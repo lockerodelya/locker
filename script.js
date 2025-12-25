@@ -1376,15 +1376,15 @@ clientForm.addEventListener('submit', function(e) {
             });
             
             closeChat.addEventListener('click', function() {
-                chatWindow.style.display = 'none';
-                chatToggle.style.display = 'flex';
-                chatMessages.innerHTML = '<div class="message bot-message">Hi! I'm Vooo. Please type your query.</div>';
-                chatInput.value = '';
-                if (suggestedQuestions) {
-                    suggestedQuestions.innerHTML = '';
-                    suggestedQuestions.classList.remove('show');
-                }
-            });
+    chatWindow.style.display = 'none';
+    chatToggle.style.display = 'flex';  // Show the toggle button again
+    chatMessages.innerHTML = '<div class="message bot-message">Hi! I am Vooo. Please type your query.</div>';
+    chatInput.value = '';
+    if (suggestedQuestions) {
+        suggestedQuestions.innerHTML = '';
+        suggestedQuestions.classList.remove('show');
+    }
+});
             
             // Send message
             sendBtn.addEventListener('click', handleSendMessage);
@@ -1502,5 +1502,6 @@ clientForm.addEventListener('submit', function(e) {
         // Initialize chat
         initializeChat();
     })();
+
 
 
