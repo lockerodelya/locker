@@ -1378,7 +1378,7 @@ clientForm.addEventListener('submit', function(e) {
             closeChat.addEventListener('click', function() {
                 chatWindow.style.display = 'none';
                 chatToggle.style.display = 'flex';
-                chatMessages.innerHTML = '<div class="message bot-message">Hello! I\'m Vooo, your AI assistant. How can I help you today?</div>';
+                chatMessages.innerHTML = '<div class="message bot-message">Hi! I'm Vooo. Please type your query.</div>';
                 chatInput.value = '';
                 if (suggestedQuestions) {
                     suggestedQuestions.innerHTML = '';
@@ -1502,3 +1502,4 @@ clientForm.addEventListener('submit', function(e) {
         // Initialize chat
         initializeChat();
     })();
+
