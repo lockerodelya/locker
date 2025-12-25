@@ -1310,244 +1310,108 @@ clientForm.addEventListener('submit', function(e) {
     // Initialize payment blur effects
     setupPaymentBlurEffects();
     
-
-
 // ====== AI CHAT FUNCTIONALITY ======
-    (function() {
-        console.log('AI Chat: Starting initialization...');
-        
-        // Get chat elements
-        const chatToggle = document.getElementById('chat-toggle-btn');
-        const chatWindow = document.getElementById('chat-window');
-        const closeChat = document.getElementById('close-chat');
-        const chatMessages = document.getElementById('chat-messages');
-        const chatInput = document.getElementById('chat-input');
-        const sendBtn = document.getElementById('send-btn');
-        
-        // Debug: Log what elements were found
-        console.log('AI Chat Elements found:', {
-            toggle: chatToggle,
-            window: chatWindow,
-            close: closeChat,
-            messages: chatMessages,
-            input: chatInput,
-            sendBtn: sendBtn
-        });
-        
-        // Check if essential elements exist
-        if (!chatToggle || !chatWindow) {
-            console.error('AI Chat: Essential elements not found!');
-            return;
-        }
-        
-        // Simple Q&A database - will be loaded from qa-data.js
-        let qaDatabase = [];
-        
-        // Function to search for answer
-        function searchAnswer(question) {
-    const userText = question
-        .toLowerCase()
-        .replace(/[^\w\s]/g, '')   // remove punctuation
-        .trim();
+(function () {
+    console.log('AI Chat: init');
 
-    if (!window.qaDatabase || !Array.isArray(window.qaDatabase)) {
-        return "I'm having trouble accessing my knowledge base right now.";
+    const chatToggle = document.getElementById('chat-toggle-btn');
+    const chatWindow = document.getElementById('chat-window');
+    const closeChat = document.getElementById('close-chat');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    if (!chatToggle || !chatWindow || !chatMessages || !chatInput) {
+        console.warn('AI Chat: elements missing');
+        return;
     }
 
-    let bestMatch = null;
-    let bestScore = 0;
-
-    window.qaDatabase.forEach(qa => {
-        let score = 0;
-
-        // Normalize stored question
-        const dbQuestion = qa.question
+    function normalize(text) {
+        return text
             .toLowerCase()
-            .replace(/[^\w\s]/g, '');
+            .replace(/[^\w\s]/g, '')
+            .trim();
+    }
 
-        // Exact or partial match
-        if (dbQuestion.includes(userText) || userText.includes(dbQuestion)) {
-            score += 5;
+    function searchAnswer(userQuestion) {
+        if (!window.qaDatabase || !Array.isArray(window.qaDatabase)) {
+            return "Knowledge base not loaded. Please contact support.";
         }
 
-        // Keyword scoring
-        if (qa.keywords && Array.isArray(qa.keywords)) {
-            qa.keywords.forEach(keyword => {
-                if (userText.includes(keyword.toLowerCase())) {
-                    score += 2;
-                }
-            });
-        }
+        const userText = normalize(userQuestion);
+        let bestAnswer = null;
+        let bestScore = 0;
 
-        // Pick best match
-        if (score > bestScore) {
-            bestScore = score;
-            bestMatch = qa;
-        }
+        window.qaDatabase.forEach(qa => {
+            let score = 0;
+
+            const dbQuestion = normalize(qa.question);
+
+            if (dbQuestion.includes(userText) || userText.includes(dbQuestion)) {
+                score += 5;
+            }
+
+            if (qa.keywords) {
+                qa.keywords.forEach(k => {
+                    if (userText.includes(k.toLowerCase())) {
+                        score += 2;
+                    }
+                });
+            }
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestAnswer = qa.answer;
+            }
+        });
+
+        return bestAnswer || 
+            "Sorry, I don’t have an answer for that. Call +91-96741 30001 or email care.ompl@gmail.com.";
+    }
+
+    function addMessage(text, isUser) {
+        const div = document.createElement('div');
+        div.className = isUser ? 'user-message' : 'bot-message';
+        div.innerHTML = text;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        addMessage(text, true);
+        chatInput.value = '';
+
+        setTimeout(() => {
+            const reply = searchAnswer(text);
+            addMessage(reply, false);
+        }, 600);
+    }
+
+    chatToggle.onclick = () => {
+        chatWindow.style.display = 'flex';
+        chatToggle.style.display = 'none';
+        chatInput.focus();
+    };
+
+    closeChat.onclick = () => {
+        chatWindow.style.display = 'none';
+        chatToggle.style.display = 'flex';
+    };
+
+    sendBtn.onclick = sendMessage;
+
+    chatInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') sendMessage();
     });
 
-    if (bestMatch && bestScore > 0) {
-        return bestMatch.answer;
-    }
+    console.log('AI Chat: ready');
+})();
 
-    return "Sorry, I don’t have an exact answer for that. You can call us at +91-96741 30001 or email care.ompl@gmail.com.";
-}
 
-            
-            // First try exact match
-            for (const qa of window.qaDatabase) {
-                if (qa.question.toLowerCase() === normalizedQuestion) {
-                    return qa.answer;
-                }
-            }
-            
-            // Then try partial match
-            for (const qa of window.qaDatabase) {
-                const qaQuestion = qa.question.toLowerCase();
-                if (normalizedQuestion.includes(qaQuestion) || qaQuestion.includes(normalizedQuestion)) {
-                    return qa.answer;
-                }
-            }
-            
-            // Then try keyword matching
-            for (const qa of window.qaDatabase) {
-                if (qa.keywords && Array.isArray(qa.keywords)) {
-                    for (const keyword of qa.keywords) {
-                        if (normalizedQuestion.includes(keyword.toLowerCase())) {
-                            return qa.answer;
-                        }
-                    }
-                }
-            }
-            
-            // Default response
-            return "I couldn't find an exact answer to your question. Please contact us at +91-96741 30001 or email care.ompl@gmail.com for assistance.";
-        }
-        
-        // Add message to chat
-        function addMessage(text, isUser = false) {
-            if (!chatMessages) return;
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            messageDiv.innerHTML = text;
-            chatMessages.appendChild(messageDiv);
-            
-            // Scroll to bottom
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        
-        // Handle sending message
-        function handleSendMessage() {
-            if (!chatInput) return;
-            
-            const question = chatInput.value.trim();
-            if (!question) return;
-            
-            // Add user message
-            addMessage(question, true);
-            chatInput.value = '';
-            
-            // Show typing indicator
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'typing-indicator';
-            typingDiv.id = 'typing-indicator';
-            typingDiv.innerHTML = `
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            `;
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            // Get answer after delay
-            setTimeout(() => {
-                // Remove typing indicator
-                const typingIndicator = document.getElementById('typing-indicator');
-                if (typingIndicator) {
-                    typingIndicator.remove();
-                }
-                
-                // Get and display answer
-                const answer = searchAnswer(question);
-                addMessage(answer, false);
-            }, 1000);
-        }
-        
-        // Toggle chat window
-        function toggleChat() {
-            if (chatWindow.style.display === 'flex') {
-                chatWindow.style.display = 'none';
-                chatToggle.style.display = 'flex';
-            } else {
-                chatWindow.style.display = 'flex';
-                chatToggle.style.display = 'none';
-                if (chatInput) {
-                    setTimeout(() => chatInput.focus(), 100);
-                }
-            }
-        }
-        
-        // Setup event listeners
-        function setupEventListeners() {
-            // Toggle chat
-            if (chatToggle) {
-                chatToggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    toggleChat();
-                });
-            }
-            
-            // Close chat
-            if (closeChat) {
-                closeChat.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    chatWindow.style.display = 'none';
-                    chatToggle.style.display = 'flex';
-                });
-            }
-            
-            // Send message on button click
-            if (sendBtn) {
-                sendBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    handleSendMessage();
-                });
-            }
-            
-            // Send message on Enter key
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        handleSendMessage();
-                    }
-                });
-            }
-            
-            // Close chat when clicking outside
-            document.addEventListener('click', function(e) {
-                if (chatWindow.style.display === 'flex' && 
-                    !chatWindow.contains(e.target) && 
-                    chatToggle && !chatToggle.contains(e.target)) {
-                    chatWindow.style.display = 'none';
-                    chatToggle.style.display = 'flex';
-                }
-            });
-        }
-        
-        // Initialize chat
-        function initializeChat() {
-            console.log('AI Chat: Initializing...');
-            console.log('QA Database available:', !!window.qaDatabase, 'Length:', window.qaDatabase ? window.qaDatabase.length : 0);
-            
-            setupEventListeners();
-            console.log('AI Chat: Initialization complete');
-        }
-        
-        // Initialize when DOM is ready
-        setTimeout(initializeChat, 500);
-
-    })();  // This closes the AI Chat IIFE
 });  // This closes the DOMContentLoaded event listener
+
 
 
