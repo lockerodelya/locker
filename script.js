@@ -191,4 +191,6 @@
         
         // Initialize when DOM is ready
         setTimeout(initializeChat, 500);
-    })();
+
+    })();  // This closes the AI Chat IIFE
+});  // This closes the DOMContentLoaded event listener
