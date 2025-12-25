@@ -1312,8 +1312,6 @@ clientForm.addEventListener('submit', function(e) {
     
     // ====== AI CHAT FUNCTIONALITY ======
     (function() {
-        console.log('Initializing AI Chat...');
-        
         // Chat elements
         const chatToggle = document.getElementById('chat-toggle-btn');
         const chatWindow = document.getElementById('chat-window');
@@ -1321,116 +1319,307 @@ clientForm.addEventListener('submit', function(e) {
         const chatMessages = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-btn');
+        const suggestedQuestions = document.getElementById('suggested-questions');
         
-        console.log('Chat elements:', { chatToggle, chatWindow, closeChat, chatMessages, chatInput, sendBtn });
-        
-        // Check if elements exist
-        if (!chatToggle || !chatWindow) {
-            console.error('Chat toggle or window not found!');
-            return;
-        }
-        
-        // Q&A database
+        // Q&A database - Now using the external qaDatabase variable
+        // This should be loaded from qa-data.js file
         let qaPairs = [];
         
-        // Load Q&A database
-        function loadQADatabase() {
-            if (typeof qaDatabase !== 'undefined' && Array.isArray(qaDatabase)) {
-                qaPairs = qaDatabase;
-                console.log('Loaded', qaPairs.length, 'Q&A pairs');
-            } else {
-                console.error('qaDatabase not found or invalid');
-                // Use minimal fallback
-                qaPairs = [
-                    {
-                        question: "What is Odelya Management?",
-                        answer: "Odelya Management Pvt. Ltd. is a Kolkata-based company specializing in secure cloud storage solutions.",
-                        keywords: ["odelya", "company", "what"]
-                    },
-                    {
-                        question: "What services do you offer?",
-                        answer: "We offer secure cloud storage with end-to-end encryption and event guest photo storage services.",
-                        keywords: ["services", "offer", "what"]
+        // Inactivity timer
+        let inactivityTimer;
+        const INACTIVITY_TIME = 60000; // 60 seconds
+        
+        // Typing debounce timer
+        let typingTimer;
+        const TYPING_DEBOUNCE = 300; // 300ms
+        
+        // Mobile keyboard detection
+        function setupMobileKeyboardHandling() {
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (!isMobile) return;
+            
+            let originalHeight = window.innerHeight;
+            
+            function handleResize() {
+                const currentHeight = window.innerHeight;
+                const isKeyboardOpen = currentHeight < originalHeight;
+                
+                if (chatWindow.style.display === 'flex') {
+                    if (isKeyboardOpen) {
+                        chatWindow.classList.add('keyboard-open');
+                        
+                        // Scroll to bottom when keyboard opens
+                        setTimeout(() => {
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        }, 100);
+                    } else {
+                        chatWindow.classList.remove('keyboard-open');
                     }
-                ];
+                }
+                
+                originalHeight = currentHeight;
             }
+            
+            // Listen for resize events (keyboard triggers resize on mobile)
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(handleResize, 100);
+            });
+            
+            // Prevent body scroll when chat input is focused
+            chatInput.addEventListener('focus', () => {
+                if (isMobile && chatWindow.style.display === 'flex') {
+                    document.body.classList.add('chat-open');
+                }
+            });
+            
+            chatInput.addEventListener('blur', () => {
+                document.body.classList.remove('chat-open');
+                chatWindow.classList.remove('keyboard-open');
+            });
+            
+            // Close keyboard when clicking outside on mobile
+            document.addEventListener('touchstart', (e) => {
+                if (chatWindow.style.display === 'flex' && 
+                    !chatWindow.contains(e.target) && 
+                    !chatToggle.contains(e.target)) {
+                    chatInput.blur();
+                }
+            });
+        }
+        
+        // Load Q&A pairs from external database
+        function loadQADatabase() {
+            // Check if qaDatabase is available globally
+            if (typeof qaDatabase !== 'undefined') {
+                qaPairs = qaDatabase.map(item => ({
+                    question: item.question,
+                    answer: item.answer,
+                    keywords: extractKeywords(item.question)
+                }));
+                console.log('Loaded', qaPairs.length, 'Q&A pairs from external database');
+            } else {
+                console.error('qaDatabase not found. Make sure qa-data.js is loaded before script.js');
+                // Fallback to minimal questions if database not available
+                qaPairs = getFallbackQuestions();
+            }
+        }
+        
+        // Fallback questions in case external database fails to load
+        function getFallbackQuestions() {
+            return [
+                {
+                    question: "What is Odelya Management?",
+                    answer: "Odelya Management Pvt. Ltd. is a Kolkata-based company specializing in secure cloud storage solutions.",
+                    keywords: ["odelya", "company", "what"]
+                },
+                {
+                    question: "What services do you offer?",
+                    answer: "We offer secure cloud storage with end-to-end encryption and event guest photo storage services.",
+                    keywords: ["services", "offer", "what"]
+                },
+                {
+                    question: "How can I contact you?",
+                    answer: "Call us at +91-96741 30001 or email care.ompl@gmail.com. Our office is in Kolkata.",
+                    keywords: ["contact", "call", "email", "phone"]
+                },
+                {
+                    question: "What are your prices?",
+                    answer: "Prices start from Rs. 18/month for 10GB. Check our pricing table for complete details.",
+                    keywords: ["price", "cost", "how much"]
+                }
+            ];
+        }
+        
+        // Extract keywords from questions
+        function extractKeywords(text) {
+            const stopWords = ['what', 'where', 'when', 'who', 'whom', 'which', 'whose', 'why', 'how', 
+                              'is', 'are', 'was', 'were', 'do', 'does', 'did', 'the', 'a', 'an', 'and',
+                              'or', 'but', 'if', 'then', 'else', 'when', 'at', 'from', 'by', 'with',
+                              'about', 'against', 'between', 'into', 'through', 'during', 'before',
+                              'after', 'above', 'below', 'to', 'of', 'in', 'for', 'on', 'off', 'over',
+                              'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when',
+                              'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more',
+                              'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own',
+                              'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just',
+                              'don', 'should', 'now'];
+            
+            const words = text.toLowerCase()
+                .replace(/[^\w\s]/g, ' ')
+                .split(/\s+/)
+                .filter(word => word.length > 2 && !stopWords.includes(word));
+            
+            return [...new Set(words)]; // Remove duplicates
         }
         
         // Initialize chat
         function initializeChat() {
             loadQADatabase();
+            startInactivityTimer();
             setupEventListeners();
-            console.log('Chat initialized successfully');
+            setupMobileKeyboardHandling();
         }
         
         // Setup event listeners
         function setupEventListeners() {
-            // Toggle chat window
-            chatToggle.addEventListener('click', function(e) {
-                e.stopPropagation();
-                console.log('Toggle clicked');
-                if (chatWindow.style.display === 'flex') {
-                    closeChatWindow();
-                } else {
-                    openChatWindow();
-                }
-            });
-            
-            // Close chat
-            if (closeChat) {
-                closeChat.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    closeChatWindow();
-                });
-            }
+            chatToggle.addEventListener('click', toggleChat);
+            closeChat.addEventListener('click', closeChatWindow);
             
             // Send message on button click
-            if (sendBtn) {
-                sendBtn.addEventListener('click', handleSendMessage);
-            }
+            sendBtn.addEventListener('click', handleSendMessage);
             
             // Send message on Enter key
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        handleSendMessage();
-                    }
-                });
-            }
-            
-            // Close chat when clicking outside
-            document.addEventListener('click', function(e) {
-                if (chatWindow.style.display === 'flex' && 
-                    !chatWindow.contains(e.target) && 
-                    !chatToggle.contains(e.target)) {
-                    closeChatWindow();
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleSendMessage();
                 }
             });
+            
+            // Show suggestions while typing
+            chatInput.addEventListener('input', function() {
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(() => {
+                    showDynamicSuggestions(this.value.trim());
+                }, TYPING_DEBOUNCE);
+                
+                // Reset inactivity timer on typing
+                resetInactivityTimer();
+            });
+            
+            // Clear suggestions when input is cleared
+            chatInput.addEventListener('blur', function() {
+                if (!this.value.trim()) {
+                    hideSuggestions();
+                }
+            });
+            
+            // Reset inactivity timer on any interaction
+            document.addEventListener('click', resetInactivityTimer);
+            document.addEventListener('keypress', resetInactivityTimer);
+            document.addEventListener('scroll', resetInactivityTimer);
+        }
+        
+        // Toggle chat window
+        function toggleChat() {
+            if (chatWindow.style.display === 'flex') {
+                closeChatWindow();
+            } else {
+                openChatWindow();
+            }
         }
         
         // Open chat window
         function openChatWindow() {
             chatWindow.style.display = 'flex';
             chatToggle.style.display = 'none';
+            resetInactivityTimer();
+            showGreeting();
             setTimeout(() => {
-                if (chatInput) chatInput.focus();
-            }, 100);
-            console.log('Chat opened');
+                chatInput.focus();
+            }, 300);
         }
         
         // Close chat window
         function closeChatWindow() {
             chatWindow.style.display = 'none';
             chatToggle.style.display = 'flex';
-            console.log('Chat closed');
+            clearChat();
+            hideSuggestions();
+            chatInput.value = '';
+        }
+        
+        // Show dynamic suggestions based on typing
+        function showDynamicSuggestions(inputText) {
+            if (!inputText) {
+                hideSuggestions();
+                return;
+            }
+            
+            const normalizedInput = inputText.toLowerCase().trim();
+            
+            // Filter questions that match the input
+            const matchedQuestions = qaPairs
+                .filter(qa => {
+                    // Check if input matches question or keywords
+                    const questionLower = qa.question.toLowerCase();
+                    return questionLower.includes(normalizedInput) ||
+                           qa.keywords.some(keyword => keyword.includes(normalizedInput)) ||
+                           normalizedInput.split(' ').some(word => 
+                               word.length > 2 && questionLower.includes(word)
+                           );
+                })
+                .slice(0, 5); // Show max 5 suggestions
+            
+            // Also check for category matches
+            const categoryMatches = getCategorySuggestions(normalizedInput);
+            const allSuggestions = [...matchedQuestions, ...categoryMatches].slice(0, 5);
+            
+            if (allSuggestions.length > 0) {
+                displaySuggestions(allSuggestions);
+            } else {
+                hideSuggestions();
+            }
+        }
+        
+        // Get category-based suggestions
+        function getCategorySuggestions(input) {
+            const categories = {
+                'price': ['how much', 'cost', 'price', 'rate', 'charges'],
+                'contact': ['contact', 'call', 'email', 'phone', 'number', 'reach'],
+                'service': ['service', 'offer', 'provide', 'storage', 'cloud'],
+                'location': ['location', 'address', 'office', 'where'],
+                'founder': ['founder', 'owner', 'director', 'chairman', 'who'],
+                'time': ['time', 'hour', 'when', 'available', 'schedule'],
+                'payment': ['payment', 'pay', 'buy', 'purchase', 'transfer', 'upi']
+            };
+            
+            const matched = [];
+            
+            for (const [category, keywords] of Object.entries(categories)) {
+                if (keywords.some(keyword => input.includes(keyword))) {
+                    // Get 2 questions related to this category
+                    const categoryQuestions = qaPairs.filter(qa => 
+                        qa.question.toLowerCase().includes(category) ||
+                        keywords.some(keyword => qa.question.toLowerCase().includes(keyword))
+                    ).slice(0, 2);
+                    
+                    matched.push(...categoryQuestions);
+                }
+            }
+            
+            return [...new Set(matched)]; // Remove duplicates
+        }
+        
+        // Display suggestions
+        function displaySuggestions(suggestions) {
+            suggestedQuestions.innerHTML = '';
+            
+            suggestions.forEach(qa => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-item';
+                questionDiv.textContent = qa.question;
+                questionDiv.addEventListener('click', () => {
+                    chatInput.value = qa.question;
+                    hideSuggestions();
+                    handleSendMessage();
+                });
+                suggestedQuestions.appendChild(questionDiv);
+            });
+            
+            suggestedQuestions.classList.add('show');
+        }
+        
+        // Hide suggestions
+        function hideSuggestions() {
+            suggestedQuestions.classList.remove('show');
+            suggestedQuestions.innerHTML = '';
         }
         
         // Handle send message
         function handleSendMessage() {
-            if (!chatInput) return;
-            
             const question = chatInput.value.trim();
-            console.log('Sending message:', question);
             
             if (!question) {
                 return;
@@ -1438,24 +1627,30 @@ clientForm.addEventListener('submit', function(e) {
             
             // Add user message
             addUserMessage(question);
+            hideSuggestions();
             chatInput.value = '';
             
             // Show typing indicator
             showTypingIndicator();
             
-            // Find and show answer after delay
+            // Simulate processing delay
             setTimeout(() => {
                 removeTypingIndicator();
+                
+                // Find answer
                 const answer = searchAnswer(question);
-                addBotMessage(answer);
-                scrollToBottom();
+                
+                // Add bot answer
+                setTimeout(() => {
+                    addBotMessage(answer);
+                    scrollToBottom();
+                    resetInactivityTimer();
+                }, 500);
             }, 1000);
         }
         
         // Show typing indicator
         function showTypingIndicator() {
-            if (!chatMessages) return;
-            
             const typingDiv = document.createElement('div');
             typingDiv.className = 'typing-indicator';
             typingDiv.id = 'typing-indicator';
@@ -1480,35 +1675,78 @@ clientForm.addEventListener('submit', function(e) {
         function searchAnswer(question) {
             const normalizedQuestion = question.toLowerCase().trim();
             
-            // Try exact match
+            // First, try exact match
             for (const qa of qaPairs) {
                 if (qa.question.toLowerCase() === normalizedQuestion) {
                     return qa.answer;
                 }
             }
             
-            // Try keyword matching
-            const inputWords = normalizedQuestion.split(/\s+/).filter(word => word.length > 2);
-            
+            // Then try partial match
             for (const qa of qaPairs) {
-                if (qa.keywords) {
-                    for (const keyword of qa.keywords) {
-                        if (inputWords.some(word => 
-                            word.includes(keyword) || keyword.includes(word))) {
-                            return qa.answer;
-                        }
-                    }
+                if (normalizedQuestion.includes(qa.question.toLowerCase()) || 
+                    qa.question.toLowerCase().includes(normalizedQuestion)) {
+                    return qa.answer;
                 }
             }
             
-            // Default response
-            return "Sorry. I couldn't find an exact answer to your question. Kindly feel free to call us at +91-96741 30001 for further assistance.";
+            // Then try keyword matching
+            const matchedByKeywords = [];
+            const inputWords = normalizedQuestion.split(/\s+/).filter(word => word.length > 2);
+            
+            for (const qa of qaPairs) {
+                const matchScore = qa.keywords.filter(keyword => 
+                    inputWords.some(word => keyword.includes(word) || word.includes(keyword))
+                ).length;
+                
+                if (matchScore > 0) {
+                    matchedByKeywords.push({ qa, score: matchScore });
+                }
+            }
+            
+            if (matchedByKeywords.length > 0) {
+                // Sort by match score and return the best match
+                matchedByKeywords.sort((a, b) => b.score - a.score);
+                return matchedByKeywords[0].qa.answer;
+            }
+            
+            // If not found, check for common keywords/phrases
+            if (normalizedQuestion.includes('price') || normalizedQuestion.includes('cost') || 
+                normalizedQuestion.includes('how much')) {
+                return "Our prices start from Rs. 18 per month for 10GB storage. Please check our pricing table for detailed rates or ask about a specific storage size.";
+            } else if (normalizedQuestion.includes('contact') || normalizedQuestion.includes('call') || 
+                      normalizedQuestion.includes('phone') || normalizedQuestion.includes('email')) {
+                return "You can contact us at:<br>📞 +91-96741 30001<br>✉️ care.ompl@gmail.com<br>⏰ Mon-Sat 9 AM - 8 PM";
+            } else if (normalizedQuestion.includes('location') || normalizedQuestion.includes('address') || 
+                      normalizedQuestion.includes('where')) {
+                return "Our office is located at:<br>44E, 2nd Floor, Nandalalmitra Lane, Kolkata-700040, India";
+            } else if (normalizedQuestion.includes('service') || normalizedQuestion.includes('offer') || 
+                      normalizedQuestion.includes('provide')) {
+                return "We offer:<br>1. Secure Cloud Storage with End-to-End Encryption<br>2. Event Guest Photo Storage";
+            } else if (normalizedQuestion.includes('founder') || normalizedQuestion.includes('owner') || 
+                      normalizedQuestion.includes('director') || normalizedQuestion.includes('who runs')) {
+                return "Our company is led by:<br>1. Mr. Aniruddha Ghosh - Chairman<br>2. Mr. Shyamal Sen - Director";
+            } else if (normalizedQuestion.includes('time') || normalizedQuestion.includes('hour') || 
+                      normalizedQuestion.includes('available') || normalizedQuestion.includes('when')) {
+                return "Our business hours are Monday to Saturday, 9 AM to 8 PM.";
+            } else if (normalizedQuestion.includes('storage') || normalizedQuestion.includes('cloud')) {
+                return "We provide secure cloud storage solutions with end-to-end encryption. You can store files, photos, and documents securely.";
+            } else if (normalizedQuestion.includes('payment') || normalizedQuestion.includes('pay') || 
+                      normalizedQuestion.includes('buy')) {
+                return "You can make payment via:<br>1. UPI Payment (Scan QR code)<br>2. Bank Transfer to State Bank of India";
+            }
+            
+            // Default response for unknown questions
+            return "Sorry. I couldn't find an exact answer to your question. Kindly feel free to call us at +91-96741 30001 for further assistance. Alternatively, you can try asking about:<br><br>" +
+                   "• Services we offer<br>" +
+                   "• Pricing and storage plans<br>" +
+                   "• Contact information<br>" +
+                   "• Office location<br>" +
+                   "• Payment methods";
         }
         
         // Add message to chat
         function addMessage(message, isUser = false) {
-            if (!chatMessages) return;
-            
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
             messageDiv.innerHTML = message;
@@ -1526,12 +1764,41 @@ clientForm.addEventListener('submit', function(e) {
             addMessage(message, false);
         }
         
-        // Scroll to bottom
+        // Scroll to bottom of chat
         function scrollToBottom() {
-            if (!chatMessages) return;
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
         
-        // Initialize when DOM is ready
-        setTimeout(initializeChat, 100);
+        // Clear chat
+        function clearChat() {
+            chatMessages.innerHTML = '';
+        }
+        
+        // Inactivity timer functions
+        function startInactivityTimer() {
+            resetInactivityTimer();
+        }
+        
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                handleInactivity();
+            }, INACTIVITY_TIME);
+        }
+        
+        function handleInactivity() {
+            if (chatWindow.style.display === 'flex') {
+                addBotMessage("It seems you're inactive. Chat history will be cleared in 5 seconds.");
+                
+                setTimeout(() => {
+                    clearChat();
+                    closeChatWindow();
+                    showGreeting();
+                }, 5000);
+            }
+        }
+        
+        // Initialize chat when DOM is loaded
+        initializeChat();
     })();
+});
