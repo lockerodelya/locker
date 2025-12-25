@@ -1345,13 +1345,54 @@ clientForm.addEventListener('submit', function(e) {
         
         // Function to search for answer
         function searchAnswer(question) {
-            const normalizedQuestion = question.toLowerCase().trim();
-            
-            // Check if qaDatabase is loaded and has data
-            if (!window.qaDatabase || !Array.isArray(window.qaDatabase)) {
-                console.error('QA Database not loaded properly');
-                return "I'm having trouble accessing my knowledge base. Please try again or contact support.";
-            }
+    const userText = question
+        .toLowerCase()
+        .replace(/[^\w\s]/g, '')   // remove punctuation
+        .trim();
+
+    if (!window.qaDatabase || !Array.isArray(window.qaDatabase)) {
+        return "I'm having trouble accessing my knowledge base right now.";
+    }
+
+    let bestMatch = null;
+    let bestScore = 0;
+
+    window.qaDatabase.forEach(qa => {
+        let score = 0;
+
+        // Normalize stored question
+        const dbQuestion = qa.question
+            .toLowerCase()
+            .replace(/[^\w\s]/g, '');
+
+        // Exact or partial match
+        if (dbQuestion.includes(userText) || userText.includes(dbQuestion)) {
+            score += 5;
+        }
+
+        // Keyword scoring
+        if (qa.keywords && Array.isArray(qa.keywords)) {
+            qa.keywords.forEach(keyword => {
+                if (userText.includes(keyword.toLowerCase())) {
+                    score += 2;
+                }
+            });
+        }
+
+        // Pick best match
+        if (score > bestScore) {
+            bestScore = score;
+            bestMatch = qa;
+        }
+    });
+
+    if (bestMatch && bestScore > 0) {
+        return bestMatch.answer;
+    }
+
+    return "Sorry, I don’t have an exact answer for that. You can call us at +91-96741 30001 or email care.ompl@gmail.com.";
+}
+
             
             // First try exact match
             for (const qa of window.qaDatabase) {
@@ -1508,4 +1549,5 @@ clientForm.addEventListener('submit', function(e) {
 
     })();  // This closes the AI Chat IIFE
 });  // This closes the DOMContentLoaded event listener
+
 
