@@ -1310,20 +1310,23 @@ clientForm.addEventListener('submit', function(e) {
     // Initialize payment blur effects
     setupPaymentBlurEffects();
     
-        // ====== AI CHAT FUNCTIONALITY ======
+    // ====== AI CHAT FUNCTIONALITY ======
     (function() {
-        // Chat elements - CORRECTED IDs to match your HTML
+        console.log('Initializing AI Chat...');
+        
+        // Chat elements
         const chatToggle = document.getElementById('chat-toggle-btn');
         const chatWindow = document.getElementById('chat-window');
         const closeChat = document.getElementById('close-chat');
         const chatMessages = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-btn');
-        const suggestedQuestions = document.getElementById('suggested-questions');
+        
+        console.log('Chat elements:', { chatToggle, chatWindow, closeChat, chatMessages, chatInput, sendBtn });
         
         // Check if elements exist
-        if (!chatToggle || !chatWindow || !chatInput || !sendBtn) {
-            console.error('Chat elements not found! Check your HTML IDs');
+        if (!chatToggle || !chatWindow) {
+            console.error('Chat toggle or window not found!');
             return;
         }
         
@@ -1332,72 +1335,102 @@ clientForm.addEventListener('submit', function(e) {
         
         // Load Q&A database
         function loadQADatabase() {
-            if (typeof qaDatabase !== 'undefined') {
+            if (typeof qaDatabase !== 'undefined' && Array.isArray(qaDatabase)) {
                 qaPairs = qaDatabase;
                 console.log('Loaded', qaPairs.length, 'Q&A pairs');
             } else {
-                console.error('qaDatabase not found');
-                qaPairs = getFallbackQuestions();
+                console.error('qaDatabase not found or invalid');
+                // Use minimal fallback
+                qaPairs = [
+                    {
+                        question: "What is Odelya Management?",
+                        answer: "Odelya Management Pvt. Ltd. is a Kolkata-based company specializing in secure cloud storage solutions.",
+                        keywords: ["odelya", "company", "what"]
+                    },
+                    {
+                        question: "What services do you offer?",
+                        answer: "We offer secure cloud storage with end-to-end encryption and event guest photo storage services.",
+                        keywords: ["services", "offer", "what"]
+                    }
+                ];
             }
-        }
-        
-        // Fallback questions
-        function getFallbackQuestions() {
-            return [
-                {
-                    question: "What is Odelya Management?",
-                    answer: "Odelya Management Pvt. Ltd. is a Kolkata-based company specializing in secure cloud storage solutions."
-                },
-                {
-                    question: "What services do you offer?",
-                    answer: "We offer secure cloud storage with end-to-end encryption and event guest photo storage services."
-                }
-            ];
         }
         
         // Initialize chat
         function initializeChat() {
             loadQADatabase();
             setupEventListeners();
+            console.log('Chat initialized successfully');
         }
         
         // Setup event listeners
         function setupEventListeners() {
-            // Open/close chat
-            chatToggle.addEventListener('click', function() {
+            // Toggle chat window
+            chatToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                console.log('Toggle clicked');
                 if (chatWindow.style.display === 'flex') {
-                    chatWindow.style.display = 'none';
-                    chatToggle.style.display = 'flex';
+                    closeChatWindow();
                 } else {
-                    chatWindow.style.display = 'flex';
-                    chatToggle.style.display = 'none';
-                    chatInput.focus();
+                    openChatWindow();
                 }
             });
             
-            closeChat.addEventListener('click', function() {
-    chatWindow.style.display = 'none';
-    chatToggle.style.display = 'flex';  // Show the toggle button again
-    chatMessages.innerHTML = '<div class="message bot-message">Hi! I am Vooo. Please type your query.</div>';
-    chatInput.value = '';
-    if (suggestedQuestions) {
-        suggestedQuestions.innerHTML = '';
-        suggestedQuestions.classList.remove('show');
-    }
-});
+            // Close chat
+            if (closeChat) {
+                closeChat.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    closeChatWindow();
+                });
+            }
             
-            // Send message
-            sendBtn.addEventListener('click', handleSendMessage);
-            chatInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    handleSendMessage();
+            // Send message on button click
+            if (sendBtn) {
+                sendBtn.addEventListener('click', handleSendMessage);
+            }
+            
+            // Send message on Enter key
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleSendMessage();
+                    }
+                });
+            }
+            
+            // Close chat when clicking outside
+            document.addEventListener('click', function(e) {
+                if (chatWindow.style.display === 'flex' && 
+                    !chatWindow.contains(e.target) && 
+                    !chatToggle.contains(e.target)) {
+                    closeChatWindow();
                 }
             });
         }
         
+        // Open chat window
+        function openChatWindow() {
+            chatWindow.style.display = 'flex';
+            chatToggle.style.display = 'none';
+            setTimeout(() => {
+                if (chatInput) chatInput.focus();
+            }, 100);
+            console.log('Chat opened');
+        }
+        
+        // Close chat window
+        function closeChatWindow() {
+            chatWindow.style.display = 'none';
+            chatToggle.style.display = 'flex';
+            console.log('Chat closed');
+        }
+        
         // Handle send message
         function handleSendMessage() {
+            if (!chatInput) return;
+            
             const question = chatInput.value.trim();
+            console.log('Sending message:', question);
             
             if (!question) {
                 return;
@@ -1410,7 +1443,7 @@ clientForm.addEventListener('submit', function(e) {
             // Show typing indicator
             showTypingIndicator();
             
-            // Find answer
+            // Find and show answer after delay
             setTimeout(() => {
                 removeTypingIndicator();
                 const answer = searchAnswer(question);
@@ -1421,6 +1454,8 @@ clientForm.addEventListener('submit', function(e) {
         
         // Show typing indicator
         function showTypingIndicator() {
+            if (!chatMessages) return;
+            
             const typingDiv = document.createElement('div');
             typingDiv.className = 'typing-indicator';
             typingDiv.id = 'typing-indicator';
@@ -1452,21 +1487,16 @@ clientForm.addEventListener('submit', function(e) {
                 }
             }
             
-            // Try partial match
-            for (const qa of qaPairs) {
-                if (normalizedQuestion.includes(qa.question.toLowerCase()) || 
-                    qa.question.toLowerCase().includes(normalizedQuestion)) {
-                    return qa.answer;
-                }
-            }
-            
             // Try keyword matching
             const inputWords = normalizedQuestion.split(/\s+/).filter(word => word.length > 2);
             
             for (const qa of qaPairs) {
-                for (const keyword of qa.keywords || []) {
-                    if (inputWords.some(word => keyword.includes(word) || word.includes(keyword))) {
-                        return qa.answer;
+                if (qa.keywords) {
+                    for (const keyword of qa.keywords) {
+                        if (inputWords.some(word => 
+                            word.includes(keyword) || keyword.includes(word))) {
+                            return qa.answer;
+                        }
                     }
                 }
             }
@@ -1477,6 +1507,8 @@ clientForm.addEventListener('submit', function(e) {
         
         // Add message to chat
         function addMessage(message, isUser = false) {
+            if (!chatMessages) return;
+            
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
             messageDiv.innerHTML = message;
@@ -1496,12 +1528,10 @@ clientForm.addEventListener('submit', function(e) {
         
         // Scroll to bottom
         function scrollToBottom() {
+            if (!chatMessages) return;
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
         
-        // Initialize chat
-        initializeChat();
+        // Initialize when DOM is ready
+        setTimeout(initializeChat, 100);
     })();
-
-
-
