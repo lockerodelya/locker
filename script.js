@@ -1,4 +1,44 @@
 // script.js - Main JavaScript for Odelya Locker System
+
+// Function to show storage details when clicking the card
+function showStorageDetails() {
+    const storageDetails = document.getElementById('cloud-storage-details');
+    const storageCard = document.getElementById('storage-card');
+    
+    // DEBUG: Check current state
+    console.log('Current display:', storageDetails.style.display);
+    console.log('Computed display:', window.getComputedStyle(storageDetails).display);
+    
+    // Use computed style to check
+    const computedStyle = window.getComputedStyle(storageDetails);
+    const isCurrentlyHidden = computedStyle.display === 'none';
+    
+    if (isCurrentlyHidden) {
+        // Show section
+        storageDetails.style.display = 'block';
+        
+        if (storageCard) {
+            storageCard.classList.add('active');
+        }
+        
+        // Wait for next tick
+        setTimeout(() => {
+            storageDetails.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start',
+                inline: 'nearest'
+            });
+        }, 150); // Increase delay
+    } else {
+        storageDetails.style.display = 'none';
+        
+        if (storageCard) {
+            storageCard.classList.remove('active');
+        }
+    }
+}
+
+
 // Function to show storage details when clicking the card
 function showStorageDetails() {
     const storageDetails = document.getElementById('cloud-storage-details');
@@ -1341,6 +1381,7 @@ clientForm.addEventListener('submit', function(e) {
     // Initialize payment blur effects
     setupPaymentBlurEffects();
 });
+
 
 
 
