@@ -1,87 +1,5 @@
 // script.js - Main JavaScript for Odelya Locker System
 
-// Function to show storage details when clicking the card
-function showStorageDetails() {
-    const storageDetails = document.getElementById('cloud-storage-details');
-    const storageCard = document.getElementById('storage-card');
-    
-    // Always ensure it's hidden on page load
-    if (!storageDetails.hasAttribute('data-initialized')) {
-        storageDetails.style.display = 'none';
-        storageDetails.setAttribute('data-initialized', 'true');
-    }
-    
-    // Toggle visibility
-    if (storageDetails.style.display === 'none') {
-        // Show section
-        storageDetails.style.display = 'block';
-        
-        if (storageCard) {
-            storageCard.classList.add('active');
-        }
-        
-        // Double requestAnimationFrame for guaranteed rendering
-        requestAnimationFrame(() => {
-            // Force layout calculation
-            storageDetails.getBoundingClientRect();
-            
-            requestAnimationFrame(() => {
-                // Scroll to position
-                const yOffset = -80; // Adjust for fixed header if needed
-                const y = storageDetails.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                
-                window.scrollTo({
-                    top: y,
-                    behavior: 'smooth'
-                });
-            });
-        });
-    } else {
-        storageDetails.style.display = 'none';
-        
-        if (storageCard) {
-            storageCard.classList.remove('active');
-        }
-    }
-}
-
-
-// Function to show storage details when clicking the card
-function showStorageDetails() {
-    const storageDetails = document.getElementById('cloud-storage-details');
-    const storageCard = document.getElementById('storage-card');
-    
-    // Toggle visibility
-    if (storageDetails.style.display === 'none' || storageDetails.style.display === '') {
-        // Show the details section
-        storageDetails.style.display = 'block';
-        
-        // Add active class to card
-        storageCard.classList.add('active');
-        
-        // Force a reflow to ensure element is rendered
-        void storageDetails.offsetHeight;
-        
-        // Scroll after a small delay
-        setTimeout(() => {
-            storageDetails.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start'
-            });
-        }, 50);
-    } else {
-        // Hide the details section
-        storageDetails.style.display = 'none';
-        
-        // Remove active class from card
-        storageCard.classList.remove('active');
-    }
-}
-
-function scrollToStorage() {
-    showStorageDetails(); // This will show and scroll to the details
-}
-
 document.addEventListener('DOMContentLoaded', function() {
     // ====== VARIABLE DECLARATIONS ======
     const hamburger = document.getElementById('hamburger');
@@ -1388,9 +1306,3 @@ clientForm.addEventListener('submit', function(e) {
     // Initialize payment blur effects
     setupPaymentBlurEffects();
 });
-
-
-
-
-
-
