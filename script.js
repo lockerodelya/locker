@@ -26,6 +26,10 @@ function showStorageDetails() {
     }
 }
 
+function scrollToStorage() {
+    showStorageDetails(); // This will show and scroll to the details
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // ====== VARIABLE DECLARATIONS ======
     const hamburger = document.getElementById('hamburger');
@@ -1332,4 +1336,5 @@ clientForm.addEventListener('submit', function(e) {
     // Initialize payment blur effects
     setupPaymentBlurEffects();
 });
+
 
