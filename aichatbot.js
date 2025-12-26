@@ -13,369 +13,369 @@ document.addEventListener('DOMContentLoaded', function() {
     // ====== PRELOADED Q&A DATABASE ======
     const qaDatabase = [
         // ====== PRICING TABLE SPECIFIC Q&A ======
-// 10GB Plan
-{
-    question: "10GB storage plan price",
-    answer: "10GB Storage Plan Details:<br><br>• Storage: 10GB<br>• Users: 1 user<br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• GST: Included (18%)",
-    category: "pricing"
-},
-{
-    question: "How much for 10GB storage?",
-    answer: "10GB storage costs:<br><br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• Users: 1 user<br>• All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "What is the price of 10GB plan?",
-    answer: "10GB Plan Pricing:<br><br>📦 Storage: 10GB<br>👥 Users: 1<br>💰 Monthly: Rs. 18<br>💰 Yearly: Rs. 202<br>📋 GST: Included",
-    category: "pricing"
-},
+        // 10GB Plan
+        {
+            question: "10GB storage plan price",
+            answer: "10GB Storage Plan Details:<br><br>• Storage: 10GB<br>• Users: 1 user<br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• GST: Included (18%)",
+            category: "pricing"
+        },
+        {
+            question: "How much for 10GB storage?",
+            answer: "10GB storage costs:<br><br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• Users: 1 user<br>• All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "What is the price of 10GB plan?",
+            answer: "10GB Plan Pricing:<br><br>📦 Storage: 10GB<br>👥 Users: 1<br>💰 Monthly: Rs. 18<br>💰 Yearly: Rs. 202<br>📋 GST: Included",
+            category: "pricing"
+        },
 
-// 30GB Plan
-{
-    question: "30GB storage plan price",
-    answer: "30GB Storage Plan Details:<br><br>• Storage: 30GB<br>• Users: 2 users<br>• Monthly: Rs. 53<br>• Yearly: Rs. 605<br>• GST: Included (18%)",
-    category: "pricing"
-},
-{
-    question: "How much for 30GB storage?",
-    answer: "30GB storage costs:<br><br>• Monthly: Rs. 53<br>• Yearly: Rs. 605<br>• Users: 2 users<br>• All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "What is the price of 30GB plan?",
-    answer: "30GB Plan Pricing:<br><br>📦 Storage: 30GB<br>👥 Users: 2<br>💰 Monthly: Rs. 53<br>💰 Yearly: Rs. 605<br>📋 GST: Included",
-    category: "pricing"
-},
+        // 30GB Plan
+        {
+            question: "30GB storage plan price",
+            answer: "30GB Storage Plan Details:<br><br>• Storage: 30GB<br>• Users: 2 users<br>• Monthly: Rs. 53<br>• Yearly: Rs. 605<br>• GST: Included (18%)",
+            category: "pricing"
+        },
+        {
+            question: "How much for 30GB storage?",
+            answer: "30GB storage costs:<br><br>• Monthly: Rs. 53<br>• Yearly: Rs. 605<br>• Users: 2 users<br>• All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "What is the price of 30GB plan?",
+            answer: "30GB Plan Pricing:<br><br>📦 Storage: 30GB<br>👥 Users: 2<br>💰 Monthly: Rs. 53<br>💰 Yearly: Rs. 605<br>📋 GST: Included",
+            category: "pricing"
+        },
 
-// 50GB Plan
-{
-    question: "50GB storage plan price",
-    answer: "50GB Storage Plan Details:<br><br>• Storage: 50GB<br>• Users: 2 users<br>• Monthly: Rs. 89<br>• Yearly: Rs. 956<br>• GST: Included (18%)",
-    category: "pricing"
-},
-{
-    question: "How much for 50GB storage?",
-    answer: "50GB storage costs:<br><br>• Monthly: Rs. 89<br>• Yearly: Rs. 956<br>• Users: 2 users<br>• All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "What is the price of 50GB plan?",
-    answer: "50GB Plan Pricing:<br><br>📦 Storage: 50GB<br>👥 Users: 2<br>💰 Monthly: Rs. 89<br>💰 Yearly: Rs. 956<br>📋 GST: Included",
-    category: "pricing"
-},
+        // 50GB Plan
+        {
+            question: "50GB storage plan price",
+            answer: "50GB Storage Plan Details:<br><br>• Storage: 50GB<br>• Users: 2 users<br>• Monthly: Rs. 89<br>• Yearly: Rs. 956<br>• GST: Included (18%)",
+            category: "pricing"
+        },
+        {
+            question: "How much for 50GB storage?",
+            answer: "50GB storage costs:<br><br>• Monthly: Rs. 89<br>• Yearly: Rs. 956<br>• Users: 2 users<br>• All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "What is the price of 50GB plan?",
+            answer: "50GB Plan Pricing:<br><br>📦 Storage: 50GB<br>👥 Users: 2<br>💰 Monthly: Rs. 89<br>💰 Yearly: Rs. 956<br>📋 GST: Included",
+            category: "pricing"
+        },
 
-// 70GB Plan
-{
-    question: "70GB storage plan price",
-    answer: "70GB Storage Plan Details:<br><br>• Storage: 70GB<br>• Users: 3 users<br>• Monthly: Rs. 124<br>• Yearly: Rs. 1,338<br>• GST: Included (18%)",
-    category: "pricing"
-},
-{
-    question: "How much for 70GB storage?",
-    answer: "70GB storage costs:<br><br>• Monthly: Rs. 124<br>• Yearly: Rs. 1,338<br>• Users: 3 users<br>• All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "What is the price of 70GB plan?",
-    answer: "70GB Plan Pricing:<br><br>📦 Storage: 70GB<br>👥 Users: 3<br>💰 Monthly: Rs. 124<br>💰 Yearly: Rs. 1,338<br>📋 GST: Included",
-    category: "pricing"
-},
+        // 70GB Plan
+        {
+            question: "70GB storage plan price",
+            answer: "70GB Storage Plan Details:<br><br>• Storage: 70GB<br>• Users: 3 users<br>• Monthly: Rs. 124<br>• Yearly: Rs. 1,338<br>• GST: Included (18%)",
+            category: "pricing"
+        },
+        {
+            question: "How much for 70GB storage?",
+            answer: "70GB storage costs:<br><br>• Monthly: Rs. 124<br>• Yearly: Rs. 1,338<br>• Users: 3 users<br>• All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "What is the price of 70GB plan?",
+            answer: "70GB Plan Pricing:<br><br>📦 Storage: 70GB<br>👥 Users: 3<br>💰 Monthly: Rs. 124<br>💰 Yearly: Rs. 1,338<br>📋 GST: Included",
+            category: "pricing"
+        },
 
-// 100GB Plan
-{
-    question: "100GB storage plan price",
-    answer: "100GB Storage Plan Details:<br><br>• Storage: 100GB<br>• Users: 3 users<br>• Monthly: Rs. 177<br>• Yearly: Rs. 1,805<br>• GST: Included (18%)",
-    category: "pricing"
-},
-{
-    question: "How much for 100GB storage?",
-    answer: "100GB storage costs:<br><br>• Monthly: Rs. 177<br>• Yearly: Rs. 1,805<br>• Users: 3 users<br>• All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "What is the price of 100GB plan?",
-    answer: "100GB Plan Pricing:<br><br>📦 Storage: 100GB<br>👥 Users: 3<br>💰 Monthly: Rs. 177<br>💰 Yearly: Rs. 1,805<br>📋 GST: Included",
-    category: "pricing"
-},
+        // 100GB Plan
+        {
+            question: "100GB storage plan price",
+            answer: "100GB Storage Plan Details:<br><br>• Storage: 100GB<br>• Users: 3 users<br>• Monthly: Rs. 177<br>• Yearly: Rs. 1,805<br>• GST: Included (18%)",
+            category: "pricing"
+        },
+        {
+            question: "How much for 100GB storage?",
+            answer: "100GB storage costs:<br><br>• Monthly: Rs. 177<br>• Yearly: Rs. 1,805<br>• Users: 3 users<br>• All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "What is the price of 100GB plan?",
+            answer: "100GB Plan Pricing:<br><br>📦 Storage: 100GB<br>👥 Users: 3<br>💰 Monthly: Rs. 177<br>💰 Yearly: Rs. 1,805<br>📋 GST: Included",
+            category: "pricing"
+        },
 
-// 150GB Plan
-{
-    question: "150GB storage plan price",
-    answer: "150GB Storage Plan Details:<br><br>• Storage: 150GB<br>• Users: 3 users<br>• Monthly: Rs. 266<br>• Yearly: Rs. 2,708<br>• GST: Included (18%)",
-    category: "pricing"
-},
-{
-    question: "How much for 150GB storage?",
-    answer: "150GB storage costs:<br><br>• Monthly: Rs. 266<br>• Yearly: Rs. 2,708<br>• Users: 3 users<br>• All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "What is the price of 150GB plan?",
-    answer: "150GB Plan Pricing:<br><br>📦 Storage: 150GB<br>👥 Users: 3<br>💰 Monthly: Rs. 266<br>💰 Yearly: Rs. 2,708<br>📋 GST: Included",
-    category: "pricing"
-},
+        // 150GB Plan
+        {
+            question: "150GB storage plan price",
+            answer: "150GB Storage Plan Details:<br><br>• Storage: 150GB<br>• Users: 3 users<br>• Monthly: Rs. 266<br>• Yearly: Rs. 2,708<br>• GST: Included (18%)",
+            category: "pricing"
+        },
+        {
+            question: "How much for 150GB storage?",
+            answer: "150GB storage costs:<br><br>• Monthly: Rs. 266<br>• Yearly: Rs. 2,708<br>• Users: 3 users<br>• All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "What is the price of 150GB plan?",
+            answer: "150GB Plan Pricing:<br><br>📦 Storage: 150GB<br>👥 Users: 3<br>💰 Monthly: Rs. 266<br>💰 Yearly: Rs. 2,708<br>📋 GST: Included",
+            category: "pricing"
+        },
 
-// 200GB Plan
-{
-    question: "200GB storage plan price",
-    answer: "200GB Storage Plan Details:<br><br>• Storage: 200GB<br>• Users: 4 users<br>• Monthly: Rs. 354<br>• Yearly: Rs. 3,611<br>• GST: Included (18%)",
-    category: "pricing"
-},
-{
-    question: "How much for 200GB storage?",
-    answer: "200GB storage costs:<br><br>• Monthly: Rs. 354<br>• Yearly: Rs. 3,611<br>• Users: 4 users<br>• All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "What is the price of 200GB plan?",
-    answer: "200GB Plan Pricing:<br><br>📦 Storage: 200GB<br>👥 Users: 4<br>💰 Monthly: Rs. 354<br>💰 Yearly: Rs. 3,611<br>📋 GST: Included",
-    category: "pricing"
-},
+        // 200GB Plan
+        {
+            question: "200GB storage plan price",
+            answer: "200GB Storage Plan Details:<br><br>• Storage: 200GB<br>• Users: 4 users<br>• Monthly: Rs. 354<br>• Yearly: Rs. 3,611<br>• GST: Included (18%)",
+            category: "pricing"
+        },
+        {
+            question: "How much for 200GB storage?",
+            answer: "200GB storage costs:<br><br>• Monthly: Rs. 354<br>• Yearly: Rs. 3,611<br>• Users: 4 users<br>• All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "What is the price of 200GB plan?",
+            answer: "200GB Plan Pricing:<br><br>📦 Storage: 200GB<br>👥 Users: 4<br>💰 Monthly: Rs. 354<br>💰 Yearly: Rs. 3,611<br>📋 GST: Included",
+            category: "pricing"
+        },
 
-// 300GB Plan
-{
-    question: "300GB storage plan price",
-    answer: "300GB Storage Plan Details:<br><br>• Storage: 300GB<br>• Users: 4 users<br>• Monthly: Rs. 531<br>• Yearly: Rs. 5,098<br>• GST: Included (18%)",
-    category: "pricing"
-},
-{
-    question: "How much for 300GB storage?",
-    answer: "300GB storage costs:<br><br>• Monthly: Rs. 531<br>• Yearly: Rs. 5,098<br>• Users: 4 users<br>• All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "What is the price of 300GB plan?",
-    answer: "300GB Plan Pricing:<br><br>📦 Storage: 300GB<br>👥 Users: 4<br>💰 Monthly: Rs. 531<br>💰 Yearly: Rs. 5,098<br>📋 GST: Included",
-    category: "pricing"
-},
+        // 300GB Plan
+        {
+            question: "300GB storage plan price",
+            answer: "300GB Storage Plan Details:<br><br>• Storage: 300GB<br>• Users: 4 users<br>• Monthly: Rs. 531<br>• Yearly: Rs. 5,098<br>• GST: Included (18%)",
+            category: "pricing"
+        },
+        {
+            question: "How much for 300GB storage?",
+            answer: "300GB storage costs:<br><br>• Monthly: Rs. 531<br>• Yearly: Rs. 5,098<br>• Users: 4 users<br>• All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "What is the price of 300GB plan?",
+            answer: "300GB Plan Pricing:<br><br>📦 Storage: 300GB<br>👥 Users: 4<br>💰 Monthly: Rs. 531<br>💰 Yearly: Rs. 5,098<br>📋 GST: Included",
+            category: "pricing"
+        },
 
-// 400GB Plan
-{
-    question: "400GB storage plan price",
-    answer: "400GB Storage Plan Details:<br><br>• Storage: 400GB<br>• Users: 4 users<br>• Monthly: Rs. 708<br>• Yearly: Rs. 6,797<br>• GST: Included (18%)",
-    category: "pricing"
-},
-{
-    question: "How much for 400GB storage?",
-    answer: "400GB storage costs:<br><br>• Monthly: Rs. 708<br>• Yearly: Rs. 6,797<br>• Users: 4 users<br>• All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "What is the price of 400GB plan?",
-    answer: "400GB Plan Pricing:<br><br>📦 Storage: 400GB<br>👥 Users: 4<br>💰 Monthly: Rs. 708<br>💰 Yearly: Rs. 6,797<br>📋 GST: Included",
-    category: "pricing"
-},
+        // 400GB Plan
+        {
+            question: "400GB storage plan price",
+            answer: "400GB Storage Plan Details:<br><br>• Storage: 400GB<br>• Users: 4 users<br>• Monthly: Rs. 708<br>• Yearly: Rs. 6,797<br>• GST: Included (18%)",
+            category: "pricing"
+        },
+        {
+            question: "How much for 400GB storage?",
+            answer: "400GB storage costs:<br><br>• Monthly: Rs. 708<br>• Yearly: Rs. 6,797<br>• Users: 4 users<br>• All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "What is the price of 400GB plan?",
+            answer: "400GB Plan Pricing:<br><br>📦 Storage: 400GB<br>👥 Users: 4<br>💰 Monthly: Rs. 708<br>💰 Yearly: Rs. 6,797<br>📋 GST: Included",
+            category: "pricing"
+        },
 
-// 500GB Plan
-{
-    question: "500GB storage plan price",
-    answer: "500GB Storage Plan Details:<br><br>• Storage: 500GB<br>• Users: 5 users<br>• Monthly: Rs. 885<br>• Yearly: Rs. 7,965<br>• GST: Included (18%)",
-    category: "pricing"
-},
-{
-    question: "How much for 500GB storage?",
-    answer: "500GB storage costs:<br><br>• Monthly: Rs. 885<br>• Yearly: Rs. 7,965<br>• Users: 5 users<br>• All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "What is the price of 500GB plan?",
-    answer: "500GB Plan Pricing:<br><br>📦 Storage: 500GB<br>👥 Users: 5<br>💰 Monthly: Rs. 885<br>💰 Yearly: Rs. 7,965<br>📋 GST: Included",
-    category: "pricing"
-},
+        // 500GB Plan
+        {
+            question: "500GB storage plan price",
+            answer: "500GB Storage Plan Details:<br><br>• Storage: 500GB<br>• Users: 5 users<br>• Monthly: Rs. 885<br>• Yearly: Rs. 7,965<br>• GST: Included (18%)",
+            category: "pricing"
+        },
+        {
+            question: "How much for 500GB storage?",
+            answer: "500GB storage costs:<br><br>• Monthly: Rs. 885<br>• Yearly: Rs. 7,965<br>• Users: 5 users<br>• All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "What is the price of 500GB plan?",
+            answer: "500GB Plan Pricing:<br><br>📦 Storage: 500GB<br>👥 Users: 5<br>💰 Monthly: Rs. 885<br>💰 Yearly: Rs. 7,965<br>📋 GST: Included",
+            category: "pricing"
+        },
 
-// ====== COMPARATIVE Q&A ======
-{
-    question: "Which plan has 2 users?",
-    answer: "Plans with 2 users:<br><br>1. 30GB Plan - Rs. 53/month, Rs. 605/year<br>2. 50GB Plan - Rs. 89/month, Rs. 956/year",
-    category: "pricing"
-},
-{
-    question: "Which plan has 3 users?",
-    answer: "Plans with 3 users:<br><br>1. 70GB Plan - Rs. 124/month, Rs. 1,338/year<br>2. 100GB Plan - Rs. 177/month, Rs. 1,805/year<br>3. 150GB Plan - Rs. 266/month, Rs. 2,708/year",
-    category: "pricing"
-},
-{
-    question: "Which plan has 4 users?",
-    answer: "Plans with 4 users:<br><br>1. 200GB Plan - Rs. 354/month, Rs. 3,611/year<br>2. 300GB Plan - Rs. 531/month, Rs. 5,098/year<br>3. 400GB Plan - Rs. 708/month, Rs. 6,797/year",
-    category: "pricing"
-},
-{
-    question: "Which plan has 5 users?",
-    answer: "Plan with 5 users:<br><br>1. 500GB Plan - Rs. 885/month, Rs. 7,965/year",
-    category: "pricing"
-},
-{
-    question: "What is your cheapest plan?",
-    answer: "Cheapest Plan:<br><br>• 10GB Storage<br>• 1 User<br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• All inclusive of 18% GST",
-    category: "pricing"
-},
-{
-    question: "What is your most expensive plan?",
-    answer: "Most Expensive Plan:<br><br>• 500GB Storage<br>• 5 Users<br>• Monthly: Rs. 885<br>• Yearly: Rs. 7,965<br>• All inclusive of 18% GST",
-    category: "pricing"
-},
-{
-    question: "What is your middle range plan?",
-    answer: "Middle Range Plans:<br><br>1. 100GB - Rs. 177/month, Rs. 1,805/year (3 users)<br>2. 150GB - Rs. 266/month, Rs. 2,708/year (3 users)<br>3. 200GB - Rs. 354/month, Rs. 3,611/year (4 users)",
-    category: "pricing"
-},
+        // ====== COMPARATIVE Q&A ======
+        {
+            question: "Which plan has 2 users?",
+            answer: "Plans with 2 users:<br><br>1. 30GB Plan - Rs. 53/month, Rs. 605/year<br>2. 50GB Plan - Rs. 89/month, Rs. 956/year",
+            category: "pricing"
+        },
+        {
+            question: "Which plan has 3 users?",
+            answer: "Plans with 3 users:<br><br>1. 70GB Plan - Rs. 124/month, Rs. 1,338/year<br>2. 100GB Plan - Rs. 177/month, Rs. 1,805/year<br>3. 150GB Plan - Rs. 266/month, Rs. 2,708/year",
+            category: "pricing"
+        },
+        {
+            question: "Which plan has 4 users?",
+            answer: "Plans with 4 users:<br><br>1. 200GB Plan - Rs. 354/month, Rs. 3,611/year<br>2. 300GB Plan - Rs. 531/month, Rs. 5,098/year<br>3. 400GB Plan - Rs. 708/month, Rs. 6,797/year",
+            category: "pricing"
+        },
+        {
+            question: "Which plan has 5 users?",
+            answer: "Plan with 5 users:<br><br>1. 500GB Plan - Rs. 885/month, Rs. 7,965/year",
+            category: "pricing"
+        },
+        {
+            question: "What is your cheapest plan?",
+            answer: "Cheapest Plan:<br><br>• 10GB Storage<br>• 1 User<br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• All inclusive of 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "What is your most expensive plan?",
+            answer: "Most Expensive Plan:<br><br>• 500GB Storage<br>• 5 Users<br>• Monthly: Rs. 885<br>• Yearly: Rs. 7,965<br>• All inclusive of 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "What is your middle range plan?",
+            answer: "Middle Range Plans:<br><br>1. 100GB - Rs. 177/month, Rs. 1,805/year (3 users)<br>2. 150GB - Rs. 266/month, Rs. 2,708/year (3 users)<br>3. 200GB - Rs. 354/month, Rs. 3,611/year (4 users)",
+            category: "pricing"
+        },
 
-// ====== PRICING SUMMARY Q&A ======
-{
-    question: "Show me all storage plans",
-    answer: "All Storage Plans:<br><br>" +
-            "1. 10GB - 1 user - Rs. 18/month - Rs. 202/year<br>" +
-            "2. 30GB - 2 users - Rs. 53/month - Rs. 605/year<br>" +
-            "3. 50GB - 2 users - Rs. 89/month - Rs. 956/year<br>" +
-            "4. 70GB - 3 users - Rs. 124/month - Rs. 1,338/year<br>" +
-            "5. 100GB - 3 users - Rs. 177/month - Rs. 1,805/year<br>" +
-            "6. 150GB - 3 users - Rs. 266/month - Rs. 2,708/year<br>" +
-            "7. 200GB - 4 users - Rs. 354/month - Rs. 3,611/year<br>" +
-            "8. 300GB - 4 users - Rs. 531/month - Rs. 5,098/year<br>" +
-            "9. 400GB - 4 users - Rs. 708/month - Rs. 6,797/year<br>" +
-            "10. 500GB - 5 users - Rs. 885/month - Rs. 7,965/year<br><br>" +
-            "All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "List all pricing plans",
-    answer: "Complete Pricing List:<br><br>" +
-            "📊 10GB: ₹18/month | ₹202/year | 1 user<br>" +
-            "📊 30GB: ₹53/month | ₹605/year | 2 users<br>" +
-            "📊 50GB: ₹89/month | ₹956/year | 2 users<br>" +
-            "📊 70GB: ₹124/month | ₹1,338/year | 3 users<br>" +
-            "📊 100GB: ₹177/month | ₹1,805/year | 3 users<br>" +
-            "📊 150GB: ₹266/month | ₹2,708/year | 3 users<br>" +
-            "📊 200GB: ₹354/month | ₹3,611/year | 4 users<br>" +
-            "📊 300GB: ₹531/month | ₹5,098/year | 4 users<br>" +
-            "📊 400GB: ₹708/month | ₹6,797/year | 4 users<br>" +
-            "📊 500GB: ₹885/month | ₹7,965/year | 5 users<br><br>" +
-            "✅ All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "Show me price table",
-    answer: "Price Table Summary:<br><br>" +
-            "┌─────────┬────────┬───────────┬──────────┐<br>" +
-            "│ Storage │ Users  │  Monthly  │  Yearly  │<br>" +
-            "├─────────┼────────┼───────────┼──────────┤<br>" +
-            "│  10GB   │   1    │   ₹18     │   ₹202   │<br>" +
-            "│  30GB   │   2    │   ₹53     │   ₹605   │<br>" +
-            "│  50GB   │   2    │   ₹89     │   ₹956   │<br>" +
-            "│  70GB   │   3    │   ₹124    │  ₹1,338  │<br>" +
-            "│  100GB  │   3    │   ₹177    │  ₹1,805  │<br>" +
-            "│  150GB  │   3    │   ₹266    │  ₹2,708  │<br>" +
-            "│  200GB  │   4    │   ₹354    │  ₹3,611  │<br>" +
-            "│  300GB  │   4    │   ₹531    │  ₹5,098  │<br>" +
-            "│  400GB  │   4    │   ₹708    │  ₹6,797  │<br>" +
-            "│  500GB  │   5    │   ₹885    │  ₹7,965  │<br>" +
-            "└─────────┴────────┴───────────┴──────────┘<br><br>" +
-            "All prices include 18% GST",
-    category: "pricing"
-},
+        // ====== PRICING SUMMARY Q&A ======
+        {
+            question: "Show me all storage plans",
+            answer: "All Storage Plans:<br><br>" +
+                    "1. 10GB - 1 user - Rs. 18/month - Rs. 202/year<br>" +
+                    "2. 30GB - 2 users - Rs. 53/month - Rs. 605/year<br>" +
+                    "3. 50GB - 2 users - Rs. 89/month - Rs. 956/year<br>" +
+                    "4. 70GB - 3 users - Rs. 124/month - Rs. 1,338/year<br>" +
+                    "5. 100GB - 3 users - Rs. 177/month - Rs. 1,805/year<br>" +
+                    "6. 150GB - 3 users - Rs. 266/month - Rs. 2,708/year<br>" +
+                    "7. 200GB - 4 users - Rs. 354/month - Rs. 3,611/year<br>" +
+                    "8. 300GB - 4 users - Rs. 531/month - Rs. 5,098/year<br>" +
+                    "9. 400GB - 4 users - Rs. 708/month - Rs. 6,797/year<br>" +
+                    "10. 500GB - 5 users - Rs. 885/month - Rs. 7,965/year<br><br>" +
+                    "All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "List all pricing plans",
+            answer: "Complete Pricing List:<br><br>" +
+                    "📊 10GB: ₹18/month | ₹202/year | 1 user<br>" +
+                    "📊 30GB: ₹53/month | ₹605/year | 2 users<br>" +
+                    "📊 50GB: ₹89/month | ₹956/year | 2 users<br>" +
+                    "📊 70GB: ₹124/month | ₹1,338/year | 3 users<br>" +
+                    "📊 100GB: ₹177/month | ₹1,805/year | 3 users<br>" +
+                    "📊 150GB: ₹266/month | ₹2,708/year | 3 users<br>" +
+                    "📊 200GB: ₹354/month | ₹3,611/year | 4 users<br>" +
+                    "📊 300GB: ₹531/month | ₹5,098/year | 4 users<br>" +
+                    "📊 400GB: ₹708/month | ₹6,797/year | 4 users<br>" +
+                    "📊 500GB: ₹885/month | ₹7,965/year | 5 users<br><br>" +
+                    "✅ All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "Show me price table",
+            answer: "Price Table Summary:<br><br>" +
+                    "┌─────────┬────────┬───────────┬──────────┐<br>" +
+                    "│ Storage │ Users  │  Monthly  │  Yearly  │<br>" +
+                    "├─────────┼────────┼───────────┼──────────┤<br>" +
+                    "│  10GB   │   1    │   ₹18     │   ₹202   │<br>" +
+                    "│  30GB   │   2    │   ₹53     │   ₹605   │<br>" +
+                    "│  50GB   │   2    │   ₹89     │   ₹956   │<br>" +
+                    "│  70GB   │   3    │   ₹124    │  ₹1,338  │<br>" +
+                    "│  100GB  │   3    │   ₹177    │  ₹1,805  │<br>" +
+                    "│  150GB  │   3    │   ₹266    │  ₹2,708  │<br>" +
+                    "│  200GB  │   4    │   ₹354    │  ₹3,611  │<br>" +
+                    "│  300GB  │   4    │   ₹531    │  ₹5,098  │<br>" +
+                    "│  400GB  │   4    │   ₹708    │  ₹6,797  │<br>" +
+                    "│  500GB  │   5    │   ₹885    │  ₹7,965  │<br>" +
+                    "└─────────┴────────┴───────────┴──────────┘<br><br>" +
+                    "All prices include 18% GST",
+            category: "pricing"
+        },
 
-// ====== SPECIFIC NUMBER Q&A ======
-{
-    question: "10",
-    answer: "10GB Storage Plan:<br><br>• Storage: 10GB<br>• Users: 1 user<br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• GST: Included",
-    category: "pricing"
-},
-{
-    question: "30",
-    answer: "30GB Storage Plan:<br><br>• Storage: 30GB<br>• Users: 2 users<br>• Monthly: Rs. 53<br>• Yearly: Rs. 605<br>• GST: Included",
-    category: "pricing"
-},
-{
-    question: "50",
-    answer: "50GB Storage Plan:<br><br>• Storage: 50GB<br>• Users: 2 users<br>• Monthly: Rs. 89<br>• Yearly: Rs. 956<br>• GST: Included",
-    category: "pricing"
-},
-{
-    question: "70",
-    answer: "70GB Storage Plan:<br><br>• Storage: 70GB<br>• Users: 3 users<br>• Monthly: Rs. 124<br>• Yearly: Rs. 1,338<br>• GST: Included",
-    category: "pricing"
-},
-{
-    question: "100",
-    answer: "100GB Storage Plan:<br><br>• Storage: 100GB<br>• Users: 3 users<br>• Monthly: Rs. 177<br>• Yearly: Rs. 1,805<br>• GST: Included",
-    category: "pricing"
-},
-{
-    question: "150",
-    answer: "150GB Storage Plan:<br><br>• Storage: 150GB<br>• Users: 3 users<br>• Monthly: Rs. 266<br>• Yearly: Rs. 2,708<br>• GST: Included",
-    category: "pricing"
-},
-{
-    question: "200",
-    answer: "200GB Storage Plan:<br><br>• Storage: 200GB<br>• Users: 4 users<br>• Monthly: Rs. 354<br>• Yearly: Rs. 3,611<br>• GST: Included",
-    category: "pricing"
-},
-{
-    question: "300",
-    answer: "300GB Storage Plan:<br><br>• Storage: 300GB<br>• Users: 4 users<br>• Monthly: Rs. 531<br>• Yearly: Rs. 5,098<br>• GST: Included",
-    category: "pricing"
-},
-{
-    question: "400",
-    answer: "400GB Storage Plan:<br><br>• Storage: 400GB<br>• Users: 4 users<br>• Monthly: Rs. 708<br>• Yearly: Rs. 6,797<br>• GST: Included",
-    category: "pricing"
-},
-{
-    question: "500",
-    answer: "500GB Storage Plan:<br><br>• Storage: 500GB<br>• Users: 5 users<br>• Monthly: Rs. 885<br>• Yearly: Rs. 7,965<br>• GST: Included",
-    category: "pricing"
-},
+        // ====== SPECIFIC NUMBER Q&A ======
+        {
+            question: "10",
+            answer: "10GB Storage Plan:<br><br>• Storage: 10GB<br>• Users: 1 user<br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• GST: Included",
+            category: "pricing"
+        },
+        {
+            question: "30",
+            answer: "30GB Storage Plan:<br><br>• Storage: 30GB<br>• Users: 2 users<br>• Monthly: Rs. 53<br>• Yearly: Rs. 605<br>• GST: Included",
+            category: "pricing"
+        },
+        {
+            question: "50",
+            answer: "50GB Storage Plan:<br><br>• Storage: 50GB<br>• Users: 2 users<br>• Monthly: Rs. 89<br>• Yearly: Rs. 956<br>• GST: Included",
+            category: "pricing"
+        },
+        {
+            question: "70",
+            answer: "70GB Storage Plan:<br><br>• Storage: 70GB<br>• Users: 3 users<br>• Monthly: Rs. 124<br>• Yearly: Rs. 1,338<br>• GST: Included",
+            category: "pricing"
+        },
+        {
+            question: "100",
+            answer: "100GB Storage Plan:<br><br>• Storage: 100GB<br>• Users: 3 users<br>• Monthly: Rs. 177<br>• Yearly: Rs. 1,805<br>• GST: Included",
+            category: "pricing"
+        },
+        {
+            question: "150",
+            answer: "150GB Storage Plan:<br><br>• Storage: 150GB<br>• Users: 3 users<br>• Monthly: Rs. 266<br>• Yearly: Rs. 2,708<br>• GST: Included",
+            category: "pricing"
+        },
+        {
+            question: "200",
+            answer: "200GB Storage Plan:<br><br>• Storage: 200GB<br>• Users: 4 users<br>• Monthly: Rs. 354<br>• Yearly: Rs. 3,611<br>• GST: Included",
+            category: "pricing"
+        },
+        {
+            question: "300",
+            answer: "300GB Storage Plan:<br><br>• Storage: 300GB<br>• Users: 4 users<br>• Monthly: Rs. 531<br>• Yearly: Rs. 5,098<br>• GST: Included",
+            category: "pricing"
+        },
+        {
+            question: "400",
+            answer: "400GB Storage Plan:<br><br>• Storage: 400GB<br>• Users: 4 users<br>• Monthly: Rs. 708<br>• Yearly: Rs. 6,797<br>• GST: Included",
+            category: "pricing"
+        },
+        {
+            question: "500",
+            answer: "500GB Storage Plan:<br><br>• Storage: 500GB<br>• Users: 5 users<br>• Monthly: Rs. 885<br>• Yearly: Rs. 7,965<br>• GST: Included",
+            category: "pricing"
+        },
 
-// ====== PRICING GENERAL Q&A ======
-{
-    question: "Do you have monthly plans?",
-    answer: "Yes! We offer monthly plans for all storage sizes:<br><br>" +
-            "• 10GB: Rs. 18/month<br>" +
-            "• 30GB: Rs. 53/month<br>" +
-            "• 50GB: Rs. 89/month<br>" +
-            "• 70GB: Rs. 124/month<br>" +
-            "• 100GB: Rs. 177/month<br>" +
-            "• 150GB: Rs. 266/month<br>" +
-            "• 200GB: Rs. 354/month<br>" +
-            "• 300GB: Rs. 531/month<br>" +
-            "• 400GB: Rs. 708/month<br>" +
-            "• 500GB: Rs. 885/month<br><br>" +
-            "All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "Do you have yearly plans?",
-    answer: "Yes! We offer yearly plans for all storage sizes:<br><br>" +
-            "• 10GB: Rs. 202/year<br>" +
-            "• 30GB: Rs. 605/year<br>" +
-            "• 50GB: Rs. 956/year<br>" +
-            "• 70GB: Rs. 1,338/year<br>" +
-            "• 100GB: Rs. 1,805/year<br>" +
-            "• 150GB: Rs. 2,708/year<br>" +
-            "• 200GB: Rs. 3,611/year<br>" +
-            "• 300GB: Rs. 5,098/year<br>" +
-            "• 400GB: Rs. 6,797/year<br>" +
-            "• 500GB: Rs. 7,965/year<br><br>" +
-            "All prices include 18% GST",
-    category: "pricing"
-},
-{
-    question: "Is GST included in price?",
-    answer: "Yes! All our prices include 18% GST (Goods and Services Tax). There are no hidden charges or additional taxes. The prices shown are the final amounts you pay.",
-    category: "pricing"
-},
-{
-    question: "What payment methods do you accept?",
-    answer: "We accept:<br><br>" +
-            "1. UPI Payment (Scan QR code)<br>" +
-            "2. Bank Transfer to State Bank of India<br><br>" +
-            "Account Details:<br>" +
-            "• Bank: State Bank of India<br>" +
-            "• Account: Odelya Management Pvt Ltd<br>" +
-            "• Account No: 39681284318<br>" +
-            "• IFSC: SBIN0001140",
-    category: "payment"
-}
+        // ====== PRICING GENERAL Q&A ======
+        {
+            question: "Do you have monthly plans?",
+            answer: "Yes! We offer monthly plans for all storage sizes:<br><br>" +
+                    "• 10GB: Rs. 18/month<br>" +
+                    "• 30GB: Rs. 53/month<br>" +
+                    "• 50GB: Rs. 89/month<br>" +
+                    "• 70GB: Rs. 124/month<br>" +
+                    "• 100GB: Rs. 177/month<br>" +
+                    "• 150GB: Rs. 266/month<br>" +
+                    "• 200GB: Rs. 354/month<br>" +
+                    "• 300GB: Rs. 531/month<br>" +
+                    "• 400GB: Rs. 708/month<br>" +
+                    "• 500GB: Rs. 885/month<br><br>" +
+                    "All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "Do you have yearly plans?",
+            answer: "Yes! We offer yearly plans for all storage sizes:<br><br>" +
+                    "• 10GB: Rs. 202/year<br>" +
+                    "• 30GB: Rs. 605/year<br>" +
+                    "• 50GB: Rs. 956/year<br>" +
+                    "• 70GB: Rs. 1,338/year<br>" +
+                    "• 100GB: Rs. 1,805/year<br>" +
+                    "• 150GB: Rs. 2,708/year<br>" +
+                    "• 200GB: Rs. 3,611/year<br>" +
+                    "• 300GB: Rs. 5,098/year<br>" +
+                    "• 400GB: Rs. 6,797/year<br>" +
+                    "• 500GB: Rs. 7,965/year<br><br>" +
+                    "All prices include 18% GST",
+            category: "pricing"
+        },
+        {
+            question: "Is GST included in price?",
+            answer: "Yes! All our prices include 18% GST (Goods and Services Tax). There are no hidden charges or additional taxes. The prices shown are the final amounts you pay.",
+            category: "pricing"
+        },
+        {
+            question: "What payment methods do you accept?",
+            answer: "We accept:<br><br>" +
+                    "1. UPI Payment (Scan QR code)<br>" +
+                    "2. Bank Transfer to State Bank of India<br><br>" +
+                    "Account Details:<br>" +
+                    "• Bank: State Bank of India<br>" +
+                    "• Account: Odelya Management Pvt Ltd<br>" +
+                    "• Account No: 39681284318<br>" +
+                    "• IFSC: SBIN0001140",
+            category: "payment"
+        },
         
         // Company Information
         {
@@ -575,12 +575,30 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize chatbot
     function initializeChatbot() {
+        // First, make sure chat window is hidden and toggle button is visible
+        if (chatWindow) chatWindow.style.display = 'none';
+        if (chatToggle) chatToggle.style.display = 'flex';
+        
+        // Setup event listeners
         setupEventListeners();
+        
+        // Show greeting
         showGreeting();
+        
+        // Add simple test to verify elements
+        console.log('Chatbot initialized successfully');
+        console.log('Chat toggle:', chatToggle ? 'Found' : 'Not found');
+        console.log('Chat window:', chatWindow ? 'Found' : 'Not found');
     }
     
     // Setup event listeners
     function setupEventListeners() {
+        // Check if elements exist before adding listeners
+        if (!chatToggle || !chatWindow || !closeChat || !sendBtn) {
+            console.error('Some chat elements not found!');
+            return;
+        }
+        
         // Toggle chat window
         chatToggle.addEventListener('click', toggleChat);
         
@@ -591,28 +609,31 @@ document.addEventListener('DOMContentLoaded', function() {
         sendBtn.addEventListener('click', handleSendMessage);
         
         // Send message on Enter key
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                handleSendMessage();
-            }
-        });
-        
-        // Show suggestions while typing
-        chatInput.addEventListener('input', function() {
-            showDynamicSuggestions(this.value.trim());
-        });
-        
-        // Hide suggestions when input is cleared
-        chatInput.addEventListener('blur', function() {
-            if (!this.value.trim()) {
-                hideSuggestions();
-            }
-        });
+        if (chatInput) {
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleSendMessage();
+                }
+            });
+            
+            // Show suggestions while typing
+            chatInput.addEventListener('input', function() {
+                showDynamicSuggestions(this.value.trim());
+            });
+            
+            // Hide suggestions when input is cleared
+            chatInput.addEventListener('blur', function() {
+                if (!this.value.trim()) {
+                    hideSuggestions();
+                }
+            });
+        }
     }
     
     // Toggle chat window
     function toggleChat() {
-        if (chatWindow.style.display === 'flex') {
+        console.log('Toggle clicked');
+        if (chatWindow.style.display === 'flex' || chatWindow.style.display === '') {
             closeChatWindow();
         } else {
             openChatWindow();
@@ -621,35 +642,41 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Open chat window
     function openChatWindow() {
+        console.log('Opening chat window');
         chatWindow.style.display = 'flex';
         chatToggle.style.display = 'none';
-        chatInput.focus();
+        if (chatInput) chatInput.focus();
     }
     
     // Close chat window
     function closeChatWindow() {
+        console.log('Closing chat window');
         chatWindow.style.display = 'none';
         chatToggle.style.display = 'flex';
         clearChat();
         hideSuggestions();
-        chatInput.value = '';
+        if (chatInput) chatInput.value = '';
         showGreeting();
     }
     
     // Show greeting message
     function showGreeting() {
-        chatMessages.innerHTML = '';
-        addBotMessage("Hi! I am Vooo. Please type your query below");
+        if (chatMessages) {
+            chatMessages.innerHTML = '';
+            addBotMessage("Hi! I am Vooo. Please type your query below");
+        }
     }
     
     // Clear chat
     function clearChat() {
-        chatMessages.innerHTML = '';
+        if (chatMessages) {
+            chatMessages.innerHTML = '';
+        }
     }
     
     // Show dynamic suggestions based on typing
     function showDynamicSuggestions(inputText) {
-        if (!inputText) {
+        if (!inputText || !suggestedQuestions) {
             hideSuggestions();
             return;
         }
@@ -718,6 +745,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Display suggestions
     function displaySuggestions(suggestions) {
+        if (!suggestedQuestions) return;
+        
         suggestedQuestions.innerHTML = '';
         
         suggestions.forEach(qa => {
@@ -725,7 +754,9 @@ document.addEventListener('DOMContentLoaded', function() {
             questionDiv.className = 'question-item';
             questionDiv.textContent = qa.question;
             questionDiv.addEventListener('click', () => {
-                chatInput.value = qa.question;
+                if (chatInput) {
+                    chatInput.value = qa.question;
+                }
                 hideSuggestions();
                 handleSendMessage();
             });
@@ -737,12 +768,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Hide suggestions
     function hideSuggestions() {
-        suggestedQuestions.classList.remove('show');
-        suggestedQuestions.innerHTML = '';
+        if (suggestedQuestions) {
+            suggestedQuestions.classList.remove('show');
+            suggestedQuestions.innerHTML = '';
+        }
     }
     
     // Handle send message
     function handleSendMessage() {
+        if (!chatInput || !chatMessages) return;
+        
         const question = chatInput.value.trim();
         
         if (!question) {
@@ -774,6 +809,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show typing indicator
     function showTypingIndicator() {
+        if (!chatMessages) return;
+        
         const typingDiv = document.createElement('div');
         typingDiv.className = 'typing-indicator';
         typingDiv.id = 'typing-indicator';
@@ -877,6 +914,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add message to chat
     function addMessage(message, isUser = false) {
+        if (!chatMessages) return;
+        
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
         messageDiv.innerHTML = message;
@@ -896,12 +935,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Scroll to bottom of chat
     function scrollToBottom() {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
     }
-
-   // ====== PRICING TABLE SPECIFIC Q&A ======
-
-    
     
     // Initialize chatbot when DOM is loaded
     initializeChatbot();
+});
