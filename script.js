@@ -6,17 +6,19 @@ function showStorageDetails() {
     
     // Toggle visibility
     if (storageDetails.style.display === 'none') {
-        // Show the details section
+        // First, make it visible (but keep it off-screen for a moment)
         storageDetails.style.display = 'block';
         
         // Add active class to card
         storageCard.classList.add('active');
         
-        // Scroll to the details section smoothly
-        storageDetails.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start'
-        });
+        // Use setTimeout to ensure the element is rendered before scrolling
+        setTimeout(() => {
+            storageDetails.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start'
+            });
+        }, 10); // Small delay to ensure rendering
     } else {
         // Hide the details section
         storageDetails.style.display = 'none';
@@ -1336,5 +1338,6 @@ clientForm.addEventListener('submit', function(e) {
     // Initialize payment blur effects
     setupPaymentBlurEffects();
 });
+
 
 
