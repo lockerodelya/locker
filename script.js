@@ -5,15 +5,14 @@ function showStorageDetails() {
     const storageDetails = document.getElementById('cloud-storage-details');
     const storageCard = document.getElementById('storage-card');
     
-    // DEBUG: Check current state
-    console.log('Current display:', storageDetails.style.display);
-    console.log('Computed display:', window.getComputedStyle(storageDetails).display);
+    // Always ensure it's hidden on page load
+    if (!storageDetails.hasAttribute('data-initialized')) {
+        storageDetails.style.display = 'none';
+        storageDetails.setAttribute('data-initialized', 'true');
+    }
     
-    // Use computed style to check
-    const computedStyle = window.getComputedStyle(storageDetails);
-    const isCurrentlyHidden = computedStyle.display === 'none';
-    
-    if (isCurrentlyHidden) {
+    // Toggle visibility
+    if (storageDetails.style.display === 'none') {
         // Show section
         storageDetails.style.display = 'block';
         
@@ -21,14 +20,22 @@ function showStorageDetails() {
             storageCard.classList.add('active');
         }
         
-        // Wait for next tick
-        setTimeout(() => {
-            storageDetails.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start',
-                inline: 'nearest'
+        // Double requestAnimationFrame for guaranteed rendering
+        requestAnimationFrame(() => {
+            // Force layout calculation
+            storageDetails.getBoundingClientRect();
+            
+            requestAnimationFrame(() => {
+                // Scroll to position
+                const yOffset = -80; // Adjust for fixed header if needed
+                const y = storageDetails.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                
+                window.scrollTo({
+                    top: y,
+                    behavior: 'smooth'
+                });
             });
-        }, 150); // Increase delay
+        });
     } else {
         storageDetails.style.display = 'none';
         
@@ -1381,6 +1388,7 @@ clientForm.addEventListener('submit', function(e) {
     // Initialize payment blur effects
     setupPaymentBlurEffects();
 });
+
 
 
 
