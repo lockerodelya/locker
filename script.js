@@ -5,20 +5,23 @@ function showStorageDetails() {
     const storageCard = document.getElementById('storage-card');
     
     // Toggle visibility
-    if (storageDetails.style.display === 'none') {
-        // First, make it visible (but keep it off-screen for a moment)
+    if (storageDetails.style.display === 'none' || storageDetails.style.display === '') {
+        // Show the details section
         storageDetails.style.display = 'block';
         
         // Add active class to card
         storageCard.classList.add('active');
         
-        // Use setTimeout to ensure the element is rendered before scrolling
+        // Force a reflow to ensure element is rendered
+        void storageDetails.offsetHeight;
+        
+        // Scroll after a small delay
         setTimeout(() => {
             storageDetails.scrollIntoView({ 
                 behavior: 'smooth', 
                 block: 'start'
             });
-        }, 10); // Small delay to ensure rendering
+        }, 50);
     } else {
         // Hide the details section
         storageDetails.style.display = 'none';
@@ -1338,6 +1341,7 @@ clientForm.addEventListener('submit', function(e) {
     // Initialize payment blur effects
     setupPaymentBlurEffects();
 });
+
 
 
 
