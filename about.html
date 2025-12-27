@@ -200,22 +200,45 @@
             padding: 25px;
             color: white;
             text-align: center;
+            position: relative;
         }
         
+        /* UPDATED: Larger Profile Images */
         .leader-image {
-            width: 150px;
-            height: 150px;
+            width: 220px; /* Increased from 150px */
+            height: 220px; /* Increased from 150px */
             margin: 0 auto 20px;
             border-radius: 50%;
             overflow: hidden;
-            border: 5px solid white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 8px solid rgba(255, 255, 255, 0.8); /* Thicker border for contrast */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+            position: relative;
         }
         
+        /* Better image display */
         .leader-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* Changed from cover to contain for better face visibility */
+            object-position: center top; /* Focus on head/face area */
+            transform: scale(1.1); /* Slight zoom for better visibility */
+            transition: transform 0.3s ease;
+        }
+        
+        /* Hover effect on image */
+        .leader-card:hover .leader-image img {
+            transform: scale(1.15);
+        }
+        
+        /* Image container to ensure proper display */
+        .leader-photo-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 50%;
         }
         
         .leader-header h3 {
@@ -236,6 +259,7 @@
             padding: 15px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
+            line-height: 1.5;
         }
         
         .leader-details {
@@ -380,6 +404,12 @@
             .leadership-grid {
                 gap: 30px;
             }
+            
+            /* Adjust leader image for tablet */
+            .leader-image {
+                width: 180px;
+                height: 180px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -400,9 +430,11 @@
                 font-size: 1.3rem;
             }
             
+            /* Adjust leader image for mobile */
             .leader-image {
-                width: 120px;
-                height: 120px;
+                width: 160px;
+                height: 160px;
+                border-width: 6px;
             }
             
             .leader-header h3 {
@@ -412,6 +444,10 @@
             .intro-grid,
             .mv-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .leader-image img {
+                object-fit: contain; /* Ensure full face visibility on mobile */
             }
         }
         
@@ -437,18 +473,18 @@
         .leadership-section { animation-delay: 0.2s; }
         .mission-vision { animation-delay: 0.3s; }
         
-        /* Leadership Card Specific Responsive */
-        @media (max-width: 600px) {
-            .leader-card {
-                margin: 0 -20px;
-                border-radius: 0;
-                border-left: none;
-                border-right: none;
-            }
-            
-            .leader-card:hover {
-                transform: none;
-            }
+        /* Image optimization for better face display */
+        .leader-image {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+        
+        /* Special styling for specific leader images */
+        .leader-image.aniruddha img {
+            object-position: center 30%; /* Adjust for Mr. Aniruddha Ghosh's image */
+        }
+        
+        .leader-image.shyamal img {
+            object-position: center 25%; /* Adjust for Mr. Shyamal Sen's image */
         }
     </style>
 </head>
@@ -688,8 +724,10 @@
                         <!-- Chairman -->
                         <div class="leader-card">
                             <div class="leader-header">
-                                <div class="leader-image">
-                                    <img src="images/ag1.jpg" alt="Mr. Aniruddha Ghosh - Chairman" class="leader-photo">
+                                <div class="leader-image aniruddha">
+                                    <div class="leader-photo-container">
+                                        <img src="images/ag1.jpg" alt="Mr. Aniruddha Ghosh - Chairman" class="leader-photo">
+                                    </div>
                                 </div>
                                 <h3>Mr. Aniruddha Ghosh</h3>
                                 <p class="leader-title">Chairman</p>
@@ -702,7 +740,7 @@
                                 </p>
                                 <p>
                                     <i class="fas fa-briefcase"></i>
-                                    <span><strong>Experience:</strong> A professional physicist with no prior IT knowledge who established two highly successful software companies - BON-ACCORD (6-time Businessman of the Year award winner from USA) and EREVMAX.</span>
+                                    <span><strong>Experience:</strong> A professional physicist with no prior IT knowledge who established two highly successful software companies - BON-ACCORD (6-time Businessman of the Year award winner from USA) and EREVMAX. His unique perspective brings innovative problem-solving to technology challenges.</span>
                                 </p>
                                 <p>
                                     <i class="fas fa-lightbulb"></i>
@@ -714,12 +752,14 @@
                         <!-- Director -->
                         <div class="leader-card">
                             <div class="leader-header">
-                                <div class="leader-image">
-                                    <img src="images/ss1.jpg" alt="Mr. Shyamal Sen - Director" class="leader-photo">
+                                <div class="leader-image shyamal">
+                                    <div class="leader-photo-container">
+                                        <img src="images/ss1.jpg" alt="Mr. Shyamal Sen - Director" class="leader-photo">
+                                    </div>
                                 </div>
                                 <h3>Mr. Shyamal Sen</h3>
                                 <p class="leader-title">Director</p>
-                                <p class="leader-quote">"Every byte of data deserves iron-clad security."</p>
+                                <p class="leader-quote">"Every byte of data deserves iron-clad security and instant accessibility."</p>
                             </div>
                             <div class="leader-details">
                                 <p>
@@ -803,4 +843,3 @@
     </footer>
 </body>
 </html>
-
