@@ -1,1 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Odelya Cloud Digital Locker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        
+        .header h1 {
+            color: #1a237e;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .header p {
+            color: #3949ab;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Payment Steps */
+        .payment-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            width: 200px;
+        }
+        
+        .step-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #757575;
+            margin-bottom: 10px;
+            border: 4px solid white;
+            transition: all 0.3s;
+        }
+        
+        .step.active .step-circle {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+        
+        .step.completed .step-circle {
+            background: #2196f3;
+            color: white;
+            border-color: #2196f3;
+        }
+        
+        .step-text {
+            color: #757575;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .step.active .step-text {
+            color: #4caf50;
+            font-weight: 600;
+        }
+        
+        .step.completed .step-text {
+            color: #2196f3;
+        }
+        
+        .steps-connector {
+            position: absolute;
+            top: 30px;
+            left: 100px;
+            right: 100px;
+            height: 4px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        
+        /* Terms Modal */
+        .terms-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .terms-content {
+            background: white;
+            width: 70%;
+            height: 70vh;
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .terms-header {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            padding: 20px 30px;
+            border-bottom: 2px solid #f48fb1;
+        }
+        
+        .terms-header h2 {
+            color: #b71c1c;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .terms-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            line-height: 1.8;
+            color: #424242;
+        }
+        
+        .terms-body p {
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        
+        .terms-footer {
+            padding: 20px 30px;
+            background: #f5f5f5;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 14px 40px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            min-width: 150px;
+        }
+        
+        .btn-disagree {
+            background: #f5f5f5;
+            color: #757575;
+        }
+        
+        .btn-disagree:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+        
+        .btn-agree {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+        }
+        
+        .btn-agree:hover {
+            background: linear-gradient(135deg, #388e3c 0%, #1b5e20 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-continue {
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+            color: white;
+            padding: 16px 50px;
+            font-size: 1.2rem;
+        }
+        
+        .btn-continue:hover:not(:disabled) {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+        }
+        
+        .btn-continue:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Confirmation Modal */
+        .confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+        }
+        
+        .confirm-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        .confirm-content h3 {
+            color: #d32f2f;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .confirm-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn-no {
+            background: #f5f5f5;
+            color: #757575;
+        }
+        
+        .btn-no:hover {
+            background: #e0e0e0;
+        }
+        
+        .btn-yes {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-yes:hover {
+            background: #d32f2f;
+        }
+        
+        /* Payment Form */
+        .payment-form {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            display: none;
+        }
+        
+        .form-section {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .section-title {
+            color: #1a237e;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #424242;
+            font-weight: 500;
+        }
+        
+        .form-group label .required {
+            color: #f44336;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            border-color: #2196f3;
+            outline: none;
+        }
+        
+        .form-group input.error {
+            border-color: #f44336;
+        }
+        
+        .form-group .error-message {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        /* Service Type Selection */
+        .service-type {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .service-option {
+            background: #f5f5f5;
+            padding: 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+            text-align: center;
+        }
+        
+        .service-option:hover {
+            background: #e3f2fd;
+        }
+        
+        .service-option.selected {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.2);
+        }
+        
+        .service-option h4 {
+            color: #1a237e;
+            margin-bottom: 10px;
+        }
+        
+        /* Cloud Storage Options */
+        .cloud-options, .it-options {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .cloud-options.active, .it-options.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* Payment Amount Display */
+        .amount-display {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            text-align: center;
+            border: 3px solid #ff9800;
+        }
+        
+        .amount-label {
+            color: #e65100;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .amount-value {
+            color: #1a237e;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        /* Agreement Check */
+        .agreement-check {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border-left: 5px solid #4caf50;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        
+        /* Warning Box */
+        .warning-box {
+            background: #ffebee;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border-left: 5px solid #f44336;
+        }
+        
+        .warning-box h4 {
+            color: #d32f2f;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Payment Methods */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin: 40px 0;
+        }
+        
+        .payment-method {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e0e0e0;
+        }
+        
+        .payment-method h3 {
+            color: #1a237e;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.6rem;
+        }
+        
+        .qr-code {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .qr-code img {
+            max-width: 250px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 10px;
+            background: white;
+        }
+        
+        .bank-details {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .bank-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+        
+        .bank-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .bank-label {
+            color: #616161;
+            font-weight: 500;
+        }
+        
+        .bank-value {
+            color: #1a237e;
+            font-weight: 600;
+            font-family: monospace;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn-close {
+            background: #757575;
+            color: white;
+        }
+        
+        .btn-close:hover {
+            background: #616161;
+        }
+        
+        .btn-home {
+            background: #2196f3;
+            color: white;
+        }
+        
+        .btn-home:hover {
+            background: #1976d2;
+        }
+        
+        /* Step Navigation */
+        .step-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .terms-content {
+                width: 85%;
+                height: 80vh;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-type {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .payment-form {
+                padding: 25px;
+            }
+            
+            .terms-content {
+                width: 95%;
+                height: 85vh;
+            }
+            
+            .step {
+                width: 120px;
+            }
+            
+            .step-circle {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .steps-connector {
+                left: 60px;
+                right: 60px;
+                top: 25px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .confirm-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .payment-form {
+                padding: 20px;
+            }
+            
+            .terms-content {
+                width: 98%;
+                height: 90vh;
+            }
+            
+            .step {
+                width: 100px;
+            }
+            
+            .step-text {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-credit-card"></i> Payment Process</h1>
+            <p>Complete the following steps to proceed with your payment</p>
+        </div>
+        
+        <!-- Payment Steps -->
+        <div class="payment-steps">
+            <div class="steps-connector"></div>
+            <div class="step active" id="step1">
+                <div class="step-circle">1</div>
+                <div class="step-text">Terms & Conditions</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-circle">2</div>
+                <div class="step-text">Client Details</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-circle">3</div>
+                <div class="step-text">Payment</div>
+            </div>
+        </div>
+        
+        <!-- Terms & Conditions Modal -->
+        <div class="terms-modal" id="termsModal">
+            <div class="terms-content">
+                <div class="terms-header">
+                    <h2><i class="fas fa-file-contract"></i> Terms & Conditions Agreement</h2>
+                </div>
+                <div class="terms-body" id="termsBody">
+                    <!-- Terms content will be loaded here -->
+                    <p>Loading terms and conditions...</p>
+                </div>
+                <div class="terms-footer">
+                    <button class="btn btn-disagree" id="btnDisagree">
+                        <i class="fas fa-times"></i> Disagree
+                    </button>
+                    <button class="btn btn-agree" id="btnAgree">
+                        <i class="fas fa-check"></i> Agree
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Disagree Confirmation Modal -->
+        <div class="confirm-modal" id="disagreeConfirm">
+            <div class="confirm-content">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirm Disagreement</h3>
+                <p>By disagreeing with the terms, you will not be able to proceed with the payment.</p>
+                <p>Are you sure you want to disagree?</p>
+                <div class="confirm-buttons">
+                    <button class="btn btn-no" id="btnDisagreeNo">
+                        <i class="fas fa-times"></i> No, Go Back
+                    </button>
+                    <button class="btn btn-yes" id="btnDisagreeYes">
+                        <i class="fas fa-check"></i> Yes, Disagree
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Payment Form -->
+        <div class="payment-form" id="paymentForm">
+            <!-- Client Details Section -->
+            <div class="form-section" id="clientDetailsSection">
+                <h2 class="section-title"><i class="fas fa-user-tie"></i> Client Details</h2>
+                <p style="color: #666; margin-bottom: 30px;">All fields marked with <span class="required">*</span> are mandatory</p>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>First Name <span class="required">*</span></label>
+                        <input type="text" id="firstName" maxlength="15" placeholder="Enter first name">
+                        <div class="error-message" id="firstNameError">First name is required (max 15 characters)</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Second Name</label>
+                        <input type="text" id="secondName" placeholder="Enter second name (optional)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Third Name <span class="required">*</span></label>
+                        <input type="text" id="thirdName" maxlength="15" placeholder="Enter third name">
+                        <div class="error-message" id="thirdNameError">Third name is required (max 15 characters)</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Phone Number <span class="required">*</span></label>
+                        <input type="tel" id="phone" maxlength="10" placeholder="10 digit number">
+                        <div class="error-message" id="phoneError">Valid 10-digit phone number required</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email ID <span class="required">*</span></label>
+                        <input type="email" id="email" maxlength="40" placeholder="Enter email address">
+                        <div class="error-message" id="emailError">Valid email address required (max 40 characters)</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Aadhaar Number <span class="required">*</span></label>
+                        <input type="text" id="aadhaar" maxlength="12" placeholder="12 digit number">
+                        <div class="error-message" id="aadhaarError">Valid 12-digit Aadhaar number required</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>PAN Number <span class="required">*</span></label>
+                        <input type="text" id="pan" maxlength="10" placeholder="10 characters">
+                        <div class="error-message" id="panError">Valid PAN number required (10 characters)</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Date of Birth <span class="required">*</span></label>
+                        <input type="text" id="dob" placeholder="DD-MM-YYYY">
+                        <div class="error-message" id="dobError">Valid date required (DD-MM-YYYY)</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Gender <span class="required">*</span></label>
+                        <select id="gender">
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div class="error-message" id="genderError">Please select gender</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Service Selection Section -->
+            <div class="form-section" id="serviceSection">
+                <h2 class="section-title"><i class="fas fa-concierge-bell"></i> Service Selection</h2>
+                
+                <div class="service-type">
+                    <div class="service-option" id="cloudService">
+                        <h4><i class="fas fa-cloud"></i> Secure Cloud Storage</h4>
+                        <p>Cloud storage with end-to-end encryption</p>
+                    </div>
+                    <div class="service-option" id="itService">
+                        <h4><i class="fas fa-laptop-code"></i> IT Service(s)</h4>
+                        <p>Custom IT services and solutions</p>
+                    </div>
+                </div>
+                
+                <!-- Cloud Storage Options -->
+                <div class="cloud-options" id="cloudOptions">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Plan (GB) <span class="required">*</span></label>
+                            <select id="planGB" disabled>
+                                <option value="">Select storage plan</option>
+                                <option value="10">10 GB</option>
+                                <option value="30">30 GB</option>
+                                <option value="50">50 GB</option>
+                                <option value="70">70 GB</option>
+                                <option value="100">100 GB</option>
+                                <option value="200">200 GB</option>
+                                <option value="300">300 GB</option>
+                                <option value="400">400 GB</option>
+                                <option value="500">500 GB</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Duration <span class="required">*</span></label>
+                            <select id="duration" disabled>
+                                <option value="">Select duration</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Amount to Pay <span class="required">*</span></label>
+                            <input type="text" id="cloudAmount" readonly placeholder="Will be calculated">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- IT Service Options -->
+                <div class="it-options" id="itOptions">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Type of Service <span class="required">*</span></label>
+                            <input type="text" id="serviceType" maxlength="100" placeholder="Describe the service (max 100 chars)">
+                            <div class="error-message" id="serviceTypeError">Service description required</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Amount to Pay (₹) <span class="required">*</span></label>
+                            <input type="number" id="itAmount" min="0" placeholder="Enter amount">
+                            <div class="error-message" id="itAmountError">Valid amount required</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payment Method Section -->
+            <div class="form-section" id="paymentMethodSection">
+                <h2 class="section-title"><i class="fas fa-money-check-alt"></i> Payment Method</h2>
+                
+                <!-- Amount Display -->
+                <div class="amount-display">
+                    <div class="amount-label">Total Amount to Pay</div>
+                    <div class="amount-value" id="totalAmount">₹ 0</div>
+                </div>
+                
+                <div class="agreement-check">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="termsConfirmed">
+                        <label for="termsConfirmed" style="font-weight: 600; color: #1b5e20;">
+                            <i class="fas fa-check-circle"></i> ✓ Agreed
+                            <span style="color: #666; font-weight: normal; display: block; margin-top: 5px;">
+                                This is automatically confirmed based on your acceptance in Step 1
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <h4><i class="fas fa-exclamation-circle"></i> Important Notice</h4>
+                    <p>It is mandatory to share your successful transaction details via</p>
+                    <p><strong>WhatsApp (+91-9674130001)</strong> or as an <strong>email attachment (care.ompl@gmail.com)</strong>.</p>
+                    <p style="color: #d32f2f; font-weight: 600;">Request(s) will not be processed without them.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Mode of Transaction <span class="required">*</span></label>
+                    <select id="transactionMode">
+                        <option value="">Select payment method</option>
+                        <option value="upi">UPI Payment</option>
+                        <option value="bank">Account Transfer</option>
+                    </select>
+                    <div class="error-message" id="transactionModeError">Please select payment method</div>
+                </div>
+                
+                <!-- Final Agreement -->
+                <div class="agreement-check" style="background: #e3f2fd; border-left-color: #2196f3;">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="finalAgreement">
+                        <label for="finalAgreement" style="font-weight: 600; color: #1a237e;">
+                            Step 2: I have read and agree to all Terms & Conditions
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Step Navigation -->
+                <div class="step-navigation">
+                    <button class="btn btn-disagree" id="btnFinalDisagree">
+                        <i class="fas fa-times"></i> Disagree
+                    </button>
+                    <button class="btn btn-continue" id="btnContinue" disabled>
+                        <i class="fas fa-arrow-right"></i> Continue to Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Payment Details Section (Initially Hidden) -->
+        <div class="payment-form" id="paymentDetailsSection" style="display: none;">
+            <div class="form-section">
+                <h2 class="section-title"><i class="fas fa-qrcode"></i> Complete Your Payment</h2>
+                
+                <!-- Amount Display -->
+                <div class="amount-display">
+                    <div class="amount-label">Amount to Pay</div>
+                    <div class="amount-value" id="finalAmount">₹ 0</div>
+                </div>
+                
+                <!-- Payment Methods -->
+                <div class="payment-methods">
+                    <!-- UPI Payment -->
+                    <div class="payment-method" id="upiMethod">
+                        <h3><i class="fas fa-mobile-alt"></i> UPI Payment</h3>
+                        <p style="text-align: center; margin-bottom: 20px; color: #666;">Scan the QR code to pay</p>
+                        <div class="qr-code">
+                            <img src="images/rq1.jpg" alt="UPI QR Code" id="qrImage" onerror="this.src='https://via.placeholder.com/250x250?text=QR+Code'">
+                        </div>
+                        <p style="text-align: center; color: #666; font-size: 0.9rem;">
+                            Use any UPI app to scan and pay
+                        </p>
+                    </div>
+                    
+                    <!-- Bank Transfer -->
+                    <div class="payment-method" id="bankMethod">
+                        <h3><i class="fas fa-university"></i> Account Transfer</h3>
+                        <div class="bank-details">
+                            <div class="bank-row">
+                                <span class="bank-label">Company Name:</span>
+                                <span class="bank-value">Odelya Management Pvt Ltd</span>
+                            </div>
+                            <div class="bank-row">
+                                <span class="bank-label">Bank Name:</span>
+                                <span class="bank-value">State Bank of India</span>
+                            </div>
+                            <div class="bank-row">
+                                <span class="bank-label">Account No:</span>
+                                <span class="bank-value">39681284318</span>
+                            </div>
+                            <div class="bank-row">
+                                <span class="bank-label">IFSC Code:</span>
+                                <span class="bank-value">SBIN0001140</span>
+                            </div>
+                            <div class="bank-row">
+                                <span class="bank-label">Branch:</span>
+                                <span class="bank-value">C.I.T. Road, Kolkata</span>
+                            </div>
+                        </div>
+                        <p style="text-align: center; margin-top: 20px; color: #666; font-size: 0.9rem;">
+                            Use above details for NEFT/RTGS/IMPS transfer
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Final Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-close" id="btnClose">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                    <button class="btn btn-home" id="btnHome">
+                        <i class="fas fa-home"></i> Home
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Close Confirmation Modal -->
+    <div class="confirm-modal" id="closeConfirm">
+        <div class="confirm-content">
+            <h3><i class="fas fa-file-pdf"></i> Save as PDF</h3>
+            <p>Do you want to save all information as an A4 PDF document?</p>
+            <p style="color: #666; font-size: 0.9rem;">If not saved, all entered data will be lost.</p>
+            <div class="confirm-buttons">
+                <button class="btn btn-no" id="btnSaveNo">
+                    <i class="fas fa-times"></i> No, Don't Save
+                </button>
+                <button class="btn btn-yes" id="btnSaveYes">
+                    <i class="fas fa-save"></i> Yes, Save PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ====== STATE MANAGEMENT ======
+        const paymentState = {
+            currentStep: 1,
+            agreedToTerms: false,
+            selectedService: null,
+            transactionMode: null,
+            totalAmount: 0,
+            isFromCloudStorage: false,
+            cloudStorageData: null
+        };
+
+        // ====== DOM ELEMENTS ======
+        const elements = {
+            // Modals
+            termsModal: document.getElementById('termsModal'),
+            disagreeConfirm: document.getElementById('disagreeConfirm'),
+            closeConfirm: document.getElementById('closeConfirm'),
+            
+            // Steps
+            step1: document.getElementById('step1'),
+            step2: document.getElementById('step2'),
+            step3: document.getElementById('step3'),
+            
+            // Forms
+            paymentForm: document.getElementById('paymentForm'),
+            paymentDetailsSection: document.getElementById('paymentDetailsSection'),
+            
+            // Buttons
+            btnAgree: document.getElementById('btnAgree'),
+            btnDisagree: document.getElementById('btnDisagree'),
+            btnDisagreeNo: document.getElementById('btnDisagreeNo'),
+            btnDisagreeYes: document.getElementById('btnDisagreeYes'),
+            btnFinalDisagree: document.getElementById('btnFinalDisagree'),
+            btnContinue: document.getElementById('btnContinue'),
+            btnClose: document.getElementById('btnClose'),
+            btnHome: document.getElementById('btnHome'),
+            btnSaveNo: document.getElementById('btnSaveNo'),
+            btnSaveYes: document.getElementById('btnSaveYes'),
+            
+            // Form inputs
+            firstName: document.getElementById('firstName'),
+            thirdName: document.getElementById('thirdName'),
+            phone: document.getElementById('phone'),
+            email: document.getElementById('email'),
+            aadhaar: document.getElementById('aadhaar'),
+            pan: document.getElementById('pan'),
+            dob: document.getElementById('dob'),
+            gender: document.getElementById('gender'),
+            
+            // Service selection
+            cloudService: document.getElementById('cloudService'),
+            itService: document.getElementById('itService'),
+            cloudOptions: document.getElementById('cloudOptions'),
+            itOptions: document.getElementById('itOptions'),
+            planGB: document.getElementById('planGB'),
+            duration: document.getElementById('duration'),
+            cloudAmount: document.getElementById('cloudAmount'),
+            serviceType: document.getElementById('serviceType'),
+            itAmount: document.getElementById('itAmount'),
+            
+            // Payment
+            transactionMode: document.getElementById('transactionMode'),
+            termsConfirmed: document.getElementById('termsConfirmed'),
+            finalAgreement: document.getElementById('finalAgreement'),
+            totalAmountDisplay: document.getElementById('totalAmount'),
+            finalAmountDisplay: document.getElementById('finalAmount'),
+            upiMethod: document.getElementById('upiMethod'),
+            bankMethod: document.getElementById('bankMethod')
+        };
+
+        // ====== INITIALIZATION ======
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load terms and conditions
+            loadTermsAndConditions();
+            
+            // Check if coming from cloud-storage.html
+            checkCloudStorageRedirect();
+            
+            // Show terms modal immediately
+            setTimeout(() => {
+                elements.termsModal.style.display = 'flex';
+            }, 500);
+            
+            // Initialize event listeners
+            setupEventListeners();
+        });
+
+        // ====== LOAD TERMS AND CONDITIONS ======
+        function loadTermsAndConditions() {
+            // In production, load from actual terms.html
+            const termsBody = document.getElementById('termsBody');
+            termsBody.innerHTML = `
+                <h3>Terms & Conditions for Odelya Cloud Digital Locker</h3>
+                <p><strong>Last Updated: 2025</strong></p>
+                
+                <h4>1. Acceptance of Terms</h4>
+                <p>By accessing and using the Odelya Cloud Digital Locker Service, you agree to be bound by these Terms and Conditions.</p>
+                
+                <h4>2. Service Description</h4>
+                <p>The service provides secure cloud storage with end-to-end encryption for personal and business files.</p>
+                
+                <h4>3. User Responsibilities</h4>
+                <p>Users are responsible for maintaining the confidentiality of their login credentials and authorized devices.</p>
+                
+                <h4>4. Payment Terms</h4>
+                <p>All payments are non-refundable. Service will be activated within 24 hours of successful payment verification.</p>
+                
+                <h4>5. Data Security</h4>
+                <p>While we employ industry-standard security measures, users are advised to maintain their own backups.</p>
+                
+                <h4>6. Service Availability</h4>
+                <p>We strive for 99.9% uptime but do not guarantee uninterrupted service due to maintenance or unforeseen circumstances.</p>
+                
+                <h4>7. Prohibited Content</h4>
+                <p>Users may not store illegal, copyrighted, or malicious content. Violation will result in immediate termination.</p>
+                
+                <h4>8. Termination</h4>
+                <p>We reserve the right to terminate service for violation of terms without refund.</p>
+                
+                <h4>9. Limitation of Liability</h4>
+                <p>Odelya Management Pvt. Ltd. shall not be liable for any indirect, incidental, or consequential damages.</p>
+                
+                <h4>10. Governing Law</h4>
+                <p>These terms are governed by the laws of India. Any disputes shall be subject to Kolkata jurisdiction.</p>
+                
+                <h4>11. Contact Information</h4>
+                <p>For queries: care.ompl@gmail.com or +91-9674130001</p>
+                
+                <div style="background: #ffebee; padding: 15px; border-radius: 8px; margin-top: 30px;">
+                    <p style="color: #b71c1c; font-weight: 600;">
+                        <i class="fas fa-exclamation-circle"></i> By proceeding, you acknowledge that you have read, understood, and agree to all terms and conditions stated above.
+                    </p>
+                </div>
+            `;
+        }
+
+        // ====== CHECK IF FROM CLOUD STORAGE ======
+        function checkCloudStorageRedirect() {
+            // Check sessionStorage for cloud storage data
+            const selectedPlan = sessionStorage.getItem('selectedPlan');
+            const selectedPeriod = sessionStorage.getItem('selectedPeriod');
+            const selectedMonthly = sessionStorage.getItem('selectedMonthly');
+            const selectedYearly = sessionStorage.getItem('selectedYearly');
+            
+            if (selectedPlan && selectedPeriod) {
+                paymentState.isFromCloudStorage = true;
+                paymentState.cloudStorageData = {
+                    plan: selectedPlan,
+                    period: selectedPeriod,
+                    monthly: selectedMonthly,
+                    yearly: selectedYearly
+                };
+                
+                // Pre-select cloud storage
+                paymentState.selectedService = 'cloud';
+                
+                // Calculate amount based on period
+                const amount = selectedPeriod === 'monthly' ? 
+                    parseInt(selectedMonthly) : 
+                    parseInt(selectedYearly);
+                
+                paymentState.totalAmount = amount;
+                
+                console.log('Redirected from cloud storage:', paymentState.cloudStorageData);
+            }
+        }
+
+        // ====== SETUP EVENT LISTENERS ======
+        function setupEventListeners() {
+            // Terms Agreement
+            elements.btnAgree.addEventListener('click', agreeToTerms);
+            elements.btnDisagree.addEventListener('click', showDisagreeConfirmation);
+            elements.btnDisagreeNo.addEventListener('click', hideDisagreeConfirmation);
+            elements.btnDisagreeYes.addEventListener('click', disagreeAndRedirect);
+            
+            // Service Selection
+            elements.cloudService.addEventListener('click', () => selectService('cloud'));
+            elements.itService.addEventListener('click', () => selectService('it'));
+            
+            // Form Validation
+            setupFormValidation();
+            
+            // Payment Method
+            elements.transactionMode.addEventListener('change', updatePaymentMethod);
+            
+            // Agreement Checkboxes
+            elements.termsConfirmed.addEventListener('change', updateContinueButton);
+            elements.finalAgreement.addEventListener('change', updateContinueButton);
+            
+            // Continue Button
+            elements.btnContinue.addEventListener('click', proceedToPayment);
+            
+            // Final Disagree
+            elements.btnFinalDisagree.addEventListener('click', showDisagreeConfirmation);
+            
+            // Close/Home Buttons
+            elements.btnClose.addEventListener('click', showCloseConfirmation);
+            elements.btnHome.addEventListener('click', goToHomePage);
+            
+            // Close Confirmation
+            elements.btnSaveNo.addEventListener('click', closeWithoutSave);
+            elements.btnSaveYes.addEventListener('click', saveAsPDFAndClose);
+        }
+
+        // ====== TERMS AGREEMENT FLOW ======
+        function agreeToTerms() {
+            paymentState.agreedToTerms = true;
+            
+            // Update step 1 to completed
+            elements.step1.classList.remove('active');
+            elements.step1.classList.add('completed');
+            
+            // Activate step 2
+            elements.step2.classList.add('active');
+            
+            // Hide terms modal
+            elements.termsModal.style.display = 'none';
+            
+            // Show payment form
+            elements.paymentForm.style.display = 'block';
+            
+            // Auto-check terms confirmed
+            elements.termsConfirmed.checked = true;
+            
+            // If from cloud storage, pre-fill
+            if (paymentState.isFromCloudStorage && paymentState.cloudStorageData) {
+                prefillCloudStorageData();
+            }
+        }
+
+        function showDisagreeConfirmation() {
+            elements.disagreeConfirm.style.display = 'flex';
+        }
+
+        function hideDisagreeConfirmation() {
+            elements.disagreeConfirm.style.display = 'none';
+        }
+
+        function disagreeAndRedirect() {
+            // Clear session
+            sessionStorage.clear();
+            
+            // Redirect to previous page
+            const referrer = document.referrer;
+            if (referrer && referrer.includes('odelya.online')) {
+                window.location.href = referrer;
+            } else {
+                window.location.href = 'https://odelya.online';
+            }
+        }
+
+        // ====== SERVICE SELECTION ======
+        function selectService(serviceType) {
+            paymentState.selectedService = serviceType;
+            
+            // Update UI
+            elements.cloudService.classList.remove('selected');
+            elements.itService.classList.remove('selected');
+            elements.cloudOptions.classList.remove('active');
+            elements.itOptions.classList.remove('active');
+            
+            if (serviceType === 'cloud') {
+                elements.cloudService.classList.add('selected');
+                elements.cloudOptions.classList.add('active');
+                
+                // If from cloud storage, lock fields
+                if (paymentState.isFromCloudStorage) {
+                    lockCloudStorageFields();
+                }
+            } else {
+                elements.itService.classList.add('selected');
+                elements.itOptions.classList.add('active');
+            }
+            
+            updateTotalAmount();
+            updateContinueButton();
+        }
+
+        function prefillCloudStorageData() {
+            if (!paymentState.cloudStorageData) return;
+            
+            // Select cloud service
+            selectService('cloud');
+            
+            // Pre-fill cloud storage fields
+            const data = paymentState.cloudStorageData;
+            elements.planGB.value = data.plan;
+            elements.duration.value = data.period;
+            
+            // Set amount
+            const amount = data.period === 'monthly' ? data.monthly : data.yearly;
+            elements.cloudAmount.value = `₹ ${parseInt(amount).toLocaleString()}`;
+            
+            // Update total amount
+            paymentState.totalAmount = parseInt(amount);
+            updateTotalAmountDisplay();
+        }
+
+        function lockCloudStorageFields() {
+            elements.planGB.disabled = true;
+            elements.duration.disabled = true;
+            elements.cloudAmount.disabled = true;
+            
+            // Add locked indicator
+            [elements.planGB, elements.duration].forEach(el => {
+                el.style.backgroundColor = '#f5f5f5';
+                el.style.cursor = 'not-allowed';
+            });
+        }
+
+        // ====== FORM VALIDATION ======
+        function setupFormValidation() {
+            // Real-time validation
+            const validateFields = [
+                { id: 'firstName', validate: validateName, errorId: 'firstNameError' },
+                { id: 'thirdName', validate: validateName, errorId: 'thirdNameError' },
+                { id: 'phone', validate: validatePhone, errorId: 'phoneError' },
+                { id: 'email', validate: validateEmail, errorId: 'emailError' },
+                { id: 'aadhaar', validate: validateAadhaar, errorId: 'aadhaarError' },
+                { id: 'pan', validate: validatePAN, errorId: 'panError' },
+                { id: 'dob', validate: validateDOB, errorId: 'dobError' }
+            ];
+            
+            validateFields.forEach(field => {
+                const input = document.getElementById(field.id);
+                const error = document.getElementById(field.errorId);
+                
+                input.addEventListener('blur', () => {
+                    if (!field.validate(input.value)) {
+                        input.classList.add('error');
+                        error.style.display = 'block';
+                    } else {
+                        input.classList.remove('error');
+                        error.style.display = 'none';
+                    }
+                    updateContinueButton();
+                });
+                
+                input.addEventListener('input', () => {
+                    input.classList.remove('error');
+                    error.style.display = 'none';
+                });
+            });
+            
+            // Gender validation
+            elements.gender.addEventListener('change', updateContinueButton);
+            
+            // IT Service validation
+            elements.serviceType.addEventListener('input', updateContinueButton);
+            elements.itAmount.addEventListener('input', updateContinueButton);
+        }
+
+        function validateName(name) {
+            return name.trim().length > 0 && name.trim().length <= 15;
+        }
+
+        function validatePhone(phone) {
+            return /^[6-9]\d{9}$/.test(phone);
+        }
+
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 40;
+        }
+
+        function validateAadhaar(aadhaar) {
+            return /^\d{12}$/.test(aadhaar);
+        }
+
+        function validatePAN(pan) {
+            return /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan.toUpperCase());
+        }
+
+        function validateDOB(dob) {
+            return /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/.test(dob);
+        }
+
+        function validateAllFields() {
+            // Basic client details
+            const validations = [
+                validateName(elements.firstName.value),
+                validateName(elements.thirdName.value),
+                validatePhone(elements.phone.value),
+                validateEmail(elements.email.value),
+                validateAadhaar(elements.aadhaar.value),
+                validatePAN(elements.pan.value),
+                validateDOB(elements.dob.value),
+                elements.gender.value !== ''
+            ];
+            
+            // Service specific validations
+            if (paymentState.selectedService === 'cloud') {
+                validations.push(elements.planGB.value !== '');
+                validations.push(elements.duration.value !== '');
+            } else if (paymentState.selectedService === 'it') {
+                validations.push(elements.serviceType.value.trim().length > 0);
+                validations.push(parseFloat(elements.itAmount.value) > 0);
+            }
+            
+            // Payment method
+            validations.push(elements.transactionMode.value !== '');
+            
+            // Agreements
+            validations.push(elements.termsConfirmed.checked);
+            validations.push(elements.finalAgreement.checked);
+            
+            return validations.every(v => v === true);
+        }
+
+        // ====== AMOUNT CALCULATION ======
+        function updateTotalAmount() {
+            if (paymentState.selectedService === 'cloud') {
+                // If from cloud storage, use pre-calculated amount
+                if (paymentState.isFromCloudStorage && paymentState.cloudStorageData) {
+                    return; // Already set
+                }
+                
+                // Otherwise calculate based on selection
+                const plan = elements.planGB.value;
+                const duration = elements.duration.value;
+                
+                if (plan && duration) {
+                    // You would have pricing logic here
+                    // For now, using placeholder
+                    const basePrice = parseInt(plan) * 1.5; // ₹1.5 per GB
+                    const multiplier = duration === 'yearly' ? 12 : 1;
+                    const discount = duration === 'yearly' ? 0.1 : 0; // 10% yearly discount
+                    
+                    let amount = basePrice * multiplier;
+                    amount = amount - (amount * discount);
+                    
+                    // Add GST 18%
+                    amount = amount + (amount * 0.18);
+                    
+                    paymentState.totalAmount = Math.round(amount);
+                    elements.cloudAmount.value = `₹ ${paymentState.totalAmount.toLocaleString()}`;
+                }
+            } else if (paymentState.selectedService === 'it') {
+                const amount = parseFloat(elements.itAmount.value) || 0;
+                paymentState.totalAmount = amount;
+            }
+            
+            updateTotalAmountDisplay();
+        }
+
+        function updateTotalAmountDisplay() {
+            elements.totalAmountDisplay.textContent = `₹ ${paymentState.totalAmount.toLocaleString()}`;
+            elements.finalAmountDisplay.textContent = `₹ ${paymentState.totalAmount.toLocaleString()}`;
+        }
+
+        // ====== PAYMENT METHOD ======
+        function updatePaymentMethod() {
+            paymentState.transactionMode = elements.transactionMode.value;
+            updateContinueButton();
+        }
+
+        // ====== CONTINUE BUTTON ======
+        function updateContinueButton() {
+            const isValid = validateAllFields();
+            elements.btnContinue.disabled = !isValid;
+        }
+
+        function proceedToPayment() {
+            if (!validateAllFields()) {
+                alert('Please fill all required fields correctly.');
+                return;
+            }
+            
+            // Update steps
+            elements.step2.classList.remove('active');
+            elements.step2.classList.add('completed');
+            elements.step3.classList.add('active');
+            
+            // Hide form, show payment details
+            elements.paymentForm.style.display = 'none';
+            elements.paymentDetailsSection.style.display = 'block';
+            
+            // Show selected payment method
+            if (paymentState.transactionMode === 'upi') {
+                elements.upiMethod.style.display = 'block';
+                elements.bankMethod.style.display = 'none';
+            } else {
+                elements.upiMethod.style.display = 'none';
+                elements.bankMethod.style.display = 'block';
+            }
+        }
+
+        // ====== CLOSE/HOME FLOW ======
+        function showCloseConfirmation() {
+            elements.closeConfirm.style.display = 'flex';
+        }
+
+        function goToHomePage() {
+            window.location.href = 'https://odelya.online';
+        }
+
+        function closeWithoutSave() {
+            elements.closeConfirm.style.display = 'none';
+            
+            // Clear session and redirect
+            sessionStorage.clear();
+            
+            const referrer = document.referrer;
+            if (referrer && referrer.includes('odelya.online')) {
+                window.location.href = referrer;
+            } else {
+                window.location.href = 'https://odelya.online';
+            }
+        }
+
+        function saveAsPDFAndClose() {
+            // In production, this would generate and download a PDF
+            // For now, simulating the download
+            
+            alert('PDF download would start here in production.');
+            
+            // Clear session and redirect
+            sessionStorage.clear();
+            
+            const referrer = document.referrer;
+            if (referrer && referrer.includes('odelya.online')) {
+                window.location.href = referrer;
+            } else {
+                window.location.href = 'https://odelya.online';
+            }
+        }
+
+        // ====== UTILITY FUNCTIONS ======
+        function formatCurrency(amount) {
+            return '₹' + amount.toLocaleString('en-IN');
+        }
+
+        // Auto-update amount when cloud storage fields change
+        elements.planGB.addEventListener('change', updateTotalAmount);
+        elements.duration.addEventListener('change', updateTotalAmount);
+        elements.itAmount.addEventListener('input', updateTotalAmount);
+    </script>
+</body>
+</html>
