@@ -1177,5 +1177,55 @@
     }
 </script>
 
+<!-- Admin System -->
+<script src="cloud-storage-admin.js"></script>
+
+<!-- Optional: Add debug info (remove in production) -->
+<div id="adminDebug" style="display: none; position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 12px; z-index: 9999;"></div>
+
+<script>
+// Simple integration with existing code
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait a bit for admin system to initialize
+    setTimeout(function() {
+        // Update your pricingConfig with loaded values
+        if (typeof pricingConfig !== 'undefined' && typeof loadPriceConfig === 'function') {
+            const config = loadPriceConfig();
+            pricingConfig.dataRate = config.dataRate;
+            pricingConfig.gstRate = config.gstRate;
+            pricingConfig.specialDiscount = config.specialDiscount;
+            
+            // Re-render table if function exists
+            if (typeof renderPricingTable === 'function') {
+                renderPricingTable();
+            }
+        }
+        
+        // Debug info (remove in production)
+        const debugDiv = document.getElementById('adminDebug');
+        if (debugDiv && localStorage.getItem('showAdminDebug') === 'true') {
+            debugDiv.style.display = 'block';
+            debugDiv.innerHTML = `
+                Admin System Loaded<br>
+                Config: ${localStorage.getItem('odelyaPriceConfig') ? '✓' : '✗'}<br>
+                Visible: ${document.getElementById('adminLinkBtn')?.style.display === 'block' ? '✓' : '✗'}
+            `;
+        }
+    }, 500);
+    
+    // Debug shortcut: Ctrl+Alt+D
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'd') {
+            const debugDiv = document.getElementById('adminDebug');
+            if (debugDiv) {
+                const isVisible = debugDiv.style.display === 'block';
+                debugDiv.style.display = isVisible ? 'none' : 'block';
+                localStorage.setItem('showAdminDebug', !isVisible);
+            }
+        }
+    });
+});
+</script>
+    
 </body>
 </html>
