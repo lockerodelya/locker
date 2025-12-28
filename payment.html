@@ -147,6 +147,9 @@
             background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
             padding: 20px 30px;
             border-bottom: 2px solid #f48fb1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .terms-header h2 {
@@ -157,17 +160,31 @@
             gap: 10px;
         }
         
+        .close-terms {
+            background: none;
+            border: none;
+            color: #d32f2f;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
         .terms-body {
             flex: 1;
             overflow-y: auto;
             padding: 30px;
             line-height: 1.8;
             color: #424242;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         .terms-body p {
             margin-bottom: 20px;
             text-align: justify;
+        }
+        
+        .terms-body strong {
+            color: #b71c1c;
         }
         
         .terms-footer {
@@ -267,12 +284,12 @@
         }
         
         .btn-no {
-            background: #f5f5f5;
-            color: #757575;
+            background: #757575;
+            color: white;
         }
         
         .btn-no:hover {
-            background: #e0e0e0;
+            background: #616161;
         }
         
         .btn-yes {
@@ -315,14 +332,24 @@
             gap: 12px;
         }
         
-        .form-grid {
+        /* Row Layout */
+        .form-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .form-row-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .form-row-3 {
+            grid-template-columns: repeat(3, 1fr);
         }
         
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 0;
         }
         
         .form-group label {
@@ -453,7 +480,7 @@
         /* Warning Box */
         .warning-box {
             background: #ffebee;
-            padding: 25px;
+            padding: 20px;
             border-radius: 10px;
             margin: 30px 0;
             border-left: 5px solid #f44336;
@@ -467,27 +494,57 @@
             gap: 10px;
         }
         
-        /* Payment Methods */
-        .payment-methods {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 40px;
-            margin: 40px 0;
+        .warning-box p {
+            margin-bottom: 10px;
+            line-height: 1.6;
         }
         
-        .payment-method {
+        /* Payment Mode Selection */
+        .payment-mode {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .mode-option {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+            text-align: center;
+        }
+        
+        .mode-option:hover {
+            background: #e8f5e9;
+        }
+        
+        .mode-option.selected {
+            background: #e8f5e9;
+            border-color: #4caf50;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+        }
+        
+        .mode-option h4 {
+            color: #1b5e20;
+            margin-bottom: 10px;
+        }
+        
+        /* Payment Details */
+        .payment-details {
             background: white;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             border: 2px solid #e0e0e0;
+            display: none;
         }
         
-        .payment-method h3 {
-            color: #1a237e;
-            margin-bottom: 25px;
-            text-align: center;
-            font-size: 1.6rem;
+        .payment-details.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
         }
         
         .qr-code {
@@ -597,11 +654,15 @@
                 grid-template-columns: 1fr;
             }
             
-            .form-grid {
+            .form-row {
                 grid-template-columns: 1fr;
             }
             
-            .service-type {
+            .form-row-2, .form-row-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-type, .payment-mode {
                 grid-template-columns: 1fr;
             }
         }
@@ -636,17 +697,18 @@
                 top: 25px;
             }
             
-            .action-buttons {
+            .action-buttons, .confirm-buttons {
                 flex-direction: column;
                 gap: 20px;
             }
             
-            .confirm-buttons {
-                flex-direction: column;
-            }
-            
             .btn {
                 width: 100%;
+            }
+            
+            .terms-footer {
+                flex-direction: column;
+                gap: 15px;
             }
         }
         
@@ -704,10 +766,12 @@
             <div class="terms-content">
                 <div class="terms-header">
                     <h2><i class="fas fa-file-contract"></i> Terms & Conditions Agreement</h2>
+                    <button class="close-terms" id="closeTerms">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
                 <div class="terms-body" id="termsBody">
-                    <!-- Terms content will be loaded here -->
-                    <p>Loading terms and conditions...</p>
+                    <!-- Terms content will be loaded from terms.html -->
                 </div>
                 <div class="terms-footer">
                     <button class="btn btn-disagree" id="btnDisagree">
@@ -725,14 +789,9 @@
             <div class="confirm-content">
                 <h3><i class="fas fa-exclamation-triangle"></i> Confirm Disagreement</h3>
                 <p>By disagreeing with the terms, you will not be able to proceed with the payment.</p>
-                <p>Are you sure you want to disagree?</p>
                 <div class="confirm-buttons">
-                    <button class="btn btn-no" id="btnDisagreeNo">
-                        <i class="fas fa-times"></i> No, Go Back
-                    </button>
-                    <button class="btn btn-yes" id="btnDisagreeYes">
-                        <i class="fas fa-check"></i> Yes, Disagree
-                    </button>
+                    <button class="btn btn-no" id="btnDisagreeNo">No</button>
+                    <button class="btn btn-yes" id="btnDisagreeYes">Yes</button>
                 </div>
             </div>
         </div>
@@ -744,26 +803,36 @@
                 <h2 class="section-title"><i class="fas fa-user-tie"></i> Client Details</h2>
                 <p style="color: #666; margin-bottom: 30px;">All fields marked with <span class="required">*</span> are mandatory</p>
                 
-                <div class="form-grid">
+                <!-- Row 1: Names -->
+                <div class="form-row form-row-3">
                     <div class="form-group">
-                        <label>First Name <span class="required">*</span></label>
+                        <label>1st Name <span class="required">*</span></label>
                         <input type="text" id="firstName" maxlength="15" placeholder="Enter first name">
                         <div class="error-message" id="firstNameError">First name is required (max 15 characters)</div>
                     </div>
                     
                     <div class="form-group">
-                        <label>Second Name</label>
+                        <label>2nd Name</label>
                         <input type="text" id="secondName" placeholder="Enter second name (optional)">
                     </div>
                     
                     <div class="form-group">
-                        <label>Third Name <span class="required">*</span></label>
+                        <label>3rd Name <span class="required">*</span></label>
                         <input type="text" id="thirdName" maxlength="15" placeholder="Enter third name">
                         <div class="error-message" id="thirdNameError">Third name is required (max 15 characters)</div>
                     </div>
+                </div>
+                
+                <!-- Row 2: DOB, Phone, Email -->
+                <div class="form-row form-row-3">
+                    <div class="form-group">
+                        <label>Date of Birth <span class="required">*</span></label>
+                        <input type="text" id="dob" placeholder="DD-MM-YYYY">
+                        <div class="error-message" id="dobError">Valid date required (DD-MM-YYYY)</div>
+                    </div>
                     
                     <div class="form-group">
-                        <label>Phone Number <span class="required">*</span></label>
+                        <label>Phone No <span class="required">*</span></label>
                         <input type="tel" id="phone" maxlength="10" placeholder="10 digit number">
                         <div class="error-message" id="phoneError">Valid 10-digit phone number required</div>
                     </div>
@@ -773,25 +842,10 @@
                         <input type="email" id="email" maxlength="40" placeholder="Enter email address">
                         <div class="error-message" id="emailError">Valid email address required (max 40 characters)</div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label>Aadhaar Number <span class="required">*</span></label>
-                        <input type="text" id="aadhaar" maxlength="12" placeholder="12 digit number">
-                        <div class="error-message" id="aadhaarError">Valid 12-digit Aadhaar number required</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>PAN Number <span class="required">*</span></label>
-                        <input type="text" id="pan" maxlength="10" placeholder="10 characters">
-                        <div class="error-message" id="panError">Valid PAN number required (10 characters)</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Date of Birth <span class="required">*</span></label>
-                        <input type="text" id="dob" placeholder="DD-MM-YYYY">
-                        <div class="error-message" id="dobError">Valid date required (DD-MM-YYYY)</div>
-                    </div>
-                    
+                </div>
+                
+                <!-- Row 3: Gender, PAN, Aadhaar -->
+                <div class="form-row form-row-3">
                     <div class="form-group">
                         <label>Gender <span class="required">*</span></label>
                         <select id="gender">
@@ -801,6 +855,18 @@
                             <option value="other">Other</option>
                         </select>
                         <div class="error-message" id="genderError">Please select gender</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>PAN No <span class="required">*</span></label>
+                        <input type="text" id="pan" maxlength="10" placeholder="10 characters">
+                        <div class="error-message" id="panError">Valid PAN number required (10 characters)</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Aadhaar No <span class="required">*</span></label>
+                        <input type="text" id="aadhaar" maxlength="12" placeholder="12 digit number">
+                        <div class="error-message" id="aadhaarError">Valid 12-digit Aadhaar number required</div>
                     </div>
                 </div>
             </div>
@@ -822,10 +888,10 @@
                 
                 <!-- Cloud Storage Options -->
                 <div class="cloud-options" id="cloudOptions">
-                    <div class="form-grid">
+                    <div class="form-row form-row-3">
                         <div class="form-group">
                             <label>Plan (GB) <span class="required">*</span></label>
-                            <select id="planGB" disabled>
+                            <select id="planGB">
                                 <option value="">Select storage plan</option>
                                 <option value="10">10 GB</option>
                                 <option value="30">30 GB</option>
@@ -837,27 +903,30 @@
                                 <option value="400">400 GB</option>
                                 <option value="500">500 GB</option>
                             </select>
+                            <div class="error-message" id="planError">Please select storage plan</div>
                         </div>
                         
                         <div class="form-group">
                             <label>Duration <span class="required">*</span></label>
-                            <select id="duration" disabled>
+                            <select id="duration">
                                 <option value="">Select duration</option>
                                 <option value="monthly">Monthly</option>
                                 <option value="yearly">Yearly</option>
                             </select>
+                            <div class="error-message" id="durationError">Please select duration</div>
                         </div>
                         
                         <div class="form-group">
                             <label>Amount to Pay <span class="required">*</span></label>
                             <input type="text" id="cloudAmount" readonly placeholder="Will be calculated">
+                            <div class="error-message" id="cloudAmountError">Amount calculation required</div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- IT Service Options -->
                 <div class="it-options" id="itOptions">
-                    <div class="form-grid">
+                    <div class="form-row form-row-2">
                         <div class="form-group">
                             <label>Type of Service <span class="required">*</span></label>
                             <input type="text" id="serviceType" maxlength="100" placeholder="Describe the service (max 100 chars)">
@@ -873,64 +942,51 @@
                 </div>
             </div>
             
-            <!-- Payment Method Section -->
-            <div class="form-section" id="paymentMethodSection">
-                <h2 class="section-title"><i class="fas fa-money-check-alt"></i> Payment Method</h2>
-                
-                <!-- Amount Display -->
-                <div class="amount-display">
-                    <div class="amount-label">Total Amount to Pay</div>
-                    <div class="amount-value" id="totalAmount">₹ 0</div>
+            <!-- Amount Display -->
+            <div class="amount-display">
+                <div class="amount-label">Total Amount to Pay</div>
+                <div class="amount-value" id="totalAmount">₹ 0</div>
+            </div>
+            
+            <!-- Agreement Check -->
+            <div class="agreement-check">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="termsConfirmed">
+                    <label for="termsConfirmed" style="font-weight: 600; color: #1b5e20;">
+                        <i class="fas fa-check-circle"></i> ✓ Agreed
+                        <span style="color: #666; font-weight: normal; display: block; margin-top: 5px;">
+                            This is automatically confirmed based on your acceptance in Step 1
+                        </span>
+                    </label>
                 </div>
-                
-                <div class="agreement-check">
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="termsConfirmed">
-                        <label for="termsConfirmed" style="font-weight: 600; color: #1b5e20;">
-                            <i class="fas fa-check-circle"></i> ✓ Agreed
-                            <span style="color: #666; font-weight: normal; display: block; margin-top: 5px;">
-                                This is automatically confirmed based on your acceptance in Step 1
-                            </span>
-                        </label>
-                    </div>
+            </div>
+            
+            <!-- Warning Box -->
+            <div class="warning-box">
+                <h4><i class="fas fa-exclamation-circle"></i> Important Notice</h4>
+                <p>It is mandatory to share your successful transaction details via</p>
+                <p><strong>WhatsApp (+91-9674130001)</strong> or as an <strong>email attachment (care.ompl@gmail.com)</strong>.</p>
+                <p><strong>Request(s) will not be processed without them.</strong></p>
+            </div>
+            
+            <!-- Final Agreement -->
+            <div class="agreement-check" style="background: #e3f2fd; border-left-color: #2196f3;">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="finalAgreement">
+                    <label for="finalAgreement" style="font-weight: 600; color: #1a237e;">
+                        Step 2: I have read and agree to all Terms & Conditions
+                    </label>
                 </div>
-                
-                <div class="warning-box">
-                    <h4><i class="fas fa-exclamation-circle"></i> Important Notice</h4>
-                    <p>It is mandatory to share your successful transaction details via</p>
-                    <p><strong>WhatsApp (+91-9674130001)</strong> or as an <strong>email attachment (care.ompl@gmail.com)</strong>.</p>
-                    <p style="color: #d32f2f; font-weight: 600;">Request(s) will not be processed without them.</p>
-                </div>
-                
-                <div class="form-group">
-                    <label>Mode of Transaction <span class="required">*</span></label>
-                    <select id="transactionMode">
-                        <option value="">Select payment method</option>
-                        <option value="upi">UPI Payment</option>
-                        <option value="bank">Account Transfer</option>
-                    </select>
-                    <div class="error-message" id="transactionModeError">Please select payment method</div>
-                </div>
-                
-                <!-- Final Agreement -->
-                <div class="agreement-check" style="background: #e3f2fd; border-left-color: #2196f3;">
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="finalAgreement">
-                        <label for="finalAgreement" style="font-weight: 600; color: #1a237e;">
-                            Step 2: I have read and agree to all Terms & Conditions
-                        </label>
-                    </div>
-                </div>
-                
-                <!-- Step Navigation -->
-                <div class="step-navigation">
-                    <button class="btn btn-disagree" id="btnFinalDisagree">
-                        <i class="fas fa-times"></i> Disagree
-                    </button>
-                    <button class="btn btn-continue" id="btnContinue" disabled>
-                        <i class="fas fa-arrow-right"></i> Continue to Payment
-                    </button>
-                </div>
+            </div>
+            
+            <!-- Step Navigation -->
+            <div class="step-navigation">
+                <button class="btn btn-disagree" id="btnFinalDisagree">
+                    <i class="fas fa-times"></i> Disagree
+                </button>
+                <button class="btn btn-continue" id="btnContinue" disabled>
+                    <i class="fas fa-arrow-right"></i> Continue to Payment
+                </button>
             </div>
         </div>
         
@@ -945,49 +1001,65 @@
                     <div class="amount-value" id="finalAmount">₹ 0</div>
                 </div>
                 
-                <!-- Payment Methods -->
-                <div class="payment-methods">
-                    <!-- UPI Payment -->
-                    <div class="payment-method" id="upiMethod">
-                        <h3><i class="fas fa-mobile-alt"></i> UPI Payment</h3>
-                        <p style="text-align: center; margin-bottom: 20px; color: #666;">Scan the QR code to pay</p>
-                        <div class="qr-code">
-                            <img src="images/rq1.jpg" alt="UPI QR Code" id="qrImage" onerror="this.src='https://via.placeholder.com/250x250?text=QR+Code'">
-                        </div>
-                        <p style="text-align: center; color: #666; font-size: 0.9rem;">
-                            Use any UPI app to scan and pay
-                        </p>
+                <!-- Payment Mode Selection -->
+                <div class="payment-mode">
+                    <div class="mode-option" id="modeUPI">
+                        <h4><i class="fas fa-mobile-alt"></i> UPI Payment</h4>
+                        <p>Scan QR code to pay</p>
                     </div>
-                    
-                    <!-- Bank Transfer -->
-                    <div class="payment-method" id="bankMethod">
-                        <h3><i class="fas fa-university"></i> Account Transfer</h3>
-                        <div class="bank-details">
-                            <div class="bank-row">
-                                <span class="bank-label">Company Name:</span>
-                                <span class="bank-value">Odelya Management Pvt Ltd</span>
-                            </div>
-                            <div class="bank-row">
-                                <span class="bank-label">Bank Name:</span>
-                                <span class="bank-value">State Bank of India</span>
-                            </div>
-                            <div class="bank-row">
-                                <span class="bank-label">Account No:</span>
-                                <span class="bank-value">39681284318</span>
-                            </div>
-                            <div class="bank-row">
-                                <span class="bank-label">IFSC Code:</span>
-                                <span class="bank-value">SBIN0001140</span>
-                            </div>
-                            <div class="bank-row">
-                                <span class="bank-label">Branch:</span>
-                                <span class="bank-value">C.I.T. Road, Kolkata</span>
-                            </div>
-                        </div>
-                        <p style="text-align: center; margin-top: 20px; color: #666; font-size: 0.9rem;">
-                            Use above details for NEFT/RTGS/IMPS transfer
-                        </p>
+                    <div class="mode-option" id="modeBank">
+                        <h4><i class="fas fa-university"></i> Account Transfer</h4>
+                        <p>Bank transfer details</p>
                     </div>
+                </div>
+                
+                <!-- UPI Payment Details -->
+                <div class="payment-details" id="upiDetails">
+                    <h3 style="color: #1b5e20; margin-bottom: 20px; text-align: center;">
+                        <i class="fas fa-mobile-alt"></i> UPI Payment
+                    </h3>
+                    <p style="text-align: center; margin-bottom: 20px; color: #666;">
+                        Scan the QR code below using any UPI app
+                    </p>
+                    <div class="qr-code">
+                        <img src="images/rq1.jpg" alt="UPI QR Code" id="qrImage" 
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/250x250/4CAF50/FFFFFF?text=QR+Code+Placeholder'">
+                    </div>
+                    <p style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 20px;">
+                        After payment, share screenshot via WhatsApp or email
+                    </p>
+                </div>
+                
+                <!-- Bank Transfer Details -->
+                <div class="payment-details" id="bankDetails">
+                    <h3 style="color: #1a237e; margin-bottom: 20px; text-align: center;">
+                        <i class="fas fa-university"></i> Account Transfer
+                    </h3>
+                    <div class="bank-details">
+                        <div class="bank-row">
+                            <span class="bank-label">Company Name:</span>
+                            <span class="bank-value">Odelya Management Pvt Ltd</span>
+                        </div>
+                        <div class="bank-row">
+                            <span class="bank-label">Bank Name:</span>
+                            <span class="bank-value">State Bank of India</span>
+                        </div>
+                        <div class="bank-row">
+                            <span class="bank-label">Account No:</span>
+                            <span class="bank-value">39681284318</span>
+                        </div>
+                        <div class="bank-row">
+                            <span class="bank-label">IFSC Code:</span>
+                            <span class="bank-value">SBIN0001140</span>
+                        </div>
+                        <div class="bank-row">
+                            <span class="bank-label">Branch:</span>
+                            <span class="bank-value">C.I.T. Road, Kolkata</span>
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 20px; color: #666; font-size: 0.9rem;">
+                        Use above details for NEFT/RTGS/IMPS transfer
+                    </p>
                 </div>
                 
                 <!-- Final Action Buttons -->
@@ -1008,14 +1080,9 @@
         <div class="confirm-content">
             <h3><i class="fas fa-file-pdf"></i> Save as PDF</h3>
             <p>Do you want to save all information as an A4 PDF document?</p>
-            <p style="color: #666; font-size: 0.9rem;">If not saved, all entered data will be lost.</p>
             <div class="confirm-buttons">
-                <button class="btn btn-no" id="btnSaveNo">
-                    <i class="fas fa-times"></i> No, Don't Save
-                </button>
-                <button class="btn btn-yes" id="btnSaveYes">
-                    <i class="fas fa-save"></i> Yes, Save PDF
-                </button>
+                <button class="btn btn-no" id="btnSaveNo">No</button>
+                <button class="btn btn-yes" id="btnSaveYes">Yes</button>
             </div>
         </div>
     </div>
@@ -1026,7 +1093,7 @@
             currentStep: 1,
             agreedToTerms: false,
             selectedService: null,
-            transactionMode: null,
+            paymentMode: null,
             totalAmount: 0,
             isFromCloudStorage: false,
             cloudStorageData: null
@@ -1038,6 +1105,7 @@
             termsModal: document.getElementById('termsModal'),
             disagreeConfirm: document.getElementById('disagreeConfirm'),
             closeConfirm: document.getElementById('closeConfirm'),
+            closeTerms: document.getElementById('closeTerms'),
             
             // Steps
             step1: document.getElementById('step1'),
@@ -1062,6 +1130,7 @@
             
             // Form inputs
             firstName: document.getElementById('firstName'),
+            secondName: document.getElementById('secondName'),
             thirdName: document.getElementById('thirdName'),
             phone: document.getElementById('phone'),
             email: document.getElementById('email'),
@@ -1081,19 +1150,27 @@
             serviceType: document.getElementById('serviceType'),
             itAmount: document.getElementById('itAmount'),
             
-            // Payment
-            transactionMode: document.getElementById('transactionMode'),
+            // Payment mode
+            modeUPI: document.getElementById('modeUPI'),
+            modeBank: document.getElementById('modeBank'),
+            upiDetails: document.getElementById('upiDetails'),
+            bankDetails: document.getElementById('bankDetails'),
+            
+            // Agreements
             termsConfirmed: document.getElementById('termsConfirmed'),
             finalAgreement: document.getElementById('finalAgreement'),
+            
+            // Amount displays
             totalAmountDisplay: document.getElementById('totalAmount'),
             finalAmountDisplay: document.getElementById('finalAmount'),
-            upiMethod: document.getElementById('upiMethod'),
-            bankMethod: document.getElementById('bankMethod')
+            
+            // QR Image
+            qrImage: document.getElementById('qrImage')
         };
 
         // ====== INITIALIZATION ======
         document.addEventListener('DOMContentLoaded', function() {
-            // Load terms and conditions
+            // Load terms and conditions from terms.html
             loadTermsAndConditions();
             
             // Check if coming from cloud-storage.html
@@ -1108,53 +1185,39 @@
             setupEventListeners();
         });
 
-        // ====== LOAD TERMS AND CONDITIONS ======
-        function loadTermsAndConditions() {
-            // In production, load from actual terms.html
-            const termsBody = document.getElementById('termsBody');
-            termsBody.innerHTML = `
-                <h3>Terms & Conditions for Odelya Cloud Digital Locker</h3>
-                <p><strong>Last Updated: 2025</strong></p>
+        // ====== LOAD TERMS FROM TERMS.HTML ======
+        async function loadTermsAndConditions() {
+            try {
+                // Try to fetch from terms.html
+                const response = await fetch('terms.html');
+                if (!response.ok) throw new Error('terms.html not found');
                 
-                <h4>1. Acceptance of Terms</h4>
-                <p>By accessing and using the Odelya Cloud Digital Locker Service, you agree to be bound by these Terms and Conditions.</p>
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
                 
-                <h4>2. Service Description</h4>
-                <p>The service provides secure cloud storage with end-to-end encryption for personal and business files.</p>
-                
-                <h4>3. User Responsibilities</h4>
-                <p>Users are responsible for maintaining the confidentiality of their login credentials and authorized devices.</p>
-                
-                <h4>4. Payment Terms</h4>
-                <p>All payments are non-refundable. Service will be activated within 24 hours of successful payment verification.</p>
-                
-                <h4>5. Data Security</h4>
-                <p>While we employ industry-standard security measures, users are advised to maintain their own backups.</p>
-                
-                <h4>6. Service Availability</h4>
-                <p>We strive for 99.9% uptime but do not guarantee uninterrupted service due to maintenance or unforeseen circumstances.</p>
-                
-                <h4>7. Prohibited Content</h4>
-                <p>Users may not store illegal, copyrighted, or malicious content. Violation will result in immediate termination.</p>
-                
-                <h4>8. Termination</h4>
-                <p>We reserve the right to terminate service for violation of terms without refund.</p>
-                
-                <h4>9. Limitation of Liability</h4>
-                <p>Odelya Management Pvt. Ltd. shall not be liable for any indirect, incidental, or consequential damages.</p>
-                
-                <h4>10. Governing Law</h4>
-                <p>These terms are governed by the laws of India. Any disputes shall be subject to Kolkata jurisdiction.</p>
-                
-                <h4>11. Contact Information</h4>
-                <p>For queries: care.ompl@gmail.com or +91-9674130001</p>
-                
-                <div style="background: #ffebee; padding: 15px; border-radius: 8px; margin-top: 30px;">
-                    <p style="color: #b71c1c; font-weight: 600;">
-                        <i class="fas fa-exclamation-circle"></i> By proceeding, you acknowledge that you have read, understood, and agree to all terms and conditions stated above.
-                    </p>
-                </div>
-            `;
+                // Extract the main content from terms.html
+                const originalContent = doc.querySelector('.original-content');
+                if (originalContent) {
+                    elements.termsBody.innerHTML = originalContent.innerHTML;
+                } else {
+                    // Fallback content
+                    elements.termsBody.innerHTML = `
+                        <h3>Terms & Conditions for Odelya Cloud Digital Locker</h3>
+                        <p><strong>Last Updated: 2025</strong></p>
+                        <p>By proceeding, you acknowledge that you have read, understood, and agree to all terms and conditions stated in the Terms & Conditions page.</p>
+                        <p>Please visit <a href="terms.html" target="_blank">Terms & Conditions</a> for complete details.</p>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading terms:', error);
+                // Fallback content
+                elements.termsBody.innerHTML = `
+                    <h3>Terms & Conditions Agreement</h3>
+                    <p>Please read and agree to the full Terms & Conditions available at <a href="terms.html" target="_blank">terms.html</a>.</p>
+                    <p>By agreeing, you accept all terms and conditions as specified in the official document.</p>
+                `;
+            }
         }
 
         // ====== CHECK IF FROM CLOUD STORAGE ======
@@ -1174,16 +1237,6 @@
                     yearly: selectedYearly
                 };
                 
-                // Pre-select cloud storage
-                paymentState.selectedService = 'cloud';
-                
-                // Calculate amount based on period
-                const amount = selectedPeriod === 'monthly' ? 
-                    parseInt(selectedMonthly) : 
-                    parseInt(selectedYearly);
-                
-                paymentState.totalAmount = amount;
-                
                 console.log('Redirected from cloud storage:', paymentState.cloudStorageData);
             }
         }
@@ -1195,16 +1248,23 @@
             elements.btnDisagree.addEventListener('click', showDisagreeConfirmation);
             elements.btnDisagreeNo.addEventListener('click', hideDisagreeConfirmation);
             elements.btnDisagreeYes.addEventListener('click', disagreeAndRedirect);
+            elements.closeTerms.addEventListener('click', () => {
+                showDisagreeConfirmation();
+            });
             
             // Service Selection
             elements.cloudService.addEventListener('click', () => selectService('cloud'));
             elements.itService.addEventListener('click', () => selectService('it'));
             
+            // Cloud storage field changes
+            elements.planGB.addEventListener('change', updateCloudAmount);
+            elements.duration.addEventListener('change', updateCloudAmount);
+            
+            // IT service amount
+            elements.itAmount.addEventListener('input', updateITAmount);
+            
             // Form Validation
             setupFormValidation();
-            
-            // Payment Method
-            elements.transactionMode.addEventListener('change', updatePaymentMethod);
             
             // Agreement Checkboxes
             elements.termsConfirmed.addEventListener('change', updateContinueButton);
@@ -1215,6 +1275,10 @@
             
             // Final Disagree
             elements.btnFinalDisagree.addEventListener('click', showDisagreeConfirmation);
+            
+            // Payment Mode Selection
+            elements.modeUPI.addEventListener('click', () => selectPaymentMode('upi'));
+            elements.modeBank.addEventListener('click', () => selectPaymentMode('bank'));
             
             // Close/Home Buttons
             elements.btnClose.addEventListener('click', showCloseConfirmation);
@@ -1286,26 +1350,26 @@
                 elements.cloudService.classList.add('selected');
                 elements.cloudOptions.classList.add('active');
                 
-                // If from cloud storage, lock fields
-                if (paymentState.isFromCloudStorage) {
-                    lockCloudStorageFields();
+                // If from cloud storage, pre-fill
+                if (paymentState.isFromCloudStorage && paymentState.cloudStorageData) {
+                    prefillCloudStorageData();
+                } else {
+                    // Reset to blank for fresh clients
+                    elements.planGB.value = '';
+                    elements.duration.value = '';
+                    elements.cloudAmount.value = '';
                 }
             } else {
                 elements.itService.classList.add('selected');
                 elements.itOptions.classList.add('active');
             }
             
-            updateTotalAmount();
             updateContinueButton();
         }
 
         function prefillCloudStorageData() {
             if (!paymentState.cloudStorageData) return;
             
-            // Select cloud service
-            selectService('cloud');
-            
-            // Pre-fill cloud storage fields
             const data = paymentState.cloudStorageData;
             elements.planGB.value = data.plan;
             elements.duration.value = data.period;
@@ -1316,19 +1380,54 @@
             
             // Update total amount
             paymentState.totalAmount = parseInt(amount);
-            updateTotalAmountDisplay();
-        }
-
-        function lockCloudStorageFields() {
+            updateAmountDisplay();
+            
+            // Lock fields since from cloud storage
             elements.planGB.disabled = true;
             elements.duration.disabled = true;
-            elements.cloudAmount.disabled = true;
             
             // Add locked indicator
             [elements.planGB, elements.duration].forEach(el => {
                 el.style.backgroundColor = '#f5f5f5';
                 el.style.cursor = 'not-allowed';
             });
+        }
+
+        // ====== AMOUNT CALCULATIONS ======
+        function updateCloudAmount() {
+            const plan = elements.planGB.value;
+            const duration = elements.duration.value;
+            
+            if (plan && duration) {
+                // Calculate based on plan and duration
+                const basePrice = parseInt(plan) * 1.5; // ₹1.5 per GB
+                const multiplier = duration === 'yearly' ? 12 : 1;
+                const discount = duration === 'yearly' ? 0.1 : 0; // 10% yearly discount
+                
+                let amount = basePrice * multiplier;
+                amount = amount - (amount * discount);
+                
+                // Add GST 18%
+                amount = amount + (amount * 0.18);
+                
+                paymentState.totalAmount = Math.round(amount);
+                elements.cloudAmount.value = `₹ ${paymentState.totalAmount.toLocaleString()}`;
+                updateAmountDisplay();
+            }
+            
+            updateContinueButton();
+        }
+
+        function updateITAmount() {
+            const amount = parseFloat(elements.itAmount.value) || 0;
+            paymentState.totalAmount = amount;
+            updateAmountDisplay();
+            updateContinueButton();
+        }
+
+        function updateAmountDisplay() {
+            elements.totalAmountDisplay.textContent = `₹ ${paymentState.totalAmount.toLocaleString()}`;
+            elements.finalAmountDisplay.textContent = `₹ ${paymentState.totalAmount.toLocaleString()}`;
         }
 
         // ====== FORM VALIDATION ======
@@ -1368,7 +1467,11 @@
             // Gender validation
             elements.gender.addEventListener('change', updateContinueButton);
             
-            // IT Service validation
+            // Cloud storage validation
+            elements.planGB.addEventListener('change', updateContinueButton);
+            elements.duration.addEventListener('change', updateContinueButton);
+            
+            // IT service validation
             elements.serviceType.addEventListener('input', updateContinueButton);
             elements.itAmount.addEventListener('input', updateContinueButton);
         }
@@ -1414,66 +1517,17 @@
             if (paymentState.selectedService === 'cloud') {
                 validations.push(elements.planGB.value !== '');
                 validations.push(elements.duration.value !== '');
+                validations.push(paymentState.totalAmount > 0);
             } else if (paymentState.selectedService === 'it') {
                 validations.push(elements.serviceType.value.trim().length > 0);
                 validations.push(parseFloat(elements.itAmount.value) > 0);
             }
-            
-            // Payment method
-            validations.push(elements.transactionMode.value !== '');
             
             // Agreements
             validations.push(elements.termsConfirmed.checked);
             validations.push(elements.finalAgreement.checked);
             
             return validations.every(v => v === true);
-        }
-
-        // ====== AMOUNT CALCULATION ======
-        function updateTotalAmount() {
-            if (paymentState.selectedService === 'cloud') {
-                // If from cloud storage, use pre-calculated amount
-                if (paymentState.isFromCloudStorage && paymentState.cloudStorageData) {
-                    return; // Already set
-                }
-                
-                // Otherwise calculate based on selection
-                const plan = elements.planGB.value;
-                const duration = elements.duration.value;
-                
-                if (plan && duration) {
-                    // You would have pricing logic here
-                    // For now, using placeholder
-                    const basePrice = parseInt(plan) * 1.5; // ₹1.5 per GB
-                    const multiplier = duration === 'yearly' ? 12 : 1;
-                    const discount = duration === 'yearly' ? 0.1 : 0; // 10% yearly discount
-                    
-                    let amount = basePrice * multiplier;
-                    amount = amount - (amount * discount);
-                    
-                    // Add GST 18%
-                    amount = amount + (amount * 0.18);
-                    
-                    paymentState.totalAmount = Math.round(amount);
-                    elements.cloudAmount.value = `₹ ${paymentState.totalAmount.toLocaleString()}`;
-                }
-            } else if (paymentState.selectedService === 'it') {
-                const amount = parseFloat(elements.itAmount.value) || 0;
-                paymentState.totalAmount = amount;
-            }
-            
-            updateTotalAmountDisplay();
-        }
-
-        function updateTotalAmountDisplay() {
-            elements.totalAmountDisplay.textContent = `₹ ${paymentState.totalAmount.toLocaleString()}`;
-            elements.finalAmountDisplay.textContent = `₹ ${paymentState.totalAmount.toLocaleString()}`;
-        }
-
-        // ====== PAYMENT METHOD ======
-        function updatePaymentMethod() {
-            paymentState.transactionMode = elements.transactionMode.value;
-            updateContinueButton();
         }
 
         // ====== CONTINUE BUTTON ======
@@ -1497,13 +1551,26 @@
             elements.paymentForm.style.display = 'none';
             elements.paymentDetailsSection.style.display = 'block';
             
-            // Show selected payment method
-            if (paymentState.transactionMode === 'upi') {
-                elements.upiMethod.style.display = 'block';
-                elements.bankMethod.style.display = 'none';
+            // Select UPI by default
+            selectPaymentMode('upi');
+        }
+
+        // ====== PAYMENT MODE SELECTION ======
+        function selectPaymentMode(mode) {
+            paymentState.paymentMode = mode;
+            
+            // Update UI
+            elements.modeUPI.classList.remove('selected');
+            elements.modeBank.classList.remove('selected');
+            elements.upiDetails.classList.remove('active');
+            elements.bankDetails.classList.remove('active');
+            
+            if (mode === 'upi') {
+                elements.modeUPI.classList.add('selected');
+                elements.upiDetails.classList.add('active');
             } else {
-                elements.upiMethod.style.display = 'none';
-                elements.bankMethod.style.display = 'block';
+                elements.modeBank.classList.add('selected');
+                elements.bankDetails.classList.add('active');
             }
         }
 
@@ -1533,7 +1600,6 @@
         function saveAsPDFAndClose() {
             // In production, this would generate and download a PDF
             // For now, simulating the download
-            
             alert('PDF download would start here in production.');
             
             // Clear session and redirect
@@ -1546,16 +1612,6 @@
                 window.location.href = 'https://odelya.online';
             }
         }
-
-        // ====== UTILITY FUNCTIONS ======
-        function formatCurrency(amount) {
-            return '₹' + amount.toLocaleString('en-IN');
-        }
-
-        // Auto-update amount when cloud storage fields change
-        elements.planGB.addEventListener('change', updateTotalAmount);
-        elements.duration.addEventListener('change', updateTotalAmount);
-        elements.itAmount.addEventListener('input', updateTotalAmount);
     </script>
 </body>
 </html>
