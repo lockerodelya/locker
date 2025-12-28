@@ -1,1 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Price Management - Odelya</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container, .admin-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            display: none;
+        }
+        
+        .admin-container {
+            max-width: 800px;
+            display: none;
+        }
+        
+        h2 {
+            color: #1a237e;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2rem;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #424242;
+            font-weight: 500;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            border-color: #1a237e;
+            outline: none;
+        }
+        
+        .login-btn, .save-btn {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .login-btn:hover, .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(26, 35, 126, 0.3);
+        }
+        
+        .error-message {
+            color: #d32f2f;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            display: none;
+        }
+        
+        .admin-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .control-group {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #e8eaf6;
+        }
+        
+        .control-title {
+            color: #1a237e;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-title i {
+            color: #3949ab;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .back-link a {
+            color: #3949ab;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-left: 4px solid #4caf50;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .login-container, .admin-container {
+                padding: 30px 20px;
+            }
+            
+            .admin-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginContainer">
+        <h2><i class="fas fa-lock"></i> Admin Access</h2>
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter admin password">
+        </div>
+        <button class="login-btn" id="loginBtn">Login</button>
+        <div class="error-message" id="errorMessage">Incorrect password. Try again.</div>
+    </div>
+    
+    <!-- Admin Panel -->
+    <div class="admin-container" id="adminContainer">
+        <h2><i class="fas fa-cogs"></i> Price Management</h2>
+        
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i> Prices updated successfully!
+        </div>
+        
+        <div class="admin-controls">
+            <div class="control-group">
+                <h3 class="control-title"><i class="fas fa-chart-line"></i> Base Pricing</h3>
+                <div class="input-group">
+                    <label for="dataRate">Data Rate (₹ per GB)</label>
+                    <input type="number" id="dataRate" step="0.1" min="0.1" value="1.5">
+                </div>
+                <div class="input-group">
+                    <label for="gstRate">GST Percentage</label>
+                    <input type="number" id="gstRate" step="0.1" min="0" max="100" value="18">
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <h3 class="control-title"><i class="fas fa-percentage"></i> Discounts</h3>
+                <div class="input-group">
+                    <label for="specialDiscount">Special Discount (%)</label>
+                    <input type="number" id="specialDiscount" step="0.1" min="0" max="100" value="0">
+                </div>
+                <div class="input-group">
+                    <label for="adminPassword">Change Admin Password</label>
+                    <input type="password" id="adminPassword" placeholder="Leave blank to keep current">
+                </div>
+            </div>
+        </div>
+        
+        <button class="save-btn" id="saveBtn">
+            <i class="fas fa-save"></i> Save & Update All Prices
+        </button>
+        
+        <div class="back-link">
+            <a href="cloud-storage.html">
+                <i class="fas fa-arrow-left"></i> Back to Cloud Storage Page
+            </a>
+        </div>
+    </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        // ====== PASSWORD PROTECTION ======
+        const ADMIN_PASSWORD = "odelya@2025"; // Change this to your desired password
+        
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            const enteredPassword = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (enteredPassword === ADMIN_PASSWORD) {
+                // Store login session
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                sessionStorage.setItem('loginTime', Date.now());
+                
+                // Show admin panel
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminContainer').style.display = 'block';
+                
+                // Load current values
+                loadCurrentValues();
+            } else {
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            }
+        });
+        
+        // Check if already logged in
+        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+            const loginTime = parseInt(sessionStorage.getItem('loginTime') || '0');
+            const currentTime = Date.now();
+            const hoursSinceLogin = (currentTime - loginTime) / (1000 * 60 * 60);
+            
+            // Auto logout after 2 hours
+            if (hoursSinceLogin < 2) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminContainer').style.display = 'block';
+                loadCurrentValues();
+            } else {
+                sessionStorage.removeItem('adminLoggedIn');
+                sessionStorage.removeItem('loginTime');
+            }
+        }
+        
+        // ====== LOAD CURRENT VALUES ======
+        function loadCurrentValues() {
+            // Try to get values from localStorage (set by cloud-storage.html)
+            const savedData = JSON.parse(localStorage.getItem('odelyaPriceConfig') || '{}');
+            
+            document.getElementById('dataRate').value = savedData.dataRate || 1.5;
+            document.getElementById('gstRate').value = savedData.gstRate || 18;
+            document.getElementById('specialDiscount').value = savedData.specialDiscount || 0;
+        }
+        
+        // ====== SAVE & UPDATE ======
+        document.getElementById('saveBtn').addEventListener('click', function() {
+            const dataRate = parseFloat(document.getElementById('dataRate').value) || 1.5;
+            const gstRate = parseFloat(document.getElementById('gstRate').value) || 18;
+            const specialDiscount = parseFloat(document.getElementById('specialDiscount').value) || 0;
+            const newPassword = document.getElementById('adminPassword').value;
+            
+            // Save to localStorage (this is shared with cloud-storage.html)
+            const priceConfig = {
+                dataRate,
+                gstRate,
+                specialDiscount,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            localStorage.setItem('odelyaPriceConfig', JSON.stringify(priceConfig));
+            
+            // Update password if provided
+            if (newPassword) {
+                // Note: In a real system, this would be stored securely server-side
+                alert('Password change requires server-side implementation for security.');
+            }
+            
+            // Show success message
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            
+            // Auto-hide success message
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+            
+            // Clear password field
+            document.getElementById('adminPassword').value = '';
+            
+            // Log activity (optional)
+            console.log(`Price updated at ${new Date().toLocaleString()}`);
+        });
+        
+        // ====== ENTER KEY SUPPORT ======
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('loginBtn').click();
+            }
+        });
+        
+        // ====== AUTO LOGOUT ON CLOSE ======
+        window.addEventListener('beforeunload', function() {
+            // Keep session for 2 hours
+            // No need to clear here - checked on page load
+        });
+    </script>
+</body>
+</html>
