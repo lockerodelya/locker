@@ -43,8 +43,14 @@
             font-size: 2rem;
         }
         
+        h3 {
+            color: #3949ab;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+        
         .input-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         
         label {
@@ -54,16 +60,16 @@
             font-weight: 500;
         }
         
-        input {
+        input, select {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 1rem;
             transition: border-color 0.3s;
         }
         
-        input:focus {
+        input:focus, select:focus {
             border-color: #1a237e;
             outline: none;
         }
@@ -72,7 +78,7 @@
             background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
             color: white;
             border: none;
-            padding: 16px 40px;
+            padding: 15px 40px;
             border-radius: 8px;
             font-size: 1.1rem;
             font-weight: 600;
@@ -151,6 +157,44 @@
             display: none;
         }
         
+        .ip-info {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .ip-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+        
+        .ip-list li {
+            padding: 8px 12px;
+            background: white;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .remove-ip {
+            background: #ff5252;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .remove-ip:hover {
+            background: #ff1744;
+        }
+        
         @media (max-width: 768px) {
             .login-container, .admin-container {
                 padding: 30px 20px;
@@ -166,10 +210,16 @@
     <!-- Login Screen -->
     <div class="login-container" id="loginContainer">
         <h2><i class="fas fa-lock"></i> Admin Access</h2>
+        
+        <div class="ip-info">
+            <strong>Current IP:</strong> <span id="currentIp">Detecting...</span>
+        </div>
+        
         <div class="input-group">
             <label for="password">Password</label>
             <input type="password" id="password" placeholder="Enter admin password">
         </div>
+        
         <button class="login-btn" id="loginBtn">Login</button>
         <div class="error-message" id="errorMessage">Incorrect password. Try again.</div>
     </div>
@@ -180,6 +230,20 @@
         
         <div class="success-message" id="successMessage">
             <i class="fas fa-check-circle"></i> Prices updated successfully!
+        </div>
+        
+        <div class="ip-info">
+            <strong>Your IP:</strong> <span id="adminIp"></span>
+            <div class="input-group" style="margin-top: 15px;">
+                <label for="newIp">Add IP Restriction (Optional)</label>
+                <input type="text" id="newIp" placeholder="e.g., 192.168.1.100">
+                <button id="addIpBtn" style="margin-top: 10px; padding: 10px 20px; background: #4caf50; color: white; border: none; border-radius: 6px; cursor: pointer;">Add IP</button>
+            </div>
+            
+            <h3 style="margin-top: 20px;">Allowed IPs:</h3>
+            <ul class="ip-list" id="ipList">
+                <!-- IPs will be populated here -->
+            </ul>
         </div>
         
         <div class="admin-controls">
@@ -219,112 +283,248 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script>
-        // ====== PASSWORD PROTECTION ======
-        const ADMIN_PASSWORD = "odelya@2025"; // Change this to your desired password
+        // ====== CONFIGURATION ======
+        const CONFIG_KEY = 'odelya_admin_config';
+        const DEFAULT_PASSWORD = 'odelya@2025'; // CHANGE THIS!
         
-        document.getElementById('loginBtn').addEventListener('click', function() {
-            const enteredPassword = document.getElementById('password').value;
-            const errorMessage = document.getElementById('errorMessage');
-            
-            if (enteredPassword === ADMIN_PASSWORD) {
-                // Store login session
-                sessionStorage.setItem('adminLoggedIn', 'true');
-                sessionStorage.setItem('loginTime', Date.now());
-                
-                // Show admin panel
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('adminContainer').style.display = 'block';
-                
-                // Load current values
-                loadCurrentValues();
-            } else {
-                errorMessage.style.display = 'block';
-                setTimeout(() => {
-                    errorMessage.style.display = 'none';
-                }, 3000);
-            }
-        });
-        
-        // Check if already logged in
-        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-            const loginTime = parseInt(sessionStorage.getItem('loginTime') || '0');
-            const currentTime = Date.now();
-            const hoursSinceLogin = (currentTime - loginTime) / (1000 * 60 * 60);
-            
-            // Auto logout after 2 hours
-            if (hoursSinceLogin < 2) {
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('adminContainer').style.display = 'block';
-                loadCurrentValues();
-            } else {
-                sessionStorage.removeItem('adminLoggedIn');
-                sessionStorage.removeItem('loginTime');
+        // ====== GET CLIENT IP ======
+        async function getClientIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip;
+            } catch (error) {
+                // Fallback to local IP detection
+                return '127.0.0.1';
             }
         }
         
-        // ====== LOAD CURRENT VALUES ======
-        function loadCurrentValues() {
-            // Try to get values from localStorage (set by cloud-storage.html)
-            const savedData = JSON.parse(localStorage.getItem('odelyaPriceConfig') || '{}');
+        // ====== LOAD CONFIG ======
+        function loadConfig() {
+            const savedConfig = localStorage.getItem(CONFIG_KEY);
+            if (savedConfig) {
+                return JSON.parse(savedConfig);
+            }
             
-            document.getElementById('dataRate').value = savedData.dataRate || 1.5;
-            document.getElementById('gstRate').value = savedData.gstRate || 18;
-            document.getElementById('specialDiscount').value = savedData.specialDiscount || 0;
-        }
-        
-        // ====== SAVE & UPDATE ======
-        document.getElementById('saveBtn').addEventListener('click', function() {
-            const dataRate = parseFloat(document.getElementById('dataRate').value) || 1.5;
-            const gstRate = parseFloat(document.getElementById('gstRate').value) || 18;
-            const specialDiscount = parseFloat(document.getElementById('specialDiscount').value) || 0;
-            const newPassword = document.getElementById('adminPassword').value;
-            
-            // Save to localStorage (this is shared with cloud-storage.html)
-            const priceConfig = {
-                dataRate,
-                gstRate,
-                specialDiscount,
-                lastUpdated: new Date().toISOString()
+            // Default configuration
+            return {
+                password: DEFAULT_PASSWORD,
+                dataRate: 1.5,
+                gstRate: 18,
+                specialDiscount: 0,
+                allowedIPs: [],
+                lastUpdated: null
             };
-            
-            localStorage.setItem('odelyaPriceConfig', JSON.stringify(priceConfig));
-            
-            // Update password if provided
-            if (newPassword) {
-                // Note: In a real system, this would be stored securely server-side
-                alert('Password change requires server-side implementation for security.');
+        }
+        
+        // ====== SAVE CONFIG ======
+        function saveConfig(config) {
+            localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+        }
+        
+        // ====== CHECK IP ACCESS ======
+        async function checkIPAccess(allowedIPs, currentIP) {
+            if (allowedIPs.length === 0) {
+                return true; // No IP restrictions
             }
             
-            // Show success message
-            const successMessage = document.getElementById('successMessage');
-            successMessage.style.display = 'block';
-            
-            // Auto-hide success message
-            setTimeout(() => {
-                successMessage.style.display = 'none';
-            }, 3000);
-            
-            // Clear password field
-            document.getElementById('adminPassword').value = '';
-            
-            // Log activity (optional)
-            console.log(`Price updated at ${new Date().toLocaleString()}`);
-        });
+            return allowedIPs.includes(currentIP);
+        }
         
-        // ====== ENTER KEY SUPPORT ======
-        document.getElementById('password').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('loginBtn').click();
+        // ====== INITIALIZE ======
+        document.addEventListener('DOMContentLoaded', async function() {
+            const config = loadConfig();
+            const currentIP = await getClientIP();
+            
+            // Display current IP
+            document.getElementById('currentIp').textContent = currentIP;
+            document.getElementById('adminIp').textContent = currentIP;
+            
+            // Check IP access
+            const hasIPAccess = await checkIPAccess(config.allowedIPs, currentIP);
+            
+            if (!hasIPAccess && config.allowedIPs.length > 0) {
+                document.getElementById('loginContainer').innerHTML = `
+                    <h2><i class="fas fa-ban"></i> Access Denied</h2>
+                    <div style="text-align: center; padding: 30px;">
+                        <p style="color: #d32f2f; margin-bottom: 20px;">
+                            Your IP address (${currentIP}) is not allowed to access this panel.
+                        </p>
+                        <p>Contact the administrator to add your IP to the allowed list.</p>
+                    </div>
+                `;
+                document.getElementById('loginContainer').style.display = 'block';
+                return;
             }
+            
+            // Show login screen
+            document.getElementById('loginContainer').style.display = 'block';
+            
+            // Load IP list
+            updateIPList(config.allowedIPs);
+            
+            // ====== LOGIN HANDLER ======
+            document.getElementById('loginBtn').addEventListener('click', function() {
+                const enteredPassword = document.getElementById('password').value;
+                const errorMessage = document.getElementById('errorMessage');
+                
+                if (enteredPassword === config.password) {
+                    // Store login session
+                    sessionStorage.setItem('adminLoggedIn', 'true');
+                    sessionStorage.setItem('loginTime', Date.now());
+                    sessionStorage.setItem('adminIP', currentIP);
+                    
+                    // Show admin panel
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('adminContainer').style.display = 'block';
+                    
+                    // Load current values
+                    document.getElementById('dataRate').value = config.dataRate;
+                    document.getElementById('gstRate').value = config.gstRate;
+                    document.getElementById('specialDiscount').value = config.specialDiscount;
+                } else {
+                    errorMessage.style.display = 'block';
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000);
+                }
+            });
+            
+            // ====== ADD IP HANDLER ======
+            document.getElementById('addIpBtn').addEventListener('click', function() {
+                const newIp = document.getElementById('newIp').value.trim();
+                
+                if (!newIp) {
+                    alert('Please enter an IP address');
+                    return;
+                }
+                
+                // Simple IP validation
+                const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+                if (!ipPattern.test(newIp)) {
+                    alert('Please enter a valid IP address (e.g., 192.168.1.100)');
+                    return;
+                }
+                
+                if (!config.allowedIPs.includes(newIp)) {
+                    config.allowedIPs.push(newIp);
+                    saveConfig(config);
+                    updateIPList(config.allowedIPs);
+                    document.getElementById('newIp').value = '';
+                    
+                    // Show success
+                    const successMessage = document.getElementById('successMessage');
+                    successMessage.innerHTML = `<i class="fas fa-check-circle"></i> IP ${newIp} added successfully!`;
+                    successMessage.style.display = 'block';
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                } else {
+                    alert('This IP is already in the list');
+                }
+            });
+            
+            // ====== SAVE HANDLER ======
+            document.getElementById('saveBtn').addEventListener('click', function() {
+                // Update config
+                config.dataRate = parseFloat(document.getElementById('dataRate').value) || 1.5;
+                config.gstRate = parseFloat(document.getElementById('gstRate').value) || 18;
+                config.specialDiscount = parseFloat(document.getElementById('specialDiscount').value) || 0;
+                config.lastUpdated = new Date().toISOString();
+                
+                // Update password if provided
+                const newPassword = document.getElementById('adminPassword').value;
+                if (newPassword) {
+                    config.password = newPassword;
+                    document.getElementById('adminPassword').value = '';
+                    alert('Password updated successfully!');
+                }
+                
+                // Save config
+                saveConfig(config);
+                
+                // Also save to a separate key for cloud-storage.html
+                const priceConfig = {
+                    dataRate: config.dataRate,
+                    gstRate: config.gstRate,
+                    specialDiscount: config.specialDiscount,
+                    lastUpdated: config.lastUpdated
+                };
+                localStorage.setItem('odelyaPriceConfig', JSON.stringify(priceConfig));
+                
+                // Show success message
+                const successMessage = document.getElementById('successMessage');
+                successMessage.innerHTML = `<i class="fas fa-check-circle"></i> Prices updated successfully!`;
+                successMessage.style.display = 'block';
+                
+                // Auto-hide success message
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 3000);
+                
+                // Log activity
+                console.log(`[${new Date().toLocaleString()}] Prices updated by ${currentIP}`);
+            });
+            
+            // ====== ENTER KEY SUPPORT ======
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('loginBtn').click();
+                }
+            });
         });
         
-        // ====== AUTO LOGOUT ON CLOSE ======
-        window.addEventListener('beforeunload', function() {
-            // Keep session for 2 hours
-            // No need to clear here - checked on page load
-        });
+        // ====== UPDATE IP LIST ======
+        function updateIPList(ipList) {
+            const ipListElement = document.getElementById('ipList');
+            ipListElement.innerHTML = '';
+            
+            if (ipList.length === 0) {
+                ipListElement.innerHTML = '<li style="color: #757575; text-align: center;">No IP restrictions (All IPs allowed)</li>';
+                return;
+            }
+            
+            ipList.forEach(ip => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    ${ip}
+                    <button class="remove-ip" data-ip="${ip}">Remove</button>
+                `;
+                ipListElement.appendChild(li);
+            });
+            
+            // Add remove handlers
+            document.querySelectorAll('.remove-ip').forEach(button => {
+                button.addEventListener('click', function() {
+                    const ipToRemove = this.getAttribute('data-ip');
+                    const config = loadConfig();
+                    config.allowedIPs = config.allowedIPs.filter(ip => ip !== ipToRemove);
+                    saveConfig(config);
+                    updateIPList(config.allowedIPs);
+                });
+            });
+        }
+        
+        // ====== AUTO LOGOUT CHECK ======
+        function checkAutoLogout() {
+            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+                const loginTime = parseInt(sessionStorage.getItem('loginTime') || '0');
+                const currentTime = Date.now();
+                const hoursSinceLogin = (currentTime - loginTime) / (1000 * 60 * 60);
+                
+                // Auto logout after 2 hours
+                if (hoursSinceLogin >= 2) {
+                    sessionStorage.removeItem('adminLoggedIn');
+                    sessionStorage.removeItem('loginTime');
+                    sessionStorage.removeItem('adminIP');
+                    window.location.reload();
+                }
+            }
+        }
+        
+        // Check every minute
+        setInterval(checkAutoLogout, 60000);
     </script>
 </body>
 </html>
