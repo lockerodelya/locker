@@ -57,6 +57,9 @@ function checkAdminAccess() {
     const adminLinkBtn = document.getElementById('adminLinkBtn');
     if (!adminLinkBtn) return;
     
+    // START HIDDEN BY DEFAULT
+    adminLinkBtn.style.display = 'none';
+    
     // Method 1: Check for special flag in localStorage
     if (localStorage.getItem('showAdminLink') === 'true') {
         adminLinkBtn.style.display = 'block';
@@ -74,6 +77,9 @@ function checkAdminAccess() {
         } else if (adminParam === 'false') {
             adminLinkBtn.style.display = 'none';
             localStorage.removeItem('showAdminLink');
+        } else if (adminParam === 'status') {
+            const isVisible = adminLinkBtn.style.display === 'block';
+            alert(`Admin link is currently: ${isVisible ? 'VISIBLE' : 'HIDDEN'}`);
         }
     }
     
