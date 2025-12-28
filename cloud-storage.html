@@ -1123,5 +1123,59 @@
             });
         });
     </script>
+
+<!-- Add Font Awesome for admin icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Add admin JavaScript -->
+<script src="cloud-storage-admin.js"></script>
+
+<script>
+    // ====== INTEGRATE WITH EXISTING CODE ======
+    
+    // Modify your existing pricingConfig to use loaded values
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize admin features
+        if (typeof initializeAdminFeatures === 'function') {
+            initializeAdminFeatures();
+        }
+        
+        // Load price config and update pricingConfig
+        if (typeof loadPriceConfig === 'function') {
+            const config = loadPriceConfig();
+            
+            // Update your existing pricingConfig
+            if (typeof pricingConfig !== 'undefined') {
+                pricingConfig.dataRate = config.dataRate;
+                pricingConfig.gstRate = config.gstRate;
+                pricingConfig.specialDiscount = config.specialDiscount;
+            }
+        }
+        
+        // Render pricing table with updated config
+        if (typeof renderPricingTable === 'function') {
+            renderPricingTable();
+        }
+    });
+    
+    // Function to manually refresh prices
+    function refreshPrices() {
+        if (typeof loadPriceConfig === 'function') {
+            const config = loadPriceConfig();
+            
+            if (typeof pricingConfig !== 'undefined') {
+                pricingConfig.dataRate = config.dataRate;
+                pricingConfig.gstRate = config.gstRate;
+                pricingConfig.specialDiscount = config.specialDiscount;
+                
+                if (typeof renderPricingTable === 'function') {
+                    renderPricingTable();
+                    alert('Prices refreshed from admin panel');
+                }
+            }
+        }
+    }
+</script>
+
 </body>
 </html>
