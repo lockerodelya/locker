@@ -1010,51 +1010,43 @@
                 };
                 
                 // Send email using Formspree
-                fetch('https://formspree.io/f/mdkqvook', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        name: formData.name,
-                        email: formData.email,
-                        phone: formData.phone,
-                        subject: formData.subject,
-                        message: formData.message,
-                        _replyto: formData.email,
-                        _subject: `New Contact Form Submission: ${formData.subject}`,
-                        _cc: 'care.ompl@gmail.com'
-                    })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // Show success message
-                        successMessage.classList.add('show');
-                        
-                        // Reset form
-                        contactForm.reset();
-                        subjectCount.textContent = '0/30 characters';
-                        messageCount.textContent = '0/200 characters';
-                        
-                        // Remove error classes
-                        contactName.classList.remove('error');
-                        contactEmail.classList.remove('error');
-                        contactPhone.classList.remove('error');
-                        
-                        // Scroll to success message
-                        setTimeout(() => {
-                            successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }, 500);
-                        
-                        // Hide success message after 15 seconds
-                        setTimeout(() => {
-                            successMessage.classList.remove('show');
-                        }, 15000);
-                    } else {
-                        throw new Error('Form submission failed');
-                    }
-                })
+                    // All validation code remains the same...
+    
+    // After validation passes:
+    const name = contactName.value.trim();
+    const email = contactEmail.value.trim();
+    const phone = contactPhone.value.trim();
+    const subject = contactSubject.value.trim();
+    const message = contactMessage.value.trim();
+    
+    // Create mailto link
+    const mailtoLink = `mailto:care.ompl@gmail.com?subject=${encodeURIComponent('Odelya Contact: ' + subject)}&body=${encodeURIComponent(
+        `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\nMessage:\n${message}\n\n---\nSent from Odelya Contact Form`
+    )}`;
+    
+    // Show success message immediately
+    successMessage.classList.add('show');
+    
+    // Reset form
+    contactForm.reset();
+    subjectCount.textContent = '0/30 characters';
+    messageCount.textContent = '0/200 characters';
+    
+    // Open email client
+    setTimeout(() => {
+        window.location.href = mailtoLink;
+    }, 500);
+    
+    // Scroll to success message
+    setTimeout(() => {
+        successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 500);
+    
+    // Hide success message after 15 seconds
+    setTimeout(() => {
+        successMessage.classList.remove('show');
+    }, 15000);
+});
                 .catch(error => {
                     console.error('Form submission error:', error);
                     
@@ -1099,3 +1091,4 @@
     </script>
 </body>
 </html>
+
