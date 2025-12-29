@@ -91,7 +91,7 @@
         .contact-hero {
             background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
             color: white;
-            padding: 80px 20px 60px;
+            padding: 56px 20px 42px; /* Reduced by 30%: 80px→56px, 60px→42px */
             text-align: center;
         }
         
@@ -352,7 +352,7 @@
         
         @media (max-width: 768px) {
             .contact-hero {
-                padding: 60px 15px 40px;
+                padding: 42px 15px 28px; /* Reduced by 30%: 60px→42px, 40px→28px */
             }
             
             .contact-hero h1 {
@@ -679,6 +679,19 @@
                                     <p>Sunday: Closed</p>
                                 </div>
                             </div>
+                            
+                            <div class="contact-detail-item">
+                                <div class="contact-detail-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="contact-detail-content">
+                                    <h4>Email ID</h4>
+                                    <p>care.ompl@gmail.com</p>
+                                    <a href="mailto:care.ompl@gmail.com" class="contact-link">
+                                        <i class="fas fa-paper-plane"></i> Send Email
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="map-container">
@@ -722,10 +735,23 @@
                             
                             <div class="contact-detail-item">
                                 <div class="contact-detail-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="contact-detail-content">
+                                    <h4>Contact Number</h4>
+                                    <p>+91-96741 30001</p>
+                                    <a href="tel:+919674130001" class="contact-link">
+                                        <i class="fas fa-phone"></i> Call Now
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-detail-item">
+                                <div class="contact-detail-icon">
                                     <i class="fas fa-envelope"></i>
                                 </div>
                                 <div class="contact-detail-content">
-                                    <h4>Email Address</h4>
+                                    <h4>Email ID</h4>
                                     <p>care.ompl@gmail.com</p>
                                     <a href="mailto:care.ompl@gmail.com" class="contact-link">
                                         <i class="fas fa-paper-plane"></i> Send Email
@@ -753,12 +779,14 @@
                     <h2>Send Us a Message</h2>
                 </div>
                 <div class="query-form-container">
-                    <form class="query-form" action="https://formspree.io/f/mdkqvook" method="POST" id="contactForm">
+                    <form class="query-form" action="https://formspree.io/f/xqavbkqb" method="POST" id="contactForm">
                         <input type="hidden" name="_subject" value="New Contact Form Submission - Odelya Locker">
+                        <input type="hidden" name="_replyto" id="reply-to">
+                        <input type="hidden" name="_cc" value="care.ompl@gmail.com">
                         
                         <div class="form-group">
                             <label for="contact-name">Your Name *</label>
-                            <input type="text" name="name" id="contact-name" placeholder="Enter your full name" required maxlength="30">
+                            <input type="text" name="name" id="contact-name" placeholder="Enter your full name" required maxlength="50">
                             <div id="name-error" class="error-message">Please type your full name (minimum 2 words)</div>
                         </div>
                         
@@ -786,7 +814,6 @@
                             <div id="message-count" class="char-count">0/200 characters</div>
                         </div>
                         
-                        <input type="hidden" name="_next" value="#contact">
                         <input type="text" name="_gotcha" style="display:none">
                         
                         <button type="submit" class="submit-btn">
@@ -795,8 +822,8 @@
                         
                         <div class="success-message" id="success-message">
                             <i class="fas fa-check-circle"></i>
-                            <h3>Message Sent Successfully!</h3>
-                            <p>Thank you for contacting Odelya. We'll get back to you within 24 hours.</p>
+                            <h3>Thanks for reaching us!</h3>
+                            <p>We will contact you within 72 business hours.</p>
                         </div>
                     </form>
                 </div>
@@ -844,14 +871,20 @@
             const subjectCount = document.getElementById('subject-count');
             const messageCount = document.getElementById('message-count');
             const successMessage = document.getElementById('success-message');
+            const replyToField = document.getElementById('reply-to');
             
-            // Name validation (full name check)
+            // Name validation (full name check with max 50 chars)
             contactName.addEventListener('input', function() {
                 const name = this.value.trim();
                 const words = name.split(/\s+/).filter(word => word.length > 0);
                 
                 // Remove non-alphabetic characters except spaces and dots
                 this.value = this.value.replace(/[^A-Za-z\s\.]/g, '');
+                
+                // Limit to 50 characters
+                if (this.value.length > 50) {
+                    this.value = this.value.substring(0, 50);
+                }
                 
                 if (words.length < 2 && name.length > 0) {
                     nameError.style.display = 'block';
@@ -874,12 +907,20 @@
                     emailError.style.display = 'none';
                     this.classList.remove('error');
                 }
+                
+                // Update reply-to field for Formspree
+                replyToField.value = email;
             });
             
-            // Phone validation (only numbers)
+            // Phone validation (only numbers, exactly 10 digits)
             contactPhone.addEventListener('input', function() {
                 // Remove non-numeric characters
                 this.value = this.value.replace(/\D/g, '');
+                
+                // Limit to 10 digits
+                if (this.value.length > 10) {
+                    this.value = this.value.substring(0, 10);
+                }
                 
                 if (this.value.length !== 10 && this.value.length > 0) {
                     phoneError.style.display = 'block';
@@ -890,7 +931,7 @@
                 }
             });
             
-            // Subject character count
+            // Subject character count (max 30)
             contactSubject.addEventListener('input', function() {
                 const count = this.value.length;
                 subjectCount.textContent = `${count}/30 characters`;
@@ -901,7 +942,7 @@
                 }
             });
             
-            // Message character count
+            // Message character count (max 200)
             contactMessage.addEventListener('input', function() {
                 const count = this.value.length;
                 messageCount.textContent = `${count}/200 characters`;
@@ -914,11 +955,12 @@
             
             // Form submission with Formspree
             contactForm.addEventListener('submit', function(e) {
-                // Validate full name
+                e.preventDefault();
+                
+                // Validate full name (at least 2 words)
                 const name = contactName.value.trim();
                 const nameWords = name.split(/\s+/).filter(word => word.length > 0);
                 if (nameWords.length < 2) {
-                    e.preventDefault();
                     nameError.style.display = 'block';
                     nameError.textContent = 'Please type your full name (minimum 2 words)';
                     contactName.classList.add('error');
@@ -930,7 +972,6 @@
                 const email = contactEmail.value.trim();
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(email)) {
-                    e.preventDefault();
                     emailError.style.display = 'block';
                     emailError.textContent = 'Please enter a valid email address';
                     contactEmail.classList.add('error');
@@ -938,9 +979,8 @@
                     return;
                 }
                 
-                // Validate phone
+                // Validate phone (exactly 10 digits)
                 if (contactPhone.value.length !== 10) {
-                    e.preventDefault();
                     phoneError.style.display = 'block';
                     phoneError.textContent = 'Please enter a valid 10-digit phone number';
                     contactPhone.classList.add('error');
@@ -950,7 +990,6 @@
                 
                 // Validate subject
                 if (contactSubject.value.trim().length === 0) {
-                    e.preventDefault();
                     alert('Please enter a subject');
                     contactSubject.focus();
                     return;
@@ -958,38 +997,66 @@
                 
                 // Validate message
                 if (contactMessage.value.trim().length === 0) {
-                    e.preventDefault();
                     alert('Please enter your message');
                     contactMessage.focus();
                     return;
                 }
                 
-                // Form will be submitted to Formspree
-                // After successful submission, Formspree will redirect to #contact
-                // We'll show a success message after redirect
+                // Show loading state
+                const submitBtn = contactForm.querySelector('.submit-btn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                submitBtn.disabled = true;
                 
-                // Store submission state in localStorage
-                localStorage.setItem('formSubmitted', 'true');
+                // Prepare Formspree submission
+                const formData = new FormData(contactForm);
+                
+                // Submit to Formspree
+                fetch('https://formspree.io/f/xqavbkqb', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Show success message
+                        successMessage.classList.add('show');
+                        
+                        // Reset form
+                        contactForm.reset();
+                        subjectCount.textContent = '0/30 characters';
+                        messageCount.textContent = '0/200 characters';
+                        
+                        // Remove error classes
+                        contactName.classList.remove('error');
+                        contactEmail.classList.remove('error');
+                        contactPhone.classList.remove('error');
+                        
+                        // Scroll to success message
+                        setTimeout(() => {
+                            successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 500);
+                        
+                        // Hide success message after 15 seconds
+                        setTimeout(() => {
+                            successMessage.classList.remove('show');
+                        }, 15000);
+                    } else {
+                        throw new Error('Form submission failed');
+                    }
+                })
+                .catch(error => {
+                    alert('Sorry, there was an error sending your message. Please try again.');
+                    console.error('Form submission error:', error);
+                })
+                .finally(() => {
+                    // Restore button state
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                });
             });
-            
-            // Check if form was just submitted (after Formspree redirect)
-            if (window.location.hash === '#contact' && localStorage.getItem('formSubmitted') === 'true') {
-                // Show success message
-                successMessage.classList.add('show');
-                
-                // Clear the flag
-                localStorage.removeItem('formSubmitted');
-                
-                // Scroll to show success message
-                setTimeout(() => {
-                    successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 500);
-                
-                // Hide success message after 10 seconds
-                setTimeout(() => {
-                    successMessage.classList.remove('show');
-                }, 10000);
-            }
             
             // Initialize character counters
             subjectCount.textContent = '0/30 characters';
@@ -1008,6 +1075,3 @@
     </script>
 </body>
 </html>
-
-
-
