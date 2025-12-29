@@ -53,8 +53,20 @@
         .about-hero {
             background: linear-gradient(135deg, #FFE87C 0%, #FFD700 100%);
             color: #333;
-            padding: 56px 20px 42px; /* Reduced by 30% (from 80px 20px 60px) */
+            padding: 50px 20px 38px; /* Reduced another 10% (from 56px 20px 42px) */
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40vh; /* Added to ensure proper centering */
+        }
+        
+        .about-hero .container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         
         .about-hero h1 {
@@ -62,6 +74,8 @@
             margin-bottom: 20px;
             font-weight: 700;
             color: #2c3e50;
+            text-align: center; /* Ensure center alignment */
+            width: 100%;
         }
         
         .about-hero p {
@@ -70,10 +84,12 @@
             margin: 0 auto 30px;
             color: #34495e;
             font-weight: 500;
+            text-align: center; /* Ensure center alignment */
+            justify-content: center; /* Override previous justify */
         }
         
         .about-sections {
-            max-width: 80%; /* Changed from 1200px to 80% */
+            max-width: 90%; /* Changed from 80% to 90% */
             margin: 0 auto;
             padding: 60px 20px;
         }
@@ -84,7 +100,7 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            width: 80%; /* Added to use 80% of screen */
+            width: 90%; /* Changed from 80% to 90% */
             margin-left: auto;
             margin-right: auto;
         }
@@ -160,7 +176,7 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            width: 80%; /* Added to use 80% of screen */
+            width: 90%; /* Changed from 80% to 90% */
             margin-left: auto;
             margin-right: auto;
         }
@@ -186,8 +202,8 @@
         
         .leadership-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(550px, 1fr)); /* Changed from 500px to 550px */
+            gap: 60px; /* Increased from 40px to 60px */
         }
         
         .leader-card {
@@ -196,6 +212,7 @@
             overflow: hidden;
             transition: all 0.3s ease;
             border: 2px solid #e9ecef;
+            width: 100%; /* Ensure full width within grid */
         }
         
         .leader-card:hover {
@@ -262,6 +279,7 @@
             font-size: 1.2rem;
             opacity: 0.9;
             margin-bottom: 15px;
+            text-align: center; /* Center align for Chairman and Director */
         }
         
         .leader-quote {
@@ -306,7 +324,7 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            width: 80%; /* Added to use 80% of screen */
+            width: 90%; /* Changed from 80% to 90% */
             margin-left: auto;
             margin-right: auto;
         }
@@ -390,7 +408,7 @@
         /* Responsive Design */
         @media (max-width: 992px) {
             .leadership-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr; /* Ensure one below another on tablet */
             }
             
             .about-hero h1 {
@@ -400,17 +418,18 @@
             .company-intro,
             .leadership-section,
             .mission-vision {
-                width: 90%; /* Adjusted for tablet */
+                width: 95%; /* Adjusted for tablet */
             }
             
             .about-sections {
-                max-width: 90%; /* Adjusted for tablet */
+                max-width: 95%; /* Adjusted for tablet */
             }
         }
         
         @media (max-width: 768px) {
             .about-hero {
-                padding: 42px 15px 28px; /* Reduced proportionally */
+                padding: 35px 15px 25px; /* Reduced proportionally */
+                min-height: 30vh; /* Adjusted for mobile */
             }
             
             .about-hero h1 {
@@ -423,7 +442,7 @@
             
             .about-sections {
                 padding: 40px 15px;
-                max-width: 95%; /* Adjusted for mobile */
+                max-width: 98%; /* Adjusted for mobile */
             }
             
             .intro-content,
@@ -440,7 +459,8 @@
             }
             
             .leadership-grid {
-                gap: 30px;
+                gap: 40px; /* Adjusted for mobile */
+                grid-template-columns: 1fr; /* Ensure one below another on mobile */
             }
             
             .leader-image {
@@ -468,7 +488,25 @@
             .company-intro,
             .leadership-section,
             .mission-vision {
-                width: 95%; /* Adjusted for mobile */
+                width: 100%; /* Full width on mobile - blocks break apart */
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .leadership-grid {
+                grid-template-columns: 1fr; /* Ensure one below another on small screens */
+            }
+            
+            .company-intro,
+            .leadership-section,
+            .mission-vision {
+                width: 100%; /* Full width on small screens */
+                margin-bottom: 40px;
+            }
+            
+            .intro-grid,
+            .mv-grid {
+                grid-template-columns: 1fr; /* Ensure cards stack on mobile */
             }
         }
         
@@ -530,6 +568,10 @@
             
             .about-sections {
                 max-width: 100%; /* Full width on very small screens */
+            }
+            
+            .leadership-grid {
+                gap: 30px; /* Adjusted for very small screens */
             }
         }
         
