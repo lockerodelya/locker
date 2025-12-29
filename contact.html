@@ -779,11 +779,7 @@
                     <h2>Send Us a Message</h2>
                 </div>
                 <div class="query-form-container">
-                    <form class="query-form" action="https://formspree.io/f/xqavbkqb" method="POST" id="contactForm">
-                        <input type="hidden" name="_subject" value="New Contact Form Submission - Odelya Locker">
-                        <input type="hidden" name="_replyto" id="reply-to">
-                        <input type="hidden" name="_cc" value="care.ompl@gmail.com">
-                        
+                    <form class="query-form" id="contactForm">
                         <div class="form-group">
                             <label for="contact-name">Your Name *</label>
                             <input type="text" name="name" id="contact-name" placeholder="Enter your full name" required maxlength="50">
@@ -813,8 +809,6 @@
                             <textarea name="message" id="contact-message" placeholder="Type your message here..." required maxlength="200"></textarea>
                             <div id="message-count" class="char-count">0/200 characters</div>
                         </div>
-                        
-                        <input type="text" name="_gotcha" style="display:none">
                         
                         <button type="submit" class="submit-btn">
                             <i class="fas fa-paper-plane"></i> Send Message
@@ -871,7 +865,6 @@
             const subjectCount = document.getElementById('subject-count');
             const messageCount = document.getElementById('message-count');
             const successMessage = document.getElementById('success-message');
-            const replyToField = document.getElementById('reply-to');
             
             // Name validation (full name check with max 50 chars)
             contactName.addEventListener('input', function() {
@@ -907,9 +900,6 @@
                     emailError.style.display = 'none';
                     this.classList.remove('error');
                 }
-                
-                // Update reply-to field for Formspree
-                replyToField.value = email;
             });
             
             // Phone validation (only numbers, exactly 10 digits)
@@ -953,7 +943,7 @@
                 }
             });
             
-            // Form submission with Formspree
+            // Form submission with EmailJS
             contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
@@ -1008,16 +998,34 @@
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
                 submitBtn.disabled = true;
                 
-                // Prepare Formspree submission
-                const formData = new FormData(contactForm);
+                // Prepare email data
+                const formData = {
+                    name: contactName.value.trim(),
+                    email: contactEmail.value.trim(),
+                    phone: contactPhone.value.trim(),
+                    subject: contactSubject.value.trim(),
+                    message: contactMessage.value.trim(),
+                    to_email: 'care.ompl@gmail.com',
+                    from_name: 'Odelya Contact Form'
+                };
                 
-                // Submit to Formspree
-                fetch('https://formspree.io/f/xqavbkqb', {
+                // Send email using Formspree
+                fetch('https://formspree.io/f/mdkqvook', {
                     method: 'POST',
-                    body: formData,
                     headers: {
+                        'Content-Type': 'application/json',
                         'Accept': 'application/json'
-                    }
+                    },
+                    body: JSON.stringify({
+                        name: formData.name,
+                        email: formData.email,
+                        phone: formData.phone,
+                        subject: formData.subject,
+                        message: formData.message,
+                        _replyto: formData.email,
+                        _subject: `New Contact Form Submission: ${formData.subject}`,
+                        _cc: 'care.ompl@gmail.com'
+                    })
                 })
                 .then(response => {
                     if (response.ok) {
@@ -1048,8 +1056,17 @@
                     }
                 })
                 .catch(error => {
-                    alert('Sorry, there was an error sending your message. Please try again.');
                     console.error('Form submission error:', error);
+                    
+                    // Fallback: Use mailto link as backup
+                    const mailtoLink = `mailto:care.ompl@gmail.com?subject=${encodeURIComponent('Contact Form: ' + formData.subject)}&body=${encodeURIComponent(
+                        `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`
+                    )}`;
+                    
+                    // Ask user to send manually
+                    if (confirm('Sorry, there was an error sending your message. Would you like to send it via your email client instead?')) {
+                        window.location.href = mailtoLink;
+                    }
                 })
                 .finally(() => {
                     // Restore button state
@@ -1069,10 +1086,16 @@
                     border-color: #e74c3c !important;
                     background: #fdf2f2 !important;
                 }
+                .fa-spinner {
+                    animation: fa-spin 1s infinite linear;
+                }
+                @keyframes fa-spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
             `;
             document.head.appendChild(style);
         });
     </script>
 </body>
 </html>
-
