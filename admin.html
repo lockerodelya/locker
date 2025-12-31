@@ -24,8 +24,8 @@
         
         .login-container {
             width: 100%;
-            max-width: 420px;
-            background: rgba(255, 255, 255, 0.95);
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.97);
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             overflow: hidden;
@@ -58,12 +58,27 @@
             font-size: 15px;
         }
         
+        .security-notice {
+            background: #fff8e1;
+            border-left: 4px solid #ffb300;
+            padding: 12px 20px;
+            margin: 0 20px 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            color: #5d4037;
+        }
+        
+        .security-notice i {
+            color: #ff9800;
+            margin-right: 8px;
+        }
+        
         .login-form {
-            padding: 35px;
+            padding: 25px 35px 35px;
         }
         
         .input-group {
-            margin-bottom: 25px;
+            margin-bottom: 22px;
             position: relative;
         }
         
@@ -114,28 +129,91 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            margin-top: 10px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
-        .login-btn:hover {
+        .login-btn:hover:not(:disabled) {
             background: linear-gradient(to right, #3498db, #34495e);
             transform: translateY(-2px);
             box-shadow: 0 7px 15px rgba(52, 152, 219, 0.3);
         }
         
-        .login-btn:active {
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .login-btn:active:not(:disabled) {
             transform: translateY(0);
         }
         
-        .error-message {
-            color: #e74c3c;
-            font-size: 14px;
-            margin-top: 5px;
+        .message {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin: 15px 0;
             display: none;
-            padding: 10px;
-            background: #ffeaea;
-            border-radius: 5px;
-            border-left: 4px solid #e74c3c;
+            font-size: 14px;
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #ef5350;
+        }
+        
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .decryption-prompt {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px dashed #bdbdbd;
+            display: none;
+        }
+        
+        .decryption-prompt input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
         }
         
         .footer-links {
@@ -156,26 +234,14 @@
             text-decoration: underline;
         }
         
-        /* Loading animation */
-        .loading {
+        .debug-info {
+            font-size: 12px;
+            color: #78909c;
+            margin-top: 10px;
+            padding: 8px;
+            background: #fafafa;
+            border-radius: 4px;
             display: none;
-            text-align: center;
-            margin-top: 15px;
-        }
-        
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
         
         @media (max-width: 480px) {
@@ -184,7 +250,7 @@
             }
             
             .login-form {
-                padding: 25px;
+                padding: 20px;
             }
         }
     </style>
@@ -196,45 +262,115 @@
             <p>Secure Access to Your Account Information</p>
         </div>
         
+        <div class="security-notice">
+            <i class="fas fa-shield-alt"></i>
+            <strong>Secure Login:</strong> All data encrypted using military-grade AES-256
+        </div>
+        
         <form id="loginForm" class="login-form">
             <div class="input-group">
                 <label for="userId"><i class="fas fa-user"></i> User ID</label>
                 <input type="text" id="userId" name="userId" required 
-                       placeholder="Enter your User ID">
+                       placeholder="Enter your User ID" autocomplete="username">
             </div>
             
             <div class="input-group">
                 <label for="password"><i class="fas fa-lock"></i> Password</label>
                 <input type="password" id="password" name="password" required 
-                       placeholder="Enter your password">
+                       placeholder="Enter your password" autocomplete="current-password">
                 <button type="button" class="password-toggle" id="togglePassword">
                     <i class="fas fa-eye"></i>
                 </button>
             </div>
             
-            <div id="errorMessage" class="error-message">
-                <i class="fas fa-exclamation-circle"></i> 
-                <span id="errorText">Invalid User ID or Password</span>
+            <div id="message" class="message">
+                <i class="fas fa-info-circle"></i> 
+                <span id="messageText">Message will appear here</span>
+            </div>
+            
+            <div class="decryption-prompt" id="decryptionPrompt">
+                <p><i class="fas fa-key"></i> <strong>Security Check:</strong> Enter decryption key to continue</p>
+                <input type="password" id="decryptionKey" 
+                       placeholder="Enter system decryption key" autocomplete="off">
             </div>
             
             <div class="loading" id="loading">
                 <div class="loading-spinner"></div>
-                <p style="margin-top: 10px;">Verifying credentials...</p>
+                <p>Verifying credentials securely...</p>
             </div>
             
             <button type="submit" class="login-btn" id="loginButton">
-                <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+                <i class="fas fa-sign-in-alt"></i> Secure Login
             </button>
             
+            <div class="debug-info" id="debugInfo">
+                Status: Ready | Encryption: Web Crypto API | Version: 1.0
+            </div>
+            
             <div class="footer-links">
-                <p>© 2024 cloud.online | Secure Cloud Services</p>
-                <p>Contact support if you forgot your credentials</p>
+                <p>© 2024 cloud.online | Enterprise Cloud Services</p>
+                <p>Contact administrator for account setup</p>
             </div>
         </form>
     </div>
 
     <script>
-        // Password toggle visibility
+        // ============================================
+        // SECURITY CONFIGURATION
+        // ============================================
+        const CONFIG = {
+            ENCRYPTED_DATA_URL: '/data/users.encrypted', // Path to your encrypted file
+            ENCRYPTION_ALGORITHM: 'AES-GCM',
+            KEY_DERIVATION_ITERATIONS: 100000,
+            SALT: 'cloud-online-secure-salt-2024', // Fixed salt (not secret)
+            DEBUG_MODE: false // Set to true for debugging
+        };
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        
+        // Show message to user
+        function showMessage(text, type = 'info') {
+            const messageDiv = document.getElementById('message');
+            const messageText = document.getElementById('messageText');
+            
+            messageText.textContent = text;
+            messageDiv.className = 'message ' + type;
+            messageDiv.style.display = 'block';
+            
+            // Auto-hide info messages after 5 seconds
+            if (type === 'info') {
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Hide all messages
+        function hideMessage() {
+            document.getElementById('message').style.display = 'none';
+        }
+
+        // Toggle loading state
+        function setLoading(loading) {
+            const loadingDiv = document.getElementById('loading');
+            const loginBtn = document.getElementById('loginButton');
+            
+            if (loading) {
+                loadingDiv.style.display = 'block';
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            } else {
+                loadingDiv.style.display = 'none';
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Secure Login';
+            }
+        }
+
+        // ============================================
+        // PASSWORD VISIBILITY TOGGLE
+        // ============================================
         document.getElementById('togglePassword').addEventListener('click', function() {
             const passwordInput = document.getElementById('password');
             const icon = this.querySelector('i');
@@ -249,52 +385,251 @@
                 icon.classList.add('fa-eye');
             }
         });
+
+        // ============================================
+        // WEB CRYPTO API FUNCTIONS
+        // ============================================
         
-        // Form submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        // Derive encryption key from password
+        async function deriveKey(password, salt) {
+            try {
+                const enc = new TextEncoder();
+                const keyMaterial = await window.crypto.subtle.importKey(
+                    "raw",
+                    enc.encode(password),
+                    { name: "PBKDF2" },
+                    false,
+                    ["deriveKey"]
+                );
+                
+                return await window.crypto.subtle.deriveKey(
+                    {
+                        name: "PBKDF2",
+                        salt: enc.encode(salt),
+                        iterations: CONFIG.KEY_DERIVATION_ITERATIONS,
+                        hash: "SHA-256"
+                    },
+                    keyMaterial,
+                    { name: CONFIG.ENCRYPTION_ALGORITHM, length: 256 },
+                    false,
+                    ["encrypt", "decrypt"]
+                );
+            } catch (error) {
+                console.error('Key derivation failed:', error);
+                throw new Error('Failed to create encryption key');
+            }
+        }
+
+        // Decrypt data using Web Crypto API
+        async function decryptData(encryptedBase64, password) {
+            try {
+                // Convert base64 to ArrayBuffer
+                const encryptedData = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
+                
+                // Extract IV (first 12 bytes) and ciphertext
+                const iv = encryptedData.slice(0, 12);
+                const ciphertext = encryptedData.slice(12);
+                
+                // Derive key from password
+                const key = await deriveKey(password, CONFIG.SALT);
+                
+                // Decrypt
+                const decrypted = await window.crypto.subtle.decrypt(
+                    {
+                        name: CONFIG.ENCRYPTION_ALGORITHM,
+                        iv: iv
+                    },
+                    key,
+                    ciphertext
+                );
+                
+                // Convert to string
+                const decryptedText = new TextDecoder().decode(decrypted);
+                
+                // Parse JSON
+                return JSON.parse(decryptedText);
+                
+            } catch (error) {
+                console.error('Decryption failed:', error);
+                throw new Error('Decryption failed. Invalid key or corrupted data.');
+            }
+        }
+
+        // Simple password hash (for demo - in production use proper bcrypt)
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Verify password against stored hash
+        async function verifyPassword(inputPassword, storedHash) {
+            const inputHash = await hashPassword(inputPassword);
+            return inputHash === storedHash;
+        }
+
+        // ============================================
+        // DATA LOADING AND VALIDATION
+        // ============================================
+        
+        // Load encrypted user database
+        async function loadUserDatabase(decryptionKey) {
+            try {
+                showMessage('Loading secure database...', 'info');
+                
+                // Fetch encrypted file
+                const response = await fetch(CONFIG.ENCRYPTED_DATA_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load database: ${response.status}`);
+                }
+                
+                const encryptedBase64 = await response.text();
+                
+                if (!encryptedBase64 || encryptedBase64.length < 50) {
+                    throw new Error('Invalid or empty database file');
+                }
+                
+                // Decrypt the data
+                const users = await decryptData(encryptedBase64, decryptionKey);
+                
+                if (!Array.isArray(users)) {
+                    throw new Error('Invalid database format');
+                }
+                
+                showMessage(`Database loaded: ${users.length} user(s)`, 'success');
+                return users;
+                
+            } catch (error) {
+                console.error('Database load error:', error);
+                showMessage(`Database error: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+
+        // Find user by ID
+        function findUser(users, userId) {
+            return users.find(user => user.userId === userId);
+        }
+
+        // ============================================
+        // LOGIN PROCESS
+        // ============================================
+        
+        // Main login function
+        async function processLogin(userId, password, decryptionKey) {
+            try {
+                setLoading(true);
+                hideMessage();
+                
+                // Step 1: Load and decrypt database
+                const users = await loadUserDatabase(decryptionKey);
+                
+                // Step 2: Find user
+                const user = findUser(users, userId);
+                
+                if (!user) {
+                    throw new Error('User ID not found');
+                }
+                
+                // Step 3: Verify password
+                const passwordValid = await verifyPassword(password, user.passwordHash);
+                
+                if (!passwordValid) {
+                    throw new Error('Invalid password');
+                }
+                
+                // Step 4: Login successful
+                showMessage('Login successful! Redirecting...', 'success');
+                
+                // Store user data temporarily for dashboard
+                sessionStorage.setItem('currentUser', JSON.stringify(user));
+                sessionStorage.setItem('loginTime', new Date().toISOString());
+                
+                // Redirect to dashboard after delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+                
+            } catch (error) {
+                showMessage(`Login failed: ${error.message}`, 'error');
+                console.error('Login error:', error);
+                setLoading(false);
+            }
+        }
+
+        // ============================================
+        // FORM HANDLING
+        // ============================================
+        
+        // Form submission handler
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const userId = document.getElementById('userId').value.trim();
             const password = document.getElementById('password').value.trim();
-            const errorDiv = document.getElementById('errorMessage');
-            const errorText = document.getElementById('errorText');
-            const loadingDiv = document.getElementById('loading');
-            const loginBtn = document.getElementById('loginButton');
-            
-            // Hide error initially
-            errorDiv.style.display = 'none';
+            const decryptionKey = document.getElementById('decryptionKey').value;
             
             // Basic validation
             if (!userId || !password) {
-                errorText.textContent = 'Please enter both User ID and Password';
-                errorDiv.style.display = 'block';
+                showMessage('Please enter both User ID and Password', 'error');
                 return;
             }
             
-            // Show loading
-            loginBtn.style.display = 'none';
-            loadingDiv.style.display = 'block';
+            if (!decryptionKey) {
+                // Show decryption prompt
+                document.getElementById('decryptionPrompt').style.display = 'block';
+                showMessage('Enter decryption key to continue', 'info');
+                return;
+            }
             
-            // Simulate login check (will be replaced with real check later)
-            setTimeout(() => {
-                // TEMPORARY: Always fail for now (we'll add real users later)
-                errorText.textContent = 'User not found. Please contact administrator.';
-                errorDiv.style.display = 'block';
-                loadingDiv.style.display = 'none';
-                loginBtn.style.display = 'block';
-                
-                // In final version, we'll redirect to dashboard:
-                // if (validUser) {
-                //     window.location.href = 'dashboard.html?user=' + encodeURIComponent(userId);
-                // }
-            }, 1500);
+            // Start login process
+            await processLogin(userId, password, decryptionKey);
         });
-        
+
         // Clear error when user starts typing
-        ['userId', 'password'].forEach(id => {
-            document.getElementById(id).addEventListener('input', function() {
-                document.getElementById('errorMessage').style.display = 'none';
-            });
+        ['userId', 'password', 'decryptionKey'].forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener('input', function() {
+                    hideMessage();
+                });
+            }
+        });
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show debug info if enabled
+            if (CONFIG.DEBUG_MODE) {
+                document.getElementById('debugInfo').style.display = 'block';
+            }
+            
+            // Clear any previous session data
+            sessionStorage.removeItem('currentUser');
+            sessionStorage.removeItem('loginTime');
+            
+            showMessage('Secure login system ready', 'info');
+            
+            // Auto-focus user ID field
+            setTimeout(() => {
+                document.getElementById('userId').focus();
+            }, 300);
+        });
+
+        // ============================================
+        // SECURITY CLEANUP
+        // ============================================
+        // Clear sensitive data when page is hidden
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                // Clear password fields when user switches tabs
+                document.getElementById('password').value = '';
+                document.getElementById('decryptionKey').value = '';
+            }
         });
     </script>
 </body>
