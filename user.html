@@ -1,1 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odelya Cloud - User Information Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        body {
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+            min-height: 500px;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #2196f3;
+        }
+
+        .search-section h2 {
+            color: #1a237e;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .search-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #424242;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #2196f3;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .btn-search {
+            width: 100%;
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-search:hover {
+            background: linear-gradient(135deg, #388e3c 0%, #1b5e20 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-change-password {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-change-password:hover {
+            background: linear-gradient(135deg, #f57c00 0%, #e65100 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 1rem;
+            margin-top: 15px;
+            text-align: center;
+            padding: 10px;
+            background: #ffebee;
+            border-radius: 8px;
+            border-left: 4px solid #f44336;
+            display: none;
+        }
+
+        .success-message {
+            color: #1b5e20;
+            font-size: 1rem;
+            margin-top: 15px;
+            text-align: center;
+            padding: 10px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+            display: none;
+        }
+
+        /* User Info Display */
+        .user-info-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-info-section h2 {
+            color: #1a237e;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #2196f3;
+        }
+
+        .info-card.personal {
+            border-left-color: #2196f3;
+        }
+
+        .info-card.plan {
+            border-left-color: #4caf50;
+        }
+
+        .info-card.payment {
+            border-left-color: #ff9800;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-header h3 {
+            color: #1a237e;
+            font-size: 1.4rem;
+        }
+
+        .card-header i {
+            color: #1a237e;
+            font-size: 1.4rem;
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #424242;
+        }
+
+        .info-value {
+            color: #666;
+            word-break: break-word;
+        }
+
+        .info-value.highlight {
+            color: #1a237e;
+            font-weight: 600;
+        }
+
+        .read-only-note {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 30px;
+            text-align: center;
+            color: #1565c0;
+            font-weight: 500;
+            border-left: 4px solid #2196f3;
+        }
+
+        .read-only-note i {
+            margin-right: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            background: #f8f9ff;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #2196f3;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Date format example */
+        .date-format-example {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Change Password Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #ff9800;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .password-requirements {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .password-match-error {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-submit {
+            flex: 1;
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: linear-gradient(135deg, #388e3c 0%, #1b5e20 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: #f5f5f5;
+            color: #666;
+            border: 2px solid #e0e0e0;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        /* Password Change Success Toast */
+        .password-success-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+            display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .toast-message {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* User Log Store Section */
+        .user-log-info {
+            background: #fff8e1;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #ff9800;
+            font-size: 0.9rem;
+            color: #5d4037;
+        }
+
+        .user-log-info i {
+            color: #ff9800;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-user-shield"></i> User Information Portal</h1>
+            <p>Odelya Cloud Digital Locker - Secure Access to Your Information</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Search Section -->
+            <div class="search-section" id="searchSection">
+                <h2><i class="fas fa-search"></i> Access Your Information</h2>
+                <p style="color: #666; margin-bottom: 25px;">Enter your User ID and Date of Birth to view your saved information.</p>
+                
+                <form class="search-form" id="searchForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-id-card"></i> User ID</label>
+                        <input type="text" id="searchUserId" placeholder="Enter your User ID" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-alt"></i> Date of Birth</label>
+                        <input type="text" id="searchDOB" placeholder="DD-MM-YYYY (e.g., 22-01-1990)" required>
+                        <div class="date-format-example">Format: DD-MM-YYYY (e.g., 22-01-1990, 05-12-1985)</div>
+                    </div>
+                    
+                    <div class="error-message" id="errorMessage">
+                        <i class="fas fa-exclamation-circle"></i> No matching records found. Please check your User ID and Date of Birth.
+                    </div>
+                    
+                    <div class="loading-spinner" id="loadingSpinner">
+                        <div class="spinner"></div>
+                        <p>Verifying your information...</p>
+                    </div>
+                    
+                    <button type="submit" class="btn-search" id="btnSearch">
+                        <i class="fas fa-unlock"></i> View My Information
+                    </button>
+                </form>
+            </div>
+
+            <!-- User Information Display -->
+            <div class="user-info-section" id="userInfoSection">
+                <h2><i class="fas fa-user-circle"></i> Your Information</h2>
+                
+                <!-- User Log Store Information -->
+
+                
+                <div class="info-cards">
+                    <!-- Personal Information Card -->
+                    <div class="info-card personal">
+                        <div class="card-header">
+                            <i class="fas fa-user"></i>
+                            <h3>Personal Information</h3>
+                        </div>
+                        <div class="info-grid" id="personalInfo">
+                            <!-- Info will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Plan Information Card -->
+                    <div class="info-card plan">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-check"></i>
+                            <h3>Plan Details</h3>
+                        </div>
+                        <div class="info-grid" id="planInfo">
+                            <!-- Info will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Payment & Account Card -->
+                    <div class="info-card payment">
+                        <div class="card-header">
+                            <i class="fas fa-credit-card"></i>
+                            <h3>Account Information</h3>
+                        </div>
+                        <div class="info-grid" id="accountInfo">
+                            <!-- Info will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="read-only-note">
+                    <i class="fas fa-lock"></i> All data is securely stored and cannot be modified. For any help call Administrator.
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn-search" onclick="resetSearch()" style="max-width: 300px; margin: 0 auto;">
+                        <i class="fas fa-search"></i> Search Another User
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2024 Odelya Cloud Digital Locker. All rights reserved.</p>
+            <p>For any queries, please contact support.</p>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal-overlay" id="changePasswordModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Change Password</h3>
+                <button class="close-modal" onclick="closePasswordModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="modal-form" id="passwordForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> New Password</label>
+                        <input type="password" id="newPassword" placeholder="Enter new password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Confirm Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+                        <div class="password-match-error" id="passwordMatchError">
+                            <i class="fas fa-exclamation-circle"></i> Passwords do not match
+                        </div>
+                    </div>
+                    
+                    <div class="password-requirements">
+                        <strong>Password Requirements:</strong>
+                        <ul style="margin-top: 5px; padding-left: 20px;">
+                            <li>Minimum 8 characters</li>
+                            <li>At least one uppercase letter</li>
+                            <li>At least one lowercase letter</li>
+                            <li>At least one number</li>
+                            <li>At least one special character</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closePasswordModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn-submit" id="btnSubmitPassword">
+                            <i class="fas fa-save"></i> Change Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Success Toast -->
+    <div class="password-success-toast" id="passwordSuccessToast">
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-content">
+            <div class="toast-title">Password Changed Successfully!</div>
+            <div class="toast-message">Password attempt count has been updated.</div>
+        </div>
+    </div>
+
+    <script>
+        // ====== ENCRYPTION/DECRYPTION FUNCTIONS ======
+        const ENCRYPTION_KEY = 'odelya-secure-admin-key-2024!@#$';
+        
+        function decryptData(encryptedData) {
+            try {
+                const decoded = atob(encryptedData);
+                let decrypted = '';
+                for (let i = 0; i < decoded.length; i++) {
+                    const charCode = decoded.charCodeAt(i) ^ ENCRYPTION_KEY.charCodeAt(i % ENCRYPTION_KEY.length);
+                    decrypted += String.fromCharCode(charCode);
+                }
+                return decrypted;
+            } catch (error) {
+                console.error('Decryption error:', error);
+                return encryptedData;
+            }
+        }
+
+        // ====== USER LOG STORAGE SYSTEM ======
+        // This ensures user data persists even when deleted from admin.html
+        const USER_LOG_PREFIX = 'user_log_';
+        
+        function saveUserLog(userData) {
+            try {
+                // Save a copy to user log storage
+                const logKey = USER_LOG_PREFIX + userData.userId;
+                const timestamp = new Date().toISOString();
+                
+                // Create log entry with timestamp
+                const userLog = {
+                    ...userData,
+                    logSavedAt: timestamp,
+                    logUpdatedAt: timestamp,
+                    isLogCopy: true
+                };
+                
+                localStorage.setItem(logKey, JSON.stringify(userLog));
+                return true;
+            } catch (error) {
+                console.error('Error saving user log:', error);
+                return false;
+            }
+        }
+        
+        function updateUserLog(userId, updatedData) {
+            try {
+                const logKey = USER_LOG_PREFIX + userId;
+                const existingLog = localStorage.getItem(logKey);
+                
+                if (existingLog) {
+                    const logData = JSON.parse(existingLog);
+                    const updatedLog = {
+                        ...logData,
+                        ...updatedData,
+                        logUpdatedAt: new Date().toISOString()
+                    };
+                    localStorage.setItem(logKey, JSON.stringify(updatedLog));
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('Error updating user log:', error);
+                return false;
+            }
+        }
+        
+        function getUserLog(userId) {
+            try {
+                const logKey = USER_LOG_PREFIX + userId;
+                const logData = localStorage.getItem(logKey);
+                return logData ? JSON.parse(logData) : null;
+            } catch (error) {
+                console.error('Error getting user log:', error);
+                return null;
+            }
+        }
+
+        // ====== DOM ELEMENTS ======
+        const elements = {
+            searchForm: document.getElementById('searchForm'),
+            searchUserId: document.getElementById('searchUserId'),
+            searchDOB: document.getElementById('searchDOB'),
+            errorMessage: document.getElementById('errorMessage'),
+            loadingSpinner: document.getElementById('loadingSpinner'),
+            searchSection: document.getElementById('searchSection'),
+            userInfoSection: document.getElementById('userInfoSection'),
+            personalInfo: document.getElementById('personalInfo'),
+            planInfo: document.getElementById('planInfo'),
+            accountInfo: document.getElementById('accountInfo'),
+            btnSearch: document.getElementById('btnSearch'),
+            changePasswordModal: document.getElementById('changePasswordModal'),
+            passwordForm: document.getElementById('passwordForm'),
+            newPassword: document.getElementById('newPassword'),
+            confirmPassword: document.getElementById('confirmPassword'),
+            passwordMatchError: document.getElementById('passwordMatchError'),
+            btnSubmitPassword: document.getElementById('btnSubmitPassword'),
+            passwordSuccessToast: document.getElementById('passwordSuccessToast')
+        };
+
+        // Current user data
+        let currentUserData = null;
+        let currentUserId = null;
+
+        // ====== DATE FORMAT FUNCTIONS ======
+        function formatDateToDDMMYYYY(dateString) {
+            if (!dateString) return '';
+            
+            try {
+                // Try to parse various date formats
+                let date;
+                
+                // Check if it's already in DD-MM-YYYY format
+                if (/^\d{2}-\d{2}-\d{4}$/.test(dateString)) {
+                    const parts = dateString.split('-');
+                    date = new Date(parts[2], parts[1] - 1, parts[0]);
+                }
+                // Check for DD/MM/YYYY format
+                else if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) {
+                    const parts = dateString.split('/');
+                    date = new Date(parts[2], parts[1] - 1, parts[0]);
+                }
+                // Check for DD.MM.YYYY format
+                else if (/^\d{2}\.\d{2}\.\d{4}$/.test(dateString)) {
+                    const parts = dateString.split('.');
+                    date = new Date(parts[2], parts[1] - 1, parts[0]);
+                }
+                // Check for textual month format (22-Mar-2001)
+                else if (/^\d{2}-[A-Za-z]{3}-\d{4}$/.test(dateString)) {
+                    date = new Date(dateString);
+                }
+                // Check for ISO format
+                else {
+                    date = new Date(dateString);
+                }
+                
+                // Format to DD-MM-YYYY
+                if (!isNaN(date.getTime())) {
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const year = date.getFullYear();
+                    return `${day}-${month}-${year}`;
+                }
+            } catch (e) {
+                console.error('Date parsing error:', e);
+            }
+            
+            return dateString; // Return original if can't parse
+        }
+
+        function normalizeDateForComparison(dateString) {
+            // Remove any spaces and convert to lowercase
+            dateString = dateString.trim().toLowerCase();
+            
+            // Try to parse the date
+            const formatted = formatDateToDDMMYYYY(dateString);
+            if (formatted) {
+                return formatted;
+            }
+            
+            // If parsing fails, try to clean up common issues
+            const monthMap = {
+                'jan': '01', 'feb': '02', 'mar': '03', 'apr': '04',
+                'may': '05', 'jun': '06', 'jul': '07', 'aug': '08',
+                'sep': '09', 'oct': '10', 'nov': '11', 'dec': '12'
+            };
+            
+            // Try to match patterns like "22-Mar-2001"
+            const match = dateString.match(/^(\d{1,2})[-/\s\.]([a-z]{3})[-/\s\.](\d{4})$/i);
+            if (match) {
+                const day = match[1].padStart(2, '0');
+                const month = monthMap[match[2].toLowerCase().substring(0, 3)] || '01';
+                const year = match[3];
+                return `${day}-${month}-${year}`;
+            }
+            
+            return dateString;
+        }
+
+        // ====== EVENT LISTENERS ======
+        document.addEventListener('DOMContentLoaded', function() {
+            // Form submission
+            elements.searchForm.addEventListener('submit', handleSearch);
+            
+            // Auto-format date input
+            elements.searchDOB.addEventListener('blur', function() {
+                const normalized = normalizeDateForComparison(this.value);
+                if (normalized !== this.value) {
+                    this.value = normalized;
+                }
+            });
+            
+            // Password form submission
+            elements.passwordForm.addEventListener('submit', handlePasswordChange);
+            
+            // Check password match in real-time
+            elements.confirmPassword.addEventListener('input', checkPasswordMatch);
+        });
+
+        // ====== SEARCH FUNCTION ======
+        function handleSearch(e) {
+            e.preventDefault();
+            
+            const userId = elements.searchUserId.value.trim();
+            const dobInput = elements.searchDOB.value.trim();
+            
+            // Validate inputs
+            if (!userId || !dobInput) {
+                showError('Please enter both User ID and Date of Birth.');
+                return;
+            }
+            
+            // Normalize DOB for comparison
+            const normalizedDOB = normalizeDateForComparison(dobInput);
+            
+            // Validate date format
+            if (!/^\d{2}-\d{2}-\d{4}$/.test(normalizedDOB)) {
+                showError('Please enter Date of Birth in DD-MM-YYYY format (e.g., 22-01-1990)');
+                return;
+            }
+            
+            // Hide error message
+            hideError();
+            
+            // Show loading spinner
+            elements.loadingSpinner.style.display = 'block';
+            elements.btnSearch.disabled = true;
+            
+            // Simulate loading delay
+            setTimeout(() => {
+                const userData = findUserData(userId, normalizedDOB);
+                
+                if (userData) {
+                    currentUserData = userData;
+                    currentUserId = userId;
+                    displayUserInfo(userData);
+                    elements.searchSection.style.display = 'none';
+                    elements.userInfoSection.style.display = 'block';
+                } else {
+                    showError('No matching records found. Please check your User ID and Date of Birth.');
+                    shakeForm();
+                }
+                
+                elements.loadingSpinner.style.display = 'none';
+                elements.btnSearch.disabled = false;
+            }, 800);
+        }
+
+        function findUserData(userId, dob) {
+            try {
+                // FIRST: Check user log storage (persistent storage)
+                let userData = getUserLog(userId);
+                
+                if (userData) {
+                    // Check if DOB matches in log storage
+                    let userDOB = '';
+                    try {
+                        if (userData.encryptedData) {
+                            const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                            userDOB = decrypted.personalInfo?.dob || '';
+                        }
+                    } catch (decryptError) {
+                        console.error('Error decrypting log data:', decryptError);
+                    }
+                    
+                    const formattedUserDOB = normalizeDateForComparison(userDOB);
+                    if (formattedUserDOB === dob) {
+                        return userData;
+                    }
+                }
+                
+                // SECOND: Check regular user storage (from admin.html)
+                const keys = Object.keys(localStorage);
+                
+                for (const key of keys) {
+                    if (key.startsWith('user_') && !key.startsWith(USER_LOG_PREFIX)) {
+                        try {
+                            const regularUserData = JSON.parse(localStorage.getItem(key));
+                            
+                            // Check if user ID matches
+                            if (regularUserData.userId === userId) {
+                                // Save a copy to log storage for future persistence
+                                saveUserLog(regularUserData);
+                                
+                                // Try to get DOB from encrypted data
+                                let regularUserDOB = '';
+                                try {
+                                    if (regularUserData.encryptedData) {
+                                        const decrypted = JSON.parse(decryptData(regularUserData.encryptedData));
+                                        regularUserDOB = decrypted.personalInfo?.dob || '';
+                                    }
+                                } catch (decryptError) {
+                                    console.error('Error decrypting user data:', decryptError);
+                                }
+                                
+                                // Format user's DOB for comparison
+                                const formattedRegularDOB = normalizeDateForComparison(regularUserDOB);
+                                
+                                // Compare DOB
+                                if (formattedRegularDOB === dob) {
+                                    return regularUserData;
+                                }
+                            }
+                        } catch (parseError) {
+                            console.error('Error parsing user data:', parseError);
+                            continue;
+                        }
+                    }
+                }
+                
+                return null;
+            } catch (error) {
+                console.error('Error finding user data:', error);
+                return null;
+            }
+        }
+
+        function displayUserInfo(userData) {
+            // Clear previous data
+            elements.personalInfo.innerHTML = '';
+            elements.planInfo.innerHTML = '';
+            elements.accountInfo.innerHTML = '';
+            
+            // Decrypt personal information
+            let personalInfo = {};
+            let email = '';
+            let phone = '';
+            
+            try {
+                if (userData.encryptedData) {
+                    const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                    personalInfo = decrypted.personalInfo || {};
+                    email = personalInfo.email || '';
+                    phone = personalInfo.phone || '';
+                }
+                
+                // Also check directly stored email/phone
+                if (!email && userData.email) {
+                    try {
+                        email = decryptData(userData.email);
+                    } catch (e) {
+                        email = 'Encrypted';
+                    }
+                }
+                
+                if (!phone && userData.phone) {
+                    try {
+                        phone = decryptData(userData.phone);
+                    } catch (e) {
+                        phone = 'Encrypted';
+                    }
+                }
+            } catch (error) {
+                console.error('Error decrypting user data:', error);
+            }
+            
+            // Format DOB for display
+            const formattedDOB = formatDateToDDMMYYYY(personalInfo.dob || '');
+            
+            // Personal Information
+            const personalInfoHTML = `
+                <div class="info-row">
+                    <span class="info-label">User ID:</span>
+                    <span class="info-value highlight">${userData.userId || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Full Name:</span>
+                    <span class="info-value">${userData.fullName || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">${email || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone:</span>
+                    <span class="info-value">${phone || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Date of Birth:</span>
+                    <span class="info-value">${formattedDOB || 'N/A'}</span>
+                </div>
+            `;
+            
+            elements.personalInfo.innerHTML = personalInfoHTML;
+            
+            // Plan Information
+            const planInfoHTML = `
+                <div class="info-row">
+                    <span class="info-label">Plan Name:</span>
+                    <span class="info-value">${userData.serviceType || 'N/A'}</span>
+                </div>
+                ${userData.planGB ? `
+                <div class="info-row">
+                    <span class="info-label">Storage Plan:</span>
+                    <span class="info-value highlight">${userData.planGB} GB</span>
+                </div>
+                ` : ''}
+                <div class="info-row">
+                    <span class="info-label">Plan Duration:</span>
+                    <span class="info-value">${userData.duration || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Start Date:</span>
+                    <span class="info-value">${userData.planStart || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">End Date:</span>
+                    <span class="info-value">${userData.planEnd || 'Ongoing'}</span>
+                </div>
+            `;
+            
+            elements.planInfo.innerHTML = planInfoHTML;
+            
+            // Account Information
+            const accountInfoHTML = `
+                <div class="info-row">
+                    <span class="info-label">Payment Status:</span>
+                    <span class="info-value ${getStatusClass(userData.paymentStatus)}">${userData.paymentStatus || 'Not Paid'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Payment Mode:</span>
+                    <span class="info-value">${userData.paymentMode || 'Not Set'}</span>
+                </div>
+<div class="info-row">
+    <span class="info-label">Amount Paid:</span>
+    <span class="info-value highlight">INR ${userData.amount || 0}</span>
+</div>
+                <div class="info-row">
+                    <span class="info-label">Password Attempts:</span>
+                    <span class="info-value">${userData.passwordAttempts || 0}</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button class="btn-change-password" onclick="openChangePasswordModal()">
+                        <i class="fas fa-key"></i> Change Password
+                    </button>
+                </div>
+            `;
+            
+            elements.accountInfo.innerHTML = accountInfoHTML;
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Successful': return 'status-successful';
+                case 'Processing': return 'status-processing';
+                case 'Not Paid': return 'status-notpaid';
+                case 'Cancelled': return 'status-cancelled';
+                default: return '';
+            }
+        }
+
+        // ====== PASSWORD CHANGE FUNCTIONS ======
+        function openChangePasswordModal() {
+            elements.changePasswordModal.style.display = 'flex';
+            elements.newPassword.value = '';
+            elements.confirmPassword.value = '';
+            elements.passwordMatchError.style.display = 'none';
+            elements.btnSubmitPassword.disabled = true;
+        }
+
+        function closePasswordModal() {
+            elements.changePasswordModal.style.display = 'none';
+        }
+
+        function checkPasswordMatch() {
+            const newPass = elements.newPassword.value;
+            const confirmPass = elements.confirmPassword.value;
+            
+            if (newPass && confirmPass && newPass !== confirmPass) {
+                elements.passwordMatchError.style.display = 'block';
+                elements.btnSubmitPassword.disabled = true;
+            } else {
+                elements.passwordMatchError.style.display = 'none';
+                
+                // Enable button only if both fields have values
+                if (newPass && confirmPass) {
+                    elements.btnSubmitPassword.disabled = false;
+                } else {
+                    elements.btnSubmitPassword.disabled = true;
+                }
+            }
+        }
+
+        function handlePasswordChange(e) {
+            e.preventDefault();
+            
+            const newPassword = elements.newPassword.value;
+            const confirmPassword = elements.confirmPassword.value;
+            
+            // Validate password match
+            if (newPassword !== confirmPassword) {
+                elements.passwordMatchError.style.display = 'block';
+                return;
+            }
+            
+            // Validate password strength
+            if (!validatePasswordStrength(newPassword)) {
+                showError('Password does not meet requirements. Please check the requirements below.');
+                return;
+            }
+            
+            // Disable button during processing
+            elements.btnSubmitPassword.disabled = true;
+            elements.btnSubmitPassword.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Changing Password...';
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                try {
+                    // Update user data in both storage locations
+                    if (currentUserData && currentUserId) {
+                        // Increment password attempts count
+                        const newAttempts = (currentUserData.passwordAttempts || 0) + 1;
+                        currentUserData.passwordAttempts = newAttempts;
+                        
+                        // Update in BOTH locations:
+                        // 1. Regular user storage (from admin.html)
+                        try {
+                            localStorage.setItem(`user_${currentUserId}`, JSON.stringify(currentUserData));
+                        } catch (e) {
+                            console.log('Regular user storage not available');
+                        }
+                        
+                        // 2. User log storage (persistent)
+                        updateUserLog(currentUserId, {
+                            passwordAttempts: newAttempts,
+                            lastPasswordChange: new Date().toISOString()
+                        });
+                        
+                        // Update the display
+                        displayUserInfo(currentUserData);
+                        
+                        // Show success toast
+                        showPasswordSuccessToast();
+                        
+                        // Close modal after a delay
+                        setTimeout(() => {
+                            closePasswordModal();
+                        }, 500);
+                    }
+                } catch (error) {
+                    console.error('Error updating password attempts:', error);
+                    showError('Error updating password. Please try again.');
+                } finally {
+                    // Reset button state
+                    elements.btnSubmitPassword.disabled = false;
+                    elements.btnSubmitPassword.innerHTML = '<i class="fas fa-save"></i> Change Password';
+                }
+            }, 1000);
+        }
+
+        function validatePasswordStrength(password) {
+            // Minimum 8 characters
+            if (password.length < 8) return false;
+            
+            // At least one uppercase letter
+            if (!/[A-Z]/.test(password)) return false;
+            
+            // At least one lowercase letter
+            if (!/[a-z]/.test(password)) return false;
+            
+            // At least one number
+            if (!/\d/.test(password)) return false;
+            
+            // At least one special character
+            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) return false;
+            
+            return true;
+        }
+
+        function showPasswordSuccessToast() {
+            elements.passwordSuccessToast.style.display = 'flex';
+            elements.passwordSuccessToast.style.animation = 'slideIn 0.3s ease';
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                elements.passwordSuccessToast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    elements.passwordSuccessToast.style.display = 'none';
+                }, 300);
+            }, 3000);
+        }
+
+        function resetSearch() {
+            // Reset form
+            elements.searchForm.reset();
+            
+            // Hide user info, show search
+            elements.userInfoSection.style.display = 'none';
+            elements.searchSection.style.display = 'block';
+            
+            // Clear error message
+            hideError();
+            
+            // Clear current user data
+            currentUserData = null;
+            currentUserId = null;
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showError(message) {
+            elements.errorMessage.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            elements.errorMessage.style.display = 'block';
+            shakeForm();
+        }
+
+        function hideError() {
+            elements.errorMessage.style.display = 'none';
+        }
+
+        function shakeForm() {
+            elements.searchSection.style.animation = 'shake 0.5s ease';
+            setTimeout(() => {
+                elements.searchSection.style.animation = '';
+            }, 500);
+        }
+
+        // Add animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+            
+            .status-successful {
+                color: #1b5e20;
+                background: #e8f5e9;
+                padding: 3px 10px;
+                border-radius: 12px;
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+            
+            .status-processing {
+                color: #e65100;
+                background: #fff3e0;
+                padding: 3px 10px;
+                border-radius: 12px;
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+            
+            .status-notpaid {
+                color: #c62828;
+                background: #ffebee;
+                padding: 3px 10px;
+                border-radius: 12px;
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+            
+            .status-cancelled {
+                color: #616161;
+                background: #f5f5f5;
+                padding: 3px 10px;
+                border-radius: 12px;
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+            
+            .fa-spinner {
+                animation: spin 1s linear infinite;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
