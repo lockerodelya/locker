@@ -82,30 +82,47 @@ function updatePlanEndDate() {
     document.getElementById('planEndDate').textContent = endDate;
 }
 
-// ====== DASHBOARD INTEGRATION ======
-async function captureToDashboard(formData) {
-    try {
-        // Generate User ID (6 digits, 2-9, no zeros)
-        function generateUserId() {
-            let userId = '';
-            const digits = '23456789';
-            for (let i = 0; i < 6; i++) {
-                userId += digits.charAt(Math.floor(Math.random() * digits.length));
-            }
-            return userId;
-        }
+// ====== SHARED USER ID GENERATOR ======
+function generateUserId() {
+    // Generate 6-digit User ID (digits 2-9 only)
+    let userId = '';
+    const digits = '23456789';
+    for (let i = 0; i < 6; i++) {
+        userId += digits.charAt(Math.floor(Math.random() * digits.length));
+    }
+    return userId;
+}
 
-        // Generate User ID only once
+// ====== ENCRYPTION FUNCTION ======
+function encryptData(data) {
+    try {
+        const key = 'odelya-secure-admin-key-2024!@#$';
+        let encrypted = '';
+        for (let i = 0; i < data.length; i++) {
+            const charCode = data.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+            encrypted += String.fromCharCode(charCode);
+        }
+        return btoa(encrypted);
+    } catch (error) {
+        console.error('Encryption error:', error);
+        return data;
+    }
+}
+
+// ====== SINGLE SAVE FUNCTION (NO DUPLICATES) ======
+function saveUserToAdminDatabase(formData) {
+    try {
+        // Generate User ID ONLY ONCE
         if (!paymentState.userId) {
             paymentState.userId = generateUserId();
         }
         
-        // Set registration date (FIRST TIME ONLY - never changes)
+        // Set registration date ONLY ONCE
         if (!paymentState.registrationDate) {
             paymentState.registrationDate = new Date().toISOString().split('T')[0];
         }
         
-        // Calculate plan dates based on selected month
+        // Calculate plan dates
         function calculatePlanDates(monthOffset, duration) {
             const today = new Date();
             const startDate = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
@@ -113,10 +130,8 @@ async function captureToDashboard(formData) {
             const startYear = startDate.getFullYear();
             const startMonth = startDate.getMonth();
             
-            // Start date is always 1st of month
             const planStart = `01-${String(startMonth + 1).padStart(2, '0')}-${startYear}`;
             
-            // Calculate end date based on duration
             let endMonth = startMonth;
             let endYear = startYear;
             
@@ -130,24 +145,23 @@ async function captureToDashboard(formData) {
                 endYear += 1;
             }
             
-            // End date is last day of month
             const lastDay = new Date(endYear, endMonth + 1, 0).getDate();
             const planEnd = `${String(lastDay).padStart(2, '0')}-${String(endMonth + 1).padStart(2, '0')}-${endYear}`;
             
             return { start: planStart, end: planEnd };
         }
         
-        // Get month offset based on service type
+        // Get month offset
         const monthOffset = paymentState.selectedService === 'cloud' ? 
             paymentState.planStartMonth : paymentState.itPlanStartMonth;
         
-        // Calculate plan dates
+        // Calculate dates
         const planDates = calculatePlanDates(monthOffset, formData.Duration);
         
-        // Prepare data for dashboard
-        const dashboardData = {
+        // Create user data object
+        const userData = {
             userId: paymentState.userId,
-            registrationDate: paymentState.registrationDate, // NEVER CHANGES
+            registrationDate: paymentState.registrationDate,
             timestamp: new Date().toISOString(),
             personalInfo: {
                 fullName: `${formData.First_Name} ${formData.Second_Name || ''} ${formData.Third_Name}`.trim(),
@@ -165,44 +179,43 @@ async function captureToDashboard(formData) {
                 serviceType: formData.Selected_Service === 'it' ? formData.Service_Type : 'Cloud Storage',
                 startDate: planDates.start,
                 endDate: planDates.end
-            },
-            paymentInfo: {
-                mode: "", // LEFT BLANK for admin to fill
-                status: "", // LEFT BLANK for admin to fill
-                passwordChangeAttempts: 0 // NEW FIELD
             }
         };
-
-        console.log('Dashboard Data:', dashboardData);
         
-        // Save to localStorage - DON'T save to odelya_users_raw anymore
-        // Instead, ONLY save to admin database via autoSaveToAdminDB()
+        // Create admin format data
+        const adminData = {
+            userId: paymentState.userId,
+            fullName: userData.personalInfo.fullName,
+            email: encryptData(userData.personalInfo.email),
+            phone: encryptData(userData.personalInfo.phone),
+            amount: userData.serviceInfo.amountPaid,
+            encryptedData: encryptData(JSON.stringify(userData)),
+            paymentMode: '',
+            paymentStatus: 'Not Paid',
+            passwordAttempts: 0,
+            adminNotes: '',
+            registrationDate: paymentState.registrationDate,
+            planStart: userData.serviceInfo.startDate,
+            planEnd: userData.serviceInfo.endDate,
+            serviceType: userData.serviceInfo.serviceType,
+            planGB: userData.serviceInfo.planGB,
+            duration: userData.serviceInfo.duration
+        };
         
-        // Sync across tabs (optional)
-        syncDataToAllTabs(dashboardData);
+        // CRITICAL: Save ONLY to admin format, NOT to odelya_users_raw
+        localStorage.setItem(`user_${paymentState.userId}`, JSON.stringify(adminData));
+        
+        console.log('✅ User saved to admin database:', {
+            userId: paymentState.userId,
+            location: 'user_' + paymentState.userId,
+            timestamp: new Date().toLocaleString()
+        });
         
         return paymentState.userId;
         
     } catch (error) {
-        console.error('Dashboard capture error:', error);
+        console.error('Save error:', error);
         return null;
-    }
-}
-
-// ====== SYNC DATA ACROSS TABS ======
-function syncDataToAllTabs(userData) {
-    try {
-        localStorage.setItem('odelya_latest_user', JSON.stringify(userData));
-        
-        if (typeof BroadcastChannel !== 'undefined') {
-            const channel = new BroadcastChannel('odelya_dashboard_channel');
-            channel.postMessage({
-                type: 'NEW_USER',
-                data: userData
-            });
-        }
-    } catch (error) {
-        console.error('Sync error:', error);
     }
 }
 
@@ -639,120 +652,14 @@ function updateContinueButton() {
     elements.btnContinue.disabled = !validateAllFields();
 }
 
-// ====== AUTO-SAVE TO ADMIN DATABASE (NO DUPLICATES) ======
-function autoSaveToAdminDB(formData) {
-    try {
-        // Generate User ID (6 digits, 2-9, no zeros)
-        function generateUserId() {
-            let userId = '';
-            const digits = '23456789';
-            for (let i = 0; i < 6; i++) {
-                userId += digits.charAt(Math.floor(Math.random() * digits.length));
-            }
-            return userId;
-        }
-
-        // Get User ID (generate new or use existing)
-        if (!paymentState.userId) {
-            paymentState.userId = generateUserId();
-        }
-        
-        // Set registration date (FIRST TIME ONLY - never changes)
-        if (!paymentState.registrationDate) {
-            paymentState.registrationDate = new Date().toISOString().split('T')[0];
-        }
-        
-        // IMPORTANT: Check if user already exists in admin storage
-        const existingUser = localStorage.getItem(`user_${paymentState.userId}`);
-        if (existingUser) {
-            console.log('User already exists in admin database. Skipping duplicate save.');
-            return paymentState.userId; // Don't create duplicate
-        }
-        
-        // Prepare user data
-        const userData = {
-            userId: paymentState.userId,
-            registrationDate: paymentState.registrationDate,
-            timestamp: new Date().toISOString(),
-            personalInfo: {
-                fullName: `${formData.First_Name} ${formData.Second_Name || ''} ${formData.Third_Name}`.trim(),
-                dob: formData.Date_of_Birth,
-                phone: formData.Phone_Number,
-                email: formData.Email_ID,
-                gender: formData.Gender,
-                pan: formData.PAN_Number,
-                aadhaar: formData.Aadhaar_Number
-            },
-            serviceInfo: {
-                planGB: formData.Plan_GB || 'N/A',
-                duration: formData.Duration || 'N/A',
-                amountPaid: formData.Total_Amount,
-                serviceType: formData.Selected_Service === 'it' ? formData.Service_Type : 'Cloud Storage',
-                startDate: formData.Plan_Start_Date || formData.Service_Start_Date || '',
-                endDate: formData.Plan_End_Date || 'Ongoing'
-            }
-        };
-        
-        // Encrypt sensitive data
-        function encryptData(data, key = 'odelya-secure-admin-key-2024!@#$') {
-            try {
-                let encrypted = '';
-                for (let i = 0; i < data.length; i++) {
-                    const charCode = data.charCodeAt(i) ^ key.charCodeAt(i % key.length);
-                    encrypted += String.fromCharCode(charCode);
-                }
-                return btoa(encrypted);
-            } catch (error) {
-                console.error('Encryption error:', error);
-                return data;
-            }
-        }
-        
-        // Prepare encrypted data for admin panel
-        const encryptedUser = {
-            userId: paymentState.userId,
-            fullName: userData.personalInfo.fullName,
-            email: encryptData(userData.personalInfo.email),
-            phone: encryptData(userData.personalInfo.phone),
-            amount: userData.serviceInfo.amountPaid,
-            encryptedData: encryptData(JSON.stringify(userData)),
-            paymentMode: '', // LEFT BLANK for admin to fill
-            paymentStatus: 'Not Paid', // Default status
-            passwordAttempts: 0, // NEW FIELD
-            adminNotes: '', // Additional field
-            registrationDate: paymentState.registrationDate,
-            planStart: userData.serviceInfo.startDate,
-            planEnd: userData.serviceInfo.endDate,
-            serviceType: userData.serviceInfo.serviceType,
-            planGB: userData.serviceInfo.planGB,
-            duration: userData.serviceInfo.duration
-        };
-        
-        // Save to localStorage (admin database) - ONLY ONE PLACE
-        localStorage.setItem(`user_${paymentState.userId}`, JSON.stringify(encryptedUser));
-        
-        console.log('User data saved to admin database:', {
-            userId: paymentState.userId,
-            status: 'encrypted and stored (no duplicate)',
-            timestamp: new Date().toLocaleString()
-        });
-        
-        return paymentState.userId;
-        
-    } catch (error) {
-        console.error('Auto-save error:', error);
-        return null;
-    }
-}
-
-// ====== PROCEED TO PAYMENT (UPDATED) ======
+// ====== PROCEED TO PAYMENT (SINGLE SAVE POINT) ======
 function proceedToPayment() {
     if (!validateAllFields()) {
         alert('Please fill all required fields correctly.');
         return;
     }
 
-    // Prepare data for admin database
+    // Prepare all form data
     const formData = {
         First_Name: elements.firstName.value,
         Second_Name: elements.secondName.value,
@@ -774,12 +681,9 @@ function proceedToPayment() {
         Service_Start_Date: paymentState.selectedService === 'it' ? document.getElementById('itPlanStartDate').textContent : ''
     };
     
-    // === AUTO-SAVE TO ADMIN DATABASE ===
-    autoSaveToAdminDB(formData);
-    
-    // === CAPTURE TO DASHBOARD (Modified to NOT save to odelya_users_raw) ===
-    // We're using the same formData, but captureToDashboard won't save to localStorage
-    captureToDashboard(formData);
+    // === SINGLE SAVE POINT ===
+    // Save user data to admin database (ONLY ONCE, NO DUPLICATES)
+    saveUserToAdminDatabase(formData);
     
     // Update steps
     elements.step2.classList.remove('active');
