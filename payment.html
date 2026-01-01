@@ -1200,6 +1200,70 @@
             <h1><i class="fas fa-credit-card"></i> Payment Process</h1>
             <p>Complete the following steps to proceed with your payment</p>
         </div>
+
+<!-- Add this RIGHT AFTER the Header, BEFORE Payment Steps -->
+<div class="user-type-selection" id="userTypeSelection" style="
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 20px auto 40px;
+    max-width: 800px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: center;
+    display: none; /* Will be shown by JavaScript */
+">
+    <h2 style="color: #1a237e; margin-bottom: 30px; font-size: 28px;">
+        <i class="fas fa-user-check"></i> Are You a New or Existing User?
+    </h2>
+    
+    <div style="display: flex; gap: 30px; justify-content: center; flex-wrap: wrap;">
+        <!-- New User Option -->
+        <div class="user-type-option" onclick="selectUserType('new')" style="
+            flex: 1;
+            min-width: 300px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 40px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        ">
+            <div style="font-size: 60px; color: #2196f3; margin-bottom: 20px;">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h3 style="color: #1565c0; margin-bottom: 15px; font-size: 24px;">
+                New User
+            </h3>
+            <p style="color: #424242; line-height: 1.6;">
+                First time purchasing our services. 
+                You'll need to provide your details.
+            </p>
+        </div>
+        
+        <!-- Existing User Option -->
+        <div class="user-type-option" onclick="selectUserType('existing')" style="
+            flex: 1;
+            min-width: 300px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 40px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        ">
+            <div style="font-size: 60px; color: #4caf50; margin-bottom: 20px;">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <h3 style="color: #2e7d32; margin-bottom: 15px; font-size: 24px;">
+                Existing User
+            </h3>
+            <p style="color: #424242; line-height: 1.6;">
+                Already have a User ID? 
+                Login with your credentials.
+            </p>
+        </div>
+    </div>
+</div>
         
         <!-- Payment Steps -->
         <div class="payment-steps">
@@ -1584,7 +1648,125 @@
             </div>
         </div>
     </div>
+// ====== USER TYPE SELECTION ======
+let isNewUser = true;
 
+function selectUserType(type) {
+    const options = document.querySelectorAll('.user-type-option');
+    options.forEach(opt => {
+        opt.style.borderColor = 'transparent';
+        opt.style.transform = 'scale(1)';
+    });
+    
+    if (type === 'new') {
+        isNewUser = true;
+        options[0].style.borderColor = '#2196f3';
+        options[0].style.transform = 'scale(1.02)';
+        showNewUserFlow();
+    } else {
+        isNewUser = false;
+        options[1].style.borderColor = '#4caf50';
+        options[1].style.transform = 'scale(1.02)';
+        showExistingUserLogin();
+    }
+}
+
+function showNewUserFlow() {
+    document.getElementById('userTypeSelection').style.display = 'none';
+    document.getElementById('termsModal').style.display = 'flex';
+}
+
+function showExistingUserLogin() {
+    document.getElementById('userTypeSelection').style.display = 'none';
+    
+    // Show login form for existing users
+    const loginHTML = `
+        <div style="background: white; border-radius: 15px; padding: 40px; margin: 20px auto; max-width: 500px;">
+            <h2 style="color: #1a237e; margin-bottom: 30px; text-align: center;">
+                <i class="fas fa-sign-in-alt"></i> Existing User Login
+            </h2>
+            
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 8px; color: #424242; font-weight: 600;">
+                    User ID
+                </label>
+                <input type="text" id="existingUserId" placeholder="Enter your 6-digit User ID" 
+                       style="width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+            </div>
+            
+            <div style="margin-bottom: 30px;">
+                <label style="display: block; margin-bottom: 8px; color: #424242; font-weight: 600;">
+                    Password
+                </label>
+                <input type="password" id="existingUserPassword" placeholder="Enter your password" 
+                       style="width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+            </div>
+            
+            <button onclick="loginExistingUser()" style="
+                width: 100%; padding: 16px; background: linear-gradient(to right, #4caf50, #2e7d32);
+                color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: 600;
+                cursor: pointer; transition: all 0.3s;
+            ">
+                <i class="fas fa-sign-in-alt"></i> Login & Continue Payment
+            </button>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="showUserTypeSelection()" style="
+                    background: none; border: none; color: #2196f3; cursor: pointer;
+                    text-decoration: underline; font-size: 14px;
+                ">
+                    ← Back to User Type Selection
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Replace content with login form
+    document.querySelector('.container').innerHTML = loginHTML;
+}
+
+function showUserTypeSelection() {
+    // Reload the page to show user type selection
+    location.reload();
+}
+
+function loginExistingUser() {
+    const userId = document.getElementById('existingUserId').value;
+    const password = document.getElementById('existingUserPassword').value;
+    
+    if (!userId || !password) {
+        alert('Please enter both User ID and Password');
+        return;
+    }
+    
+    // Here you would verify credentials
+    // For now, we'll proceed directly
+    alert('Existing user login would be verified here. Proceeding...');
+    // In real system, you would fetch user data and pre-fill form
+}
+
+// Modify the initialization to show user type selection first
+// Find this line in your existing code:
+// setTimeout(() => { elements.termsModal.style.display = 'flex'; }, 500);
+// Replace it with:
+document.addEventListener('DOMContentLoaded', function() {
+    // Load terms and conditions
+    loadTermsAndConditions();
+    
+    // Check if coming from cloud-storage.html
+    checkCloudStorageRedirect();
+    
+    // Show user type selection instead of terms immediately
+    setTimeout(() => {
+        document.getElementById('userTypeSelection').style.display = 'block';
+    }, 300);
+    
+    // Initialize event listeners
+    setupEventListeners();
+    
+    // Setup Date of Birth auto-formatting
+    setupDOBAutoFormat();
+});
     <script>
 // ====== AUTO CAPTURE TO ADMIN DASHBOARD ======
 function captureToAdminDashboard(formData) {
