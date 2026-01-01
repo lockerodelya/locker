@@ -1341,244 +1341,283 @@
             }
         }
 
-        // ====== PDF EXPORT FUNCTION ======
-        function exportSelectedToPDF() {
-            try {
-                if (selectedUsers.size === 0) {
-                    showNotification('Please select at least one user!', 'error');
-                    return;
-                }
-                
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF('p', 'mm', 'a4');
-                const pageWidth = doc.internal.pageSize.getWidth();
-                const pageHeight = doc.internal.pageSize.getHeight();
-                const margin = 15;
-                let yPos = margin;
-                
-                // Get selected users data
-                const selectedUserData = [];
-                selectedUsers.forEach(userId => {
-                    try {
-                        const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
-                        if (userData) {
-                            selectedUserData.push(userData);
-                        }
-                    } catch (error) {
-                        console.error('Error loading user for PDF:', userId, error);
-                    }
-                });
-                
-                if (selectedUserData.length === 0) {
-                    showNotification('No valid user data found!', 'error');
-                    return;
-                }
-                
-                showNotification(`Generating PDF for ${selectedUserData.length} user(s)...`, 'info');
-                
-                // Generate PDF for each user
-                selectedUserData.forEach((userData, index) => {
-                    // Add new page for each user (except first)
-                    if (index > 0) {
-                        doc.addPage();
-                        yPos = margin;
-                    }
-                    
-                    // Title
-                    doc.setFontSize(20);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setTextColor(26, 35, 126);
-                    doc.text('ODELYA CLOUD DIGITAL LOCKER', pageWidth / 2, yPos, { align: 'center' });
-                    
-                    yPos += 10;
-                    doc.setFontSize(16);
-                    doc.text('USER DETAILS REPORT', pageWidth / 2, yPos, { align: 'center' });
-                    
-                    yPos += 10;
-                    doc.setFontSize(12);
-                    doc.setTextColor(100, 100, 100);
-                    doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth / 2, yPos, { align: 'center' });
-                    
-                    yPos += 15;
-                    
-                    // Add line separator
-                    doc.setDrawColor(200, 200, 200);
-                    doc.line(margin, yPos, pageWidth - margin, yPos);
-                    yPos += 10;
-                    
-                    // User ID Section
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setTextColor(26, 35, 126);
-                    doc.text('USER IDENTIFICATION', margin, yPos);
-                    yPos += 8;
-                    
-                    doc.setFontSize(11);
-                    doc.setFont('helvetica', 'normal');
-                    doc.setTextColor(0, 0, 0);
-                    doc.text(`User ID: ${userData.userId || 'N/A'}`, margin, yPos);
-                    yPos += 6;
-                    doc.text(`Full Name: ${userData.fullName || 'N/A'}`, margin, yPos);
-                    yPos += 6;
-                    doc.text(`Registration Date: ${userData.registrationDate || 'N/A'}`, margin, yPos);
-                    
-                    yPos += 10;
-                    
-                    // Basic Information Section
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setTextColor(26, 35, 126);
-                    doc.text('BASIC INFORMATION', margin, yPos);
-                    yPos += 8;
-                    
-                    try {
-                        const decrypted = userData.encryptedData ? 
-                            JSON.parse(decryptData(userData.encryptedData)) : {};
-                        
-                        const personalInfo = decrypted.personalInfo || {};
-                        
-                        doc.setFontSize(11);
-                        doc.setFont('helvetica', 'normal');
-                        doc.setTextColor(0, 0, 0);
-                        
-                        // Column 1
-                        let col1X = margin;
-                        let tempY = yPos;
-                        
-                        doc.text(`Email: ${personalInfo.email || 'N/A'}`, col1X, tempY);
-                        tempY += 6;
-                        doc.text(`Phone: ${personalInfo.phone || 'N/A'}`, col1X, tempY);
-                        tempY += 6;
-                        doc.text(`PAN: ${personalInfo.pan || 'N/A'}`, col1X, tempY);
-                        tempY += 6;
-                        doc.text(`Aadhaar: ${personalInfo.aadhaar || 'N/A'}`, col1X, tempY);
-                        
-                        // Column 2
-                        let col2X = pageWidth / 2;
-                        tempY = yPos;
-                        
-                        doc.text(`Date of Birth: ${personalInfo.dob || 'N/A'}`, col2X, tempY);
-                        tempY += 6;
-                        doc.text(`Gender: ${personalInfo.gender || 'N/A'}`, col2X, tempY);
-                        
-                        yPos = Math.max(yPos, tempY) + 10;
-                        
-                    } catch (error) {
-                        console.error('Error decrypting for PDF:', error);
-                        doc.text('Error decrypting user information', margin, yPos);
-                        yPos += 10;
-                    }
-                    
-                    // Service Information Section
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setTextColor(26, 35, 126);
-                    doc.text('SERVICE INFORMATION', margin, yPos);
-                    yPos += 8;
-                    
-                    doc.setFontSize(11);
-                    doc.setFont('helvetica', 'normal');
-                    doc.setTextColor(0, 0, 0);
-                    
-                    doc.text(`Service Type: ${userData.serviceType || 'N/A'}`, margin, yPos);
-                    yPos += 6;
-                    
-                    if (userData.planGB) {
-                        doc.text(`Storage Plan: ${userData.planGB} GB (${userData.duration || 'N/A'})`, margin, yPos);
-                        yPos += 6;
-                    }
-                    
-                    doc.text(`Plan Start: ${userData.planStart || 'N/A'}`, margin, yPos);
-                    yPos += 6;
-                    doc.text(`Plan End: ${userData.planEnd || 'Ongoing'}`, margin, yPos);
-                    
-                    yPos += 10;
-                    
-                    // Payment Information Section
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setTextColor(26, 35, 126);
-                    doc.text('PAYMENT INFORMATION', margin, yPos);
-                    yPos += 8;
-                    
-                    doc.setFontSize(11);
-                    doc.setFont('helvetica', 'normal');
-                    doc.setTextColor(0, 0, 0);
-                    
-                    doc.text(`Amount: ₹ ${userData.amount || 0}`, margin, yPos);
-                    yPos += 6;
-                    doc.text(`Payment Mode: ${userData.paymentMode || 'Not Set'}`, margin, yPos);
-                    yPos += 6;
-                    doc.text(`Payment Status: ${userData.paymentStatus || 'Not Paid'}`, margin, yPos);
-                    yPos += 6;
-                    doc.text(`Password Attempts: ${userData.passwordAttempts || 0}`, margin, yPos);
-                    
-                    yPos += 10;
-                    
-                    // Admin Notes Section
-                    if (userData.adminNotes) {
-                        doc.setFontSize(14);
-                        doc.setFont('helvetica', 'bold');
-                        doc.setTextColor(26, 35, 126);
-                        doc.text('ADMIN NOTES', margin, yPos);
-                        yPos += 8;
-                        
-                        doc.setFontSize(11);
-                        doc.setFont('helvetica', 'normal');
-                        doc.setTextColor(0, 0, 0);
-                        
-                        // Split notes into lines that fit page width
-                        const notesLines = doc.splitTextToSize(userData.adminNotes, pageWidth - 2 * margin);
-                        doc.text(notesLines, margin, yPos);
-                        yPos += (notesLines.length * 6) + 5;
-                    }
-                    
-                    // Encrypted Data Section (for verification)
-                    doc.setFontSize(14);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setTextColor(26, 35, 126);
-                    doc.text('ENCRYPTED DATA VERIFICATION', margin, yPos);
-                    yPos += 8;
-                    
-                    doc.setFontSize(9);
-                    doc.setFont('helvetica', 'normal');
-                    doc.setTextColor(100, 100, 100);
-                    
-                    if (userData.encryptedData) {
-                        const encryptedPreview = userData.encryptedData.substring(0, 100) + '...';
-                        doc.text(`Encrypted Hash: ${encryptedPreview}`, margin, yPos);
-                        yPos += 6;
-                        doc.text(`Data Integrity: Verified`, margin, yPos);
-                        yPos += 6;
-                        doc.text(`Encryption Key: ${ENCRYPTION_KEY.substring(0, 20)}...`, margin, yPos);
-                    } else {
-                        doc.text('No encrypted data available', margin, yPos);
-                        yPos += 6;
-                    }
-                    
-                    yPos += 10;
-                    
-                    // Footer
-                    doc.setFontSize(10);
-                    doc.setTextColor(150, 150, 150);
-                    doc.text('--- End of User Report ---', pageWidth / 2, pageHeight - 20, { align: 'center' });
-                    doc.text(`Page ${index + 1} of ${selectedUserData.length}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-                    
-                    // Reset yPos for next user
-                    yPos = margin;
-                });
-                
-                // Save PDF
-                const fileName = `odelya_users_${new Date().toISOString().split('T')[0]}_${selectedUserData.length}_users.pdf`;
-                doc.save(fileName);
-                
-                showNotification(`PDF exported successfully with ${selectedUserData.length} user(s)!`, 'success');
-                
-            } catch (error) {
-                console.error('PDF export error:', error);
-                showNotification('Error generating PDF!', 'error');
-            }
+// ====== PDF EXPORT FUNCTION (FIXED VERSION) ======
+function exportSelectedToPDF() {
+    try {
+        if (selectedUsers.size === 0) {
+            showNotification('Please select at least one user!', 'error');
+            return;
         }
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin = 15;
+        let yPos = margin;
+        
+        // Get selected users data
+        const selectedUserData = [];
+        selectedUsers.forEach(userId => {
+            try {
+                const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
+                if (userData) {
+                    selectedUserData.push(userData);
+                }
+            } catch (error) {
+                console.error('Error loading user for PDF:', userId, error);
+            }
+        });
+        
+        if (selectedUserData.length === 0) {
+            showNotification('No valid user data found!', 'error');
+            return;
+        }
+        
+        showNotification(`Generating PDF for ${selectedUserData.length} user(s)...`, 'info');
+        
+        // Generate PDF for each user
+        selectedUserData.forEach((userData, index) => {
+            // Add new page for each user (except first)
+            if (index > 0) {
+                doc.addPage();
+                yPos = margin;
+            }
+            
+            // Title
+            doc.setFontSize(20);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(26, 35, 126);
+            doc.text('ODELYA CLOUD DIGITAL LOCKER', pageWidth / 2, yPos, { align: 'center' });
+            
+            yPos += 10;
+            doc.setFontSize(16);
+            doc.text('USER DETAILS REPORT', pageWidth / 2, yPos, { align: 'center' });
+            
+            yPos += 10;
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth / 2, yPos, { align: 'center' });
+            
+            yPos += 15;
+            
+            // Add line separator
+            doc.setDrawColor(200, 200, 200);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            yPos += 10;
+            
+            // User ID Section
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(26, 35, 126);
+            doc.text('USER IDENTIFICATION', margin, yPos);
+            yPos += 8;
+            
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(0, 0, 0);
+            doc.text(`User ID: ${userData.userId || 'N/A'}`, margin, yPos);
+            yPos += 6;
+            doc.text(`Full Name: ${userData.fullName || 'N/A'}`, margin, yPos);
+            yPos += 6;
+            doc.text(`Registration Date: ${userData.registrationDate || 'N/A'}`, margin, yPos);
+            
+            yPos += 12; // Increased space before next section
+            
+// Basic Information Section
+doc.setFontSize(14);
+doc.setFont('helvetica', 'bold');
+doc.setTextColor(26, 35, 126);
+doc.text('BASIC INFORMATION', margin, yPos);
+yPos += 8;
+
+try {
+    const decrypted = userData.encryptedData ? 
+        JSON.parse(decryptData(userData.encryptedData)) : {};
+    
+    const personalInfo = decrypted.personalInfo || {};
+    
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+    
+    // Left Column
+    let leftX = margin;
+    let tempY = yPos;
+    
+    doc.text(`Email: ${personalInfo.email || 'N/A'}`, leftX, tempY);
+    tempY += 6;
+    doc.text(`Phone: ${personalInfo.phone || 'N/A'}`, leftX, tempY);
+    tempY += 6;
+    doc.text(`PAN: ${personalInfo.pan || 'N/A'}`, leftX, tempY);
+    
+    // Right Column
+    let rightX = pageWidth / 2;
+    tempY = yPos; // Reset to top for right column
+    
+    doc.text(`Date of Birth: ${personalInfo.dob || 'N/A'}`, rightX, tempY);
+    tempY += 6;
+    doc.text(`Gender: ${personalInfo.gender || 'N/A'}`, rightX, tempY);
+    tempY += 6;
+    doc.text(`Aadhaar: ${personalInfo.aadhaar || 'N/A'}`, rightX, tempY);
+    
+    // Move yPos down to the lowest point of both columns
+    yPos = Math.max(yPos + 18, tempY + 6); // Account for 3 lines in left column
+    
+} catch (error) {
+    console.error('Error decrypting for PDF:', error);
+    doc.text('Error decrypting user information', margin, yPos);
+    yPos += 10;
+}
+
+// Add THREE LINES of space before Service Information
+yPos += 12; // 2 lines × 6mm each = 12mm
+            
+            // Service Information Section
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(26, 35, 126);
+            doc.text('SERVICE INFORMATION', margin, yPos);
+            yPos += 8;
+            
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(0, 0, 0);
+            
+            doc.text(`Service Type: ${userData.serviceType || 'N/A'}`, margin, yPos);
+            yPos += 6;
+            
+            if (userData.planGB) {
+                doc.text(`Storage Plan: ${userData.planGB} GB (${userData.duration || 'N/A'})`, margin, yPos);
+                yPos += 6;
+            }
+            
+            doc.text(`Plan Start: ${userData.planStart || 'N/A'}`, margin, yPos);
+            yPos += 6;
+            doc.text(`Plan End: ${userData.planEnd || 'Ongoing'}`, margin, yPos);
+            
+            yPos += 12;
+            
+            // Payment Information Section
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(26, 35, 126);
+            doc.text('PAYMENT INFORMATION', margin, yPos);
+            yPos += 8;
+            
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(0, 0, 0);
+            
+            // FIX 2: Fix amount formatting issue
+            const amountText = `Amount: INR ${userData.amount || 0}`;
+			doc.text(amountText, margin, yPos);
+			yPos += 6;
+            
+            doc.text(`Payment Mode: ${userData.paymentMode || 'Not Set'}`, margin, yPos);
+            yPos += 6;
+            doc.text(`Payment Status: ${userData.paymentStatus || 'Not Paid'}`, margin, yPos);
+            yPos += 6;
+            doc.text(`Password Attempts: ${userData.passwordAttempts || 0}`, margin, yPos);
+            
+            yPos += 12;
+            
+            // Admin Notes Section
+            if (userData.adminNotes && userData.adminNotes.trim()) {
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(26, 35, 126);
+                doc.text('ADMIN NOTES', margin, yPos);
+                yPos += 8;
+                
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(0, 0, 0);
+                
+                // Split notes into lines that fit page width
+                const notesLines = doc.splitTextToSize(userData.adminNotes.trim(), pageWidth - 2 * margin);
+                doc.text(notesLines, margin, yPos);
+                yPos += (notesLines.length * 6) + 10;
+            }
+            
+            // Encrypted Data Section (for verification)
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(26, 35, 126);
+            doc.text('ENCRYPTED DATA VERIFICATION', margin, yPos);
+            yPos += 8;
+            
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(100, 100, 100);
+            
+            if (userData.encryptedData) {
+                // FIX 3: Split long encrypted data to fit page width
+                const encryptedPreview = userData.encryptedData.substring(0, 100) + '...';
+                const encryptedLines = doc.splitTextToSize(`Encrypted Hash: ${encryptedPreview}`, pageWidth - 2 * margin);
+                
+                doc.text(encryptedLines, margin, yPos);
+                yPos += (encryptedLines.length * 5) + 6;
+                
+                doc.text(`Data Integrity: Verified`, margin, yPos);
+                yPos += 5;
+                
+                const keyPreview = `Encryption Key: ${ENCRYPTION_KEY.substring(0, 20)}...`;
+                const keyLines = doc.splitTextToSize(keyPreview, pageWidth - 2 * margin);
+                doc.text(keyLines, margin, yPos);
+                yPos += (keyLines.length * 5) + 6;
+            } else {
+                doc.text('No encrypted data available', margin, yPos);
+                yPos += 6;
+            }
+            
+            yPos += 10;
+            
+            // Footer - Check if we have enough space
+            if (yPos > pageHeight - 30) {
+                doc.addPage();
+                yPos = margin;
+            }
+            
+            doc.setFontSize(10);
+            doc.setTextColor(150, 150, 150);
+            doc.text('--- End of User Report ---', pageWidth / 2, pageHeight - 20, { align: 'center' });
+            doc.text(`Page ${index + 1} of ${selectedUserData.length}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+            
+            // Reset yPos for next user
+            yPos = margin;
+        });
+        
+        // Save PDF
+// Save PDF with proper filename format
+let fileName;
+if (selectedUserData.length === 1) {
+    // Single user: userid_fullname.pdf
+    const user = selectedUserData[0];
+    const cleanName = (user.fullName || 'Unknown')
+        .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters
+        .replace(/\s+/g, '_')           // Replace spaces with underscores
+        .substring(0, 30);              // Limit length
+    
+    fileName = `${user.userId || 'Unknown'}_${cleanName}.pdf`;
+} else {
+    // Multiple users: multiple_users_date_time.pdf
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    const timeStr = now.getHours().toString().padStart(2, '0') + 
+                   now.getMinutes().toString().padStart(2, '0');
+    fileName = `Multiple_Users_${dateStr}_${timeStr}.pdf`;
+}
+
+doc.save(fileName);
+        
+        showNotification(`PDF exported successfully with ${selectedUserData.length} user(s)!`, 'success');
+        
+    } catch (error) {
+        console.error('PDF export error:', error);
+        showNotification('Error generating PDF!', 'error');
+    }
+}
 
         // ====== CLEAR DATA FUNCTION ======
         function clearAllData() {
