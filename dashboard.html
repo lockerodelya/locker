@@ -24,7 +24,7 @@
         
         .dashboard-container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px;
             background: rgba(255, 255, 255, 0.97);
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
@@ -245,14 +245,54 @@
             background: #2980b9;
         }
         
-        .btn-email {
-            background: #27ae60;
-            color: white;
-            margin-left: 10px;
+        /* Status Badges */
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 100px;
+            text-align: center;
         }
         
-        .btn-email:hover {
-            background: #219653;
+        .status-not-paid {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef5350;
+        }
+        
+        .status-processing {
+            background: #fff3e0;
+            color: #ef6c00;
+            border: 1px solid #ff9800;
+        }
+        
+        .status-successful {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+        
+        /* Payment Mode Dropdown */
+        .payment-mode-dropdown {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            min-width: 120px;
+        }
+        
+        /* Password Attempts */
+        .password-attempts {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f5f5f5;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #666;
         }
         
         /* Password Change Modal */
@@ -323,7 +363,7 @@
             padding: 40px;
             border-radius: 15px;
             width: 90%;
-            max-width: 800px;
+            max-width: 1000px;
             max-height: 80vh;
             overflow-y: auto;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
@@ -373,6 +413,36 @@
             color: #2c3e50;
             font-size: 18px;
             font-weight: 600;
+        }
+        
+        /* Admin Edit Controls */
+        .admin-edit-controls {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px dashed #2196f3;
+        }
+        
+        .admin-edit-controls h4 {
+            color: #1565c0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .edit-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .edit-row label {
+            min-width: 150px;
+            font-weight: 600;
+            color: #424242;
         }
         
         /* Search Bar */
@@ -429,6 +499,11 @@
             .users-table th, 
             .users-table td {
                 padding: 10px;
+            }
+            
+            .edit-row {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     </style>
@@ -497,7 +572,7 @@
                     
                     <div class="search-container">
                         <input type="text" class="search-input" id="searchInput" 
-                               placeholder="Search by User ID, Name, Email, or Phone..." 
+                               placeholder="Search by User ID, Name, or Phone..." 
                                onkeyup="filterUsers()">
                     </div>
                     
@@ -508,10 +583,11 @@
                                     <th>User ID</th>
                                     <th>Full Name</th>
                                     <th>Phone</th>
-                                    <th>Email</th>
-                                    <th>Plan</th>
                                     <th>Amount</th>
-                                    <th>Start Date</th>
+                                    <th>Plan End Date</th>
+                                    <th>Payment Mode</th>
+                                    <th>Payment Status</th>
+                                    <th>Password Attempts</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -574,11 +650,16 @@
     <script>
         // ====== ENCRYPTION CONFIGURATION ======
         const ENCRYPTION_CONFIG = {
-            STORAGE_KEY: 'odelya_encrypted_users_v2',
-            ADMIN_KEY: 'odelya_admin_pass_v2',
+            STORAGE_KEY: 'odelya_encrypted_users_v3',
+            ADMIN_KEY: 'odelya_admin_pass_v3',
             MASTER_KEY: 'odelya_secure_master_key_2024_!@#$%',
             SALT: 'odelya_salt_secure'
         };
+
+        // ====== STATE MANAGEMENT ======
+        let isLoggedIn = false;
+        let allUsers = [];
+        let currentEditingUserId = null;
 
         // ====== ADVANCED ENCRYPTION FUNCTIONS ======
         async function deriveKey(password, salt) {
@@ -648,19 +729,61 @@
             }
         }
 
-        // ====== STATE MANAGEMENT ======
-        let isLoggedIn = false;
-        let allUsers = [];
-
         // ====== USER DATA MANAGEMENT ======
         async function loadUsers() {
-            const encryptedData = localStorage.getItem(ENCRYPTION_CONFIG.STORAGE_KEY);
-            if (encryptedData) {
-                allUsers = await decryptDataAdvanced(encryptedData);
-            } else {
+            try {
+                console.log('Loading users from all sources...');
+                
+                let loadedUsers = [];
+                
+                // SOURCE 1: Encrypted storage
+                const encryptedData = localStorage.getItem(ENCRYPTION_CONFIG.STORAGE_KEY);
+                if (encryptedData) {
+                    const decrypted = await decryptDataAdvanced(encryptedData);
+                    if (decrypted && Array.isArray(decrypted)) {
+                        loadedUsers = [...decrypted];
+                        console.log('Loaded from encrypted:', loadedUsers.length);
+                    }
+                }
+                
+                // SOURCE 2: Raw localStorage (from payment page)
+                const rawData = localStorage.getItem('odelya_users_raw');
+                if (rawData) {
+                    const rawUsers = JSON.parse(rawData);
+                    console.log('Raw users found:', rawUsers.length);
+                    
+                    // Merge new users
+                    rawUsers.forEach(rawUser => {
+                        const exists = loadedUsers.some(u => u.userId === rawUser.userId);
+                        if (!exists) {
+                            // Initialize password attempts if not present
+                            if (!rawUser.paymentInfo.passwordChangeAttempts) {
+                                rawUser.paymentInfo.passwordChangeAttempts = 0;
+                            }
+                            loadedUsers.push(rawUser);
+                            console.log('Added new user from raw:', rawUser.userId);
+                        }
+                    });
+                }
+                
+                // Update state
+                allUsers = loadedUsers;
+                
+                // Save back to encrypted storage
+                if (loadedUsers.length > 0) {
+                    await saveUsers();
+                }
+                
+                // Update dashboard display
+                updateDashboard();
+                
+                console.log('Total users loaded:', allUsers.length);
+                
+            } catch (error) {
+                console.error('Error loading users:', error);
                 allUsers = [];
+                updateDashboard();
             }
-            updateDashboard();
         }
 
         async function saveUsers() {
@@ -673,61 +796,17 @@
 
         // ====== CAPTURE DATA FROM PAYMENT PAGE ======
         function capturePaymentData(formData) {
-            // Generate User ID (6 digits, 2-9, no zeros)
-            function generateUserId() {
-                let userId = '';
-                const digits = '23456789';
-                for (let i = 0; i < 6; i++) {
-                    userId += digits.charAt(Math.floor(Math.random() * digits.length));
-                }
-                return userId;
-            }
-
-            const userId = generateUserId();
+            console.log('Payment data received:', formData);
             
-            // Create user object with all required fields
-            const user = {
-                userId: userId,
-                timestamp: new Date().toISOString(),
-                personalInfo: {
-                    fullName: `${formData.personalInfo.fullName}`,
-                    dob: formData.personalInfo.dob,
-                    phone: formData.personalInfo.phone,
-                    email: formData.personalInfo.email,
-                    gender: formData.personalInfo.gender,
-                    pan: formData.personalInfo.pan,
-                    aadhaar: formData.personalInfo.aadhaar
-                },
-                serviceInfo: {
-                    planGB: formData.serviceInfo.planGB,
-                    duration: formData.serviceInfo.duration,
-                    amountPaid: formData.serviceInfo.amountPaid,
-                    serviceType: formData.serviceInfo.serviceType,
-                    startDate: formData.serviceInfo.startDate,
-                    endDate: formData.serviceInfo.endDate
-                },
-                paymentInfo: {
-                    mode: formData.paymentInfo.mode,
-                    status: 'Payment Processing'
-                }
-            };
-            
-            // Add to users array
-            allUsers.push(user);
-            
-            // Save to encrypted storage
-            saveUsers();
-            
-            // Log for debugging
-            console.log(`New user captured: ${userId} - ${user.personalInfo.fullName}`);
-            
-            return userId;
+            // The payment page already saves to localStorage directly
+            // This function is just for compatibility
+            return formData.userId;
         }
 
         // ====== ADMIN AUTHENTICATION ======
         function getAdminPassword() {
             const savedHash = localStorage.getItem(ENCRYPTION_CONFIG.ADMIN_KEY);
-            return savedHash || 'admin123'; // Default password
+            return savedHash || 'admin123';
         }
 
         function setAdminPassword(password) {
@@ -757,6 +836,7 @@
                 
                 // Load users
                 loadUsers();
+                setupAutoRefresh();
                 
                 showMessage('Login successful!', 'success', 'loginMessage');
                 setTimeout(() => hideMessage('loginMessage'), 2000);
@@ -801,7 +881,6 @@
                 return;
             }
             
-            // Save new password (no complexity required)
             setAdminPassword(newPassword);
             
             showMessage('Password changed successfully!', 'success', 'passwordMessage');
@@ -863,26 +942,51 @@
             sortedUsers.forEach(user => {
                 const name = user.personalInfo.fullName;
                 const phone = user.personalInfo.phone;
-                const email = user.personalInfo.email;
-                const plan = user.serviceInfo.serviceType;
                 const amount = user.serviceInfo.amountPaid;
-                const startDate = user.serviceInfo.startDate;
+                const endDate = user.serviceInfo.endDate;
+                const paymentMode = user.paymentInfo.mode || 'Not Set';
+                const paymentStatus = user.paymentInfo.status || 'Not Paid';
+                const passwordAttempts = user.paymentInfo.passwordChangeAttempts || 0;
+                
+                // Determine status badge
+                let statusClass = 'status-not-paid';
+                if (paymentStatus === 'Payment Processing') {
+                    statusClass = 'status-processing';
+                } else if (paymentStatus === 'Successful') {
+                    statusClass = 'status-successful';
+                }
                 
                 tableHTML += `
                     <tr>
                         <td><span class="user-id">${user.userId}</span></td>
                         <td>${name}</td>
                         <td>${phone}</td>
-                        <td>${email}</td>
-                        <td>${plan}</td>
                         <td>₹ ${parseInt(amount).toLocaleString()}</td>
-                        <td>${startDate}</td>
+                        <td>${endDate}</td>
+                        <td>
+                            <select class="payment-mode-dropdown" onchange="updatePaymentMode('${user.userId}', this.value)">
+                                <option value="" ${paymentMode === '' ? 'selected' : ''}>Select Mode</option>
+                                <option value="UPI" ${paymentMode === 'UPI' ? 'selected' : ''}>UPI</option>
+                                <option value="Account Transfer" ${paymentMode === 'Account Transfer' ? 'selected' : ''}>Account Transfer</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="payment-mode-dropdown" onchange="updatePaymentStatus('${user.userId}', this.value)">
+                                <option value="" ${paymentStatus === '' ? 'selected' : ''}>Select Status</option>
+                                <option value="Not Paid" ${paymentStatus === 'Not Paid' ? 'selected' : ''}>Not Paid</option>
+                                <option value="Payment Processing" ${paymentStatus === 'Payment Processing' ? 'selected' : ''}>Payment Processing</option>
+                                <option value="Successful" ${paymentStatus === 'Successful' ? 'selected' : ''}>Successful</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div class="password-attempts">
+                                <i class="fas fa-key"></i>
+                                <span>${passwordAttempts}</span>
+                            </div>
+                        </td>
                         <td>
                             <button class="action-btn btn-view" onclick="viewUserDetails('${user.userId}')">
                                 <i class="fas fa-eye"></i> View
-                            </button>
-                            <button class="action-btn btn-email" onclick="emailUserID('${user.userId}')">
-                                <i class="fas fa-envelope"></i> Email ID
                             </button>
                         </td>
                     </tr>
@@ -890,6 +994,26 @@
             });
             
             tableBody.innerHTML = tableHTML;
+        }
+
+        function updatePaymentMode(userId, mode) {
+            const userIndex = allUsers.findIndex(u => u.userId === userId);
+            if (userIndex !== -1) {
+                allUsers[userIndex].paymentInfo.mode = mode;
+                saveUsers();
+                showMessage(`Payment mode updated for user ${userId}`, 'success');
+                setTimeout(() => hideMessage(), 2000);
+            }
+        }
+
+        function updatePaymentStatus(userId, status) {
+            const userIndex = allUsers.findIndex(u => u.userId === userId);
+            if (userIndex !== -1) {
+                allUsers[userIndex].paymentInfo.status = status;
+                saveUsers();
+                showMessage(`Payment status updated for user ${userId}`, 'success');
+                setTimeout(() => hideMessage(), 2000);
+            }
         }
 
         function filterUsers() {
@@ -907,6 +1031,8 @@
             const user = allUsers.find(u => u.userId === userId);
             if (!user) return;
             
+            currentEditingUserId = userId;
+            
             const detailsHTML = `
                 <div class="user-details-grid">
                     <div class="detail-card">
@@ -915,7 +1041,7 @@
                     </div>
                     <div class="detail-card">
                         <div class="detail-label">Registration Date</div>
-                        <div class="detail-value">${new Date(user.timestamp).toLocaleDateString()}</div>
+                        <div class="detail-value">${user.registrationDate}</div>
                     </div>
                     <div class="detail-card">
                         <div class="detail-label">Full Name</div>
@@ -969,20 +1095,39 @@
                         <div class="detail-label">Plan End Date</div>
                         <div class="detail-value">${user.serviceInfo.endDate}</div>
                     </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Payment Mode</div>
-                        <div class="detail-value">${user.paymentInfo.mode}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Payment Status</div>
-                        <div class="detail-value">${user.paymentInfo.status}</div>
-                    </div>
                 </div>
                 
-                <div style="margin-top: 30px; text-align: center;">
-                    <button class="login-btn" onclick="closeUserModal()" style="max-width: 200px;">
-                        <i class="fas fa-times"></i> Close
-                    </button>
+                <div class="admin-edit-controls">
+                    <h4><i class="fas fa-edit"></i> Admin Controls</h4>
+                    <div class="edit-row">
+                        <label>Payment Mode:</label>
+                        <select id="editPaymentMode" class="payment-mode-dropdown" style="min-width: 200px;">
+                            <option value="" ${user.paymentInfo.mode === '' ? 'selected' : ''}>Select Mode</option>
+                            <option value="UPI" ${user.paymentInfo.mode === 'UPI' ? 'selected' : ''}>UPI</option>
+                            <option value="Account Transfer" ${user.paymentInfo.mode === 'Account Transfer' ? 'selected' : ''}>Account Transfer</option>
+                        </select>
+                    </div>
+                    <div class="edit-row">
+                        <label>Payment Status:</label>
+                        <select id="editPaymentStatus" class="payment-mode-dropdown" style="min-width: 200px;">
+                            <option value="" ${user.paymentInfo.status === '' ? 'selected' : ''}>Select Status</option>
+                            <option value="Not Paid" ${user.paymentInfo.status === 'Not Paid' ? 'selected' : ''}>Not Paid</option>
+                            <option value="Payment Processing" ${user.paymentInfo.status === 'Payment Processing' ? 'selected' : ''}>Payment Processing</option>
+                            <option value="Successful" ${user.paymentInfo.status === 'Successful' ? 'selected' : ''}>Successful</option>
+                        </select>
+                    </div>
+                    <div class="edit-row">
+                        <label>Password Change Attempts:</label>
+                        <input type="number" id="editPasswordAttempts" value="${user.paymentInfo.passwordChangeAttempts || 0}" min="0" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button class="login-btn" onclick="saveUserEdits()" style="padding: 10px 20px; max-width: 150px;">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <button class="login-btn" onclick="closeUserModal()" style="padding: 10px 20px; max-width: 150px; background: #95a5a6;">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
                 </div>
             `;
             
@@ -990,15 +1135,57 @@
             document.getElementById('userModal').style.display = 'flex';
         }
 
-        function closeUserModal() {
-            document.getElementById('userModal').style.display = 'none';
+        function saveUserEdits() {
+            if (!currentEditingUserId) return;
+            
+            const userIndex = allUsers.findIndex(u => u.userId === currentEditingUserId);
+            if (userIndex === -1) return;
+            
+            const paymentMode = document.getElementById('editPaymentMode').value;
+            const paymentStatus = document.getElementById('editPaymentStatus').value;
+            const passwordAttempts = parseInt(document.getElementById('editPasswordAttempts').value) || 0;
+            
+            allUsers[userIndex].paymentInfo.mode = paymentMode;
+            allUsers[userIndex].paymentInfo.status = paymentStatus;
+            allUsers[userIndex].paymentInfo.passwordChangeAttempts = passwordAttempts;
+            
+            saveUsers();
+            updateUsersTable();
+            
+            showMessage('Changes saved successfully!', 'success');
+            setTimeout(() => {
+                closeUserModal();
+                hideMessage();
+            }, 2000);
         }
 
-        function emailUserID(userId) {
-            const user = allUsers.find(u => u.userId === userId);
-            if (!user) return;
+        function closeUserModal() {
+            document.getElementById('userModal').style.display = 'none';
+            currentEditingUserId = null;
+        }
+
+        // ====== AUTO-REFRESH ON NEW DATA ======
+        function setupAutoRefresh() {
+            // Listen for storage events
+            window.addEventListener('storage', function(event) {
+                if (event.key === 'odelya_users_raw' || event.key === 'odelya_latest_user') {
+                    console.log('Storage updated, refreshing...');
+                    loadUsers();
+                }
+            });
             
-            alert(`User ID ${userId} would be emailed to: ${user.personalInfo.email}\n\nNote: Email functionality requires backend integration.`);
+            // Listen for broadcast messages
+            if (typeof BroadcastChannel !== 'undefined') {
+                const channel = new BroadcastChannel('odelya_dashboard_channel');
+                channel.onmessage = function(event) {
+                    if (event.data.type === 'NEW_USER') {
+                        console.log('New user broadcast received');
+                        loadUsers();
+                        showMessage(`New user added: ${event.data.data.userId}`, 'success');
+                        setTimeout(() => hideMessage(), 3000);
+                    }
+                };
+            }
         }
 
         // ====== EXPORT DATA ======
@@ -1040,9 +1227,10 @@
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('dashboardContent').style.display = 'block';
                 loadUsers();
+                setupAutoRefresh();
             }
             
-            // Make capture function globally available for payment.html
+            // Make capture function globally available
             window.odelyaDashboard = {
                 capturePaymentData: capturePaymentData,
                 loadUsers: loadUsers,
@@ -1050,151 +1238,7 @@
             };
             
             console.log('Admin Dashboard Loaded - Secure Version');
-            console.log('Default Admin Password: admin123');
         });
-// ====== AUTO-REFRESH ON NEW DATA ======
-function setupAutoRefresh() {
-    // Listen for storage events (from payment page)
-    window.addEventListener('storage', function(event) {
-        if (event.key === 'odelya_users_raw' || 
-            event.key === 'odelya_latest_user' ||
-            event.key === 'odelya_users_update') {
-            console.log('Storage updated, refreshing dashboard...');
-            loadUsers(); // Reload users
-        }
-    });
-    
-    // Listen for broadcast messages
-    if (typeof BroadcastChannel !== 'undefined') {
-        const channel = new BroadcastChannel('odelya_dashboard_channel');
-        channel.onmessage = function(event) {
-            if (event.data.type === 'NEW_USER') {
-                console.log('New user broadcast received:', event.data.data.userId);
-                loadUsers(); // Reload users
-                
-                // Show notification
-                showMessage(`New user added: ${event.data.data.userId}`, 'success');
-                setTimeout(() => hideMessage(), 3000);
-            }
-        };
-    }
-    
-    // Polling fallback (check every 5 seconds)
-    setInterval(function() {
-        if (isLoggedIn) {
-            const lastCheck = localStorage.getItem('odelya_last_check') || '0';
-            const usersData = localStorage.getItem('odelya_users_raw');
-            
-            if (usersData) {
-                const users = JSON.parse(usersData);
-                if (users.length > allUsers.length) {
-                    console.log('New users detected via polling');
-                    loadUsers();
-                }
-            }
-            
-            localStorage.setItem('odelya_last_check', Date.now().toString());
-        }
-    }, 5000);
-}
-
-// ====== MODIFY loadUsers() function ======
-// REPLACE the existing loadUsers() function with this:
-
-async function loadUsers() {
-    try {
-        console.log('Loading users from all sources...');
-        
-        let loadedUsers = [];
-        
-        // SOURCE 1: Encrypted storage (primary)
-        const encryptedData = localStorage.getItem(ENCRYPTION_CONFIG.STORAGE_KEY);
-        if (encryptedData) {
-            const decrypted = await decryptDataAdvanced(encryptedData);
-            if (decrypted && Array.isArray(decrypted)) {
-                loadedUsers = [...decrypted];
-                console.log('Loaded from encrypted:', loadedUsers.length);
-            }
-        }
-        
-        // SOURCE 2: Raw localStorage (from payment page)
-        const rawData = localStorage.getItem('odelya_users_raw');
-        if (rawData) {
-            const rawUsers = JSON.parse(rawData);
-            console.log('Raw users found:', rawUsers.length);
-            
-            // Merge new users
-            rawUsers.forEach(rawUser => {
-                const exists = loadedUsers.some(u => u.userId === rawUser.userId);
-                if (!exists) {
-                    // Add to encrypted storage
-                    loadedUsers.push(rawUser);
-                    console.log('Added new user from raw:', rawUser.userId);
-                }
-            });
-        }
-        
-        // SOURCE 3: Emergency backup
-        const emergencyData = localStorage.getItem('odelya_emergency');
-        if (emergencyData) {
-            const emergency = JSON.parse(emergencyData);
-            const exists = loadedUsers.some(u => u.userId === emergency.userId);
-            if (!exists && emergency.userId) {
-                loadedUsers.push({
-                    userId: emergency.userId,
-                    timestamp: emergency.timestamp,
-                    personalInfo: {
-                        fullName: emergency.name || 'Unknown',
-                        phone: emergency.phone || 'N/A',
-                        email: emergency.email || 'N/A'
-                    },
-                    serviceInfo: {
-                        amountPaid: 0,
-                        serviceType: 'Unknown',
-                        startDate: new Date().toISOString().split('T')[0],
-                        endDate: new Date().toISOString().split('T')[0]
-                    },
-                    paymentInfo: {
-                        status: 'Emergency Capture'
-                    }
-                });
-                console.log('Added emergency user:', emergency.userId);
-            }
-        }
-        
-        // Update state
-        allUsers = loadedUsers;
-        
-        // Save back to encrypted storage
-        if (loadedUsers.length > 0) {
-            await saveUsers();
-        }
-        
-        // Update dashboard display
-        updateDashboard();
-        
-        console.log('Total users loaded:', allUsers.length);
-        
-    } catch (error) {
-        console.error('Error loading users:', error);
-        allUsers = [];
-        updateDashboard();
-    }
-}
-
-// ====== UPDATE initialization ======
-// In the document.addEventListener('DOMContentLoaded', ...) function,
-// ADD this line after loading users:
-
-document.addEventListener('DOMContentLoaded', function() {
-    // ... existing code ...
-    
-    // ADD THIS LINE:
-    setupAutoRefresh(); // <-- Add this for auto-sync
-    
-    // ... rest of existing code ...
-});
-                
     </script>
 </body>
 </html>
