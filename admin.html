@@ -795,6 +795,8 @@
     </div>
 
     <script>
+
+<script>
         // ====== ENCRYPTION/DECRYPTION FUNCTIONS ======
         const ENCRYPTION_KEY = 'odelya-secure-admin-key-2024!@#$';
         
@@ -940,52 +942,59 @@
             loadUserData();
         }
 
-        // ====== USER DATA MANAGEMENT ======
+        // ====== USER DATA MANAGEMENT - FIXED DUPLICATES ======
         function loadUserData() {
             const allUsers = [];
+            const userMap = new Map(); // Use Map to track unique users by userId
             
+            // First, check our admin storage (user_XXXXXX)
             const keys = Object.keys(localStorage);
             keys.forEach(key => {
                 if (key.startsWith('user_')) {
                     try {
                         const userData = JSON.parse(localStorage.getItem(key));
-                        allUsers.push(userData);
+                        // Store in map with userId as key to ensure uniqueness
+                        userMap.set(userData.userId, userData);
                     } catch (error) {
                         console.error('Error parsing user data:', error);
                     }
                 }
             });
             
+            // Now check odelya_users_raw and migrate if needed
             const odelyaUsers = JSON.parse(localStorage.getItem('odelya_users_raw') || '[]');
             odelyaUsers.forEach(user => {
-                const encryptedUser = {
-                    userId: user.userId,
-                    fullName: user.personalInfo.fullName,
-                    email: encryptData(user.personalInfo.email),
-                    phone: encryptData(user.personalInfo.phone),
-                    amount: user.serviceInfo.amountPaid,
-                    encryptedData: encryptData(JSON.stringify(user)),
-                    paymentMode: '',
-                    paymentStatus: 'Not Paid',
-                    passwordAttempts: 0,
-                    adminNotes: '',
-                    registrationDate: user.registrationDate,
-                    planStart: user.serviceInfo.startDate,
-                    planEnd: user.serviceInfo.endDate,
-                    serviceType: user.serviceInfo.serviceType,
-                    planGB: user.serviceInfo.planGB,
-                    duration: user.serviceInfo.duration
-                };
-                
-                const exists = allUsers.some(u => u.userId === user.userId);
-                if (!exists) {
-                    allUsers.push(encryptedUser);
+                // Only migrate if user doesn't already exist in our admin storage
+                if (!userMap.has(user.userId)) {
+                    const encryptedUser = {
+                        userId: user.userId,
+                        fullName: user.personalInfo.fullName,
+                        email: encryptData(user.personalInfo.email),
+                        phone: encryptData(user.personalInfo.phone),
+                        amount: user.serviceInfo.amountPaid,
+                        encryptedData: encryptData(JSON.stringify(user)),
+                        paymentMode: '',
+                        paymentStatus: 'Not Paid',
+                        passwordAttempts: 0,
+                        adminNotes: '',
+                        registrationDate: user.registrationDate,
+                        planStart: user.serviceInfo.startDate,
+                        planEnd: user.serviceInfo.endDate,
+                        serviceType: user.serviceInfo.serviceType,
+                        planGB: user.serviceInfo.planGB,
+                        duration: user.serviceInfo.duration
+                    };
+                    
+                    userMap.set(user.userId, encryptedUser);
                     localStorage.setItem(`user_${user.userId}`, JSON.stringify(encryptedUser));
                 }
             });
             
-            updateStats(allUsers);
-            populateUsersTable(allUsers);
+            // Convert map back to array
+            const uniqueUsers = Array.from(userMap.values());
+            
+            updateStats(uniqueUsers);
+            populateUsersTable(uniqueUsers);
         }
 
         function updateStats(users) {
@@ -1015,6 +1024,11 @@
                 `;
                 return;
             }
+            
+            // Sort users by registration date (newest first)
+            users.sort((a, b) => {
+                return new Date(b.registrationDate) - new Date(a.registrationDate);
+            });
             
             users.forEach(user => {
                 const row = document.createElement('tr');
@@ -1256,6 +1270,7 @@
 
         function clearAllData() {
             if (confirm('⚠️ Are you sure you want to clear ALL user data?\n\nThis action cannot be undone!')) {
+                // Clear BOTH storage formats
                 const keys = Object.keys(localStorage);
                 keys.forEach(key => {
                     if (key.startsWith('user_') || key === 'odelya_users_raw') {
@@ -1265,6 +1280,73 @@
                 
                 loadUserData();
                 showNotification('All user data has been cleared!', 'success');
+            }
+        }
+
+        // ====== MIGRATION FUNCTION (One-time cleanup) ======
+        function cleanUpDuplicateData() {
+            // This function can be called once to clean up existing duplicates
+            const userMap = new Map();
+            const keys = Object.keys(localStorage);
+            
+            keys.forEach(key => {
+                if (key.startsWith('user_')) {
+                    try {
+                        const userData = JSON.parse(localStorage.getItem(key));
+                        userMap.set(userData.userId, userData);
+                    } catch (error) {
+                        console.error('Error parsing user data:', error);
+                    }
+                }
+            });
+            
+            // Also check odelya_users_raw
+            const odelyaUsers = JSON.parse(localStorage.getItem('odelya_users_raw') || '[]');
+            odelyaUsers.forEach(user => {
+                if (!userMap.has(user.userId)) {
+                    const encryptedUser = {
+                        userId: user.userId,
+                        fullName: user.personalInfo.fullName,
+                        email: encryptData(user.personalInfo.email),
+                        phone: encryptData(user.personalInfo.phone),
+                        amount: user.serviceInfo.amountPaid,
+                        encryptedData: encryptData(JSON.stringify(user)),
+                        paymentMode: '',
+                        paymentStatus: 'Not Paid',
+                        passwordAttempts: 0,
+                        adminNotes: '',
+                        registrationDate: user.registrationDate,
+                        planStart: user.serviceInfo.startDate,
+                        planEnd: user.serviceInfo.endDate,
+                        serviceType: user.serviceInfo.serviceType,
+                        planGB: user.serviceInfo.planGB,
+                        duration: user.serviceInfo.duration
+                    };
+                    
+                    userMap.set(user.userId, encryptedUser);
+                    localStorage.setItem(`user_${user.userId}`, JSON.stringify(encryptedUser));
+                }
+            });
+            
+            // Now clear odelya_users_raw since we've migrated everything
+            localStorage.removeItem('odelya_users_raw');
+            
+            console.log('Duplicate cleanup completed. Migrated users:', userMap.size);
+            showNotification('Duplicate data cleanup completed!', 'success');
+            loadUserData();
+        }
+
+        // Optional: Add a cleanup button (you can remove this after first use)
+        function addCleanupButton() {
+            const cleanupBtn = document.createElement('button');
+            cleanupBtn.className = 'btn-clear';
+            cleanupBtn.innerHTML = '<i class="fas fa-broom"></i> Clean Duplicates';
+            cleanupBtn.style.marginLeft = '15px';
+            cleanupBtn.onclick = cleanUpDuplicateData;
+            
+            const actionButtons = document.querySelector('.action-buttons');
+            if (actionButtons) {
+                actionButtons.appendChild(cleanupBtn);
             }
         }
 
@@ -1295,8 +1377,14 @@
         `;
         document.head.appendChild(style);
 
+        // Initialize cleanup button (optional)
+        setTimeout(addCleanupButton, 1000);
+
         // ====== GLOBAL FUNCTIONS ======
         window.editUser = editUser;
+        window.cleanUpDuplicateData = cleanUpDuplicateData;
+    </script>
+        
     </script>
 </body>
 </html>
