@@ -3,1242 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Odelya</title>
+    <title>Admin Dashboard - Gym Management</title>
+    <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #1a2980, #26d0ce);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .dashboard-container {
-            width: 100%;
-            max-width: 1400px;
-            background: rgba(255, 255, 255, 0.97);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .header {
-            background: linear-gradient(to right, #2c3e50, #4a6491);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .header h1 {
-            font-size: 28px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .admin-controls {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .btn-admin {
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-        
-        .btn-admin:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        .content-area {
-            padding: 30px;
-        }
-        
-        /* Login Section */
-        .login-section {
-            max-width: 400px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        
-        .login-section h2 {
-            color: #2c3e50;
-            margin-bottom: 30px;
-            font-size: 24px;
-        }
-        
-        .input-group {
-            margin-bottom: 25px;
-            text-align: left;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-        
-        .input-group input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 16px;
-        }
-        
-        .input-group input:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-        }
-        
-        .login-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(to right, #2980b9, #2c3e50);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
-        }
-        
-        .login-btn:hover {
-            background: linear-gradient(to right, #3498db, #34495e);
-            transform: translateY(-2px);
-        }
-        
-        /* Dashboard Stats */
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            border-left: 5px solid #3498db;
-            text-align: center;
-        }
-        
-        .stat-card h3 {
-            color: #2c3e50;
-            font-size: 14px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .stat-card .stat-value {
-            font-size: 36px;
-            font-weight: 700;
-            color: #1a2980;
-        }
-        
-        /* Users Table */
-        .users-section {
-            margin-top: 40px;
-        }
-        
-        .section-title {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 22px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .users-table-container {
-            overflow-x: auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            padding: 20px;
-            margin-top: 20px;
-        }
-        
-        .users-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .users-table th {
-            background: #f8f9fa;
-            padding: 15px;
-            text-align: left;
-            color: #2c3e50;
-            font-weight: 600;
-            border-bottom: 2px solid #e9ecef;
-        }
-        
-        .users-table td {
-            padding: 15px;
-            border-bottom: 1px solid #e9ecef;
-            color: #495057;
-        }
-        
-        .users-table tr:hover {
-            background: #f8f9fa;
-        }
-        
-        .user-id {
-            font-family: monospace;
-            font-weight: 700;
-            color: #1a2980;
-            background: #e3f2fd;
-            padding: 5px 10px;
-            border-radius: 5px;
-            display: inline-block;
-        }
-        
-        .action-btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        
-        .btn-view {
-            background: #3498db;
-            color: white;
-        }
-        
-        .btn-view:hover {
-            background: #2980b9;
-        }
-        
-        /* Status Badges */
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-block;
-            min-width: 100px;
-            text-align: center;
-        }
-        
-        .status-not-paid {
-            background: #ffebee;
-            color: #c62828;
-            border: 1px solid #ef5350;
-        }
-        
-        .status-processing {
-            background: #fff3e0;
-            color: #ef6c00;
-            border: 1px solid #ff9800;
-        }
-        
-        .status-successful {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #4caf50;
-        }
-        
-        /* Payment Mode Dropdown */
-        .payment-mode-dropdown {
-            padding: 6px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 13px;
-            min-width: 120px;
-        }
-        
-        /* Password Attempts */
-        .password-attempts {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: #f5f5f5;
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            color: #666;
-        }
-        
-        /* Password Change Modal */
-        .password-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        
-        .password-content {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-        }
-        
-        .password-content h3 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .message {
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            display: none;
-            font-size: 14px;
-        }
-        
-        .error {
-            background: #ffebee;
-            color: #c62828;
-            border-left: 4px solid #ef5350;
-        }
-        
-        .success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border-left: 4px solid #4caf50;
-        }
-        
-        /* User Details Modal */
-        .user-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1001;
-        }
-        
-        .user-content {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 1000px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-        }
-        
-        .user-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        
-        .user-header h3 {
-            color: #2c3e50;
-            font-size: 24px;
-        }
-        
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: #7f8c8d;
-            cursor: pointer;
-        }
-        
-        .user-details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .detail-card {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #3498db;
-        }
-        
-        .detail-label {
-            color: #7f8c8d;
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-        
-        .detail-value {
-            color: #2c3e50;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        /* Admin Edit Controls */
-        .admin-edit-controls {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border: 2px dashed #2196f3;
-        }
-        
-        .admin-edit-controls h4 {
-            color: #1565c0;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .edit-row {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .edit-row label {
-            min-width: 150px;
-            font-weight: 600;
-            color: #424242;
-        }
-        
-        /* Search Bar */
-        .search-container {
-            margin-bottom: 20px;
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 14px 20px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 16px;
-        }
-        
-        .search-input:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-        
-        /* No Data Message */
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
-            font-size: 18px;
-        }
-        
-        .no-data i {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #bdc3c7;
-        }
-        
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 20px;
-            }
-            
-            .admin-controls {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .stats-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .users-table {
-                font-size: 14px;
-            }
-            
-            .users-table th, 
-            .users-table td {
-                padding: 10px;
-            }
-            
-            .edit-row {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-    </style>
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Header -->
-        <div class="header">
-            <h1><i class="fas fa-cogs"></i> Admin Dashboard</h1>
-            <div class="admin-controls">
-                <button class="btn-admin" onclick="exportData()">
-                    <i class="fas fa-download"></i> Export
-                </button>
-                <button class="btn-admin" onclick="changePassword()">
-                    <i class="fas fa-key"></i> Change Password
-                </button>
-                <button class="btn-admin" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h2><i class="fas fa-dumbbell"></i> GYM PRO</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-page="overview">
+                    <a href="#"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                </li>
+                <li class="nav-item" data-page="users">
+                    <a href="#"><i class="fas fa-users"></i> Manage Users</a>
+                </li>
+                <li class="nav-item" data-page="new-user">
+                    <a href="#"><i class="fas fa-user-plus"></i> Add New User</a>
+                </li>
+                <li class="nav-item" data-page="billing">
+                    <a href="#"><i class="fas fa-credit-card"></i> Billing & Payments</a>
+                </li>
+                <li class="nav-item">
+                    <a href="payment.html" target="_blank"><i class="fas fa-cash-register"></i> Payment Portal</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <p>© 2024 GYM PRO</p>
             </div>
         </div>
-        
-        <!-- Content Area -->
-        <div class="content-area">
-            <!-- Login Section -->
-            <div id="loginSection" class="login-section">
-                <h2>Admin Login</h2>
-                <div class="input-group">
-                    <label>Admin Password</label>
-                    <input type="password" id="adminPassword" placeholder="Enter admin password">
-                </div>
-                <div id="loginMessage" class="message"></div>
-                <button class="login-btn" onclick="adminLogin()">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </button>
-                <p style="margin-top: 20px; color: #666; font-size: 14px;">
-                    Default password: <strong>admin123</strong> (Change after first login)
-                </p>
-            </div>
-            
-            <!-- Dashboard Content -->
-            <div id="dashboardContent" style="display: none;">
-                <!-- Stats -->
-                <div class="stats-container">
-                    <div class="stat-card">
-                        <h3>Total Users</h3>
-                        <div class="stat-value" id="totalUsers">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>This Month</h3>
-                        <div class="stat-value" id="monthUsers">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Total Revenue</h3>
-                        <div class="stat-value" id="totalRevenue">₹ 0</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Active Plans</h3>
-                        <div class="stat-value" id="activePlans">0</div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h1>Admin Dashboard</h1>
+                    <div class="date-display">
+                        <i class="far fa-calendar"></i>
+                        <span id="current-date"></span>
                     </div>
                 </div>
-                
-                <!-- Users Table -->
-                <div class="users-section">
-                    <h3 class="section-title"><i class="fas fa-users"></i> Registered Users</h3>
-                    
-                    <div class="search-container">
-                        <input type="text" class="search-input" id="searchInput" 
-                               placeholder="Search by User ID, Name, or Phone..." 
-                               onkeyup="filterUsers()">
+                <div class="header-right">
+                    <div class="admin-profile">
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=4A90E2&color=fff" alt="Admin">
+                        <div class="admin-info">
+                            <span class="admin-name">Admin User</span>
+                            <span class="admin-role">Super Admin</span>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Overview Page -->
+                <div id="overview-page" class="page active">
+                    <div class="stats-cards">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: #4A90E2;">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Users</h3>
+                                <p id="total-users">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: #50C878;">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Active Today</h3>
+                                <p id="active-today">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: #FF6B6B;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Expiring Soon</h3>
+                                <p id="expiring-soon">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: #F5A623;">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Monthly Revenue</h3>
+                                <p id="monthly-revenue">₹0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recent-activity">
+                        <h2>Recent Activity</h2>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon success">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <p><strong>New User Registered</strong></p>
+                                    <p>John Doe joined the gym</p>
+                                    <span class="activity-time">2 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon warning">
+                                    <i class="fas fa-calendar-exclamation"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <p><strong>Membership Expiring</strong></p>
+                                    <p>Jane Smith's plan ends tomorrow</p>
+                                    <span class="activity-time">5 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manage Users Page -->
+                <div id="users-page" class="page">
+                    <div class="page-header">
+                        <h2>Manage Users</h2>
+                        <div class="search-bar">
+                            <input type="text" id="user-search" placeholder="Search by name, phone, or ID...">
+                            <i class="fas fa-search"></i>
+                        </div>
                     </div>
                     
                     <div class="users-table-container">
-                        <table class="users-table" id="usersTable">
+                        <table class="users-table">
                             <thead>
                                 <tr>
                                     <th>User ID</th>
                                     <th>Full Name</th>
                                     <th>Phone</th>
-                                    <th>Amount</th>
                                     <th>Plan End Date</th>
-                                    <th>Payment Mode</th>
-                                    <th>Payment Status</th>
-                                    <th>Password Attempts</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="usersTableBody">
-                                <!-- Users will be loaded here -->
+                            <tbody id="users-table-body">
+                                <!-- Users will be populated here by JavaScript -->
                             </tbody>
                         </table>
-                        
-                        <div id="noDataMessage" class="no-data" style="display: none;">
-                            <i class="fas fa-database"></i>
-                            <p>No users found. Users will appear here automatically when they complete payment.</p>
+                    </div>
+                </div>
+
+                <!-- Add New User Page -->
+                <div id="new-user-page" class="page">
+                    <div class="page-header">
+                        <h2>Add New User</h2>
+                    </div>
+                    
+                    <div class="form-container">
+                        <form id="new-user-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="full-name">Full Name *</label>
+                                    <input type="text" id="full-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number *</label>
+                                    <input type="tel" id="phone" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="plan-type">Plan Type *</label>
+                                    <select id="plan-type" required>
+                                        <option value="">Select Plan</option>
+                                        <option value="basic">Basic (₹1500/month)</option>
+                                        <option value="standard">Standard (₹2500/month)</option>
+                                        <option value="premium">Premium (₹4000/month)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="duration">Duration (Months) *</label>
+                                    <select id="duration" required>
+                                        <option value="1">1 Month</option>
+                                        <option value="3">3 Months</option>
+                                        <option value="6">6 Months</option>
+                                        <option value="12">12 Months</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="start-date">Start Date *</label>
+                                <input type="date" id="start-date" required>
+                            </div>
+                            
+                            <div class="existing-user-section">
+                                <p><strong>Existing User?</strong> Please use the "Manage Users" section to update details.</p>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-user-plus"></i> Create User
+                                </button>
+                                <button type="reset" class="btn-secondary">
+                                    <i class="fas fa-redo"></i> Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Billing & Payments Page -->
+                <div id="billing-page" class="page">
+                    <div class="page-header">
+                        <h2>Billing & Payments</h2>
+                        <div class="filter-options">
+                            <select id="payment-filter">
+                                <option value="all">All Payments</option>
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                                <option value="overdue">Overdue</option>
+                            </select>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Password Change Modal -->
-    <div class="password-modal" id="passwordModal">
-        <div class="password-content">
-            <h3><i class="fas fa-key"></i> Change Admin Password</h3>
-            <div class="input-group">
-                <label>New Password</label>
-                <input type="password" id="newPassword" placeholder="Enter new password">
-            </div>
-            <div class="input-group">
-                <label>Confirm Password</label>
-                <input type="password" id="confirmPassword" placeholder="Confirm new password">
-            </div>
-            <div id="passwordMessage" class="message"></div>
-            <div style="display: flex; gap: 15px; margin-top: 20px;">
-                <button class="login-btn" onclick="saveNewPassword()" style="flex: 1;">
-                    Save
-                </button>
-                <button class="login-btn" onclick="closePasswordModal()" 
-                        style="flex: 1; background: #95a5a6;">
-                    Cancel
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- User Details Modal -->
-    <div class="user-modal" id="userModal">
-        <div class="user-content">
-            <div class="user-header">
-                <h3><i class="fas fa-user"></i> User Details</h3>
-                <button class="close-btn" onclick="closeUserModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div id="userDetailsContent">
-                <!-- User details will be loaded here -->
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // ====== ENCRYPTION CONFIGURATION ======
-        const ENCRYPTION_CONFIG = {
-            STORAGE_KEY: 'odelya_encrypted_users_v3',
-            ADMIN_KEY: 'odelya_admin_pass_v3',
-            MASTER_KEY: 'odelya_secure_master_key_2024_!@#$%',
-            SALT: 'odelya_salt_secure'
-        };
-
-        // ====== STATE MANAGEMENT ======
-        let isLoggedIn = false;
-        let allUsers = [];
-        let currentEditingUserId = null;
-
-        // ====== ADVANCED ENCRYPTION FUNCTIONS ======
-        async function deriveKey(password, salt) {
-            const encoder = new TextEncoder();
-            const keyMaterial = await window.crypto.subtle.importKey(
-                "raw",
-                encoder.encode(password),
-                {name: "PBKDF2"},
-                false,
-                ["deriveKey"]
-            );
-            
-            return await window.crypto.subtle.deriveKey(
-                {
-                    name: "PBKDF2",
-                    salt: encoder.encode(salt),
-                    iterations: 100000,
-                    hash: "SHA-256"
-                },
-                keyMaterial,
-                {name: "AES-GCM", length: 256},
-                false,
-                ["encrypt", "decrypt"]
-            );
-        }
-
-        async function encryptDataAdvanced(data) {
-            try {
-                const key = await deriveKey(ENCRYPTION_CONFIG.MASTER_KEY, ENCRYPTION_CONFIG.SALT);
-                const iv = window.crypto.getRandomValues(new Uint8Array(12));
-                const encoder = new TextEncoder();
-                const encrypted = await window.crypto.subtle.encrypt(
-                    {name: "AES-GCM", iv: iv},
-                    key,
-                    encoder.encode(JSON.stringify(data))
-                );
-                
-                const combined = new Uint8Array(iv.length + encrypted.byteLength);
-                combined.set(iv);
-                combined.set(new Uint8Array(encrypted), iv.length);
-                
-                return btoa(String.fromCharCode(...combined));
-            } catch (error) {
-                console.error('Encryption error:', error);
-                return null;
-            }
-        }
-
-        async function decryptDataAdvanced(encryptedBase64) {
-            try {
-                const encryptedData = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
-                const iv = encryptedData.slice(0, 12);
-                const ciphertext = encryptedData.slice(12);
-                
-                const key = await deriveKey(ENCRYPTION_CONFIG.MASTER_KEY, ENCRYPTION_CONFIG.SALT);
-                const decrypted = await window.crypto.subtle.decrypt(
-                    {name: "AES-GCM", iv: iv},
-                    key,
-                    ciphertext
-                );
-                
-                const decryptedText = new TextDecoder().decode(decrypted);
-                return JSON.parse(decryptedText);
-            } catch (error) {
-                console.error('Decryption error:', error);
-                return [];
-            }
-        }
-
-        // ====== USER DATA MANAGEMENT ======
-        async function loadUsers() {
-            try {
-                console.log('Loading users from all sources...');
-                
-                let loadedUsers = [];
-                
-                // SOURCE 1: Encrypted storage
-                const encryptedData = localStorage.getItem(ENCRYPTION_CONFIG.STORAGE_KEY);
-                if (encryptedData) {
-                    const decrypted = await decryptDataAdvanced(encryptedData);
-                    if (decrypted && Array.isArray(decrypted)) {
-                        loadedUsers = [...decrypted];
-                        console.log('Loaded from encrypted:', loadedUsers.length);
-                    }
-                }
-                
-                // SOURCE 2: Raw localStorage (from payment page)
-                const rawData = localStorage.getItem('odelya_users_raw');
-                if (rawData) {
-                    const rawUsers = JSON.parse(rawData);
-                    console.log('Raw users found:', rawUsers.length);
                     
-                    // Merge new users
-                    rawUsers.forEach(rawUser => {
-                        const exists = loadedUsers.some(u => u.userId === rawUser.userId);
-                        if (!exists) {
-                            // Initialize password attempts if not present
-                            if (!rawUser.paymentInfo.passwordChangeAttempts) {
-                                rawUser.paymentInfo.passwordChangeAttempts = 0;
-                            }
-                            loadedUsers.push(rawUser);
-                            console.log('Added new user from raw:', rawUser.userId);
-                        }
-                    });
-                }
-                
-                // Update state
-                allUsers = loadedUsers;
-                
-                // Save back to encrypted storage
-                if (loadedUsers.length > 0) {
-                    await saveUsers();
-                }
-                
-                // Update dashboard display
-                updateDashboard();
-                
-                console.log('Total users loaded:', allUsers.length);
-                
-            } catch (error) {
-                console.error('Error loading users:', error);
-                allUsers = [];
-                updateDashboard();
-            }
-        }
-
-        async function saveUsers() {
-            const encryptedData = await encryptDataAdvanced(allUsers);
-            if (encryptedData) {
-                localStorage.setItem(ENCRYPTION_CONFIG.STORAGE_KEY, encryptedData);
-                updateDashboard();
-            }
-        }
-
-        // ====== CAPTURE DATA FROM PAYMENT PAGE ======
-        function capturePaymentData(formData) {
-            console.log('Payment data received:', formData);
-            
-            // The payment page already saves to localStorage directly
-            // This function is just for compatibility
-            return formData.userId;
-        }
-
-        // ====== ADMIN AUTHENTICATION ======
-        function getAdminPassword() {
-            const savedHash = localStorage.getItem(ENCRYPTION_CONFIG.ADMIN_KEY);
-            return savedHash || 'admin123';
-        }
-
-        function setAdminPassword(password) {
-            localStorage.setItem(ENCRYPTION_CONFIG.ADMIN_KEY, password);
-        }
-
-        function adminLogin() {
-            const passwordInput = document.getElementById('adminPassword');
-            const password = passwordInput.value.trim();
-            const messageDiv = document.getElementById('loginMessage');
-            
-            if (!password) {
-                showMessage('Please enter password', 'error', 'loginMessage');
-                return;
-            }
-            
-            const savedPassword = getAdminPassword();
-            
-            if (password === savedPassword) {
-                isLoggedIn = true;
-                passwordInput.value = '';
-                hideMessage('loginMessage');
-                
-                // Show dashboard
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('dashboardContent').style.display = 'block';
-                
-                // Load users
-                loadUsers();
-                setupAutoRefresh();
-                
-                showMessage('Login successful!', 'success', 'loginMessage');
-                setTimeout(() => hideMessage('loginMessage'), 2000);
-                
-                // Set session
-                sessionStorage.setItem('odelya_admin_logged_in', 'true');
-            } else {
-                showMessage('Invalid password', 'error', 'loginMessage');
-            }
-        }
-
-        function logout() {
-            isLoggedIn = false;
-            document.getElementById('dashboardContent').style.display = 'none';
-            document.getElementById('loginSection').style.display = 'block';
-            sessionStorage.removeItem('odelya_admin_logged_in');
-        }
-
-        // ====== PASSWORD CHANGE ======
-        function changePassword() {
-            document.getElementById('passwordModal').style.display = 'flex';
-            document.getElementById('newPassword').value = '';
-            document.getElementById('confirmPassword').value = '';
-            hideMessage('passwordMessage');
-        }
-
-        function closePasswordModal() {
-            document.getElementById('passwordModal').style.display = 'none';
-        }
-
-        function saveNewPassword() {
-            const newPassword = document.getElementById('newPassword').value.trim();
-            const confirmPassword = document.getElementById('confirmPassword').value.trim();
-            
-            if (!newPassword || !confirmPassword) {
-                showMessage('Please fill both fields', 'error', 'passwordMessage');
-                return;
-            }
-            
-            if (newPassword !== confirmPassword) {
-                showMessage('Passwords do not match', 'error', 'passwordMessage');
-                return;
-            }
-            
-            setAdminPassword(newPassword);
-            
-            showMessage('Password changed successfully!', 'success', 'passwordMessage');
-            
-            setTimeout(() => {
-                closePasswordModal();
-                hideMessage('passwordMessage');
-            }, 2000);
-        }
-
-        // ====== DASHBOARD FUNCTIONS ======
-        function updateDashboard() {
-            // Update stats
-            document.getElementById('totalUsers').textContent = allUsers.length;
-            
-            // This month's users
-            const thisMonth = new Date().getMonth();
-            const thisYear = new Date().getFullYear();
-            const monthUsers = allUsers.filter(user => {
-                const date = new Date(user.timestamp);
-                return date.getMonth() === thisMonth && date.getFullYear() === thisYear;
-            }).length;
-            document.getElementById('monthUsers').textContent = monthUsers;
-            
-            // Total revenue
-            const totalRevenue = allUsers.reduce((sum, user) => {
-                return sum + (parseInt(user.serviceInfo.amountPaid) || 0);
-            }, 0);
-            document.getElementById('totalRevenue').textContent = `₹ ${totalRevenue.toLocaleString()}`;
-            
-            // Active plans
-            const today = new Date().toISOString().split('T')[0];
-            const activePlans = allUsers.filter(user => user.serviceInfo.endDate >= today).length;
-            document.getElementById('activePlans').textContent = activePlans;
-            
-            // Update table
-            updateUsersTable();
-        }
-
-        function updateUsersTable() {
-            const tableBody = document.getElementById('usersTableBody');
-            const noDataMessage = document.getElementById('noDataMessage');
-            
-            if (allUsers.length === 0) {
-                tableBody.innerHTML = '';
-                noDataMessage.style.display = 'block';
-                return;
-            }
-            
-            noDataMessage.style.display = 'none';
-            
-            // Sort by latest first
-            const sortedUsers = [...allUsers].sort((a, b) => 
-                new Date(b.timestamp) - new Date(a.timestamp)
-            );
-            
-            let tableHTML = '';
-            
-            sortedUsers.forEach(user => {
-                const name = user.personalInfo.fullName;
-                const phone = user.personalInfo.phone;
-                const amount = user.serviceInfo.amountPaid;
-                const endDate = user.serviceInfo.endDate;
-                const paymentMode = user.paymentInfo.mode || 'Not Set';
-                const paymentStatus = user.paymentInfo.status || 'Not Paid';
-                const passwordAttempts = user.paymentInfo.passwordChangeAttempts || 0;
-                
-                // Determine status badge
-                let statusClass = 'status-not-paid';
-                if (paymentStatus === 'Payment Processing') {
-                    statusClass = 'status-processing';
-                } else if (paymentStatus === 'Successful') {
-                    statusClass = 'status-successful';
-                }
-                
-                tableHTML += `
-                    <tr>
-                        <td><span class="user-id">${user.userId}</span></td>
-                        <td>${name}</td>
-                        <td>${phone}</td>
-                        <td>₹ ${parseInt(amount).toLocaleString()}</td>
-                        <td>${endDate}</td>
-                        <td>
-                            <select class="payment-mode-dropdown" onchange="updatePaymentMode('${user.userId}', this.value)">
-                                <option value="" ${paymentMode === '' ? 'selected' : ''}>Select Mode</option>
-                                <option value="UPI" ${paymentMode === 'UPI' ? 'selected' : ''}>UPI</option>
-                                <option value="Account Transfer" ${paymentMode === 'Account Transfer' ? 'selected' : ''}>Account Transfer</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="payment-mode-dropdown" onchange="updatePaymentStatus('${user.userId}', this.value)">
-                                <option value="" ${paymentStatus === '' ? 'selected' : ''}>Select Status</option>
-                                <option value="Not Paid" ${paymentStatus === 'Not Paid' ? 'selected' : ''}>Not Paid</option>
-                                <option value="Payment Processing" ${paymentStatus === 'Payment Processing' ? 'selected' : ''}>Payment Processing</option>
-                                <option value="Successful" ${paymentStatus === 'Successful' ? 'selected' : ''}>Successful</option>
-                            </select>
-                        </td>
-                        <td>
-                            <div class="password-attempts">
-                                <i class="fas fa-key"></i>
-                                <span>${passwordAttempts}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <button class="action-btn btn-view" onclick="viewUserDetails('${user.userId}')">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tableBody.innerHTML = tableHTML;
-        }
-
-        function updatePaymentMode(userId, mode) {
-            const userIndex = allUsers.findIndex(u => u.userId === userId);
-            if (userIndex !== -1) {
-                allUsers[userIndex].paymentInfo.mode = mode;
-                saveUsers();
-                showMessage(`Payment mode updated for user ${userId}`, 'success');
-                setTimeout(() => hideMessage(), 2000);
-            }
-        }
-
-        function updatePaymentStatus(userId, status) {
-            const userIndex = allUsers.findIndex(u => u.userId === userId);
-            if (userIndex !== -1) {
-                allUsers[userIndex].paymentInfo.status = status;
-                saveUsers();
-                showMessage(`Payment status updated for user ${userId}`, 'success');
-                setTimeout(() => hideMessage(), 2000);
-            }
-        }
-
-        function filterUsers() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#usersTableBody tr');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
-        }
-
-        // ====== USER DETAILS ======
-        function viewUserDetails(userId) {
-            const user = allUsers.find(u => u.userId === userId);
-            if (!user) return;
-            
-            currentEditingUserId = userId;
-            
-            const detailsHTML = `
-                <div class="user-details-grid">
-                    <div class="detail-card">
-                        <div class="detail-label">User ID</div>
-                        <div class="detail-value">${user.userId}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Registration Date</div>
-                        <div class="detail-value">${user.registrationDate}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Full Name</div>
-                        <div class="detail-value">${user.personalInfo.fullName}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Date of Birth</div>
-                        <div class="detail-value">${user.personalInfo.dob}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Phone Number</div>
-                        <div class="detail-value">${user.personalInfo.phone}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Email ID</div>
-                        <div class="detail-value">${user.personalInfo.email}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Gender</div>
-                        <div class="detail-value">${user.personalInfo.gender}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">PAN Number</div>
-                        <div class="detail-value">${user.personalInfo.pan}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Aadhaar Number</div>
-                        <div class="detail-value">${user.personalInfo.aadhaar}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Service Type</div>
-                        <div class="detail-value">${user.serviceInfo.serviceType}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Plan Details</div>
-                        <div class="detail-value">${user.serviceInfo.planGB} ${user.serviceInfo.serviceType === 'Cloud Storage' ? 'GB' : ''}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Duration</div>
-                        <div class="detail-value">${user.serviceInfo.duration}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Amount Paid</div>
-                        <div class="detail-value">₹ ${parseInt(user.serviceInfo.amountPaid).toLocaleString()}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Plan Start Date</div>
-                        <div class="detail-value">${user.serviceInfo.startDate}</div>
-                    </div>
-                    <div class="detail-card">
-                        <div class="detail-label">Plan End Date</div>
-                        <div class="detail-value">${user.serviceInfo.endDate}</div>
+                    <div class="payments-table-container">
+                        <table class="payments-table">
+                            <thead>
+                                <tr>
+                                    <th>Payment ID</th>
+                                    <th>User ID</th>
+                                    <th>User Name</th>
+                                    <th>Amount</th>
+                                    <th>Payment Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payments-table-body">
+                                <!-- Payments will be populated here by JavaScript -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                
-                <div class="admin-edit-controls">
-                    <h4><i class="fas fa-edit"></i> Admin Controls</h4>
-                    <div class="edit-row">
-                        <label>Payment Mode:</label>
-                        <select id="editPaymentMode" class="payment-mode-dropdown" style="min-width: 200px;">
-                            <option value="" ${user.paymentInfo.mode === '' ? 'selected' : ''}>Select Mode</option>
-                            <option value="UPI" ${user.paymentInfo.mode === 'UPI' ? 'selected' : ''}>UPI</option>
-                            <option value="Account Transfer" ${user.paymentInfo.mode === 'Account Transfer' ? 'selected' : ''}>Account Transfer</option>
-                        </select>
-                    </div>
-                    <div class="edit-row">
-                        <label>Payment Status:</label>
-                        <select id="editPaymentStatus" class="payment-mode-dropdown" style="min-width: 200px;">
-                            <option value="" ${user.paymentInfo.status === '' ? 'selected' : ''}>Select Status</option>
-                            <option value="Not Paid" ${user.paymentInfo.status === 'Not Paid' ? 'selected' : ''}>Not Paid</option>
-                            <option value="Payment Processing" ${user.paymentInfo.status === 'Payment Processing' ? 'selected' : ''}>Payment Processing</option>
-                            <option value="Successful" ${user.paymentInfo.status === 'Successful' ? 'selected' : ''}>Successful</option>
-                        </select>
-                    </div>
-                    <div class="edit-row">
-                        <label>Password Change Attempts:</label>
-                        <input type="number" id="editPasswordAttempts" value="${user.paymentInfo.passwordChangeAttempts || 0}" min="0" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                    </div>
-                    <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <button class="login-btn" onclick="saveUserEdits()" style="padding: 10px 20px; max-width: 150px;">
-                            <i class="fas fa-save"></i> Save Changes
-                        </button>
-                        <button class="login-btn" onclick="closeUserModal()" style="padding: 10px 20px; max-width: 150px; background: #95a5a6;">
-                            <i class="fas fa-times"></i> Close
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('userDetailsContent').innerHTML = detailsHTML;
-            document.getElementById('userModal').style.display = 'flex';
-        }
+            </div>
+        </div>
+    </div>
 
-        function saveUserEdits() {
-            if (!currentEditingUserId) return;
-            
-            const userIndex = allUsers.findIndex(u => u.userId === currentEditingUserId);
-            if (userIndex === -1) return;
-            
-            const paymentMode = document.getElementById('editPaymentMode').value;
-            const paymentStatus = document.getElementById('editPaymentStatus').value;
-            const passwordAttempts = parseInt(document.getElementById('editPasswordAttempts').value) || 0;
-            
-            allUsers[userIndex].paymentInfo.mode = paymentMode;
-            allUsers[userIndex].paymentInfo.status = paymentStatus;
-            allUsers[userIndex].paymentInfo.passwordChangeAttempts = passwordAttempts;
-            
-            saveUsers();
-            updateUsersTable();
-            
-            showMessage('Changes saved successfully!', 'success');
-            setTimeout(() => {
-                closeUserModal();
-                hideMessage();
-            }, 2000);
-        }
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span class="toast-message">Operation completed successfully!</span>
+        </div>
+    </div>
 
-        function closeUserModal() {
-            document.getElementById('userModal').style.display = 'none';
-            currentEditingUserId = null;
-        }
-
-        // ====== AUTO-REFRESH ON NEW DATA ======
-        function setupAutoRefresh() {
-            // Listen for storage events
-            window.addEventListener('storage', function(event) {
-                if (event.key === 'odelya_users_raw' || event.key === 'odelya_latest_user') {
-                    console.log('Storage updated, refreshing...');
-                    loadUsers();
-                }
-            });
-            
-            // Listen for broadcast messages
-            if (typeof BroadcastChannel !== 'undefined') {
-                const channel = new BroadcastChannel('odelya_dashboard_channel');
-                channel.onmessage = function(event) {
-                    if (event.data.type === 'NEW_USER') {
-                        console.log('New user broadcast received');
-                        loadUsers();
-                        showMessage(`New user added: ${event.data.data.userId}`, 'success');
-                        setTimeout(() => hideMessage(), 3000);
-                    }
-                };
-            }
-        }
-
-        // ====== EXPORT DATA ======
-        function exportData() {
-            const dataStr = JSON.stringify(allUsers, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `odelya_users_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showMessage('Data exported successfully!', 'success');
-            setTimeout(() => hideMessage(), 2000);
-        }
-
-        // ====== UTILITY FUNCTIONS ======
-        function showMessage(text, type = 'info', elementId = 'message') {
-            const messageDiv = document.getElementById(elementId);
-            messageDiv.textContent = text;
-            messageDiv.className = 'message ' + type;
-            messageDiv.style.display = 'block';
-        }
-
-        function hideMessage(elementId = 'message') {
-            document.getElementById(elementId).style.display = 'none';
-        }
-
-        // ====== INITIALIZATION ======
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check session login
-            const savedLogin = sessionStorage.getItem('odelya_admin_logged_in');
-            if (savedLogin === 'true') {
-                isLoggedIn = true;
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('dashboardContent').style.display = 'block';
-                loadUsers();
-                setupAutoRefresh();
-            }
-            
-            // Make capture function globally available
-            window.odelyaDashboard = {
-                capturePaymentData: capturePaymentData,
-                loadUsers: loadUsers,
-                saveUsers: saveUsers
-            };
-            
-            console.log('Admin Dashboard Loaded - Secure Version');
-        });
-    </script>
+    <script src="dashboard.js"></script>
 </body>
 </html>
