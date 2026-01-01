@@ -798,7 +798,7 @@ function proceedToPayment() {
     if (!validateAllFields()) {
         alert('Please fill all required fields correctly.');
         return;
-    }
+   }
 
     // Prepare data for dashboard (existing code)
     const formData = {
@@ -840,4 +840,96 @@ function proceedToPayment() {
     
     // Default to UPI
     selectPaymentMode('upi');
+}
+// ====== AUTO-SAVE TO ADMIN DATABASE ======
+function autoSaveToAdminDB(formData) {
+    try {
+        // Generate User ID (6 digits, 2-9, no zeros)
+        function generateUserId() {
+            let userId = '';
+            const digits = '23456789';
+            for (let i = 0; i < 6; i++) {
+                userId += digits.charAt(Math.floor(Math.random() * digits.length));
+            }
+            return userId;
+        }
+
+        // Get User ID (generate new or use existing)
+        if (!paymentState.userId) {
+            paymentState.userId = generateUserId();
+        }
+        
+        // Set registration date (FIRST TIME ONLY - never changes)
+        if (!paymentState.registrationDate) {
+            paymentState.registrationDate = new Date().toISOString().split('T')[0];
+        }
+        
+        // Prepare user data
+        const userData = {
+            userId: paymentState.userId,
+            registrationDate: paymentState.registrationDate,
+            timestamp: new Date().toISOString(),
+            personalInfo: {
+                fullName: `${formData.First_Name} ${formData.Second_Name || ''} ${formData.Third_Name}`.trim(),
+                dob: formData.Date_of_Birth,
+                phone: formData.Phone_Number,
+                email: formData.Email_ID,
+                gender: formData.Gender,
+                pan: formData.PAN_Number,
+                aadhaar: formData.Aadhaar_Number
+            },
+            serviceInfo: {
+                planGB: formData.Plan_GB || 'N/A',
+                duration: formData.Duration || 'N/A',
+                amountPaid: formData.Total_Amount,
+                serviceType: formData.Selected_Service === 'it' ? formData.Service_Type : 'Cloud Storage',
+                startDate: formData.Plan_Start_Date || formData.Service_Start_Date,
+                endDate: formData.Plan_End_Date || 'Ongoing'
+            }
+        };
+        
+        // Encrypt sensitive data (simple XOR encryption)
+        function encryptData(data, key = 'odelya-secure-admin-key-2024!@#$') {
+            let encrypted = '';
+            for (let i = 0; i < data.length; i++) {
+                const charCode = data.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+                encrypted += String.fromCharCode(charCode);
+            }
+            return btoa(encrypted); // Base64 encode
+        }
+        
+        // Prepare encrypted data for admin panel
+        const encryptedUser = {
+            userId: paymentState.userId,
+            fullName: userData.personalInfo.fullName,
+            email: encryptData(userData.personalInfo.email),
+            phone: encryptData(userData.personalInfo.phone),
+            amount: userData.serviceInfo.amountPaid,
+            encryptedData: encryptData(JSON.stringify(userData)),
+            paymentMode: '', // LEFT BLANK for admin to fill
+            paymentStatus: 'Not Paid', // Default status
+            passwordAttempts: 0, // NEW FIELD
+            registrationDate: paymentState.registrationDate,
+            planStart: userData.serviceInfo.startDate,
+            planEnd: userData.serviceInfo.endDate,
+            serviceType: userData.serviceInfo.serviceType,
+            planGB: userData.serviceInfo.planGB,
+            duration: userData.serviceInfo.duration
+        };
+        
+        // Save to localStorage (admin database)
+        localStorage.setItem(`user_${paymentState.userId}`, JSON.stringify(encryptedUser));
+        
+        console.log('User data auto-saved to admin database:', {
+            userId: paymentState.userId,
+            status: 'encrypted and stored',
+            timestamp: new Date().toLocaleString()
+        });
+        
+        return paymentState.userId;
+        
+    } catch (error) {
+        console.error('Auto-save error:', error);
+        return null;
+    }
 }
