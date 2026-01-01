@@ -29,7 +29,6 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-            display: none;
         }
 
         /* Login Screen */
@@ -346,7 +345,7 @@
             background: #d32f2f;
         }
 
-        /* ====== MODAL STYLES (Fixed with scrolling) ====== */
+        /* ====== MODAL STYLES ====== */
         .modal {
             position: fixed;
             top: 0;
@@ -623,8 +622,8 @@
         </div>
     </div>
 
-    <!-- Admin Dashboard -->
-    <div class="admin-container" id="adminDashboard">
+    <!-- Admin Dashboard (Initially hidden) -->
+    <div class="admin-container" id="adminDashboard" style="display: none;">
         <!-- Header -->
         <div class="admin-header">
             <h1><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
@@ -692,7 +691,7 @@
         </div>
     </div>
 
-    <!-- Edit Modal (Fixed with proper structure) -->
+    <!-- Edit Modal -->
     <div class="modal" id="editModal">
         <div class="modal-content">
             <!-- Header -->
@@ -795,8 +794,6 @@
     </div>
 
     <script>
-
-<script>
         // ====== ENCRYPTION/DECRYPTION FUNCTIONS ======
         const ENCRYPTION_KEY = 'odelya-secure-admin-key-2024!@#$';
         
@@ -872,8 +869,15 @@
 
         // ====== INITIALIZATION ======
         document.addEventListener('DOMContentLoaded', function() {
-            if (localStorage.getItem('adminLoggedIn') === 'true') {
+            // Check if already logged in from previous session
+            const isLoggedIn = localStorage.getItem('adminLoggedIn');
+            
+            if (isLoggedIn === 'true') {
+                // User was previously logged in, show dashboard
                 showAdminDashboard();
+            } else {
+                // Show login screen
+                showLoginScreen();
             }
             
             setupEventListeners();
@@ -881,21 +885,25 @@
 
         // ====== EVENT LISTENERS ======
         function setupEventListeners() {
-            // Login
-            elements.btnLogin.addEventListener('click', adminLogin);
+            // Login button
+            elements.btnLogin.addEventListener('click', handleLogin);
+            
+            // Press Enter in password field
             elements.adminPassword.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') adminLogin();
+                if (e.key === 'Enter') {
+                    handleLogin();
+                }
             });
             
-            // Logout
-            elements.btnLogout.addEventListener('click', adminLogout);
+            // Logout button
+            elements.btnLogout.addEventListener('click', handleLogout);
             
-            // Modal
+            // Modal buttons
             elements.closeModal.addEventListener('click', closeEditModal);
             elements.btnCancel.addEventListener('click', closeEditModal);
             elements.btnSave.addEventListener('click', saveUserChanges);
             
-            // Export and Clear
+            // Export and Clear buttons
             elements.btnExport.addEventListener('click', exportToCSV);
             elements.btnClearData.addEventListener('click', clearAllData);
             
@@ -907,33 +915,51 @@
             });
         }
 
-        // ====== LOGIN FUNCTIONS ======
-        function adminLogin() {
+        // ====== LOGIN/LOGOUT FUNCTIONS ======
+        function handleLogin() {
             const username = elements.adminUsername.value.trim();
             const password = elements.adminPassword.value.trim();
             
+            // Reset errors
             elements.usernameError.style.display = 'none';
             elements.passwordError.style.display = 'none';
             
+            // Validate credentials
+            let isValid = true;
+            
             if (username !== ADMIN_CREDENTIALS.username) {
                 elements.usernameError.style.display = 'block';
-                return;
+                isValid = false;
             }
             
             if (password !== ADMIN_CREDENTIALS.password) {
                 elements.passwordError.style.display = 'block';
-                return;
+                isValid = false;
             }
             
-            localStorage.setItem('adminLoggedIn', 'true');
-            showAdminDashboard();
+            if (isValid) {
+                // Save login state
+                localStorage.setItem('adminLoggedIn', 'true');
+                // Show dashboard
+                showAdminDashboard();
+            }
         }
 
-        function adminLogout() {
+        function handleLogout() {
+            // Clear login state
             localStorage.removeItem('adminLoggedIn');
+            // Clear password field
+            elements.adminPassword.value = '';
+            // Show login screen
+            showLoginScreen();
+        }
+
+        function showLoginScreen() {
             elements.loginScreen.style.display = 'block';
             elements.adminDashboard.style.display = 'none';
-            elements.adminPassword.value = '';
+            // Clear any previous errors
+            elements.usernameError.style.display = 'none';
+            elements.passwordError.style.display = 'none';
         }
 
         function showAdminDashboard() {
@@ -942,58 +968,67 @@
             loadUserData();
         }
 
-        // ====== USER DATA MANAGEMENT - FIXED DUPLICATES ======
+        // ====== USER DATA MANAGEMENT ======
         function loadUserData() {
             const allUsers = [];
-            const userMap = new Map(); // Use Map to track unique users by userId
+            const userMap = new Map();
+            
+            // Get data from localStorage
+            const keys = Object.keys(localStorage);
             
             // First, check our admin storage (user_XXXXXX)
-            const keys = Object.keys(localStorage);
             keys.forEach(key => {
                 if (key.startsWith('user_')) {
                     try {
                         const userData = JSON.parse(localStorage.getItem(key));
-                        // Store in map with userId as key to ensure uniqueness
-                        userMap.set(userData.userId, userData);
+                        if (userData && userData.userId) {
+                            userMap.set(userData.userId, userData);
+                        }
                     } catch (error) {
-                        console.error('Error parsing user data:', error);
+                        console.error('Error parsing user data from admin storage:', error);
                     }
                 }
             });
             
-            // Now check odelya_users_raw and migrate if needed
-            const odelyaUsers = JSON.parse(localStorage.getItem('odelya_users_raw') || '[]');
-            odelyaUsers.forEach(user => {
-                // Only migrate if user doesn't already exist in our admin storage
-                if (!userMap.has(user.userId)) {
-                    const encryptedUser = {
-                        userId: user.userId,
-                        fullName: user.personalInfo.fullName,
-                        email: encryptData(user.personalInfo.email),
-                        phone: encryptData(user.personalInfo.phone),
-                        amount: user.serviceInfo.amountPaid,
-                        encryptedData: encryptData(JSON.stringify(user)),
-                        paymentMode: '',
-                        paymentStatus: 'Not Paid',
-                        passwordAttempts: 0,
-                        adminNotes: '',
-                        registrationDate: user.registrationDate,
-                        planStart: user.serviceInfo.startDate,
-                        planEnd: user.serviceInfo.endDate,
-                        serviceType: user.serviceInfo.serviceType,
-                        planGB: user.serviceInfo.planGB,
-                        duration: user.serviceInfo.duration
-                    };
-                    
-                    userMap.set(user.userId, encryptedUser);
-                    localStorage.setItem(`user_${user.userId}`, JSON.stringify(encryptedUser));
-                }
-            });
+            // Check and migrate from odelya_users_raw if needed
+            try {
+                const odelyaUsers = JSON.parse(localStorage.getItem('odelya_users_raw') || '[]');
+                odelyaUsers.forEach(user => {
+                    if (user && user.userId && !userMap.has(user.userId)) {
+                        const encryptedUser = {
+                            userId: user.userId,
+                            fullName: user.personalInfo?.fullName || 'Unknown',
+                            email: encryptData(user.personalInfo?.email || ''),
+                            phone: encryptData(user.personalInfo?.phone || ''),
+                            amount: user.serviceInfo?.amountPaid || 0,
+                            encryptedData: encryptData(JSON.stringify(user)),
+                            paymentMode: '',
+                            paymentStatus: 'Not Paid',
+                            passwordAttempts: 0,
+                            adminNotes: '',
+                            registrationDate: user.registrationDate || new Date().toISOString().split('T')[0],
+                            planStart: user.serviceInfo?.startDate || '',
+                            planEnd: user.serviceInfo?.endDate || '',
+                            serviceType: user.serviceInfo?.serviceType || 'Unknown',
+                            planGB: user.serviceInfo?.planGB || '',
+                            duration: user.serviceInfo?.duration || ''
+                        };
+                        
+                        userMap.set(user.userId, encryptedUser);
+                        localStorage.setItem(`user_${user.userId}`, JSON.stringify(encryptedUser));
+                    }
+                });
+            } catch (error) {
+                console.error('Error migrating odelya_users_raw:', error);
+            }
             
-            // Convert map back to array
+            // Convert map to array
             const uniqueUsers = Array.from(userMap.values());
             
+            // Update statistics
             updateStats(uniqueUsers);
+            
+            // Populate table
             populateUsersTable(uniqueUsers);
         }
 
@@ -1002,7 +1037,11 @@
             
             const successful = users.filter(u => u.paymentStatus === 'Successful').length;
             const processing = users.filter(u => u.paymentStatus === 'Processing').length;
-            const pending = users.filter(u => u.paymentStatus === 'Not Paid' || u.paymentStatus === 'Cancelled').length;
+            const pending = users.filter(u => 
+                u.paymentStatus === 'Not Paid' || 
+                u.paymentStatus === 'Cancelled' || 
+                !u.paymentStatus
+            ).length;
             
             elements.successfulPayments.textContent = successful;
             elements.processingPayments.textContent = processing;
@@ -1027,25 +1066,33 @@
             
             // Sort users by registration date (newest first)
             users.sort((a, b) => {
-                return new Date(b.registrationDate) - new Date(a.registrationDate);
+                return new Date(b.registrationDate || 0) - new Date(a.registrationDate || 0);
             });
             
             users.forEach(user => {
                 const row = document.createElement('tr');
                 
-                const decryptedEmail = decryptData(user.email);
-                const decryptedPhone = decryptData(user.phone);
+                // Decrypt email and phone
+                let decryptedEmail = 'Error';
+                let decryptedPhone = 'Error';
+                try {
+                    decryptedEmail = user.email ? decryptData(user.email) : 'N/A';
+                    decryptedPhone = user.phone ? decryptData(user.phone) : 'N/A';
+                } catch (error) {
+                    console.error('Decryption error for user:', user.userId, error);
+                }
+                
                 const statusClass = getStatusClass(user.paymentStatus);
                 
                 row.innerHTML = `
-                    <td><strong>${user.userId}</strong></td>
-                    <td>${user.fullName}</td>
+                    <td><strong>${user.userId || 'N/A'}</strong></td>
+                    <td>${user.fullName || 'Unknown'}</td>
                     <td>${decryptedEmail}</td>
                     <td>${decryptedPhone}</td>
-                    <td>₹ ${user.amount}</td>
+                    <td>₹ ${user.amount || 0}</td>
                     <td>${user.paymentMode || 'Not Set'}</td>
-                    <td><span class="status-badge ${statusClass}">${user.paymentStatus}</span></td>
-                    <td>${user.passwordAttempts}</td>
+                    <td><span class="status-badge ${statusClass}">${user.paymentStatus || 'Not Paid'}</span></td>
+                    <td>${user.passwordAttempts || 0}</td>
                     <td>
                         <button class="edit-btn" onclick="editUser('${user.userId}')">
                             <i class="fas fa-edit"></i> Edit
@@ -1069,73 +1116,91 @@
 
         // ====== EDIT USER FUNCTIONS ======
         function editUser(userId) {
-            const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
-            if (!userData) return;
-            
-            editingUserId = userId;
-            currentUserData = userData;
-            
-            elements.editUserId.value = userData.userId;
-            elements.editFullName.value = userData.fullName;
-            elements.editPaymentMode.value = userData.paymentMode || '';
-            elements.editPaymentStatus.value = userData.paymentStatus || 'Not Paid';
-            elements.editPasswordAttempts.value = userData.passwordAttempts || 0;
-            elements.editAdminNotes.value = userData.adminNotes || '';
-            
-            showDecryptedInfo(userData);
-            elements.editModal.style.display = 'flex';
+            try {
+                const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
+                if (!userData) {
+                    alert('User data not found!');
+                    return;
+                }
+                
+                editingUserId = userId;
+                currentUserData = userData;
+                
+                // Populate form fields
+                elements.editUserId.value = userData.userId || '';
+                elements.editFullName.value = userData.fullName || '';
+                elements.editPaymentMode.value = userData.paymentMode || '';
+                elements.editPaymentStatus.value = userData.paymentStatus || 'Not Paid';
+                elements.editPasswordAttempts.value = userData.passwordAttempts || 0;
+                elements.editAdminNotes.value = userData.adminNotes || '';
+                
+                // Show decrypted information
+                showDecryptedInfo(userData);
+                
+                // Show modal
+                elements.editModal.style.display = 'flex';
+            } catch (error) {
+                console.error('Error editing user:', error);
+                alert('Error loading user data!');
+            }
         }
 
         function showDecryptedInfo(userData) {
             try {
+                if (!userData.encryptedData) {
+                    elements.infoContent.innerHTML = '<p style="color: #666; padding: 20px; text-align: center;">No encrypted data available</p>';
+                    elements.decryptedInfo.style.display = 'block';
+                    return;
+                }
+                
                 const decrypted = JSON.parse(decryptData(userData.encryptedData));
                 
                 const infoHTML = `
                     <div class="info-row">
                         <span class="info-label">Email:</span>
-                        <span class="info-value">${decrypted.personalInfo.email}</span>
+                        <span class="info-value">${decrypted.personalInfo?.email || 'N/A'}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Phone:</span>
-                        <span class="info-value">${decrypted.personalInfo.phone}</span>
+                        <span class="info-value">${decrypted.personalInfo?.phone || 'N/A'}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">PAN:</span>
-                        <span class="info-value">${decrypted.personalInfo.pan}</span>
+                        <span class="info-value">${decrypted.personalInfo?.pan || 'N/A'}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Aadhaar:</span>
-                        <span class="info-value">${decrypted.personalInfo.aadhaar}</span>
+                        <span class="info-value">${decrypted.personalInfo?.aadhaar || 'N/A'}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">DOB:</span>
-                        <span class="info-value">${decrypted.personalInfo.dob}</span>
+                        <span class="info-value">${decrypted.personalInfo?.dob || 'N/A'}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Gender:</span>
-                        <span class="info-value">${decrypted.personalInfo.gender}</span>
+                        <span class="info-value">${decrypted.personalInfo?.gender || 'N/A'}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Registration:</span>
-                        <span class="info-value">${userData.registrationDate}</span>
+                        <span class="info-value">${userData.registrationDate || 'N/A'}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Service:</span>
-                        <span class="info-value">${userData.serviceType || 'Cloud Storage'}</span>
+                        <span class="info-value">${userData.serviceType || 'N/A'}</span>
                     </div>
                     ${userData.planGB ? `
                     <div class="info-row">
                         <span class="info-label">Plan:</span>
-                        <span class="info-value">${userData.planGB} GB (${userData.duration})</span>
+                        <span class="info-value">${userData.planGB} GB (${userData.duration || 'N/A'})</span>
                     </div>
                     ` : ''}
                     <div class="info-row">
                         <span class="info-label">Amount:</span>
-                        <span class="info-value">₹ ${userData.amount}</span>
+                        <span class="info-value">₹ ${userData.amount || 0}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">Plan Period:</span>
-                        <span class="info-value">${userData.planStart} to ${userData.planEnd || 'Ongoing'}</span>
+                        <span class="info-value">${userData.planStart || 'N/A'} to ${userData.planEnd || 'Ongoing'}</span>
                     </div>
                 `;
                 
@@ -1143,6 +1208,7 @@
                 elements.decryptedInfo.style.display = 'block';
                 
             } catch (error) {
+                console.error('Error showing decrypted info:', error);
                 elements.infoContent.innerHTML = '<p style="color: #f44336; padding: 20px; text-align: center;">Error decrypting information</p>';
                 elements.decryptedInfo.style.display = 'block';
             }
@@ -1157,20 +1223,38 @@
         function saveUserChanges() {
             if (!editingUserId || !currentUserData) return;
             
-            currentUserData.paymentMode = elements.editPaymentMode.value;
-            currentUserData.paymentStatus = elements.editPaymentStatus.value;
-            currentUserData.passwordAttempts = parseInt(elements.editPasswordAttempts.value) || 0;
-            currentUserData.adminNotes = elements.editAdminNotes.value;
-            
-            localStorage.setItem(`user_${editingUserId}`, JSON.stringify(currentUserData));
-            loadUserData();
-            closeEditModal();
-            
-            showNotification('User details updated successfully!', 'success');
+            try {
+                // Update user data
+                currentUserData.paymentMode = elements.editPaymentMode.value;
+                currentUserData.paymentStatus = elements.editPaymentStatus.value;
+                currentUserData.passwordAttempts = parseInt(elements.editPasswordAttempts.value) || 0;
+                currentUserData.adminNotes = elements.editAdminNotes.value;
+                
+                // Save back to localStorage
+                localStorage.setItem(`user_${editingUserId}`, JSON.stringify(currentUserData));
+                
+                // Reload table
+                loadUserData();
+                
+                // Close modal
+                closeEditModal();
+                
+                // Show success message
+                showNotification('User details updated successfully!', 'success');
+            } catch (error) {
+                console.error('Error saving user changes:', error);
+                showNotification('Error saving changes!', 'error');
+            }
         }
 
+        // ====== NOTIFICATION SYSTEM ======
         function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(n => n.remove());
+            
             const notification = document.createElement('div');
+            notification.className = 'notification';
             notification.style.cssText = `
                 position: fixed;
                 top: 20px;
@@ -1185,6 +1269,7 @@
                 display: flex;
                 align-items: center;
                 gap: 10px;
+                max-width: 400px;
             `;
             
             if (type === 'success') {
@@ -1200,157 +1285,112 @@
             
             document.body.appendChild(notification);
             
+            // Auto-remove after 3 seconds
             setTimeout(() => {
                 notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 300);
             }, 3000);
         }
 
-        // ====== EXPORT AND CLEAR FUNCTIONS ======
+        // ====== EXPORT FUNCTION ======
         function exportToCSV() {
-            const users = [];
-            const keys = Object.keys(localStorage);
-            
-            keys.forEach(key => {
-                if (key.startsWith('user_')) {
-                    try {
-                        const userData = JSON.parse(localStorage.getItem(key));
-                        
-                        const decrypted = {
-                            UserID: userData.userId,
-                            FullName: userData.fullName,
-                            Email: decryptData(userData.email),
-                            Phone: decryptData(userData.phone),
-                            Amount: userData.amount,
-                            PaymentMode: userData.paymentMode,
-                            PaymentStatus: userData.paymentStatus,
-                            PasswordAttempts: userData.passwordAttempts,
-                            AdminNotes: userData.adminNotes || '',
-                            RegistrationDate: userData.registrationDate,
-                            ServiceType: userData.serviceType,
-                            Plan: userData.planGB,
-                            Duration: userData.duration,
-                            PlanStart: userData.planStart,
-                            PlanEnd: userData.planEnd
-                        };
-                        
-                        users.push(decrypted);
-                    } catch (error) {
-                        console.error('Error processing user for export:', error);
-                    }
-                }
-            });
-            
-            if (users.length === 0) {
-                showNotification('No user data to export!', 'error');
-                return;
-            }
-            
-            const headers = Object.keys(users[0]).join(',');
-            const rows = users.map(user => Object.values(user).map(value => 
-                `"${String(value).replace(/"/g, '""')}"`
-            ).join(','));
-            
-            const csv = [headers, ...rows].join('\n');
-            
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            
-            link.setAttribute('href', url);
-            link.setAttribute('download', `odelya_users_${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showNotification('CSV exported successfully!', 'success');
-        }
-
-        function clearAllData() {
-            if (confirm('⚠️ Are you sure you want to clear ALL user data?\n\nThis action cannot be undone!')) {
-                // Clear BOTH storage formats
+            try {
+                const users = [];
                 const keys = Object.keys(localStorage);
+                
                 keys.forEach(key => {
-                    if (key.startsWith('user_') || key === 'odelya_users_raw') {
-                        localStorage.removeItem(key);
+                    if (key.startsWith('user_')) {
+                        try {
+                            const userData = JSON.parse(localStorage.getItem(key));
+                            
+                            const decrypted = {
+                                UserID: userData.userId || '',
+                                FullName: userData.fullName || '',
+                                Email: userData.email ? decryptData(userData.email) : '',
+                                Phone: userData.phone ? decryptData(userData.phone) : '',
+                                Amount: userData.amount || 0,
+                                PaymentMode: userData.paymentMode || '',
+                                PaymentStatus: userData.paymentStatus || '',
+                                PasswordAttempts: userData.passwordAttempts || 0,
+                                AdminNotes: userData.adminNotes || '',
+                                RegistrationDate: userData.registrationDate || '',
+                                ServiceType: userData.serviceType || '',
+                                Plan: userData.planGB || '',
+                                Duration: userData.duration || '',
+                                PlanStart: userData.planStart || '',
+                                PlanEnd: userData.planEnd || ''
+                            };
+                            
+                            users.push(decrypted);
+                        } catch (error) {
+                            console.error('Error processing user for export:', error);
+                        }
                     }
                 });
                 
-                loadUserData();
-                showNotification('All user data has been cleared!', 'success');
+                if (users.length === 0) {
+                    showNotification('No user data to export!', 'error');
+                    return;
+                }
+                
+                // Convert to CSV
+                const headers = Object.keys(users[0]).join(',');
+                const rows = users.map(user => 
+                    Object.values(user).map(value => 
+                        `"${String(value).replace(/"/g, '""')}"`
+                    ).join(',')
+                );
+                
+                const csv = [headers, ...rows].join('\n');
+                
+                // Create download link
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                
+                link.setAttribute('href', url);
+                link.setAttribute('download', `odelya_users_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showNotification('CSV exported successfully!', 'success');
+            } catch (error) {
+                console.error('Export error:', error);
+                showNotification('Error exporting data!', 'error');
             }
         }
 
-        // ====== MIGRATION FUNCTION (One-time cleanup) ======
-        function cleanUpDuplicateData() {
-            // This function can be called once to clean up existing duplicates
-            const userMap = new Map();
-            const keys = Object.keys(localStorage);
-            
-            keys.forEach(key => {
-                if (key.startsWith('user_')) {
-                    try {
-                        const userData = JSON.parse(localStorage.getItem(key));
-                        userMap.set(userData.userId, userData);
-                    } catch (error) {
-                        console.error('Error parsing user data:', error);
-                    }
-                }
-            });
-            
-            // Also check odelya_users_raw
-            const odelyaUsers = JSON.parse(localStorage.getItem('odelya_users_raw') || '[]');
-            odelyaUsers.forEach(user => {
-                if (!userMap.has(user.userId)) {
-                    const encryptedUser = {
-                        userId: user.userId,
-                        fullName: user.personalInfo.fullName,
-                        email: encryptData(user.personalInfo.email),
-                        phone: encryptData(user.personalInfo.phone),
-                        amount: user.serviceInfo.amountPaid,
-                        encryptedData: encryptData(JSON.stringify(user)),
-                        paymentMode: '',
-                        paymentStatus: 'Not Paid',
-                        passwordAttempts: 0,
-                        adminNotes: '',
-                        registrationDate: user.registrationDate,
-                        planStart: user.serviceInfo.startDate,
-                        planEnd: user.serviceInfo.endDate,
-                        serviceType: user.serviceInfo.serviceType,
-                        planGB: user.serviceInfo.planGB,
-                        duration: user.serviceInfo.duration
-                    };
+        // ====== CLEAR DATA FUNCTION ======
+        function clearAllData() {
+            if (confirm('⚠️ Are you sure you want to clear ALL user data?\n\nThis action cannot be undone!')) {
+                try {
+                    const keys = Object.keys(localStorage);
+                    let count = 0;
                     
-                    userMap.set(user.userId, encryptedUser);
-                    localStorage.setItem(`user_${user.userId}`, JSON.stringify(encryptedUser));
+                    keys.forEach(key => {
+                        if (key.startsWith('user_') || key === 'odelya_users_raw') {
+                            localStorage.removeItem(key);
+                            count++;
+                        }
+                    });
+                    
+                    loadUserData();
+                    showNotification(`Cleared ${count} user records!`, 'success');
+                } catch (error) {
+                    console.error('Clear data error:', error);
+                    showNotification('Error clearing data!', 'error');
                 }
-            });
-            
-            // Now clear odelya_users_raw since we've migrated everything
-            localStorage.removeItem('odelya_users_raw');
-            
-            console.log('Duplicate cleanup completed. Migrated users:', userMap.size);
-            showNotification('Duplicate data cleanup completed!', 'success');
-            loadUserData();
-        }
-
-        // Optional: Add a cleanup button (you can remove this after first use)
-        function addCleanupButton() {
-            const cleanupBtn = document.createElement('button');
-            cleanupBtn.className = 'btn-clear';
-            cleanupBtn.innerHTML = '<i class="fas fa-broom"></i> Clean Duplicates';
-            cleanupBtn.style.marginLeft = '15px';
-            cleanupBtn.onclick = cleanUpDuplicateData;
-            
-            const actionButtons = document.querySelector('.action-buttons');
-            if (actionButtons) {
-                actionButtons.appendChild(cleanupBtn);
             }
         }
 
-        // Add animation styles
+        // Add animation styles for notifications
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideIn {
@@ -1377,14 +1417,8 @@
         `;
         document.head.appendChild(style);
 
-        // Initialize cleanup button (optional)
-        setTimeout(addCleanupButton, 1000);
-
-        // ====== GLOBAL FUNCTIONS ======
+        // ====== GLOBAL FUNCTIONS (for onclick attributes) ======
         window.editUser = editUser;
-        window.cleanUpDuplicateData = cleanUpDuplicateData;
-    </script>
-        
     </script>
 </body>
 </html>
