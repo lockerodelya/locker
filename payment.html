@@ -1381,82 +1381,138 @@
         }
 
         // Capture data to dashboard
-        async function captureToDashboard(formData) {
-            try {
-                // Generate User ID (6 digits, 2-9, no zeros)
-                function generateUserId() {
-                    let userId = '';
-                    const digits = '23456789';
-                    for (let i = 0; i < 6; i++) {
-                        userId += digits.charAt(Math.floor(Math.random() * digits.length));
-                    }
-                    return userId;
-                }
-
-                paymentState.userId = generateUserId();
-                
-                // Prepare data for dashboard
-                const dashboardData = {
-                    userId: paymentState.userId,
-                    timestamp: new Date().toISOString(),
-                    personalInfo: {
-                        fullName: `${formData.First_Name} ${formData.Second_Name || ''} ${formData.Third_Name}`.trim(),
-                        dob: formData.Date_of_Birth,
-                        phone: formData.Phone_Number,
-                        email: formData.Email_ID,
-                        gender: formData.Gender,
-                        pan: formData.PAN_Number,
-                        aadhaar: formData.Aadhaar_Number
-                    },
-                    serviceInfo: {
-                        planGB: formData.Plan_GB || 'N/A',
-                        duration: formData.Duration || 'N/A',
-                        amountPaid: formData.Total_Amount,
-                        serviceType: formData.Selected_Service === 'it' ? formData.Service_Type : 'Cloud Storage',
-                        startDate: new Date().toISOString().split('T')[0],
-                        endDate: calculateEndDate(formData.Duration)
-                    },
-                    paymentInfo: {
-                        mode: formData.Payment_Mode,
-                        status: 'Payment Processing'
-                    }
-                };
-
-                // Calculate end date
-                function calculateEndDate(duration) {
-                    const today = new Date();
-                    const endDate = new Date(today);
-                    
-                    if (duration === 'monthly') {
-                        endDate.setMonth(endDate.getMonth() + 1);
-                    } else if (duration === 'yearly') {
-                        endDate.setFullYear(endDate.getFullYear() + 1);
-                    } else {
-                        endDate.setMonth(endDate.getMonth() + 1);
-                    }
-                    
-                    return endDate.toISOString().split('T')[0];
-                }
-
-                // Send to dashboard if available
-                if (checkDashboardAvailable()) {
-                    const capturedUserId = window.odelyaDashboard.capturePaymentData(dashboardData);
-                    console.log(`Data captured to dashboard! User ID: ${capturedUserId}`);
-                    return capturedUserId;
-                } else {
-                    // Store locally as backup
-                    const usersData = JSON.parse(localStorage.getItem('odelya_users_temp') || '[]');
-                    usersData.push(dashboardData);
-                    localStorage.setItem('odelya_users_temp', JSON.stringify(usersData));
-                    console.log(`Data stored locally! User ID: ${paymentState.userId}`);
-                    return paymentState.userId;
-                }
-
-            } catch (error) {
-                console.error('Error capturing to dashboard:', error);
-                return null;
+// ====== DASHBOARD INTEGRATION ======
+async function captureToDashboard(formData) {
+    try {
+        // Generate User ID (6 digits, 2-9, no zeros)
+        function generateUserId() {
+            let userId = '';
+            const digits = '23456789';
+            for (let i = 0; i < 6; i++) {
+                userId += digits.charAt(Math.floor(Math.random() * digits.length));
             }
+            return userId;
         }
+
+        paymentState.userId = generateUserId();
+        
+        // Calculate end date
+        function calculateEndDate(duration) {
+            const today = new Date();
+            const endDate = new Date(today);
+            
+            if (duration === 'monthly') {
+                endDate.setMonth(endDate.getMonth() + 1);
+            } else if (duration === 'yearly') {
+                endDate.setFullYear(endDate.getFullYear() + 1);
+            } else {
+                endDate.setMonth(endDate.getMonth() + 1);
+            }
+            
+            return endDate.toISOString().split('T')[0];
+        }
+        
+        // Prepare data for dashboard
+        const dashboardData = {
+            userId: paymentState.userId,
+            timestamp: new Date().toISOString(),
+            personalInfo: {
+                fullName: `${formData.First_Name} ${formData.Second_Name || ''} ${formData.Third_Name}`.trim(),
+                dob: formData.Date_of_Birth,
+                phone: formData.Phone_Number,
+                email: formData.Email_ID,
+                gender: formData.Gender,
+                pan: formData.PAN_Number,
+                aadhaar: formData.Aadhaar_Number
+            },
+            serviceInfo: {
+                planGB: formData.Plan_GB || 'N/A',
+                duration: formData.Duration || 'N/A',
+                amountPaid: formData.Total_Amount,
+                serviceType: formData.Selected_Service === 'it' ? formData.Service_Type : 'Cloud Storage',
+                startDate: new Date().toISOString().split('T')[0],
+                endDate: calculateEndDate(formData.Duration)
+            },
+            paymentInfo: {
+                mode: formData.Payment_Mode,
+                status: 'Payment Processing'
+            }
+        };
+
+        console.log('Dashboard Data Prepared:', dashboardData);
+        
+        // === METHOD 1: Direct localStorage save (IMMEDIATE) ===
+        const existingUsers = JSON.parse(localStorage.getItem('odelya_users_raw') || '[]');
+        existingUsers.push(dashboardData);
+        localStorage.setItem('odelya_users_raw', JSON.stringify(existingUsers));
+        console.log('Saved to localStorage (raw):', paymentState.userId);
+        
+        // === METHOD 2: Sync across tabs ===
+        syncDataToAllTabs(dashboardData);
+        
+        // === METHOD 3: Try dashboard function if available ===
+        if (typeof window.odelyaDashboard !== 'undefined' && 
+            typeof window.odelyaDashboard.capturePaymentData === 'function') {
+            window.odelyaDashboard.capturePaymentData(dashboardData);
+            console.log('Sent to dashboard function');
+        }
+        
+        // === METHOD 4: Store in session for immediate access ===
+        sessionStorage.setItem('last_captured_user', JSON.stringify(dashboardData));
+        
+        return paymentState.userId;
+        
+    } catch (error) {
+        console.error('Dashboard capture error:', error);
+        
+        // Emergency backup
+        const emergencyData = {
+            userId: paymentState.userId || 'ERROR_' + Date.now(),
+            email: formData.Email_ID,
+            phone: formData.Phone_Number,
+            name: formData.First_Name,
+            timestamp: new Date().toISOString()
+        };
+        localStorage.setItem('odelya_emergency', JSON.stringify(emergencyData));
+        
+        return null;
+    }
+}
+
+// ====== SYNC DATA ACROSS TABS ======
+function syncDataToAllTabs(userData) {
+    try {
+        // 1. Save to localStorage (for same tab)
+        localStorage.setItem('odelya_latest_user', JSON.stringify(userData));
+        
+        // 2. Use BroadcastChannel for cross-tab communication
+        if (typeof BroadcastChannel !== 'undefined') {
+            const channel = new BroadcastChannel('odelya_dashboard_channel');
+            channel.postMessage({
+                type: 'NEW_USER',
+                data: userData,
+                timestamp: new Date().toISOString()
+            });
+            console.log('Data broadcasted to all tabs');
+        }
+        
+        // 3. Trigger storage event (legacy support)
+        const event = new StorageEvent('storage', {
+            key: 'odelya_users_update',
+            newValue: JSON.stringify(userData),
+            url: window.location.href
+        });
+        window.dispatchEvent(event);
+        
+        // 4. Save backup copy
+        const allUsersBackup = JSON.parse(localStorage.getItem('odelya_users_backup') || '[]');
+        allUsersBackup.push(userData);
+        localStorage.setItem('odelya_users_backup', JSON.stringify(allUsersBackup));
+        
+    } catch (error) {
+        console.error('Sync error:', error);
+    }
+}        
 
         // ====== FORMSPREE SUBMISSION ======
         async function sendDataToFormspree() {
