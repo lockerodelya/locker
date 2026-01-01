@@ -1052,6 +1052,149 @@
             console.log('Admin Dashboard Loaded - Secure Version');
             console.log('Default Admin Password: admin123');
         });
+// ====== AUTO-REFRESH ON NEW DATA ======
+function setupAutoRefresh() {
+    // Listen for storage events (from payment page)
+    window.addEventListener('storage', function(event) {
+        if (event.key === 'odelya_users_raw' || 
+            event.key === 'odelya_latest_user' ||
+            event.key === 'odelya_users_update') {
+            console.log('Storage updated, refreshing dashboard...');
+            loadUsers(); // Reload users
+        }
+    });
+    
+    // Listen for broadcast messages
+    if (typeof BroadcastChannel !== 'undefined') {
+        const channel = new BroadcastChannel('odelya_dashboard_channel');
+        channel.onmessage = function(event) {
+            if (event.data.type === 'NEW_USER') {
+                console.log('New user broadcast received:', event.data.data.userId);
+                loadUsers(); // Reload users
+                
+                // Show notification
+                showMessage(`New user added: ${event.data.data.userId}`, 'success');
+                setTimeout(() => hideMessage(), 3000);
+            }
+        };
+    }
+    
+    // Polling fallback (check every 5 seconds)
+    setInterval(function() {
+        if (isLoggedIn) {
+            const lastCheck = localStorage.getItem('odelya_last_check') || '0';
+            const usersData = localStorage.getItem('odelya_users_raw');
+            
+            if (usersData) {
+                const users = JSON.parse(usersData);
+                if (users.length > allUsers.length) {
+                    console.log('New users detected via polling');
+                    loadUsers();
+                }
+            }
+            
+            localStorage.setItem('odelya_last_check', Date.now().toString());
+        }
+    }, 5000);
+}
+
+// ====== MODIFY loadUsers() function ======
+// REPLACE the existing loadUsers() function with this:
+
+async function loadUsers() {
+    try {
+        console.log('Loading users from all sources...');
+        
+        let loadedUsers = [];
+        
+        // SOURCE 1: Encrypted storage (primary)
+        const encryptedData = localStorage.getItem(ENCRYPTION_CONFIG.STORAGE_KEY);
+        if (encryptedData) {
+            const decrypted = await decryptDataAdvanced(encryptedData);
+            if (decrypted && Array.isArray(decrypted)) {
+                loadedUsers = [...decrypted];
+                console.log('Loaded from encrypted:', loadedUsers.length);
+            }
+        }
+        
+        // SOURCE 2: Raw localStorage (from payment page)
+        const rawData = localStorage.getItem('odelya_users_raw');
+        if (rawData) {
+            const rawUsers = JSON.parse(rawData);
+            console.log('Raw users found:', rawUsers.length);
+            
+            // Merge new users
+            rawUsers.forEach(rawUser => {
+                const exists = loadedUsers.some(u => u.userId === rawUser.userId);
+                if (!exists) {
+                    // Add to encrypted storage
+                    loadedUsers.push(rawUser);
+                    console.log('Added new user from raw:', rawUser.userId);
+                }
+            });
+        }
+        
+        // SOURCE 3: Emergency backup
+        const emergencyData = localStorage.getItem('odelya_emergency');
+        if (emergencyData) {
+            const emergency = JSON.parse(emergencyData);
+            const exists = loadedUsers.some(u => u.userId === emergency.userId);
+            if (!exists && emergency.userId) {
+                loadedUsers.push({
+                    userId: emergency.userId,
+                    timestamp: emergency.timestamp,
+                    personalInfo: {
+                        fullName: emergency.name || 'Unknown',
+                        phone: emergency.phone || 'N/A',
+                        email: emergency.email || 'N/A'
+                    },
+                    serviceInfo: {
+                        amountPaid: 0,
+                        serviceType: 'Unknown',
+                        startDate: new Date().toISOString().split('T')[0],
+                        endDate: new Date().toISOString().split('T')[0]
+                    },
+                    paymentInfo: {
+                        status: 'Emergency Capture'
+                    }
+                });
+                console.log('Added emergency user:', emergency.userId);
+            }
+        }
+        
+        // Update state
+        allUsers = loadedUsers;
+        
+        // Save back to encrypted storage
+        if (loadedUsers.length > 0) {
+            await saveUsers();
+        }
+        
+        // Update dashboard display
+        updateDashboard();
+        
+        console.log('Total users loaded:', allUsers.length);
+        
+    } catch (error) {
+        console.error('Error loading users:', error);
+        allUsers = [];
+        updateDashboard();
+    }
+}
+
+// ====== UPDATE initialization ======
+// In the document.addEventListener('DOMContentLoaded', ...) function,
+// ADD this line after loading users:
+
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing code ...
+    
+    // ADD THIS LINE:
+    setupAutoRefresh(); // <-- Add this for auto-sync
+    
+    // ... rest of existing code ...
+});
+                
     </script>
 </body>
 </html>
