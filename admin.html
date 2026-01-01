@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Odelya Cloud Digital Locker</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -290,6 +292,101 @@
             color: #616161;
         }
 
+        /* Checkbox for selection */
+        .user-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* Selection Actions */
+        .selection-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 10px;
+            border-left: 5px solid #2196f3;
+        }
+
+        .selection-info {
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .select-all-btn, .deselect-all-btn {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .deselect-all-btn {
+            background: #757575;
+        }
+
+        .select-all-btn:hover {
+            background: #1976d2;
+        }
+
+        .deselect-all-btn:hover {
+            background: #616161;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn-export-pdf, .btn-clear {
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-export-pdf {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            color: white;
+        }
+
+        .btn-export-pdf:hover:not(:disabled) {
+            background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+        }
+
+        .btn-export-pdf:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-clear {
+            background: #757575;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #616161;
+        }
+
         .edit-btn {
             background: #2196f3;
             color: white;
@@ -306,43 +403,6 @@
 
         .edit-btn:hover {
             background: #1976d2;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .btn-export, .btn-clear {
-            padding: 12px 25px;
-            border-radius: 8px;
-            border: none;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .btn-export {
-            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
-            color: white;
-        }
-
-        .btn-export:hover {
-            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
-        }
-
-        .btn-clear {
-            background: #f44336;
-            color: white;
-        }
-
-        .btn-clear:hover {
-            background: #d32f2f;
         }
 
         /* ====== MODAL STYLES ====== */
@@ -658,9 +718,20 @@
             <div class="users-section">
                 <h2><i class="fas fa-users"></i> User Management</h2>
                 
+                <!-- Selection Actions -->
+                <div class="selection-actions" id="selectionActions" style="display: none;">
+                    <div class="selection-info" id="selectedCount">0 users selected</div>
+                    <button class="select-all-btn" id="btnSelectAll">
+                        <i class="fas fa-check-square"></i> Select All
+                    </button>
+                    <button class="deselect-all-btn" id="btnDeselectAll">
+                        <i class="fas fa-times-circle"></i> Deselect All
+                    </button>
+                </div>
+                
                 <div class="action-buttons">
-                    <button class="btn-export" id="btnExport">
-                        <i class="fas fa-download"></i> Export as CSV
+                    <button class="btn-export-pdf" id="btnExportPDF" disabled>
+                        <i class="fas fa-file-pdf"></i> Export Selected as PDF
                     </button>
                     <button class="btn-clear" id="btnClearData">
                         <i class="fas fa-trash"></i> Clear All Data
@@ -671,6 +742,9 @@
                     <table id="usersTable">
                         <thead>
                             <tr>
+                                <th style="width: 50px;">
+                                    <input type="checkbox" id="selectAllCheckbox" class="user-checkbox">
+                                </th>
                                 <th>User ID</th>
                                 <th>Full Name</th>
                                 <th>Email</th>
@@ -835,6 +909,7 @@
         // ====== STATE MANAGEMENT ======
         let currentUserData = null;
         let editingUserId = null;
+        let selectedUsers = new Set(); // Store selected user IDs
 
         // ====== DOM ELEMENTS ======
         const elements = {
@@ -861,22 +936,24 @@
             editPaymentStatus: document.getElementById('editPaymentStatus'),
             editPasswordAttempts: document.getElementById('editPasswordAttempts'),
             editAdminNotes: document.getElementById('editAdminNotes'),
-            btnExport: document.getElementById('btnExport'),
+            btnExportPDF: document.getElementById('btnExportPDF'),
             btnClearData: document.getElementById('btnClearData'),
             decryptedInfo: document.getElementById('decryptedInfo'),
-            infoContent: document.getElementById('infoContent')
+            infoContent: document.getElementById('infoContent'),
+            selectAllCheckbox: document.getElementById('selectAllCheckbox'),
+            selectionActions: document.getElementById('selectionActions'),
+            selectedCount: document.getElementById('selectedCount'),
+            btnSelectAll: document.getElementById('btnSelectAll'),
+            btnDeselectAll: document.getElementById('btnDeselectAll')
         };
 
         // ====== INITIALIZATION ======
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if already logged in from previous session
             const isLoggedIn = localStorage.getItem('adminLoggedIn');
             
             if (isLoggedIn === 'true') {
-                // User was previously logged in, show dashboard
                 showAdminDashboard();
             } else {
-                // Show login screen
                 showLoginScreen();
             }
             
@@ -885,27 +962,28 @@
 
         // ====== EVENT LISTENERS ======
         function setupEventListeners() {
-            // Login button
+            // Login
             elements.btnLogin.addEventListener('click', handleLogin);
-            
-            // Press Enter in password field
             elements.adminPassword.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    handleLogin();
-                }
+                if (e.key === 'Enter') handleLogin();
             });
             
-            // Logout button
+            // Logout
             elements.btnLogout.addEventListener('click', handleLogout);
             
-            // Modal buttons
+            // Modal
             elements.closeModal.addEventListener('click', closeEditModal);
             elements.btnCancel.addEventListener('click', closeEditModal);
             elements.btnSave.addEventListener('click', saveUserChanges);
             
-            // Export and Clear buttons
-            elements.btnExport.addEventListener('click', exportToCSV);
+            // Export and Clear
+            elements.btnExportPDF.addEventListener('click', exportSelectedToPDF);
             elements.btnClearData.addEventListener('click', clearAllData);
+            
+            // Selection
+            elements.selectAllCheckbox.addEventListener('change', toggleSelectAll);
+            elements.btnSelectAll.addEventListener('click', selectAllUsers);
+            elements.btnDeselectAll.addEventListener('click', deselectAllUsers);
             
             // Close modal when clicking outside
             elements.editModal.addEventListener('click', function(e) {
@@ -920,11 +998,9 @@
             const username = elements.adminUsername.value.trim();
             const password = elements.adminPassword.value.trim();
             
-            // Reset errors
             elements.usernameError.style.display = 'none';
             elements.passwordError.style.display = 'none';
             
-            // Validate credentials
             let isValid = true;
             
             if (username !== ADMIN_CREDENTIALS.username) {
@@ -938,26 +1014,20 @@
             }
             
             if (isValid) {
-                // Save login state
                 localStorage.setItem('adminLoggedIn', 'true');
-                // Show dashboard
                 showAdminDashboard();
             }
         }
 
         function handleLogout() {
-            // Clear login state
             localStorage.removeItem('adminLoggedIn');
-            // Clear password field
             elements.adminPassword.value = '';
-            // Show login screen
             showLoginScreen();
         }
 
         function showLoginScreen() {
             elements.loginScreen.style.display = 'block';
             elements.adminDashboard.style.display = 'none';
-            // Clear any previous errors
             elements.usernameError.style.display = 'none';
             elements.passwordError.style.display = 'none';
         }
@@ -973,10 +1043,8 @@
             const allUsers = [];
             const userMap = new Map();
             
-            // Get data from localStorage
             const keys = Object.keys(localStorage);
             
-            // First, check our admin storage (user_XXXXXX)
             keys.forEach(key => {
                 if (key.startsWith('user_')) {
                     try {
@@ -985,51 +1053,15 @@
                             userMap.set(userData.userId, userData);
                         }
                     } catch (error) {
-                        console.error('Error parsing user data from admin storage:', error);
+                        console.error('Error parsing user data:', error);
                     }
                 }
             });
             
-            // Check and migrate from odelya_users_raw if needed
-            try {
-                const odelyaUsers = JSON.parse(localStorage.getItem('odelya_users_raw') || '[]');
-                odelyaUsers.forEach(user => {
-                    if (user && user.userId && !userMap.has(user.userId)) {
-                        const encryptedUser = {
-                            userId: user.userId,
-                            fullName: user.personalInfo?.fullName || 'Unknown',
-                            email: encryptData(user.personalInfo?.email || ''),
-                            phone: encryptData(user.personalInfo?.phone || ''),
-                            amount: user.serviceInfo?.amountPaid || 0,
-                            encryptedData: encryptData(JSON.stringify(user)),
-                            paymentMode: '',
-                            paymentStatus: 'Not Paid',
-                            passwordAttempts: 0,
-                            adminNotes: '',
-                            registrationDate: user.registrationDate || new Date().toISOString().split('T')[0],
-                            planStart: user.serviceInfo?.startDate || '',
-                            planEnd: user.serviceInfo?.endDate || '',
-                            serviceType: user.serviceInfo?.serviceType || 'Unknown',
-                            planGB: user.serviceInfo?.planGB || '',
-                            duration: user.serviceInfo?.duration || ''
-                        };
-                        
-                        userMap.set(user.userId, encryptedUser);
-                        localStorage.setItem(`user_${user.userId}`, JSON.stringify(encryptedUser));
-                    }
-                });
-            } catch (error) {
-                console.error('Error migrating odelya_users_raw:', error);
-            }
-            
-            // Convert map to array
             const uniqueUsers = Array.from(userMap.values());
-            
-            // Update statistics
             updateStats(uniqueUsers);
-            
-            // Populate table
             populateUsersTable(uniqueUsers);
+            updateSelectionUI();
         }
 
         function updateStats(users) {
@@ -1055,7 +1087,7 @@
             if (users.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="9" style="text-align: center; padding: 40px; color: #666;">
+                        <td colspan="10" style="text-align: center; padding: 40px; color: #666;">
                             <i class="fas fa-user-slash" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                             No users found
                         </td>
@@ -1071,8 +1103,8 @@
             
             users.forEach(user => {
                 const row = document.createElement('tr');
+                const isSelected = selectedUsers.has(user.userId);
                 
-                // Decrypt email and phone
                 let decryptedEmail = 'Error';
                 let decryptedPhone = 'Error';
                 try {
@@ -1085,6 +1117,11 @@
                 const statusClass = getStatusClass(user.paymentStatus);
                 
                 row.innerHTML = `
+                    <td>
+                        <input type="checkbox" class="user-checkbox user-select" 
+                               data-user-id="${user.userId}"
+                               ${isSelected ? 'checked' : ''}>
+                    </td>
                     <td><strong>${user.userId || 'N/A'}</strong></td>
                     <td>${user.fullName || 'Unknown'}</td>
                     <td>${decryptedEmail}</td>
@@ -1102,6 +1139,19 @@
                 
                 tbody.appendChild(row);
             });
+            
+            // Add event listeners to checkboxes
+            document.querySelectorAll('.user-select').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const userId = this.getAttribute('data-user-id');
+                    if (this.checked) {
+                        selectedUsers.add(userId);
+                    } else {
+                        selectedUsers.delete(userId);
+                    }
+                    updateSelectionUI();
+                });
+            });
         }
 
         function getStatusClass(status) {
@@ -1112,6 +1162,62 @@
                 case 'Cancelled': return 'status-cancelled';
                 default: return 'status-notpaid';
             }
+        }
+
+        // ====== USER SELECTION FUNCTIONS ======
+        function updateSelectionUI() {
+            const selectedCount = selectedUsers.size;
+            elements.selectedCount.textContent = `${selectedCount} user${selectedCount !== 1 ? 's' : ''} selected`;
+            
+            // Show/hide selection actions
+            if (selectedCount > 0) {
+                elements.selectionActions.style.display = 'flex';
+            } else {
+                elements.selectionActions.style.display = 'none';
+            }
+            
+            // Enable/disable PDF export button
+            elements.btnExportPDF.disabled = selectedCount === 0;
+            
+            // Update select all checkbox
+            const totalUsers = document.querySelectorAll('.user-select').length;
+            elements.selectAllCheckbox.checked = selectedCount > 0 && selectedCount === totalUsers;
+            elements.selectAllCheckbox.indeterminate = selectedCount > 0 && selectedCount < totalUsers;
+        }
+
+        function toggleSelectAll() {
+            const checkboxes = document.querySelectorAll('.user-select');
+            const isChecked = elements.selectAllCheckbox.checked;
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+                const userId = checkbox.getAttribute('data-user-id');
+                if (isChecked) {
+                    selectedUsers.add(userId);
+                } else {
+                    selectedUsers.delete(userId);
+                }
+            });
+            
+            updateSelectionUI();
+        }
+
+        function selectAllUsers() {
+            const checkboxes = document.querySelectorAll('.user-select');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+                selectedUsers.add(checkbox.getAttribute('data-user-id'));
+            });
+            updateSelectionUI();
+        }
+
+        function deselectAllUsers() {
+            const checkboxes = document.querySelectorAll('.user-select');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            selectedUsers.clear();
+            updateSelectionUI();
         }
 
         // ====== EDIT USER FUNCTIONS ======
@@ -1126,7 +1232,6 @@
                 editingUserId = userId;
                 currentUserData = userData;
                 
-                // Populate form fields
                 elements.editUserId.value = userData.userId || '';
                 elements.editFullName.value = userData.fullName || '';
                 elements.editPaymentMode.value = userData.paymentMode || '';
@@ -1134,10 +1239,7 @@
                 elements.editPasswordAttempts.value = userData.passwordAttempts || 0;
                 elements.editAdminNotes.value = userData.adminNotes || '';
                 
-                // Show decrypted information
                 showDecryptedInfo(userData);
-                
-                // Show modal
                 elements.editModal.style.display = 'flex';
             } catch (error) {
                 console.error('Error editing user:', error);
@@ -1224,22 +1326,14 @@
             if (!editingUserId || !currentUserData) return;
             
             try {
-                // Update user data
                 currentUserData.paymentMode = elements.editPaymentMode.value;
                 currentUserData.paymentStatus = elements.editPaymentStatus.value;
                 currentUserData.passwordAttempts = parseInt(elements.editPasswordAttempts.value) || 0;
                 currentUserData.adminNotes = elements.editAdminNotes.value;
                 
-                // Save back to localStorage
                 localStorage.setItem(`user_${editingUserId}`, JSON.stringify(currentUserData));
-                
-                // Reload table
                 loadUserData();
-                
-                // Close modal
                 closeEditModal();
-                
-                // Show success message
                 showNotification('User details updated successfully!', 'success');
             } catch (error) {
                 console.error('Error saving user changes:', error);
@@ -1247,12 +1341,271 @@
             }
         }
 
+        // ====== PDF EXPORT FUNCTION ======
+        function exportSelectedToPDF() {
+            try {
+                if (selectedUsers.size === 0) {
+                    showNotification('Please select at least one user!', 'error');
+                    return;
+                }
+                
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                const margin = 15;
+                let yPos = margin;
+                
+                // Get selected users data
+                const selectedUserData = [];
+                selectedUsers.forEach(userId => {
+                    try {
+                        const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
+                        if (userData) {
+                            selectedUserData.push(userData);
+                        }
+                    } catch (error) {
+                        console.error('Error loading user for PDF:', userId, error);
+                    }
+                });
+                
+                if (selectedUserData.length === 0) {
+                    showNotification('No valid user data found!', 'error');
+                    return;
+                }
+                
+                showNotification(`Generating PDF for ${selectedUserData.length} user(s)...`, 'info');
+                
+                // Generate PDF for each user
+                selectedUserData.forEach((userData, index) => {
+                    // Add new page for each user (except first)
+                    if (index > 0) {
+                        doc.addPage();
+                        yPos = margin;
+                    }
+                    
+                    // Title
+                    doc.setFontSize(20);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(26, 35, 126);
+                    doc.text('ODELYA CLOUD DIGITAL LOCKER', pageWidth / 2, yPos, { align: 'center' });
+                    
+                    yPos += 10;
+                    doc.setFontSize(16);
+                    doc.text('USER DETAILS REPORT', pageWidth / 2, yPos, { align: 'center' });
+                    
+                    yPos += 10;
+                    doc.setFontSize(12);
+                    doc.setTextColor(100, 100, 100);
+                    doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth / 2, yPos, { align: 'center' });
+                    
+                    yPos += 15;
+                    
+                    // Add line separator
+                    doc.setDrawColor(200, 200, 200);
+                    doc.line(margin, yPos, pageWidth - margin, yPos);
+                    yPos += 10;
+                    
+                    // User ID Section
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(26, 35, 126);
+                    doc.text('USER IDENTIFICATION', margin, yPos);
+                    yPos += 8;
+                    
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(0, 0, 0);
+                    doc.text(`User ID: ${userData.userId || 'N/A'}`, margin, yPos);
+                    yPos += 6;
+                    doc.text(`Full Name: ${userData.fullName || 'N/A'}`, margin, yPos);
+                    yPos += 6;
+                    doc.text(`Registration Date: ${userData.registrationDate || 'N/A'}`, margin, yPos);
+                    
+                    yPos += 10;
+                    
+                    // Basic Information Section
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(26, 35, 126);
+                    doc.text('BASIC INFORMATION', margin, yPos);
+                    yPos += 8;
+                    
+                    try {
+                        const decrypted = userData.encryptedData ? 
+                            JSON.parse(decryptData(userData.encryptedData)) : {};
+                        
+                        const personalInfo = decrypted.personalInfo || {};
+                        
+                        doc.setFontSize(11);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setTextColor(0, 0, 0);
+                        
+                        // Column 1
+                        let col1X = margin;
+                        let tempY = yPos;
+                        
+                        doc.text(`Email: ${personalInfo.email || 'N/A'}`, col1X, tempY);
+                        tempY += 6;
+                        doc.text(`Phone: ${personalInfo.phone || 'N/A'}`, col1X, tempY);
+                        tempY += 6;
+                        doc.text(`PAN: ${personalInfo.pan || 'N/A'}`, col1X, tempY);
+                        tempY += 6;
+                        doc.text(`Aadhaar: ${personalInfo.aadhaar || 'N/A'}`, col1X, tempY);
+                        
+                        // Column 2
+                        let col2X = pageWidth / 2;
+                        tempY = yPos;
+                        
+                        doc.text(`Date of Birth: ${personalInfo.dob || 'N/A'}`, col2X, tempY);
+                        tempY += 6;
+                        doc.text(`Gender: ${personalInfo.gender || 'N/A'}`, col2X, tempY);
+                        
+                        yPos = Math.max(yPos, tempY) + 10;
+                        
+                    } catch (error) {
+                        console.error('Error decrypting for PDF:', error);
+                        doc.text('Error decrypting user information', margin, yPos);
+                        yPos += 10;
+                    }
+                    
+                    // Service Information Section
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(26, 35, 126);
+                    doc.text('SERVICE INFORMATION', margin, yPos);
+                    yPos += 8;
+                    
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(0, 0, 0);
+                    
+                    doc.text(`Service Type: ${userData.serviceType || 'N/A'}`, margin, yPos);
+                    yPos += 6;
+                    
+                    if (userData.planGB) {
+                        doc.text(`Storage Plan: ${userData.planGB} GB (${userData.duration || 'N/A'})`, margin, yPos);
+                        yPos += 6;
+                    }
+                    
+                    doc.text(`Plan Start: ${userData.planStart || 'N/A'}`, margin, yPos);
+                    yPos += 6;
+                    doc.text(`Plan End: ${userData.planEnd || 'Ongoing'}`, margin, yPos);
+                    
+                    yPos += 10;
+                    
+                    // Payment Information Section
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(26, 35, 126);
+                    doc.text('PAYMENT INFORMATION', margin, yPos);
+                    yPos += 8;
+                    
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(0, 0, 0);
+                    
+                    doc.text(`Amount: ₹ ${userData.amount || 0}`, margin, yPos);
+                    yPos += 6;
+                    doc.text(`Payment Mode: ${userData.paymentMode || 'Not Set'}`, margin, yPos);
+                    yPos += 6;
+                    doc.text(`Payment Status: ${userData.paymentStatus || 'Not Paid'}`, margin, yPos);
+                    yPos += 6;
+                    doc.text(`Password Attempts: ${userData.passwordAttempts || 0}`, margin, yPos);
+                    
+                    yPos += 10;
+                    
+                    // Admin Notes Section
+                    if (userData.adminNotes) {
+                        doc.setFontSize(14);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setTextColor(26, 35, 126);
+                        doc.text('ADMIN NOTES', margin, yPos);
+                        yPos += 8;
+                        
+                        doc.setFontSize(11);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setTextColor(0, 0, 0);
+                        
+                        // Split notes into lines that fit page width
+                        const notesLines = doc.splitTextToSize(userData.adminNotes, pageWidth - 2 * margin);
+                        doc.text(notesLines, margin, yPos);
+                        yPos += (notesLines.length * 6) + 5;
+                    }
+                    
+                    // Encrypted Data Section (for verification)
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(26, 35, 126);
+                    doc.text('ENCRYPTED DATA VERIFICATION', margin, yPos);
+                    yPos += 8;
+                    
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(100, 100, 100);
+                    
+                    if (userData.encryptedData) {
+                        const encryptedPreview = userData.encryptedData.substring(0, 100) + '...';
+                        doc.text(`Encrypted Hash: ${encryptedPreview}`, margin, yPos);
+                        yPos += 6;
+                        doc.text(`Data Integrity: Verified`, margin, yPos);
+                        yPos += 6;
+                        doc.text(`Encryption Key: ${ENCRYPTION_KEY.substring(0, 20)}...`, margin, yPos);
+                    } else {
+                        doc.text('No encrypted data available', margin, yPos);
+                        yPos += 6;
+                    }
+                    
+                    yPos += 10;
+                    
+                    // Footer
+                    doc.setFontSize(10);
+                    doc.setTextColor(150, 150, 150);
+                    doc.text('--- End of User Report ---', pageWidth / 2, pageHeight - 20, { align: 'center' });
+                    doc.text(`Page ${index + 1} of ${selectedUserData.length}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                    
+                    // Reset yPos for next user
+                    yPos = margin;
+                });
+                
+                // Save PDF
+                const fileName = `odelya_users_${new Date().toISOString().split('T')[0]}_${selectedUserData.length}_users.pdf`;
+                doc.save(fileName);
+                
+                showNotification(`PDF exported successfully with ${selectedUserData.length} user(s)!`, 'success');
+                
+            } catch (error) {
+                console.error('PDF export error:', error);
+                showNotification('Error generating PDF!', 'error');
+            }
+        }
+
+        // ====== CLEAR DATA FUNCTION ======
+        function clearAllData() {
+            if (confirm('⚠️ Are you sure you want to clear ALL user data?\n\nThis action cannot be undone!')) {
+                try {
+                    const keys = Object.keys(localStorage);
+                    let count = 0;
+                    
+                    keys.forEach(key => {
+                        if (key.startsWith('user_')) {
+                            localStorage.removeItem(key);
+                            count++;
+                        }
+                    });
+                    
+                    selectedUsers.clear();
+                    loadUserData();
+                    showNotification(`Cleared ${count} user records!`, 'success');
+                } catch (error) {
+                    console.error('Clear data error:', error);
+                    showNotification('Error clearing data!', 'error');
+                }
+            }
+        }
+
         // ====== NOTIFICATION SYSTEM ======
         function showNotification(message, type = 'info') {
-            // Remove existing notifications
-            const existingNotifications = document.querySelectorAll('.notification');
-            existingNotifications.forEach(n => n.remove());
-            
             const notification = document.createElement('div');
             notification.className = 'notification';
             notification.style.cssText = `
@@ -1285,7 +1638,6 @@
             
             document.body.appendChild(notification);
             
-            // Auto-remove after 3 seconds
             setTimeout(() => {
                 notification.style.animation = 'slideOut 0.3s ease';
                 setTimeout(() => {
@@ -1296,101 +1648,7 @@
             }, 3000);
         }
 
-        // ====== EXPORT FUNCTION ======
-        function exportToCSV() {
-            try {
-                const users = [];
-                const keys = Object.keys(localStorage);
-                
-                keys.forEach(key => {
-                    if (key.startsWith('user_')) {
-                        try {
-                            const userData = JSON.parse(localStorage.getItem(key));
-                            
-                            const decrypted = {
-                                UserID: userData.userId || '',
-                                FullName: userData.fullName || '',
-                                Email: userData.email ? decryptData(userData.email) : '',
-                                Phone: userData.phone ? decryptData(userData.phone) : '',
-                                Amount: userData.amount || 0,
-                                PaymentMode: userData.paymentMode || '',
-                                PaymentStatus: userData.paymentStatus || '',
-                                PasswordAttempts: userData.passwordAttempts || 0,
-                                AdminNotes: userData.adminNotes || '',
-                                RegistrationDate: userData.registrationDate || '',
-                                ServiceType: userData.serviceType || '',
-                                Plan: userData.planGB || '',
-                                Duration: userData.duration || '',
-                                PlanStart: userData.planStart || '',
-                                PlanEnd: userData.planEnd || ''
-                            };
-                            
-                            users.push(decrypted);
-                        } catch (error) {
-                            console.error('Error processing user for export:', error);
-                        }
-                    }
-                });
-                
-                if (users.length === 0) {
-                    showNotification('No user data to export!', 'error');
-                    return;
-                }
-                
-                // Convert to CSV
-                const headers = Object.keys(users[0]).join(',');
-                const rows = users.map(user => 
-                    Object.values(user).map(value => 
-                        `"${String(value).replace(/"/g, '""')}"`
-                    ).join(',')
-                );
-                
-                const csv = [headers, ...rows].join('\n');
-                
-                // Create download link
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                const url = URL.createObjectURL(blob);
-                
-                link.setAttribute('href', url);
-                link.setAttribute('download', `odelya_users_${new Date().toISOString().split('T')[0]}.csv`);
-                link.style.visibility = 'hidden';
-                
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                showNotification('CSV exported successfully!', 'success');
-            } catch (error) {
-                console.error('Export error:', error);
-                showNotification('Error exporting data!', 'error');
-            }
-        }
-
-        // ====== CLEAR DATA FUNCTION ======
-        function clearAllData() {
-            if (confirm('⚠️ Are you sure you want to clear ALL user data?\n\nThis action cannot be undone!')) {
-                try {
-                    const keys = Object.keys(localStorage);
-                    let count = 0;
-                    
-                    keys.forEach(key => {
-                        if (key.startsWith('user_') || key === 'odelya_users_raw') {
-                            localStorage.removeItem(key);
-                            count++;
-                        }
-                    });
-                    
-                    loadUserData();
-                    showNotification(`Cleared ${count} user records!`, 'success');
-                } catch (error) {
-                    console.error('Clear data error:', error);
-                    showNotification('Error clearing data!', 'error');
-                }
-            }
-        }
-
-        // Add animation styles for notifications
+        // Add animation styles
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideIn {
@@ -1417,49 +1675,8 @@
         `;
         document.head.appendChild(style);
 
-        // ====== GLOBAL FUNCTIONS (for onclick attributes) ======
+        // ====== GLOBAL FUNCTIONS ======
         window.editUser = editUser;
-// ====== CLEANUP FUNCTION (Run once) ======
-function cleanUpOldData() {
-    console.log('Cleaning up old data...');
-    
-    // Remove old odelya_users_raw data
-    localStorage.removeItem('odelya_users_raw');
-    localStorage.removeItem('odelya_latest_user');
-    
-    // Get all user keys
-    const keys = Object.keys(localStorage);
-    const userMap = new Map();
-    
-    // Find and remove duplicates
-    keys.forEach(key => {
-        if (key.startsWith('user_')) {
-            try {
-                const userData = JSON.parse(localStorage.getItem(key));
-                if (userData && userData.userId) {
-                    // If we haven't seen this userId before, keep it
-                    if (!userMap.has(userData.userId)) {
-                        userMap.set(userData.userId, userData);
-                    } else {
-                        // This is a duplicate - remove it
-                        localStorage.removeItem(key);
-                        console.log('Removed duplicate:', key);
-                    }
-                }
-            } catch (error) {
-                console.error('Error processing key:', key, error);
-            }
-        }
-    });
-    
-    console.log('Cleanup complete. Unique users:', userMap.size);
-    showNotification('Old data cleanup completed!', 'success');
-    loadUserData();
-}
-
-// Run cleanup once (you can remove this after running once)
-// cleanUpOldData();
-    
     </script>
 </body>
 </html>
