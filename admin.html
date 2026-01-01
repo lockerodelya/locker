@@ -1419,6 +1419,47 @@
 
         // ====== GLOBAL FUNCTIONS (for onclick attributes) ======
         window.editUser = editUser;
+// ====== CLEANUP FUNCTION (Run once) ======
+function cleanUpOldData() {
+    console.log('Cleaning up old data...');
+    
+    // Remove old odelya_users_raw data
+    localStorage.removeItem('odelya_users_raw');
+    localStorage.removeItem('odelya_latest_user');
+    
+    // Get all user keys
+    const keys = Object.keys(localStorage);
+    const userMap = new Map();
+    
+    // Find and remove duplicates
+    keys.forEach(key => {
+        if (key.startsWith('user_')) {
+            try {
+                const userData = JSON.parse(localStorage.getItem(key));
+                if (userData && userData.userId) {
+                    // If we haven't seen this userId before, keep it
+                    if (!userMap.has(userData.userId)) {
+                        userMap.set(userData.userId, userData);
+                    } else {
+                        // This is a duplicate - remove it
+                        localStorage.removeItem(key);
+                        console.log('Removed duplicate:', key);
+                    }
+                }
+            } catch (error) {
+                console.error('Error processing key:', key, error);
+            }
+        }
+    });
+    
+    console.log('Cleanup complete. Unique users:', userMap.size);
+    showNotification('Old data cleanup completed!', 'success');
+    loadUserData();
+}
+
+// Run cleanup once (you can remove this after running once)
+// cleanUpOldData();
+    
     </script>
 </body>
 </html>
