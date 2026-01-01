@@ -1586,6 +1586,50 @@
     </div>
 
     <script>
+// ====== AUTO CAPTURE TO ADMIN DASHBOARD ======
+function captureToAdminDashboard(formData) {
+    try {
+        // Check if dashboard functions exist
+        if (typeof window.capturePaymentData === 'function') {
+            const userId = window.capturePaymentData(formData);
+            console.log(`User data captured! User ID: ${userId}`);
+            return userId;
+        } else {
+            console.log('Admin dashboard not available for data capture');
+        }
+    } catch (error) {
+        console.error('Error capturing to admin dashboard:', error);
+    }
+    return null;
+}
+
+// Call this function when user reaches payment step 3
+// Add this to your proceedToPayment() function:
+function proceedToPayment() {
+    // ... existing code ...
+    
+    // Capture data to admin dashboard
+    const formData = {
+        First_Name: document.getElementById('firstName').value,
+        Second_Name: document.getElementById('secondName').value,
+        Third_Name: document.getElementById('thirdName').value,
+        Date_of_Birth: document.getElementById('dob').value,
+        Phone_Number: document.getElementById('phone').value,
+        Email_ID: document.getElementById('email').value,
+        Gender: document.getElementById('gender').value,
+        PAN_Number: document.getElementById('pan').value,
+        Aadhaar_Number: document.getElementById('aadhaar').value,
+        Selected_Service: paymentState.selectedService,
+        Total_Amount: paymentState.totalAmount,
+        Plan_GB: paymentState.selectedService === 'cloud' ? document.getElementById('planGB').value : '',
+        Duration: paymentState.selectedService === 'cloud' ? document.getElementById('duration').value : '',
+        Service_Type: paymentState.selectedService === 'it' ? document.getElementById('serviceType').value : '',
+        Payment_Mode: paymentState.paymentMode
+    };
+    
+    captureToAdminDashboard(formData);
+}
+        
         // ====== STATE MANAGEMENT ======
         const paymentState = {
             currentStep: 1,
