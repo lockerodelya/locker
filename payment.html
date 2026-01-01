@@ -904,40 +904,6 @@
             color: #1b5e20;
         }
         
-        /* REMOVED: Copy All Bank Details Button */
-        /* .copy-all-btn {
-            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
-            color: white;
-            border: none;
-            padding: 16px 30px;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 20px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            transition: all 0.3s;
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        .copy-all-btn:hover {
-            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.25);
-        }
-        
-        @media (max-width: 768px) {
-            .copy-all-btn {
-                padding: 14px 20px;
-                font-size: 16px;
-                margin: 15px auto;
-            }
-        } */
-        
         .attention-note {
             background: #ffebee;
             border-radius: 12px;
@@ -1648,169 +1614,171 @@
             </div>
         </div>
     </div>
-// ====== USER TYPE SELECTION ======
-let isNewUser = true;
 
-function selectUserType(type) {
-    const options = document.querySelectorAll('.user-type-option');
-    options.forEach(opt => {
-        opt.style.borderColor = 'transparent';
-        opt.style.transform = 'scale(1)';
-    });
-    
-    if (type === 'new') {
-        isNewUser = true;
-        options[0].style.borderColor = '#2196f3';
-        options[0].style.transform = 'scale(1.02)';
-        showNewUserFlow();
-    } else {
-        isNewUser = false;
-        options[1].style.borderColor = '#4caf50';
-        options[1].style.transform = 'scale(1.02)';
-        showExistingUserLogin();
-    }
-}
-
-function showNewUserFlow() {
-    document.getElementById('userTypeSelection').style.display = 'none';
-    document.getElementById('termsModal').style.display = 'flex';
-}
-
-function showExistingUserLogin() {
-    document.getElementById('userTypeSelection').style.display = 'none';
-    
-    // Show login form for existing users
-    const loginHTML = `
-        <div style="background: white; border-radius: 15px; padding: 40px; margin: 20px auto; max-width: 500px;">
-            <h2 style="color: #1a237e; margin-bottom: 30px; text-align: center;">
-                <i class="fas fa-sign-in-alt"></i> Existing User Login
-            </h2>
-            
-            <div style="margin-bottom: 25px;">
-                <label style="display: block; margin-bottom: 8px; color: #424242; font-weight: 600;">
-                    User ID
-                </label>
-                <input type="text" id="existingUserId" placeholder="Enter your 6-digit User ID" 
-                       style="width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
-            </div>
-            
-            <div style="margin-bottom: 30px;">
-                <label style="display: block; margin-bottom: 8px; color: #424242; font-weight: 600;">
-                    Password
-                </label>
-                <input type="password" id="existingUserPassword" placeholder="Enter your password" 
-                       style="width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
-            </div>
-            
-            <button onclick="loginExistingUser()" style="
-                width: 100%; padding: 16px; background: linear-gradient(to right, #4caf50, #2e7d32);
-                color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: 600;
-                cursor: pointer; transition: all 0.3s;
-            ">
-                <i class="fas fa-sign-in-alt"></i> Login & Continue Payment
-            </button>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <button onclick="showUserTypeSelection()" style="
-                    background: none; border: none; color: #2196f3; cursor: pointer;
-                    text-decoration: underline; font-size: 14px;
-                ">
-                    ← Back to User Type Selection
-                </button>
-            </div>
-        </div>
-    `;
-    
-    // Replace content with login form
-    document.querySelector('.container').innerHTML = loginHTML;
-}
-
-function showUserTypeSelection() {
-    // Reload the page to show user type selection
-    location.reload();
-}
-
-function loginExistingUser() {
-    const userId = document.getElementById('existingUserId').value;
-    const password = document.getElementById('existingUserPassword').value;
-    
-    if (!userId || !password) {
-        alert('Please enter both User ID and Password');
-        return;
-    }
-    
-    // Here you would verify credentials
-    // For now, we'll proceed directly
-    alert('Existing user login would be verified here. Proceeding...');
-    // In real system, you would fetch user data and pre-fill form
-}
-
-// Modify the initialization to show user type selection first
-// Find this line in your existing code:
-// setTimeout(() => { elements.termsModal.style.display = 'flex'; }, 500);
-// Replace it with:
-document.addEventListener('DOMContentLoaded', function() {
-    // Load terms and conditions
-    loadTermsAndConditions();
-    
-    // Check if coming from cloud-storage.html
-    checkCloudStorageRedirect();
-    
-    // Show user type selection instead of terms immediately
-    setTimeout(() => {
-        document.getElementById('userTypeSelection').style.display = 'block';
-    }, 300);
-    
-    // Initialize event listeners
-    setupEventListeners();
-    
-    // Setup Date of Birth auto-formatting
-    setupDOBAutoFormat();
-});
     <script>
-// ====== AUTO CAPTURE TO ADMIN DASHBOARD ======
-function captureToAdminDashboard(formData) {
-    try {
-        // Check if dashboard functions exist
-        if (typeof window.capturePaymentData === 'function') {
-            const userId = window.capturePaymentData(formData);
-            console.log(`User data captured! User ID: ${userId}`);
-            return userId;
-        } else {
-            console.log('Admin dashboard not available for data capture');
+        // ====== AUTO CAPTURE TO ADMIN DASHBOARD ======
+        function captureToAdminDashboard(formData) {
+            try {
+                // Check if dashboard functions exist
+                if (typeof window.capturePaymentData === 'function') {
+                    const userId = window.capturePaymentData(formData);
+                    console.log(`User data captured! User ID: ${userId}`);
+                    return userId;
+                } else {
+                    console.log('Admin dashboard not available for data capture');
+                }
+            } catch (error) {
+                console.error('Error capturing to admin dashboard:', error);
+            }
+            return null;
         }
-    } catch (error) {
-        console.error('Error capturing to admin dashboard:', error);
-    }
-    return null;
-}
 
-// Call this function when user reaches payment step 3
-// Add this to your proceedToPayment() function:
-function proceedToPayment() {
-    // ... existing code ...
-    
-    // Capture data to admin dashboard
-    const formData = {
-        First_Name: document.getElementById('firstName').value,
-        Second_Name: document.getElementById('secondName').value,
-        Third_Name: document.getElementById('thirdName').value,
-        Date_of_Birth: document.getElementById('dob').value,
-        Phone_Number: document.getElementById('phone').value,
-        Email_ID: document.getElementById('email').value,
-        Gender: document.getElementById('gender').value,
-        PAN_Number: document.getElementById('pan').value,
-        Aadhaar_Number: document.getElementById('aadhaar').value,
-        Selected_Service: paymentState.selectedService,
-        Total_Amount: paymentState.totalAmount,
-        Plan_GB: paymentState.selectedService === 'cloud' ? document.getElementById('planGB').value : '',
-        Duration: paymentState.selectedService === 'cloud' ? document.getElementById('duration').value : '',
-        Service_Type: paymentState.selectedService === 'it' ? document.getElementById('serviceType').value : '',
-        Payment_Mode: paymentState.paymentMode
-    };
-    
-    captureToAdminDashboard(formData);
-}
+        // Call this function when user reaches payment step 3
+        // Add this to your proceedToPayment() function:
+        function proceedToPayment() {
+            // ... existing code ...
+            
+            // Capture data to admin dashboard
+            const formData = {
+                First_Name: document.getElementById('firstName').value,
+                Second_Name: document.getElementById('secondName').value,
+                Third_Name: document.getElementById('thirdName').value,
+                Date_of_Birth: document.getElementById('dob').value,
+                Phone_Number: document.getElementById('phone').value,
+                Email_ID: document.getElementById('email').value,
+                Gender: document.getElementById('gender').value,
+                PAN_Number: document.getElementById('pan').value,
+                Aadhaar_Number: document.getElementById('aadhaar').value,
+                Selected_Service: paymentState.selectedService,
+                Total_Amount: paymentState.totalAmount,
+                Plan_GB: paymentState.selectedService === 'cloud' ? document.getElementById('planGB').value : '',
+                Duration: paymentState.selectedService === 'cloud' ? document.getElementById('duration').value : '',
+                Service_Type: paymentState.selectedService === 'it' ? document.getElementById('serviceType').value : '',
+                Payment_Mode: paymentState.paymentMode
+            };
+            
+            captureToAdminDashboard(formData);
+        }
+        
+        // ====== USER TYPE SELECTION ======
+        let isNewUser = true;
+
+        function selectUserType(type) {
+            const options = document.querySelectorAll('.user-type-option');
+            options.forEach(opt => {
+                opt.style.borderColor = 'transparent';
+                opt.style.transform = 'scale(1)';
+            });
+            
+            if (type === 'new') {
+                isNewUser = true;
+                options[0].style.borderColor = '#2196f3';
+                options[0].style.transform = 'scale(1.02)';
+                showNewUserFlow();
+            } else {
+                isNewUser = false;
+                options[1].style.borderColor = '#4caf50';
+                options[1].style.transform = 'scale(1.02)';
+                showExistingUserLogin();
+            }
+        }
+
+        function showNewUserFlow() {
+            document.getElementById('userTypeSelection').style.display = 'none';
+            document.getElementById('termsModal').style.display = 'flex';
+        }
+
+        function showExistingUserLogin() {
+            document.getElementById('userTypeSelection').style.display = 'none';
+            
+            // Show login form for existing users
+            const loginHTML = `
+                <div style="background: white; border-radius: 15px; padding: 40px; margin: 20px auto; max-width: 500px;">
+                    <h2 style="color: #1a237e; margin-bottom: 30px; text-align: center;">
+                        <i class="fas fa-sign-in-alt"></i> Existing User Login
+                    </h2>
+                    
+                    <div style="margin-bottom: 25px;">
+                        <label style="display: block; margin-bottom: 8px; color: #424242; font-weight: 600;">
+                            User ID
+                        </label>
+                        <input type="text" id="existingUserId" placeholder="Enter your 6-digit User ID" 
+                               style="width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                    </div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <label style="display: block; margin-bottom: 8px; color: #424242; font-weight: 600;">
+                            Password
+                        </label>
+                        <input type="password" id="existingUserPassword" placeholder="Enter your password" 
+                               style="width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px;">
+                    </div>
+                    
+                    <button onclick="loginExistingUser()" style="
+                        width: 100%; padding: 16px; background: linear-gradient(to right, #4caf50, #2e7d32);
+                        color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: 600;
+                        cursor: pointer; transition: all 0.3s;
+                    ">
+                        <i class="fas fa-sign-in-alt"></i> Login & Continue Payment
+                    </button>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="showUserTypeSelection()" style="
+                            background: none; border: none; color: #2196f3; cursor: pointer;
+                            text-decoration: underline; font-size: 14px;
+                        ">
+                            ← Back to User Type Selection
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Replace content with login form
+            document.querySelector('.container').innerHTML = loginHTML;
+        }
+
+        function showUserTypeSelection() {
+            // Reload the page to show user type selection
+            location.reload();
+        }
+
+        function loginExistingUser() {
+            const userId = document.getElementById('existingUserId').value;
+            const password = document.getElementById('existingUserPassword').value;
+            
+            if (!userId || !password) {
+                alert('Please enter both User ID and Password');
+                return;
+            }
+            
+            // Here you would verify credentials
+            // For now, we'll proceed directly
+            alert('Existing user login would be verified here. Proceeding...');
+            // In real system, you would fetch user data and pre-fill form
+        }
+
+        // Modify the initialization to show user type selection first
+        // Find this line in your existing code:
+        // setTimeout(() => { elements.termsModal.style.display = 'flex'; }, 500);
+        // Replace it with:
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load terms and conditions
+            loadTermsAndConditions();
+            
+            // Check if coming from cloud-storage.html
+            checkCloudStorageRedirect();
+            
+            // Show user type selection instead of terms immediately
+            setTimeout(() => {
+                document.getElementById('userTypeSelection').style.display = 'block';
+            }, 300);
+            
+            // Initialize event listeners
+            setupEventListeners();
+            
+            // Setup Date of Birth auto-formatting
+            setupDOBAutoFormat();
+        });
         
         // ====== STATE MANAGEMENT ======
         const paymentState = {
@@ -1994,26 +1962,6 @@ function proceedToPayment() {
             // Terms Body
             termsBody: document.getElementById('termsBody')
         };
-
-        // ====== INITIALIZATION ======
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load terms and conditions from terms.html
-            loadTermsAndConditions();
-            
-            // Check if coming from cloud-storage.html
-            checkCloudStorageRedirect();
-            
-            // Show terms modal immediately
-            setTimeout(() => {
-                elements.termsModal.style.display = 'flex';
-            }, 500);
-            
-            // Initialize event listeners
-            setupEventListeners();
-            
-            // Setup Date of Birth auto-formatting
-            setupDOBAutoFormat();
-        });
 
         // ====== SETUP DATE OF BIRTH AUTO-FORMAT ======
         function setupDOBAutoFormat() {
@@ -2426,26 +2374,26 @@ function proceedToPayment() {
                 return;
             }
 
- // Capture data to admin dashboard
-    const formData = {
-        First_Name: document.getElementById('firstName').value,
-        Second_Name: document.getElementById('secondName').value,
-        Third_Name: document.getElementById('thirdName').value,
-        Date_of_Birth: document.getElementById('dob').value,
-        Phone_Number: document.getElementById('phone').value,
-        Email_ID: document.getElementById('email').value,
-        Gender: document.getElementById('gender').value,
-        PAN_Number: document.getElementById('pan').value,
-        Aadhaar_Number: document.getElementById('aadhaar').value,
-        Selected_Service: paymentState.selectedService,
-        Total_Amount: paymentState.totalAmount,
-        Plan_GB: paymentState.selectedService === 'cloud' ? document.getElementById('planGB').value : '',
-        Duration: paymentState.selectedService === 'cloud' ? document.getElementById('duration').value : '',
-        Service_Type: paymentState.selectedService === 'it' ? document.getElementById('serviceType').value : '',
-        Payment_Mode: paymentState.paymentMode
-    };
-    
-    captureToAdminDashboard(formData);            
+            // Capture data to admin dashboard
+            const formData = {
+                First_Name: document.getElementById('firstName').value,
+                Second_Name: document.getElementById('secondName').value,
+                Third_Name: document.getElementById('thirdName').value,
+                Date_of_Birth: document.getElementById('dob').value,
+                Phone_Number: document.getElementById('phone').value,
+                Email_ID: document.getElementById('email').value,
+                Gender: document.getElementById('gender').value,
+                PAN_Number: document.getElementById('pan').value,
+                Aadhaar_Number: document.getElementById('aadhaar').value,
+                Selected_Service: paymentState.selectedService,
+                Total_Amount: paymentState.totalAmount,
+                Plan_GB: paymentState.selectedService === 'cloud' ? document.getElementById('planGB').value : '',
+                Duration: paymentState.selectedService === 'cloud' ? document.getElementById('duration').value : '',
+                Service_Type: paymentState.selectedService === 'it' ? document.getElementById('serviceType').value : '',
+                Payment_Mode: paymentState.paymentMode
+            };
+            
+            captureToAdminDashboard(formData);            
             
             elements.step2.classList.remove('active');
             elements.step2.classList.add('completed');
