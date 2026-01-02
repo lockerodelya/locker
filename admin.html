@@ -639,7 +639,7 @@
             color: #666;
             border: 2px solid #e0e0e0;
             padding: 14px 35px;
-            border-radius = 8px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 1.1rem;
             font-weight: 600;
@@ -1438,17 +1438,15 @@
                     doc.setFontSize(12);
                     doc.setTextColor(100, 100, 100);
                     
-                    // Get current date and time with seconds
+                    // Get current date and time for PDF generation (not download time)
                     const now = new Date();
-                    const dateTimeStr = now.toLocaleString('en-IN', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: true
-                    });
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const year = now.getFullYear();
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                    const dateTimeStr = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
                     
                     doc.text(`Generated: ${dateTimeStr}`, pageWidth / 2, yPos, { align: 'center' });
                     
@@ -1475,23 +1473,24 @@
                     let tempY = yPos;
                     doc.text(`Full Name: ${userData.fullName || 'N/A'}`, leftX, tempY);
                     tempY += 6;
-                    // Format registration date to DD-MM-YY format
-let formattedRegDate = 'N/A';
-if (userData.registrationDate) {
-    try {
-        const regDate = new Date(userData.registrationDate);
-        if (!isNaN(regDate)) {
-            const regDay = String(regDate.getDate()).padStart(2, '0');
-            const regMonth = String(regDate.getMonth() + 1).padStart(2, '0');
-            const regYear = regDate.getFullYear(); // Full 4-digit year
-            formattedRegDate = `${regDay}-${regMonth}-${regYear}`;
-        }
-    } catch (error) {
-        console.error('Error formatting registration date:', error);
-        formattedRegDate = userData.registrationDate; // Fallback to original
-    }
-}
-doc.text(`Registration Date: ${formattedRegDate}`, leftX, tempY);
+                    
+                    // Format registration date to DD-MM-YYYY format
+                    let formattedRegDate = 'N/A';
+                    if (userData.registrationDate) {
+                        try {
+                            const regDate = new Date(userData.registrationDate);
+                            if (!isNaN(regDate)) {
+                                const regDay = String(regDate.getDate()).padStart(2, '0');
+                                const regMonth = String(regDate.getMonth() + 1).padStart(2, '0');
+                                const regYear = regDate.getFullYear();
+                                formattedRegDate = `${regDay}-${regMonth}-${regYear}`;
+                            }
+                        } catch (error) {
+                            console.error('Error formatting registration date:', error);
+                            formattedRegDate = userData.registrationDate;
+                        }
+                    }
+                    doc.text(`Registration Date: ${formattedRegDate}`, leftX, tempY);
                     
                     // Right side: User ID
                     let rightX = pageWidth / 2;
@@ -1500,7 +1499,7 @@ doc.text(`Registration Date: ${formattedRegDate}`, leftX, tempY);
                     
                     yPos = Math.max(yPos + 12, tempY + 6);
                     
-                    yPos += 8; // Reduced from 12
+                    yPos += 8;
                     
                     // Basic Information Section
                     doc.setFontSize(14);
@@ -1532,45 +1531,37 @@ doc.text(`Registration Date: ${formattedRegDate}`, leftX, tempY);
                         // Right Column
                         rightX = pageWidth / 2;
                         tempY = yPos;
-// Format Date of Birth to DD-MM-YYYY format
-let formattedDOB = 'N/A';
-if (personalInfo.dob) {
-    try {
-        // Try to parse the date in various formats
-        const dateStr = personalInfo.dob.toString().trim();
-        let dobDate;
-        
-        // Try parsing as ISO format (YYYY-MM-DD)
-        if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
-            dobDate = new Date(dateStr);
-        } 
-        // Try parsing as DD/MM/YYYY or DD-MM-YYYY
-        else if (dateStr.match(/^\d{2}[\/\-]\d{2}[\/\-]\d{4}$/)) {
-            const parts = dateStr.split(/[\/\-]/);
-            dobDate = new Date(parts[2], parts[1] - 1, parts[0]);
-        }
-        // Try parsing as a general date string
-        else {
-            dobDate = new Date(dateStr);
-        }
-        
-        if (dobDate && !isNaN(dobDate)) {
-            const dobDay = String(dobDate.getDate()).padStart(2, '0');
-            const dobMonth = String(dobDate.getMonth() + 1).padStart(2, '0');
-            const dobYear = dobDate.getFullYear();
-            formattedDOB = `${dobDay}-${dobMonth}-${dobYear}`;
-        } else {
-            // If parsing fails, show the original value
-            formattedDOB = personalInfo.dob;
-        }
-    } catch (error) {
-        console.error('Error formatting DOB:', error);
-        formattedDOB = personalInfo.dob; // Fallback to original
-    }
-}
-doc.text(`Date of Birth: ${formattedDOB}`, rightX, tempY);                        
-
-
+                        
+                        // Format DOB to DD-MM-YYYY format
+                        let formattedDOB = 'N/A';
+                        if (personalInfo.dob) {
+                            try {
+                                const dateStr = personalInfo.dob.toString().trim();
+                                let dobDate;
+                                
+                                if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                                    dobDate = new Date(dateStr);
+                                } else if (dateStr.match(/^\d{2}[\/\-]\d{2}[\/\-]\d{4}$/)) {
+                                    const parts = dateStr.split(/[\/\-]/);
+                                    dobDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                                } else {
+                                    dobDate = new Date(dateStr);
+                                }
+                                
+                                if (dobDate && !isNaN(dobDate)) {
+                                    const dobDay = String(dobDate.getDate()).padStart(2, '0');
+                                    const dobMonth = String(dobDate.getMonth() + 1).padStart(2, '0');
+                                    const dobYear = dobDate.getFullYear();
+                                    formattedDOB = `${dobDay}-${dobMonth}-${dobYear}`;
+                                } else {
+                                    formattedDOB = personalInfo.dob;
+                                }
+                            } catch (error) {
+                                console.error('Error formatting DOB:', error);
+                                formattedDOB = personalInfo.dob;
+                            }
+                        }
+                        doc.text(`Date of Birth: ${formattedDOB}`, rightX, tempY);
                         tempY += 6;
                         doc.text(`Gender: ${personalInfo.gender || 'N/A'}`, rightX, tempY);
                         tempY += 6;
@@ -1584,9 +1575,9 @@ doc.text(`Date of Birth: ${formattedDOB}`, rightX, tempY);
                         yPos += 10;
                     }
                     
-                    yPos += 8; // Reduced from 12
+                    yPos += 8;
                     
-                    // SERVICE INFORMATION Section (Updated layout)
+                    // SERVICE INFORMATION Section
                     doc.setFontSize(14);
                     doc.setFont('helvetica', 'bold');
                     doc.setTextColor(26, 35, 126);
@@ -1620,9 +1611,9 @@ doc.text(`Date of Birth: ${formattedDOB}`, rightX, tempY);
                     
                     yPos = Math.max(yPos + 12, tempY + 6);
                     
-                    yPos += 8; // Reduced from 12
+                    yPos += 8;
                     
-                    // PAYMENT INFORMATION Section (Updated layout)
+                    // PAYMENT INFORMATION Section
                     doc.setFontSize(14);
                     doc.setFont('helvetica', 'bold');
                     doc.setTextColor(26, 35, 126);
@@ -1635,20 +1626,19 @@ doc.text(`Date of Birth: ${formattedDOB}`, rightX, tempY);
                     
                     // Get current date for "Paid on" in DD-MM-YYYY format
                     const currentDate = new Date();
-                    const day = String(currentDate.getDate()).padStart(2, '0');
-                    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-                    const year = currentDate.getFullYear();
-                    const formattedDate = `${day}-${month}-${year}`;
+                    const paidDay = String(currentDate.getDate()).padStart(2, '0');
+                    const paidMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+                    const paidYear = currentDate.getFullYear();
+                    const formattedPaidDate = `${paidDay}-${paidMonth}-${paidYear}`;
                     
                     // Left side: Amount and Paid on date
                     leftX = margin;
                     tempY = yPos;
                     
-                    // Fixed: Amount showing as "INR" instead of little 1
                     const amountText = `Amount: INR ${userData.amount || 0}`;
                     doc.text(amountText, leftX, tempY);
                     tempY += 6;
-                    doc.text(`Paid on: ${formattedDate}`, leftX, tempY); // Changed to DD-MM-YYYY format
+                    doc.text(`Paid on: ${formattedPaidDate}`, leftX, tempY);
                     
                     // Right side: Payment Mode and Payment Status
                     rightX = pageWidth / 2;
@@ -1659,7 +1649,7 @@ doc.text(`Date of Birth: ${formattedDOB}`, rightX, tempY);
                     
                     yPos = Math.max(yPos + 12, tempY + 6);
                     
-                    yPos += 8; // Reduced from 12
+                    yPos += 8;
                     
                     // Admin Notes Section
                     if (userData.adminNotes && userData.adminNotes.trim()) {
@@ -1675,10 +1665,10 @@ doc.text(`Date of Birth: ${formattedDOB}`, rightX, tempY);
                         
                         const notesLines = doc.splitTextToSize(userData.adminNotes.trim(), pageWidth - 2 * margin);
                         doc.text(notesLines, margin, yPos);
-                        yPos += (notesLines.length * 6) + 8; // Reduced from 10
+                        yPos += (notesLines.length * 6) + 8;
                     }
                     
-                    // ====== TERMS & CONDITIONS SECTION ======
+                    // TERMS & CONDITIONS SECTION
                     doc.setFontSize(14);
                     doc.setFont('helvetica', 'bold');
                     doc.setTextColor(26, 35, 126);
@@ -1689,8 +1679,6 @@ doc.text(`Date of Birth: ${formattedDOB}`, rightX, tempY);
                     doc.setFont('helvetica', 'normal');
                     doc.setTextColor(0, 0, 0);
                     
-                    // Add checkmarks for both steps (removed the dot)
-                    
                     // Left side - Step 1
                     leftX = margin;
                     doc.text('Step 1: Agreed', leftX, yPos);
@@ -1699,7 +1687,7 @@ doc.text(`Date of Birth: ${formattedDOB}`, rightX, tempY);
                     rightX = pageWidth / 2;
                     doc.text('Step 2: Agreed', rightX, yPos);
                     
-                    yPos += 6; // Reduced from 8
+                    yPos += 6;
                     
                     // Add Terms & Conditions text
                     doc.setFontSize(10);
@@ -1711,15 +1699,11 @@ doc.text(`Date of Birth: ${formattedDOB}`, rightX, tempY);
                     
                     const termsLines = doc.splitTextToSize(termsText, pageWidth - 2 * margin);
                     doc.text(termsLines, margin, yPos);
-                    yPos += (termsLines.length * 5) + 6; // Reduced from 10
+                    yPos += (termsLines.length * 5) + 6;
                     
-                    // Removed signature line as requested
-                    // Removed time of accessing website as requested
+                    yPos += 6;
                     
-                    yPos += 6; // Reduced from 12
-                    // ====== END OF TERMS & CONDITIONS SECTION ======
-                    
-                    // Encrypted Data Section - Moved up with reduced gap
+                    // Encrypted Data Section
                     doc.setFontSize(14);
                     doc.setFont('helvetica', 'bold');
                     doc.setTextColor(26, 35, 126);
@@ -1749,20 +1733,10 @@ doc.text(`Date of Birth: ${formattedDOB}`, rightX, tempY);
                         yPos += 6;
                     }
                     
-                    yPos += 8; // Reduced from 10
+                    yPos += 8;
                     
-                    // Footer
-                    if (yPos > pageHeight - 30) {
-                        doc.addPage();
-                        yPos = margin;
-                    }
-                    
-                    doc.setFontSize(10);
-                    doc.setTextColor(150, 150, 150);
-                    doc.text('--- End of User Report ---', pageWidth / 2, pageHeight - 20, { align: 'center' });
-                    doc.text(`Page ${index + 1} of ${selectedUserData.length}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-                    
-                    yPos = margin;
+                    // Footer - REMOVED "End of User Report" and page numbers as requested
+                    // No footer text added
                 });
                 
                 // Save PDF
