@@ -387,14 +387,14 @@
             gap: 8px;
         }
 
-        .form-row input {
+        .form-row input, .form-row select {
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 1rem;
         }
 
-        .form-row input:focus {
+        .form-row input:focus, .form-row select:focus {
             border-color: #2196f3;
             outline: none;
             box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
@@ -655,6 +655,63 @@
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
+
+        /* Date Format Indicator */
+        .date-format {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Status Indicators */
+        .status-active {
+            color: #1b5e20;
+            background: #e8f5e9;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .status-inactive {
+            color: #c62828;
+            background: #ffebee;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        /* Plan History Table */
+        .plan-history-section {
+            margin-top: 30px;
+        }
+
+        .plan-history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .plan-history-table th {
+            background: linear-gradient(135deg, #4caf50 0%, #2E7D32 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .plan-history-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .plan-history-table tr:nth-child(even) {
+            background-color: #f8f9ff;
+        }
     </style>
 </head>
 <body>
@@ -732,6 +789,29 @@
                     </div>
                 </div>
 
+                <!-- Plan History -->
+                <div class="plan-history-section" id="planHistorySection">
+                    <h3><i class="fas fa-history"></i> Plan History (Last 36 Months)</h3>
+                    <div class="table-container active">
+                        <table class="plan-history-table" id="planHistoryTable">
+                            <thead>
+                                <tr>
+                                    <th>Plan Name</th>
+                                    <th>Plan (GB)</th>
+                                    <th>Duration</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Amount Paid</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="planHistoryBody">
+                                <!-- Plan history will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Recharge Button -->
                 <div class="recharge-section">
                     <button class="btn-recharge" onclick="rechargeNow()">
@@ -760,12 +840,12 @@
                         <div class="stat-value" id="statActivePlans">0</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">First Logins</div>
-                        <div class="stat-value" id="statFirstLogins">0</div>
+                        <div class="stat-label">Expired Plans</div>
+                        <div class="stat-value" id="statExpiredPlans">0</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Revenue</div>
-                        <div class="stat-value" id="statRevenue">₹0</div>
+                        <div class="stat-label">Total Storage</div>
+                        <div class="stat-value" id="statTotalStorage">0 GB</div>
                     </div>
                 </div>
 
@@ -782,6 +862,9 @@
                     </button>
                     <button class="btn-admin-secondary" onclick="restoreData()">
                         <i class="fas fa-upload"></i> Restore Data
+                    </button>
+                    <button class="btn-admin-secondary" onclick="openChangePasswordModal()">
+                        <i class="fas fa-key"></i> Change Password
                     </button>
                 </div>
 
@@ -807,31 +890,50 @@
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-calendar"></i> Date of Birth</label>
-                            <input type="text" id="newDOB" placeholder="DD-MM-YYYY">
+                            <input type="text" id="newDOB" placeholder="DD-MM-YYYY" pattern="\d{2}-\d{2}-\d{4}">
+                            <div class="date-format">Format: DD-MM-YYYY</div>
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-tag"></i> Plan Name</label>
-                            <input type="text" id="newPlanName" placeholder="Premium Plan" value="Premium Plan">
+                            <select id="newPlanName">
+                                <option value="Cloud Storage">Cloud Storage</option>
+                                <option value="Event Guest Storage">Event Guest Storage</option>
+                                <option value="Premium Plan">Premium Plan</option>
+                                <option value="Standard Plan">Standard Plan</option>
+                                <option value="Basic Plan">Basic Plan</option>
+                            </select>
                         </div>
                         <div class="form-row">
-                            <label><i class="fas fa-database"></i> Data (GB)</label>
-                            <input type="text" id="newPlanGB" placeholder="50 GB" value="50 GB">
+                            <label><i class="fas fa-database"></i> Plan (GB)</label>
+                            <input type="text" id="newPlanGB" placeholder="e.g., 50 GB">
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-calendar-alt"></i> Duration</label>
-                            <input type="text" id="newPlanDuration" placeholder="30 Days" value="30 Days">
+                            <select id="newPlanDuration">
+                                <option value="30 Days">30 Days</option>
+                                <option value="60 Days">60 Days</option>
+                                <option value="90 Days">90 Days</option>
+                                <option value="180 Days">180 Days</option>
+                                <option value="365 Days">365 Days</option>
+                            </select>
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-calendar-day"></i> Start Date</label>
-                            <input type="text" id="newPlanStart" placeholder="DD-MM-YYYY">
+                            <input type="text" id="newPlanStart" placeholder="DD-MM-YYYY" pattern="\d{2}-\d{2}-\d{4}">
+                            <div class="date-format">Format: DD-MM-YYYY</div>
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-calendar-check"></i> End Date</label>
-                            <input type="text" id="newPlanEnd" placeholder="DD-MM-YYYY">
+                            <input type="text" id="newPlanEnd" placeholder="DD-MM-YYYY" pattern="\d{2}-\d{2}-\d{4}">
+                            <div class="date-format">Format: DD-MM-YYYY</div>
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-rupee-sign"></i> Amount Paid</label>
                             <input type="number" id="newAmount" placeholder="599">
+                        </div>
+                        <div class="form-row">
+                            <label><i class="fas fa-key"></i> Initial Password</label>
+                            <input type="text" id="newPassword" placeholder="Enter initial password" value="odelya@123">
                         </div>
                     </div>
                     <div class="form-actions">
@@ -854,6 +956,7 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Plan</th>
+                                <th>End Date</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -892,6 +995,16 @@
                     <label>Confirm New Password</label>
                     <input type="password" id="confirmPassword" placeholder="Confirm new password">
                     <div class="error-message" id="passwordError" style="display: none;"></div>
+                </div>
+                <div class="password-requirements" style="margin-top: 15px; padding: 10px; background: #f5f5f5; border-radius: 8px; font-size: 0.9rem;">
+                    <strong>Password Requirements:</strong>
+                    <ul style="margin-top: 5px; margin-left: 20px;">
+                        <li>Minimum 8 characters</li>
+                        <li>At least one uppercase letter</li>
+                        <li>At least one lowercase letter</li>
+                        <li>At least one number</li>
+                        <li>At least one special character</li>
+                    </ul>
                 </div>
                 <div style="margin-top: 20px;">
                     <button class="btn-login" onclick="changePassword()" style="width: 100%;">
@@ -939,7 +1052,8 @@
                     amountPaid: 0,
                     isFirstLogin: false,
                     isAdmin: true,
-                    createdAt: new Date().toISOString()
+                    createdAt: new Date().toISOString(),
+                    planHistory: []
                 };
                 localStorage.setItem('user_ADMIN', JSON.stringify(adminUser));
             }
@@ -993,7 +1107,7 @@
                     try {
                         const user = JSON.parse(localStorage.getItem(key));
                         if ((user.username === username || user.email === username) && 
-                            (user.password === password || (user.isFirstLogin && password === 'odelya@123'))) {
+                            (user.password === password || (user.isFirstLogin && user.initialPassword && password === user.initialPassword))) {
                             return user;
                         }
                     } catch (e) {
@@ -1012,6 +1126,9 @@
             
             // Display user info
             displayUserInfo(user);
+            
+            // Display plan history
+            displayPlanHistory(user);
             
             // Show security alert if first login
             if (user.isFirstLogin) {
@@ -1071,7 +1188,7 @@
                     <div class="info-value highlight">${user.planName || 'N/A'}</div>
                 </div>
                 <div class="info-row">
-                    <div class="info-label">Data Limit:</div>
+                    <div class="info-label">Plan (GB):</div>
                     <div class="info-value">${user.planGB || 'N/A'}</div>
                 </div>
                 <div class="info-row">
@@ -1093,12 +1210,72 @@
             `;
         }
 
+        function displayPlanHistory(user) {
+            const tbody = document.getElementById('planHistoryBody');
+            tbody.innerHTML = '';
+            
+            // Get plan history (last 36 months)
+            let planHistory = user.planHistory || [];
+            
+            // If no history, create from current plan
+            if (planHistory.length === 0 && user.planName) {
+                planHistory = [{
+                    planName: user.planName,
+                    planGB: user.planGB,
+                    duration: user.planDuration,
+                    startDate: user.planStartDate,
+                    endDate: user.planEndDate,
+                    amountPaid: user.amountPaid,
+                    addedAt: user.createdAt || new Date().toISOString()
+                }];
+            }
+            
+            // Sort by date (newest first)
+            planHistory.sort((a, b) => {
+                const dateA = parseDate(a.endDate || a.startDate);
+                const dateB = parseDate(b.endDate || b.startDate);
+                return dateB - dateA;
+            });
+            
+            // Limit to 36 records
+            if (planHistory.length > 36) {
+                planHistory = planHistory.slice(0, 36);
+            }
+            
+            // Display plan history
+            planHistory.forEach(plan => {
+                const today = new Date();
+                const endDate = parseDate(plan.endDate);
+                const isActive = endDate >= today;
+                
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${plan.planName || 'N/A'}</td>
+                    <td>${plan.planGB || 'N/A'}</td>
+                    <td>${plan.duration || 'N/A'}</td>
+                    <td>${plan.startDate || 'N/A'}</td>
+                    <td>${plan.endDate || 'N/A'}</td>
+                    <td>₹${plan.amountPaid || 0}</td>
+                    <td>
+                        <span class="${isActive ? 'status-active' : 'status-inactive'}">
+                            ${isActive ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                `;
+                
+                // Add red color to inactive rows
+                if (!isActive) {
+                    row.style.color = '#c62828';
+                }
+            });
+        }
+
         // ====== ADMIN FUNCTIONS ======
         function loadAdminStats() {
             let totalUsers = 0;
             let activePlans = 0;
-            let firstLogins = 0;
-            let totalRevenue = 0;
+            let expiredPlans = 0;
+            let totalStorage = 0;
             
             const today = new Date();
             
@@ -1108,17 +1285,20 @@
                     try {
                         const user = JSON.parse(localStorage.getItem(key));
                         totalUsers++;
-                        totalRevenue += user.amountPaid || 0;
                         
-                        if (user.isFirstLogin) {
-                            firstLogins++;
+                        // Calculate storage
+                        const storageMatch = (user.planGB || '').match(/(\d+)/);
+                        if (storageMatch) {
+                            totalStorage += parseInt(storageMatch[1]);
                         }
                         
-                        // Check if plan is active
+                        // Check plan status
                         if (user.planEndDate) {
                             const endDate = parseDate(user.planEndDate);
                             if (endDate >= today) {
                                 activePlans++;
+                            } else {
+                                expiredPlans++;
                             }
                         }
                     } catch (e) {
@@ -1129,8 +1309,8 @@
             
             document.getElementById('statTotalUsers').textContent = totalUsers;
             document.getElementById('statActivePlans').textContent = activePlans;
-            document.getElementById('statFirstLogins').textContent = firstLogins;
-            document.getElementById('statRevenue').textContent = `₹${totalRevenue}`;
+            document.getElementById('statExpiredPlans').textContent = expiredPlans;
+            document.getElementById('statTotalStorage').textContent = `${totalStorage} GB`;
         }
 
         function showSection(sectionId) {
@@ -1139,6 +1319,11 @@
             
             // Show requested section
             document.getElementById(sectionId).classList.add('active');
+            
+            // Load data for users list
+            if (sectionId === 'usersList') {
+                loadUsersList();
+            }
         }
 
         function hideAllSections() {
@@ -1153,24 +1338,48 @@
             const email = document.getElementById('newEmail').value.trim();
             const phone = document.getElementById('newPhone').value.trim();
             const dob = document.getElementById('newDOB').value.trim();
-            const planName = document.getElementById('newPlanName').value.trim();
+            const planName = document.getElementById('newPlanName').value;
             const planGB = document.getElementById('newPlanGB').value.trim();
-            const planDuration = document.getElementById('newPlanDuration').value.trim();
+            const planDuration = document.getElementById('newPlanDuration').value;
             const planStart = document.getElementById('newPlanStart').value.trim();
             const planEnd = document.getElementById('newPlanEnd').value.trim();
             const amount = parseInt(document.getElementById('newAmount').value) || 0;
+            const password = document.getElementById('newPassword').value.trim();
             
             // Validation
-            if (!userId || !fullName || !email) {
+            if (!userId || !fullName || !email || !password) {
                 showToast('Error', 'Please fill in required fields');
+                return;
+            }
+            
+            // Validate date formats
+            if (!isValidDateFormat(dob)) {
+                showToast('Error', 'Date of Birth must be in DD-MM-YYYY format');
+                return;
+            }
+            
+            if (!isValidDateFormat(planStart)) {
+                showToast('Error', 'Start Date must be in DD-MM-YYYY format');
+                return;
+            }
+            
+            if (!isValidDateFormat(planEnd)) {
+                showToast('Error', 'End Date must be in DD-MM-YYYY format');
+                return;
+            }
+            
+            // Check if user already exists
+            if (localStorage.getItem('user_' + userId)) {
+                showToast('Error', 'User ID already exists');
                 return;
             }
             
             // Create user object
             const newUser = {
                 userId: userId,
-                username: email.split('@')[0], // Use email prefix as username
-                password: 'odelya@123', // Default password
+                username: email.split('@')[0],
+                password: password,
+                initialPassword: password,
                 fullName: fullName,
                 email: email,
                 phone: phone,
@@ -1183,14 +1392,23 @@
                 amountPaid: amount,
                 isFirstLogin: true,
                 isAdmin: false,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                planHistory: [{
+                    planName: planName,
+                    planGB: planGB,
+                    duration: planDuration,
+                    startDate: planStart,
+                    endDate: planEnd,
+                    amountPaid: amount,
+                    addedAt: new Date().toISOString()
+                }]
             };
             
             // Save to localStorage
             localStorage.setItem('user_' + userId, JSON.stringify(newUser));
             
             // Show success message
-            showToast('Success', `User "${fullName}" added successfully!\nDefault password: odelya@123`);
+            showToast('Success', `User "${fullName}" added successfully!\nInitial password: ${password}`);
             
             // Clear form
             clearAddUserForm();
@@ -1206,9 +1424,11 @@
             document.getElementById('newEmail').value = '';
             document.getElementById('newPhone').value = '';
             document.getElementById('newDOB').value = '';
+            document.getElementById('newPlanGB').value = '';
             document.getElementById('newPlanStart').value = '';
             document.getElementById('newPlanEnd').value = '';
             document.getElementById('newAmount').value = '';
+            document.getElementById('newPassword').value = 'odelya@123';
         }
 
         function loadUsersList() {
@@ -1227,12 +1447,22 @@
                         const endDate = parseDate(user.planEndDate);
                         const isActive = endDate >= today;
                         
+                        // Set row color based on status
+                        if (!isActive) {
+                            row.style.color = '#c62828';
+                        }
+                        
                         row.innerHTML = `
                             <td>${user.userId}</td>
                             <td>${user.fullName}</td>
                             <td>${user.email}</td>
                             <td>${user.planName}</td>
-                            <td>${user.isFirstLogin ? 'First Login' : (isActive ? 'Active' : 'Expired')}</td>
+                            <td>${user.planEndDate || 'N/A'}</td>
+                            <td>
+                                <span class="${isActive ? 'status-active' : 'status-inactive'}">
+                                    ${isActive ? 'Active' : 'Inactive'}
+                                </span>
+                            </td>
                             <td>
                                 <button class="btn-action btn-edit" onclick="editUser('${user.userId}')">
                                     <i class="fas fa-edit"></i>
@@ -1264,6 +1494,7 @@
                 document.getElementById('newPlanStart').value = user.planStartDate;
                 document.getElementById('newPlanEnd').value = user.planEndDate;
                 document.getElementById('newAmount').value = user.amountPaid;
+                document.getElementById('newPassword').value = user.initialPassword || user.password;
                 
                 // Show add user form
                 showSection('addUserForm');
@@ -1276,8 +1507,83 @@
         }
 
         function updateUser(userId) {
-            // Similar to saveNewUser but update existing user
-            saveNewUser();
+            const user = JSON.parse(localStorage.getItem('user_' + userId));
+            if (!user) return;
+            
+            // Get updated values
+            const fullName = document.getElementById('newFullName').value.trim();
+            const email = document.getElementById('newEmail').value.trim();
+            const phone = document.getElementById('newPhone').value.trim();
+            const dob = document.getElementById('newDOB').value.trim();
+            const planName = document.getElementById('newPlanName').value;
+            const planGB = document.getElementById('newPlanGB').value.trim();
+            const planDuration = document.getElementById('newPlanDuration').value;
+            const planStart = document.getElementById('newPlanStart').value.trim();
+            const planEnd = document.getElementById('newPlanEnd').value.trim();
+            const amount = parseInt(document.getElementById('newAmount').value) || 0;
+            const password = document.getElementById('newPassword').value.trim();
+            
+            // Validate date formats
+            if (!isValidDateFormat(dob) || !isValidDateFormat(planStart) || !isValidDateFormat(planEnd)) {
+                showToast('Error', 'All dates must be in DD-MM-YYYY format');
+                return;
+            }
+            
+            // Check if plan has changed
+            const planChanged = 
+                user.planName !== planName ||
+                user.planGB !== planGB ||
+                user.planDuration !== planDuration ||
+                user.planStartDate !== planStart ||
+                user.planEndDate !== planEnd ||
+                user.amountPaid !== amount;
+            
+            // Update user object
+            user.fullName = fullName;
+            user.email = email;
+            user.phone = phone;
+            user.dob = dob;
+            user.planName = planName;
+            user.planGB = planGB;
+            user.planDuration = planDuration;
+            user.planStartDate = planStart;
+            user.planEndDate = planEnd;
+            user.amountPaid = amount;
+            user.initialPassword = password;
+            
+            // If plan changed, add to history
+            if (planChanged) {
+                const planHistory = user.planHistory || [];
+                planHistory.unshift({
+                    planName: planName,
+                    planGB: planGB,
+                    duration: planDuration,
+                    startDate: planStart,
+                    endDate: planEnd,
+                    amountPaid: amount,
+                    addedAt: new Date().toISOString()
+                });
+                
+                // Keep only last 36 records
+                if (planHistory.length > 36) {
+                    user.planHistory = planHistory.slice(0, 36);
+                } else {
+                    user.planHistory = planHistory;
+                }
+            }
+            
+            // Save updated user
+            localStorage.setItem('user_' + userId, JSON.stringify(user));
+            
+            showToast('Success', `User "${fullName}" updated successfully!`);
+            
+            // Reset form and button
+            clearAddUserForm();
+            hideAllSections();
+            
+            // Reload data
+            loadAdminStats();
+            loadUsersList();
             
             // Reset button
             const saveBtn = document.querySelector('#addUserForm .btn-save');
@@ -1397,7 +1703,11 @@
             }
             
             // Check current password
-            if (currentPass !== user.password && !(user.isFirstLogin && currentPass === 'odelya@123')) {
+            const isAdmin = user.isAdmin;
+            const correctPassword = isAdmin ? ADMIN_CREDENTIALS.password : 
+                (user.isFirstLogin ? (user.initialPassword || 'odelya@123') : user.password);
+            
+            if (currentPass !== correctPassword) {
                 showMessage('passwordError', 'Current password is incorrect');
                 document.getElementById('passwordError').style.display = 'block';
                 return;
@@ -1410,8 +1720,9 @@
                 return;
             }
             
-            if (newPass.length < 8) {
-                showMessage('passwordError', 'Password must be at least 8 characters');
+            // Check password strength
+            if (!validatePasswordStrength(newPass)) {
+                showMessage('passwordError', 'Password does not meet requirements');
                 document.getElementById('passwordError').style.display = 'block';
                 return;
             }
@@ -1424,19 +1735,21 @@
             const key = user.isAdmin ? 'user_ADMIN' : 'user_' + user.userId;
             localStorage.setItem(key, JSON.stringify(user));
             
-            // Update session
-            if (user.isAdmin) {
-                sessionStorage.setItem('currentAdmin', JSON.stringify(user));
-            } else {
-                sessionStorage.setItem('currentUser', JSON.stringify(user));
-            }
-            
-            showToast('Success', 'Password changed successfully!');
+            showToast('Success', 'Password changed successfully! Logging out...');
             
             setTimeout(() => {
                 closeChangePasswordModal();
                 logout(); // Auto logout after password change
             }, 1500);
+        }
+
+        function validatePasswordStrength(password) {
+            if (password.length < 8) return false;
+            if (!/[A-Z]/.test(password)) return false;
+            if (!/[a-z]/.test(password)) return false;
+            if (!/\d/.test(password)) return false;
+            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) return false;
+            return true;
         }
 
         // ====== UTILITY FUNCTIONS ======
@@ -1475,6 +1788,30 @@
             return new Date(dateStr);
         }
 
+        function isValidDateFormat(dateStr) {
+            const regex = /^\d{2}-\d{2}-\d{4}$/;
+            if (!regex.test(dateStr)) return false;
+            
+            const parts = dateStr.split('-');
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10);
+            const year = parseInt(parts[2], 10);
+            
+            if (month < 1 || month > 12) return false;
+            if (day < 1 || day > 31) return false;
+            
+            // Check for specific month day limits
+            if (month === 2) {
+                const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+                if (isLeapYear) return day <= 29;
+                return day <= 28;
+            }
+            
+            if ([4, 6, 9, 11].includes(month)) return day <= 30;
+            
+            return true;
+        }
+
         function rechargeNow() {
             showToast('Info', 'Recharge functionality will be configured later.');
         }
@@ -1486,11 +1823,12 @@
                     userId: 'USER001',
                     username: 'john_doe',
                     password: 'odelya@123',
+                    initialPassword: 'odelya@123',
                     fullName: 'John Doe',
                     email: 'john@example.com',
                     phone: '9876543210',
                     dob: '15-05-1990',
-                    planName: 'Premium Plan',
+                    planName: 'Cloud Storage',
                     planGB: '50 GB',
                     planDuration: '30 Days',
                     planStartDate: '01-01-2025',
@@ -1498,31 +1836,64 @@
                     amountPaid: 599,
                     isFirstLogin: true,
                     isAdmin: false,
-                    createdAt: '2024-01-01'
+                    createdAt: '2024-01-01',
+                    planHistory: []
                 },
                 {
                     userId: 'USER002',
                     username: 'jane_smith',
                     password: 'odelya@123',
+                    initialPassword: 'odelya@123',
                     fullName: 'Jane Smith',
                     email: 'jane@example.com',
                     phone: '9876543211',
                     dob: '22-08-1985',
-                    planName: 'Standard Plan',
-                    planGB: '30 GB',
-                    planDuration: '30 Days',
+                    planName: 'Event Guest Storage',
+                    planGB: '100 GB',
+                    planDuration: '60 Days',
                     planStartDate: '01-02-2025',
                     planEndDate: '03-03-2025',
-                    amountPaid: 399,
+                    amountPaid: 899,
                     isFirstLogin: true,
                     isAdmin: false,
-                    createdAt: '2024-01-02'
+                    createdAt: '2024-01-02',
+                    planHistory: []
                 }
             ];
             
             // Add sample users if they don't exist
             sampleUsers.forEach(user => {
                 if (!localStorage.getItem('user_' + user.userId)) {
+                    // Add some historical data
+                    const today = new Date();
+                    user.planHistory = [];
+                    
+                    // Add 12 months of history
+                    for (let i = 0; i < 12; i++) {
+                        const monthAgo = new Date();
+                        monthAgo.setMonth(today.getMonth() - i);
+                        
+                        const startDate = new Date(monthAgo);
+                        startDate.setDate(1);
+                        
+                        const endDate = new Date(startDate);
+                        endDate.setMonth(startDate.getMonth() + 1);
+                        endDate.setDate(0);
+                        
+                        const formattedStart = `${String(startDate.getDate()).padStart(2, '0')}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${startDate.getFullYear()}`;
+                        const formattedEnd = `${String(endDate.getDate()).padStart(2, '0')}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${endDate.getFullYear()}`;
+                        
+                        user.planHistory.push({
+                            planName: i === 0 ? user.planName : (i % 2 === 0 ? 'Cloud Storage' : 'Event Guest Storage'),
+                            planGB: i === 0 ? user.planGB : `${50 + (i * 5)} GB`,
+                            duration: user.planDuration,
+                            startDate: formattedStart,
+                            endDate: formattedEnd,
+                            amountPaid: i === 0 ? user.amountPaid : (500 + (i * 50)),
+                            addedAt: startDate.toISOString()
+                        });
+                    }
+                    
                     localStorage.setItem('user_' + user.userId, JSON.stringify(user));
                 }
             });
@@ -1532,6 +1903,21 @@
         window.onload = function() {
             initializeStorage();
             loadUsersList(); // Preload users list for admin
+            
+            // Add input validation for date fields
+            const dateFields = ['newDOB', 'newPlanStart', 'newPlanEnd'];
+            dateFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('blur', function() {
+                        const value = this.value.trim();
+                        if (value && !isValidDateFormat(value)) {
+                            showToast('Error', 'Please use DD-MM-YYYY format');
+                            this.focus();
+                        }
+                    });
+                }
+            });
         };
     </script>
 </body>
