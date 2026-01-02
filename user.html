@@ -6,7 +6,6 @@
     <title>Odelya Locker - User Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ====== EXISTING STYLES (KEEP ALL PREVIOUS STYLES) ====== */
         * {
             margin: 0;
             padding: 0;
@@ -37,7 +36,6 @@
             color: white;
             padding: 30px 40px;
             text-align: center;
-            position: relative;
         }
 
         .header h1 {
@@ -49,104 +47,760 @@
             margin-bottom: 5px;
         }
 
-        /* ====== NEW ADMIN SECRET BUTTON ====== */
-        .admin-secret-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #ff9800;
+        .content {
+            padding: 40px;
+            min-height: 500px;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #2196f3;
+        }
+
+        .search-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #424242;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #2196f3;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 50px;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 0.9rem;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
-            opacity: 0.3;
-            transition: opacity 0.3s;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .admin-secret-btn:hover {
-            opacity: 1;
+        .btn-login:hover {
+            background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(33, 150, 243, 0.3);
         }
 
-        /* ====== ADMIN MODAL ====== */
-        .admin-modal-overlay {
+        .btn-recharge {
+            width: 100%;
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-recharge:hover {
+            background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn-forgot-password {
+            background: transparent;
+            color: #2196f3;
+            border: none;
+            padding: 10px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 15px auto 0;
+            text-align: center;
+        }
+
+        .btn-forgot-password:hover {
+            color: #0d47a1;
+            text-decoration: underline;
+        }
+
+        .btn-change-password {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-change-password:hover {
+            background: linear-gradient(135deg, #f57c00 0%, #e65100 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .btn-change-password-urgent {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        .btn-change-password-urgent:hover {
+            background: linear-gradient(135deg, #cc0000 0%, #990000 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 68, 68, 0.4);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 1rem;
+            margin-top: 15px;
+            text-align: center;
+            padding: 10px;
+            background: #ffebee;
+            border-radius: 8px;
+            border-left: 4px solid #f44336;
+            display: none;
+        }
+
+        .success-message {
+            color: #1b5e20;
+            font-size: 1rem;
+            margin-top: 15px;
+            text-align: center;
+            padding: 10px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+            display: none;
+        }
+
+        /* User Info Display */
+        .user-info-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .user-info-header h2 {
+            color: #1a237e;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: center;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .logout-btn-header {
+            background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(244, 67, 54, 0.3);
+        }
+
+        .logout-btn-header:hover {
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(244, 67, 54, 0.4);
+        }
+
+        /* User Account Sections */
+        .account-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .account-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #2196f3;
+        }
+
+        .account-section.personal {
+            border-left-color: #2196f3;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .account-section.plan-history {
+            border-left-color: #4caf50;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .section-header h3 {
+            color: #1a237e;
+            font-size: 1.6rem;
+        }
+
+        .section-header i {
+            color: #1a237e;
+            font-size: 1.6rem;
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .info-row {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #424242;
+            font-size: 1.1rem;
+        }
+
+        .info-value {
+            color: #666;
+            word-break: break-word;
+            font-size: 1.1rem;
+        }
+
+        .info-value.highlight {
+            color: #1a237e;
+            font-weight: 600;
+        }
+
+        /* Plan History Table */
+        .plan-history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .plan-history-table th {
+            background: linear-gradient(135deg, #4caf50 0%, #2E7D32 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .plan-history-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #666;
+        }
+
+        .plan-history-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .plan-history-table tr:nth-child(even) {
+            background-color: #f8f9ff;
+        }
+
+        .plan-history-table tr:hover {
+            background-color: #e8f5e9;
+        }
+
+        .status-active {
+            color: #1b5e20;
+            background: #e8f5e9;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .status-inactive {
+            color: #c62828;
+            background: #ffebee;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        /* Security Alert for First Time Login */
+        .security-alert {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffecb3 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            border-left: 5px solid #ff9800;
+            border-right: 5px solid #ff9800;
+            animation: shakeAlert 0.5s ease;
+        }
+
+        @keyframes shakeAlert {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .security-alert h4 {
+            color: #e65100;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .security-alert p {
+            color: #5d4037;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            background: #f8f9ff;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #2196f3;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Password format example */
+        .password-format-example {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Date format example */
+        .date-format-example {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* First time login note */
+        .first-time-note {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+            color: #e65100;
+            font-weight: 500;
+            border-left: 4px solid #ff9800;
+            display: none;
+        }
+
+        .first-time-note i {
+            margin-right: 10px;
+        }
+
+        /* Modals */
+        .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.7);
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
+            z-index: 1000;
             padding: 20px;
         }
 
-        .admin-modal {
+        .modal {
             background: white;
             border-radius: 15px;
             width: 100%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
             animation: modalFadeIn 0.3s ease;
         }
 
-        .admin-modal-header {
-            background: linear-gradient(135deg, #333 0%, #555 100%);
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
             color: white;
             padding: 20px 30px;
             border-radius: 15px 15px 0 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 10;
         }
 
-        .admin-modal-header h3 {
-            font-size: 1.8rem;
+        .modal-header h3 {
+            font-size: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
-        .admin-close-modal {
+        .close-modal {
             background: none;
             border: none;
             color: white;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             cursor: pointer;
             padding: 5px;
             transition: color 0.3s;
         }
 
-        .admin-close-modal:hover {
+        .close-modal:hover {
             color: #ff9800;
         }
 
-        /* ====== ADMIN CONTENT ====== */
-        .admin-content {
+        .modal-body {
             padding: 30px;
         }
 
-        .admin-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 15px;
+        .modal-form .form-group {
+            margin-bottom: 20px;
         }
 
-        .admin-tab-btn {
+        .password-requirements {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            padding: 10px;
             background: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .password-match-error {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-submit {
+            flex: 1;
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: linear-gradient(135deg, #388e3c 0%, #1b5e20 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: #f5f5f5;
+            color: #666;
+            border: 2px solid #e0e0e0;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-reset-password {
+            flex: 1;
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-reset-password:hover:not(:disabled) {
+            background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        /* Success Toast */
+        .password-success-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+            display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .toast-message {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* User Log Store Section */
+        .user-log-info {
+            background: #fff8e1;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #ff9800;
+            font-size: 0.9rem;
+            color: #5d4037;
+            display: none;
+        }
+
+        .user-log-info i {
+            color: #ff9800;
+            margin-right: 10px;
+        }
+
+        .no-history {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        /* Admin Panel Styles */
+        .admin-panel {
+            display: none;
+        }
+
+        .admin-section {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #ff9800;
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+            color: white;
             border: none;
             padding: 12px 25px;
             border-radius: 8px;
@@ -156,49 +810,68 @@
             transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .admin-tab-btn:hover {
-            background: #e0e0e0;
+        .btn-admin:hover {
+            background: linear-gradient(135deg, #7b1fa2 0%, #6a1b9a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.3);
         }
 
-        .admin-tab-btn.active {
-            background: #2196f3;
+        .btn-admin-secondary {
+            background: linear-gradient(135deg, #607d8b 0%, #455a64 100%);
             color: white;
-        }
-
-        /* ====== USER MANAGEMENT SECTION ====== */
-        .admin-section {
-            display: none;
-        }
-
-        .admin-section.active {
-            display: block;
-        }
-
-        .user-form-section {
-            background: #f8f9ff;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 25px;
-            border-left: 4px solid #2196f3;
-        }
-
-        .form-title {
-            color: #1a237e;
-            margin-bottom: 20px;
-            font-size: 1.4rem;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+
+        .btn-admin-secondary:hover {
+            background: linear-gradient(135deg, #455a64 0%, #37474f 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(96, 125, 139, 0.3);
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a237e;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
         }
 
         .admin-form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
 
         .admin-form-group {
@@ -211,273 +884,102 @@
             color: #424242;
             font-weight: 500;
             font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .admin-form-group input,
-        .admin-form-group select {
+        .admin-form-group input {
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 1rem;
-            transition: all 0.3s;
         }
 
-        .admin-form-group input:focus,
-        .admin-form-group select:focus {
+        .admin-form-group input:focus {
             border-color: #2196f3;
             outline: none;
             box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
         }
 
-        .admin-buttons {
-            display: flex;
-            gap: 15px;
+        .users-list-container {
             margin-top: 20px;
-        }
-
-        .btn-admin-save {
-            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
-            color: white;
-            border: none;
-            padding: 14px 25px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-        }
-
-        .btn-admin-save:hover {
-            background: linear-gradient(135deg, #388e3c 0%, #1b5e20 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
-        }
-
-        .btn-admin-clear {
-            background: #f5f5f5;
-            color: #666;
-            border: 2px solid #e0e0e0;
-            padding: 14px 25px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-        }
-
-        .btn-admin-clear:hover {
-            background: #e0e0e0;
-        }
-
-        /* ====== USERS LIST SECTION ====== */
-        .users-list-section {
-            margin-top: 30px;
-        }
-
-        .users-list-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .users-list-header h4 {
-            color: #1a237e;
-            font-size: 1.3rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .search-users {
-            display: flex;
-            gap: 10px;
-        }
-
-        .search-users input {
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            width: 250px;
-        }
-
-        .search-users button {
-            background: #2196f3;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .users-table-container {
-            overflow-x: auto;
-            border-radius: 10px;
+            max-height: 400px;
+            overflow-y: auto;
             border: 1px solid #e0e0e0;
+            border-radius: 10px;
         }
 
-        .users-table {
+        .users-list {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .users-table th {
+        .users-list th {
             background: #f5f5f5;
-            padding: 15px;
+            padding: 12px;
             text-align: left;
             font-weight: 600;
             color: #424242;
-            border-bottom: 2px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
 
-        .users-table td {
-            padding: 15px;
+        .users-list td {
+            padding: 12px;
             border-bottom: 1px solid #e0e0e0;
             color: #666;
         }
 
-        .users-table tr:hover {
+        .users-list tr:hover {
             background: #f8f9ff;
         }
 
-        .user-actions {
-            display: flex;
-            gap: 8px;
+        .user-action-btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-right: 5px;
         }
 
-        .btn-edit-user {
+        .btn-edit {
             background: #ff9800;
             color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
 
-        .btn-delete-user {
+        .btn-delete {
             background: #f44336;
             color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
-
-        .no-users {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-            font-style: italic;
-        }
-
-        /* ====== ADMIN STATUS SECTION ====== */
-        .admin-status-section {
-            background: #e8f5e9;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border-left: 4px solid #4caf50;
-        }
-
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .status-item {
-            text-align: center;
-            padding: 15px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-
-        .status-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #1a237e;
-            margin: 10px 0;
-        }
-
-        .status-label {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        /* ====== EXISTING STYLES CONTINUE... ====== */
-        /* ALL YOUR EXISTING STYLES FROM THE ORIGINAL CODE */
-        /* I'm keeping them all here but not duplicating to save space */
-        
-        .content {
-            padding: 40px;
-            min-height: 500px;
-        }
-
-        .search-section {
-            background: #f8f9ff;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            border-left: 5px solid #2196f3;
-        }
-
-        /* ... continue with all existing styles ... */
-
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header with Hidden Admin Button -->
+        <!-- Header -->
         <div class="header">
             <h1><i class="fas fa-user-shield"></i> Odelya Locker User Portal</h1>
-            <!-- Hidden Admin Button - Only visible to you -->
-            <button class="admin-secret-btn" onclick="openAdminModal()">
-                <i class="fas fa-cog"></i> Admin
-            </button>
         </div>
 
-        <!-- Original Content (User Login/Portal) -->
+        <!-- Content -->
         <div class="content">
             <!-- Login Section -->
             <div class="search-section" id="loginSection">
                 <form class="search-form" id="loginForm">
                     <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email ID</label>
-                        <input type="text" id="loginEmail" placeholder="Enter your Email ID" required>
+                        <label><i class="fas fa-user"></i> Username or Email</label>
+                        <input type="text" id="loginEmail" placeholder="Enter your username or email" required>
                     </div>
                     
                     <div class="form-group">
                         <label><i class="fas fa-lock"></i> Password</label>
-                        <input type="password" id="loginPassword" placeholder="Enter your Odelya Locker password" required>
-                        <div class="password-format-example">** Alert! Do not enter your email password, enter Odelya Locker password</div>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
                         <div class="first-time-note" id="firstTimeNote">
                             <i class="fas fa-info-circle"></i> First time users: Please use the default password provided by administrator
                         </div>
                     </div>
                     
                     <div class="error-message" id="loginErrorMessage">
-                        <i class="fas fa-exclamation-circle"></i> Invalid email or password. Please check your credentials.
+                        <i class="fas fa-exclamation-circle"></i> Invalid username/email or password. Please check your credentials.
                     </div>
                     
                     <div class="success-message" id="loginSuccessMessage">
@@ -554,6 +1056,133 @@
                     </button>
                 </div>
             </div>
+
+            <!-- Admin Panel (Hidden by default) -->
+            <div class="admin-panel" id="adminPanel">
+                <div class="admin-section">
+                    <h3><i class="fas fa-user-cog"></i> Admin Control Panel</h3>
+                    
+                    <div class="admin-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Total Users</div>
+                            <div class="stat-value" id="totalUsersCount">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Active Users</div>
+                            <div class="stat-value" id="activeUsersCount">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">First Logins</div>
+                            <div class="stat-value" id="firstLoginCount">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-buttons">
+                        <button class="btn-admin" onclick="showAddUserForm()">
+                            <i class="fas fa-user-plus"></i> Add New User
+                        </button>
+                        <button class="btn-admin-secondary" onclick="showAllUsers()">
+                            <i class="fas fa-users"></i> View All Users
+                        </button>
+                        <button class="btn-admin-secondary" onclick="backupData()">
+                            <i class="fas fa-download"></i> Backup Data
+                        </button>
+                        <button class="btn-admin-secondary" onclick="restoreData()">
+                            <i class="fas fa-upload"></i> Restore Data
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Add User Form -->
+                <div class="admin-section" id="addUserSection" style="display: none;">
+                    <h4><i class="fas fa-user-plus"></i> Add/Edit User</h4>
+                    
+                    <div class="admin-form-grid">
+                        <div class="admin-form-group">
+                            <label>Username</label>
+                            <input type="text" id="adminUsername" placeholder="Enter username">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Password</label>
+                            <input type="text" id="adminPassword" placeholder="Enter default password" value="odelya@123">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="adminFullName" placeholder="Enter full name">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Email</label>
+                            <input type="email" id="adminEmail" placeholder="Enter email">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Phone</label>
+                            <input type="text" id="adminPhone" placeholder="Enter phone number">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Date of Birth</label>
+                            <input type="text" id="adminDOB" placeholder="DD-MM-YYYY">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Plan Name</label>
+                            <input type="text" id="adminPlanName" placeholder="e.g., Premium Plan">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Plan Data (GB)</label>
+                            <input type="text" id="adminPlanGB" placeholder="e.g., 50 GB">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Duration</label>
+                            <input type="text" id="adminPlanDuration" placeholder="e.g., 30 Days">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Start Date</label>
+                            <input type="text" id="adminPlanStart" placeholder="DD-MM-YYYY">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>End Date</label>
+                            <input type="text" id="adminPlanEnd" placeholder="DD-MM-YYYY">
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Amount Paid</label>
+                            <input type="number" id="adminAmount" placeholder="Amount in INR">
+                        </div>
+                    </div>
+                    
+                    <div class="admin-buttons">
+                        <button class="btn-admin-secondary" onclick="hideAddUserForm()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button class="btn-admin" onclick="saveUser()">
+                            <i class="fas fa-save"></i> Save User
+                        </button>
+                        <button class="btn-admin" onclick="clearUserForm()">
+                            <i class="fas fa-broom"></i> Clear Form
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Users List -->
+                <div class="admin-section" id="usersListSection" style="display: none;">
+                    <h4><i class="fas fa-users"></i> All Users</h4>
+                    <div class="users-list-container">
+                        <table class="users-list" id="usersListTable">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Plan</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersListBody">
+                                <!-- Users will be listed here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Footer -->
@@ -562,223 +1191,6 @@
         </div>
     </div>
 
-    <!-- ====== ADMIN MODAL (HIDDEN FROM NORMAL USERS) ====== -->
-    <div class="admin-modal-overlay" id="adminModal">
-        <div class="admin-modal">
-            <div class="admin-modal-header">
-                <h3><i class="fas fa-user-cog"></i> Admin Control Panel</h3>
-                <button class="admin-close-modal" onclick="closeAdminModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="admin-content">
-                <!-- Admin Tabs -->
-                <div class="admin-tabs">
-                    <button class="admin-tab-btn active" onclick="switchAdminTab('manage-users')">
-                        <i class="fas fa-users"></i> Manage Users
-                    </button>
-                    <button class="admin-tab-btn" onclick="switchAdminTab('add-user')">
-                        <i class="fas fa-user-plus"></i> Add New User
-                    </button>
-                    <button class="admin-tab-btn" onclick="switchAdminTab('system-status')">
-                        <i class="fas fa-chart-bar"></i> System Status
-                    </button>
-                </div>
-
-                <!-- Add User Tab -->
-                <div id="add-user-tab" class="admin-section active">
-                    <div class="user-form-section">
-                        <h4 class="form-title"><i class="fas fa-user-plus"></i> Add/Edit User</h4>
-                        
-                        <div class="admin-form-grid">
-                            <div class="admin-form-group">
-                                <label><i class="fas fa-id-card"></i> User ID</label>
-                                <input type="text" id="adminUserId" placeholder="e.g., USER001" required>
-                            </div>
-                            
-                            <div class="admin-form-group">
-                                <label><i class="fas fa-user"></i> Full Name</label>
-                                <input type="text" id="adminFullName" placeholder="Full Name" required>
-                            </div>
-                            
-                            <div class="admin-form-group">
-                                <label><i class="fas fa-envelope"></i> Email</label>
-                                <input type="email" id="adminEmail" placeholder="user@example.com" required>
-                            </div>
-                            
-                            <div class="admin-form-group">
-                                <label><i class="fas fa-phone"></i> Phone</label>
-                                <input type="text" id="adminPhone" placeholder="9876543210" required>
-                            </div>
-                            
-                            <div class="admin-form-group">
-                                <label><i class="fas fa-birthday-cake"></i> Date of Birth</label>
-                                <input type="text" id="adminDOB" placeholder="DD-MM-YYYY" required>
-                            </div>
-                            
-                            <div class="admin-form-group">
-                                <label><i class="fas fa-tag"></i> Plan Name</label>
-                                <select id="adminPlanName">
-                                    <option value="Premium Plan">Premium Plan</option>
-                                    <option value="Standard Plan">Standard Plan</option>
-                                    <option value="Basic Plan">Basic Plan</option>
-                                    <option value="Custom Plan">Custom Plan</option>
-                                </select>
-                            </div>
-                            
-                            <div class="admin-form-group">
-                                <label><i class="fas fa-database"></i> Data (GB)</label>
-                                <select id="adminPlanGB">
-                                    <option value="50 GB">50 GB</option>
-                                    <option value="30 GB">30 GB</option>
-                                    <option value="20 GB">20 GB</option>
-                                    <option value="10 GB">10 GB</option>
-                                </select>
-                            </div>
-                            
-                            <div class="admin-form-group">
-                                <label><i class="fas fa-calendar-alt"></i> Duration</label>
-                                <select id="adminPlanDuration">
-                                    <option value="30 Days">30 Days</option>
-                                    <option value="60 Days">60 Days</option>
-                                    <option value="90 Days">90 Days</option>
-                                    <option value="180 Days">180 Days</option>
-                                    <option value="365 Days">365 Days</option>
-                                </select>
-                            </div>
-                            
-                            <div class="admin-form-group">
-                                <label><i class="fas fa-calendar-day"></i> Start Date</label>
-                                <input type="text" id="adminPlanStart" placeholder="DD-MM-YYYY" required>
-                            </div>
-                            
-                            <div class="admin-form-group">
-                                <label><i class="fas fa-calendar-check"></i> End Date</label>
-                                <input type="text" id="adminPlanEnd" placeholder="DD-MM-YYYY" required>
-                            </div>
-                            
-                            <div class="admin-form-group">
-                                <label><i class="fas fa-rupee-sign"></i> Amount Paid</label>
-                                <input type="number" id="adminAmount" placeholder="Amount" required>
-                            </div>
-                        </div>
-                        
-                        <div class="admin-buttons">
-                            <button type="button" class="btn-admin-clear" onclick="clearAdminForm()">
-                                <i class="fas fa-times"></i> Clear Form
-                            </button>
-                            <button type="button" class="btn-admin-save" onclick="saveUserFromAdmin()">
-                                <i class="fas fa-save"></i> Save User
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="admin-status-section">
-                        <h4><i class="fas fa-info-circle"></i> Quick Information</h4>
-                        <div class="status-grid">
-                            <div class="status-item">
-                                <div class="status-label">Default Password</div>
-                                <div class="status-value">odelya@123</div>
-                                <div class="status-label">All new users</div>
-                            </div>
-                            <div class="status-item">
-                                <div class="status-label">Date Format</div>
-                                <div class="status-value">DD-MM-YYYY</div>
-                                <div class="status-label">For all dates</div>
-                            </div>
-                            <div class="status-item">
-                                <div class="status-label">Storage</div>
-                                <div class="status-value" id="adminUserCount">0</div>
-                                <div class="status-label">Users saved</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Manage Users Tab -->
-                <div id="manage-users-tab" class="admin-section">
-                    <div class="users-list-section">
-                        <div class="users-list-header">
-                            <h4><i class="fas fa-list"></i> All Users</h4>
-                            <div class="search-users">
-                                <input type="text" id="searchUsers" placeholder="Search by name or email...">
-                                <button onclick="searchUsersList()">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="users-table-container">
-                            <table class="users-table" id="usersTable">
-                                <thead>
-                                    <tr>
-                                        <th>User ID</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Plan</th>
-                                        <th>End Date</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="usersTableBody">
-                                    <!-- Users will be listed here -->
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <div class="no-users" id="noUsersMessage" style="display: none;">
-                            <i class="fas fa-users" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                            <p>No users found. Add your first user from the "Add New User" tab.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- System Status Tab -->
-                <div id="system-status-tab" class="admin-section">
-                    <div class="admin-status-section">
-                        <h4><i class="fas fa-chart-pie"></i> System Overview</h4>
-                        <div class="status-grid">
-                            <div class="status-item">
-                                <div class="status-label">Total Users</div>
-                                <div class="status-value" id="totalUsers">0</div>
-                            </div>
-                            <div class="status-item">
-                                <div class="status-label">Active Plans</div>
-                                <div class="status-value" id="activePlans">0</div>
-                            </div>
-                            <div class="status-item">
-                                <div class="status-label">Expired Plans</div>
-                                <div class="status-value" id="expiredPlans">0</div>
-                            </div>
-                            <div class="status-item">
-                                <div class="status-label">First Logins</div>
-                                <div class="status-value" id="firstLogins">0</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 30px;">
-                        <h4><i class="fas fa-tools"></i> System Tools</h4>
-                        <div style="display: flex; gap: 15px; margin-top: 20px;">
-                            <button class="btn-admin-save" onclick="backupUsers()">
-                                <i class="fas fa-download"></i> Backup Users
-                            </button>
-                            <button class="btn-admin-clear" onclick="clearAllUsers()">
-                                <i class="fas fa-trash"></i> Clear All Users
-                            </button>
-                            <button class="btn-admin-clear" onclick="generateSampleData()">
-                                <i class="fas fa-magic"></i> Generate Sample
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ====== EXISTING MODALS (KEEP ALL PREVIOUS MODALS) ====== -->
     <!-- Forgot Password Modal -->
     <div class="modal-overlay" id="forgotPasswordModal">
         <div class="modal">
@@ -828,73 +1240,362 @@
         </div>
     </div>
 
-    <!-- Keep all other existing modals (Reset Password, Change Password, Success Toast) -->
     <!-- Reset Password Modal -->
     <div class="modal-overlay" id="resetPasswordModal">
         <div class="modal">
-            <!-- ... existing reset password modal content ... -->
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Reset Password</h3>
+                <button class="close-modal" onclick="closeResetPasswordModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="modal-form" id="resetPasswordForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> New Password</label>
+                        <input type="password" id="resetNewPassword" placeholder="Enter new password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Confirm New Password</label>
+                        <input type="password" id="resetConfirmPassword" placeholder="Confirm new password" required>
+                        <div class="password-match-error" id="resetPasswordMatchError">
+                            <i class="fas fa-exclamation-circle"></i> Passwords do not match
+                        </div>
+                    </div>
+                    
+                    <div class="password-requirements">
+                        <strong>Password Requirements:</strong>
+                        <ul style="margin-top: 5px; padding-left: 20px;">
+                            <li>Minimum 8 characters</li>
+                            <li>At least one uppercase letter</li>
+                            <li>At least one lowercase letter</li>
+                            <li>At least one number</li>
+                            <li>At least one special character</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeResetPasswordModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn-reset-password" id="btnResetPassword">
+                            <i class="fas fa-save"></i> Reset Password
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <!-- Change Password Modal -->
     <div class="modal-overlay" id="changePasswordModal">
         <div class="modal">
-            <!-- ... existing change password modal content ... -->
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Change Password</h3>
+                <button class="close-modal" onclick="closeChangePasswordModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="modal-form" id="changePasswordForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Current Password</label>
+                        <input type="password" id="currentPassword" placeholder="Enter current password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> New Password</label>
+                        <input type="password" id="newPassword" placeholder="Enter new password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Confirm New Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+                        <div class="password-match-error" id="passwordMatchError">
+                            <i class="fas fa-exclamation-circle"></i> Passwords do not match
+                        </div>
+                    </div>
+                    
+                    <div class="password-requirements">
+                        <strong>Password Requirements:</strong>
+                        <ul style="margin-top: 5px; padding-left: 20px;">
+                            <li>Minimum 8 characters</li>
+                            <li>At least one uppercase letter</li>
+                            <li>At least one lowercase letter</li>
+                            <li>At least one number</li>
+                            <li>At least one special character</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeChangePasswordModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn-submit" id="btnSubmitPassword">
+                            <i class="fas fa-save"></i> Change Password
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <!-- Success Toast -->
     <div class="password-success-toast" id="passwordSuccessToast">
-        <!-- ... existing success toast content ... -->
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-content">
+            <div class="toast-title">Password Changed Successfully!</div>
+            <div class="toast-message">You will be logged out automatically.</div>
+        </div>
     </div>
 
     <script>
-        // ====== ADMIN FUNCTIONS ======
-        let currentEditingUserId = null;
+        // ====== INITIALIZE DEFAULT ADMIN USER ======
+        const DEFAULT_ADMIN = {
+            username: 'ompluseradmin',
+            password: 'ompl@123',
+            fullName: 'System Administrator',
+            email: 'admin@odelya.com',
+            phone: '0000000000',
+            dob: '01-01-1980',
+            planName: 'Admin Plan',
+            planGB: 'Unlimited',
+            planDuration: 'Permanent',
+            planStartDate: '01-01-2024',
+            planEndDate: '31-12-2099',
+            amountPaid: 0,
+            isFirstLogin: false,
+            isAdmin: true,
+            userId: 'ADMIN001'
+        };
 
-        // Open Admin Modal
-        function openAdminModal() {
-            document.getElementById('adminModal').style.display = 'flex';
-            loadAdminData();
-            switchAdminTab('add-user');
-        }
-
-        // Close Admin Modal
-        function closeAdminModal() {
-            document.getElementById('adminModal').style.display = 'none';
-            clearAdminForm();
-            currentEditingUserId = null;
-        }
-
-        // Switch Admin Tabs
-        function switchAdminTab(tabName) {
-            // Hide all tabs
-            document.getElementById('add-user-tab').classList.remove('active');
-            document.getElementById('manage-users-tab').classList.remove('active');
-            document.getElementById('system-status-tab').classList.remove('active');
-            
-            // Remove active class from all tab buttons
-            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(tabName + '-tab').classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-            
-            // Load data for specific tab
-            if (tabName === 'manage-users') {
-                loadUsersList();
-            } else if (tabName === 'system-status') {
-                loadSystemStatus();
+        // Initialize storage
+        function initializeStorage() {
+            // Create default admin if not exists
+            if (!localStorage.getItem('odelya_user_data_ADMIN001')) {
+                localStorage.setItem('odelya_user_data_ADMIN001', JSON.stringify(DEFAULT_ADMIN));
+                console.log('Default admin user created.');
             }
         }
 
-        // Clear Admin Form
-        function clearAdminForm() {
-            document.getElementById('adminUserId').value = '';
+        // ====== LOGIN SYSTEM ======
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            
+            if (!username || !password) {
+                showLoginError('Please enter both username/email and password.');
+                return;
+            }
+            
+            document.getElementById('loginLoadingSpinner').style.display = 'block';
+            document.getElementById('btnLogin').disabled = true;
+            
+            setTimeout(() => {
+                const userData = findUser(username, password);
+                
+                if (userData) {
+                    // Check if this is admin login
+                    if (userData.username === 'ompluseradmin' || userData.isAdmin) {
+                        // Show admin panel
+                        showAdminPanel(userData);
+                    } else {
+                        // Show user info
+                        showUserInfo(userData);
+                    }
+                } else {
+                    showLoginError('Invalid username/email or password.');
+                }
+                
+                document.getElementById('loginLoadingSpinner').style.display = 'none';
+                document.getElementById('btnLogin').disabled = false;
+            }, 800);
+        }
+
+        function findUser(username, password) {
+            // First check for admin
+            if (username === 'ompluseradmin' && password === 'ompl@123') {
+                return DEFAULT_ADMIN;
+            }
+            
+            // Check all users in localStorage
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('odelya_user_data_')) {
+                    try {
+                        const user = JSON.parse(localStorage.getItem(key));
+                        
+                        // Check username or email
+                        if ((user.username === username || user.email === username) && 
+                            (user.password === password || (user.isFirstLogin && password === 'odelya@123'))) {
+                            return user;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing user:', e);
+                    }
+                }
+            }
+            
+            return null;
+        }
+
+        function showUserInfo(userData) {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('userInfoSection').style.display = 'block';
+            document.getElementById('userNameAccount').textContent = userData.fullName || 'User Account';
+            
+            // Display personal info
+            displayPersonalInfo(userData);
+            
+            // Display plan history
+            displayPlanHistory(userData);
+            
+            // Check if first login
+            if (userData.isFirstLogin) {
+                document.getElementById('securityAlert').style.display = 'block';
+            }
+        }
+
+        function showAdminPanel(adminData) {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            
+            // Load admin stats
+            loadAdminStats();
+        }
+
+        function displayPersonalInfo(userData) {
+            const personalInfo = document.getElementById('personalInfo');
+            personalInfo.innerHTML = `
+                <div class="info-row">
+                    <span class="info-label">User ID:</span>
+                    <span class="info-value highlight">${userData.userId || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Full Name:</span>
+                    <span class="info-value">${userData.fullName || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Date of Birth:</span>
+                    <span class="info-value">${userData.dob || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email ID:</span>
+                    <span class="info-value">${userData.email || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone No.:</span>
+                    <span class="info-value">${userData.phone || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Current Plan:</span>
+                    <span class="info-value highlight">${userData.planName || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Data Limit:</span>
+                    <span class="info-value">${userData.planGB || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Plan Duration:</span>
+                    <span class="info-value">${userData.planDuration || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Plan Start Date:</span>
+                    <span class="info-value">${userData.planStartDate || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Plan End Date:</span>
+                    <span class="info-value">${userData.planEndDate || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Amount Paid:</span>
+                    <span class="info-value highlight">INR ${userData.amountPaid || 0}</span>
+                </div>
+            `;
+        }
+
+        function displayPlanHistory(userData) {
+            const planHistoryContent = document.getElementById('planHistoryContent');
+            
+            // For now, just show current plan as history
+            planHistoryContent.innerHTML = `
+                <table class="plan-history-table">
+                    <thead>
+                        <tr>
+                            <th>Plan Name</th>
+                            <th>Data (GB)</th>
+                            <th>Duration</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>${userData.planName || 'N/A'}</td>
+                            <td>${userData.planGB || 'N/A'}</td>
+                            <td>${userData.planDuration || 'N/A'}</td>
+                            <td>${userData.planStartDate || 'N/A'}</td>
+                            <td>${userData.planEndDate || 'N/A'}</td>
+                            <td>INR ${userData.amountPaid || 0}</td>
+                            <td><span class="status-active">Active</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // ====== ADMIN FUNCTIONS ======
+        function loadAdminStats() {
+            let totalUsers = 0;
+            let activeUsers = 0;
+            let firstLogins = 0;
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('odelya_user_data_')) {
+                    totalUsers++;
+                    
+                    try {
+                        const user = JSON.parse(localStorage.getItem(key));
+                        
+                        if (user.isFirstLogin) {
+                            firstLogins++;
+                        }
+                        
+                        if (!user.isAdmin) {
+                            activeUsers++;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing user:', e);
+                    }
+                }
+            }
+            
+            document.getElementById('totalUsersCount').textContent = totalUsers;
+            document.getElementById('activeUsersCount').textContent = activeUsers;
+            document.getElementById('firstLoginCount').textContent = firstLogins;
+        }
+
+        function showAddUserForm() {
+            document.getElementById('addUserSection').style.display = 'block';
+            document.getElementById('usersListSection').style.display = 'none';
+            clearUserForm();
+        }
+
+        function hideAddUserForm() {
+            document.getElementById('addUserSection').style.display = 'none';
+        }
+
+        function clearUserForm() {
+            document.getElementById('adminUsername').value = '';
+            document.getElementById('adminPassword').value = 'odelya@123';
             document.getElementById('adminFullName').value = '';
             document.getElementById('adminEmail').value = '';
             document.getElementById('adminPhone').value = '';
@@ -905,682 +1606,474 @@
             document.getElementById('adminPlanStart').value = '';
             document.getElementById('adminPlanEnd').value = '';
             document.getElementById('adminAmount').value = '';
-            
-            currentEditingUserId = null;
-            
-            // Update button text
-            document.querySelector('.btn-admin-save').innerHTML = '<i class="fas fa-save"></i> Save User';
         }
 
-        // Save User from Admin Form
-        function saveUserFromAdmin() {
-            // Get values from form
-            const userData = {
-                userId: document.getElementById('adminUserId').value.trim(),
-                fullName: document.getElementById('adminFullName').value.trim(),
-                email: document.getElementById('adminEmail').value.trim(),
-                phone: document.getElementById('adminPhone').value.trim(),
-                dob: document.getElementById('adminDOB').value.trim(),
-                planName: document.getElementById('adminPlanName').value,
-                planGB: document.getElementById('adminPlanGB').value,
-                planDuration: document.getElementById('adminPlanDuration').value,
-                planStartDate: document.getElementById('adminPlanStart').value.trim(),
-                planEndDate: document.getElementById('adminPlanEnd').value.trim(),
-                amountPaid: parseInt(document.getElementById('adminAmount').value) || 0,
-                isFirstLogin: true,
-                savedAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
-
+        function saveUser() {
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+            const fullName = document.getElementById('adminFullName').value.trim();
+            const email = document.getElementById('adminEmail').value.trim();
+            const phone = document.getElementById('adminPhone').value.trim();
+            const dob = document.getElementById('adminDOB').value.trim();
+            const planName = document.getElementById('adminPlanName').value.trim();
+            const planGB = document.getElementById('adminPlanGB').value.trim();
+            const planDuration = document.getElementById('adminPlanDuration').value.trim();
+            const planStart = document.getElementById('adminPlanStart').value.trim();
+            const planEnd = document.getElementById('adminPlanEnd').value.trim();
+            const amount = parseInt(document.getElementById('adminAmount').value) || 0;
+            
             // Validate required fields
-            if (!userData.userId || !userData.fullName || !userData.email || !userData.dob) {
-                alert('Please fill in all required fields (User ID, Name, Email, DOB)');
+            if (!username || !password || !fullName || !email) {
+                alert('Please fill in required fields: Username, Password, Full Name, and Email');
                 return;
             }
-
-            // Validate email format
-            if (!validateEmail(userData.email)) {
-                alert('Please enter a valid email address');
-                return;
-            }
-
-            // Validate date format (DD-MM-YYYY)
-            const dateRegex = /^\d{2}-\d{2}-\d{4}$/;
-            if (!dateRegex.test(userData.dob) || !dateRegex.test(userData.planStartDate) || !dateRegex.test(userData.planEndDate)) {
-                alert('Please use DD-MM-YYYY format for all dates');
-                return;
-            }
-
-            // Save user data
-            const dataKey = 'odelya_user_data_' + userData.userId;
-            localStorage.setItem(dataKey, JSON.stringify(userData));
-
-            // If editing existing user, also update plan history
-            if (currentEditingUserId && currentEditingUserId !== userData.userId) {
-                // User ID changed, remove old data
-                localStorage.removeItem('odelya_user_data_' + currentEditingUserId);
-            }
-
-            // Add to plan history
-            saveToPlanHistory(userData);
-
-            // Show success message
-            alert(`✅ User ${currentEditingUserId ? 'updated' : 'added'} successfully!\n\nLogin Details:\nEmail: ${userData.email}\nPassword: odelya@123`);
-
-            // Clear form and reload lists
-            clearAdminForm();
-            loadAdminData();
-            loadUsersList();
             
-            // Switch to manage users tab
-            switchAdminTab('manage-users');
+            // Create user object
+            const userData = {
+                username: username,
+                password: password,
+                fullName: fullName,
+                email: email,
+                phone: phone,
+                dob: dob,
+                planName: planName,
+                planGB: planGB,
+                planDuration: planDuration,
+                planStartDate: planStart,
+                planEndDate: planEnd,
+                amountPaid: amount,
+                isFirstLogin: true,
+                isAdmin: false,
+                userId: 'USER' + Date.now().toString().slice(-6)
+            };
+            
+            // Save to localStorage
+            const key = 'odelya_user_data_' + userData.userId;
+            localStorage.setItem(key, JSON.stringify(userData));
+            
+            alert(`User "${fullName}" added successfully!\n\nUsername: ${username}\nDefault Password: ${password}\n\nUser must change password on first login.`);
+            
+            clearUserForm();
+            loadAdminStats();
         }
 
-        // Load Admin Data
-        function loadAdminData() {
-            // Count total users
-            let userCount = 0;
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.startsWith('odelya_user_data_')) {
-                    userCount++;
-                }
-            }
+        function showAllUsers() {
+            document.getElementById('addUserSection').style.display = 'none';
+            document.getElementById('usersListSection').style.display = 'block';
             
-            document.getElementById('adminUserCount').textContent = userCount;
-        }
-
-        // Load Users List
-        function loadUsersList() {
-            const tableBody = document.getElementById('usersTableBody');
-            const noUsersMessage = document.getElementById('noUsersMessage');
+            const usersListBody = document.getElementById('usersListBody');
+            usersListBody.innerHTML = '';
             
-            // Clear table
-            tableBody.innerHTML = '';
-            
-            // Get all users
-            const users = [];
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key.startsWith('odelya_user_data_')) {
                     try {
                         const user = JSON.parse(localStorage.getItem(key));
-                        users.push(user);
+                        
+                        // Skip admin user
+                        if (user.isAdmin) continue;
+                        
+                        const row = usersListBody.insertRow();
+                        row.innerHTML = `
+                            <td>${user.username || 'N/A'}</td>
+                            <td>${user.fullName || 'N/A'}</td>
+                            <td>${user.email || 'N/A'}</td>
+                            <td>${user.planName || 'N/A'}</td>
+                            <td>${user.isFirstLogin ? 'First Login' : 'Active'}</td>
+                            <td>
+                                <button class="user-action-btn btn-edit" onclick="editUser('${user.userId}')">Edit</button>
+                                <button class="user-action-btn btn-delete" onclick="deleteUser('${user.userId}')">Delete</button>
+                            </td>
+                        `;
                     } catch (e) {
                         console.error('Error parsing user:', e);
                     }
                 }
             }
-            
-            if (users.length === 0) {
-                tableBody.innerHTML = '';
-                noUsersMessage.style.display = 'block';
-                return;
-            }
-            
-            noUsersMessage.style.display = 'none';
-            
-            // Sort users by name
-            users.sort((a, b) => a.fullName.localeCompare(b.fullName));
-            
-            // Add users to table
-            users.forEach(user => {
-                const row = tableBody.insertRow();
-                
-                // Check if plan is active
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                
-                let endDate;
-                try {
-                    if (/^\d{2}-\d{2}-\d{4}$/.test(user.planEndDate)) {
-                        const parts = user.planEndDate.split('-');
-                        endDate = new Date(parts[2], parts[1] - 1, parts[0]);
-                    } else {
-                        endDate = new Date(user.planEndDate);
-                    }
-                } catch (e) {
-                    endDate = new Date();
-                }
-                
-                const isActive = !isNaN(endDate.getTime()) && endDate >= today;
-                
-                row.innerHTML = `
-                    <td>${user.userId || 'N/A'}</td>
-                    <td>${user.fullName || 'N/A'}</td>
-                    <td>${user.email || 'N/A'}</td>
-                    <td>${user.phone || 'N/A'}</td>
-                    <td>${user.planName || 'N/A'}</td>
-                    <td>
-                        ${user.planEndDate || 'N/A'}
-                        ${isActive ? '<span style="color:green; font-size:0.8rem;"> (Active)</span>' : '<span style="color:red; font-size:0.8rem;"> (Expired)</span>'}
-                    </td>
-                    <td>
-                        <div class="user-actions">
-                            <button class="btn-edit-user" onclick="editUser('${user.userId}')">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn-delete-user" onclick="deleteUser('${user.userId}')">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </div>
-                    </td>
-                `;
-            });
         }
 
-        // Edit User
         function editUser(userId) {
-            const dataKey = 'odelya_user_data_' + userId;
-            const userData = JSON.parse(localStorage.getItem(dataKey));
+            const key = 'odelya_user_data_' + userId;
+            const user = JSON.parse(localStorage.getItem(key));
             
-            if (userData) {
-                // Fill form with user data
-                document.getElementById('adminUserId').value = userData.userId || '';
-                document.getElementById('adminFullName').value = userData.fullName || '';
-                document.getElementById('adminEmail').value = userData.email || '';
-                document.getElementById('adminPhone').value = userData.phone || '';
-                document.getElementById('adminDOB').value = userData.dob || '';
-                document.getElementById('adminPlanName').value = userData.planName || 'Premium Plan';
-                document.getElementById('adminPlanGB').value = userData.planGB || '50 GB';
-                document.getElementById('adminPlanDuration').value = userData.planDuration || '30 Days';
-                document.getElementById('adminPlanStart').value = userData.planStartDate || '';
-                document.getElementById('adminPlanEnd').value = userData.planEndDate || '';
-                document.getElementById('adminAmount').value = userData.amountPaid || 0;
+            if (user) {
+                document.getElementById('adminUsername').value = user.username || '';
+                document.getElementById('adminPassword').value = user.password || 'odelya@123';
+                document.getElementById('adminFullName').value = user.fullName || '';
+                document.getElementById('adminEmail').value = user.email || '';
+                document.getElementById('adminPhone').value = user.phone || '';
+                document.getElementById('adminDOB').value = user.dob || '';
+                document.getElementById('adminPlanName').value = user.planName || '';
+                document.getElementById('adminPlanGB').value = user.planGB || '';
+                document.getElementById('adminPlanDuration').value = user.planDuration || '';
+                document.getElementById('adminPlanStart').value = user.planStartDate || '';
+                document.getElementById('adminPlanEnd').value = user.planEndDate || '';
+                document.getElementById('adminAmount').value = user.amountPaid || 0;
                 
-                // Set editing mode
-                currentEditingUserId = userId;
+                showAddUserForm();
                 
-                // Update button text
-                document.querySelector('.btn-admin-save').innerHTML = '<i class="fas fa-save"></i> Update User';
-                
-                // Switch to add user tab
-                switchAdminTab('add-user');
-                
-                // Scroll to top
-                document.querySelector('.admin-modal').scrollTop = 0;
+                // Add update button
+                const saveBtn = document.querySelector('.btn-admin[onclick="saveUser()"]');
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Update User';
+                saveBtn.setAttribute('onclick', `updateUser('${userId}')`);
             }
         }
 
-        // Delete User
+        function updateUser(userId) {
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+            const fullName = document.getElementById('adminFullName').value.trim();
+            const email = document.getElementById('adminEmail').value.trim();
+            const phone = document.getElementById('adminPhone').value.trim();
+            const dob = document.getElementById('adminDOB').value.trim();
+            const planName = document.getElementById('adminPlanName').value.trim();
+            const planGB = document.getElementById('adminPlanGB').value.trim();
+            const planDuration = document.getElementById('adminPlanDuration').value.trim();
+            const planStart = document.getElementById('adminPlanStart').value.trim();
+            const planEnd = document.getElementById('adminPlanEnd').value.trim();
+            const amount = parseInt(document.getElementById('adminAmount').value) || 0;
+            
+            // Validate required fields
+            if (!username || !password || !fullName || !email) {
+                alert('Please fill in required fields: Username, Password, Full Name, and Email');
+                return;
+            }
+            
+            // Get existing user data
+            const key = 'odelya_user_data_' + userId;
+            const existingUser = JSON.parse(localStorage.getItem(key)) || {};
+            
+            // Update user object
+            const userData = {
+                ...existingUser,
+                username: username,
+                password: password,
+                fullName: fullName,
+                email: email,
+                phone: phone,
+                dob: dob,
+                planName: planName,
+                planGB: planGB,
+                planDuration: planDuration,
+                planStartDate: planStart,
+                planEndDate: planEnd,
+                amountPaid: amount
+            };
+            
+            // Save to localStorage
+            localStorage.setItem(key, JSON.stringify(userData));
+            
+            alert(`User "${fullName}" updated successfully!`);
+            
+            clearUserForm();
+            showAllUsers();
+            
+            // Reset save button
+            const saveBtn = document.querySelector('.btn-admin[onclick^="updateUser"]');
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> Save User';
+            saveBtn.setAttribute('onclick', 'saveUser()');
+        }
+
         function deleteUser(userId) {
-            if (confirm(`Are you sure you want to delete user ${userId}?\nThis action cannot be undone.`)) {
+            if (confirm('Are you sure you want to delete this user?')) {
                 localStorage.removeItem('odelya_user_data_' + userId);
-                
-                // Also remove from plan history
-                localStorage.removeItem('odelya_plan_history_' + userId);
-                
-                // Remove from user log
-                localStorage.removeItem('odelya_user_log_' + userId);
-                
                 alert('User deleted successfully!');
-                loadUsersList();
-                loadAdminData();
+                showAllUsers();
+                loadAdminStats();
             }
         }
 
-        // Search Users
-        function searchUsersList() {
-            const searchTerm = document.getElementById('searchUsers').value.toLowerCase().trim();
-            const rows = document.querySelectorAll('#usersTableBody tr');
-            
-            if (!searchTerm) {
-                rows.forEach(row => row.style.display = '');
-                return;
-            }
-            
-            let visibleCount = 0;
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                if (text.includes(searchTerm)) {
-                    row.style.display = '';
-                    visibleCount++;
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-            
-            // Show no results message if needed
-            const noUsersMessage = document.getElementById('noUsersMessage');
-            if (visibleCount === 0) {
-                noUsersMessage.style.display = 'block';
-                noUsersMessage.innerHTML = `
-                    <i class="fas fa-search" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                    <p>No users found matching "${searchTerm}"</p>
-                `;
-            } else {
-                noUsersMessage.style.display = 'none';
-            }
-        }
-
-        // Load System Status
-        function loadSystemStatus() {
-            let totalUsers = 0;
-            let activePlans = 0;
-            let expiredPlans = 0;
-            let firstLogins = 0;
-            
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.startsWith('odelya_user_data_')) {
-                    totalUsers++;
-                    
-                    try {
-                        const user = JSON.parse(localStorage.getItem(key));
-                        
-                        // Check first login status
-                        if (user.isFirstLogin === true) {
-                            firstLogins++;
-                        }
-                        
-                        // Check plan status
-                        if (user.planEndDate) {
-                            let endDate;
-                            if (/^\d{2}-\d{2}-\d{4}$/.test(user.planEndDate)) {
-                                const parts = user.planEndDate.split('-');
-                                endDate = new Date(parts[2], parts[1] - 1, parts[0]);
-                            } else {
-                                endDate = new Date(user.planEndDate);
-                            }
-                            
-                            if (!isNaN(endDate.getTime())) {
-                                endDate.setHours(0, 0, 0, 0);
-                                if (endDate >= today) {
-                                    activePlans++;
-                                } else {
-                                    expiredPlans++;
-                                }
-                            }
-                        }
-                    } catch (e) {
-                        console.error('Error processing user:', e);
-                    }
-                }
-            }
-            
-            document.getElementById('totalUsers').textContent = totalUsers;
-            document.getElementById('activePlans').textContent = activePlans;
-            document.getElementById('expiredPlans').textContent = expiredPlans;
-            document.getElementById('firstLogins').textContent = firstLogins;
-        }
-
-        // Backup Users
-        function backupUsers() {
-            const users = [];
-            
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.startsWith('odelya_user_data_')) {
-                    try {
-                        const user = JSON.parse(localStorage.getItem(key));
-                        users.push(user);
-                    } catch (e) {
-                        console.error('Error parsing user:', e);
-                    }
-                }
-            }
-            
-            if (users.length === 0) {
-                alert('No users to backup');
-                return;
-            }
-            
-            // Create backup data
+        function backupData() {
             const backupData = {
                 timestamp: new Date().toISOString(),
-                totalUsers: users.length,
-                users: users
+                users: []
             };
             
-            // Convert to JSON string
-            const jsonString = JSON.stringify(backupData, null, 2);
-            
-            // Create download link
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `odelya_backup_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            alert(`Backup created successfully!\nDownloaded ${users.length} users.`);
-        }
-
-        // Clear All Users
-        function clearAllUsers() {
-            if (confirm('⚠️ DANGER ZONE ⚠️\n\nAre you absolutely sure you want to delete ALL users?\nThis will remove EVERY user from the system!\n\nThis action cannot be undone!')) {
-                let deletedCount = 0;
-                
-                // Get all keys to delete
-                const keysToDelete = [];
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    if (key.startsWith('odelya_user_data_') || 
-                        key.startsWith('odelya_plan_history_') || 
-                        key.startsWith('odelya_user_log_')) {
-                        keysToDelete.push(key);
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('odelya_user_data_')) {
+                    try {
+                        const user = JSON.parse(localStorage.getItem(key));
+                        backupData.users.push(user);
+                    } catch (e) {
+                        console.error('Error parsing user:', e);
                     }
                 }
-                
-                // Delete all found keys
-                keysToDelete.forEach(key => {
-                    localStorage.removeItem(key);
-                    deletedCount++;
-                });
-                
-                alert(`Cleared ${deletedCount} user records from the system.`);
-                
-                // Refresh admin data
-                loadAdminData();
-                loadUsersList();
-                loadSystemStatus();
             }
+            
+            const dataStr = JSON.stringify(backupData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `odelya_backup_${new Date().toISOString().slice(0,10)}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            alert(`Backup created successfully!\nDownloaded ${backupData.users.length} users.`);
         }
 
-        // Generate Sample Data
-        function generateSampleData() {
-            if (confirm('Generate sample users?\nThis will add 5 sample users for testing.')) {
+        function restoreData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    try {
+                        const backupData = JSON.parse(event.target.result);
+                        
+                        if (confirm(`Restore ${backupData.users.length} users from ${backupData.timestamp}?`)) {
+                            // Clear existing users (except admin)
+                            for (let i = 0; i < localStorage.length; i++) {
+                                const key = localStorage.key(i);
+                                if (key.startsWith('odelya_user_data_') && key !== 'odelya_user_data_ADMIN001') {
+                                    localStorage.removeItem(key);
+                                }
+                            }
+                            
+                            // Restore users
+                            backupData.users.forEach(user => {
+                                if (!user.isAdmin) {
+                                    const key = 'odelya_user_data_' + user.userId;
+                                    localStorage.setItem(key, JSON.stringify(user));
+                                }
+                            });
+                            
+                            alert(`Restored ${backupData.users.length} users successfully!`);
+                            loadAdminStats();
+                        }
+                    } catch (e) {
+                        alert('Error reading backup file. Please make sure it is a valid backup file.');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        // ====== PASSWORD CHANGE FUNCTIONS ======
+        function openChangePasswordModal() {
+            document.getElementById('changePasswordModal').style.display = 'flex';
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('changePasswordModal').style.display = 'none';
+        }
+
+        function handleChangePassword(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Get current user
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                alert('Session expired. Please login again.');
+                resetLogin();
+                return;
+            }
+            
+            // Check current password
+            if (currentUser.username === 'ompluseradmin') {
+                if (currentPassword !== 'ompl@123') {
+                    showLoginError('Current password is incorrect.');
+                    closeChangePasswordModal();
+                    return;
+                }
+            } else {
+                if (currentPassword !== currentUser.password) {
+                    showLoginError('Current password is incorrect.');
+                    closeChangePasswordModal();
+                    return;
+                }
+            }
+            
+            // Check password match
+            if (newPassword !== confirmPassword) {
+                document.getElementById('passwordMatchError').style.display = 'block';
+                return;
+            }
+            
+            // Check password strength
+            if (!validatePasswordStrength(newPassword)) {
+                showLoginError('New password does not meet requirements.');
+                return;
+            }
+            
+            // Update password
+            if (currentUser.username === 'ompluseradmin') {
+                // For admin, we can't change in localStorage as it's hardcoded
+                alert('Admin password changed. Note: For demo purposes, admin password reset is not persisted.');
+            } else {
+                // Update user password
+                currentUser.password = newPassword;
+                currentUser.isFirstLogin = false;
+                
+                const key = 'odelya_user_data_' + currentUser.userId;
+                localStorage.setItem(key, JSON.stringify(currentUser));
+            }
+            
+            showSuccessToast('Password Changed Successfully!', 'You will be logged out automatically.');
+            
+            setTimeout(() => {
+                resetLogin();
+                closeChangePasswordModal();
+            }, 2000);
+        }
+
+        function getCurrentUser() {
+            // This is a simplified version - in real app, you'd track current user session
+            return null;
+        }
+
+        function validatePasswordStrength(password) {
+            if (password.length < 8) return false;
+            if (!/[A-Z]/.test(password)) return false;
+            if (!/[a-z]/.test(password)) return false;
+            if (!/\d/.test(password)) return false;
+            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) return false;
+            return true;
+        }
+
+        // ====== UTILITY FUNCTIONS ======
+        function resetLogin() {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('userInfoSection').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('securityAlert').style.display = 'none';
+            document.getElementById('loginForm').reset();
+            hideLoginError();
+        }
+
+        function showLoginError(message) {
+            document.getElementById('loginErrorMessage').innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            document.getElementById('loginErrorMessage').style.display = 'block';
+        }
+
+        function hideLoginError() {
+            document.getElementById('loginErrorMessage').style.display = 'none';
+        }
+
+        function showSuccessToast(title, message) {
+            const toast = document.getElementById('passwordSuccessToast');
+            toast.querySelector('.toast-title').textContent = title;
+            toast.querySelector('.toast-message').textContent = message;
+            toast.style.display = 'flex';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        function rechargeNow() {
+            alert('Recharge functionality will be configured later. For now, please contact administrator for recharge.');
+        }
+
+        // ====== EVENT LISTENERS ======
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStorage();
+            
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Change password form
+            document.getElementById('changePasswordForm').addEventListener('submit', handleChangePassword);
+            
+            // Password match checking
+            document.getElementById('confirmPassword').addEventListener('input', function() {
+                const newPass = document.getElementById('newPassword').value;
+                const confirmPass = this.value;
+                
+                if (newPass && confirmPass && newPass !== confirmPass) {
+                    document.getElementById('passwordMatchError').style.display = 'block';
+                    document.getElementById('btnSubmitPassword').disabled = true;
+                } else {
+                    document.getElementById('passwordMatchError').style.display = 'none';
+                    document.getElementById('btnSubmitPassword').disabled = false;
+                }
+            });
+            
+            // Show first time note when username field is focused
+            document.getElementById('loginEmail').addEventListener('focus', function() {
+                document.getElementById('firstTimeNote').style.display = 'block';
+            });
+            
+            // Hide first time note when password field is focused
+            document.getElementById('loginPassword').addEventListener('focus', function() {
+                document.getElementById('firstTimeNote').style.display = 'none';
+            });
+            
+            // Add sample users for testing (remove this in production)
+            addSampleUsersForTesting();
+        });
+
+        // ====== SAMPLE DATA FOR TESTING ======
+        function addSampleUsersForTesting() {
+            // Only add if no users exist (except admin)
+            let hasUsers = false;
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('odelya_user_data_') && key !== 'odelya_user_data_ADMIN001') {
+                    hasUsers = true;
+                    break;
+                }
+            }
+            
+            if (!hasUsers) {
                 const sampleUsers = [
                     {
-                        userId: "USER001",
-                        fullName: "John Doe",
-                        email: "john@example.com",
-                        phone: "9876543210",
-                        dob: "15-05-1990",
-                        planName: "Premium Plan",
-                        planGB: "50 GB",
-                        planDuration: "30 Days",
-                        planStartDate: "01-01-2025",
-                        planEndDate: "31-01-2025",
+                        username: 'john_doe',
+                        password: 'odelya@123',
+                        fullName: 'John Doe',
+                        email: 'john@example.com',
+                        phone: '9876543210',
+                        dob: '15-05-1990',
+                        planName: 'Premium Plan',
+                        planGB: '50 GB',
+                        planDuration: '30 Days',
+                        planStartDate: '01-01-2025',
+                        planEndDate: '31-01-2025',
                         amountPaid: 599,
                         isFirstLogin: true,
-                        savedAt: new Date().toISOString()
+                        isAdmin: false,
+                        userId: 'USER001'
                     },
                     {
-                        userId: "USER002",
-                        fullName: "Jane Smith",
-                        email: "jane@example.com",
-                        phone: "9876543211",
-                        dob: "22-08-1985",
-                        planName: "Standard Plan",
-                        planGB: "30 GB",
-                        planDuration: "30 Days",
-                        planStartDate: "15-01-2025",
-                        planEndDate: "14-02-2025",
+                        username: 'jane_smith',
+                        password: 'odelya@123',
+                        fullName: 'Jane Smith',
+                        email: 'jane@example.com',
+                        phone: '9876543211',
+                        dob: '22-08-1985',
+                        planName: 'Standard Plan',
+                        planGB: '30 GB',
+                        planDuration: '30 Days',
+                        planStartDate: '15-01-2025',
+                        planEndDate: '14-02-2025',
                         amountPaid: 399,
                         isFirstLogin: true,
-                        savedAt: new Date().toISOString()
-                    },
-                    {
-                        userId: "USER003",
-                        fullName: "Robert Johnson",
-                        email: "robert@example.com",
-                        phone: "9876543212",
-                        dob: "10-11-1992",
-                        planName: "Basic Plan",
-                        planGB: "20 GB",
-                        planDuration: "30 Days",
-                        planStartDate: "01-02-2025",
-                        planEndDate: "03-03-2025",
-                        amountPaid: 299,
-                        isFirstLogin: false,
-                        savedAt: new Date().toISOString()
-                    },
-                    {
-                        userId: "USER004",
-                        fullName: "Alice Williams",
-                        email: "alice@example.com",
-                        phone: "9876543213",
-                        dob: "30-03-1988",
-                        planName: "Premium Plan",
-                        planGB: "50 GB",
-                        planDuration: "60 Days",
-                        planStartDate: "01-12-2024",
-                        planEndDate: "30-01-2025",
-                        amountPaid: 1099,
-                        isFirstLogin: true,
-                        savedAt: new Date().toISOString()
-                    },
-                    {
-                        userId: "USER005",
-                        fullName: "Michael Brown",
-                        email: "michael@example.com",
-                        phone: "9876543214",
-                        dob: "05-07-1995",
-                        planName: "Standard Plan",
-                        planGB: "30 GB",
-                        planDuration: "90 Days",
-                        planStartDate: "15-11-2024",
-                        planEndDate: "13-02-2025",
-                        amountPaid: 999,
-                        isFirstLogin: false,
-                        savedAt: new Date().toISOString()
+                        isAdmin: false,
+                        userId: 'USER002'
                     }
                 ];
                 
-                // Save sample users
                 sampleUsers.forEach(user => {
-                    const dataKey = 'odelya_user_data_' + user.userId;
-                    localStorage.setItem(dataKey, JSON.stringify(user));
-                    saveToPlanHistory(user);
+                    const key = 'odelya_user_data_' + user.userId;
+                    localStorage.setItem(key, JSON.stringify(user));
                 });
                 
-                alert('5 sample users added successfully!\n\nLogin with any email and password: odelya@123');
-                
-                // Refresh admin data
-                loadAdminData();
-                loadUsersList();
-                loadSystemStatus();
-                
-                // Switch to manage users tab
-                switchAdminTab('manage-users');
+                console.log('Sample users added for testing.');
             }
         }
-
-        // ====== KEEP ALL EXISTING FUNCTIONS ======
-        // ALL YOUR ORIGINAL FUNCTIONS FROM THE PREVIOUS CODE
-        // I'm including the essential ones here for the demo
-        
-        const DEFAULT_PASSWORD = 'odelya@123';
-        const ENCRYPTION_KEY = 'odelya-secure-admin-key-2024!@#$';
-        
-        function encryptData(data) {
-            try {
-                let encrypted = '';
-                for (let i = 0; i < data.length; i++) {
-                    const charCode = data.charCodeAt(i) ^ ENCRYPTION_KEY.charCodeAt(i % ENCRYPTION_KEY.length);
-                    encrypted += String.fromCharCode(charCode);
-                }
-                return btoa(encrypted);
-            } catch (error) {
-                console.error('Encryption error:', error);
-                return data;
-            }
-        }
-        
-        function decryptData(encryptedData) {
-            try {
-                const decoded = atob(encryptedData);
-                let decrypted = '';
-                for (let i = 0; i < decoded.length; i++) {
-                    const charCode = decoded.charCodeAt(i) ^ ENCRYPTION_KEY.charCodeAt(i % ENCRYPTION_KEY.length);
-                    decrypted += String.fromCharCode(charCode);
-                }
-                return decrypted;
-            } catch (error) {
-                console.error('Decryption error:', error);
-                return encryptedData;
-            }
-        }
-
-        // ====== PERMANENT USER LOG STORAGE SYSTEM ======
-        const USER_LOG_PREFIX = 'odelya_user_log_';
-        const USER_DATA_PREFIX = 'odelya_user_data_';
-        const PLAN_HISTORY_PREFIX = 'odelya_plan_history_';
-        
-        function saveUserDataPermanently(userData) {
-            try {
-                const userId = userData.userId || userData.email;
-                if (!userId) return false;
-                
-                const dataKey = USER_DATA_PREFIX + userId;
-                const permanentData = {
-                    ...extractRequiredFields(userData),
-                    savedAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    isPermanent: true,
-                    source: 'admin_storage'
-                };
-                
-                localStorage.setItem(dataKey, JSON.stringify(permanentData));
-                
-                updateUserLog(userId, {
-                    dataSavedAt: new Date().toISOString(),
-                    isDataPermanent: true
-                });
-                
-                saveToPlanHistory(userData);
-                
-                return true;
-            } catch (error) {
-                console.error('Error saving permanent user data:', error);
-                return false;
-            }
-        }
-        
-        function saveToPlanHistory(userData) {
-            try {
-                const userId = userData.userId || userData.email;
-                if (!userId) return false;
-                
-                const historyKey = PLAN_HISTORY_PREFIX + userId;
-                let history = JSON.parse(localStorage.getItem(historyKey)) || [];
-                
-                const existingIndex = history.findIndex(item => 
-                    item.planStartDate === userData.planStartDate && 
-                    item.planName === userData.planName
-                );
-                
-                if (existingIndex === -1) {
-                    const planRecord = {
-                        planName: userData.planName || '',
-                        planGB: userData.planGB || '',
-                        planDuration: userData.planDuration || '',
-                        planStartDate: userData.planStartDate || '',
-                        planEndDate: userData.planEndDate || '',
-                        amountPaid: userData.amountPaid || 0,
-                        recordedAt: new Date().toISOString(),
-                        isActive: true
-                    };
-                    
-                    history.forEach(item => item.isActive = false);
-                    
-                    history.unshift(planRecord);
-                    
-                    if (history.length > 36) {
-                        history = history.slice(0, 36);
-                    }
-                    
-                    localStorage.setItem(historyKey, JSON.stringify(history));
-                }
-                
-                return true;
-            } catch (error) {
-                console.error('Error saving to plan history:', error);
-                return false;
-            }
-        }
-        
-        function getPlanHistory(userIdOrEmail) {
-            try {
-                const historyKey = PLAN_HISTORY_PREFIX + userIdOrEmail;
-                const history = localStorage.getItem(historyKey);
-                return history ? JSON.parse(history) : [];
-            } catch (error) {
-                console.error('Error getting plan history:', error);
-                return [];
-            }
-        }
-        
-        function getUserDataPermanently(userIdOrEmail) {
-            try {
-                const dataKey = USER_DATA_PREFIX + userIdOrEmail;
-                const data = localStorage.getItem(dataKey);
-                return data ? JSON.parse(data) : null;
-            } catch (error) {
-                console.error('Error getting permanent user data:', error);
-                return null;
-            }
-        }
-        
-        function updateUserLog(userIdOrEmail, updates) {
-            try {
-                const logKey = USER_LOG_PREFIX + userIdOrEmail;
-                let logData = getUserLog(userIdOrEmail) || {};
-                
-                logData = {
-                    ...logData,
-                    ...updates,
-                    logUpdatedAt: new Date().toISOString()
-                };
-                
-                localStorage.setItem(logKey, JSON.stringify(logData));
-                return true;
-            } catch (error) {
-                console.error('Error updating user log:', error);
-                return false;
-            }
-        }
-        
-        function getUserLog(userIdOrEmail) {
-            try {
-                const logKey = USER_LOG_PREFIX + userIdOrEmail;
-                const logData = localStorage.getItem(logKey);
-                return logData ? JSON.parse(logData) : null;
-            } catch (error) {
-                console.error('Error getting user log:', error);
-                return null;
-            }
-        }
-        
-        function extractRequiredFields(userData) {
-            const extracted = {
-                userId: userData.userId || '',
-                fullName: userData.fullName || '',
-                dob: extractDOB(userData),
-                email: extractEmail(userData),
-                phone: extractPhone(userData),
-                planName: userData.planName || '',
-                planGB: userData.planGB || '',
-                planDuration: userData.planDuration || '',
-                planStartDate: userData.planStartDate || '',
-                planEndDate: userData.planEndDate || '',
-                amountPaid: userData.amountPaid || 0,
-                encryptedData: userData.encryptedData || '',
-                registrationDate: userData.registrationDate || '',
-                isFirstLogin: userData.isFirstLogin !== false
-            };
-            
-            return extracted;
-        }
-
-        // ... Keep all other existing functions from your original code ...
-        // The login, forgot password, change password functions remain the same
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load initial admin data
-            loadAdminData();
-            
-            // Your existing initialization code...
-        });
-
     </script>
 </body>
 </html>
