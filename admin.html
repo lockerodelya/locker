@@ -1532,24 +1532,45 @@ doc.text(`Registration Date: ${formattedRegDate}`, leftX, tempY);
                         // Right Column
                         rightX = pageWidth / 2;
                         tempY = yPos;
-                        
-                        // Format Date of Birth to DD-MM-YYYY format
+// Format Date of Birth to DD-MM-YYYY format
 let formattedDOB = 'N/A';
 if (personalInfo.dob) {
     try {
-        const dobDate = new Date(personalInfo.dob);
-        if (!isNaN(dobDate)) {
+        // Try to parse the date in various formats
+        const dateStr = personalInfo.dob.toString().trim();
+        let dobDate;
+        
+        // Try parsing as ISO format (YYYY-MM-DD)
+        if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            dobDate = new Date(dateStr);
+        } 
+        // Try parsing as DD/MM/YYYY or DD-MM-YYYY
+        else if (dateStr.match(/^\d{2}[\/\-]\d{2}[\/\-]\d{4}$/)) {
+            const parts = dateStr.split(/[\/\-]/);
+            dobDate = new Date(parts[2], parts[1] - 1, parts[0]);
+        }
+        // Try parsing as a general date string
+        else {
+            dobDate = new Date(dateStr);
+        }
+        
+        if (dobDate && !isNaN(dobDate)) {
             const dobDay = String(dobDate.getDate()).padStart(2, '0');
             const dobMonth = String(dobDate.getMonth() + 1).padStart(2, '0');
             const dobYear = dobDate.getFullYear();
             formattedDOB = `${dobDay}-${dobMonth}-${dobYear}`;
+        } else {
+            // If parsing fails, show the original value
+            formattedDOB = personalInfo.dob;
         }
     } catch (error) {
         console.error('Error formatting DOB:', error);
         formattedDOB = personalInfo.dob; // Fallback to original
     }
 }
-doc.text(`Date of Birth: ${formattedDOB}`, rightX, tempY);
+doc.text(`Date of Birth: ${formattedDOB}`, rightX, tempY);                        
+
+
                         tempY += 6;
                         doc.text(`Gender: ${personalInfo.gender || 'N/A'}`, rightX, tempY);
                         tempY += 6;
