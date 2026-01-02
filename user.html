@@ -1109,76 +1109,91 @@
         }
         
         // ====== SEARCH FOR USER DATA FROM USER_STATUS ======
-        function searchUserData(email, password) {
-            try {
-                console.log('Searching for user:', email);
+function searchUserData(email, password) {
+    try {
+        console.log('Searching for user:', email, 'Password:', password);
+        
+        // ====== FIX: First check if default password is being used ======
+        if (password === 'odelya@123') {
+            console.log('Default password detected, searching for user...');
+            
+            // Get successful payment users from user_status.js
+            const successfulUsers = getSuccessfulPaymentUsers();
+            console.log('Total successful users found:', successfulUsers.length);
+            
+            // Search through successful payment users
+            for (const userData of successfulUsers) {
+                // Try to extract email from different sources
+                let userEmail = '';
                 
-                // Get successful payment users from user_status.js
-                const successfulUsers = getSuccessfulPaymentUsers();
-                console.log('Total successful users:', successfulUsers.length);
-                
-                // Search through successful payment users
-                for (const userData of successfulUsers) {
-                    // Check if this is the user by email
-                    let userEmail = '';
-                    
-                    // Try to extract email from different sources
-                    if (userData.email) {
-                        try {
-                            // Try to decrypt if it's encrypted
-                            userEmail = decryptData(userData.email);
-                        } catch (e) {
-                            userEmail = userData.email;
-                        }
-                    }
-                    
-                    // If no email found, try from encrypted data
-                    if (!userEmail && userData.encryptedData) {
-                        try {
-                            const decrypted = JSON.parse(decryptData(userData.encryptedData));
-                            userEmail = decrypted.personalInfo?.email || '';
-                        } catch (decryptError) {
-                            console.error('Error decrypting email:', decryptError);
-                        }
-                    }
-                    
-                    // Also check userId
-                    if (!userEmail && userData.userId) {
-                        userEmail = userData.userId;
-                    }
-                    
-                    console.log('Checking user:', { 
-                        userEmail: userEmail, 
-                        userId: userData.userId,
-                        searchEmail: email 
-                    });
-                    
-                    if (userEmail === email || userData.userId === email) {
-                        console.log('User found, checking password...');
-                        
-                        // Check password
-                        if (verifyPassword(userData, password)) {
-                            console.log('Password verified successfully');
-                            
-                            // Extract user info
-                            const extracted = extractUserInfo(userData);
-                            extracted.isFirstLogin = checkIfFirstLogin(userEmail);
-                            
-                            return extracted;
-                        } else {
-                            console.log('Password verification failed');
-                        }
+                // 1. Try from encrypted data
+                if (userData.encryptedData) {
+                    try {
+                        const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                        userEmail = decrypted.personalInfo?.email || '';
+                        console.log('Email from encrypted:', userEmail);
+                    } catch (decryptError) {
+                        console.error('Error decrypting email:', decryptError);
                     }
                 }
                 
-                console.log('User not found in successful payment users');
-                return null;
+                // 2. Try direct email field
+                if (!userEmail && userData.email) {
+                    try {
+                        userEmail = decryptData(userData.email);
+                        console.log('Email from direct field (decrypted):', userEmail);
+                    } catch (e) {
+                        userEmail = userData.email;
+                        console.log('Email from direct field (plain):', userEmail);
+                    }
+                }
                 
-            } catch (error) {
-                console.error('Error searching user data:', error);
-                return null;
+                // 3. Also check userId
+                if (!userEmail && userData.userId) {
+                    userEmail = userData.userId;
+                    console.log('Using userId as email:', userEmail);
+                }
+                
+                // Debug log
+                console.log('Comparing:', {
+                    userEmail: userEmail,
+                    searchEmail: email,
+                    match: userEmail === email || userData.userId === email
+                });
+                
+                // Check if this is the user
+                if (userEmail === email || userData.userId === email) {
+                    console.log('✅ USER FOUND!');
+                    
+                    // Extract user info
+                    const extracted = extractUserInfo(userData);
+                    extracted.isFirstLogin = true; // Always first login with default password
+                    
+                    // Store login record
+                    const loginKey = 'odelya_user_login_' + email;
+                    if (!localStorage.getItem(loginKey)) {
+                        localStorage.setItem(loginKey, JSON.stringify({
+                            firstLogin: new Date().toISOString(),
+                            lastLogin: new Date().toISOString()
+                        }));
+                    }
+                    
+                    return extracted;
+                }
             }
+            
+            console.log('❌ User not found with email:', email);
+            return null;
         }
+        
+        console.log('❌ Password is not default password');
+        return null;
+        
+    } catch (error) {
+        console.error('Error searching user data:', error);
+        return null;
+    }
+}
         
         function extractUserInfo(userData) {
             try {
@@ -2020,4 +2035,5 @@ function verifyPassword(userData, password) {
     <script src="user_status.js"></script>
 </body>
 </html>
+
 
