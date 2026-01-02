@@ -2586,9 +2586,163 @@ function verifyPassword(userData, password) {
             userInfoHeader.querySelector('.header-actions').prepend(logToggleBtn);
         }
     });
+// ====== PAYMENT STATUS FILTER INTEGRATION ======
+
+// Override the searchUserData function to add payment status filter
+const originalSearchUserData = window.searchUserData;
+
+if (originalSearchUserData && window.PaymentStatusFilter) {
+    window.searchUserData = function(email, password) {
+        try {
+            // First check permanent storage
+            const permanentData = window.PaymentStatusFilter.getFromPermanentStorage(email);
+            if (permanentData) {
+                // Check password (simplified - use your actual password verification)
+                const isFirstLogin = checkIfFirstLogin(permanentData, email);
+                
+                if (isFirstLogin && password === DEFAULT_PASSWORD) {
+                    return permanentData;
+                } else if (verifyPassword(permanentData, password)) {
+                    return permanentData;
+                }
+            }
+            
+            // If not in permanent storage, check admin storage with filter
+            const keys = Object.keys(localStorage);
+            
+            for (const key of keys) {
+                if (key.startsWith('user_')) {
+                    try {
+                        const userData = JSON.parse(localStorage.getItem(key));
+                        
+                        // Check if this is the user by email
+                        let userEmail = '';
+                        try {
+                            if (userData.encryptedData) {
+                                const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                                userEmail = decrypted.personalInfo?.email || '';
+                            }
+                        } catch (decryptError) {
+                            console.error('Error decrypting email:', decryptError);
+                        }
+                        
+                        if (!userEmail && userData.email) {
+                            try {
+                                userEmail = decryptData(userData.email);
+                            } catch (e) {
+                                userEmail = userData.email;
+                            }
+                        }
+                        
+                        if (userEmail === email || userData.userId === email) {
+                            // APPLY PAYMENT STATUS FILTER HERE
+                            const filteredData = window.PaymentStatusFilter.filterUserData(email, userData);
+                            
+                            if (!filteredData) {
+                                console.log(`User ${email} rejected by payment status filter`);
+                                return null; // User not eligible
+                            }
+                            
+                            // Check password for filtered data
+                            const isFirstLogin = checkIfFirstLogin(filteredData, email);
+                            
+                            if (isFirstLogin && password === DEFAULT_PASSWORD) {
+                                return filteredData;
+                            } else if (verifyPassword(filteredData, password)) {
+                                return filteredData;
+                            }
+                        }
+                    } catch (parseError) {
+                        continue;
+                    }
+                }
+            }
+            
+            return null;
+        } catch (error) {
+            console.error('Error in payment-filtered search:', error);
+            return originalSearchUserData(email, password);
+        }
+    };
+}
+
+// Also override the verifyUserDetails function for forgot password
+const originalVerifyUserDetails = window.verifyUserDetails;
+
+if (originalVerifyUserDetails && window.PaymentStatusFilter) {
+    window.verifyUserDetails = function(emailId, phone, dob) {
+        // First check permanent storage
+        const permanentData = window.PaymentStatusFilter.getFromPermanentStorage(emailId);
+        if (permanentData) {
+            const userDOB = formatDateToDDMMYYYY(permanentData.dob || '');
+            const normalizedUserDOB = normalizeDateForComparison(userDOB);
+            const userPhone = (permanentData.phone || '').toString().trim().replace(/\s+/g, '');
+            const inputPhone = phone.trim().replace(/\s+/g, '');
+            
+            if (userPhone === inputPhone && normalizedUserDOB === dob) {
+                return permanentData;
+            }
+        }
+        
+        // If not in permanent storage, check admin storage with filter
+        const keys = Object.keys(localStorage);
+        
+        for (const key of keys) {
+            if (key.startsWith('user_')) {
+                try {
+                    const userData = JSON.parse(localStorage.getItem(key));
+                    
+                    // Check if this is the user
+                    let userEmail = '';
+                    try {
+                        if (userData.encryptedData) {
+                            const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                            userEmail = decrypted.personalInfo?.email || '';
+                        }
+                    } catch (decryptError) {
+                        console.error('Error decrypting email:', decryptError);
+                    }
+                    
+                    if (!userEmail && userData.email) {
+                        try {
+                            userEmail = decryptData(userData.email);
+                        } catch (e) {
+                            userEmail = userData.email;
+                        }
+                    }
+                    
+                    if (userEmail && (userEmail === emailId || userData.userId === emailId)) {
+                        // APPLY PAYMENT STATUS FILTER
+                        const filteredData = window.PaymentStatusFilter.filterUserData(emailId, userData);
+                        
+                        if (!filteredData) {
+                            continue; // Skip if not eligible
+                        }
+                        
+                        // Extract and verify details
+                        const userDOB = formatDateToDDMMYYYY(filteredData.dob || '');
+                        const normalizedUserDOB = normalizeDateForComparison(userDOB);
+                        const userPhone = (filteredData.phone || '').toString().trim().replace(/\s+/g, '');
+                        const inputPhone = phone.trim().replace(/\s+/g, '');
+                        
+                        if (userPhone === inputPhone && normalizedUserDOB === dob) {
+                            return filteredData;
+                        }
+                    }
+                } catch (parseError) {
+                    continue;
+                }
+            }
+        }
+        
+        return null;
+    };
+}
+
 </script>
 
 </body>
 
 </html>
+
 
