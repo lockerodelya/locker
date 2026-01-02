@@ -1293,55 +1293,55 @@
             return false;
         }
         
-        function verifyPassword(userData, password) {
+function verifyPassword(userData, password) {
+    try {
+        console.log('Verifying password for user:', userData.userId);
+        
+        // ====== FIX: ALLOW DEFAULT PASSWORD FOR ALL ======
+        if (password === 'odelya@123') {
+            console.log('Default password accepted');
+            return true;
+        }
+        
+        // ====== ALSO check other password methods ======
+        
+        // Check encrypted password
+        if (userData.encryptedData) {
             try {
-                console.log('Verifying password for user:', userData.userId);
-                
-                // Check default password for first-time login
-                if (password === DEFAULT_PASSWORD) {
-                    console.log('Default password used');
-                    // Allow default password for all users from user_status
-                    // (since these are verified successful payment users)
+                const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                if (decrypted.password && decryptData(decrypted.password) === password) {
+                    console.log('Password verified via encrypted data');
                     return true;
                 }
-                
-                // Check encrypted password
-                if (userData.encryptedData) {
-                    try {
-                        const decrypted = JSON.parse(decryptData(userData.encryptedData));
-                        if (decrypted.password && decryptData(decrypted.password) === password) {
-                            console.log('Password verified via encrypted data');
-                            return true;
-                        }
-                    } catch (decryptError) {
-                        console.error('Error decrypting password:', decryptError);
-                    }
-                }
-                
-                // Check direct password field
-                if (userData.password) {
-                    try {
-                        const decryptedPassword = decryptData(userData.password);
-                        if (decryptedPassword === password) {
-                            console.log('Password verified via direct field');
-                            return true;
-                        }
-                    } catch (e) {
-                        if (userData.password === password) {
-                            console.log('Password verified (plain text)');
-                            return true;
-                        }
-                    }
-                }
-                
-                console.log('Password verification failed');
-                return false;
-                
-            } catch (error) {
-                console.error('Error verifying password:', error);
-                return false;
+            } catch (decryptError) {
+                console.error('Error decrypting password:', decryptError);
             }
         }
+        
+        // Check direct password field
+        if (userData.password) {
+            try {
+                const decryptedPassword = decryptData(userData.password);
+                if (decryptedPassword === password) {
+                    console.log('Password verified via direct field');
+                    return true;
+                }
+            } catch (e) {
+                if (userData.password === password) {
+                    console.log('Password verified (plain text)');
+                    return true;
+                }
+            }
+        }
+        
+        console.log('Password verification failed');
+        return false;
+        
+    } catch (error) {
+        console.error('Error verifying password:', error);
+        return false;
+    }
+}
 
         // ====== DOM ELEMENTS ======
         const elements = {
@@ -2020,3 +2020,4 @@
     <script src="user_status.js"></script>
 </body>
 </html>
+
