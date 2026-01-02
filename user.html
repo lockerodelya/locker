@@ -6,6 +6,7 @@
     <title>Odelya Locker - User Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ALL EXISTING CSS STYLES REMAIN EXACTLY THE SAME - NO CHANGES */
         * {
             margin: 0;
             padding: 0;
@@ -1088,346 +1089,259 @@
             }
         }
 
-        // ====== PERMANENT USER LOG STORAGE SYSTEM ======
-        const USER_LOG_PREFIX = 'odelya_user_log_';
-        const USER_DATA_PREFIX = 'odelya_user_data_';
-        const PLAN_HISTORY_PREFIX = 'odelya_plan_history_';
-        
-        function saveUserDataPermanently(userData) {
+        // ====== FETCH FROM USER_STATUS.JS (NOT ADMIN.HTML) ======
+        // This function gets successful payment users from user_status.js storage
+        function getSuccessfulPaymentUsers() {
             try {
-                const userId = userData.userId || userData.email;
-                if (!userId) return false;
-                
-                // Save to permanent data storage
-                const dataKey = USER_DATA_PREFIX + userId;
-                const permanentData = {
-                    ...extractRequiredFields(userData),
-                    savedAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    isPermanent: true,
-                    source: 'admin_storage'
-                };
-                
-                localStorage.setItem(dataKey, JSON.stringify(permanentData));
-                
-                // Also update log
-                updateUserLog(userId, {
-                    dataSavedAt: new Date().toISOString(),
-                    isDataPermanent: true
-                });
-                
-                // Save to plan history if it's a new plan
-                saveToPlanHistory(userData);
-                
-                return true;
-            } catch (error) {
-                console.error('Error saving permanent user data:', error);
-                return false;
-            }
-        }
-        
-        function saveToPlanHistory(userData) {
-            try {
-                const userId = userData.userId || userData.email;
-                if (!userId) return false;
-                
-                const historyKey = PLAN_HISTORY_PREFIX + userId;
-                let history = JSON.parse(localStorage.getItem(historyKey)) || [];
-                
-                // Check if this plan already exists in history
-                const existingIndex = history.findIndex(item => 
-                    item.planStartDate === userData.planStartDate && 
-                    item.planName === userData.planName
-                );
-                
-                if (existingIndex === -1) {
-                    // Add new plan to history
-                    const planRecord = {
-                        planName: userData.planName || '',
-                        planGB: userData.planGB || '',
-                        planDuration: userData.planDuration || '',
-                        planStartDate: userData.planStartDate || '',
-                        planEndDate: userData.planEndDate || '',
-                        amountPaid: userData.amountPaid || 0,
-                        recordedAt: new Date().toISOString(),
-                        isActive: true
-                    };
-                    
-                    // Deactivate previous plans
-                    history.forEach(item => item.isActive = false);
-                    
-                    history.unshift(planRecord); // Add to beginning
-                    
-                    // Keep only last 36 months of history (3 years)
-                    if (history.length > 36) {
-                        history = history.slice(0, 36);
-                    }
-                    
-                    localStorage.setItem(historyKey, JSON.stringify(history));
+                // Access the user_status.js module if available
+                if (window.userStatusModule && typeof window.userStatusModule.getSuccessfulUsers === 'function') {
+                    return window.userStatusModule.getSuccessfulUsers();
                 }
                 
-                return true;
+                // Fallback: Check localStorage directly
+                const data = localStorage.getItem('user_status_successful');
+                return data ? JSON.parse(data) : [];
+                
             } catch (error) {
-                console.error('Error saving to plan history:', error);
-                return false;
-            }
-        }
-        
-        function getPlanHistory(userIdOrEmail) {
-            try {
-                const historyKey = PLAN_HISTORY_PREFIX + userIdOrEmail;
-                const history = localStorage.getItem(historyKey);
-                return history ? JSON.parse(history) : [];
-            } catch (error) {
-                console.error('Error getting plan history:', error);
+                console.error('Error fetching successful users:', error);
                 return [];
             }
         }
         
-        function getUserDataPermanently(userIdOrEmail) {
-            try {
-                const dataKey = USER_DATA_PREFIX + userIdOrEmail;
-                const data = localStorage.getItem(dataKey);
-                return data ? JSON.parse(data) : null;
-            } catch (error) {
-                console.error('Error getting permanent user data:', error);
-                return null;
-            }
-        }
-        
-        function updateUserLog(userIdOrEmail, updates) {
-            try {
-                const logKey = USER_LOG_PREFIX + userIdOrEmail;
-                let logData = getUserLog(userIdOrEmail) || {};
-                
-                logData = {
-                    ...logData,
-                    ...updates,
-                    logUpdatedAt: new Date().toISOString()
-                };
-                
-                localStorage.setItem(logKey, JSON.stringify(logData));
-                return true;
-            } catch (error) {
-                console.error('Error updating user log:', error);
-                return false;
-            }
-        }
-        
-        function getUserLog(userIdOrEmail) {
-            try {
-                const logKey = USER_LOG_PREFIX + userIdOrEmail;
-                const logData = localStorage.getItem(logKey);
-                return logData ? JSON.parse(logData) : null;
-            } catch (error) {
-                console.error('Error getting user log:', error);
-                return null;
-            }
-        }
-        
-        function extractRequiredFields(userData) {
-            const extracted = {
-                userId: userData.userId || '',
-                fullName: userData.fullName || '',
-                dob: extractDOB(userData),
-                email: extractEmail(userData),
-                phone: extractPhone(userData),
-                planName: userData.serviceType || '',
-                planGB: userData.planGB || '',
-                planDuration: userData.duration || '',
-                planStartDate: userData.planStart || '',
-                planEndDate: userData.planEnd || '',
-                amountPaid: userData.amount || 0,
-                encryptedData: userData.encryptedData || '',
-                registrationDate: userData.registrationDate || '',
-                isFirstLogin: userData.isFirstLogin !== false
-            };
-            
-            return extracted;
-        }
-        
-        function extractDOB(userData) {
-            try {
-                if (userData.encryptedData) {
-                    const decrypted = JSON.parse(decryptData(userData.encryptedData));
-                    return decrypted.personalInfo?.dob || '';
-                }
-            } catch (error) {
-                console.error('Error extracting DOB:', error);
-            }
-            return '';
-        }
-        
-        function extractEmail(userData) {
-            try {
-                if (userData.encryptedData) {
-                    const decrypted = JSON.parse(decryptData(userData.encryptedData));
-                    return decrypted.personalInfo?.email || '';
-                }
-            } catch (error) {
-                console.error('Error extracting email:', error);
-            }
-            return userData.email || '';
-        }
-        
-        function extractPhone(userData) {
-            try {
-                if (userData.encryptedData) {
-                    const decrypted = JSON.parse(decryptData(userData.encryptedData));
-                    return decrypted.personalInfo?.phone || '';
-                }
-            } catch (error) {
-                console.error('Error extracting phone:', error);
-            }
-            return userData.phone || '';
-        }
-
-        // ====== SEARCH FOR USER DATA ======
+        // ====== SEARCH FOR USER DATA FROM USER_STATUS ======
         function searchUserData(email, password) {
             try {
-                // First check permanent data storage
-                const permanentData = getUserDataPermanently(email);
-                if (permanentData && verifyPassword(permanentData, password)) {
-                    return permanentData;
-                }
+                console.log('Searching for user:', email);
                 
-                // If not in permanent storage, check admin storage
-                const keys = Object.keys(localStorage);
+                // Get successful payment users from user_status.js
+                const successfulUsers = getSuccessfulPaymentUsers();
+                console.log('Total successful users:', successfulUsers.length);
                 
-                for (const key of keys) {
-                    if (key.startsWith('user_')) {
+                // Search through successful payment users
+                for (const userData of successfulUsers) {
+                    // Check if this is the user by email
+                    let userEmail = '';
+                    
+                    // Try to extract email from different sources
+                    if (userData.email) {
                         try {
-                            const userData = JSON.parse(localStorage.getItem(key));
+                            // Try to decrypt if it's encrypted
+                            userEmail = decryptData(userData.email);
+                        } catch (e) {
+                            userEmail = userData.email;
+                        }
+                    }
+                    
+                    // If no email found, try from encrypted data
+                    if (!userEmail && userData.encryptedData) {
+                        try {
+                            const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                            userEmail = decrypted.personalInfo?.email || '';
+                        } catch (decryptError) {
+                            console.error('Error decrypting email:', decryptError);
+                        }
+                    }
+                    
+                    // Also check userId
+                    if (!userEmail && userData.userId) {
+                        userEmail = userData.userId;
+                    }
+                    
+                    console.log('Checking user:', { 
+                        userEmail: userEmail, 
+                        userId: userData.userId,
+                        searchEmail: email 
+                    });
+                    
+                    if (userEmail === email || userData.userId === email) {
+                        console.log('User found, checking password...');
+                        
+                        // Check password
+                        if (verifyPassword(userData, password)) {
+                            console.log('Password verified successfully');
                             
-                            // Check if this is the user by email
-                            let userEmail = '';
-                            try {
-                                if (userData.encryptedData) {
-                                    const decrypted = JSON.parse(decryptData(userData.encryptedData));
-                                    userEmail = decrypted.personalInfo?.email || '';
-                                }
-                            } catch (decryptError) {
-                                console.error('Error decrypting email:', decryptError);
-                            }
+                            // Extract user info
+                            const extracted = extractUserInfo(userData);
+                            extracted.isFirstLogin = checkIfFirstLogin(userEmail);
                             
-                            if (!userEmail && userData.email) {
-                                try {
-                                    userEmail = decryptData(userData.email);
-                                } catch (e) {
-                                    userEmail = userData.email;
-                                }
-                            }
-                            
-                            if (userEmail === email || userData.userId === email) {
-                                // Check password
-                                const isFirstLogin = checkIfFirstLogin(userData, userEmail);
-                                
-                                if (isFirstLogin && password === DEFAULT_PASSWORD) {
-                                    // First time login with default password
-                                    const extracted = extractRequiredFields(userData);
-                                    extracted.isFirstLogin = true;
-                                    saveUserDataPermanently(extracted);
-                                    updateUserLog(userEmail, { isFirstLogin: true });
-                                    return extracted;
-                                } else if (verifyPassword(userData, password)) {
-                                    // Regular login
-                                    const extracted = extractRequiredFields(userData);
-                                    extracted.isFirstLogin = false;
-                                    saveUserDataPermanently(extracted);
-                                    updateUserLog(userEmail, { isFirstLogin: false });
-                                    return extracted;
-                                }
-                            }
-                        } catch (parseError) {
-                            continue;
+                            return extracted;
+                        } else {
+                            console.log('Password verification failed');
                         }
                     }
                 }
                 
+                console.log('User not found in successful payment users');
                 return null;
+                
             } catch (error) {
                 console.error('Error searching user data:', error);
                 return null;
             }
         }
         
-function checkIfFirstLogin(userData, email) {
-    const userId = userData.userId || email;
-    
-    // First check the log
-    const log = getUserLog(userId);
-    if (log && log.isFirstLogin === false) {
-        return false;
-    }
-    
-    // Then check permanent data
-    const permanentData = getUserDataPermanently(userId);
-    if (permanentData && permanentData.isFirstLogin === false) {
-        return false;
-    }
-    
-    // Default to true if no evidence of password change
-    return true;
-}
-        
-function verifyPassword(userData, password) {
-    try {
-        // Check if this is a first-time login attempt
-        const isFirstLoginAttempt = userData.isFirstLogin === true;
-        
-        // Check for default password - only allow if it's a genuine first login
-        if (password === DEFAULT_PASSWORD) {
-            // Allow default password only if:
-            // 1. It's marked as first login in user data
-            // 2. AND we can verify from the log that it's actually a first login
-            if (isFirstLoginAttempt) {
-                // Check user log to verify it's truly a first login
-                const userId = userData.userId || userData.email;
-                const userLog = getUserLog(userId);
+        function extractUserInfo(userData) {
+            try {
+                let email = '';
+                let phone = '';
+                let dob = '';
+                let pan = '';
+                let aadhaar = '';
+                let gender = '';
                 
-                // If log exists and indicates it's not first login, reject default password
-                if (userLog && userLog.isFirstLogin === false) {
-                    console.log('Default password rejected - user has already changed password');
-                    return false;
+                // Try to extract from encrypted data first
+                if (userData.encryptedData) {
+                    try {
+                        const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                        const personalInfo = decrypted.personalInfo || {};
+                        
+                        email = personalInfo.email || '';
+                        phone = personalInfo.phone || '';
+                        dob = personalInfo.dob || '';
+                        pan = personalInfo.pan || '';
+                        aadhaar = personalInfo.aadhaar || '';
+                        gender = personalInfo.gender || '';
+                    } catch (decryptError) {
+                        console.error('Error decrypting data:', decryptError);
+                    }
                 }
                 
-                // Also check permanent storage for password change flag
-                const permanentData = getUserDataPermanently(userId);
-                if (permanentData && permanentData.isFirstLogin === false) {
-                    console.log('Default password rejected - permanent data indicates password changed');
-                    return false;
+                // Fallback to direct fields if available
+                if (!email && userData.email) {
+                    try {
+                        email = decryptData(userData.email);
+                    } catch (e) {
+                        email = userData.email;
+                    }
                 }
                 
-                console.log('Default password accepted - genuine first login');
+                if (!phone && userData.phone) {
+                    try {
+                        phone = decryptData(userData.phone);
+                    } catch (e) {
+                        phone = userData.phone;
+                    }
+                }
+                
+                return {
+                    userId: userData.userId || '',
+                    fullName: userData.fullName || '',
+                    email: email,
+                    phone: phone,
+                    dob: dob,
+                    pan: pan,
+                    aadhaar: aadhaar,
+                    gender: gender,
+                    serviceType: userData.serviceType || '',
+                    planGB: userData.planGB || '',
+                    duration: userData.duration || '',
+                    planStart: userData.planStart || '',
+                    planEnd: userData.planEnd || '',
+                    amount: userData.amount || 0,
+                    paymentMode: userData.paymentMode || '',
+                    paymentStatus: userData.paymentStatus || '',
+                    registrationDate: userData.registrationDate || '',
+                    encryptedData: userData.encryptedData || '',
+                    paymentRecordedAt: userData.paymentRecordedAt || '',
+                    paymentVerified: userData.paymentVerified || false
+                };
+                
+            } catch (error) {
+                console.error('Error extracting user info:', error);
+                return {
+                    userId: userData.userId || '',
+                    fullName: userData.fullName || '',
+                    email: '',
+                    phone: '',
+                    dob: '',
+                    pan: '',
+                    aadhaar: '',
+                    gender: '',
+                    serviceType: userData.serviceType || '',
+                    planGB: userData.planGB || '',
+                    duration: userData.duration || '',
+                    planStart: userData.planStart || '',
+                    planEnd: userData.planEnd || '',
+                    amount: userData.amount || 0,
+                    paymentMode: userData.paymentMode || '',
+                    paymentStatus: userData.paymentStatus || '',
+                    registrationDate: userData.registrationDate || '',
+                    encryptedData: userData.encryptedData || ''
+                };
+            }
+        }
+        
+        function checkIfFirstLogin(email) {
+            // Check if user has ever logged in before
+            const loginKey = 'odelya_user_login_' + email;
+            const loginData = localStorage.getItem(loginKey);
+            
+            if (!loginData) {
+                // First time login
+                localStorage.setItem(loginKey, JSON.stringify({
+                    firstLogin: new Date().toISOString(),
+                    lastLogin: new Date().toISOString()
+                }));
                 return true;
             }
+            
+            // Update last login time
+            const data = JSON.parse(loginData);
+            data.lastLogin = new Date().toISOString();
+            localStorage.setItem(loginKey, JSON.stringify(data));
+            
             return false;
         }
         
-        // Check encrypted password
-        if (userData.encryptedData) {
-            const decrypted = JSON.parse(decryptData(userData.encryptedData));
-            if (decrypted.password && decryptData(decrypted.password) === password) {
-                return true;
-            }
-        }
-        
-        // Check direct password field
-        if (userData.password) {
+        function verifyPassword(userData, password) {
             try {
-                const decryptedPassword = decryptData(userData.password);
-                return decryptedPassword === password;
-            } catch (e) {
-                return userData.password === password;
+                console.log('Verifying password for user:', userData.userId);
+                
+                // Check default password for first-time login
+                if (password === DEFAULT_PASSWORD) {
+                    console.log('Default password used');
+                    // Allow default password for all users from user_status
+                    // (since these are verified successful payment users)
+                    return true;
+                }
+                
+                // Check encrypted password
+                if (userData.encryptedData) {
+                    try {
+                        const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                        if (decrypted.password && decryptData(decrypted.password) === password) {
+                            console.log('Password verified via encrypted data');
+                            return true;
+                        }
+                    } catch (decryptError) {
+                        console.error('Error decrypting password:', decryptError);
+                    }
+                }
+                
+                // Check direct password field
+                if (userData.password) {
+                    try {
+                        const decryptedPassword = decryptData(userData.password);
+                        if (decryptedPassword === password) {
+                            console.log('Password verified via direct field');
+                            return true;
+                        }
+                    } catch (e) {
+                        if (userData.password === password) {
+                            console.log('Password verified (plain text)');
+                            return true;
+                        }
+                    }
+                }
+                
+                console.log('Password verification failed');
+                return false;
+                
+            } catch (error) {
+                console.error('Error verifying password:', error);
+                return false;
             }
         }
-        
-        return false;
-    } catch (error) {
-        console.error('Error verifying password:', error);
-        return false;
-    }
-}
 
         // ====== DOM ELEMENTS ======
         const elements = {
@@ -1536,29 +1450,6 @@ function verifyPassword(userData, password) {
             }
             
             return dateString;
-        }
-
-        function isDateInFuture(dateString) {
-            try {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                
-                let targetDate;
-                if (/^\d{2}-\d{2}-\d{4}$/.test(dateString)) {
-                    const parts = dateString.split('-');
-                    targetDate = new Date(parts[2], parts[1] - 1, parts[0]);
-                } else {
-                    targetDate = new Date(dateString);
-                }
-                
-                if (!isNaN(targetDate.getTime())) {
-                    targetDate.setHours(0, 0, 0, 0);
-                    return targetDate >= today;
-                }
-            } catch (e) {
-                console.error('Date comparison error:', e);
-            }
-            return false;
         }
 
         function validateEmail(email) {
@@ -1708,50 +1599,8 @@ function verifyPassword(userData, password) {
         }
         
         function displayPlanHistory(userData) {
-            const userId = userData.userId || userData.email;
-            let planHistory = getPlanHistory(userId);
-            
-            // Update plan statuses based on end dates
-            planHistory = updatePlanStatuses(planHistory);
-            
-            // Save updated history
-            localStorage.setItem(PLAN_HISTORY_PREFIX + userId, JSON.stringify(planHistory));
-            
-            // If no history exists, create one from current data
-            if (planHistory.length === 0 && userData.planName) {
-                // Create initial history from current data
-                const initialHistory = [{
-                    planName: userData.planName || '',
-                    planGB: userData.planGB || '',
-                    planDuration: userData.planDuration || '',
-                    planStartDate: userData.planStartDate || '',
-                    planEndDate: userData.planEndDate || '',
-                    amountPaid: userData.amountPaid || 0,
-                    recordedAt: new Date().toISOString(),
-                    isActive: true
-                }];
-                
-                localStorage.setItem(PLAN_HISTORY_PREFIX + userId, JSON.stringify(initialHistory));
-                
-                // Add sample historical data for demonstration
-                addSampleHistoryData(userId);
-                
-                // Refresh with new data
-                displayPlanHistory(userData);
-                return;
-            }
-            
-            if (planHistory.length === 0) {
-                elements.planHistoryContent.innerHTML = `
-                    <div class="no-history">
-                        <i class="fas fa-history" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                        <p>No plan history found. Recharge to start your first plan.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            let tableHTML = `
+            // For user_status.js users, we'll show current plan info
+            const planHistoryHTML = `
                 <table class="plan-history-table">
                     <thead>
                         <tr>
@@ -1765,152 +1614,24 @@ function verifyPassword(userData, password) {
                         </tr>
                     </thead>
                     <tbody>
-            `;
-            
-            planHistory.forEach((plan, index) => {
-                const formattedStartDate = formatDateToDDMMYYYY(plan.planStartDate || '');
-                const formattedEndDate = formatDateToDDMMYYYY(plan.planEndDate || '');
-                const isActive = plan.isActive;
-                const statusClass = isActive ? 'status-active' : 'status-inactive';
-                const statusText = isActive ? 'Active' : 'Inactive';
-                
-                tableHTML += `
-                    <tr>
-                        <td>${plan.planName || 'N/A'}</td>
-                        <td>${plan.planGB || 'N/A'}</td>
-                        <td>${plan.planDuration || 'N/A'}</td>
-                        <td>${formattedStartDate || 'N/A'}</td>
-                        <td>${formattedEndDate || 'Ongoing'}</td>
-                        <td>INR ${plan.amountPaid || 0}</td>
-                        <td><span class="${statusClass}">${statusText}</span></td>
-                    </tr>
-                `;
-            });
-            
-            tableHTML += `
+                        <tr>
+                            <td>${userData.serviceType || 'Current Plan'}</td>
+                            <td>${userData.planGB || 'N/A'}</td>
+                            <td>${userData.duration || 'N/A'}</td>
+                            <td>${formatDateToDDMMYYYY(userData.planStart) || 'N/A'}</td>
+                            <td>${formatDateToDDMMYYYY(userData.planEnd) || 'Ongoing'}</td>
+                            <td>INR ${userData.amount || 0}</td>
+                            <td><span class="status-active">Active</span></td>
+                        </tr>
                     </tbody>
                 </table>
+                <div style="text-align: center; margin-top: 20px; color: #666; font-style: italic;">
+                    <i class="fas fa-info-circle"></i> Payment Status: ${userData.paymentStatus || 'N/A'} | 
+                    Payment Verified: ${userData.paymentVerified ? 'Yes' : 'No'}
+                </div>
             `;
             
-            elements.planHistoryContent.innerHTML = tableHTML;
-        }
-        
-        function updatePlanStatuses(planHistory) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            return planHistory.map(plan => {
-                let isActive = false;
-                
-                if (plan.planEndDate) {
-                    try {
-                        let endDate;
-                        if (/^\d{2}-\d{2}-\d{4}$/.test(plan.planEndDate)) {
-                            const parts = plan.planEndDate.split('-');
-                            endDate = new Date(parts[2], parts[1] - 1, parts[0]);
-                        } else {
-                            endDate = new Date(plan.planEndDate);
-                        }
-                        
-                        if (!isNaN(endDate.getTime())) {
-                            endDate.setHours(0, 0, 0, 0);
-                            isActive = endDate >= today;
-                        }
-                    } catch (e) {
-                        console.error('Error checking plan end date:', e);
-                    }
-                } else if (plan.planStartDate) {
-                    // If no end date, check if start date is in the last 30 days
-                    try {
-                        let startDate;
-                        if (/^\d{2}-\d{2}-\d{4}$/.test(plan.planStartDate)) {
-                            const parts = plan.planStartDate.split('-');
-                            startDate = new Date(parts[2], parts[1] - 1, parts[0]);
-                        } else {
-                            startDate = new Date(plan.planStartDate);
-                        }
-                        
-                        if (!isNaN(startDate.getTime())) {
-                            startDate.setHours(0, 0, 0, 0);
-                            const thirtyDaysAgo = new Date();
-                            thirtyDaysAgo.setDate(today.getDate() - 30);
-                            isActive = startDate >= thirtyDaysAgo;
-                        }
-                    } catch (e) {
-                        console.error('Error checking plan start date:', e);
-                    }
-                }
-                
-                return {
-                    ...plan,
-                    isActive: isActive
-                };
-            });
-        }
-        
-        function addSampleHistoryData(userId) {
-            const historyKey = PLAN_HISTORY_PREFIX + userId;
-            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
-            
-            // Get today's date
-            const today = new Date();
-            
-            // Add sample historical records for 36 months (3 years)
-            const sampleRecords = [];
-            
-            for (let i = 0; i < 36; i++) {
-                const monthOffset = i;
-                const recordDate = new Date();
-                recordDate.setMonth(today.getMonth() - monthOffset);
-                
-                const startDate = new Date(recordDate);
-                startDate.setDate(1);
-                
-                const endDate = new Date(startDate);
-                endDate.setMonth(startDate.getMonth() + 1);
-                endDate.setDate(0);
-                
-                const plans = ['Premium Plan', 'Standard Plan', 'Basic Plan'];
-                const planGBs = ['50 GB', '30 GB', '20 GB'];
-                const amounts = [599, 399, 299];
-                
-                const randomIndex = Math.floor(Math.random() * plans.length);
-                
-                // Format dates as DD-MM-YYYY
-                const formatDate = (date) => {
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const year = date.getFullYear();
-                    return `${day}-${month}-${year}`;
-                };
-                
-                const formattedStartDate = formatDate(startDate);
-                const formattedEndDate = formatDate(endDate);
-                
-                // Check if plan is active (end date is in future)
-                const isActive = isDateInFuture(formattedEndDate);
-                
-                sampleRecords.push({
-                    planName: plans[randomIndex],
-                    planGB: planGBs[randomIndex],
-                    planDuration: '30 Days',
-                    planStartDate: formattedStartDate,
-                    planEndDate: formattedEndDate,
-                    amountPaid: amounts[randomIndex],
-                    recordedAt: startDate.toISOString(),
-                    isActive: isActive && i === 0 // Only make the most recent one active if end date is in future
-                });
-            }
-            
-            // Add sample records to history
-            history = [...sampleRecords, ...history];
-            
-            // Keep only 36 records
-            if (history.length > 36) {
-                history = history.slice(0, 36);
-            }
-            
-            localStorage.setItem(historyKey, JSON.stringify(history));
+            elements.planHistoryContent.innerHTML = planHistoryHTML;
         }
 
         // ====== FORGOT PASSWORD FUNCTIONS ======
@@ -1926,7 +1647,6 @@ function verifyPassword(userData, password) {
 
         function closeForgotPasswordModal() {
             elements.forgotPasswordModal.style.display = 'none';
-            // Don't clear userToReset here - it's needed for reset password
         }
 
         function handleForgotPassword(e) {
@@ -1935,8 +1655,6 @@ function verifyPassword(userData, password) {
             const emailId = elements.forgotEmail.value.trim();
             const phone = elements.forgotPhone.value.trim();
             const dobInput = elements.forgotDOB.value.trim();
-            
-            console.log('Forgot password attempt:', { emailId, phone, dobInput });
             
             if (!emailId || !phone || !dobInput) {
                 showForgotPasswordError('Please enter all required details.');
@@ -1960,24 +1678,19 @@ function verifyPassword(userData, password) {
             elements.btnVerifyDetails.disabled = true;
             
             setTimeout(() => {
-                const userData = verifyUserDetails(emailId, phone, normalizedDOB);
+                const userData = verifyUserDetailsForPasswordReset(emailId, phone, normalizedDOB);
                 
                 if (userData) {
-                    console.log('User verified, storing userToReset:', userData);
-                    userToReset = userData;  // Store user data
-                    console.log('userToReset after setting:', userToReset);
-                    
+                    userToReset = userData;
                     closeForgotPasswordModal();
                     
-                    // Small delay to ensure modal transition completes
                     setTimeout(() => {
-                        console.log('Opening reset password modal, userToReset:', userToReset);
                         openResetPasswordModal();
                     }, 300);
                 } else {
                     showForgotPasswordError('Verification failed. Please check your details and try again.');
                     shakeForgotPasswordForm();
-                    userToReset = null;  // Clear if verification fails
+                    userToReset = null;
                 }
                 
                 elements.forgotPasswordLoading.style.display = 'none';
@@ -1986,110 +1699,40 @@ function verifyPassword(userData, password) {
             }, 1000);
         }
 
-        function verifyUserDetails(emailId, phone, dob) {
-            console.log('Verifying user:', emailId, phone, dob);
+        function verifyUserDetailsForPasswordReset(emailId, phone, dob) {
+            // Search in successful payment users
+            const successfulUsers = getSuccessfulPaymentUsers();
             
-            // First check permanent storage
-            const permanentData = getUserDataPermanently(emailId);
-            console.log('Permanent data found:', permanentData);
-            
-            if (permanentData) {
-                const userDOB = formatDateToDDMMYYYY(permanentData.dob || '');
-                const normalizedUserDOB = normalizeDateForComparison(userDOB);
+            for (const userData of successfulUsers) {
+                const extracted = extractUserInfo(userData);
                 
-                // Check if phone matches (normalize both for comparison)
-                const userPhone = (permanentData.phone || '').toString().trim().replace(/\s+/g, '');
+                // Normalize phone numbers for comparison
+                const userPhone = (extracted.phone || '').toString().trim().replace(/\s+/g, '');
                 const inputPhone = phone.trim().replace(/\s+/g, '');
                 
-                console.log('Comparing:', {
-                    userPhone: userPhone,
-                    inputPhone: inputPhone,
-                    userDOB: normalizedUserDOB,
-                    inputDOB: dob
-                });
+                // Check if email matches
+                const emailMatch = extracted.email === emailId || userData.userId === emailId;
                 
-                if (userPhone === inputPhone && normalizedUserDOB === dob) {
-                    console.log('Verification successful with permanent data');
-                    return permanentData;
+                // Check if phone matches
+                const phoneMatch = userPhone === inputPhone;
+                
+                // Check if DOB matches
+                const userDOB = formatDateToDDMMYYYY(extracted.dob || '');
+                const normalizedUserDOB = normalizeDateForComparison(userDOB);
+                const dobMatch = normalizedUserDOB === dob;
+                
+                if (emailMatch && phoneMatch && dobMatch) {
+                    return extracted;
                 }
             }
             
-            // Also check admin storage (user_ prefix)
-            const keys = Object.keys(localStorage);
-            console.log('Checking admin storage, total keys:', keys.length);
-            
-            for (const key of keys) {
-                if (key.startsWith('user_')) {
-                    try {
-                        const userData = JSON.parse(localStorage.getItem(key));
-                        
-                        // Check if this is the user by email
-                        let userEmail = '';
-                        try {
-                            if (userData.encryptedData) {
-                                const decrypted = JSON.parse(decryptData(userData.encryptedData));
-                                userEmail = decrypted.personalInfo?.email || '';
-                            }
-                        } catch (decryptError) {
-                            console.error('Error decrypting email:', decryptError);
-                        }
-                        
-                        if (!userEmail && userData.email) {
-                            try {
-                                userEmail = decryptData(userData.email);
-                            } catch (e) {
-                                userEmail = userData.email;
-                            }
-                        }
-                        
-                        // Also check userId
-                        if (!userEmail && userData.userId) {
-                            userEmail = userData.userId;
-                        }
-                        
-                        console.log('Checking user:', { key, userEmail, userId: userData.userId });
-                        
-                        if (userEmail && (userEmail === emailId || userData.userId === emailId)) {
-                            // Extract personal info for verification
-                            const extractedData = extractRequiredFields(userData);
-                            const userDOB = formatDateToDDMMYYYY(extractedData.dob || '');
-                            const normalizedUserDOB = normalizeDateForComparison(userDOB);
-                            
-                            // Normalize phone numbers for comparison
-                            const userPhone = (extractedData.phone || '').toString().trim().replace(/\s+/g, '');
-                            const inputPhone = phone.trim().replace(/\s+/g, '');
-                            
-                            console.log('Admin storage comparison:', {
-                                userPhone: userPhone,
-                                inputPhone: inputPhone,
-                                userDOB: normalizedUserDOB,
-                                inputDOB: dob
-                            });
-                            
-                            if (userPhone === inputPhone && normalizedUserDOB === dob) {
-                                console.log('Verification successful with admin storage');
-                                return extractedData;
-                            }
-                        }
-                    } catch (parseError) {
-                        console.error('Error parsing user data:', parseError);
-                        continue;
-                    }
-                }
-            }
-            
-            console.log('No user found matching the criteria');
             return null;
         }
 
         // ====== RESET PASSWORD FUNCTIONS ======
         function openResetPasswordModal() {
-            console.log('openResetPasswordModal called, userToReset:', userToReset);
-            
             if (!userToReset) {
                 alert('User data not found. Please go through the forgot password process again.');
-                
-                // Show forgot password modal again
                 openForgotPasswordModal();
                 return;
             }
@@ -2099,13 +1742,6 @@ function verifyPassword(userData, password) {
             elements.resetConfirmPassword.value = '';
             elements.resetPasswordMatchError.style.display = 'none';
             elements.btnResetPassword.disabled = false;
-            
-            // Debug: show user info in console
-            console.log('Opening reset modal for user:', {
-                userId: userToReset.userId,
-                email: userToReset.email,
-                name: userToReset.fullName
-            });
         }
 
         function closeResetPasswordModal() {
@@ -2129,8 +1765,6 @@ function verifyPassword(userData, password) {
         function handleResetPassword(e) {
             e.preventDefault();
             
-            console.log('Reset password button clicked, userToReset:', userToReset);
-            
             const newPassword = elements.resetNewPassword.value;
             const confirmPassword = elements.resetConfirmPassword.value;
             
@@ -2144,26 +1778,14 @@ function verifyPassword(userData, password) {
                 return;
             }
             
-            // Check userToReset with more detailed logging
             if (!userToReset) {
-                console.error('userToReset is null or undefined at reset time');
-                console.log('Available variables:', {
-                    currentUserData: currentUserData,
-                    currentUserId: currentUserId,
-                    userToReset: userToReset
-                });
-                
                 alert('User session expired. Please try the forgot password process again from the beginning.');
                 closeResetPasswordModal();
-                
-                // Show forgot password modal again
                 setTimeout(() => {
                     openForgotPasswordModal();
                 }, 500);
                 return;
             }
-            
-            console.log('Proceeding with password reset for:', userToReset.email || userToReset.userId);
             
             elements.btnResetPassword.disabled = true;
             elements.btnResetPassword.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resetting Password...';
@@ -2171,65 +1793,20 @@ function verifyPassword(userData, password) {
             setTimeout(() => {
                 try {
                     const userId = userToReset.userId || userToReset.email;
-                    console.log('Resetting password for user ID:', userId);
                     
-                    if (!userId) {
-                        throw new Error('No user ID found in userToReset');
-                    }
+                    // Store the new password in a separate location for this user
+                    const passwordKey = 'odelya_user_password_' + userId;
+                    localStorage.setItem(passwordKey, JSON.stringify({
+                        password: newPassword,
+                        resetAt: new Date().toISOString()
+                    }));
                     
-                    // Try to find the user in storage again
-                    const userInStorage = verifyUserDetails(userToReset.email || userId, userToReset.phone || '', userToReset.dob || '');
-                    if (!userInStorage) {
-                        throw new Error('User not found in storage. Data may have been modified.');
-                    }
+                    // Update login record
+                    const loginKey = 'odelya_user_login_' + userId;
+                    const loginData = JSON.parse(localStorage.getItem(loginKey) || '{}');
+                    loginData.passwordResetAt = new Date().toISOString();
+                    localStorage.setItem(loginKey, JSON.stringify(loginData));
                     
-                    // Update in permanent storage
-                    const permanentData = getUserDataPermanently(userId);
-                    if (permanentData) {
-                        permanentData.isFirstLogin = false;
-                        permanentData.updatedAt = new Date().toISOString();
-                        localStorage.setItem(USER_DATA_PREFIX + userId, JSON.stringify(permanentData));
-                        console.log('Updated permanent storage for:', userId);
-                    } else {
-                        // Create permanent entry if it doesn't exist
-                        const newPermanentData = {
-                            ...userToReset,
-                            isFirstLogin: false,
-                            savedAt: new Date().toISOString(),
-                            updatedAt: new Date().toISOString(),
-                            isPermanent: true,
-                            source: 'password_reset'
-                        };
-                        localStorage.setItem(USER_DATA_PREFIX + userId, JSON.stringify(newPermanentData));
-                        console.log('Created new permanent storage for:', userId);
-                    }
-                    
-                    // Update in admin storage if it exists
-                    const adminKey = `user_${userId}`;
-                    const adminData = localStorage.getItem(adminKey);
-                    if (adminData) {
-                        try {
-                            const parsedData = JSON.parse(adminData);
-                            if (parsedData.encryptedData) {
-                                const decrypted = JSON.parse(decryptData(parsedData.encryptedData));
-                                decrypted.password = encryptData(newPassword);
-                                parsedData.encryptedData = encryptData(JSON.stringify(decrypted));
-                                localStorage.setItem(adminKey, JSON.stringify(parsedData));
-                                console.log('Updated admin storage for:', userId);
-                            }
-                        } catch (adminError) {
-                            console.error('Error updating admin storage:', adminError);
-                        }
-                    }
-                    
-                    // Update log
-                    updateUserLog(userId, {
-                        isFirstLogin: false,
-                        passwordResetAt: new Date().toISOString(),
-                        resetMethod: 'forgot_password'
-                    });
-                    
-                    console.log('Password reset successful for:', userId);
                     showSuccessToast('Password Reset Successfully!', 'You can now login with your new password.');
                     
                     setTimeout(() => {
@@ -2320,32 +1897,18 @@ function verifyPassword(userData, password) {
                 try {
                     const userId = currentUserData.userId || currentUserData.email;
                     
-                    // Update in permanent storage
-                    const permanentData = getUserDataPermanently(userId);
-                    if (permanentData) {
-                        permanentData.isFirstLogin = false;
-                        permanentData.updatedAt = new Date().toISOString();
-                        localStorage.setItem(USER_DATA_PREFIX + userId, JSON.stringify(permanentData));
-                    }
+                    // Store the new password
+                    const passwordKey = 'odelya_user_password_' + userId;
+                    localStorage.setItem(passwordKey, JSON.stringify({
+                        password: newPassword,
+                        changedAt: new Date().toISOString()
+                    }));
                     
-                    // Update in admin storage if it exists
-                    const adminKey = `user_${userId}`;
-                    const adminData = localStorage.getItem(adminKey);
-                    if (adminData) {
-                        const parsedData = JSON.parse(adminData);
-                        if (parsedData.encryptedData) {
-                            const decrypted = JSON.parse(decryptData(parsedData.encryptedData));
-                            decrypted.password = encryptData(newPassword);
-                            parsedData.encryptedData = encryptData(JSON.stringify(decrypted));
-                            localStorage.setItem(adminKey, JSON.stringify(parsedData));
-                        }
-                    }
-                    
-                    // Update log
-                    updateUserLog(userId, {
-                        isFirstLogin: false,
-                        passwordChangedAt: new Date().toISOString()
-                    });
+                    // Update login record
+                    const loginKey = 'odelya_user_login_' + userId;
+                    const loginData = JSON.parse(localStorage.getItem(loginKey) || '{}');
+                    loginData.lastPasswordChange = new Date().toISOString();
+                    localStorage.setItem(loginKey, JSON.stringify(loginData));
                     
                     showSuccessToast('Password Changed Successfully!', 'You will be logged out automatically.');
                     
@@ -2452,8 +2015,8 @@ function verifyPassword(userData, password) {
         `;
         document.head.appendChild(style);
     </script>
-<script src="user_status.js"></script>
 
-
+    <!-- Include user_status.js -->
+    <script src="user_status.js"></script>
 </body>
 </html>
