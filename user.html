@@ -2452,5 +2452,54 @@ function verifyPassword(userData, password) {
         `;
         document.head.appendChild(style);
     </script>
+
+<!-- Payment Status Based User Fetcher -->
+<script src="user_payment_fetcher.js"></script>
+<script src="user_log_display.js"></script>
+
+<script>
+    // Integrate with existing login system
+    document.addEventListener('DOMContentLoaded', function() {
+        // Override the displayUserInfo function to check payment status
+        const originalDisplayUserInfo = window.displayUserInfo;
+        
+        if (originalDisplayUserInfo) {
+            window.displayUserInfo = function(userData) {
+                // Call original function first
+                originalDisplayUserInfo(userData);
+                
+                // Check payment status and save to permanent log if eligible
+                if (window.PaymentBasedUserFetcher) {
+                    const userId = userData.userId || userData.email;
+                    const fetchedData = window.PaymentBasedUserFetcher.fetchUserDataByPaymentStatus(userId, userData);
+                    
+                    if (fetchedData) {
+                        console.log('User data saved to permanent log:', fetchedData);
+                        
+                        // Show log display section
+                        if (window.UserLogDisplay) {
+                            window.UserLogDisplay.show();
+                        }
+                    }
+                }
+            };
+        }
+        
+        // Add a button to show/hide permanent log
+        const userInfoHeader = document.querySelector('.user-info-header');
+        if (userInfoHeader && window.UserLogDisplay) {
+            const logToggleBtn = document.createElement('button');
+            logToggleBtn.className = 'btn-change-password';
+            logToggleBtn.innerHTML = '<i class="fas fa-database"></i> View Permanent Log';
+            logToggleBtn.onclick = function() {
+                window.UserLogDisplay.show();
+            };
+            
+            userInfoHeader.querySelector('.header-actions').prepend(logToggleBtn);
+        }
+    });
+</script>
+
 </body>
+
 </html>
