@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <style>
+        /* All existing styles remain exactly the same */
         * {
             margin: 0;
             padding: 0;
@@ -350,7 +351,7 @@
             flex-wrap: wrap;
         }
 
-        .btn-export-pdf, .btn-clear {
+        .btn-export-pdf, .btn-remove {
             padding: 12px 25px;
             border-radius: 8px;
             border: none;
@@ -378,13 +379,20 @@
             cursor: not-allowed;
         }
 
-        .btn-clear {
-            background: #757575;
+        .btn-remove {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
             color: white;
         }
 
-        .btn-clear:hover {
-            background: #616161;
+        .btn-remove:hover:not(:disabled) {
+            background: linear-gradient(135deg, #cc0000 0%, #990000 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 68, 68, 0.3);
+        }
+
+        .btn-remove:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .edit-btn {
@@ -733,8 +741,9 @@
                     <button class="btn-export-pdf" id="btnExportPDF" disabled>
                         <i class="fas fa-file-pdf"></i> Export Selected as PDF
                     </button>
-                    <button class="btn-clear" id="btnClearData">
-                        <i class="fas fa-trash"></i> Clear All Data
+                    <!-- Added Remove Selected button -->
+                    <button class="btn-remove" id="btnRemoveSelected" disabled>
+                        <i class="fas fa-trash"></i> Remove Selected
                     </button>
                 </div>
                 
@@ -742,17 +751,18 @@
                     <table id="usersTable">
                         <thead>
                             <tr>
+                                <!-- Select box added as requested -->
                                 <th style="width: 50px;">
                                     <input type="checkbox" id="selectAllCheckbox" class="user-checkbox">
                                 </th>
                                 <th>User ID</th>
                                 <th>Full Name</th>
-                                <th>Email</th>
+                                <!-- Email column removed from front end -->
                                 <th>Phone</th>
                                 <th>Amount</th>
                                 <th>Payment Mode</th>
                                 <th>Payment Status</th>
-                                <th>Attempts</th>
+                                <!-- Removed Attempts column -->
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -821,13 +831,7 @@
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Password Attempts</label>
-                        <input type="number" id="editPasswordAttempts" min="0" placeholder="Enter attempts count">
-                        <small style="color: #666; display: block; margin-top: 5px;">
-                            Number of password change attempts made by user
-                        </small>
-                    </div>
+                    <!-- Removed Password Attempts field -->
                     
                     <!-- Decrypted Information -->
                     <div class="section-title">
@@ -909,7 +913,7 @@
         // ====== STATE MANAGEMENT ======
         let currentUserData = null;
         let editingUserId = null;
-        let selectedUsers = new Set(); // Store selected user IDs
+        let selectedUsers = new Set();
 
         // ====== DOM ELEMENTS ======
         const elements = {
@@ -934,10 +938,9 @@
             editFullName: document.getElementById('editFullName'),
             editPaymentMode: document.getElementById('editPaymentMode'),
             editPaymentStatus: document.getElementById('editPaymentStatus'),
-            editPasswordAttempts: document.getElementById('editPasswordAttempts'),
             editAdminNotes: document.getElementById('editAdminNotes'),
             btnExportPDF: document.getElementById('btnExportPDF'),
-            btnClearData: document.getElementById('btnClearData'),
+            btnRemoveSelected: document.getElementById('btnRemoveSelected'),
             decryptedInfo: document.getElementById('decryptedInfo'),
             infoContent: document.getElementById('infoContent'),
             selectAllCheckbox: document.getElementById('selectAllCheckbox'),
@@ -976,9 +979,9 @@
             elements.btnCancel.addEventListener('click', closeEditModal);
             elements.btnSave.addEventListener('click', saveUserChanges);
             
-            // Export and Clear
+            // Export and Remove
             elements.btnExportPDF.addEventListener('click', exportSelectedToPDF);
-            elements.btnClearData.addEventListener('click', clearAllData);
+            elements.btnRemoveSelected.addEventListener('click', removeSelectedUsers);
             
             // Selection
             elements.selectAllCheckbox.addEventListener('change', toggleSelectAll);
@@ -1087,7 +1090,7 @@
             if (users.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="10" style="text-align: center; padding: 40px; color: #666;">
+                        <td colspan="9" style="text-align: center; padding: 40px; color: #666;">
                             <i class="fas fa-user-slash" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                             No users found
                         </td>
@@ -1105,10 +1108,8 @@
                 const row = document.createElement('tr');
                 const isSelected = selectedUsers.has(user.userId);
                 
-                let decryptedEmail = 'Error';
                 let decryptedPhone = 'Error';
                 try {
-                    decryptedEmail = user.email ? decryptData(user.email) : 'N/A';
                     decryptedPhone = user.phone ? decryptData(user.phone) : 'N/A';
                 } catch (error) {
                     console.error('Decryption error for user:', user.userId, error);
@@ -1124,12 +1125,11 @@
                     </td>
                     <td><strong>${user.userId || 'N/A'}</strong></td>
                     <td>${user.fullName || 'Unknown'}</td>
-                    <td>${decryptedEmail}</td>
+                    <!-- Email column removed from front end -->
                     <td>${decryptedPhone}</td>
                     <td>₹ ${user.amount || 0}</td>
                     <td>${user.paymentMode || 'Not Set'}</td>
                     <td><span class="status-badge ${statusClass}">${user.paymentStatus || 'Not Paid'}</span></td>
-                    <td>${user.passwordAttempts || 0}</td>
                     <td>
                         <button class="edit-btn" onclick="editUser('${user.userId}')">
                             <i class="fas fa-edit"></i> Edit
@@ -1176,8 +1176,9 @@
                 elements.selectionActions.style.display = 'none';
             }
             
-            // Enable/disable PDF export button
+            // Enable/disable buttons
             elements.btnExportPDF.disabled = selectedCount === 0;
+            elements.btnRemoveSelected.disabled = selectedCount === 0;
             
             // Update select all checkbox
             const totalUsers = document.querySelectorAll('.user-select').length;
@@ -1220,6 +1221,48 @@
             updateSelectionUI();
         }
 
+        // ====== REMOVE SELECTED USERS ======
+        function removeSelectedUsers() {
+            if (selectedUsers.size === 0) {
+                showNotification('Please select at least one user!', 'error');
+                return;
+            }
+            
+            const count = selectedUsers.size;
+            const message = count === 1 
+                ? 'Are you sure you want to permanently remove this user? This action cannot be undone!'
+                : `Are you sure you want to permanently remove ${count} users? This action cannot be undone!`;
+            
+            if (!confirm(`⚠️ ${message}`)) {
+                return;
+            }
+            
+            try {
+                let removedCount = 0;
+                
+                // Remove each selected user from localStorage
+                selectedUsers.forEach(userId => {
+                    const key = `user_${userId}`;
+                    if (localStorage.getItem(key)) {
+                        localStorage.removeItem(key);
+                        removedCount++;
+                    }
+                });
+                
+                // Clear selection
+                selectedUsers.clear();
+                
+                // Reload data
+                loadUserData();
+                
+                showNotification(`Successfully removed ${removedCount} user(s) permanently!`, 'success');
+                
+            } catch (error) {
+                console.error('Error removing users:', error);
+                showNotification('Error removing users!', 'error');
+            }
+        }
+
         // ====== EDIT USER FUNCTIONS ======
         function editUser(userId) {
             try {
@@ -1236,7 +1279,6 @@
                 elements.editFullName.value = userData.fullName || '';
                 elements.editPaymentMode.value = userData.paymentMode || '';
                 elements.editPaymentStatus.value = userData.paymentStatus || 'Not Paid';
-                elements.editPasswordAttempts.value = userData.passwordAttempts || 0;
                 elements.editAdminNotes.value = userData.adminNotes || '';
                 
                 showDecryptedInfo(userData);
@@ -1328,7 +1370,6 @@
             try {
                 currentUserData.paymentMode = elements.editPaymentMode.value;
                 currentUserData.paymentStatus = elements.editPaymentStatus.value;
-                currentUserData.passwordAttempts = parseInt(elements.editPasswordAttempts.value) || 0;
                 currentUserData.adminNotes = elements.editAdminNotes.value;
                 
                 localStorage.setItem(`user_${editingUserId}`, JSON.stringify(currentUserData));
@@ -1341,305 +1382,358 @@
             }
         }
 
-// ====== PDF EXPORT FUNCTION (FIXED VERSION) ======
-function exportSelectedToPDF() {
-    try {
-        if (selectedUsers.size === 0) {
-            showNotification('Please select at least one user!', 'error');
-            return;
-        }
-        
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('p', 'mm', 'a4');
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
-        const margin = 15;
-        let yPos = margin;
-        
-        // Get selected users data
-        const selectedUserData = [];
-        selectedUsers.forEach(userId => {
+        // ====== PDF EXPORT FUNCTION ======
+        function exportSelectedToPDF() {
             try {
-                const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
-                if (userData) {
-                    selectedUserData.push(userData);
+                if (selectedUsers.size === 0) {
+                    showNotification('Please select at least one user!', 'error');
+                    return;
                 }
-            } catch (error) {
-                console.error('Error loading user for PDF:', userId, error);
-            }
-        });
-        
-        if (selectedUserData.length === 0) {
-            showNotification('No valid user data found!', 'error');
-            return;
-        }
-        
-        showNotification(`Generating PDF for ${selectedUserData.length} user(s)...`, 'info');
-        
-        // Generate PDF for each user
-        selectedUserData.forEach((userData, index) => {
-            // Add new page for each user (except first)
-            if (index > 0) {
-                doc.addPage();
-                yPos = margin;
-            }
-            
-            // Title
-            doc.setFontSize(20);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(26, 35, 126);
-            doc.text('ODELYA CLOUD DIGITAL LOCKER', pageWidth / 2, yPos, { align: 'center' });
-            
-            yPos += 10;
-            doc.setFontSize(16);
-            doc.text('USER DETAILS REPORT', pageWidth / 2, yPos, { align: 'center' });
-            
-            yPos += 10;
-            doc.setFontSize(12);
-            doc.setTextColor(100, 100, 100);
-            doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth / 2, yPos, { align: 'center' });
-            
-            yPos += 15;
-            
-            // Add line separator
-            doc.setDrawColor(200, 200, 200);
-            doc.line(margin, yPos, pageWidth - margin, yPos);
-            yPos += 10;
-            
-            // User ID Section
-            doc.setFontSize(14);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(26, 35, 126);
-            doc.text('USER IDENTIFICATION', margin, yPos);
-            yPos += 8;
-            
-            doc.setFontSize(11);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(0, 0, 0);
-            doc.text(`User ID: ${userData.userId || 'N/A'}`, margin, yPos);
-            yPos += 6;
-            doc.text(`Full Name: ${userData.fullName || 'N/A'}`, margin, yPos);
-            yPos += 6;
-            doc.text(`Registration Date: ${userData.registrationDate || 'N/A'}`, margin, yPos);
-            
-            yPos += 12; // Increased space before next section
-            
-// Basic Information Section
-doc.setFontSize(14);
-doc.setFont('helvetica', 'bold');
-doc.setTextColor(26, 35, 126);
-doc.text('BASIC INFORMATION', margin, yPos);
-yPos += 8;
-
-try {
-    const decrypted = userData.encryptedData ? 
-        JSON.parse(decryptData(userData.encryptedData)) : {};
-    
-    const personalInfo = decrypted.personalInfo || {};
-    
-    doc.setFontSize(11);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(0, 0, 0);
-    
-    // Left Column
-    let leftX = margin;
-    let tempY = yPos;
-    
-    doc.text(`Email: ${personalInfo.email || 'N/A'}`, leftX, tempY);
-    tempY += 6;
-    doc.text(`Phone: ${personalInfo.phone || 'N/A'}`, leftX, tempY);
-    tempY += 6;
-    doc.text(`PAN: ${personalInfo.pan || 'N/A'}`, leftX, tempY);
-    
-    // Right Column
-    let rightX = pageWidth / 2;
-    tempY = yPos; // Reset to top for right column
-    
-    doc.text(`Date of Birth: ${personalInfo.dob || 'N/A'}`, rightX, tempY);
-    tempY += 6;
-    doc.text(`Gender: ${personalInfo.gender || 'N/A'}`, rightX, tempY);
-    tempY += 6;
-    doc.text(`Aadhaar: ${personalInfo.aadhaar || 'N/A'}`, rightX, tempY);
-    
-    // Move yPos down to the lowest point of both columns
-    yPos = Math.max(yPos + 18, tempY + 6); // Account for 3 lines in left column
-    
-} catch (error) {
-    console.error('Error decrypting for PDF:', error);
-    doc.text('Error decrypting user information', margin, yPos);
-    yPos += 10;
-}
-
-// Add THREE LINES of space before Service Information
-yPos += 12; // 2 lines × 6mm each = 12mm
-            
-            // Service Information Section
-            doc.setFontSize(14);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(26, 35, 126);
-            doc.text('SERVICE INFORMATION', margin, yPos);
-            yPos += 8;
-            
-            doc.setFontSize(11);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(0, 0, 0);
-            
-            doc.text(`Service Type: ${userData.serviceType || 'N/A'}`, margin, yPos);
-            yPos += 6;
-            
-            if (userData.planGB) {
-                doc.text(`Storage Plan: ${userData.planGB} GB (${userData.duration || 'N/A'})`, margin, yPos);
-                yPos += 6;
-            }
-            
-            doc.text(`Plan Start: ${userData.planStart || 'N/A'}`, margin, yPos);
-            yPos += 6;
-            doc.text(`Plan End: ${userData.planEnd || 'Ongoing'}`, margin, yPos);
-            
-            yPos += 12;
-            
-            // Payment Information Section
-            doc.setFontSize(14);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(26, 35, 126);
-            doc.text('PAYMENT INFORMATION', margin, yPos);
-            yPos += 8;
-            
-            doc.setFontSize(11);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(0, 0, 0);
-            
-            // FIX 2: Fix amount formatting issue
-            const amountText = `Amount: INR ${userData.amount || 0}`;
-			doc.text(amountText, margin, yPos);
-			yPos += 6;
-            
-            doc.text(`Payment Mode: ${userData.paymentMode || 'Not Set'}`, margin, yPos);
-            yPos += 6;
-            doc.text(`Payment Status: ${userData.paymentStatus || 'Not Paid'}`, margin, yPos);
-            yPos += 6;
-            doc.text(`Password Attempts: ${userData.passwordAttempts || 0}`, margin, yPos);
-            
-            yPos += 12;
-            
-            // Admin Notes Section
-            if (userData.adminNotes && userData.adminNotes.trim()) {
-                doc.setFontSize(14);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(26, 35, 126);
-                doc.text('ADMIN NOTES', margin, yPos);
-                yPos += 8;
                 
-                doc.setFontSize(11);
-                doc.setFont('helvetica', 'normal');
-                doc.setTextColor(0, 0, 0);
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                const margin = 15;
+                let yPos = margin;
                 
-                // Split notes into lines that fit page width
-                const notesLines = doc.splitTextToSize(userData.adminNotes.trim(), pageWidth - 2 * margin);
-                doc.text(notesLines, margin, yPos);
-                yPos += (notesLines.length * 6) + 10;
-            }
-            
-            // Encrypted Data Section (for verification)
-            doc.setFontSize(14);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(26, 35, 126);
-            doc.text('ENCRYPTED DATA VERIFICATION', margin, yPos);
-            yPos += 8;
-            
-            doc.setFontSize(9);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(100, 100, 100);
-            
-            if (userData.encryptedData) {
-                // FIX 3: Split long encrypted data to fit page width
-                const encryptedPreview = userData.encryptedData.substring(0, 100) + '...';
-                const encryptedLines = doc.splitTextToSize(`Encrypted Hash: ${encryptedPreview}`, pageWidth - 2 * margin);
-                
-                doc.text(encryptedLines, margin, yPos);
-                yPos += (encryptedLines.length * 5) + 6;
-                
-                doc.text(`Data Integrity: Verified`, margin, yPos);
-                yPos += 5;
-                
-                const keyPreview = `Encryption Key: ${ENCRYPTION_KEY.substring(0, 20)}...`;
-                const keyLines = doc.splitTextToSize(keyPreview, pageWidth - 2 * margin);
-                doc.text(keyLines, margin, yPos);
-                yPos += (keyLines.length * 5) + 6;
-            } else {
-                doc.text('No encrypted data available', margin, yPos);
-                yPos += 6;
-            }
-            
-            yPos += 10;
-            
-            // Footer - Check if we have enough space
-            if (yPos > pageHeight - 30) {
-                doc.addPage();
-                yPos = margin;
-            }
-            
-            doc.setFontSize(10);
-            doc.setTextColor(150, 150, 150);
-            doc.text('--- End of User Report ---', pageWidth / 2, pageHeight - 20, { align: 'center' });
-            doc.text(`Page ${index + 1} of ${selectedUserData.length}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-            
-            // Reset yPos for next user
-            yPos = margin;
-        });
-        
-        // Save PDF
-// Save PDF with proper filename format
-let fileName;
-if (selectedUserData.length === 1) {
-    // Single user: userid_fullname.pdf
-    const user = selectedUserData[0];
-    const cleanName = (user.fullName || 'Unknown')
-        .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters
-        .replace(/\s+/g, '_')           // Replace spaces with underscores
-        .substring(0, 30);              // Limit length
-    
-    fileName = `${user.userId || 'Unknown'}_${cleanName}.pdf`;
-} else {
-    // Multiple users: multiple_users_date_time.pdf
-    const now = new Date();
-    const dateStr = now.toISOString().split('T')[0];
-    const timeStr = now.getHours().toString().padStart(2, '0') + 
-                   now.getMinutes().toString().padStart(2, '0');
-    fileName = `Multiple_Users_${dateStr}_${timeStr}.pdf`;
-}
-
-doc.save(fileName);
-        
-        showNotification(`PDF exported successfully with ${selectedUserData.length} user(s)!`, 'success');
-        
-    } catch (error) {
-        console.error('PDF export error:', error);
-        showNotification('Error generating PDF!', 'error');
-    }
-}
-
-        // ====== CLEAR DATA FUNCTION ======
-        function clearAllData() {
-            if (confirm('⚠️ Are you sure you want to clear ALL user data?\n\nThis action cannot be undone!')) {
-                try {
-                    const keys = Object.keys(localStorage);
-                    let count = 0;
-                    
-                    keys.forEach(key => {
-                        if (key.startsWith('user_')) {
-                            localStorage.removeItem(key);
-                            count++;
+                // Get selected users data
+                const selectedUserData = [];
+                selectedUsers.forEach(userId => {
+                    try {
+                        const userData = JSON.parse(localStorage.getItem(`user_${userId}`));
+                        if (userData) {
+                            selectedUserData.push(userData);
                         }
+                    } catch (error) {
+                        console.error('Error loading user for PDF:', userId, error);
+                    }
+                });
+                
+                if (selectedUserData.length === 0) {
+                    showNotification('No valid user data found!', 'error');
+                    return;
+                }
+                
+                showNotification(`Generating PDF for ${selectedUserData.length} user(s)...`, 'info');
+                
+                // Generate PDF for each user
+                selectedUserData.forEach((userData, index) => {
+                    if (index > 0) {
+                        doc.addPage();
+                        yPos = margin;
+                    }
+                    
+                    // Title
+                    doc.setFontSize(20);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(26, 35, 126);
+                    doc.text('ODELYA CLOUD DIGITAL LOCKER', pageWidth / 2, yPos, { align: 'center' });
+                    
+                    yPos += 10;
+                    doc.setFontSize(16);
+                    doc.text('USER DETAILS REPORT', pageWidth / 2, yPos, { align: 'center' });
+                    
+                    yPos += 10;
+                    doc.setFontSize(12);
+                    doc.setTextColor(100, 100, 100);
+                    
+                    // Get current date and time with seconds
+                    const now = new Date();
+                    const dateTimeStr = now.toLocaleString('en-IN', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: true
                     });
                     
-                    selectedUsers.clear();
-                    loadUserData();
-                    showNotification(`Cleared ${count} user records!`, 'success');
-                } catch (error) {
-                    console.error('Clear data error:', error);
-                    showNotification('Error clearing data!', 'error');
+                    doc.text(`Generated: ${dateTimeStr}`, pageWidth / 2, yPos, { align: 'center' });
+                    
+                    yPos += 15;
+                    
+                    // Add line separator
+                    doc.setDrawColor(200, 200, 200);
+                    doc.line(margin, yPos, pageWidth - margin, yPos);
+                    yPos += 10;
+                    
+                    // USER IDENTIFICATION Section
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(26, 35, 126);
+                    doc.text('USER IDENTIFICATION', margin, yPos);
+                    yPos += 8;
+                    
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(0, 0, 0);
+                    
+                    // Left side: Full Name and Registration Date
+                    let leftX = margin;
+                    let tempY = yPos;
+                    doc.text(`Full Name: ${userData.fullName || 'N/A'}`, leftX, tempY);
+                    tempY += 6;
+                    doc.text(`Registration Date: ${userData.registrationDate || 'N/A'}`, leftX, tempY);
+                    
+                    // Right side: User ID
+                    let rightX = pageWidth / 2;
+                    tempY = yPos;
+                    doc.text(`User ID: ${userData.userId || 'N/A'}`, rightX, tempY);
+                    
+                    yPos = Math.max(yPos + 12, tempY + 6);
+                    
+                    yPos += 8; // Reduced from 12
+                    
+                    // Basic Information Section
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(26, 35, 126);
+                    doc.text('BASIC INFORMATION', margin, yPos);
+                    yPos += 8;
+                    
+                    try {
+                        const decrypted = userData.encryptedData ? 
+                            JSON.parse(decryptData(userData.encryptedData)) : {};
+                        
+                        const personalInfo = decrypted.personalInfo || {};
+                        
+                        doc.setFontSize(11);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setTextColor(0, 0, 0);
+                        
+                        // Left Column
+                        leftX = margin;
+                        tempY = yPos;
+                        
+                        doc.text(`Email: ${personalInfo.email || 'N/A'}`, leftX, tempY);
+                        tempY += 6;
+                        doc.text(`Phone: ${personalInfo.phone || 'N/A'}`, leftX, tempY);
+                        tempY += 6;
+                        doc.text(`PAN: ${personalInfo.pan || 'N/A'}`, leftX, tempY);
+                        
+                        // Right Column
+                        rightX = pageWidth / 2;
+                        tempY = yPos;
+                        
+                        doc.text(`Date of Birth: ${personalInfo.dob || 'N/A'}`, rightX, tempY);
+                        tempY += 6;
+                        doc.text(`Gender: ${personalInfo.gender || 'N/A'}`, rightX, tempY);
+                        tempY += 6;
+                        doc.text(`Aadhaar: ${personalInfo.aadhaar || 'N/A'}`, rightX, tempY);
+                        
+                        yPos = Math.max(yPos + 18, tempY + 6);
+                        
+                    } catch (error) {
+                        console.error('Error decrypting for PDF:', error);
+                        doc.text('Error decrypting user information', margin, yPos);
+                        yPos += 10;
+                    }
+                    
+                    yPos += 8; // Reduced from 12
+                    
+                    // SERVICE INFORMATION Section (Updated layout)
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(26, 35, 126);
+                    doc.text('SERVICE INFORMATION', margin, yPos);
+                    yPos += 8;
+                    
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(0, 0, 0);
+                    
+                    // Left side: Service Type and Storage Plan
+                    leftX = margin;
+                    tempY = yPos;
+                    doc.text(`Service Type: ${userData.serviceType || 'N/A'}`, leftX, tempY);
+                    tempY += 6;
+                    
+                    if (userData.planGB) {
+                        doc.text(`Storage Plan: ${userData.planGB} GB (${userData.duration || 'N/A'})`, leftX, tempY);
+                        tempY += 6;
+                    } else {
+                        doc.text(`Storage Plan: N/A`, leftX, tempY);
+                        tempY += 6;
+                    }
+                    
+                    // Right side: Plan Start Date and Plan End Date
+                    rightX = pageWidth / 2;
+                    tempY = yPos;
+                    doc.text(`Plan Start Date: ${userData.planStart || 'N/A'}`, rightX, tempY);
+                    tempY += 6;
+                    doc.text(`Plan End Date: ${userData.planEnd || 'Ongoing'}`, rightX, tempY);
+                    
+                    yPos = Math.max(yPos + 12, tempY + 6);
+                    
+                    yPos += 8; // Reduced from 12
+                    
+                    // PAYMENT INFORMATION Section (Updated layout)
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(26, 35, 126);
+                    doc.text('PAYMENT INFORMATION', margin, yPos);
+                    yPos += 8;
+                    
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(0, 0, 0);
+                    
+                    // Get current date for "Paid on"
+                    const currentDate = new Date().toLocaleDateString('en-IN');
+                    
+                    // Left side: Amount and Paid on date
+                    leftX = margin;
+                    tempY = yPos;
+                    
+                    // Fixed: Amount showing as "INR" instead of little 1
+                    const amountText = `Amount: INR ${userData.amount || 0}`;
+                    doc.text(amountText, leftX, tempY);
+                    tempY += 6;
+                    doc.text(`Paid on: ${currentDate}`, leftX, tempY);
+                    
+                    // Right side: Payment Mode and Payment Status
+                    rightX = pageWidth / 2;
+                    tempY = yPos;
+                    doc.text(`Payment Mode: ${userData.paymentMode || 'Not Set'}`, rightX, tempY);
+                    tempY += 6;
+                    doc.text(`Payment Status: ${userData.paymentStatus || 'Not Paid'}`, rightX, tempY);
+                    
+                    yPos = Math.max(yPos + 12, tempY + 6);
+                    
+                    yPos += 8; // Reduced from 12
+                    
+                    // Admin Notes Section
+                    if (userData.adminNotes && userData.adminNotes.trim()) {
+                        doc.setFontSize(14);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setTextColor(26, 35, 126);
+                        doc.text('ADMIN NOTES', margin, yPos);
+                        yPos += 8;
+                        
+                        doc.setFontSize(11);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setTextColor(0, 0, 0);
+                        
+                        const notesLines = doc.splitTextToSize(userData.adminNotes.trim(), pageWidth - 2 * margin);
+                        doc.text(notesLines, margin, yPos);
+                        yPos += (notesLines.length * 6) + 8; // Reduced from 10
+                    }
+                    
+                    // ====== TERMS & CONDITIONS SECTION ======
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(26, 35, 126);
+                    doc.text('TERMS & CONDITIONS AGREEMENT', margin, yPos);
+                    yPos += 8;
+                    
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(0, 0, 0);
+                    
+                    // Add checkmarks for both steps (removed the dot)
+                    
+                    // Left side - Step 1
+                    leftX = margin;
+                    doc.text('Step 1: Agreed', leftX, yPos);
+                    
+                    // Right side - Step 2  
+                    rightX = pageWidth / 2;
+                    doc.text('Step 2: Agreed', rightX, yPos);
+                    
+                    yPos += 6; // Reduced from 8
+                    
+                    // Add Terms & Conditions text
+                    doc.setFontSize(10);
+                    doc.setTextColor(0, 0, 0);
+                    doc.setFont('helvetica', 'italic');
+                    
+                    const termsText = "The user has agreed to all terms and conditions of Odelya Cloud Digital Locker service, " +
+                                     "including data privacy, security policies, payment terms, and service usage guidelines.";
+                    
+                    const termsLines = doc.splitTextToSize(termsText, pageWidth - 2 * margin);
+                    doc.text(termsLines, margin, yPos);
+                    yPos += (termsLines.length * 5) + 6; // Reduced from 10
+                    
+                    // Removed signature line as requested
+                    // Removed time of accessing website as requested
+                    
+                    yPos += 6; // Reduced from 12
+                    // ====== END OF TERMS & CONDITIONS SECTION ======
+                    
+                    // Encrypted Data Section - Moved up with reduced gap
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(26, 35, 126);
+                    doc.text('ENCRYPTED DATA VERIFICATION', margin, yPos);
+                    yPos += 8;
+                    
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(100, 100, 100);
+                    
+                    if (userData.encryptedData) {
+                        const encryptedPreview = userData.encryptedData.substring(0, 100) + '...';
+                        const encryptedLines = doc.splitTextToSize(`Encrypted Hash: ${encryptedPreview}`, pageWidth - 2 * margin);
+                        
+                        doc.text(encryptedLines, margin, yPos);
+                        yPos += (encryptedLines.length * 5) + 6;
+                        
+                        doc.text(`Data Integrity: Verified`, margin, yPos);
+                        yPos += 5;
+                        
+                        const keyPreview = `Encryption Key: ${ENCRYPTION_KEY.substring(0, 20)}...`;
+                        const keyLines = doc.splitTextToSize(keyPreview, pageWidth - 2 * margin);
+                        doc.text(keyLines, margin, yPos);
+                        yPos += (keyLines.length * 5) + 6;
+                    } else {
+                        doc.text('No encrypted data available', margin, yPos);
+                        yPos += 6;
+                    }
+                    
+                    yPos += 8; // Reduced from 10
+                    
+                    // Footer
+                    if (yPos > pageHeight - 30) {
+                        doc.addPage();
+                        yPos = margin;
+                    }
+                    
+                    doc.setFontSize(10);
+                    doc.setTextColor(150, 150, 150);
+                    doc.text('--- End of User Report ---', pageWidth / 2, pageHeight - 20, { align: 'center' });
+                    doc.text(`Page ${index + 1} of ${selectedUserData.length}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                    
+                    yPos = margin;
+                });
+                
+                // Save PDF
+                let fileName;
+                if (selectedUserData.length === 1) {
+                    const user = selectedUserData[0];
+                    const cleanName = (user.fullName || 'Unknown')
+                        .replace(/[^a-zA-Z0-9\s]/g, '')
+                        .replace(/\s+/g, '_')
+                        .substring(0, 30);
+                    
+                    fileName = `${user.userId || 'Unknown'}_${cleanName}.pdf`;
+                } else {
+                    const now = new Date();
+                    const dateStr = now.toISOString().split('T')[0];
+                    const timeStr = now.getHours().toString().padStart(2, '0') + 
+                                   now.getMinutes().toString().padStart(2, '0') +
+                                   now.getSeconds().toString().padStart(2, '0');
+                    fileName = `Multiple_Users_${dateStr}_${timeStr}.pdf`;
                 }
+                
+                doc.save(fileName);
+                
+                showNotification(`PDF exported successfully with ${selectedUserData.length} user(s)!`, 'success');
+                
+            } catch (error) {
+                console.error('PDF export error:', error);
+                showNotification('Error generating PDF!', 'error');
             }
         }
 
