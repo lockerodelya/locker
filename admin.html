@@ -1842,5 +1842,204 @@
         // ====== GLOBAL FUNCTIONS ======
         window.editUser = editUser;
     </script>
+====== for user_status file only ====
+<!-- Add this RIGHT BEFORE the closing </body> tag -->
+<!-- USER STATUS MODULE - FETCHES SUCCESSFUL PAYMENT USERS -->
+<script>
+    // ====== USER STATUS MODULE ======
+    // This module automatically fetches users with successful payments
+    
+    // Function to check if payment status is successful
+    function isPaymentSuccessful(status) {
+        if (!status) return false;
+        const statusLower = status.toLowerCase();
+        return statusLower === 'successful' || 
+               statusLower === 'success' || 
+               statusLower === 'paid' || 
+               statusLower === 'completed';
+    }
+    
+    // Function to extract all users from localStorage
+    function getAllUsersFromStorage() {
+        const users = [];
+        const keys = Object.keys(localStorage);
+        
+        keys.forEach(key => {
+            if (key.startsWith('user_')) {
+                try {
+                    const userData = JSON.parse(localStorage.getItem(key));
+                    if (userData && userData.userId) {
+                        users.push(userData);
+                    }
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                }
+            }
+        });
+        
+        return users;
+    }
+    
+    // Function to save successful payment users to user_status storage
+    function saveSuccessfulUsersToStatus() {
+        try {
+            const allUsers = getAllUsersFromStorage();
+            const successfulUsers = [];
+            
+            // Filter only successful payment users
+            allUsers.forEach(user => {
+                if (isPaymentSuccessful(user.paymentStatus)) {
+                    // Create a copy with additional metadata
+                    const userCopy = {
+                        ...user,
+                        paymentRecordedAt: new Date().toISOString(),
+                        paymentVerified: true,
+                        fetchedFromAdmin: true
+                    };
+                    successfulUsers.push(userCopy);
+                }
+            });
+            
+            // Save to user_status storage (in localStorage)
+            localStorage.setItem('user_status_successful', JSON.stringify(successfulUsers));
+            
+            console.log(`Saved ${successfulUsers.length} successful payment users to user_status`);
+            return successfulUsers.length;
+            
+        } catch (error) {
+            console.error('Error saving successful users:', error);
+            return 0;
+        }
+    }
+    
+    // Function to get all successful users from user_status
+    function getSuccessfulUsers() {
+        try {
+            const data = localStorage.getItem('user_status_successful');
+            return data ? JSON.parse(data) : [];
+        } catch (error) {
+            console.error('Error getting successful users:', error);
+            return [];
+        }
+    }
+    
+    // Function to export successful users as JSON file
+    function exportSuccessfulUsers() {
+        const successfulUsers = getSuccessfulUsers();
+        
+        if (successfulUsers.length === 0) {
+            alert('No successful payment users found!');
+            return;
+        }
+        
+        const dataStr = JSON.stringify(successfulUsers, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+        
+        const exportFileDefaultName = 'successful_payment_users.json';
+        
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+        
+        console.log(`Exported ${successfulUsers.length} successful users`);
+    }
+    
+    // Function to display user_status statistics
+    function displayUserStatusStats() {
+        const successfulUsers = getSuccessfulUsers();
+        const allUsers = getAllUsersFromStorage();
+        
+        const totalSuccessful = successfulUsers.length;
+        const totalUsers = allUsers.length;
+        
+        console.log('=== USER STATUS STATS ===');
+        console.log(`Total users in system: ${totalUsers}`);
+        console.log(`Successful payment users in user_status: ${totalSuccessful}`);
+        console.log(`Percentage successful: ${totalUsers > 0 ? ((totalSuccessful / totalUsers) * 100).toFixed(2) : 0}%`);
+        
+        // Optional: Display in console table
+        console.table(successfulUsers.map(user => ({
+            userId: user.userId,
+            name: user.fullName,
+            amount: user.amount,
+            status: user.paymentStatus,
+            recordedAt: user.paymentRecordedAt
+        })));
+    }
+    
+    // Auto-save successful users when admin panel loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Wait a bit for the page to fully load
+        setTimeout(() => {
+            const savedCount = saveSuccessfulUsersToStatus();
+            console.log(`Auto-saved ${savedCount} successful payment users to user_status`);
+            
+            // Display stats
+            displayUserStatusStats();
+            
+            // Add export button to admin panel (optional)
+            addExportButtonToAdminPanel();
+        }, 2000);
+    });
+    
+    // Function to add export button to admin panel (optional)
+    function addExportButtonToAdminPanel() {
+        // Check if we're on admin dashboard
+        const adminDashboard = document.getElementById('adminDashboard');
+        if (!adminDashboard || adminDashboard.style.display === 'none') {
+            return;
+        }
+        
+        // Add export button to action buttons section
+        const actionButtons = document.querySelector('.action-buttons');
+        if (actionButtons) {
+            // Check if button already exists
+            if (!document.getElementById('exportSuccessfulUsersBtn')) {
+                const exportBtn = document.createElement('button');
+                exportBtn.id = 'exportSuccessfulUsersBtn';
+                exportBtn.className = 'btn-export-pdf';
+                exportBtn.innerHTML = '<i class="fas fa-download"></i> Export Successful Users (JSON)';
+                exportBtn.style.marginLeft = '10px';
+                exportBtn.style.background = 'linear-gradient(135deg, #673ab7 0%, #512da8 100%)';
+                exportBtn.onclick = exportSuccessfulUsers;
+                
+                actionButtons.appendChild(exportBtn);
+            }
+        }
+    }
+    
+    // Also save when user edits payment status to successful
+    // Override the saveUserChanges function to include user_status saving
+    const originalSaveUserChanges = window.saveUserChanges;
+    window.saveUserChanges = function() {
+        // Call original function
+        if (typeof originalSaveUserChanges === 'function') {
+            originalSaveUserChanges();
+        }
+        
+        // After saving, check if payment status is now successful
+        const paymentStatus = document.getElementById('editPaymentStatus')?.value;
+        if (isPaymentSuccessful(paymentStatus)) {
+            setTimeout(() => {
+                saveSuccessfulUsersToStatus();
+                console.log('Updated user_status after payment status change');
+            }, 500);
+        }
+    };
+    
+    // Make functions globally available
+    window.userStatusModule = {
+        saveSuccessfulUsersToStatus,
+        getSuccessfulUsers,
+        exportSuccessfulUsers,
+        displayUserStatusStats
+    };
+    
+    console.log('User Status Module loaded successfully!');
+</script>
+=====================================
+
+
 </body>
 </html>
