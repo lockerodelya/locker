@@ -276,7 +276,7 @@
 
         .admin-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -562,6 +562,7 @@
             border-left: 5px solid #ff9800;
             border-right: 5px solid #ff9800;
             animation: pulseAlert 2s infinite;
+            display: none;
         }
 
         @keyframes pulseAlert {
@@ -808,7 +809,7 @@
                 </div>
 
                 <!-- Security Alert for First Time Login -->
-                <div class="security-alert" id="securityAlert" style="display: none;">
+                <div class="security-alert" id="securityAlert">
                     <h3><i class="fas fa-exclamation-triangle"></i> Security Alert</h3>
                     <p>You are using the default password. Please change your password immediately for security.</p>
                     <button class="btn-change-password" onclick="openChangePasswordModal()" style="margin-top: 10px;">
@@ -879,16 +880,12 @@
                         <div class="stat-value" id="statTotalUsers">0</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Active Plans</div>
+                        <div class="stat-label">Active Users</div>
                         <div class="stat-value" id="statActivePlans">0</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Expired Plans</div>
+                        <div class="stat-label">Inactive Users</div>
                         <div class="stat-value" id="statExpiredPlans">0</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Total Storage</div>
-                        <div class="stat-value" id="statTotalStorage">0 GB</div>
                     </div>
                 </div>
 
@@ -1178,9 +1175,12 @@
             // Display plan history if exists
             displayPlanHistory(user);
             
-            // Show security alert if first login
+            // Show/hide security alert based on isFirstLogin
+            const securityAlert = document.getElementById('securityAlert');
             if (user.isFirstLogin) {
-                document.getElementById('securityAlert').style.display = 'block';
+                securityAlert.style.display = 'block';
+            } else {
+                securityAlert.style.display = 'none';
             }
             
             // Store current user
@@ -1247,45 +1247,45 @@
                     </div>
                     <div class="info-item">
                         <div class="info-label"><i class="fas fa-id-card"></i> User ID</div>
-                        <div class="info-value highlight">${user.userId || 'N/A'}</div>
+                        <div class="info-value highlight">${user.userId || ''}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label"><i class="fas fa-user"></i> Full Name</div>
-                        <div class="info-value">${user.fullName || 'N/A'}</div>
+                        <div class="info-value">${user.fullName || ''}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label"><i class="fas fa-envelope"></i> Email</div>
-                        <div class="info-value">${user.email || 'N/A'}</div>
+                        <div class="info-value">${user.email || ''}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label"><i class="fas fa-phone"></i> Phone</div>
-                        <div class="info-value">${user.phone || 'N/A'}</div>
+                        <div class="info-value">${user.phone || ''}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label"><i class="fas fa-calendar"></i> Date of Birth</div>
-                        <div class="info-value">${user.dob || 'N/A'}</div>
+                        <div class="info-value">${user.dob || ''}</div>
                     </div>
                 </div>
                 <div class="info-section">
                     <div class="info-item">
                         <div class="info-label"><i class="fas fa-tag"></i> Plan Name</div>
-                        <div class="info-value highlight">${user.planName || 'N/A'}</div>
+                        <div class="info-value highlight">${user.planName || ''}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label"><i class="fas fa-database"></i> Plan (GB)</div>
-                        <div class="info-value">${user.planGB || 'N/A'}</div>
+                        <div class="info-value">${user.planGB || ''}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label"><i class="fas fa-calendar-alt"></i> Duration</div>
-                        <div class="info-value">${user.planDuration || 'N/A'}</div>
+                        <div class="info-value">${user.planDuration || ''}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label"><i class="fas fa-calendar-day"></i> Start Date</div>
-                        <div class="info-value">${user.planStartDate || 'N/A'}</div>
+                        <div class="info-value">${user.planStartDate || ''}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label"><i class="fas fa-calendar-check"></i> End Date</div>
-                        <div class="info-value" style="color: ${isActive ? '#666' : '#f44336'}">${user.planEndDate || 'N/A'}</div>
+                        <div class="info-value" style="color: ${isActive ? '#666' : '#f44336'}">${user.planEndDate || ''}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label"><i class="fas fa-rupee-sign"></i> Amount Paid</div>
@@ -1332,11 +1332,11 @@
                 
                 const row = tbody.insertRow();
                 row.innerHTML = `
-                    <td>${plan.planName || 'N/A'}</td>
-                    <td>${plan.planGB || 'N/A'}</td>
-                    <td>${plan.duration || 'N/A'}</td>
-                    <td>${plan.startDate || 'N/A'}</td>
-                    <td>${plan.endDate || 'N/A'}</td>
+                    <td>${plan.planName || ''}</td>
+                    <td>${plan.planGB || ''}</td>
+                    <td>${plan.duration || ''}</td>
+                    <td>${plan.startDate || ''}</td>
+                    <td>${plan.endDate || ''}</td>
                     <td>₹${plan.amountPaid || 0}</td>
                     <td>
                         <span class="${isActive ? 'status-active' : 'status-inactive'}">
@@ -1355,9 +1355,8 @@
         // ====== ADMIN FUNCTIONS ======
         function loadAdminStats() {
             let totalUsers = 0;
-            let activePlans = 0;
-            let expiredPlans = 0;
-            let totalStorage = 0;
+            let activeUsers = 0;
+            let inactiveUsers = 0;
             
             const today = new Date();
             
@@ -1368,20 +1367,17 @@
                         const user = JSON.parse(localStorage.getItem(key));
                         totalUsers++;
                         
-                        // Calculate storage
-                        const storageMatch = (user.planGB || '').match(/(\d+)/);
-                        if (storageMatch) {
-                            totalStorage += parseInt(storageMatch[1]);
-                        }
-                        
-                        // Check plan status
+                        // Check plan status for user activity
                         if (user.planEndDate) {
                             const endDate = parseDate(user.planEndDate);
                             if (endDate >= today) {
-                                activePlans++;
+                                activeUsers++;
                             } else {
-                                expiredPlans++;
+                                inactiveUsers++;
                             }
+                        } else {
+                            // If no end date, consider as active
+                            activeUsers++;
                         }
                     } catch (e) {
                         console.error('Error processing user:', e);
@@ -1390,9 +1386,8 @@
             }
             
             document.getElementById('statTotalUsers').textContent = totalUsers;
-            document.getElementById('statActivePlans').textContent = activePlans;
-            document.getElementById('statExpiredPlans').textContent = expiredPlans;
-            document.getElementById('statTotalStorage').textContent = `${totalStorage} GB`;
+            document.getElementById('statActivePlans').textContent = activeUsers;
+            document.getElementById('statExpiredPlans').textContent = inactiveUsers;
         }
 
         function showSection(sectionId) {
@@ -1820,9 +1815,9 @@
                 return;
             }
             
-            // Update password
+            // Update password and set isFirstLogin to false
             user.password = newPass;
-            user.isFirstLogin = false;
+            user.isFirstLogin = false; // THIS IS THE FIX - Set to false after password change
             
             // Save updated user
             const key = 'user_' + user.userId;
@@ -1873,7 +1868,7 @@
         }
 
         function parseDate(dateStr) {
-            if (!dateStr || dateStr === 'N/A') return new Date('2099-12-31'); // Return future date for invalid
+            if (!dateStr || dateStr === 'N/A' || dateStr === '') return new Date('2099-12-31');
             const parts = dateStr.split('-');
             if (parts.length === 3) {
                 return new Date(parts[2], parts[1] - 1, parts[0]);
