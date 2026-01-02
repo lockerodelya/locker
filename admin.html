@@ -1475,7 +1475,23 @@
                     let tempY = yPos;
                     doc.text(`Full Name: ${userData.fullName || 'N/A'}`, leftX, tempY);
                     tempY += 6;
-                    doc.text(`Registration Date: ${userData.registrationDate || 'N/A'}`, leftX, tempY);
+                    // Format registration date to DD-MM-YY format
+let formattedRegDate = 'N/A';
+if (userData.registrationDate) {
+    try {
+        const regDate = new Date(userData.registrationDate);
+        if (!isNaN(regDate)) {
+            const regDay = String(regDate.getDate()).padStart(2, '0');
+            const regMonth = String(regDate.getMonth() + 1).padStart(2, '0');
+            const regYear = String(regDate.getFullYear()).slice(-2); // Get last 2 digits of year
+            formattedRegDate = `${regDay}-${regMonth}-${regYear}`;
+        }
+    } catch (error) {
+        console.error('Error formatting registration date:', error);
+        formattedRegDate = userData.registrationDate; // Fallback to original
+    }
+}
+doc.text(`Registration Date: ${formattedRegDate}`, leftX, tempY);
                     
                     // Right side: User ID
                     let rightX = pageWidth / 2;
