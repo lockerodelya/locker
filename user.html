@@ -490,45 +490,62 @@
             color: white;
         }
 
-        /* User Info Display */
-        .user-info {
+        /* User Info Display - Two Column Layout */
+        .user-info-container {
             background: white;
             border-radius: 15px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             border-left: 5px solid #2196f3;
-            max-width: 800px;
             margin: 0 auto 30px;
         }
 
-        .info-grid {
-            display: grid;
-            gap: 15px;
+        .user-info-container h3 {
+            color: #1a237e;
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .info-row {
+        .user-info-grid {
             display: grid;
-            grid-template-columns: 200px 1fr;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .info-section {
+            display: flex;
+            flex-direction: column;
             gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
             padding-bottom: 15px;
             border-bottom: 1px dashed #e0e0e0;
         }
 
-        .info-row:last-child {
+        .info-item:last-child {
             border-bottom: none;
-            padding-bottom: 0;
         }
 
         .info-label {
             font-weight: 600;
             color: #424242;
             font-size: 1.1rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .info-value {
             color: #666;
-            word-break: break-word;
             font-size: 1.1rem;
+            padding-left: 26px;
         }
 
         .info-value.highlight {
@@ -688,6 +705,7 @@
         /* Plan History Table */
         .plan-history-section {
             margin-top: 30px;
+            display: none;
         }
 
         .plan-history-table {
@@ -711,6 +729,23 @@
 
         .plan-history-table tr:nth-child(even) {
             background-color: #f8f9ff;
+        }
+
+        /* User Status Display */
+        .user-status {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -781,17 +816,25 @@
                     </button>
                 </div>
 
-                <!-- User Information -->
-                <div class="user-info">
-                    <h3><i class="fas fa-user"></i> Personal Information</h3>
-                    <div class="info-grid" id="userInfoGrid">
-                        <!-- User info will be populated here -->
+                <!-- User Status -->
+                <div class="user-status" id="userStatus">
+                    <div class="status-indicator">
+                        <i class="fas fa-circle" id="statusIcon" style="color: #4caf50;"></i>
+                        <span id="statusText">Account Active</span>
                     </div>
                 </div>
 
-                <!-- Plan History -->
+                <!-- Your Information (Two Column Layout) -->
+                <div class="user-info-container">
+                    <h3><i class="fas fa-user"></i> Your Information</h3>
+                    <div class="user-info-grid" id="userInfoGrid">
+                        <!-- User info will be populated here in two columns -->
+                    </div>
+                </div>
+
+                <!-- Plan History (Hidden by default, only show if has history) -->
                 <div class="plan-history-section" id="planHistorySection">
-                    <h3><i class="fas fa-history"></i> Plan History (Last 36 Months)</h3>
+                    <h3><i class="fas fa-history"></i> Plan History</h3>
                     <div class="table-container active">
                         <table class="plan-history-table" id="planHistoryTable">
                             <thead>
@@ -863,7 +906,7 @@
                     <button class="btn-admin-secondary" onclick="restoreData()">
                         <i class="fas fa-upload"></i> Restore Data
                     </button>
-                    <button class="btn-admin-secondary" onclick="openChangePasswordModal()">
+                    <button class="btn-admin-secondary" onclick="openAdminChangePasswordModal()">
                         <i class="fas fa-key"></i> Change Password
                     </button>
                 </div>
@@ -955,9 +998,8 @@
                                 <th>User ID</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Plan</th>
-                                <th>End Date</th>
-                                <th>Status</th>
+                                <th>Phone</th>
+                                <th>Plan End Date</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -989,12 +1031,12 @@
                 </div>
                 <div class="form-group">
                     <label>New Password</label>
-                    <input type="password" id="newPassword" placeholder="Enter new password">
+                    <input type="password" id="newPasswordChange" placeholder="Enter new password">
                 </div>
                 <div class="form-group">
                     <label>Confirm New Password</label>
-                    <input type="password" id="confirmPassword" placeholder="Confirm new password">
-                    <div class="error-message" id="passwordError" style="display: none;"></div>
+                    <input type="password" id="confirmNewPassword" placeholder="Confirm new password">
+                    <div class="error-message" id="passwordMatchError" style="display: none;"></div>
                 </div>
                 <div class="password-requirements" style="margin-top: 15px; padding: 10px; background: #f5f5f5; border-radius: 8px; font-size: 0.9rem;">
                     <strong>Password Requirements:</strong>
@@ -1106,9 +1148,12 @@
                 if (key.startsWith('user_')) {
                     try {
                         const user = JSON.parse(localStorage.getItem(key));
-                        if ((user.username === username || user.email === username) && 
-                            (user.password === password || (user.isFirstLogin && user.initialPassword && password === user.initialPassword))) {
-                            return user;
+                        if ((user.username === username || user.email === username)) {
+                            // Check password
+                            if (user.password === password || 
+                                (user.isFirstLogin && user.initialPassword && password === user.initialPassword)) {
+                                return user;
+                            }
                         }
                     } catch (e) {
                         console.error('Error parsing user:', e);
@@ -1122,12 +1167,15 @@
         function showUserPanel(user) {
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('userPanel').style.display = 'block';
-            document.getElementById('userDisplayName').textContent = user.fullName;
+            document.getElementById('userDisplayName').textContent = user.fullName || 'User Account';
             
-            // Display user info
+            // Update user status
+            updateUserStatus(user);
+            
+            // Display user info in two columns
             displayUserInfo(user);
             
-            // Display plan history
+            // Display plan history if exists
             displayPlanHistory(user);
             
             // Show security alert if first login
@@ -1137,6 +1185,25 @@
             
             // Store current user
             sessionStorage.setItem('currentUser', JSON.stringify(user));
+        }
+
+        function updateUserStatus(user) {
+            const statusIcon = document.getElementById('statusIcon');
+            const statusText = document.getElementById('statusText');
+            
+            const today = new Date();
+            const endDate = parseDate(user.planEndDate);
+            const isActive = endDate >= today;
+            
+            if (isActive) {
+                statusIcon.style.color = '#4caf50';
+                statusText.textContent = 'Account Active';
+                statusText.style.color = '#1b5e20';
+            } else {
+                statusIcon.style.color = '#f44336';
+                statusText.textContent = 'Account Inactive - Plan Expired';
+                statusText.style.color = '#c62828';
+            }
         }
 
         function showAdminPanel(admin) {
@@ -1159,76 +1226,91 @@
             hideAllSections();
         }
 
-        // ====== USER INFO DISPLAY ======
+        // ====== USER INFO DISPLAY - TWO COLUMN LAYOUT ======
         function displayUserInfo(user) {
             const grid = document.getElementById('userInfoGrid');
+            
+            // Left column: Status, User ID, Name, Email, Phone, DOB
+            // Right column: Plan Name, Plan, Duration, Start Date, End Date, Amount Paid
+            
+            const today = new Date();
+            const endDate = parseDate(user.planEndDate);
+            const isActive = endDate >= today;
+            const statusText = isActive ? 'Active' : 'Inactive';
+            const statusColor = isActive ? '#4caf50' : '#f44336';
+            
             grid.innerHTML = `
-                <div class="info-row">
-                    <div class="info-label">User ID:</div>
-                    <div class="info-value highlight">${user.userId || 'N/A'}</div>
+                <div class="info-section">
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-circle" style="color: ${statusColor};"></i> Status</div>
+                        <div class="info-value highlight" style="color: ${statusColor};">${statusText}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-id-card"></i> User ID</div>
+                        <div class="info-value highlight">${user.userId || 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-user"></i> Full Name</div>
+                        <div class="info-value">${user.fullName || 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-envelope"></i> Email</div>
+                        <div class="info-value">${user.email || 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-phone"></i> Phone</div>
+                        <div class="info-value">${user.phone || 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-calendar"></i> Date of Birth</div>
+                        <div class="info-value">${user.dob || 'N/A'}</div>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <div class="info-label">Full Name:</div>
-                    <div class="info-value">${user.fullName || 'N/A'}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Email:</div>
-                    <div class="info-value">${user.email || 'N/A'}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Phone:</div>
-                    <div class="info-value">${user.phone || 'N/A'}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Date of Birth:</div>
-                    <div class="info-value">${user.dob || 'N/A'}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Current Plan:</div>
-                    <div class="info-value highlight">${user.planName || 'N/A'}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Plan (GB):</div>
-                    <div class="info-value">${user.planGB || 'N/A'}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Duration:</div>
-                    <div class="info-value">${user.planDuration || 'N/A'}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Start Date:</div>
-                    <div class="info-value">${user.planStartDate || 'N/A'}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">End Date:</div>
-                    <div class="info-value">${user.planEndDate || 'N/A'}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Amount Paid:</div>
-                    <div class="info-value highlight">₹${user.amountPaid || 0}</div>
+                <div class="info-section">
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-tag"></i> Plan Name</div>
+                        <div class="info-value highlight">${user.planName || 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-database"></i> Plan (GB)</div>
+                        <div class="info-value">${user.planGB || 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-calendar-alt"></i> Duration</div>
+                        <div class="info-value">${user.planDuration || 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-calendar-day"></i> Start Date</div>
+                        <div class="info-value">${user.planStartDate || 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-calendar-check"></i> End Date</div>
+                        <div class="info-value" style="color: ${isActive ? '#666' : '#f44336'}">${user.planEndDate || 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label"><i class="fas fa-rupee-sign"></i> Amount Paid</div>
+                        <div class="info-value highlight">₹${user.amountPaid || 0}</div>
+                    </div>
                 </div>
             `;
         }
 
         function displayPlanHistory(user) {
+            const planHistorySection = document.getElementById('planHistorySection');
             const tbody = document.getElementById('planHistoryBody');
             tbody.innerHTML = '';
             
-            // Get plan history (last 36 months)
+            // Get plan history
             let planHistory = user.planHistory || [];
             
-            // If no history, create from current plan
-            if (planHistory.length === 0 && user.planName) {
-                planHistory = [{
-                    planName: user.planName,
-                    planGB: user.planGB,
-                    duration: user.planDuration,
-                    startDate: user.planStartDate,
-                    endDate: user.planEndDate,
-                    amountPaid: user.amountPaid,
-                    addedAt: user.createdAt || new Date().toISOString()
-                }];
+            // If no history or only current plan, don't show the section
+            if (planHistory.length <= 1) {
+                planHistorySection.style.display = 'none';
+                return;
             }
+            
+            // Show the section
+            planHistorySection.style.display = 'block';
             
             // Sort by date (newest first)
             planHistory.sort((a, b) => {
@@ -1263,7 +1345,7 @@
                     </td>
                 `;
                 
-                // Add red color to inactive rows
+                // Add color to inactive rows
                 if (!isActive) {
                     row.style.color = '#c62828';
                 }
@@ -1380,26 +1462,26 @@
                 username: email.split('@')[0],
                 password: password,
                 initialPassword: password,
-                fullName: fullName,
-                email: email,
-                phone: phone,
-                dob: dob,
-                planName: planName,
-                planGB: planGB,
-                planDuration: planDuration,
-                planStartDate: planStart,
-                planEndDate: planEnd,
-                amountPaid: amount,
+                fullName: fullName || '',
+                email: email || '',
+                phone: phone || '',
+                dob: dob || '',
+                planName: planName || '',
+                planGB: planGB || '',
+                planDuration: planDuration || '',
+                planStartDate: planStart || '',
+                planEndDate: planEnd || '',
+                amountPaid: amount || 0,
                 isFirstLogin: true,
                 isAdmin: false,
                 createdAt: new Date().toISOString(),
                 planHistory: [{
-                    planName: planName,
-                    planGB: planGB,
-                    duration: planDuration,
-                    startDate: planStart,
-                    endDate: planEnd,
-                    amountPaid: amount,
+                    planName: planName || '',
+                    planGB: planGB || '',
+                    duration: planDuration || '',
+                    startDate: planStart || '',
+                    endDate: planEnd || '',
+                    amountPaid: amount || 0,
                     addedAt: new Date().toISOString()
                 }]
             };
@@ -1442,27 +1524,12 @@
                         const user = JSON.parse(localStorage.getItem(key));
                         const row = tbody.insertRow();
                         
-                        // Check plan status
-                        const today = new Date();
-                        const endDate = parseDate(user.planEndDate);
-                        const isActive = endDate >= today;
-                        
-                        // Set row color based on status
-                        if (!isActive) {
-                            row.style.color = '#c62828';
-                        }
-                        
                         row.innerHTML = `
-                            <td>${user.userId}</td>
-                            <td>${user.fullName}</td>
-                            <td>${user.email}</td>
-                            <td>${user.planName}</td>
-                            <td>${user.planEndDate || 'N/A'}</td>
-                            <td>
-                                <span class="${isActive ? 'status-active' : 'status-inactive'}">
-                                    ${isActive ? 'Active' : 'Inactive'}
-                                </span>
-                            </td>
+                            <td>${user.userId || ''}</td>
+                            <td>${user.fullName || ''}</td>
+                            <td>${user.email || ''}</td>
+                            <td>${user.phone || ''}</td>
+                            <td>${user.planEndDate || ''}</td>
                             <td>
                                 <button class="btn-action btn-edit" onclick="editUser('${user.userId}')">
                                     <i class="fas fa-edit"></i>
@@ -1483,18 +1550,18 @@
             const user = JSON.parse(localStorage.getItem('user_' + userId));
             if (user) {
                 // Fill form with user data
-                document.getElementById('newUserId').value = user.userId;
-                document.getElementById('newFullName').value = user.fullName;
-                document.getElementById('newEmail').value = user.email;
-                document.getElementById('newPhone').value = user.phone;
-                document.getElementById('newDOB').value = user.dob;
-                document.getElementById('newPlanName').value = user.planName;
-                document.getElementById('newPlanGB').value = user.planGB;
-                document.getElementById('newPlanDuration').value = user.planDuration;
-                document.getElementById('newPlanStart').value = user.planStartDate;
-                document.getElementById('newPlanEnd').value = user.planEndDate;
-                document.getElementById('newAmount').value = user.amountPaid;
-                document.getElementById('newPassword').value = user.initialPassword || user.password;
+                document.getElementById('newUserId').value = user.userId || '';
+                document.getElementById('newFullName').value = user.fullName || '';
+                document.getElementById('newEmail').value = user.email || '';
+                document.getElementById('newPhone').value = user.phone || '';
+                document.getElementById('newDOB').value = user.dob || '';
+                document.getElementById('newPlanName').value = user.planName || '';
+                document.getElementById('newPlanGB').value = user.planGB || '';
+                document.getElementById('newPlanDuration').value = user.planDuration || '';
+                document.getElementById('newPlanStart').value = user.planStartDate || '';
+                document.getElementById('newPlanEnd').value = user.planEndDate || '';
+                document.getElementById('newAmount').value = user.amountPaid || 0;
+                document.getElementById('newPassword').value = user.initialPassword || user.password || '';
                 
                 // Show add user form
                 showSection('addUserForm');
@@ -1539,28 +1606,28 @@
                 user.amountPaid !== amount;
             
             // Update user object
-            user.fullName = fullName;
-            user.email = email;
-            user.phone = phone;
-            user.dob = dob;
-            user.planName = planName;
-            user.planGB = planGB;
-            user.planDuration = planDuration;
-            user.planStartDate = planStart;
-            user.planEndDate = planEnd;
-            user.amountPaid = amount;
-            user.initialPassword = password;
+            user.fullName = fullName || '';
+            user.email = email || '';
+            user.phone = phone || '';
+            user.dob = dob || '';
+            user.planName = planName || '';
+            user.planGB = planGB || '';
+            user.planDuration = planDuration || '';
+            user.planStartDate = planStart || '';
+            user.planEndDate = planEnd || '';
+            user.amountPaid = amount || 0;
+            user.initialPassword = password || user.initialPassword || '';
             
             // If plan changed, add to history
             if (planChanged) {
                 const planHistory = user.planHistory || [];
                 planHistory.unshift({
-                    planName: planName,
-                    planGB: planGB,
-                    duration: planDuration,
-                    startDate: planStart,
-                    endDate: planEnd,
-                    amountPaid: amount,
+                    planName: planName || '',
+                    planGB: planGB || '',
+                    duration: planDuration || '',
+                    startDate: planStart || '',
+                    endDate: planEnd || '',
+                    amountPaid: amount || 0,
                     addedAt: new Date().toISOString()
                 });
                 
@@ -1675,20 +1742,27 @@
         // ====== PASSWORD CHANGE ======
         function openChangePasswordModal() {
             document.getElementById('changePasswordModal').style.display = 'flex';
+            document.getElementById('passwordMatchError').style.display = 'none';
+        }
+
+        function openAdminChangePasswordModal() {
+            // For admin, we need to handle differently
+            showToast('Info', 'Admin password change from panel coming soon');
+            return;
         }
 
         function closeChangePasswordModal() {
             document.getElementById('changePasswordModal').style.display = 'none';
-            document.getElementById('passwordError').style.display = 'none';
+            document.getElementById('passwordMatchError').style.display = 'none';
             document.getElementById('currentPassword').value = '';
-            document.getElementById('newPassword').value = '';
-            document.getElementById('confirmPassword').value = '';
+            document.getElementById('newPasswordChange').value = '';
+            document.getElementById('confirmNewPassword').value = '';
         }
 
         function changePassword() {
             const currentPass = document.getElementById('currentPassword').value;
-            const newPass = document.getElementById('newPassword').value;
-            const confirmPass = document.getElementById('confirmPassword').value;
+            const newPass = document.getElementById('newPasswordChange').value;
+            const confirmPass = document.getElementById('confirmNewPassword').value;
             
             // Get current user from session
             const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
@@ -1702,28 +1776,47 @@
                 return;
             }
             
-            // Check current password
-            const isAdmin = user.isAdmin;
-            const correctPassword = isAdmin ? ADMIN_CREDENTIALS.password : 
-                (user.isFirstLogin ? (user.initialPassword || 'odelya@123') : user.password);
-            
-            if (currentPass !== correctPassword) {
-                showMessage('passwordError', 'Current password is incorrect');
-                document.getElementById('passwordError').style.display = 'block';
-                return;
-            }
-            
-            // Check new password
+            // Check password match
             if (newPass !== confirmPass) {
-                showMessage('passwordError', 'New passwords do not match');
-                document.getElementById('passwordError').style.display = 'block';
+                document.getElementById('passwordMatchError').innerHTML = '<i class="fas fa-exclamation-circle"></i> New passwords do not match';
+                document.getElementById('passwordMatchError').style.display = 'block';
                 return;
             }
             
             // Check password strength
             if (!validatePasswordStrength(newPass)) {
-                showMessage('passwordError', 'Password does not meet requirements');
-                document.getElementById('passwordError').style.display = 'block';
+                document.getElementById('passwordMatchError').innerHTML = '<i class="fas fa-exclamation-circle"></i> Password does not meet requirements';
+                document.getElementById('passwordMatchError').style.display = 'block';
+                return;
+            }
+            
+            // For admin, handle separately
+            if (user.isAdmin) {
+                // Admin password change
+                if (currentPass !== ADMIN_CREDENTIALS.password) {
+                    document.getElementById('passwordMatchError').innerHTML = '<i class="fas fa-exclamation-circle"></i> Current password is incorrect';
+                    document.getElementById('passwordMatchError').style.display = 'block';
+                    return;
+                }
+                
+                // For demo, we'll just show a message
+                showToast('Success', 'Admin password changed (demo mode)');
+                setTimeout(() => {
+                    closeChangePasswordModal();
+                    logout();
+                }, 1500);
+                return;
+            }
+            
+            // For regular users
+            // Check current password
+            const correctPassword = user.isFirstLogin ? 
+                (user.initialPassword || 'odelya@123') : 
+                user.password;
+            
+            if (currentPass !== correctPassword) {
+                document.getElementById('passwordMatchError').innerHTML = '<i class="fas fa-exclamation-circle"></i> Current password is incorrect';
+                document.getElementById('passwordMatchError').style.display = 'block';
                 return;
             }
             
@@ -1732,7 +1825,7 @@
             user.isFirstLogin = false;
             
             // Save updated user
-            const key = user.isAdmin ? 'user_ADMIN' : 'user_' + user.userId;
+            const key = 'user_' + user.userId;
             localStorage.setItem(key, JSON.stringify(user));
             
             showToast('Success', 'Password changed successfully! Logging out...');
@@ -1780,7 +1873,7 @@
         }
 
         function parseDate(dateStr) {
-            if (!dateStr) return new Date();
+            if (!dateStr || dateStr === 'N/A') return new Date('2099-12-31'); // Return future date for invalid
             const parts = dateStr.split('-');
             if (parts.length === 3) {
                 return new Date(parts[2], parts[1] - 1, parts[0]);
@@ -1789,27 +1882,9 @@
         }
 
         function isValidDateFormat(dateStr) {
+            if (!dateStr) return false;
             const regex = /^\d{2}-\d{2}-\d{4}$/;
-            if (!regex.test(dateStr)) return false;
-            
-            const parts = dateStr.split('-');
-            const day = parseInt(parts[0], 10);
-            const month = parseInt(parts[1], 10);
-            const year = parseInt(parts[2], 10);
-            
-            if (month < 1 || month > 12) return false;
-            if (day < 1 || day > 31) return false;
-            
-            // Check for specific month day limits
-            if (month === 2) {
-                const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
-                if (isLeapYear) return day <= 29;
-                return day <= 28;
-            }
-            
-            if ([4, 6, 9, 11].includes(month)) return day <= 30;
-            
-            return true;
+            return regex.test(dateStr);
         }
 
         function rechargeNow() {
@@ -1864,36 +1939,6 @@
             // Add sample users if they don't exist
             sampleUsers.forEach(user => {
                 if (!localStorage.getItem('user_' + user.userId)) {
-                    // Add some historical data
-                    const today = new Date();
-                    user.planHistory = [];
-                    
-                    // Add 12 months of history
-                    for (let i = 0; i < 12; i++) {
-                        const monthAgo = new Date();
-                        monthAgo.setMonth(today.getMonth() - i);
-                        
-                        const startDate = new Date(monthAgo);
-                        startDate.setDate(1);
-                        
-                        const endDate = new Date(startDate);
-                        endDate.setMonth(startDate.getMonth() + 1);
-                        endDate.setDate(0);
-                        
-                        const formattedStart = `${String(startDate.getDate()).padStart(2, '0')}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${startDate.getFullYear()}`;
-                        const formattedEnd = `${String(endDate.getDate()).padStart(2, '0')}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${endDate.getFullYear()}`;
-                        
-                        user.planHistory.push({
-                            planName: i === 0 ? user.planName : (i % 2 === 0 ? 'Cloud Storage' : 'Event Guest Storage'),
-                            planGB: i === 0 ? user.planGB : `${50 + (i * 5)} GB`,
-                            duration: user.planDuration,
-                            startDate: formattedStart,
-                            endDate: formattedEnd,
-                            amountPaid: i === 0 ? user.amountPaid : (500 + (i * 50)),
-                            addedAt: startDate.toISOString()
-                        });
-                    }
-                    
                     localStorage.setItem('user_' + user.userId, JSON.stringify(user));
                 }
             });
