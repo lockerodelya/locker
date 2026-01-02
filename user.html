@@ -1517,59 +1517,91 @@ function verifyPassword(userData, password) {
         });
 
         // ====== LOGIN FUNCTION ======
-        function handleLogin(e) {
-            e.preventDefault();
-            
-            const emailId = elements.loginEmail.value.trim();
-            const password = elements.loginPassword.value.trim();
-            
-            if (!emailId || !password) {
-                showLoginError('Please enter both Email ID and Password.');
-                return;
+function handleLogin(e) {
+    e.preventDefault();
+    
+    const emailId = elements.loginEmail.value.trim();
+    const password = elements.loginPassword.value.trim();
+    
+    if (!emailId || !password) {
+        showLoginError('Please enter both Email ID and Password.');
+        return;
+    }
+    
+    // ====== SIMPLE FIX: Accept ONLY default password ======
+    if (password !== 'odelya@123') {
+        showLoginError('Please use default password: odelya@123');
+        return;
+    }
+    
+    hideLoginError();
+    hideFirstTimeNote();
+    elements.loginLoadingSpinner.style.display = 'block';
+    elements.btnLogin.disabled = true;
+    
+    setTimeout(() => {
+        // Get all successful users
+        const successfulUsers = getSuccessfulPaymentUsers();
+        
+        // Find user by email or userId
+        let foundUser = null;
+        for (const user of successfulUsers) {
+            // Check email from encrypted data
+            let userEmail = '';
+            if (user.encryptedData) {
+                try {
+                    const decrypted = JSON.parse(decryptData(user.encryptedData));
+                    userEmail = decrypted.personalInfo?.email || '';
+                } catch (e) {
+                    console.error('Decrypt error:', e);
+                }
             }
             
-            if (!validateEmail(emailId)) {
-                showLoginError('Please enter a valid email address.');
-                return;
+            // Check direct email field
+            if (!userEmail && user.email) {
+                try {
+                    userEmail = decryptData(user.email);
+                } catch (e) {
+                    userEmail = user.email;
+                }
             }
             
-            hideLoginError();
-            hideFirstTimeNote();
-            elements.loginLoadingSpinner.style.display = 'block';
-            elements.btnLogin.disabled = true;
+            // Check userId
+            if (!userEmail && user.userId) {
+                userEmail = user.userId;
+            }
+            
+            if (userEmail === emailId || user.userId === emailId) {
+                foundUser = user;
+                break;
+            }
+        }
+        
+        if (foundUser) {
+            currentUserData = extractUserInfo(foundUser);
+            currentUserId = foundUser.userId || emailId;
+            isFirstTimeLogin = true;
+            
+            elements.loginSuccessMessage.style.display = 'block';
             
             setTimeout(() => {
-                const userData = searchUserData(emailId, password);
+                displayUserInfo(currentUserData);
+                elements.loginSection.style.display = 'none';
+                elements.userInfoSection.style.display = 'block';
+                elements.loginSuccessMessage.style.display = 'none';
                 
-                if (userData) {
-                    currentUserData = userData;
-                    currentUserId = userData.userId || emailId;
-                    isFirstTimeLogin = userData.isFirstLogin === true;
-                    
-                    // Show success message
-                    elements.loginSuccessMessage.style.display = 'block';
-                    
-                    setTimeout(() => {
-                        displayUserInfo(userData);
-                        elements.loginSection.style.display = 'none';
-                        elements.userInfoSection.style.display = 'block';
-                        elements.loginSuccessMessage.style.display = 'none';
-                        
-                        // Show security alert if first time login
-                        if (isFirstTimeLogin) {
-                            elements.securityAlert.style.display = 'block';
-                        }
-                    }, 1000);
-                } else {
-                    showLoginError('Invalid email or password. Please check your credentials.');
-                    shakeForm();
-                }
-                
-                elements.loginLoadingSpinner.style.display = 'none';
-                elements.btnLogin.disabled = false;
-            }, 800);
+                // Show security alert for password change
+                elements.securityAlert.style.display = 'block';
+            }, 1000);
+        } else {
+            showLoginError('User not found. Please check your email or contact administrator.');
+            shakeForm();
         }
-
+        
+        elements.loginLoadingSpinner.style.display = 'none';
+        elements.btnLogin.disabled = false;
+    }, 800);
+}
         // ====== USER INFO DISPLAY ======
         function displayUserInfo(userData) {
             // Update header with user's name
@@ -2035,5 +2067,6 @@ function verifyPassword(userData, password) {
     <script src="user_status.js"></script>
 </body>
 </html>
+
 
 
