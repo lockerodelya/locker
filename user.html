@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odelya Cloud - User Information Portal</title>
+    <title>Odelya Locker - User Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -44,12 +44,7 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
+            margin-bottom: 5px;
         }
 
         .content {
@@ -65,15 +60,6 @@
             margin-bottom: 40px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             border-left: 5px solid #2196f3;
-        }
-
-        .search-section h2 {
-            color: #1a237e;
-            margin-bottom: 25px;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
         }
 
         .search-form {
@@ -108,9 +94,9 @@
             box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
         }
 
-        .btn-search {
+        .btn-login {
             width: 100%;
-            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
             color: white;
             border: none;
             padding: 18px;
@@ -126,32 +112,105 @@
             margin-top: 20px;
         }
 
-        .btn-search:hover {
-            background: linear-gradient(135deg, #388e3c 0%, #1b5e20 100%);
+        .btn-login:hover {
+            background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+            box-shadow: 0 10px 20px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn-recharge {
+            width: 100%;
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-recharge:hover {
+            background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn-forgot-password {
+            background: transparent;
+            color: #2196f3;
+            border: none;
+            padding: 10px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 15px auto 0;
+            text-align: center;
+        }
+
+        .btn-forgot-password:hover {
+            color: #0d47a1;
+            text-decoration: underline;
         }
 
         .btn-change-password {
             background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-top: 10px;
+            gap: 10px;
         }
 
         .btn-change-password:hover {
             background: linear-gradient(135deg, #f57c00 0%, #e65100 100%);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .btn-change-password-urgent {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        .btn-change-password-urgent:hover {
+            background: linear-gradient(135deg, #cc0000 0%, #990000 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 68, 68, 0.4);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         .error-message {
@@ -189,59 +248,99 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .user-info-section h2 {
+        .user-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .user-info-header h2 {
             color: #1a237e;
-            margin-bottom: 25px;
-            font-size: 1.8rem;
+            font-size: 2rem;
             display: flex;
             align-items: center;
             gap: 12px;
+            text-align: center;
+            flex: 1;
+            justify-content: center;
         }
 
-        .info-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .logout-btn-header {
+            background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(244, 67, 54, 0.3);
+        }
+
+        .logout-btn-header:hover {
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(244, 67, 54, 0.4);
+        }
+
+        /* User Account Sections */
+        .account-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
             margin-bottom: 40px;
         }
 
-        .info-card {
+        .account-section {
             background: white;
             border-radius: 15px;
-            padding: 25px;
+            padding: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             border-left: 5px solid #2196f3;
         }
 
-        .info-card.personal {
+        .account-section.personal {
             border-left-color: #2196f3;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        .info-card.plan {
+        .account-section.plan-history {
             border-left-color: #4caf50;
         }
 
-        .info-card.payment {
-            border-left-color: #ff9800;
-        }
-
-        .card-header {
+        .section-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             padding-bottom: 15px;
             border-bottom: 2px solid #f0f0f0;
+            text-align: center;
+            justify-content: center;
         }
 
-        .card-header h3 {
+        .section-header h3 {
             color: #1a237e;
-            font-size: 1.4rem;
+            font-size: 1.6rem;
         }
 
-        .card-header i {
+        .section-header i {
             color: #1a237e;
-            font-size: 1.4rem;
+            font-size: 1.6rem;
         }
 
         .info-grid {
@@ -251,8 +350,8 @@
 
         .info-row {
             display: grid;
-            grid-template-columns: 150px 1fr;
-            gap: 15px;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
             padding-bottom: 15px;
             border-bottom: 1px dashed #e0e0e0;
         }
@@ -265,11 +364,13 @@
         .info-label {
             font-weight: 600;
             color: #424242;
+            font-size: 1.1rem;
         }
 
         .info-value {
             color: #666;
             word-break: break-word;
+            font-size: 1.1rem;
         }
 
         .info-value.highlight {
@@ -277,19 +378,94 @@
             font-weight: 600;
         }
 
-        .read-only-note {
-            background: #e3f2fd;
+        /* Plan History Table */
+        .plan-history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             border-radius: 10px;
-            padding: 15px;
-            margin-top: 30px;
-            text-align: center;
-            color: #1565c0;
-            font-weight: 500;
-            border-left: 4px solid #2196f3;
+            overflow: hidden;
         }
 
-        .read-only-note i {
-            margin-right: 10px;
+        .plan-history-table th {
+            background: linear-gradient(135deg, #4caf50 0%, #2E7D32 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .plan-history-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #666;
+        }
+
+        .plan-history-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .plan-history-table tr:nth-child(even) {
+            background-color: #f8f9ff;
+        }
+
+        .plan-history-table tr:hover {
+            background-color: #e8f5e9;
+        }
+
+        .status-active {
+            color: #1b5e20;
+            background: #e8f5e9;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .status-inactive {
+            color: #c62828;
+            background: #ffebee;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        /* Security Alert for First Time Login */
+        .security-alert {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffecb3 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            border-left: 5px solid #ff9800;
+            border-right: 5px solid #ff9800;
+            animation: shakeAlert 0.5s ease;
+        }
+
+        @keyframes shakeAlert {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .security-alert h4 {
+            color: #e65100;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .security-alert p {
+            color: #5d4037;
+            margin-bottom: 15px;
+            line-height: 1.5;
         }
 
         /* Footer */
@@ -322,6 +498,14 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Password format example */
+        .password-format-example {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
         /* Date format example */
         .date-format-example {
             font-size: 0.9rem;
@@ -330,7 +514,24 @@
             font-style: italic;
         }
 
-        /* Change Password Modal */
+        /* First time login note */
+        .first-time-note {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+            color: #e65100;
+            font-weight: 500;
+            border-left: 4px solid #ff9800;
+            display: none;
+        }
+
+        .first-time-note i {
+            margin-right: 10px;
+        }
+
+        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -471,7 +672,30 @@
             background: #e0e0e0;
         }
 
-        /* Password Change Success Toast */
+        .btn-reset-password {
+            flex: 1;
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-reset-password:hover:not(:disabled) {
+            background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        /* Success Toast */
         .password-success-toast {
             position: fixed;
             top: 20px;
@@ -538,11 +762,20 @@
             border-left: 4px solid #ff9800;
             font-size: 0.9rem;
             color: #5d4037;
+            display: none;
         }
 
         .user-log-info i {
             color: #ff9800;
             margin-right: 10px;
+        }
+
+        .no-history {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -550,55 +783,79 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1><i class="fas fa-user-shield"></i> User Information Portal</h1>
-            <p>Odelya Cloud Digital Locker - Secure Access to Your Information</p>
+            <h1><i class="fas fa-user-shield"></i> Odelya Locker User Portal</h1>
         </div>
 
         <!-- Content -->
         <div class="content">
-            <!-- Search Section -->
-            <div class="search-section" id="searchSection">
-                <h2><i class="fas fa-search"></i> Access Your Information</h2>
-                <p style="color: #666; margin-bottom: 25px;">Enter your User ID and Date of Birth to view your saved information.</p>
-                
-                <form class="search-form" id="searchForm">
+            <!-- Login Section -->
+            <div class="search-section" id="loginSection">
+                <form class="search-form" id="loginForm">
                     <div class="form-group">
-                        <label><i class="fas fa-id-card"></i> User ID</label>
-                        <input type="text" id="searchUserId" placeholder="Enter your User ID" required>
+                        <label><i class="fas fa-envelope"></i> Email ID</label>
+                        <input type="text" id="loginEmail" placeholder="Enter your Email ID" required>
                     </div>
                     
                     <div class="form-group">
-                        <label><i class="fas fa-calendar-alt"></i> Date of Birth</label>
-                        <input type="text" id="searchDOB" placeholder="DD-MM-YYYY (e.g., 22-01-1990)" required>
-                        <div class="date-format-example">Format: DD-MM-YYYY (e.g., 22-01-1990, 05-12-1985)</div>
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your Odelya Locker password" required>
+                        <div class="password-format-example">** Alert! Do not enter your email password, enter Odelya Locker password</div>
+                        <div class="first-time-note" id="firstTimeNote">
+                            <i class="fas fa-info-circle"></i> First time users: Please use the default password provided by administrator
+                        </div>
                     </div>
                     
-                    <div class="error-message" id="errorMessage">
-                        <i class="fas fa-exclamation-circle"></i> No matching records found. Please check your User ID and Date of Birth.
+                    <div class="error-message" id="loginErrorMessage">
+                        <i class="fas fa-exclamation-circle"></i> Invalid email or password. Please check your credentials.
                     </div>
                     
-                    <div class="loading-spinner" id="loadingSpinner">
+                    <div class="success-message" id="loginSuccessMessage">
+                        <i class="fas fa-check-circle"></i> Login successful! Loading your information...
+                    </div>
+                    
+                    <div class="loading-spinner" id="loginLoadingSpinner">
                         <div class="spinner"></div>
-                        <p>Verifying your information...</p>
+                        <p>Verifying your credentials...</p>
                     </div>
                     
-                    <button type="submit" class="btn-search" id="btnSearch">
-                        <i class="fas fa-unlock"></i> View My Information
+                    <button type="submit" class="btn-login" id="btnLogin">
+                        <i class="fas fa-sign-in-alt"></i> Log in
+                    </button>
+
+                    <button type="button" class="btn-forgot-password" onclick="openForgotPasswordModal()">
+                        <i class="fas fa-question-circle"></i> Forgot Password?
                     </button>
                 </form>
             </div>
 
             <!-- User Information Display -->
             <div class="user-info-section" id="userInfoSection">
-                <h2><i class="fas fa-user-circle"></i> Your Information</h2>
+                <div class="user-info-header">
+                    <div style="flex: 1;"></div>
+                    <h2><i class="fas fa-user-circle"></i> <span id="userNameAccount">User Name Account</span></h2>
+                    <div class="header-actions">
+                        <button class="btn-change-password" onclick="openChangePasswordModal()">
+                            <i class="fas fa-key"></i> Change Password
+                        </button>
+                        <button class="logout-btn-header" onclick="resetLogin()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
                 
-                <!-- User Log Store Information -->
-
+                <!-- Security Alert for First Time Login -->
+                <div class="security-alert" id="securityAlert" style="display: none;">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Security Alert: Password Change Required</h4>
+                    <p>You are using the default password. For security reasons, you must change your password immediately.</p>
+                    <button class="btn-change-password-urgent" onclick="openChangePasswordModal()">
+                        <i class="fas fa-key"></i> Change Password Now
+                    </button>
+                </div>
                 
-                <div class="info-cards">
-                    <!-- Personal Information Card -->
-                    <div class="info-card personal">
-                        <div class="card-header">
+                <div class="account-sections">
+                    <!-- Personal Information Section -->
+                    <div class="account-section personal">
+                        <div class="section-header">
                             <i class="fas fa-user"></i>
                             <h3>Personal Information</h3>
                         </div>
@@ -607,36 +864,22 @@
                         </div>
                     </div>
 
-                    <!-- Plan Information Card -->
-                    <div class="info-card plan">
-                        <div class="card-header">
-                            <i class="fas fa-calendar-check"></i>
-                            <h3>Plan Details</h3>
+                    <!-- Plan History Section -->
+                    <div class="account-section plan-history">
+                        <div class="section-header">
+                            <i class="fas fa-history"></i>
+                            <h3>Plan History</h3>
                         </div>
-                        <div class="info-grid" id="planInfo">
-                            <!-- Info will be populated here -->
-                        </div>
-                    </div>
-
-                    <!-- Payment & Account Card -->
-                    <div class="info-card payment">
-                        <div class="card-header">
-                            <i class="fas fa-credit-card"></i>
-                            <h3>Account Information</h3>
-                        </div>
-                        <div class="info-grid" id="accountInfo">
-                            <!-- Info will be populated here -->
+                        <div id="planHistoryContent">
+                            <!-- Plan history table will be populated here -->
                         </div>
                     </div>
                 </div>
 
-                <div class="read-only-note">
-                    <i class="fas fa-lock"></i> All data is securely stored and cannot be modified. For any help call Administrator.
-                </div>
-
+                <!-- Recharge Now Button -->
                 <div style="text-align: center; margin-top: 30px;">
-                    <button class="btn-search" onclick="resetSearch()" style="max-width: 300px; margin: 0 auto;">
-                        <i class="fas fa-search"></i> Search Another User
+                    <button class="btn-recharge" id="btnRecharge" onclick="rechargeNow()">
+                        <i class="fas fa-sync-alt"></i> Recharge Now
                     </button>
                 </div>
             </div>
@@ -644,8 +887,104 @@
 
         <!-- Footer -->
         <div class="footer">
-            <p>© 2024 Odelya Cloud Digital Locker. All rights reserved.</p>
-            <p>For any queries, please contact support.</p>
+            <p>© 2025 Odelya Locker. All rights reserved. | For any queries, please contact support.</p>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal-overlay" id="forgotPasswordModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Forgot Password</h3>
+                <button class="close-modal" onclick="closeForgotPasswordModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="modal-form" id="forgotPasswordForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email ID</label>
+                        <input type="text" id="forgotEmail" placeholder="Enter your registered Email ID" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Phone Number</label>
+                        <input type="text" id="forgotPhone" placeholder="Enter your registered phone number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-calendar-alt"></i> Date of Birth</label>
+                        <input type="text" id="forgotDOB" placeholder="DD-MM-YYYY (e.g., 22-01-1990)" required>
+                        <div class="date-format-example">Format: DD-MM-YYYY (e.g., 22-01-1990, 05-12-1985)</div>
+                    </div>
+                    
+                    <div class="error-message" id="forgotPasswordError" style="display: none;">
+                        <i class="fas fa-exclamation-circle"></i> Verification failed. Please check your details and try again.
+                    </div>
+                    
+                    <div class="loading-spinner" id="forgotPasswordLoading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Verifying your information...</p>
+                    </div>
+                    
+                    <div class="modal-actions" id="forgotPasswordActions">
+                        <button type="button" class="btn-cancel" onclick="closeForgotPasswordModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn-submit" id="btnVerifyDetails">
+                            <i class="fas fa-check"></i> Verify Details
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Password Modal -->
+    <div class="modal-overlay" id="resetPasswordModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Reset Password</h3>
+                <button class="close-modal" onclick="closeResetPasswordModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="modal-form" id="resetPasswordForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> New Password</label>
+                        <input type="password" id="resetNewPassword" placeholder="Enter new password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Confirm New Password</label>
+                        <input type="password" id="resetConfirmPassword" placeholder="Confirm new password" required>
+                        <div class="password-match-error" id="resetPasswordMatchError">
+                            <i class="fas fa-exclamation-circle"></i> Passwords do not match
+                        </div>
+                    </div>
+                    
+                    <div class="password-requirements">
+                        <strong>Password Requirements:</strong>
+                        <ul style="margin-top: 5px; padding-left: 20px;">
+                            <li>Minimum 8 characters</li>
+                            <li>At least one uppercase letter</li>
+                            <li>At least one lowercase letter</li>
+                            <li>At least one number</li>
+                            <li>At least one special character</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeResetPasswordModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn-reset-password" id="btnResetPassword">
+                            <i class="fas fa-save"></i> Reset Password
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -654,19 +993,24 @@
         <div class="modal">
             <div class="modal-header">
                 <h3><i class="fas fa-key"></i> Change Password</h3>
-                <button class="close-modal" onclick="closePasswordModal()">
+                <button class="close-modal" onclick="closeChangePasswordModal()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <form class="modal-form" id="passwordForm">
+                <form class="modal-form" id="changePasswordForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Current Password</label>
+                        <input type="password" id="currentPassword" placeholder="Enter current password" required>
+                    </div>
+                    
                     <div class="form-group">
                         <label><i class="fas fa-lock"></i> New Password</label>
                         <input type="password" id="newPassword" placeholder="Enter new password" required>
                     </div>
                     
                     <div class="form-group">
-                        <label><i class="fas fa-lock"></i> Confirm Password</label>
+                        <label><i class="fas fa-lock"></i> Confirm New Password</label>
                         <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
                         <div class="password-match-error" id="passwordMatchError">
                             <i class="fas fa-exclamation-circle"></i> Passwords do not match
@@ -685,7 +1029,7 @@
                     </div>
                     
                     <div class="modal-actions">
-                        <button type="button" class="btn-cancel" onclick="closePasswordModal()">
+                        <button type="button" class="btn-cancel" onclick="closeChangePasswordModal()">
                             <i class="fas fa-times"></i> Cancel
                         </button>
                         <button type="submit" class="btn-submit" id="btnSubmitPassword">
@@ -697,20 +1041,37 @@
         </div>
     </div>
 
-    <!-- Password Success Toast -->
+    <!-- Success Toast -->
     <div class="password-success-toast" id="passwordSuccessToast">
         <div class="toast-icon">
             <i class="fas fa-check-circle"></i>
         </div>
         <div class="toast-content">
             <div class="toast-title">Password Changed Successfully!</div>
-            <div class="toast-message">Password attempt count has been updated.</div>
+            <div class="toast-message">You will be logged out automatically.</div>
         </div>
     </div>
 
     <script>
+        // ====== DEFAULT PASSWORD ======
+        const DEFAULT_PASSWORD = 'odelya@123';
+        
         // ====== ENCRYPTION/DECRYPTION FUNCTIONS ======
         const ENCRYPTION_KEY = 'odelya-secure-admin-key-2024!@#$';
+        
+        function encryptData(data) {
+            try {
+                let encrypted = '';
+                for (let i = 0; i < data.length; i++) {
+                    const charCode = data.charCodeAt(i) ^ ENCRYPTION_KEY.charCodeAt(i % ENCRYPTION_KEY.length);
+                    encrypted += String.fromCharCode(charCode);
+                }
+                return btoa(encrypted);
+            } catch (error) {
+                console.error('Encryption error:', error);
+                return data;
+            }
+        }
         
         function decryptData(encryptedData) {
             try {
@@ -727,57 +1088,135 @@
             }
         }
 
-        // ====== USER LOG STORAGE SYSTEM ======
-        // This ensures user data persists even when deleted from admin.html
-        const USER_LOG_PREFIX = 'user_log_';
+        // ====== PERMANENT USER LOG STORAGE SYSTEM ======
+        const USER_LOG_PREFIX = 'odelya_user_log_';
+        const USER_DATA_PREFIX = 'odelya_user_data_';
+        const PLAN_HISTORY_PREFIX = 'odelya_plan_history_';
         
-        function saveUserLog(userData) {
+        function saveUserDataPermanently(userData) {
             try {
-                // Save a copy to user log storage
-                const logKey = USER_LOG_PREFIX + userData.userId;
-                const timestamp = new Date().toISOString();
+                const userId = userData.userId || userData.email;
+                if (!userId) return false;
                 
-                // Create log entry with timestamp
-                const userLog = {
-                    ...userData,
-                    logSavedAt: timestamp,
-                    logUpdatedAt: timestamp,
-                    isLogCopy: true
+                // Save to permanent data storage
+                const dataKey = USER_DATA_PREFIX + userId;
+                const permanentData = {
+                    ...extractRequiredFields(userData),
+                    savedAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    isPermanent: true,
+                    source: 'admin_storage'
                 };
                 
-                localStorage.setItem(logKey, JSON.stringify(userLog));
+                localStorage.setItem(dataKey, JSON.stringify(permanentData));
+                
+                // Also update log
+                updateUserLog(userId, {
+                    dataSavedAt: new Date().toISOString(),
+                    isDataPermanent: true
+                });
+                
+                // Save to plan history if it's a new plan
+                saveToPlanHistory(userData);
+                
                 return true;
             } catch (error) {
-                console.error('Error saving user log:', error);
+                console.error('Error saving permanent user data:', error);
                 return false;
             }
         }
         
-        function updateUserLog(userId, updatedData) {
+        function saveToPlanHistory(userData) {
             try {
-                const logKey = USER_LOG_PREFIX + userId;
-                const existingLog = localStorage.getItem(logKey);
+                const userId = userData.userId || userData.email;
+                if (!userId) return false;
                 
-                if (existingLog) {
-                    const logData = JSON.parse(existingLog);
-                    const updatedLog = {
-                        ...logData,
-                        ...updatedData,
-                        logUpdatedAt: new Date().toISOString()
+                const historyKey = PLAN_HISTORY_PREFIX + userId;
+                let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+                
+                // Check if this plan already exists in history
+                const existingIndex = history.findIndex(item => 
+                    item.planStartDate === userData.planStartDate && 
+                    item.planName === userData.planName
+                );
+                
+                if (existingIndex === -1) {
+                    // Add new plan to history
+                    const planRecord = {
+                        planName: userData.planName || '',
+                        planGB: userData.planGB || '',
+                        planDuration: userData.planDuration || '',
+                        planStartDate: userData.planStartDate || '',
+                        planEndDate: userData.planEndDate || '',
+                        amountPaid: userData.amountPaid || 0,
+                        recordedAt: new Date().toISOString(),
+                        isActive: true
                     };
-                    localStorage.setItem(logKey, JSON.stringify(updatedLog));
-                    return true;
+                    
+                    // Deactivate previous plans
+                    history.forEach(item => item.isActive = false);
+                    
+                    history.unshift(planRecord); // Add to beginning
+                    
+                    // Keep only last 36 months of history (3 years)
+                    if (history.length > 36) {
+                        history = history.slice(0, 36);
+                    }
+                    
+                    localStorage.setItem(historyKey, JSON.stringify(history));
                 }
+                
+                return true;
+            } catch (error) {
+                console.error('Error saving to plan history:', error);
                 return false;
+            }
+        }
+        
+        function getPlanHistory(userIdOrEmail) {
+            try {
+                const historyKey = PLAN_HISTORY_PREFIX + userIdOrEmail;
+                const history = localStorage.getItem(historyKey);
+                return history ? JSON.parse(history) : [];
+            } catch (error) {
+                console.error('Error getting plan history:', error);
+                return [];
+            }
+        }
+        
+        function getUserDataPermanently(userIdOrEmail) {
+            try {
+                const dataKey = USER_DATA_PREFIX + userIdOrEmail;
+                const data = localStorage.getItem(dataKey);
+                return data ? JSON.parse(data) : null;
+            } catch (error) {
+                console.error('Error getting permanent user data:', error);
+                return null;
+            }
+        }
+        
+        function updateUserLog(userIdOrEmail, updates) {
+            try {
+                const logKey = USER_LOG_PREFIX + userIdOrEmail;
+                let logData = getUserLog(userIdOrEmail) || {};
+                
+                logData = {
+                    ...logData,
+                    ...updates,
+                    logUpdatedAt: new Date().toISOString()
+                };
+                
+                localStorage.setItem(logKey, JSON.stringify(logData));
+                return true;
             } catch (error) {
                 console.error('Error updating user log:', error);
                 return false;
             }
         }
         
-        function getUserLog(userId) {
+        function getUserLog(userIdOrEmail) {
             try {
-                const logKey = USER_LOG_PREFIX + userId;
+                const logKey = USER_LOG_PREFIX + userIdOrEmail;
                 const logData = localStorage.getItem(logKey);
                 return logData ? JSON.parse(logData) : null;
             } catch (error) {
@@ -785,97 +1224,280 @@
                 return null;
             }
         }
+        
+        function extractRequiredFields(userData) {
+            const extracted = {
+                userId: userData.userId || '',
+                fullName: userData.fullName || '',
+                dob: extractDOB(userData),
+                email: extractEmail(userData),
+                phone: extractPhone(userData),
+                planName: userData.serviceType || '',
+                planGB: userData.planGB || '',
+                planDuration: userData.duration || '',
+                planStartDate: userData.planStart || '',
+                planEndDate: userData.planEnd || '',
+                amountPaid: userData.amount || 0,
+                encryptedData: userData.encryptedData || '',
+                registrationDate: userData.registrationDate || '',
+                isFirstLogin: userData.isFirstLogin !== false
+            };
+            
+            return extracted;
+        }
+        
+        function extractDOB(userData) {
+            try {
+                if (userData.encryptedData) {
+                    const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                    return decrypted.personalInfo?.dob || '';
+                }
+            } catch (error) {
+                console.error('Error extracting DOB:', error);
+            }
+            return '';
+        }
+        
+        function extractEmail(userData) {
+            try {
+                if (userData.encryptedData) {
+                    const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                    return decrypted.personalInfo?.email || '';
+                }
+            } catch (error) {
+                console.error('Error extracting email:', error);
+            }
+            return userData.email || '';
+        }
+        
+        function extractPhone(userData) {
+            try {
+                if (userData.encryptedData) {
+                    const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                    return decrypted.personalInfo?.phone || '';
+                }
+            } catch (error) {
+                console.error('Error extracting phone:', error);
+            }
+            return userData.phone || '';
+        }
+
+        // ====== SEARCH FOR USER DATA ======
+        function searchUserData(email, password) {
+            try {
+                // First check permanent data storage
+                const permanentData = getUserDataPermanently(email);
+                if (permanentData && verifyPassword(permanentData, password)) {
+                    return permanentData;
+                }
+                
+                // If not in permanent storage, check admin storage
+                const keys = Object.keys(localStorage);
+                
+                for (const key of keys) {
+                    if (key.startsWith('user_')) {
+                        try {
+                            const userData = JSON.parse(localStorage.getItem(key));
+                            
+                            // Check if this is the user by email
+                            let userEmail = '';
+                            try {
+                                if (userData.encryptedData) {
+                                    const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                                    userEmail = decrypted.personalInfo?.email || '';
+                                }
+                            } catch (decryptError) {
+                                console.error('Error decrypting email:', decryptError);
+                            }
+                            
+                            if (!userEmail && userData.email) {
+                                try {
+                                    userEmail = decryptData(userData.email);
+                                } catch (e) {
+                                    userEmail = userData.email;
+                                }
+                            }
+                            
+                            if (userEmail === email || userData.userId === email) {
+                                // Check password
+                                const isFirstLogin = checkIfFirstLogin(userData, userEmail);
+                                
+                                if (isFirstLogin && password === DEFAULT_PASSWORD) {
+                                    // First time login with default password
+                                    const extracted = extractRequiredFields(userData);
+                                    extracted.isFirstLogin = true;
+                                    saveUserDataPermanently(extracted);
+                                    updateUserLog(userEmail, { isFirstLogin: true });
+                                    return extracted;
+                                } else if (verifyPassword(userData, password)) {
+                                    // Regular login
+                                    const extracted = extractRequiredFields(userData);
+                                    extracted.isFirstLogin = false;
+                                    saveUserDataPermanently(extracted);
+                                    updateUserLog(userEmail, { isFirstLogin: false });
+                                    return extracted;
+                                }
+                            }
+                        } catch (parseError) {
+                            continue;
+                        }
+                    }
+                }
+                
+                return null;
+            } catch (error) {
+                console.error('Error searching user data:', error);
+                return null;
+            }
+        }
+        
+function checkIfFirstLogin(userData, email) {
+    const userId = userData.userId || email;
+    
+    // First check the log
+    const log = getUserLog(userId);
+    if (log && log.isFirstLogin === false) {
+        return false;
+    }
+    
+    // Then check permanent data
+    const permanentData = getUserDataPermanently(userId);
+    if (permanentData && permanentData.isFirstLogin === false) {
+        return false;
+    }
+    
+    // Default to true if no evidence of password change
+    return true;
+}
+        
+function verifyPassword(userData, password) {
+    try {
+        // Check if this is a first-time login attempt
+        const isFirstLoginAttempt = userData.isFirstLogin === true;
+        
+        // Check for default password - only allow if it's a genuine first login
+        if (password === DEFAULT_PASSWORD) {
+            // Allow default password only if:
+            // 1. It's marked as first login in user data
+            // 2. AND we can verify from the log that it's actually a first login
+            if (isFirstLoginAttempt) {
+                // Check user log to verify it's truly a first login
+                const userId = userData.userId || userData.email;
+                const userLog = getUserLog(userId);
+                
+                // If log exists and indicates it's not first login, reject default password
+                if (userLog && userLog.isFirstLogin === false) {
+                    console.log('Default password rejected - user has already changed password');
+                    return false;
+                }
+                
+                // Also check permanent storage for password change flag
+                const permanentData = getUserDataPermanently(userId);
+                if (permanentData && permanentData.isFirstLogin === false) {
+                    console.log('Default password rejected - permanent data indicates password changed');
+                    return false;
+                }
+                
+                console.log('Default password accepted - genuine first login');
+                return true;
+            }
+            return false;
+        }
+        
+        // Check encrypted password
+        if (userData.encryptedData) {
+            const decrypted = JSON.parse(decryptData(userData.encryptedData));
+            if (decrypted.password && decryptData(decrypted.password) === password) {
+                return true;
+            }
+        }
+        
+        // Check direct password field
+        if (userData.password) {
+            try {
+                const decryptedPassword = decryptData(userData.password);
+                return decryptedPassword === password;
+            } catch (e) {
+                return userData.password === password;
+            }
+        }
+        
+        return false;
+    } catch (error) {
+        console.error('Error verifying password:', error);
+        return false;
+    }
+}
 
         // ====== DOM ELEMENTS ======
         const elements = {
-            searchForm: document.getElementById('searchForm'),
-            searchUserId: document.getElementById('searchUserId'),
-            searchDOB: document.getElementById('searchDOB'),
-            errorMessage: document.getElementById('errorMessage'),
-            loadingSpinner: document.getElementById('loadingSpinner'),
-            searchSection: document.getElementById('searchSection'),
+            loginForm: document.getElementById('loginForm'),
+            loginEmail: document.getElementById('loginEmail'),
+            loginPassword: document.getElementById('loginPassword'),
+            loginErrorMessage: document.getElementById('loginErrorMessage'),
+            loginSuccessMessage: document.getElementById('loginSuccessMessage'),
+            loginLoadingSpinner: document.getElementById('loginLoadingSpinner'),
+            btnLogin: document.getElementById('btnLogin'),
+            firstTimeNote: document.getElementById('firstTimeNote'),
+            
+            loginSection: document.getElementById('loginSection'),
             userInfoSection: document.getElementById('userInfoSection'),
+            
             personalInfo: document.getElementById('personalInfo'),
-            planInfo: document.getElementById('planInfo'),
-            accountInfo: document.getElementById('accountInfo'),
-            btnSearch: document.getElementById('btnSearch'),
+            planHistoryContent: document.getElementById('planHistoryContent'),
+            userNameAccount: document.getElementById('userNameAccount'),
+            
+            securityAlert: document.getElementById('securityAlert'),
+            
+            forgotPasswordModal: document.getElementById('forgotPasswordModal'),
+            forgotPasswordForm: document.getElementById('forgotPasswordForm'),
+            forgotEmail: document.getElementById('forgotEmail'),
+            forgotPhone: document.getElementById('forgotPhone'),
+            forgotDOB: document.getElementById('forgotDOB'),
+            forgotPasswordError: document.getElementById('forgotPasswordError'),
+            forgotPasswordLoading: document.getElementById('forgotPasswordLoading'),
+            forgotPasswordActions: document.getElementById('forgotPasswordActions'),
+            btnVerifyDetails: document.getElementById('btnVerifyDetails'),
+            
+            resetPasswordModal: document.getElementById('resetPasswordModal'),
+            resetPasswordForm: document.getElementById('resetPasswordForm'),
+            resetNewPassword: document.getElementById('resetNewPassword'),
+            resetConfirmPassword: document.getElementById('resetConfirmPassword'),
+            resetPasswordMatchError: document.getElementById('resetPasswordMatchError'),
+            btnResetPassword: document.getElementById('btnResetPassword'),
+            
             changePasswordModal: document.getElementById('changePasswordModal'),
-            passwordForm: document.getElementById('passwordForm'),
+            changePasswordForm: document.getElementById('changePasswordForm'),
+            currentPassword: document.getElementById('currentPassword'),
             newPassword: document.getElementById('newPassword'),
             confirmPassword: document.getElementById('confirmPassword'),
             passwordMatchError: document.getElementById('passwordMatchError'),
             btnSubmitPassword: document.getElementById('btnSubmitPassword'),
-            passwordSuccessToast: document.getElementById('passwordSuccessToast')
+            
+            passwordSuccessToast: document.getElementById('passwordSuccessToast'),
+            btnRecharge: document.getElementById('btnRecharge')
         };
 
         // Current user data
         let currentUserData = null;
         let currentUserId = null;
+        let userToReset = null;
+        let isFirstTimeLogin = false;
 
-        // ====== DATE FORMAT FUNCTIONS ======
-        function formatDateToDDMMYYYY(dateString) {
-            if (!dateString) return '';
-            
-            try {
-                // Try to parse various date formats
-                let date;
-                
-                // Check if it's already in DD-MM-YYYY format
-                if (/^\d{2}-\d{2}-\d{4}$/.test(dateString)) {
-                    const parts = dateString.split('-');
-                    date = new Date(parts[2], parts[1] - 1, parts[0]);
-                }
-                // Check for DD/MM/YYYY format
-                else if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) {
-                    const parts = dateString.split('/');
-                    date = new Date(parts[2], parts[1] - 1, parts[0]);
-                }
-                // Check for DD.MM.YYYY format
-                else if (/^\d{2}\.\d{2}\.\d{4}$/.test(dateString)) {
-                    const parts = dateString.split('.');
-                    date = new Date(parts[2], parts[1] - 1, parts[0]);
-                }
-                // Check for textual month format (22-Mar-2001)
-                else if (/^\d{2}-[A-Za-z]{3}-\d{4}$/.test(dateString)) {
-                    date = new Date(dateString);
-                }
-                // Check for ISO format
-                else {
-                    date = new Date(dateString);
-                }
-                
-                // Format to DD-MM-YYYY
-                if (!isNaN(date.getTime())) {
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const year = date.getFullYear();
-                    return `${day}-${month}-${year}`;
-                }
-            } catch (e) {
-                console.error('Date parsing error:', e);
-            }
-            
-            return dateString; // Return original if can't parse
-        }
-
+        // ====== HELPER FUNCTIONS ======
         function normalizeDateForComparison(dateString) {
-            // Remove any spaces and convert to lowercase
             dateString = dateString.trim().toLowerCase();
             
-            // Try to parse the date
-            const formatted = formatDateToDDMMYYYY(dateString);
-            if (formatted) {
-                return formatted;
+            if (/^\d{2}-\d{2}-\d{4}$/.test(dateString)) {
+                return dateString;
             }
             
-            // If parsing fails, try to clean up common issues
             const monthMap = {
                 'jan': '01', 'feb': '02', 'mar': '03', 'apr': '04',
                 'may': '05', 'jun': '06', 'jul': '07', 'aug': '08',
                 'sep': '09', 'oct': '10', 'nov': '11', 'dec': '12'
             };
             
-            // Try to match patterns like "22-Mar-2001"
             const match = dateString.match(/^(\d{1,2})[-/\s\.]([a-z]{3})[-/\s\.](\d{4})$/i);
             if (match) {
                 const day = match[1].padStart(2, '0');
@@ -887,187 +1509,178 @@
             return dateString;
         }
 
+        function formatDateToDDMMYYYY(dateString) {
+            if (!dateString) return '';
+            
+            try {
+                let date;
+                
+                if (/^\d{2}-\d{2}-\d{4}$/.test(dateString)) {
+                    const parts = dateString.split('-');
+                    date = new Date(parts[2], parts[1] - 1, parts[0]);
+                } else if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) {
+                    const parts = dateString.split('/');
+                    date = new Date(parts[2], parts[1] - 1, parts[0]);
+                } else {
+                    date = new Date(dateString);
+                }
+                
+                if (!isNaN(date.getTime())) {
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const year = date.getFullYear();
+                    return `${day}-${month}-${year}`;
+                }
+            } catch (e) {
+                console.error('Date parsing error:', e);
+            }
+            
+            return dateString;
+        }
+
+        function isDateInFuture(dateString) {
+            try {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                let targetDate;
+                if (/^\d{2}-\d{2}-\d{4}$/.test(dateString)) {
+                    const parts = dateString.split('-');
+                    targetDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                } else {
+                    targetDate = new Date(dateString);
+                }
+                
+                if (!isNaN(targetDate.getTime())) {
+                    targetDate.setHours(0, 0, 0, 0);
+                    return targetDate >= today;
+                }
+            } catch (e) {
+                console.error('Date comparison error:', e);
+            }
+            return false;
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validatePasswordStrength(password) {
+            if (password.length < 8) return false;
+            if (!/[A-Z]/.test(password)) return false;
+            if (!/[a-z]/.test(password)) return false;
+            if (!/\d/.test(password)) return false;
+            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) return false;
+            return true;
+        }
+
+        function showFirstTimeNote() {
+            elements.firstTimeNote.style.display = 'block';
+        }
+
+        function hideFirstTimeNote() {
+            elements.firstTimeNote.style.display = 'none';
+        }
+
         // ====== EVENT LISTENERS ======
         document.addEventListener('DOMContentLoaded', function() {
-            // Form submission
-            elements.searchForm.addEventListener('submit', handleSearch);
+            elements.loginForm.addEventListener('submit', handleLogin);
+            elements.forgotPasswordForm.addEventListener('submit', handleForgotPassword);
+            elements.resetPasswordForm.addEventListener('submit', handleResetPassword);
+            elements.changePasswordForm.addEventListener('submit', handleChangePassword);
             
-            // Auto-format date input
-            elements.searchDOB.addEventListener('blur', function() {
+            elements.confirmPassword.addEventListener('input', checkPasswordMatch);
+            elements.resetConfirmPassword.addEventListener('input', checkResetPasswordMatch);
+            
+            elements.forgotDOB.addEventListener('blur', function() {
                 const normalized = normalizeDateForComparison(this.value);
                 if (normalized !== this.value) {
                     this.value = normalized;
                 }
             });
             
-            // Password form submission
-            elements.passwordForm.addEventListener('submit', handlePasswordChange);
+            // Show first time note only when needed
+            elements.loginEmail.addEventListener('focus', function() {
+                showFirstTimeNote();
+            });
             
-            // Check password match in real-time
-            elements.confirmPassword.addEventListener('input', checkPasswordMatch);
+            elements.loginPassword.addEventListener('focus', function() {
+                hideFirstTimeNote();
+            });
         });
 
-        // ====== SEARCH FUNCTION ======
-        function handleSearch(e) {
+        // ====== LOGIN FUNCTION ======
+        function handleLogin(e) {
             e.preventDefault();
             
-            const userId = elements.searchUserId.value.trim();
-            const dobInput = elements.searchDOB.value.trim();
+            const emailId = elements.loginEmail.value.trim();
+            const password = elements.loginPassword.value.trim();
             
-            // Validate inputs
-            if (!userId || !dobInput) {
-                showError('Please enter both User ID and Date of Birth.');
+            if (!emailId || !password) {
+                showLoginError('Please enter both Email ID and Password.');
                 return;
             }
             
-            // Normalize DOB for comparison
-            const normalizedDOB = normalizeDateForComparison(dobInput);
-            
-            // Validate date format
-            if (!/^\d{2}-\d{2}-\d{4}$/.test(normalizedDOB)) {
-                showError('Please enter Date of Birth in DD-MM-YYYY format (e.g., 22-01-1990)');
+            if (!validateEmail(emailId)) {
+                showLoginError('Please enter a valid email address.');
                 return;
             }
             
-            // Hide error message
-            hideError();
+            hideLoginError();
+            hideFirstTimeNote();
+            elements.loginLoadingSpinner.style.display = 'block';
+            elements.btnLogin.disabled = true;
             
-            // Show loading spinner
-            elements.loadingSpinner.style.display = 'block';
-            elements.btnSearch.disabled = true;
-            
-            // Simulate loading delay
             setTimeout(() => {
-                const userData = findUserData(userId, normalizedDOB);
+                const userData = searchUserData(emailId, password);
                 
                 if (userData) {
                     currentUserData = userData;
-                    currentUserId = userId;
-                    displayUserInfo(userData);
-                    elements.searchSection.style.display = 'none';
-                    elements.userInfoSection.style.display = 'block';
+                    currentUserId = userData.userId || emailId;
+                    isFirstTimeLogin = userData.isFirstLogin === true;
+                    
+                    // Show success message
+                    elements.loginSuccessMessage.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        displayUserInfo(userData);
+                        elements.loginSection.style.display = 'none';
+                        elements.userInfoSection.style.display = 'block';
+                        elements.loginSuccessMessage.style.display = 'none';
+                        
+                        // Show security alert if first time login
+                        if (isFirstTimeLogin) {
+                            elements.securityAlert.style.display = 'block';
+                        }
+                    }, 1000);
                 } else {
-                    showError('No matching records found. Please check your User ID and Date of Birth.');
+                    showLoginError('Invalid email or password. Please check your credentials.');
                     shakeForm();
                 }
                 
-                elements.loadingSpinner.style.display = 'none';
-                elements.btnSearch.disabled = false;
+                elements.loginLoadingSpinner.style.display = 'none';
+                elements.btnLogin.disabled = false;
             }, 800);
         }
 
-        function findUserData(userId, dob) {
-            try {
-                // FIRST: Check user log storage (persistent storage)
-                let userData = getUserLog(userId);
-                
-                if (userData) {
-                    // Check if DOB matches in log storage
-                    let userDOB = '';
-                    try {
-                        if (userData.encryptedData) {
-                            const decrypted = JSON.parse(decryptData(userData.encryptedData));
-                            userDOB = decrypted.personalInfo?.dob || '';
-                        }
-                    } catch (decryptError) {
-                        console.error('Error decrypting log data:', decryptError);
-                    }
-                    
-                    const formattedUserDOB = normalizeDateForComparison(userDOB);
-                    if (formattedUserDOB === dob) {
-                        return userData;
-                    }
-                }
-                
-                // SECOND: Check regular user storage (from admin.html)
-                const keys = Object.keys(localStorage);
-                
-                for (const key of keys) {
-                    if (key.startsWith('user_') && !key.startsWith(USER_LOG_PREFIX)) {
-                        try {
-                            const regularUserData = JSON.parse(localStorage.getItem(key));
-                            
-                            // Check if user ID matches
-                            if (regularUserData.userId === userId) {
-                                // Save a copy to log storage for future persistence
-                                saveUserLog(regularUserData);
-                                
-                                // Try to get DOB from encrypted data
-                                let regularUserDOB = '';
-                                try {
-                                    if (regularUserData.encryptedData) {
-                                        const decrypted = JSON.parse(decryptData(regularUserData.encryptedData));
-                                        regularUserDOB = decrypted.personalInfo?.dob || '';
-                                    }
-                                } catch (decryptError) {
-                                    console.error('Error decrypting user data:', decryptError);
-                                }
-                                
-                                // Format user's DOB for comparison
-                                const formattedRegularDOB = normalizeDateForComparison(regularUserDOB);
-                                
-                                // Compare DOB
-                                if (formattedRegularDOB === dob) {
-                                    return regularUserData;
-                                }
-                            }
-                        } catch (parseError) {
-                            console.error('Error parsing user data:', parseError);
-                            continue;
-                        }
-                    }
-                }
-                
-                return null;
-            } catch (error) {
-                console.error('Error finding user data:', error);
-                return null;
-            }
-        }
-
+        // ====== USER INFO DISPLAY ======
         function displayUserInfo(userData) {
-            // Clear previous data
+            // Update header with user's name
+            elements.userNameAccount.textContent = userData.fullName || 'User Account';
+            
+            // Display personal information
+            displayPersonalInfo(userData);
+            
+            // Display plan history
+            displayPlanHistory(userData);
+        }
+        
+        function displayPersonalInfo(userData) {
             elements.personalInfo.innerHTML = '';
-            elements.planInfo.innerHTML = '';
-            elements.accountInfo.innerHTML = '';
             
-            // Decrypt personal information
-            let personalInfo = {};
-            let email = '';
-            let phone = '';
+            const formattedDOB = formatDateToDDMMYYYY(userData.dob || '');
             
-            try {
-                if (userData.encryptedData) {
-                    const decrypted = JSON.parse(decryptData(userData.encryptedData));
-                    personalInfo = decrypted.personalInfo || {};
-                    email = personalInfo.email || '';
-                    phone = personalInfo.phone || '';
-                }
-                
-                // Also check directly stored email/phone
-                if (!email && userData.email) {
-                    try {
-                        email = decryptData(userData.email);
-                    } catch (e) {
-                        email = 'Encrypted';
-                    }
-                }
-                
-                if (!phone && userData.phone) {
-                    try {
-                        phone = decryptData(userData.phone);
-                    } catch (e) {
-                        phone = 'Encrypted';
-                    }
-                }
-            } catch (error) {
-                console.error('Error decrypting user data:', error);
-            }
-            
-            // Format DOB for display
-            const formattedDOB = formatDateToDDMMYYYY(personalInfo.dob || '');
-            
-            // Personal Information
             const personalInfoHTML = `
                 <div class="info-row">
                     <span class="info-label">User ID:</span>
@@ -1078,97 +1691,581 @@
                     <span class="info-value">${userData.fullName || 'N/A'}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Email:</span>
-                    <span class="info-value">${email || 'N/A'}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Phone:</span>
-                    <span class="info-value">${phone || 'N/A'}</span>
-                </div>
-                <div class="info-row">
                     <span class="info-label">Date of Birth:</span>
                     <span class="info-value">${formattedDOB || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email ID:</span>
+                    <span class="info-value">${userData.email || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone No.:</span>
+                    <span class="info-value">${userData.phone || 'N/A'}</span>
                 </div>
             `;
             
             elements.personalInfo.innerHTML = personalInfoHTML;
+        }
+        
+        function displayPlanHistory(userData) {
+            const userId = userData.userId || userData.email;
+            let planHistory = getPlanHistory(userId);
             
-            // Plan Information
-            const planInfoHTML = `
-                <div class="info-row">
-                    <span class="info-label">Plan Name:</span>
-                    <span class="info-value">${userData.serviceType || 'N/A'}</span>
-                </div>
-                ${userData.planGB ? `
-                <div class="info-row">
-                    <span class="info-label">Storage Plan:</span>
-                    <span class="info-value highlight">${userData.planGB} GB</span>
-                </div>
-                ` : ''}
-                <div class="info-row">
-                    <span class="info-label">Plan Duration:</span>
-                    <span class="info-value">${userData.duration || 'N/A'}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Start Date:</span>
-                    <span class="info-value">${userData.planStart || 'N/A'}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">End Date:</span>
-                    <span class="info-value">${userData.planEnd || 'Ongoing'}</span>
-                </div>
+            // Update plan statuses based on end dates
+            planHistory = updatePlanStatuses(planHistory);
+            
+            // Save updated history
+            localStorage.setItem(PLAN_HISTORY_PREFIX + userId, JSON.stringify(planHistory));
+            
+            // If no history exists, create one from current data
+            if (planHistory.length === 0 && userData.planName) {
+                // Create initial history from current data
+                const initialHistory = [{
+                    planName: userData.planName || '',
+                    planGB: userData.planGB || '',
+                    planDuration: userData.planDuration || '',
+                    planStartDate: userData.planStartDate || '',
+                    planEndDate: userData.planEndDate || '',
+                    amountPaid: userData.amountPaid || 0,
+                    recordedAt: new Date().toISOString(),
+                    isActive: true
+                }];
+                
+                localStorage.setItem(PLAN_HISTORY_PREFIX + userId, JSON.stringify(initialHistory));
+                
+                // Add sample historical data for demonstration
+                addSampleHistoryData(userId);
+                
+                // Refresh with new data
+                displayPlanHistory(userData);
+                return;
+            }
+            
+            if (planHistory.length === 0) {
+                elements.planHistoryContent.innerHTML = `
+                    <div class="no-history">
+                        <i class="fas fa-history" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                        <p>No plan history found. Recharge to start your first plan.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let tableHTML = `
+                <table class="plan-history-table">
+                    <thead>
+                        <tr>
+                            <th>Plan Name</th>
+                            <th>Plan (GB)</th>
+                            <th>Duration</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Amount Paid</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
             `;
             
-            elements.planInfo.innerHTML = planInfoHTML;
+            planHistory.forEach((plan, index) => {
+                const formattedStartDate = formatDateToDDMMYYYY(plan.planStartDate || '');
+                const formattedEndDate = formatDateToDDMMYYYY(plan.planEndDate || '');
+                const isActive = plan.isActive;
+                const statusClass = isActive ? 'status-active' : 'status-inactive';
+                const statusText = isActive ? 'Active' : 'Inactive';
+                
+                tableHTML += `
+                    <tr>
+                        <td>${plan.planName || 'N/A'}</td>
+                        <td>${plan.planGB || 'N/A'}</td>
+                        <td>${plan.planDuration || 'N/A'}</td>
+                        <td>${formattedStartDate || 'N/A'}</td>
+                        <td>${formattedEndDate || 'Ongoing'}</td>
+                        <td>INR ${plan.amountPaid || 0}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                    </tr>
+                `;
+            });
             
-            // Account Information
-            const accountInfoHTML = `
-                <div class="info-row">
-                    <span class="info-label">Payment Status:</span>
-                    <span class="info-value ${getStatusClass(userData.paymentStatus)}">${userData.paymentStatus || 'Not Paid'}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Payment Mode:</span>
-                    <span class="info-value">${userData.paymentMode || 'Not Set'}</span>
-                </div>
-<div class="info-row">
-    <span class="info-label">Amount Paid:</span>
-    <span class="info-value highlight">INR ${userData.amount || 0}</span>
-</div>
-                <div class="info-row">
-                    <span class="info-label">Password Attempts:</span>
-                    <span class="info-value">${userData.passwordAttempts || 0}</span>
-                </div>
-                <div style="margin-top: 15px;">
-                    <button class="btn-change-password" onclick="openChangePasswordModal()">
-                        <i class="fas fa-key"></i> Change Password
-                    </button>
-                </div>
+            tableHTML += `
+                    </tbody>
+                </table>
             `;
             
-            elements.accountInfo.innerHTML = accountInfoHTML;
+            elements.planHistoryContent.innerHTML = tableHTML;
+        }
+        
+        function updatePlanStatuses(planHistory) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            return planHistory.map(plan => {
+                let isActive = false;
+                
+                if (plan.planEndDate) {
+                    try {
+                        let endDate;
+                        if (/^\d{2}-\d{2}-\d{4}$/.test(plan.planEndDate)) {
+                            const parts = plan.planEndDate.split('-');
+                            endDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                        } else {
+                            endDate = new Date(plan.planEndDate);
+                        }
+                        
+                        if (!isNaN(endDate.getTime())) {
+                            endDate.setHours(0, 0, 0, 0);
+                            isActive = endDate >= today;
+                        }
+                    } catch (e) {
+                        console.error('Error checking plan end date:', e);
+                    }
+                } else if (plan.planStartDate) {
+                    // If no end date, check if start date is in the last 30 days
+                    try {
+                        let startDate;
+                        if (/^\d{2}-\d{2}-\d{4}$/.test(plan.planStartDate)) {
+                            const parts = plan.planStartDate.split('-');
+                            startDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                        } else {
+                            startDate = new Date(plan.planStartDate);
+                        }
+                        
+                        if (!isNaN(startDate.getTime())) {
+                            startDate.setHours(0, 0, 0, 0);
+                            const thirtyDaysAgo = new Date();
+                            thirtyDaysAgo.setDate(today.getDate() - 30);
+                            isActive = startDate >= thirtyDaysAgo;
+                        }
+                    } catch (e) {
+                        console.error('Error checking plan start date:', e);
+                    }
+                }
+                
+                return {
+                    ...plan,
+                    isActive: isActive
+                };
+            });
+        }
+        
+        function addSampleHistoryData(userId) {
+            const historyKey = PLAN_HISTORY_PREFIX + userId;
+            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+            
+            // Get today's date
+            const today = new Date();
+            
+            // Add sample historical records for 36 months (3 years)
+            const sampleRecords = [];
+            
+            for (let i = 0; i < 36; i++) {
+                const monthOffset = i;
+                const recordDate = new Date();
+                recordDate.setMonth(today.getMonth() - monthOffset);
+                
+                const startDate = new Date(recordDate);
+                startDate.setDate(1);
+                
+                const endDate = new Date(startDate);
+                endDate.setMonth(startDate.getMonth() + 1);
+                endDate.setDate(0);
+                
+                const plans = ['Premium Plan', 'Standard Plan', 'Basic Plan'];
+                const planGBs = ['50 GB', '30 GB', '20 GB'];
+                const amounts = [599, 399, 299];
+                
+                const randomIndex = Math.floor(Math.random() * plans.length);
+                
+                // Format dates as DD-MM-YYYY
+                const formatDate = (date) => {
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const year = date.getFullYear();
+                    return `${day}-${month}-${year}`;
+                };
+                
+                const formattedStartDate = formatDate(startDate);
+                const formattedEndDate = formatDate(endDate);
+                
+                // Check if plan is active (end date is in future)
+                const isActive = isDateInFuture(formattedEndDate);
+                
+                sampleRecords.push({
+                    planName: plans[randomIndex],
+                    planGB: planGBs[randomIndex],
+                    planDuration: '30 Days',
+                    planStartDate: formattedStartDate,
+                    planEndDate: formattedEndDate,
+                    amountPaid: amounts[randomIndex],
+                    recordedAt: startDate.toISOString(),
+                    isActive: isActive && i === 0 // Only make the most recent one active if end date is in future
+                });
+            }
+            
+            // Add sample records to history
+            history = [...sampleRecords, ...history];
+            
+            // Keep only 36 records
+            if (history.length > 36) {
+                history = history.slice(0, 36);
+            }
+            
+            localStorage.setItem(historyKey, JSON.stringify(history));
         }
 
-        function getStatusClass(status) {
-            switch(status) {
-                case 'Successful': return 'status-successful';
-                case 'Processing': return 'status-processing';
-                case 'Not Paid': return 'status-notpaid';
-                case 'Cancelled': return 'status-cancelled';
-                default: return '';
+        // ====== FORGOT PASSWORD FUNCTIONS ======
+        function openForgotPasswordModal() {
+            elements.forgotPasswordModal.style.display = 'flex';
+            elements.forgotEmail.value = '';
+            elements.forgotPhone.value = '';
+            elements.forgotDOB.value = '';
+            elements.forgotPasswordError.style.display = 'none';
+            elements.forgotPasswordLoading.style.display = 'none';
+            elements.forgotPasswordActions.style.display = 'flex';
+        }
+
+        function closeForgotPasswordModal() {
+            elements.forgotPasswordModal.style.display = 'none';
+            // Don't clear userToReset here - it's needed for reset password
+        }
+
+        function handleForgotPassword(e) {
+            e.preventDefault();
+            
+            const emailId = elements.forgotEmail.value.trim();
+            const phone = elements.forgotPhone.value.trim();
+            const dobInput = elements.forgotDOB.value.trim();
+            
+            console.log('Forgot password attempt:', { emailId, phone, dobInput });
+            
+            if (!emailId || !phone || !dobInput) {
+                showForgotPasswordError('Please enter all required details.');
+                return;
+            }
+            
+            if (!validateEmail(emailId)) {
+                showForgotPasswordError('Please enter a valid email address.');
+                return;
+            }
+            
+            const normalizedDOB = normalizeDateForComparison(dobInput);
+            if (!/^\d{2}-\d{2}-\d{4}$/.test(normalizedDOB)) {
+                showForgotPasswordError('Please enter Date of Birth in DD-MM-YYYY format.');
+                return;
+            }
+            
+            hideForgotPasswordError();
+            elements.forgotPasswordLoading.style.display = 'block';
+            elements.forgotPasswordActions.style.display = 'none';
+            elements.btnVerifyDetails.disabled = true;
+            
+            setTimeout(() => {
+                const userData = verifyUserDetails(emailId, phone, normalizedDOB);
+                
+                if (userData) {
+                    console.log('User verified, storing userToReset:', userData);
+                    userToReset = userData;  // Store user data
+                    console.log('userToReset after setting:', userToReset);
+                    
+                    closeForgotPasswordModal();
+                    
+                    // Small delay to ensure modal transition completes
+                    setTimeout(() => {
+                        console.log('Opening reset password modal, userToReset:', userToReset);
+                        openResetPasswordModal();
+                    }, 300);
+                } else {
+                    showForgotPasswordError('Verification failed. Please check your details and try again.');
+                    shakeForgotPasswordForm();
+                    userToReset = null;  // Clear if verification fails
+                }
+                
+                elements.forgotPasswordLoading.style.display = 'none';
+                elements.forgotPasswordActions.style.display = 'flex';
+                elements.btnVerifyDetails.disabled = false;
+            }, 1000);
+        }
+
+        function verifyUserDetails(emailId, phone, dob) {
+            console.log('Verifying user:', emailId, phone, dob);
+            
+            // First check permanent storage
+            const permanentData = getUserDataPermanently(emailId);
+            console.log('Permanent data found:', permanentData);
+            
+            if (permanentData) {
+                const userDOB = formatDateToDDMMYYYY(permanentData.dob || '');
+                const normalizedUserDOB = normalizeDateForComparison(userDOB);
+                
+                // Check if phone matches (normalize both for comparison)
+                const userPhone = (permanentData.phone || '').toString().trim().replace(/\s+/g, '');
+                const inputPhone = phone.trim().replace(/\s+/g, '');
+                
+                console.log('Comparing:', {
+                    userPhone: userPhone,
+                    inputPhone: inputPhone,
+                    userDOB: normalizedUserDOB,
+                    inputDOB: dob
+                });
+                
+                if (userPhone === inputPhone && normalizedUserDOB === dob) {
+                    console.log('Verification successful with permanent data');
+                    return permanentData;
+                }
+            }
+            
+            // Also check admin storage (user_ prefix)
+            const keys = Object.keys(localStorage);
+            console.log('Checking admin storage, total keys:', keys.length);
+            
+            for (const key of keys) {
+                if (key.startsWith('user_')) {
+                    try {
+                        const userData = JSON.parse(localStorage.getItem(key));
+                        
+                        // Check if this is the user by email
+                        let userEmail = '';
+                        try {
+                            if (userData.encryptedData) {
+                                const decrypted = JSON.parse(decryptData(userData.encryptedData));
+                                userEmail = decrypted.personalInfo?.email || '';
+                            }
+                        } catch (decryptError) {
+                            console.error('Error decrypting email:', decryptError);
+                        }
+                        
+                        if (!userEmail && userData.email) {
+                            try {
+                                userEmail = decryptData(userData.email);
+                            } catch (e) {
+                                userEmail = userData.email;
+                            }
+                        }
+                        
+                        // Also check userId
+                        if (!userEmail && userData.userId) {
+                            userEmail = userData.userId;
+                        }
+                        
+                        console.log('Checking user:', { key, userEmail, userId: userData.userId });
+                        
+                        if (userEmail && (userEmail === emailId || userData.userId === emailId)) {
+                            // Extract personal info for verification
+                            const extractedData = extractRequiredFields(userData);
+                            const userDOB = formatDateToDDMMYYYY(extractedData.dob || '');
+                            const normalizedUserDOB = normalizeDateForComparison(userDOB);
+                            
+                            // Normalize phone numbers for comparison
+                            const userPhone = (extractedData.phone || '').toString().trim().replace(/\s+/g, '');
+                            const inputPhone = phone.trim().replace(/\s+/g, '');
+                            
+                            console.log('Admin storage comparison:', {
+                                userPhone: userPhone,
+                                inputPhone: inputPhone,
+                                userDOB: normalizedUserDOB,
+                                inputDOB: dob
+                            });
+                            
+                            if (userPhone === inputPhone && normalizedUserDOB === dob) {
+                                console.log('Verification successful with admin storage');
+                                return extractedData;
+                            }
+                        }
+                    } catch (parseError) {
+                        console.error('Error parsing user data:', parseError);
+                        continue;
+                    }
+                }
+            }
+            
+            console.log('No user found matching the criteria');
+            return null;
+        }
+
+        // ====== RESET PASSWORD FUNCTIONS ======
+        function openResetPasswordModal() {
+            console.log('openResetPasswordModal called, userToReset:', userToReset);
+            
+            if (!userToReset) {
+                alert('User data not found. Please go through the forgot password process again.');
+                
+                // Show forgot password modal again
+                openForgotPasswordModal();
+                return;
+            }
+            
+            elements.resetPasswordModal.style.display = 'flex';
+            elements.resetNewPassword.value = '';
+            elements.resetConfirmPassword.value = '';
+            elements.resetPasswordMatchError.style.display = 'none';
+            elements.btnResetPassword.disabled = false;
+            
+            // Debug: show user info in console
+            console.log('Opening reset modal for user:', {
+                userId: userToReset.userId,
+                email: userToReset.email,
+                name: userToReset.fullName
+            });
+        }
+
+        function closeResetPasswordModal() {
+            elements.resetPasswordModal.style.display = 'none';
+            userToReset = null;
+        }
+
+        function checkResetPasswordMatch() {
+            const newPass = elements.resetNewPassword.value;
+            const confirmPass = elements.resetConfirmPassword.value;
+            
+            if (newPass && confirmPass && newPass !== confirmPass) {
+                elements.resetPasswordMatchError.style.display = 'block';
+                elements.btnResetPassword.disabled = true;
+            } else {
+                elements.resetPasswordMatchError.style.display = 'none';
+                elements.btnResetPassword.disabled = !(newPass && confirmPass);
             }
         }
 
-        // ====== PASSWORD CHANGE FUNCTIONS ======
+        function handleResetPassword(e) {
+            e.preventDefault();
+            
+            console.log('Reset password button clicked, userToReset:', userToReset);
+            
+            const newPassword = elements.resetNewPassword.value;
+            const confirmPassword = elements.resetConfirmPassword.value;
+            
+            if (newPassword !== confirmPassword) {
+                elements.resetPasswordMatchError.style.display = 'block';
+                return;
+            }
+            
+            if (!validatePasswordStrength(newPassword)) {
+                alert('Password does not meet requirements. Please ensure it has:\n- Minimum 8 characters\n- At least one uppercase letter\n- At least one lowercase letter\n- At least one number\n- At least one special character');
+                return;
+            }
+            
+            // Check userToReset with more detailed logging
+            if (!userToReset) {
+                console.error('userToReset is null or undefined at reset time');
+                console.log('Available variables:', {
+                    currentUserData: currentUserData,
+                    currentUserId: currentUserId,
+                    userToReset: userToReset
+                });
+                
+                alert('User session expired. Please try the forgot password process again from the beginning.');
+                closeResetPasswordModal();
+                
+                // Show forgot password modal again
+                setTimeout(() => {
+                    openForgotPasswordModal();
+                }, 500);
+                return;
+            }
+            
+            console.log('Proceeding with password reset for:', userToReset.email || userToReset.userId);
+            
+            elements.btnResetPassword.disabled = true;
+            elements.btnResetPassword.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resetting Password...';
+            
+            setTimeout(() => {
+                try {
+                    const userId = userToReset.userId || userToReset.email;
+                    console.log('Resetting password for user ID:', userId);
+                    
+                    if (!userId) {
+                        throw new Error('No user ID found in userToReset');
+                    }
+                    
+                    // Try to find the user in storage again
+                    const userInStorage = verifyUserDetails(userToReset.email || userId, userToReset.phone || '', userToReset.dob || '');
+                    if (!userInStorage) {
+                        throw new Error('User not found in storage. Data may have been modified.');
+                    }
+                    
+                    // Update in permanent storage
+                    const permanentData = getUserDataPermanently(userId);
+                    if (permanentData) {
+                        permanentData.isFirstLogin = false;
+                        permanentData.updatedAt = new Date().toISOString();
+                        localStorage.setItem(USER_DATA_PREFIX + userId, JSON.stringify(permanentData));
+                        console.log('Updated permanent storage for:', userId);
+                    } else {
+                        // Create permanent entry if it doesn't exist
+                        const newPermanentData = {
+                            ...userToReset,
+                            isFirstLogin: false,
+                            savedAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString(),
+                            isPermanent: true,
+                            source: 'password_reset'
+                        };
+                        localStorage.setItem(USER_DATA_PREFIX + userId, JSON.stringify(newPermanentData));
+                        console.log('Created new permanent storage for:', userId);
+                    }
+                    
+                    // Update in admin storage if it exists
+                    const adminKey = `user_${userId}`;
+                    const adminData = localStorage.getItem(adminKey);
+                    if (adminData) {
+                        try {
+                            const parsedData = JSON.parse(adminData);
+                            if (parsedData.encryptedData) {
+                                const decrypted = JSON.parse(decryptData(parsedData.encryptedData));
+                                decrypted.password = encryptData(newPassword);
+                                parsedData.encryptedData = encryptData(JSON.stringify(decrypted));
+                                localStorage.setItem(adminKey, JSON.stringify(parsedData));
+                                console.log('Updated admin storage for:', userId);
+                            }
+                        } catch (adminError) {
+                            console.error('Error updating admin storage:', adminError);
+                        }
+                    }
+                    
+                    // Update log
+                    updateUserLog(userId, {
+                        isFirstLogin: false,
+                        passwordResetAt: new Date().toISOString(),
+                        resetMethod: 'forgot_password'
+                    });
+                    
+                    console.log('Password reset successful for:', userId);
+                    showSuccessToast('Password Reset Successfully!', 'You can now login with your new password.');
+                    
+                    setTimeout(() => {
+                        closeResetPasswordModal();
+                        elements.btnResetPassword.disabled = false;
+                        elements.btnResetPassword.innerHTML = '<i class="fas fa-save"></i> Reset Password';
+                        
+                        // Clear the forgot password form
+                        elements.forgotEmail.value = '';
+                        elements.forgotPhone.value = '';
+                        elements.forgotDOB.value = '';
+                        
+                        // Clear userToReset after successful reset
+                        userToReset = null;
+                    }, 1000);
+                    
+                } catch (error) {
+                    console.error('Error resetting password:', error);
+                    alert('Error resetting password. Please try again.\n\nError: ' + error.message);
+                    elements.btnResetPassword.disabled = false;
+                    elements.btnResetPassword.innerHTML = '<i class="fas fa-save"></i> Reset Password';
+                }
+            }, 1000);
+        }
+
+        // ====== CHANGE PASSWORD FUNCTIONS ======
         function openChangePasswordModal() {
             elements.changePasswordModal.style.display = 'flex';
+            elements.currentPassword.value = '';
             elements.newPassword.value = '';
             elements.confirmPassword.value = '';
             elements.passwordMatchError.style.display = 'none';
             elements.btnSubmitPassword.disabled = true;
         }
 
-        function closePasswordModal() {
+        function closeChangePasswordModal() {
             elements.changePasswordModal.style.display = 'none';
         }
 
@@ -1181,149 +2278,163 @@
                 elements.btnSubmitPassword.disabled = true;
             } else {
                 elements.passwordMatchError.style.display = 'none';
-                
-                // Enable button only if both fields have values
-                if (newPass && confirmPass) {
-                    elements.btnSubmitPassword.disabled = false;
-                } else {
-                    elements.btnSubmitPassword.disabled = true;
-                }
+                elements.btnSubmitPassword.disabled = !(newPass && confirmPass);
             }
         }
 
-        function handlePasswordChange(e) {
+        function handleChangePassword(e) {
             e.preventDefault();
             
+            const currentPassword = elements.currentPassword.value;
             const newPassword = elements.newPassword.value;
             const confirmPassword = elements.confirmPassword.value;
             
-            // Validate password match
+            // Allow default password for first time login
+            if (isFirstTimeLogin && currentPassword === DEFAULT_PASSWORD) {
+                // This is allowed for first time login
+            } else if (!verifyPassword(currentUserData, currentPassword)) {
+                showLoginError('Current password is incorrect.');
+                closeChangePasswordModal();
+                return;
+            }
+            
             if (newPassword !== confirmPassword) {
                 elements.passwordMatchError.style.display = 'block';
                 return;
             }
             
-            // Validate password strength
             if (!validatePasswordStrength(newPassword)) {
-                showError('Password does not meet requirements. Please check the requirements below.');
+                showLoginError('New password does not meet requirements.');
                 return;
             }
             
-            // Disable button during processing
+            if (currentPassword === newPassword) {
+                showLoginError('New password must be different from current password.');
+                return;
+            }
+            
             elements.btnSubmitPassword.disabled = true;
             elements.btnSubmitPassword.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Changing Password...';
             
-            // Simulate processing delay
             setTimeout(() => {
                 try {
-                    // Update user data in both storage locations
-                    if (currentUserData && currentUserId) {
-                        // Increment password attempts count
-                        const newAttempts = (currentUserData.passwordAttempts || 0) + 1;
-                        currentUserData.passwordAttempts = newAttempts;
-                        
-                        // Update in BOTH locations:
-                        // 1. Regular user storage (from admin.html)
-                        try {
-                            localStorage.setItem(`user_${currentUserId}`, JSON.stringify(currentUserData));
-                        } catch (e) {
-                            console.log('Regular user storage not available');
-                        }
-                        
-                        // 2. User log storage (persistent)
-                        updateUserLog(currentUserId, {
-                            passwordAttempts: newAttempts,
-                            lastPasswordChange: new Date().toISOString()
-                        });
-                        
-                        // Update the display
-                        displayUserInfo(currentUserData);
-                        
-                        // Show success toast
-                        showPasswordSuccessToast();
-                        
-                        // Close modal after a delay
-                        setTimeout(() => {
-                            closePasswordModal();
-                        }, 500);
+                    const userId = currentUserData.userId || currentUserData.email;
+                    
+                    // Update in permanent storage
+                    const permanentData = getUserDataPermanently(userId);
+                    if (permanentData) {
+                        permanentData.isFirstLogin = false;
+                        permanentData.updatedAt = new Date().toISOString();
+                        localStorage.setItem(USER_DATA_PREFIX + userId, JSON.stringify(permanentData));
                     }
+                    
+                    // Update in admin storage if it exists
+                    const adminKey = `user_${userId}`;
+                    const adminData = localStorage.getItem(adminKey);
+                    if (adminData) {
+                        const parsedData = JSON.parse(adminData);
+                        if (parsedData.encryptedData) {
+                            const decrypted = JSON.parse(decryptData(parsedData.encryptedData));
+                            decrypted.password = encryptData(newPassword);
+                            parsedData.encryptedData = encryptData(JSON.stringify(decrypted));
+                            localStorage.setItem(adminKey, JSON.stringify(parsedData));
+                        }
+                    }
+                    
+                    // Update log
+                    updateUserLog(userId, {
+                        isFirstLogin: false,
+                        passwordChangedAt: new Date().toISOString()
+                    });
+                    
+                    showSuccessToast('Password Changed Successfully!', 'You will be logged out automatically.');
+                    
+                    // Hide security alert
+                    elements.securityAlert.style.display = 'none';
+                    
+                    // Automatically logout after 2 seconds
+                    setTimeout(() => {
+                        resetLogin();
+                        closeChangePasswordModal();
+                        elements.btnSubmitPassword.disabled = false;
+                        elements.btnSubmitPassword.innerHTML = '<i class="fas fa-save"></i> Change Password';
+                    }, 2000);
+                    
                 } catch (error) {
-                    console.error('Error updating password attempts:', error);
-                    showError('Error updating password. Please try again.');
-                } finally {
-                    // Reset button state
+                    console.error('Error updating password:', error);
+                    showLoginError('Error updating password. Please try again.');
                     elements.btnSubmitPassword.disabled = false;
                     elements.btnSubmitPassword.innerHTML = '<i class="fas fa-save"></i> Change Password';
                 }
             }, 1000);
         }
 
-        function validatePasswordStrength(password) {
-            // Minimum 8 characters
-            if (password.length < 8) return false;
-            
-            // At least one uppercase letter
-            if (!/[A-Z]/.test(password)) return false;
-            
-            // At least one lowercase letter
-            if (!/[a-z]/.test(password)) return false;
-            
-            // At least one number
-            if (!/\d/.test(password)) return false;
-            
-            // At least one special character
-            if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) return false;
-            
-            return true;
+        // ====== RECHARGE FUNCTION ======
+        function rechargeNow() {
+            alert('Recharge functionality will be configured later. For now, please contact administrator for recharge.');
         }
 
-        function showPasswordSuccessToast() {
-            elements.passwordSuccessToast.style.display = 'flex';
-            elements.passwordSuccessToast.style.animation = 'slideIn 0.3s ease';
-            
-            // Auto hide after 3 seconds
-            setTimeout(() => {
-                elements.passwordSuccessToast.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    elements.passwordSuccessToast.style.display = 'none';
-                }, 300);
-            }, 3000);
-        }
-
-        function resetSearch() {
-            // Reset form
-            elements.searchForm.reset();
-            
-            // Hide user info, show search
+        // ====== UTILITY FUNCTIONS ======
+        function resetLogin() {
+            elements.loginForm.reset();
             elements.userInfoSection.style.display = 'none';
-            elements.searchSection.style.display = 'block';
-            
-            // Clear error message
-            hideError();
-            
-            // Clear current user data
+            elements.loginSection.style.display = 'block';
+            elements.securityAlert.style.display = 'none';
+            hideLoginError();
+            hideFirstTimeNote();
             currentUserData = null;
             currentUserId = null;
-            
-            // Scroll to top
+            isFirstTimeLogin = false;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function showError(message) {
-            elements.errorMessage.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
-            elements.errorMessage.style.display = 'block';
+        function showLoginError(message) {
+            elements.loginErrorMessage.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            elements.loginErrorMessage.style.display = 'block';
             shakeForm();
         }
 
-        function hideError() {
-            elements.errorMessage.style.display = 'none';
+        function hideLoginError() {
+            elements.loginErrorMessage.style.display = 'none';
+        }
+
+        function showForgotPasswordError(message) {
+            elements.forgotPasswordError.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            elements.forgotPasswordError.style.display = 'block';
+            shakeForgotPasswordForm();
+        }
+
+        function hideForgotPasswordError() {
+            elements.forgotPasswordError.style.display = 'none';
         }
 
         function shakeForm() {
-            elements.searchSection.style.animation = 'shake 0.5s ease';
+            elements.loginSection.style.animation = 'shake 0.5s ease';
             setTimeout(() => {
-                elements.searchSection.style.animation = '';
+                elements.loginSection.style.animation = '';
             }, 500);
+        }
+
+        function shakeForgotPasswordForm() {
+            elements.forgotPasswordModal.style.animation = 'shake 0.5s ease';
+            setTimeout(() => {
+                elements.forgotPasswordModal.style.animation = '';
+            }, 500);
+        }
+
+        function showSuccessToast(title, message) {
+            const toast = elements.passwordSuccessToast;
+            toast.querySelector('.toast-title').textContent = title;
+            toast.querySelector('.toast-message').textContent = message;
+            toast.style.display = 'flex';
+            toast.style.animation = 'slideIn 0.3s ease';
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 300);
+            }, 3000);
         }
 
         // Add animations
@@ -1333,42 +2444,6 @@
                 0%, 100% { transform: translateX(0); }
                 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
                 20%, 40%, 60%, 80% { transform: translateX(5px); }
-            }
-            
-            .status-successful {
-                color: #1b5e20;
-                background: #e8f5e9;
-                padding: 3px 10px;
-                border-radius: 12px;
-                font-size: 0.9rem;
-                font-weight: 500;
-            }
-            
-            .status-processing {
-                color: #e65100;
-                background: #fff3e0;
-                padding: 3px 10px;
-                border-radius: 12px;
-                font-size: 0.9rem;
-                font-weight: 500;
-            }
-            
-            .status-notpaid {
-                color: #c62828;
-                background: #ffebee;
-                padding: 3px 10px;
-                border-radius: 12px;
-                font-size: 0.9rem;
-                font-weight: 500;
-            }
-            
-            .status-cancelled {
-                color: #616161;
-                background: #f5f5f5;
-                padding: 3px 10px;
-                border-radius: 12px;
-                font-size: 0.9rem;
-                font-weight: 500;
             }
             
             .fa-spinner {
