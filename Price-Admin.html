@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Admin - Odelya Cloud</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+            authDomain: "odelya-user-data.firebaseapp.com",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.firebasestorage.app",
+            messagingSenderId: "590231118790",
+            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+            measurementId: "G-9SWTR9V32R"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        window.firebaseDb = db;
+        window.firebaseDoc = doc;
+        window.getDoc = getDoc;
+        window.setDoc = setDoc;
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .admin-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, #1a237e, #0d47a1);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .admin-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .admin-header p {
+            opacity: 0.9;
+        }
+        
+        .admin-content {
+            padding: 40px;
+        }
+        
+        .admin-form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group label i {
+            color: #1a237e;
+        }
+        
+        .form-control {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #1a237e;
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+        }
+        
+        .form-hint {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            margin-left: 5px;
+        }
+        
+        .current-values {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .current-values h3 {
+            color: #1a237e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .value-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .value-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .value-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .value-number {
+            color: #1a237e;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .value-unit {
+            color: #666;
+            font-size: 0.9rem;
+            margin-left: 2px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #1a237e, #0d47a1);
+            color: white;
+        }
+        
+        .btn-save:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(26, 35, 126, 0.3);
+        }
+        
+        .btn-back {
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .btn-back:hover {
+            background: #e0e0e0;
+            transform: translateY(-3px);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+        
+        .notification.success {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .notification.error {
+            background: #f44336;
+            color: white;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .admin-container {
+                margin: 20px auto;
+            }
+            
+            .admin-content {
+                padding: 25px;
+            }
+            
+            .value-display {
+                grid-template-columns: 1fr;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><i class="fas fa-cog"></i> Price Administration</h1>
+            <p>Update pricing rates that will be reflected on the cloud storage page</p>
+        </div>
+        
+        <div class="admin-content">
+            <form class="admin-form" id="priceForm">
+                <div class="form-group">
+                    <label for="dataRate">
+                        <i class="fas fa-rupee-sign"></i> Data Rate (per GB)
+                    </label>
+                    <input type="number" 
+                           id="dataRate" 
+                           class="form-control" 
+                           step="0.1" 
+                           min="0.1" 
+                           max="10" 
+                           placeholder="e.g., 1.5"
+                           required>
+                    <div class="form-hint">Rate in ₹ per GB (e.g., 1.5 means ₹1.5 per GB)</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gstRate">
+                        <i class="fas fa-percentage"></i> GST Rate (%)
+                    </label>
+                    <input type="number" 
+                           id="gstRate" 
+                           class="form-control" 
+                           step="0.1" 
+                           min="0" 
+                           max="30" 
+                           placeholder="e.g., 18"
+                           required>
+                    <div class="form-hint">GST percentage (e.g., 18 for 18% GST)</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="specialDiscount">
+                        <i class="fas fa-tag"></i> Special Discount (%)
+                    </label>
+                    <input type="number" 
+                           id="specialDiscount" 
+                           class="form-control" 
+                           step="0.1" 
+                           min="0" 
+                           max="50" 
+                           placeholder="e.g., 10"
+                           required>
+                    <div class="form-hint">Additional discount percentage (0-50%)</div>
+                </div>
+            </form>
+            
+            <div class="current-values" id="currentValues">
+                <h3><i class="fas fa-chart-line"></i> Current Values</h3>
+                <div class="value-display">
+                    <div class="value-item">
+                        <div class="value-label">Data Rate</div>
+                        <div class="value-number" id="currentDataRate">1.5</div>
+                        <span class="value-unit">₹/GB</span>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-label">GST Rate</div>
+                        <div class="value-number" id="currentGstRate">18</div>
+                        <span class="value-unit">%</span>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-label">Special Discount</div>
+                        <div class="value-number" id="currentDiscount">0</div>
+                        <span class="value-unit">%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button type="button" class="btn btn-back" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Back to Pricing
+                </button>
+                <button type="button" class="btn btn-save" onclick="savePrices()">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // ====== LOAD CURRENT PRICES ======
+        async function loadCurrentPrices() {
+            try {
+                const pricingRef = window.firebaseDoc(window.firebaseDb, "settings", "pricing");
+                const docSnap = await window.getDoc(pricingRef);
+                
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    // Update form fields
+                    document.getElementById('dataRate').value = data.dataRate || 1.5;
+                    document.getElementById('gstRate').value = data.gstRate || 18;
+                    document.getElementById('specialDiscount').value = data.specialDiscount || 0;
+                    
+                    // Update current values display
+                    document.getElementById('currentDataRate').textContent = data.dataRate || 1.5;
+                    document.getElementById('currentGstRate').textContent = data.gstRate || 18;
+                    document.getElementById('currentDiscount').textContent = data.specialDiscount || 0;
+                    
+                    console.log('✅ Current prices loaded');
+                } else {
+                    console.log('⚠️ No pricing data found, using defaults');
+                }
+            } catch (error) {
+                console.error('❌ Error loading prices:', error);
+                showNotification('Error loading current prices', 'error');
+            }
+        }
+        
+        // ====== SAVE PRICES TO FIREBASE ======
+        async function savePrices() {
+            try {
+                // Get values from form
+                const dataRate = parseFloat(document.getElementById('dataRate').value);
+                const gstRate = parseFloat(document.getElementById('gstRate').value);
+                const specialDiscount = parseFloat(document.getElementById('specialDiscount').value);
+                
+                // Validate
+                if (isNaN(dataRate) || dataRate < 0.1 || dataRate > 10) {
+                    showNotification('Please enter a valid data rate (0.1-10 ₹/GB)', 'error');
+                    return;
+                }
+                
+                if (isNaN(gstRate) || gstRate < 0 || gstRate > 30) {
+                    showNotification('Please enter a valid GST rate (0-30%)', 'error');
+                    return;
+                }
+                
+                if (isNaN(specialDiscount) || specialDiscount < 0 || specialDiscount > 50) {
+                    showNotification('Please enter a valid discount (0-50%)', 'error');
+                    return;
+                }
+                
+                // Save to Firebase
+                const pricingRef = window.firebaseDoc(window.firebaseDb, "settings", "pricing");
+                await window.setDoc(pricingRef, {
+                    dataRate: dataRate,
+                    gstRate: gstRate,
+                    specialDiscount: specialDiscount,
+                    lastUpdated: new Date().toISOString(),
+                    updatedBy: 'admin'
+                });
+                
+                // Update current values display
+                document.getElementById('currentDataRate').textContent = dataRate;
+                document.getElementById('currentGstRate').textContent = gstRate;
+                document.getElementById('currentDiscount').textContent = specialDiscount;
+                
+                // Show success message
+                showNotification('Prices saved successfully! Changes will reflect immediately.', 'success');
+                
+                console.log('✅ Prices saved to Firebase:', { dataRate, gstRate, specialDiscount });
+                
+            } catch (error) {
+                console.error('❌ Error saving prices:', error);
+                showNotification('Error saving prices: ' + error.message, 'error');
+            }
+        }
+        
+        // ====== SHOW NOTIFICATION ======
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'flex';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+        
+        // ====== GO BACK TO PRICING PAGE ======
+        function goBack() {
+            window.location.href = 'cloud-storage.html?admin=true';
+        }
+        
+        // ====== INITIALIZE PAGE ======
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCurrentPrices();
+            
+            // Auto-save when Enter is pressed
+            document.getElementById('priceForm').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    savePrices();
+                }
+            });
+            
+            // Keyboard shortcut: Ctrl+S to save
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    savePrices();
+                }
+            });
+            
+            console.log('✅ Price admin page initialized');
+        });
+    </script>
+</body>
+</html>
