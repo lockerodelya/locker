@@ -138,7 +138,7 @@
         
         .value-display {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
         }
         
@@ -302,21 +302,6 @@
                            required>
                     <div class="form-hint">GST percentage (e.g., 18 for 18% GST)</div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="specialDiscount">
-                        <i class="fas fa-tag"></i> Special Discount (%)
-                    </label>
-                    <input type="number" 
-                           id="specialDiscount" 
-                           class="form-control" 
-                           step="0.1" 
-                           min="0" 
-                           max="50" 
-                           placeholder="e.g., 10"
-                           required>
-                    <div class="form-hint">Additional discount percentage (0-50%)</div>
-                </div>
             </form>
             
             <div class="current-values" id="currentValues">
@@ -330,11 +315,6 @@
                     <div class="value-item">
                         <div class="value-label">GST Rate</div>
                         <div class="value-number" id="currentGstRate">18</div>
-                        <span class="value-unit">%</span>
-                    </div>
-                    <div class="value-item">
-                        <div class="value-label">Special Discount</div>
-                        <div class="value-number" id="currentDiscount">0</div>
                         <span class="value-unit">%</span>
                     </div>
                 </div>
@@ -367,12 +347,10 @@
                     // Update form fields
                     document.getElementById('dataRate').value = data.dataRate || 1.5;
                     document.getElementById('gstRate').value = data.gstRate || 18;
-                    document.getElementById('specialDiscount').value = data.specialDiscount || 0;
                     
                     // Update current values display
                     document.getElementById('currentDataRate').textContent = data.dataRate || 1.5;
                     document.getElementById('currentGstRate').textContent = data.gstRate || 18;
-                    document.getElementById('currentDiscount').textContent = data.specialDiscount || 0;
                     
                     console.log('✅ Current prices loaded');
                 } else {
@@ -390,7 +368,6 @@
                 // Get values from form
                 const dataRate = parseFloat(document.getElementById('dataRate').value);
                 const gstRate = parseFloat(document.getElementById('gstRate').value);
-                const specialDiscount = parseFloat(document.getElementById('specialDiscount').value);
                 
                 // Validate
                 if (isNaN(dataRate) || dataRate < 0.1 || dataRate > 10) {
@@ -403,17 +380,11 @@
                     return;
                 }
                 
-                if (isNaN(specialDiscount) || specialDiscount < 0 || specialDiscount > 50) {
-                    showNotification('Please enter a valid discount (0-50%)', 'error');
-                    return;
-                }
-                
-                // Save to Firebase
+                // Save to Firebase (NO specialDiscount field)
                 const pricingRef = window.firebaseDoc(window.firebaseDb, "settings", "pricing");
                 await window.setDoc(pricingRef, {
                     dataRate: dataRate,
                     gstRate: gstRate,
-                    specialDiscount: specialDiscount,
                     lastUpdated: new Date().toISOString(),
                     updatedBy: 'admin'
                 });
@@ -421,12 +392,11 @@
                 // Update current values display
                 document.getElementById('currentDataRate').textContent = dataRate;
                 document.getElementById('currentGstRate').textContent = gstRate;
-                document.getElementById('currentDiscount').textContent = specialDiscount;
                 
                 // Show success message
                 showNotification('Prices saved successfully! Changes will reflect immediately.', 'success');
                 
-                console.log('✅ Prices saved to Firebase:', { dataRate, gstRate, specialDiscount });
+                console.log('✅ Prices saved to Firebase:', { dataRate, gstRate });
                 
             } catch (error) {
                 console.error('❌ Error saving prices:', error);
