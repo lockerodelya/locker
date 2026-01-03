@@ -4,15 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Odelya - User Registration</title>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <!-- Include your Firebase config -->
-    <script src="firebase-config.js"></script>
+    <!-- Firebase SDKs Version 9 (Modular) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+        import { getFirestore, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+        
+        // Your Firebase configuration - REPLACE WITH YOUR VALUES
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY_HERE",
+            authDomain: "odelya-user-data.firebaseapp.com",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // Make available globally
+        window.firebaseAuth = auth;
+        window.firebaseDb = db;
+        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+        window.setDoc = setDoc;
+        window.doc = doc;
+        window.serverTimestamp = serverTimestamp;
+    </script>
+    
     <!-- Flatpickr for calendar -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
     <style>
         * {
             margin: 0;
@@ -100,6 +125,11 @@
             cursor: not-allowed;
         }
         
+        .required::after {
+            content: " *";
+            color: #f44336;
+        }
+        
         .form-footer {
             text-align: center;
             padding: 30px 0;
@@ -124,8 +154,11 @@
             box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
         }
         
-        .continue-btn:active {
-            transform: translateY(-1px);
+        .continue-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
         /* For small screens */
@@ -138,19 +171,6 @@
                 padding: 20px;
             }
         }
-        
-        /* Status indicator */
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-        
-        .status-active { background-color: #4CAF50; }
-        .status-pending { background-color: #FF9800; }
-        .status-inactive { background-color: #f44336; }
         
         /* Plan duration selector */
         .duration-options {
@@ -179,6 +199,19 @@
             background-color: #4361ee;
             color: white;
         }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .error-message {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -193,7 +226,7 @@
             <h2 class="section-title">Personal Information</h2>
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="status">Status</label>
+                    <label for="status" class="required">Status</label>
                     <select id="status" disabled class="disabled-input">
                         <option value="pending">Pending</option>
                         <option value="active">Active</option>
@@ -202,24 +235,27 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="userId">User ID</label>
+                    <label for="userId" class="required">User ID</label>
                     <input type="text" id="userId" readonly class="disabled-input" placeholder="Auto-generated">
                 </div>
                 
                 <div class="form-group">
-                    <label for="fullName">Full Name *</label>
+                    <label for="fullName" class="required">Full Name</label>
                     <input type="text" id="fullName" required placeholder="Enter your full name">
+                    <div class="error-message" id="fullNameError"></div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="email">Email ID *</label>
+                    <label for="email" class="required">Email ID</label>
                     <input type="email" id="email" required placeholder="example@domain.com">
+                    <div class="error-message" id="emailError"></div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="phone">Phone Number *</label>
+                    <label for="phone" class="required">Phone Number</label>
                     <input type="tel" id="phone" required pattern="[0-9]{10}" 
                            placeholder="10-digit mobile number" maxlength="10">
+                    <div class="error-message" id="phoneError"></div>
                 </div>
                 
                 <div class="form-group">
@@ -244,17 +280,17 @@
             <h2 class="section-title">Plan Details</h2>
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="planName">Plan Name</label>
+                    <label for="planName" class="required">Plan Name</label>
                     <input type="text" id="planName" readonly class="disabled-input">
                 </div>
                 
                 <div class="form-group">
-                    <label for="planSize">Plan (GB)</label>
+                    <label for="planSize" class="required">Plan (GB)</label>
                     <input type="text" id="planSize" readonly class="disabled-input">
                 </div>
                 
                 <div class="form-group">
-                    <label>Plan Duration</label>
+                    <label class="required">Plan Duration</label>
                     <div class="duration-options">
                         <div class="duration-option" data-duration="30" onclick="selectDuration(30)">Days</div>
                         <div class="duration-option" data-duration="1" onclick="selectDuration(1)">Months</div>
@@ -264,28 +300,31 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="planStartDate">Plan Start Date</label>
+                    <label for="planStartDate" class="required">Plan Start Date</label>
                     <input type="text" id="planStartDate" class="datepicker" placeholder="DD-MM-YYYY">
+                    <div class="error-message" id="startDateError"></div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="planEndDate">Plan End Date</label>
+                    <label for="planEndDate" class="required">Plan End Date</label>
                     <input type="text" id="planEndDate" readonly class="disabled-input" placeholder="Auto-calculated">
                 </div>
                 
                 <div class="form-group">
-                    <label for="planValue">Plan Value (₹)</label>
+                    <label for="planValue" class="required">Plan Value (₹)</label>
                     <input type="text" id="planValue" readonly class="disabled-input">
                 </div>
                 
                 <div class="form-group">
-                    <label for="paymentMode">Payment Mode</label>
+                    <label for="paymentMode" class="required">Payment Mode</label>
                     <select id="paymentMode">
+                        <option value="">Select payment mode</option>
                         <option value="UPI">UPI</option>
                         <option value="Bank Transfer">Bank Transfer</option>
                         <option value="Credit Card">Credit Card</option>
                         <option value="Debit Card">Debit Card</option>
                     </select>
+                    <div class="error-message" id="paymentModeError"></div>
                 </div>
             </div>
             
@@ -293,19 +332,25 @@
             <h2 class="section-title">Account Security</h2>
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="username">Username *</label>
+                    <label for="username" class="required">Username</label>
                     <input type="text" id="username" required placeholder="Choose a username">
+                    <div class="error-message" id="usernameError"></div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="password">Password *</label>
+                    <label for="password" class="required">Password</label>
                     <input type="password" id="password" required placeholder="Create a strong password">
+                    <div class="error-message" id="passwordError"></div>
                 </div>
             </div>
         </div>
         
+        <div class="loading" id="loading">
+            <p>Registering user... Please wait.</p>
+        </div>
+        
         <div class="form-footer">
-            <button class="continue-btn" onclick="submitForm()">Continue to Payment</button>
+            <button class="continue-btn" onclick="submitForm()" id="submitBtn">Continue to Payment</button>
             <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
                 You will be redirected to payment page after successful registration
             </p>
@@ -314,9 +359,23 @@
 
     <script>
         // Initialize date pickers
-        flatpickr(".datepicker", {
-            dateFormat: "d-m-Y",
-            allowInput: true
+        let dobPicker, startDatePicker;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            dobPicker = flatpickr("#dob", {
+                dateFormat: "d-m-Y",
+                allowInput: true
+            });
+            
+            startDatePicker = flatpickr("#planStartDate", {
+                dateFormat: "d-m-Y",
+                allowInput: true,
+                onChange: function(selectedDates, dateStr, instance) {
+                    calculateEndDate();
+                }
+            });
+            
+            autoFillPlanDetails();
         });
         
         // Get URL parameters for plan details
@@ -346,6 +405,10 @@
                                  (today.getMonth() + 1).toString().padStart(2, '0') + '-' + 
                                  today.getFullYear();
             document.getElementById('planStartDate').value = formattedDate;
+            
+            // Set status to pending
+            document.getElementById('status').value = 'pending';
+            
             calculateEndDate();
         }
         
@@ -390,18 +453,54 @@
             }
         }
         
+        // Show error message
+        function showError(fieldId, message) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                document.getElementById(fieldId).style.borderColor = '#f44336';
+            }
+        }
+        
+        // Hide error message
+        function hideError(fieldId) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+                document.getElementById(fieldId).style.borderColor = '#e0e0e0';
+            }
+        }
+        
         // Form validation
         function validateForm() {
-            const requiredFields = ['fullName', 'email', 'phone', 'username', 'password'];
             let isValid = true;
             
-            requiredFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (!field.value.trim()) {
-                    field.style.borderColor = '#f44336';
+            // Clear all errors
+            hideError('fullName');
+            hideError('email');
+            hideError('phone');
+            hideError('username');
+            hideError('password');
+            hideError('startDate');
+            hideError('paymentMode');
+            
+            // Check required fields
+            const requiredFields = [
+                {id: 'fullName', name: 'Full Name'},
+                {id: 'email', name: 'Email ID'},
+                {id: 'phone', name: 'Phone Number'},
+                {id: 'username', name: 'Username'},
+                {id: 'password', name: 'Password'},
+                {id: 'planStartDate', name: 'Plan Start Date'},
+                {id: 'paymentMode', name: 'Payment Mode'}
+            ];
+            
+            requiredFields.forEach(field => {
+                const value = document.getElementById(field.id).value.trim();
+                if (!value) {
+                    showError(field.id, `${field.name} is required`);
                     isValid = false;
-                } else {
-                    field.style.borderColor = '#e0e0e0';
                 }
             });
             
@@ -409,15 +508,22 @@
             const email = document.getElementById('email').value;
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (email && !emailRegex.test(email)) {
-                alert('Please enter a valid email address');
-                return false;
+                showError('email', 'Please enter a valid email address');
+                isValid = false;
             }
             
             // Phone validation
             const phone = document.getElementById('phone').value;
             if (phone && !/^\d{10}$/.test(phone)) {
-                alert('Please enter a valid 10-digit phone number');
-                return false;
+                showError('phone', 'Please enter a valid 10-digit phone number');
+                isValid = false;
+            }
+            
+            // Password validation (at least 6 characters)
+            const password = document.getElementById('password').value;
+            if (password && password.length < 6) {
+                showError('password', 'Password must be at least 6 characters');
+                isValid = false;
             }
             
             return isValid;
@@ -426,17 +532,27 @@
         // Submit form to Firebase
         async function submitForm() {
             if (!validateForm()) {
-                alert('Please fill all required fields correctly.');
                 return;
             }
             
+            // Disable button and show loading
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+            loading.style.display = 'block';
+            
             try {
                 // 1. Create user authentication
-                const username = document.getElementById('username').value;
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
                 
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const userCredential = await createUserWithEmailAndPassword(
+                    window.firebaseAuth, 
+                    email, 
+                    password
+                );
+                
                 const user = userCredential.user;
                 
                 // 2. Prepare user data
@@ -445,9 +561,9 @@
                     fullName: document.getElementById('fullName').value,
                     email: email,
                     phone: document.getElementById('phone').value,
-                    dob: document.getElementById('dob').value,
-                    aadhaar: document.getElementById('aadhaar').value,
-                    pan: document.getElementById('pan').value.toUpperCase(),
+                    dob: document.getElementById('dob').value || null,
+                    aadhaar: document.getElementById('aadhaar').value || null,
+                    pan: document.getElementById('pan').value.toUpperCase() || null,
                     
                     planName: document.getElementById('planName').value,
                     planSize: document.getElementById('planSize').value,
@@ -457,32 +573,47 @@
                     planValue: document.getElementById('planValue').value,
                     paymentMode: document.getElementById('paymentMode').value,
                     
+                    username: document.getElementById('username').value,
                     status: 'pending',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
                 };
                 
                 // 3. Save to Firestore
-                await db.collection('users').doc(user.uid).set(userData);
+                await setDoc(doc(window.firebaseDb, "users", user.uid), userData);
                 
-                alert('Registration successful! Redirecting to payment...');
+                alert('✅ Registration successful! Redirecting to payment...');
                 
                 // 4. Redirect to payment page with user ID
-                window.location.href = `https://www.odelya.online/payment.html?userId=${userData.userId}&amount=${userData.planValue}`;
+                setTimeout(() => {
+                    window.location.href = `https://www.odelya.online/payment.html?userId=${userData.userId}&amount=${userData.planValue.replace('₹', '')}&email=${encodeURIComponent(email)}`;
+                }, 1000);
                 
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error: ' + error.message);
+                
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Continue to Payment';
+                loading.style.display = 'none';
+                
+                // Show user-friendly error messages
+                if (error.code === 'auth/email-already-in-use') {
+                    alert('❌ This email is already registered. Please use a different email or login.');
+                } else if (error.code === 'auth/invalid-email') {
+                    alert('❌ Please enter a valid email address.');
+                } else if (error.code === 'auth/weak-password') {
+                    alert('❌ Password is too weak. Please use at least 6 characters.');
+                } else {
+                    alert('❌ Error: ' + error.message);
+                }
             }
         }
-        
-        // Event listeners
-        document.getElementById('planStartDate').addEventListener('change', calculateEndDate);
-        document.addEventListener('DOMContentLoaded', autoFillPlanDetails);
         
         // Phone number formatting
         document.getElementById('phone').addEventListener('input', function(e) {
             this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            hideError('phone');
         });
         
         // Aadhaar formatting
@@ -494,6 +625,13 @@
         document.getElementById('pan').addEventListener('input', function(e) {
             this.value = this.value.replace(/[^A-Z0-9]/g, '').toUpperCase().slice(0, 10);
         });
+        
+        // Real-time validation
+        document.getElementById('fullName').addEventListener('input', () => hideError('fullName'));
+        document.getElementById('email').addEventListener('input', () => hideError('email'));
+        document.getElementById('username').addEventListener('input', () => hideError('username'));
+        document.getElementById('password').addEventListener('input', () => hideError('password'));
+        document.getElementById('paymentMode').addEventListener('change', () => hideError('paymentMode'));
     </script>
 </body>
 </html>
