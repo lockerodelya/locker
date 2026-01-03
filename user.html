@@ -2072,16 +2072,11 @@
             document.getElementById('passwordMatchError').style.display = 'none';
         }
 
-function openAdminChangePasswordModal() {
-    // For admin, use the same change password modal but with admin-specific handling
-    document.getElementById('changePasswordModal').style.display = 'flex';
-    document.getElementById('passwordMatchError').style.display = 'none';
-    
-    // Clear any previous input
-    document.getElementById('currentPassword').value = '';
-    document.getElementById('newPasswordChange').value = '';
-    document.getElementById('confirmNewPassword').value = '';
-}
+        function openAdminChangePasswordModal() {
+            // For admin, we need to handle differently
+            showToast('Info', 'Admin password change from panel coming soon');
+            return;
+        }
 
         function closeChangePasswordModal() {
             document.getElementById('changePasswordModal').style.display = 'none';
@@ -2123,32 +2118,13 @@ function openAdminChangePasswordModal() {
             }
             
             // For admin, handle separately
-if (user.isAdmin) {
-    // Admin password change
-    if (currentPass !== ADMIN_CREDENTIALS.password) {
-        document.getElementById('passwordMatchError').innerHTML = '<i class="fas fa-exclamation-circle"></i> Current password is incorrect';
-        document.getElementById('passwordMatchError').style.display = 'block';
-        return;
-    }
-    
-    // Update admin password
-    ADMIN_CREDENTIALS.password = newPass;
-    
-    // Also update in localStorage
-    const adminUser = JSON.parse(localStorage.getItem('user_ADMIN'));
-    if (adminUser) {
-        adminUser.password = newPass;
-        localStorage.setItem('user_ADMIN', JSON.stringify(adminUser));
-    }
-    
-    showToast('Success', 'Admin password changed successfully! Logging out...');
-    
-    setTimeout(() => {
-        closeChangePasswordModal();
-        logout(); // Auto logout after password change
-    }, 1500);
-    return;
-}
+            if (user.isAdmin) {
+                // Admin password change
+                if (currentPass !== ADMIN_CREDENTIALS.password) {
+                    document.getElementById('passwordMatchError').innerHTML = '<i class="fas fa-exclamation-circle"></i> Current password is incorrect';
+                    document.getElementById('passwordMatchError').style.display = 'block';
+                    return;
+                }
                 
                 // For demo, we'll just show a message
                 showToast('Success', 'Admin password changed (demo mode)');
@@ -2255,4 +2231,3 @@ if (user.isAdmin) {
     </script>
 </body>
 </html>
-
