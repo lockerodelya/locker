@@ -853,7 +853,7 @@
                                 <!-- Plan history will be populated here -->
                             </tbody>
                         </table>
-                    </div>
+                </div>
                 </div>
 
                 <!-- Recharge Button -->
@@ -914,7 +914,9 @@
                     <div class="form-grid">
                         <div class="form-row">
                             <label><i class="fas fa-id-card"></i> User ID</label>
-                            <input type="text" id="newUserId" placeholder="e.g., USER001">
+                            <input type="number" id="newUserId" placeholder="e.g., 100001" min="100000" max="999999" oninput="validateUserId()">
+                            <div class="date-format">6 digits only (100000-999999)</div>
+                            <div class="error-message" id="userIdError" style="display:none; margin-top:5px;"></div>
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-user"></i> Full Name</label>
@@ -926,7 +928,9 @@
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-phone"></i> Phone</label>
-                            <input type="text" id="newPhone" placeholder="9876543210">
+                            <input type="tel" id="newPhone" placeholder="9876543210" maxlength="10" oninput="validatePhone()">
+                            <div class="date-format">10 digits only</div>
+                            <div class="error-message" id="phoneError" style="display:none; margin-top:5px;"></div>
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-calendar"></i> Date of Birth</label>
@@ -936,11 +940,9 @@
                         <div class="form-row">
                             <label><i class="fas fa-tag"></i> Plan Name</label>
                             <select id="newPlanName">
-                                <option value="Cloud Storage">Cloud Storage</option>
-                                <option value="Event Guest Storage">Event Guest Storage</option>
-                                <option value="Premium Plan">Premium Plan</option>
-                                <option value="Standard Plan">Standard Plan</option>
-                                <option value="Basic Plan">Basic Plan</option>
+                                <option value="cloud storage">Cloud Storage</option>
+                                <option value="event guest storage">Event Guest Storage</option>
+                                <option value="custom storage">Custom Storage</option>
                             </select>
                         </div>
                         <div class="form-row">
@@ -949,23 +951,21 @@
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-calendar-alt"></i> Duration</label>
-                            <select id="newPlanDuration">
-                                <option value="30 Days">30 Days</option>
-                                <option value="60 Days">60 Days</option>
-                                <option value="90 Days">90 Days</option>
-                                <option value="180 Days">180 Days</option>
-                                <option value="365 Days">365 Days</option>
+                            <select id="newPlanDuration" onchange="calculateEndDate()">
+                                <option value="days">Days</option>
+                                <option value="month">Month</option>
+                                <option value="years">Years</option>
                             </select>
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-calendar-day"></i> Start Date</label>
-                            <input type="text" id="newPlanStart" placeholder="DD-MM-YYYY" pattern="\d{2}-\d{2}-\d{4}">
+                            <input type="text" id="newPlanStart" placeholder="DD-MM-YYYY" value="31-01-2025" onchange="calculateEndDate()">
                             <div class="date-format">Format: DD-MM-YYYY</div>
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-calendar-check"></i> End Date</label>
-                            <input type="text" id="newPlanEnd" placeholder="DD-MM-YYYY" pattern="\d{2}-\d{2}-\d{4}">
-                            <div class="date-format">Format: DD-MM-YYYY</div>
+                            <input type="text" id="newPlanEnd" placeholder="Auto-calculated" readonly>
+                            <div class="date-format">Auto-calculated based on duration</div>
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-rupee-sign"></i> Amount Paid</label>
@@ -1099,6 +1099,95 @@
 
             // Create sample users for testing
             createSampleUsers();
+        }
+
+        // ====== ADMIN FORM VALIDATIONS ======
+        function validateUserId() {
+            const userId = document.getElementById('newUserId').value;
+            const errorDiv = document.getElementById('userIdError');
+            
+            if (userId.length !== 6) {
+                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> User ID must be exactly 6 digits';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            
+            if (userId < 100000 || userId > 999999) {
+                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> User ID must be between 100000 and 999999';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            
+            // Check if user already exists
+            if (localStorage.getItem('user_' + userId)) {
+                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> User ID already exists';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            
+            errorDiv.style.display = 'none';
+            return true;
+        }
+
+        function validatePhone() {
+            const phone = document.getElementById('newPhone').value;
+            const errorDiv = document.getElementById('phoneError');
+            
+            if (phone.length !== 10) {
+                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Phone number must be exactly 10 digits';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            
+            if (!/^\d+$/.test(phone)) {
+                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Phone number must contain only digits';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            
+            errorDiv.style.display = 'none';
+            return true;
+        }
+
+        function calculateEndDate() {
+            const startDateInput = document.getElementById('newPlanStart').value;
+            const duration = document.getElementById('newPlanDuration').value;
+            const endDateInput = document.getElementById('newPlanEnd');
+            
+            if (!startDateInput || !isValidDateFormat(startDateInput)) {
+                endDateInput.value = '31-12-2026'; // Default fallback
+                return;
+            }
+            
+            const parts = startDateInput.split('-');
+            const day = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1;
+            const year = parseInt(parts[2]);
+            
+            const startDate = new Date(year, month, day);
+            const endDate = new Date(startDate);
+            
+            switch(duration) {
+                case 'days':
+                    endDate.setDate(endDate.getDate() + 30); // Default 30 days
+                    break;
+                case 'month':
+                    endDate.setMonth(endDate.getMonth() + 1);
+                    break;
+                case 'years':
+                    endDate.setFullYear(endDate.getFullYear() + 1);
+                    break;
+                default:
+                    endDate.setDate(endDate.getDate() + 30);
+            }
+            
+            // Format to DD-MM-YYYY
+            const formattedEndDate = 
+                String(endDate.getDate()).padStart(2, '0') + '-' +
+                String(endDate.getMonth() + 1).padStart(2, '0') + '-' +
+                endDate.getFullYear();
+            
+            endDateInput.value = formattedEndDate;
         }
 
         // ====== LOGIN SYSTEM ======
@@ -1429,6 +1518,16 @@
                 return;
             }
             
+            // Validate User ID
+            if (!validateUserId()) {
+                return;
+            }
+            
+            // Validate Phone
+            if (!validatePhone()) {
+                return;
+            }
+            
             // Validate date formats
             if (!isValidDateFormat(dob)) {
                 showToast('Error', 'Date of Birth must be in DD-MM-YYYY format');
@@ -1437,11 +1536,6 @@
             
             if (!isValidDateFormat(planStart)) {
                 showToast('Error', 'Start Date must be in DD-MM-YYYY format');
-                return;
-            }
-            
-            if (!isValidDateFormat(planEnd)) {
-                showToast('Error', 'End Date must be in DD-MM-YYYY format');
                 return;
             }
             
@@ -1502,10 +1596,12 @@
             document.getElementById('newPhone').value = '';
             document.getElementById('newDOB').value = '';
             document.getElementById('newPlanGB').value = '';
-            document.getElementById('newPlanStart').value = '';
+            document.getElementById('newPlanStart').value = '31-01-2025';
             document.getElementById('newPlanEnd').value = '';
             document.getElementById('newAmount').value = '';
             document.getElementById('newPassword').value = 'odelya@123';
+            document.getElementById('userIdError').style.display = 'none';
+            document.getElementById('phoneError').style.display = 'none';
         }
 
         function loadUsersList() {
@@ -1558,6 +1654,10 @@
                 document.getElementById('newAmount').value = user.amountPaid || 0;
                 document.getElementById('newPassword').value = user.initialPassword || user.password || '';
                 
+                // Hide validation errors
+                document.getElementById('userIdError').style.display = 'none';
+                document.getElementById('phoneError').style.display = 'none';
+                
                 // Show add user form
                 showSection('addUserForm');
                 
@@ -1588,6 +1688,11 @@
             // Validate date formats
             if (!isValidDateFormat(dob) || !isValidDateFormat(planStart) || !isValidDateFormat(planEnd)) {
                 showToast('Error', 'All dates must be in DD-MM-YYYY format');
+                return;
+            }
+            
+            // Validate Phone
+            if (!validatePhone()) {
                 return;
             }
             
@@ -1890,7 +1995,7 @@
         function createSampleUsers() {
             const sampleUsers = [
                 {
-                    userId: 'USER001',
+                    userId: '100001',
                     username: 'john_doe',
                     password: 'odelya@123',
                     initialPassword: 'odelya@123',
@@ -1898,9 +2003,9 @@
                     email: 'john@example.com',
                     phone: '9876543210',
                     dob: '15-05-1990',
-                    planName: 'Cloud Storage',
+                    planName: 'cloud storage',
                     planGB: '50 GB',
-                    planDuration: '30 Days',
+                    planDuration: 'days',
                     planStartDate: '01-01-2025',
                     planEndDate: '31-01-2025',
                     amountPaid: 599,
@@ -1910,7 +2015,7 @@
                     planHistory: []
                 },
                 {
-                    userId: 'USER002',
+                    userId: '100002',
                     username: 'jane_smith',
                     password: 'odelya@123',
                     initialPassword: 'odelya@123',
@@ -1918,9 +2023,9 @@
                     email: 'jane@example.com',
                     phone: '9876543211',
                     dob: '22-08-1985',
-                    planName: 'Event Guest Storage',
+                    planName: 'event guest storage',
                     planGB: '100 GB',
-                    planDuration: '60 Days',
+                    planDuration: 'month',
                     planStartDate: '01-02-2025',
                     planEndDate: '03-03-2025',
                     amountPaid: 899,
@@ -1944,8 +2049,12 @@
             initializeStorage();
             loadUsersList(); // Preload users list for admin
             
+            // Initialize default values
+            document.getElementById('newPlanStart').value = '31-01-2025';
+            calculateEndDate(); // Calculate initial end date
+            
             // Add input validation for date fields
-            const dateFields = ['newDOB', 'newPlanStart', 'newPlanEnd'];
+            const dateFields = ['newDOB', 'newPlanStart'];
             dateFields.forEach(fieldId => {
                 const field = document.getElementById(fieldId);
                 if (field) {
