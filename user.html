@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Odelya Locker - User Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Add Flatpickr CSS for calendar -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         /* Reset and Base Styles */
         * {
@@ -748,6 +750,50 @@
             font-weight: 600;
             font-size: 1.1rem;
         }
+
+        /* Duration Input Group */
+        .duration-input-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .duration-input {
+            position: relative;
+        }
+
+        .duration-input input {
+            padding-right: 40px;
+        }
+
+        .duration-label {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            color: #666;
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Calendar Icon */
+        .calendar-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+        }
+
+        .date-input-wrapper {
+            position: relative;
+        }
     </style>
 </head>
 <body>
@@ -853,7 +899,7 @@
                                 <!-- Plan history will be populated here -->
                             </tbody>
                         </table>
-                </div>
+                    </div>
                 </div>
 
                 <!-- Recharge Button -->
@@ -934,7 +980,12 @@
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-calendar"></i> Date of Birth</label>
-                            <input type="text" id="newDOB" placeholder="DD-MM-YYYY" pattern="\d{2}-\d{2}-\d{4}">
+                            <div class="date-input-wrapper">
+                                <input type="text" id="newDOB" placeholder="DD-MM-YYYY" class="datepicker">
+                                <button type="button" class="calendar-icon" onclick="openCalendar('newDOB')">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                            </div>
                             <div class="date-format">Format: DD-MM-YYYY</div>
                         </div>
                         <div class="form-row">
@@ -951,20 +1002,40 @@
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-calendar-alt"></i> Duration</label>
-                            <select id="newPlanDuration" onchange="calculateEndDate()">
-                                <option value="days">Days</option>
-                                <option value="month">Month</option>
-                                <option value="years">Years</option>
-                            </select>
+                            <div class="duration-input-group">
+                                <div class="duration-input">
+                                    <input type="number" id="durationDays" placeholder="0" min="0" value="0" oninput="calculateEndDate()">
+                                    <div class="duration-label">Days</div>
+                                </div>
+                                <div class="duration-input">
+                                    <input type="number" id="durationMonths" placeholder="0" min="0" value="0" oninput="calculateEndDate()">
+                                    <div class="duration-label">Months</div>
+                                </div>
+                                <div class="duration-input">
+                                    <input type="number" id="durationYears" placeholder="0" min="0" value="0" oninput="calculateEndDate()">
+                                    <div class="duration-label">Years</div>
+                                </div>
+                            </div>
+                            <div class="date-format">Enter duration in days, months, years</div>
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-calendar-day"></i> Start Date</label>
-                            <input type="text" id="newPlanStart" placeholder="DD-MM-YYYY" value="31-01-2025" onchange="calculateEndDate()">
+                            <div class="date-input-wrapper">
+                                <input type="text" id="newPlanStart" placeholder="DD-MM-YYYY" value="31-01-2025" class="datepicker" onchange="calculateEndDate()">
+                                <button type="button" class="calendar-icon" onclick="openCalendar('newPlanStart')">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                            </div>
                             <div class="date-format">Format: DD-MM-YYYY</div>
                         </div>
                         <div class="form-row">
                             <label><i class="fas fa-calendar-check"></i> End Date</label>
-                            <input type="text" id="newPlanEnd" placeholder="Auto-calculated" readonly>
+                            <div class="date-input-wrapper">
+                                <input type="text" id="newPlanEnd" placeholder="Auto-calculated" readonly class="datepicker">
+                                <button type="button" class="calendar-icon" onclick="openCalendar('newPlanEnd')">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                            </div>
                             <div class="date-format">Auto-calculated based on duration</div>
                         </div>
                         <div class="form-row">
@@ -1063,7 +1134,39 @@
         </div>
     </div>
 
+    <!-- Add Flatpickr JS for calendar -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <script>
+        // ====== CALENDAR INTEGRATION ======
+        let calendarInstances = {};
+        
+        function initializeCalendars() {
+            // Initialize all date fields with calendar
+            const dateFields = ['newDOB', 'newPlanStart', 'newPlanEnd'];
+            
+            dateFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    calendarInstances[fieldId] = flatpickr(field, {
+                        dateFormat: "d-m-Y",
+                        allowInput: true,
+                        onChange: function(selectedDates, dateStr, instance) {
+                            if (fieldId === 'newPlanStart') {
+                                calculateEndDate();
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        
+        function openCalendar(fieldId) {
+            if (calendarInstances[fieldId]) {
+                calendarInstances[fieldId].open();
+            }
+        }
+
         // ====== INITIALIZATION ======
         const ADMIN_CREDENTIALS = {
             username: 'ompluseradmin',
@@ -1151,11 +1254,17 @@
 
         function calculateEndDate() {
             const startDateInput = document.getElementById('newPlanStart').value;
-            const duration = document.getElementById('newPlanDuration').value;
+            const days = parseInt(document.getElementById('durationDays').value) || 0;
+            const months = parseInt(document.getElementById('durationMonths').value) || 0;
+            const years = parseInt(document.getElementById('durationYears').value) || 0;
             const endDateInput = document.getElementById('newPlanEnd');
             
             if (!startDateInput || !isValidDateFormat(startDateInput)) {
-                endDateInput.value = '31-12-2026'; // Default fallback
+                // If no valid start date, set default to 31-Dec-2026
+                if (calendarInstances['newPlanEnd']) {
+                    calendarInstances['newPlanEnd'].setDate('31-12-2026', true);
+                }
+                endDateInput.value = '31-12-2026';
                 return;
             }
             
@@ -1167,19 +1276,10 @@
             const startDate = new Date(year, month, day);
             const endDate = new Date(startDate);
             
-            switch(duration) {
-                case 'days':
-                    endDate.setDate(endDate.getDate() + 30); // Default 30 days
-                    break;
-                case 'month':
-                    endDate.setMonth(endDate.getMonth() + 1);
-                    break;
-                case 'years':
-                    endDate.setFullYear(endDate.getFullYear() + 1);
-                    break;
-                default:
-                    endDate.setDate(endDate.getDate() + 30);
-            }
+            // Add years, months, and days
+            endDate.setFullYear(endDate.getFullYear() + years);
+            endDate.setMonth(endDate.getMonth() + months);
+            endDate.setDate(endDate.getDate() + days);
             
             // Format to DD-MM-YYYY
             const formattedEndDate = 
@@ -1187,6 +1287,10 @@
                 String(endDate.getMonth() + 1).padStart(2, '0') + '-' +
                 endDate.getFullYear();
             
+            // Update the calendar instance and input field
+            if (calendarInstances['newPlanEnd']) {
+                calendarInstances['newPlanEnd'].setDate(formattedEndDate, true);
+            }
             endDateInput.value = formattedEndDate;
         }
 
@@ -1328,6 +1432,20 @@
             const statusText = isActive ? 'Active' : 'Inactive';
             const statusColor = isActive ? '#4caf50' : '#f44336';
             
+            // Calculate duration display
+            let durationDisplay = '';
+            if (user.planDuration) {
+                // For old format
+                durationDisplay = user.planDuration;
+            } else if (user.durationDays || user.durationMonths || user.durationYears) {
+                // For new format
+                const parts = [];
+                if (user.durationYears > 0) parts.push(`${user.durationYears} years`);
+                if (user.durationMonths > 0) parts.push(`${user.durationMonths} months`);
+                if (user.durationDays > 0) parts.push(`${user.durationDays} days`);
+                durationDisplay = parts.join(', ');
+            }
+            
             grid.innerHTML = `
                 <div class="info-section">
                     <div class="info-item">
@@ -1366,7 +1484,7 @@
                     </div>
                     <div class="info-item">
                         <div class="info-label"><i class="fas fa-calendar-alt"></i> Duration</div>
-                        <div class="info-value">${user.planDuration || ''}</div>
+                        <div class="info-value">${durationDisplay || ''}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label"><i class="fas fa-calendar-day"></i> Start Date</div>
@@ -1490,6 +1608,11 @@
             if (sectionId === 'usersList') {
                 loadUsersList();
             }
+            
+            // Initialize calendars when showing add user form
+            if (sectionId === 'addUserForm') {
+                setTimeout(initializeCalendars, 100);
+            }
         }
 
         function hideAllSections() {
@@ -1506,7 +1629,9 @@
             const dob = document.getElementById('newDOB').value.trim();
             const planName = document.getElementById('newPlanName').value;
             const planGB = document.getElementById('newPlanGB').value.trim();
-            const planDuration = document.getElementById('newPlanDuration').value;
+            const durationDays = parseInt(document.getElementById('durationDays').value) || 0;
+            const durationMonths = parseInt(document.getElementById('durationMonths').value) || 0;
+            const durationYears = parseInt(document.getElementById('durationYears').value) || 0;
             const planStart = document.getElementById('newPlanStart').value.trim();
             const planEnd = document.getElementById('newPlanEnd').value.trim();
             const amount = parseInt(document.getElementById('newAmount').value) || 0;
@@ -1539,11 +1664,23 @@
                 return;
             }
             
+            if (!isValidDateFormat(planEnd)) {
+                showToast('Error', 'End Date must be in DD-MM-YYYY format');
+                return;
+            }
+            
             // Check if user already exists
             if (localStorage.getItem('user_' + userId)) {
                 showToast('Error', 'User ID already exists');
                 return;
             }
+            
+            // Calculate duration display
+            const durationParts = [];
+            if (durationYears > 0) durationParts.push(`${durationYears} years`);
+            if (durationMonths > 0) durationParts.push(`${durationMonths} months`);
+            if (durationDays > 0) durationParts.push(`${durationDays} days`);
+            const durationDisplay = durationParts.join(', ') || '0 days';
             
             // Create user object
             const newUser = {
@@ -1557,7 +1694,10 @@
                 dob: dob || '',
                 planName: planName || '',
                 planGB: planGB || '',
-                planDuration: planDuration || '',
+                durationDays: durationDays,
+                durationMonths: durationMonths,
+                durationYears: durationYears,
+                planDuration: durationDisplay,
                 planStartDate: planStart || '',
                 planEndDate: planEnd || '',
                 amountPaid: amount || 0,
@@ -1567,7 +1707,7 @@
                 planHistory: [{
                     planName: planName || '',
                     planGB: planGB || '',
-                    duration: planDuration || '',
+                    duration: durationDisplay,
                     startDate: planStart || '',
                     endDate: planEnd || '',
                     amountPaid: amount || 0,
@@ -1596,12 +1736,18 @@
             document.getElementById('newPhone').value = '';
             document.getElementById('newDOB').value = '';
             document.getElementById('newPlanGB').value = '';
+            document.getElementById('durationDays').value = '0';
+            document.getElementById('durationMonths').value = '0';
+            document.getElementById('durationYears').value = '0';
             document.getElementById('newPlanStart').value = '31-01-2025';
             document.getElementById('newPlanEnd').value = '';
             document.getElementById('newAmount').value = '';
             document.getElementById('newPassword').value = 'odelya@123';
             document.getElementById('userIdError').style.display = 'none';
             document.getElementById('phoneError').style.display = 'none';
+            
+            // Update end date calculation
+            calculateEndDate();
         }
 
         function loadUsersList() {
@@ -1648,7 +1794,9 @@
                 document.getElementById('newDOB').value = user.dob || '';
                 document.getElementById('newPlanName').value = user.planName || '';
                 document.getElementById('newPlanGB').value = user.planGB || '';
-                document.getElementById('newPlanDuration').value = user.planDuration || '';
+                document.getElementById('durationDays').value = user.durationDays || 0;
+                document.getElementById('durationMonths').value = user.durationMonths || 0;
+                document.getElementById('durationYears').value = user.durationYears || 0;
                 document.getElementById('newPlanStart').value = user.planStartDate || '';
                 document.getElementById('newPlanEnd').value = user.planEndDate || '';
                 document.getElementById('newAmount').value = user.amountPaid || 0;
@@ -1660,6 +1808,19 @@
                 
                 // Show add user form
                 showSection('addUserForm');
+                
+                // Initialize calendars
+                setTimeout(() => {
+                    if (calendarInstances['newPlanStart']) {
+                        calendarInstances['newPlanStart'].setDate(user.planStartDate || '31-01-2025', true);
+                    }
+                    if (calendarInstances['newPlanEnd']) {
+                        calendarInstances['newPlanEnd'].setDate(user.planEndDate || '', true);
+                    }
+                    if (calendarInstances['newDOB']) {
+                        calendarInstances['newDOB'].setDate(user.dob || '', true);
+                    }
+                }, 100);
                 
                 // Change button action
                 const saveBtn = document.querySelector('#addUserForm .btn-save');
@@ -1679,7 +1840,9 @@
             const dob = document.getElementById('newDOB').value.trim();
             const planName = document.getElementById('newPlanName').value;
             const planGB = document.getElementById('newPlanGB').value.trim();
-            const planDuration = document.getElementById('newPlanDuration').value;
+            const durationDays = parseInt(document.getElementById('durationDays').value) || 0;
+            const durationMonths = parseInt(document.getElementById('durationMonths').value) || 0;
+            const durationYears = parseInt(document.getElementById('durationYears').value) || 0;
             const planStart = document.getElementById('newPlanStart').value.trim();
             const planEnd = document.getElementById('newPlanEnd').value.trim();
             const amount = parseInt(document.getElementById('newAmount').value) || 0;
@@ -1696,11 +1859,20 @@
                 return;
             }
             
+            // Calculate duration display
+            const durationParts = [];
+            if (durationYears > 0) durationParts.push(`${durationYears} years`);
+            if (durationMonths > 0) durationParts.push(`${durationMonths} months`);
+            if (durationDays > 0) durationParts.push(`${durationDays} days`);
+            const durationDisplay = durationParts.join(', ') || '0 days';
+            
             // Check if plan has changed
             const planChanged = 
                 user.planName !== planName ||
                 user.planGB !== planGB ||
-                user.planDuration !== planDuration ||
+                user.durationDays !== durationDays ||
+                user.durationMonths !== durationMonths ||
+                user.durationYears !== durationYears ||
                 user.planStartDate !== planStart ||
                 user.planEndDate !== planEnd ||
                 user.amountPaid !== amount;
@@ -1712,7 +1884,10 @@
             user.dob = dob || '';
             user.planName = planName || '';
             user.planGB = planGB || '';
-            user.planDuration = planDuration || '';
+            user.durationDays = durationDays;
+            user.durationMonths = durationMonths;
+            user.durationYears = durationYears;
+            user.planDuration = durationDisplay;
             user.planStartDate = planStart || '';
             user.planEndDate = planEnd || '';
             user.amountPaid = amount || 0;
@@ -1724,7 +1899,7 @@
                 planHistory.unshift({
                     planName: planName || '',
                     planGB: planGB || '',
-                    duration: planDuration || '',
+                    duration: durationDisplay,
                     startDate: planStart || '',
                     endDate: planEnd || '',
                     amountPaid: amount || 0,
@@ -2005,7 +2180,10 @@
                     dob: '15-05-1990',
                     planName: 'cloud storage',
                     planGB: '50 GB',
-                    planDuration: 'days',
+                    durationDays: 30,
+                    durationMonths: 0,
+                    durationYears: 0,
+                    planDuration: '30 days',
                     planStartDate: '01-01-2025',
                     planEndDate: '31-01-2025',
                     amountPaid: 599,
@@ -2025,7 +2203,10 @@
                     dob: '22-08-1985',
                     planName: 'event guest storage',
                     planGB: '100 GB',
-                    planDuration: 'month',
+                    durationDays: 0,
+                    durationMonths: 1,
+                    durationYears: 0,
+                    planDuration: '1 months',
                     planStartDate: '01-02-2025',
                     planEndDate: '03-03-2025',
                     amountPaid: 899,
@@ -2048,25 +2229,11 @@
         window.onload = function() {
             initializeStorage();
             loadUsersList(); // Preload users list for admin
+            initializeCalendars(); // Initialize calendars
             
             // Initialize default values
             document.getElementById('newPlanStart').value = '31-01-2025';
             calculateEndDate(); // Calculate initial end date
-            
-            // Add input validation for date fields
-            const dateFields = ['newDOB', 'newPlanStart'];
-            dateFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (field) {
-                    field.addEventListener('blur', function() {
-                        const value = this.value.trim();
-                        if (value && !isValidDateFormat(value)) {
-                            showToast('Error', 'Please use DD-MM-YYYY format');
-                            this.focus();
-                        }
-                    });
-                }
-            });
         };
     </script>
 </body>
