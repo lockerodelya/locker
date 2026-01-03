@@ -334,116 +334,124 @@
     <!-- Notification -->
     <div class="notification" id="notification"></div>
 
-    <script>
-        // ====== LOAD CURRENT PRICES ======
-        async function loadCurrentPrices() {
-            try {
-                const pricingRef = window.firebaseDoc(window.firebaseDb, "settings", "pricing");
-                const docSnap = await window.getDoc(pricingRef);
+<script>
+    // ====== LOAD CURRENT PRICES ======
+    async function loadCurrentPrices() {
+        try {
+            const pricingRef = window.firebaseDoc(window.firebaseDb, "settings", "pricing");
+            const docSnap = await window.getDoc(pricingRef);
+            
+            if (docSnap.exists()) {
+                const data = docSnap.data();
                 
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    
-                    // Update form fields
-                    document.getElementById('dataRate').value = data.dataRate || 1.5;
-                    document.getElementById('gstRate').value = data.gstRate || 18;
-                    
-                    // Update current values display
-                    document.getElementById('currentDataRate').textContent = data.dataRate || 1.5;
-                    document.getElementById('currentGstRate').textContent = data.gstRate || 18;
-                    
-                    console.log('✅ Current prices loaded');
-                } else {
-                    console.log('⚠️ No pricing data found, using defaults');
-                }
-            } catch (error) {
-                console.error('❌ Error loading prices:', error);
-                showNotification('Error loading current prices', 'error');
-            }
-        }
-        
-        // ====== SAVE PRICES TO FIREBASE ======
-        async function savePrices() {
-            try {
-                // Get values from form
-                const dataRate = parseFloat(document.getElementById('dataRate').value);
-                const gstRate = parseFloat(document.getElementById('gstRate').value);
-                
-                // Validate
-                if (isNaN(dataRate) || dataRate < 0.1 || dataRate > 10) {
-                    showNotification('Please enter a valid data rate (0.1-10 ₹/GB)', 'error');
-                    return;
-                }
-                
-                if (isNaN(gstRate) || gstRate < 0 || gstRate > 30) {
-                    showNotification('Please enter a valid GST rate (0-30%)', 'error');
-                    return;
-                }
-                
-                // Save to Firebase (NO specialDiscount field)
-                const pricingRef = window.firebaseDoc(window.firebaseDb, "settings", "pricing");
-                await window.setDoc(pricingRef, {
-                    dataRate: dataRate,
-                    gstRate: gstRate,
-                    lastUpdated: new Date().toISOString(),
-                    updatedBy: 'admin'
-                });
+                // Update form fields
+                document.getElementById('dataRate').value = data.dataRate || 1.5;
+                document.getElementById('gstRate').value = data.gstRate || 18;
                 
                 // Update current values display
-                document.getElementById('currentDataRate').textContent = dataRate;
-                document.getElementById('currentGstRate').textContent = gstRate;
+                document.getElementById('currentDataRate').textContent = data.dataRate || 1.5;
+                document.getElementById('currentGstRate').textContent = data.gstRate || 18;
                 
-                // Show success message
-                showNotification('Prices saved successfully! Changes will reflect immediately.', 'success');
-                
-                console.log('✅ Prices saved to Firebase:', { dataRate, gstRate });
-                
-            } catch (error) {
-                console.error('❌ Error saving prices:', error);
-                showNotification('Error saving prices: ' + error.message, 'error');
+                console.log('✅ Current prices loaded');
+            } else {
+                console.log('⚠️ No pricing data found, using defaults');
             }
+        } catch (error) {
+            console.error('❌ Error loading prices:', error);
+            showNotification('Error loading current prices', 'error');
         }
-        
-        // ====== SHOW NOTIFICATION ======
-        function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.style.display = 'flex';
+    }
+    
+    // ====== SAVE PRICES TO FIREBASE ======
+    async function savePrices() {
+        try {
+            // Get values from form
+            const dataRate = parseFloat(document.getElementById('dataRate').value);
+            const gstRate = parseFloat(document.getElementById('gstRate').value);
             
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 5000);
-        }
-        
-        // ====== GO BACK TO PRICING PAGE ======
-        function goBack() {
-            window.location.href = 'cloud-storage.html?admin=true';
-        }
-        
-        // ====== INITIALIZE PAGE ======
-        document.addEventListener('DOMContentLoaded', function() {
-            loadCurrentPrices();
+            // Validate
+            if (isNaN(dataRate) || dataRate < 0.1 || dataRate > 10) {
+                showNotification('Please enter a valid data rate (0.1-10 ₹/GB)', 'error');
+                return;
+            }
             
-            // Auto-save when Enter is pressed
-            document.getElementById('priceForm').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    savePrices();
-                }
+            if (isNaN(gstRate) || gstRate < 0 || gstRate > 30) {
+                showNotification('Please enter a valid GST rate (0-30%)', 'error');
+                return;
+            }
+            
+            // Save to Firebase
+            const pricingRef = window.firebaseDoc(window.firebaseDb, "settings", "pricing");
+            await window.setDoc(pricingRef, {
+                dataRate: dataRate,
+                gstRate: gstRate,
+                lastUpdated: new Date().toISOString(),
+                updatedBy: 'admin'
             });
             
-            // Keyboard shortcut: Ctrl+S to save
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey && e.key === 's') {
-                    e.preventDefault();
-                    savePrices();
-                }
-            });
+            // Update current values display
+            document.getElementById('currentDataRate').textContent = dataRate;
+            document.getElementById('currentGstRate').textContent = gstRate;
             
-            console.log('✅ Price admin page initialized');
+            // Show success message
+            showNotification('Prices saved successfully!', 'success');
+            
+            console.log('✅ Prices saved to Firebase:', { dataRate, gstRate });
+            
+        } catch (error) {
+            console.error('❌ Error saving prices:', error);
+            showNotification('Error saving prices: ' + error.message, 'error');
+        }
+    }
+    
+    // ====== ADMIN ACCESS CONTROL ======
+    function checkAdminAccess() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const adminPassword = urlParams.get('admin_pass');
+        
+        // Simple password check
+        if (adminPassword !== 'odelya123') { // Change this to your password
+            // Redirect back or show error
+            document.body.innerHTML = `
+                <div style="text-align: center; padding: 50px; color: white;">
+                    <h1>⛔ Access Denied</h1>
+                    <p>Admin access requires password</p>
+                    <p><a href="cloud-storage.html" style="color: white; text-decoration: underline;">Back to Pricing</a></p>
+                </div>
+            `;
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // ====== INITIALIZE PAGE ======
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check admin access first
+        if (!checkAdminAccess()) {
+            return;
+        }
+        
+        loadCurrentPrices();
+        
+        // Auto-save when Enter is pressed
+        document.getElementById('priceForm').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                savePrices();
+            }
         });
-    </script>
+        
+        // Keyboard shortcut: Ctrl+S to save
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                savePrices();
+            }
+        });
+        
+        console.log('✅ Price admin page initialized');
+    });
+</script>
 </body>
 </html>
