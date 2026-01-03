@@ -213,6 +213,39 @@
             margin-top: 5px;
             display: none;
         }
+        
+        .format-hint {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        .password-requirements {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }
+        
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin: 3px 0;
+        }
+        
+        .requirement.valid {
+            color: #4CAF50;
+        }
+        
+        .requirement.invalid {
+            color: #f44336;
+        }
+        
+        .checkmark {
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -254,9 +287,9 @@
                 
                 <div class="form-group">
                     <label for="phone" class="required">Phone Number</label>
-                    <input type="tel" id="phone" required pattern="[0-9]{10}" 
-                           placeholder="10-digit mobile number" maxlength="10">
+                    <input type="tel" id="phone" required placeholder="10-digit mobile number" maxlength="10">
                     <div class="error-message" id="phoneError"></div>
+                    <div class="format-hint">10 digits only</div>
                 </div>
                 
                 <div class="form-group">
@@ -266,14 +299,14 @@
                 
                 <div class="form-group">
                     <label for="aadhaar">Aadhaar Number</label>
-                    <input type="text" id="aadhaar" pattern="[0-9]{12}" 
-                           placeholder="12-digit Aadhaar" maxlength="12">
+                    <input type="text" id="aadhaar" placeholder="12-digit Aadhaar" maxlength="12">
+                    <div class="format-hint">12 digits only</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="pan">PAN Number</label>
-                    <input type="text" id="pan" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" 
-                           placeholder="ABCDE1234F" maxlength="10">
+                    <input type="text" id="pan" placeholder="ABCDE1234F" maxlength="10">
+                    <div class="format-hint">Format: 5 letters + 4 numbers + 1 letter</div>
                 </div>
             </div>
             
@@ -327,8 +360,9 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="planValue" class="required">Plan Value (₹)</label>
-                    <input type="text" id="planValue" placeholder="Will auto-fill from pricing table">
+                    <label for="planValue" class="required">Plan Value</label>
+                    <input type="text" id="planValue" placeholder="INR amount">
+                    <div class="format-hint">Enter amount in INR</div>
                 </div>
                 
                 <div class="form-group">
@@ -348,14 +382,32 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label for="username" class="required">Username</label>
-                    <input type="text" id="username" required placeholder="Choose a username">
+                    <input type="text" id="username" required placeholder="Choose username (8-12 characters)">
                     <div class="error-message" id="usernameError"></div>
+                    <div class="format-hint">8-12 characters, letters and numbers only</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="password" class="required">Password</label>
                     <input type="password" id="password" required placeholder="Create a strong password">
                     <div class="error-message" id="passwordError"></div>
+                    <div class="password-requirements">
+                        <div class="requirement invalid" id="reqLength">
+                            <span class="checkmark">❌</span> At least 8 characters
+                        </div>
+                        <div class="requirement invalid" id="reqUpper">
+                            <span class="checkmark">❌</span> At least 1 uppercase letter
+                        </div>
+                        <div class="requirement invalid" id="reqLower">
+                            <span class="checkmark">❌</span> At least 1 lowercase letter
+                        </div>
+                        <div class="requirement invalid" id="reqNumber">
+                            <span class="checkmark">❌</span> At least 1 number
+                        </div>
+                        <div class="requirement invalid" id="reqSpecial">
+                            <span class="checkmark">❌</span> At least 1 special character (@$!%*?&)
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -383,6 +435,48 @@
                 userId += digits[randomIndex];
             }
             return userId;
+        }
+        
+        // Validate PAN format (5 letters + 4 numbers + 1 letter)
+        function validatePAN(pan) {
+            const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+            return panRegex.test(pan);
+        }
+        
+        // Validate password format
+        function validatePassword(password) {
+            const minLength = password.length >= 8;
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[@$!%*?&]/.test(password);
+            
+            // Update requirement indicators
+            updateRequirement('reqLength', minLength);
+            updateRequirement('reqUpper', hasUpper);
+            updateRequirement('reqLower', hasLower);
+            updateRequirement('reqNumber', hasNumber);
+            updateRequirement('reqSpecial', hasSpecial);
+            
+            return minLength && hasUpper && hasLower && hasNumber && hasSpecial;
+        }
+        
+        function updateRequirement(elementId, isValid) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.classList.toggle('valid', isValid);
+                element.classList.toggle('invalid', !isValid);
+                const checkmark = element.querySelector('.checkmark');
+                if (checkmark) {
+                    checkmark.textContent = isValid ? '✅' : '❌';
+                }
+            }
+        }
+        
+        // Validate username (8-12 characters, alphanumeric only)
+        function validateUsername(username) {
+            const usernameRegex = /^[a-zA-Z0-9]{8,12}$/;
+            return usernameRegex.test(username);
         }
         
         // Initialize date pickers
@@ -418,7 +512,7 @@
             }
             
             if (planPrice) {
-                document.getElementById('planValue').value = '₹' + planPrice;
+                document.getElementById('planValue').value = 'INR ' + planPrice;
             }
             
             // Generate user ID (6 digits, 2-9 only)
@@ -535,17 +629,38 @@
                 isValid = false;
             }
             
-            // Phone validation
+            // Phone validation (10 digits)
             const phone = document.getElementById('phone').value;
             if (phone && !/^\d{10}$/.test(phone)) {
                 showError('phone', 'Please enter a valid 10-digit phone number');
                 isValid = false;
             }
             
-            // Password validation (at least 6 characters)
+            // Username validation (8-12 characters)
+            const username = document.getElementById('username').value;
+            if (username && !validateUsername(username)) {
+                showError('username', 'Username must be 8-12 characters (letters and numbers only)');
+                isValid = false;
+            }
+            
+            // Password validation
             const password = document.getElementById('password').value;
-            if (password && password.length < 6) {
-                showError('password', 'Password must be at least 6 characters');
+            if (password && !validatePassword(password)) {
+                showError('password', 'Password does not meet requirements');
+                isValid = false;
+            }
+            
+            // PAN validation (if provided)
+            const pan = document.getElementById('pan').value;
+            if (pan && !validatePAN(pan.toUpperCase())) {
+                showError('pan', 'Invalid PAN format. Use: ABCDE1234F');
+                isValid = false;
+            }
+            
+            // Plan Value validation (must have INR)
+            const planValue = document.getElementById('planValue').value;
+            if (planValue && !planValue.toUpperCase().includes('INR')) {
+                showError('planValue', 'Plan value must include INR (e.g., INR 1000)');
                 isValid = false;
             }
             
@@ -554,7 +669,10 @@
         
         // Submit form to Firebase
         async function submitForm() {
+            console.log('Submit button clicked'); // Debug
+            
             if (!validateForm()) {
+                alert('Please fix the errors in the form');
                 return;
             }
             
@@ -564,9 +682,13 @@
             submitBtn.textContent = 'Processing...';
             
             try {
+                console.log('Starting form submission...'); // Debug
+                
                 // 1. Create user authentication
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
+                
+                console.log('Creating user with email:', email); // Debug
                 
                 const userCredential = await createUserWithEmailAndPassword(
                     window.firebaseAuth, 
@@ -575,6 +697,7 @@
                 );
                 
                 const user = userCredential.user;
+                console.log('User created with ID:', user.uid); // Debug
                 
                 // 2. Calculate total duration
                 const days = parseInt(document.getElementById('durationDays').value) || 0;
@@ -590,7 +713,7 @@
                     phone: document.getElementById('phone').value,
                     dob: document.getElementById('dob').value || null,
                     aadhaar: document.getElementById('aadhaar').value || null,
-                    pan: document.getElementById('pan').value || null,
+                    pan: document.getElementById('pan').value.toUpperCase() || null,
                     
                     planName: document.getElementById('planName').value,
                     planSize: document.getElementById('planSize').value,
@@ -606,17 +729,21 @@
                     updatedAt: serverTimestamp()
                 };
                 
-                // 4. Save to Firestore (This saves to Firebase server)
+                console.log('User data prepared:', userData); // Debug
+                
+                // 4. Save to Firestore
+                console.log('Saving to Firestore...'); // Debug
                 await setDoc(doc(window.firebaseDb, "users", user.uid), userData);
+                console.log('Data saved successfully!'); // Debug
                 
                 alert('✅ Registration successful! Redirecting to payment...');
                 
                 // 5. Redirect to payment page
-                const amount = userData.planValue.replace('₹', '');
+                const amount = userData.planValue.replace('INR ', '');
                 window.location.href = `https://www.odelya.online/payment.html?userId=${userData.userId}&amount=${amount}&email=${encodeURIComponent(email)}`;
                 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Full Error:', error); // Debug
                 
                 // Re-enable button
                 submitBtn.disabled = false;
@@ -628,20 +755,22 @@
                 } else if (error.code === 'auth/invalid-email') {
                     alert('❌ Please enter a valid email address.');
                 } else if (error.code === 'auth/weak-password') {
-                    alert('❌ Password is too weak. Please use at least 6 characters.');
+                    alert('❌ Password is too weak. Please use at least 8 characters with uppercase, lowercase, number and special character.');
+                } else if (error.code === 'auth/network-request-failed') {
+                    alert('❌ Network error. Please check your internet connection.');
                 } else {
-                    alert('❌ Error: ' + error.message);
+                    alert('❌ Error: ' + error.message + '\n\nCheck console (F12) for details.');
                 }
             }
         }
         
-        // Phone number formatting
+        // Phone number formatting (only numbers)
         document.getElementById('phone').addEventListener('input', function(e) {
             this.value = this.value.replace(/\D/g, '').slice(0, 10);
             hideError('phone');
         });
         
-        // Aadhaar formatting
+        // Aadhaar formatting (only numbers)
         document.getElementById('aadhaar').addEventListener('input', function(e) {
             this.value = this.value.replace(/\D/g, '').slice(0, 12);
         });
@@ -650,19 +779,57 @@
         document.getElementById('pan').addEventListener('input', function(e) {
             let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
             
-            // Format as ABCDE1234F
-            if (value.length > 5) {
-                value = value.slice(0, 5) + value.slice(5, 9) + value.slice(9, 10);
+            // Limit to 10 characters
+            value = value.slice(0, 10);
+            
+            // Auto-format: First 5 positions for letters, next 4 for numbers, last 1 for letter
+            let formatted = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i < 5) {
+                    // First 5: only letters
+                    formatted += /[A-Z]/.test(value[i]) ? value[i] : '';
+                } else if (i < 9) {
+                    // Next 4: only numbers
+                    formatted += /[0-9]/.test(value[i]) ? value[i] : '';
+                } else {
+                    // Last 1: only letters
+                    formatted += /[A-Z]/.test(value[i]) ? value[i] : '';
+                }
             }
             
-            this.value = value;
+            this.value = formatted;
+            hideError('pan');
         });
         
-        // Real-time validation
+        // Plan Value formatting (add INR)
+        document.getElementById('planValue').addEventListener('input', function(e) {
+            let value = this.value.toUpperCase();
+            if (!value.includes('INR')) {
+                // Remove non-digits and format
+                const numbers = value.replace(/\D/g, '');
+                if (numbers) {
+                    this.value = 'INR ' + numbers;
+                }
+            }
+            hideError('planValue');
+        });
+        
+        // Username validation on input
+        document.getElementById('username').addEventListener('input', function(e) {
+            // Remove spaces and special characters
+            this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
+            hideError('username');
+        });
+        
+        // Password validation on input
+        document.getElementById('password').addEventListener('input', function(e) {
+            validatePassword(this.value);
+            hideError('password');
+        });
+        
+        // Real-time validation for other fields
         document.getElementById('fullName').addEventListener('input', () => hideError('fullName'));
         document.getElementById('email').addEventListener('input', () => hideError('email'));
-        document.getElementById('username').addEventListener('input', () => hideError('username'));
-        document.getElementById('password').addEventListener('input', () => hideError('password'));
         document.getElementById('paymentMode').addEventListener('change', () => hideError('paymentMode'));
         document.getElementById('planName').addEventListener('change', () => hideError('planName'));
         
