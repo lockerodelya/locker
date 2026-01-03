@@ -1,1 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odelya - User Registration</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <!-- Include your Firebase config -->
+    <script src="firebase-config.js"></script>
+    <!-- Flatpickr for calendar -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .form-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .form-content {
+            padding: 40px;
+        }
+        
+        .section-title {
+            color: #3a0ca3;
+            font-size: 1.5rem;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4361ee;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input, .form-group select {
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .disabled-input {
+            background-color: #f5f5f5;
+            color: #666;
+            cursor: not-allowed;
+        }
+        
+        .form-footer {
+            text-align: center;
+            padding: 30px 0;
+            border-top: 2px solid #eee;
+        }
+        
+        .continue-btn {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .continue-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
+        }
+        
+        .continue-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* For small screens */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-content {
+                padding: 20px;
+            }
+        }
+        
+        /* Status indicator */
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active { background-color: #4CAF50; }
+        .status-pending { background-color: #FF9800; }
+        .status-inactive { background-color: #f44336; }
+        
+        /* Plan duration selector */
+        .duration-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        
+        .duration-option {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .duration-option:hover {
+            border-color: #4361ee;
+            background-color: #f0f4ff;
+        }
+        
+        .duration-option.selected {
+            border-color: #4361ee;
+            background-color: #4361ee;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <h1>User Details</h1>
+            <p>Complete your registration for Odelya Cloud Storage</p>
+        </div>
+        
+        <div class="form-content">
+            <!-- Personal Information Section -->
+            <h2 class="section-title">Personal Information</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" disabled class="disabled-input">
+                        <option value="pending">Pending</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userId">User ID</label>
+                    <input type="text" id="userId" readonly class="disabled-input" placeholder="Auto-generated">
+                </div>
+                
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email ID *</label>
+                    <input type="email" id="email" required placeholder="example@domain.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" required pattern="[0-9]{10}" 
+                           placeholder="10-digit mobile number" maxlength="10">
+                </div>
+                
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="text" id="dob" class="datepicker" placeholder="DD-MM-YYYY">
+                </div>
+                
+                <div class="form-group">
+                    <label for="aadhaar">Aadhaar Number</label>
+                    <input type="text" id="aadhaar" pattern="[0-9]{12}" 
+                           placeholder="12-digit Aadhaar" maxlength="12">
+                </div>
+                
+                <div class="form-group">
+                    <label for="pan">PAN Number</label>
+                    <input type="text" id="pan" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" 
+                           placeholder="ABCDE1234F" maxlength="10">
+                </div>
+            </div>
+            
+            <!-- Plan Details Section -->
+            <h2 class="section-title">Plan Details</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="planName">Plan Name</label>
+                    <input type="text" id="planName" readonly class="disabled-input">
+                </div>
+                
+                <div class="form-group">
+                    <label for="planSize">Plan (GB)</label>
+                    <input type="text" id="planSize" readonly class="disabled-input">
+                </div>
+                
+                <div class="form-group">
+                    <label>Plan Duration</label>
+                    <div class="duration-options">
+                        <div class="duration-option" data-duration="30" onclick="selectDuration(30)">Days</div>
+                        <div class="duration-option" data-duration="1" onclick="selectDuration(1)">Months</div>
+                        <div class="duration-option selected" data-duration="12" onclick="selectDuration(12)">Years</div>
+                    </div>
+                    <input type="hidden" id="planDuration" value="12">
+                </div>
+                
+                <div class="form-group">
+                    <label for="planStartDate">Plan Start Date</label>
+                    <input type="text" id="planStartDate" class="datepicker" placeholder="DD-MM-YYYY">
+                </div>
+                
+                <div class="form-group">
+                    <label for="planEndDate">Plan End Date</label>
+                    <input type="text" id="planEndDate" readonly class="disabled-input" placeholder="Auto-calculated">
+                </div>
+                
+                <div class="form-group">
+                    <label for="planValue">Plan Value (₹)</label>
+                    <input type="text" id="planValue" readonly class="disabled-input">
+                </div>
+                
+                <div class="form-group">
+                    <label for="paymentMode">Payment Mode</label>
+                    <select id="paymentMode">
+                        <option value="UPI">UPI</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="Debit Card">Debit Card</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Authentication Section -->
+            <h2 class="section-title">Account Security</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="username">Username *</label>
+                    <input type="text" id="username" required placeholder="Choose a username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" required placeholder="Create a strong password">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-footer">
+            <button class="continue-btn" onclick="submitForm()">Continue to Payment</button>
+            <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
+                You will be redirected to payment page after successful registration
+            </p>
+        </div>
+    </div>
 
+    <script>
+        // Initialize date pickers
+        flatpickr(".datepicker", {
+            dateFormat: "d-m-Y",
+            allowInput: true
+        });
+        
+        // Get URL parameters for plan details
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                planName: params.get('plan') || '10 GB Monthly',
+                planSize: params.get('size') || '10',
+                planValue: params.get('price') || '18'
+            };
+        }
+        
+        // Auto-fill plan details from URL
+        function autoFillPlanDetails() {
+            const params = getUrlParams();
+            document.getElementById('planName').value = params.planName;
+            document.getElementById('planSize').value = params.planSize + ' GB';
+            document.getElementById('planValue').value = '₹' + params.planValue;
+            
+            // Generate user ID (6 digits)
+            const userId = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('userId').value = userId.toString();
+            
+            // Set today as start date
+            const today = new Date();
+            const formattedDate = today.getDate().toString().padStart(2, '0') + '-' + 
+                                 (today.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                                 today.getFullYear();
+            document.getElementById('planStartDate').value = formattedDate;
+            calculateEndDate();
+        }
+        
+        // Duration selection
+        function selectDuration(duration) {
+            document.getElementById('planDuration').value = duration;
+            document.querySelectorAll('.duration-option').forEach(opt => {
+                opt.classList.remove('selected');
+                if(opt.dataset.duration == duration) {
+                    opt.classList.add('selected');
+                }
+            });
+            calculateEndDate();
+        }
+        
+        // Calculate end date based on duration
+        function calculateEndDate() {
+            const startDateInput = document.getElementById('planStartDate').value;
+            const duration = parseInt(document.getElementById('planDuration').value);
+            
+            if (startDateInput) {
+                const [day, month, year] = startDateInput.split('-').map(Number);
+                const startDate = new Date(year, month - 1, day);
+                const endDate = new Date(startDate);
+                
+                // Determine unit from selected option
+                const selectedOption = document.querySelector('.duration-option.selected');
+                const unit = selectedOption ? selectedOption.textContent.toLowerCase() : 'years';
+                
+                if (unit.includes('days')) {
+                    endDate.setDate(startDate.getDate() + duration);
+                } else if (unit.includes('months')) {
+                    endDate.setMonth(startDate.getMonth() + duration);
+                } else {
+                    endDate.setFullYear(startDate.getFullYear() + duration);
+                }
+                
+                const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
+                                       (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                                       endDate.getFullYear();
+                document.getElementById('planEndDate').value = formattedEndDate;
+            }
+        }
+        
+        // Form validation
+        function validateForm() {
+            const requiredFields = ['fullName', 'email', 'phone', 'username', 'password'];
+            let isValid = true;
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#f44336';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#e0e0e0';
+                }
+            });
+            
+            // Email validation
+            const email = document.getElementById('email').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                alert('Please enter a valid email address');
+                return false;
+            }
+            
+            // Phone validation
+            const phone = document.getElementById('phone').value;
+            if (phone && !/^\d{10}$/.test(phone)) {
+                alert('Please enter a valid 10-digit phone number');
+                return false;
+            }
+            
+            return isValid;
+        }
+        
+        // Submit form to Firebase
+        async function submitForm() {
+            if (!validateForm()) {
+                alert('Please fill all required fields correctly.');
+                return;
+            }
+            
+            try {
+                // 1. Create user authentication
+                const username = document.getElementById('username').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // 2. Prepare user data
+                const userData = {
+                    userId: document.getElementById('userId').value,
+                    fullName: document.getElementById('fullName').value,
+                    email: email,
+                    phone: document.getElementById('phone').value,
+                    dob: document.getElementById('dob').value,
+                    aadhaar: document.getElementById('aadhaar').value,
+                    pan: document.getElementById('pan').value.toUpperCase(),
+                    
+                    planName: document.getElementById('planName').value,
+                    planSize: document.getElementById('planSize').value,
+                    planDuration: document.getElementById('planDuration').value,
+                    planStartDate: document.getElementById('planStartDate').value,
+                    planEndDate: document.getElementById('planEndDate').value,
+                    planValue: document.getElementById('planValue').value,
+                    paymentMode: document.getElementById('paymentMode').value,
+                    
+                    status: 'pending',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                // 3. Save to Firestore
+                await db.collection('users').doc(user.uid).set(userData);
+                
+                alert('Registration successful! Redirecting to payment...');
+                
+                // 4. Redirect to payment page with user ID
+                window.location.href = `https://www.odelya.online/payment.html?userId=${userData.userId}&amount=${userData.planValue}`;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error: ' + error.message);
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('planStartDate').addEventListener('change', calculateEndDate);
+        document.addEventListener('DOMContentLoaded', autoFillPlanDetails);
+        
+        // Phone number formatting
+        document.getElementById('phone').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+        });
+        
+        // Aadhaar formatting
+        document.getElementById('aadhaar').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 12);
+        });
+        
+        // PAN formatting
+        document.getElementById('pan').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^A-Z0-9]/g, '').toUpperCase().slice(0, 10);
+        });
+    </script>
+</body>
+</html>
