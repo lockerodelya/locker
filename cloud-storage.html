@@ -677,338 +677,235 @@
         </a>
     </div>
 
-    <script>
-        // ====== FIREBASE PRICING CONFIGURATION ======
-        let pricingConfig = {
-            plans: [
-                { storage: 10, devices: 1 },
-                { storage: 30, devices: 2 },
-                { storage: 50, devices: 2 },
-                { storage: 70, devices: 3 },
-                { storage: 100, devices: 3 },
-                { storage: 200, devices: 4 },
-                { storage: 300, devices: 4 },
-                { storage: 400, devices: 4 },
-                { storage: 500, devices: 5 }
-            ],
-            
-            normalDiscounts: {
-                10: 5,    // 5% for 10GB
-                30: 5,    // 5% for 30GB
-                50: 10,   // 10% for 50GB
-                70: 10,   // 10% for 70GB
-                100: 15,  // 15% for 100GB
-                200: 15,  // 15% for 200GB
-                300: 20,  // 20% for 300GB
-                400: 20,  // 20% for 400GB
-                500: 25   // 25% for 500GB
-            },
-            
-            // These will be loaded from Firebase
-            dataRate: 1.5,        // ₹ per GB
-            gstRate: 18,          // GST percentage
-            specialDiscount: 0,   // Special discount percentage
-            
-            // Current selection
-            selectedPlan: null,
-            selectedPeriod: null,
-            selectedAmount: null
-        };
+<script>
+    // ====== FIREBASE PRICING CONFIGURATION ======
+    let pricingConfig = {
+        plans: [
+            { storage: 10, devices: 1 },
+            { storage: 30, devices: 2 },
+            { storage: 50, devices: 2 },
+            { storage: 70, devices: 3 },
+            { storage: 100, devices: 3 },
+            { storage: 200, devices: 4 },
+            { storage: 300, devices: 4 },
+            { storage: 400, devices: 4 },
+            { storage: 500, devices: 5 }
+        ],
+        
+        normalDiscounts: {
+            10: 5,    // 5% for 10GB
+            30: 5,    // 5% for 30GB
+            50: 10,   // 10% for 50GB
+            70: 10,   // 10% for 70GB
+            100: 15,  // 15% for 100GB
+            200: 15,  // 15% for 200GB
+            300: 20,  // 20% for 300GB
+            400: 20,  // 20% for 400GB
+            500: 25   // 25% for 500GB
+        },
+        
+        // These will be loaded from Firebase
+        dataRate: 1.5,        // ₹ per GB
+        gstRate: 18,          // GST percentage
+        
+        // Current selection
+        selectedPlan: null,
+        selectedPeriod: null,
+        selectedAmount: null
+    };
 
-        // ====== LOAD PRICING FROM FIREBASE ======
-        async function loadPricingFromFirebase() {
-            try {
-                console.log('Loading pricing from Firebase...');
-                
-                const pricingRef = window.firebaseDoc(window.firebaseDb, "settings", "pricing");
-                const docSnap = await window.getDoc(pricingRef);
-                
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
+    // ====== FORMAT CURRENCY ======
+    function formatCurrency(amount) {
+        return 'INR ' + amount.toLocaleString('en-IN', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    }
+
+    // ====== CALCULATE PRICES ======
+    function calculatePrices() {
+        const results = [];
+        
+        pricingConfig.plans.forEach(plan => {
+            const calculatedMonthly = plan.storage * pricingConfig.dataRate;
+            
+            // Add GST
+            const gstAmountMonthly = calculatedMonthly * (pricingConfig.gstRate / 100);
+            const payableMonthly = Math.round(calculatedMonthly + gstAmountMonthly);
+            
+            // Yearly calculation
+            const calculatedYearly = calculatedMonthly * 12;
+            const normalDiscount = pricingConfig.normalDiscounts[plan.storage] || 0;
+            
+            // Apply normal discount for yearly plans
+            let grossYearly = calculatedYearly;
+            if (normalDiscount > 0) {
+                const normalDiscountAmount = calculatedYearly * (normalDiscount / 100);
+                grossYearly -= normalDiscountAmount;
+            }
+            
+            // Add GST
+            const gstAmountYearly = grossYearly * (pricingConfig.gstRate / 100);
+            const payableYearly = Math.round(grossYearly + gstAmountYearly);
+            
+            results.push({
+                storage: plan.storage,
+                devices: plan.devices,
+                payableMonthly,
+                payableYearly,
+                normalDiscount
+            });
+        });
+        
+        return results;
+    }
+
+    // ====== LISTEN FOR PRICING UPDATES (SILENT) ======
+    function listenForPricingUpdates() {
+        try {
+            const pricingRef = window.firebaseDoc(window.firebaseDb, "settings", "pricing");
+            
+            window.onSnapshot(pricingRef, (doc) => {
+                if (doc.exists()) {
+                    const data = doc.data();
+                    
+                    const oldDataRate = pricingConfig.dataRate;
+                    const oldGstRate = pricingConfig.gstRate;
                     
                     pricingConfig.dataRate = data.dataRate || 1.5;
                     pricingConfig.gstRate = data.gstRate || 18;
-                    pricingConfig.specialDiscount = data.specialDiscount || 0;
                     
                     // Update GST display
                     document.getElementById('gstRateDisplay').textContent = pricingConfig.gstRate;
                     
-                    console.log('✅ Pricing loaded from Firebase:', {
-                        dataRate: pricingConfig.dataRate,
-                        gstRate: pricingConfig.gstRate,
-                        discount: pricingConfig.specialDiscount
-                    });
-                    
-                    return true;
-                } else {
-                    // Create default pricing in Firebase
-                    await window.setDoc(pricingRef, {
-                        dataRate: 1.5,
-                        gstRate: 18,
-                        specialDiscount: 0,
-                        lastUpdated: new Date().toISOString()
-                    });
-                    
-                    console.log('⚠️ Created default pricing in Firebase');
-                    return true;
-                }
-            } catch (error) {
-                console.error('❌ Error loading pricing from Firebase:', error);
-                return false;
-            }
-        }
-
-        // ====== LISTEN FOR PRICING UPDATES ======
-        function listenForPricingUpdates() {
-            try {
-                const pricingRef = window.firebaseDoc(window.firebaseDb, "settings", "pricing");
-                
-                window.onSnapshot(pricingRef, (doc) => {
-                    if (doc.exists()) {
-                        const data = doc.data();
-                        
-                        pricingConfig.dataRate = data.dataRate || 1.5;
-                        pricingConfig.gstRate = data.gstRate || 18;
-                        pricingConfig.specialDiscount = data.specialDiscount || 0;
-                        
-                        // Update GST display
-                        document.getElementById('gstRateDisplay').textContent = pricingConfig.gstRate;
-                        
+                    // Only show notification if values actually changed
+                    if (oldDataRate !== pricingConfig.dataRate || oldGstRate !== pricingConfig.gstRate) {
                         // Re-render pricing table
                         renderPricingTable();
                         
                         console.log('🔄 Prices updated in real-time');
                         
-                        // Show notification
-                        showPriceUpdateNotification();
+                        // NO AUTOMATIC NOTIFICATION - Only update silently
                     }
-                });
-                
-                console.log('✅ Listening for pricing updates');
-            } catch (error) {
-                console.error('❌ Error setting up pricing listener:', error);
-            }
-        }
-
-        // ====== SHOW PRICE UPDATE NOTIFICATION ======
-        function showPriceUpdateNotification() {
-            // Remove existing notification
-            const existingNotif = document.getElementById('priceUpdateNotification');
-            if (existingNotif) existingNotif.remove();
+                }
+            });
             
-            // Create new notification
-            const notification = document.createElement('div');
-            notification.id = 'priceUpdateNotification';
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: #4caf50;
-                color: white;
-                padding: 15px 25px;
-                border-radius: 10px;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-                z-index: 10001;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                animation: slideIn 0.3s ease;
+            console.log('✅ Listening for pricing updates (silent)');
+        } catch (error) {
+            console.error('❌ Error setting up pricing listener:', error);
+        }
+    }
+
+    // ====== ADMIN LINK MANAGEMENT ======
+    function setupAdminLink() {
+        const adminLink = document.getElementById('adminLinkBtn');
+        
+        // HIDDEN BY DEFAULT - Only show with special conditions
+        adminLink.style.display = 'none';
+        
+        // Check for special admin mode (temporary)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === 'true') {
+            // Only show if admin parameter is explicitly set
+            adminLink.style.display = 'block';
+            // Don't save to localStorage - temporary only
+        }
+        
+        // Check for password in URL
+        const adminPassword = urlParams.get('admin_pass');
+        if (adminPassword === 'odelya123') { // Change this password
+            adminLink.style.display = 'block';
+            // Don't save to localStorage
+        }
+        
+        // Keyboard shortcut: Ctrl+Alt+A (temporary - disappears on refresh)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'a') {
+                e.preventDefault();
+                
+                const isVisible = adminLink.style.display === 'block';
+                adminLink.style.display = isVisible ? 'none' : 'block';
+                
+                // Ask for password if showing
+                if (!isVisible) {
+                    const password = prompt('Enter admin password:');
+                    if (password !== 'odelya123') { // Change this password
+                        adminLink.style.display = 'none';
+                        alert('Incorrect password');
+                        return;
+                    }
+                }
+                
+                // Never save to localStorage - temporary only
+                console.log(`Admin link ${isVisible ? 'hidden' : 'shown'} (temporary)`);
+            }
+        });
+    }
+
+    // ====== RENDER PRICING TABLE ======
+    function renderPricingTable() {
+        const tableBody = document.getElementById('pricing-table-body');
+        const prices = calculatePrices();
+        
+        tableBody.innerHTML = '';
+        
+        prices.forEach((price, index) => {
+            const row = document.createElement('tr');
+            
+            // Create "Select Plan" buttons with proper links
+            const monthlyLink = `user-panel.html?plan=${price.storage}GB Monthly&size=${price.storage}&price=${price.payableMonthly}`;
+            const yearlyLink = `user-panel.html?plan=${price.storage}GB Yearly&size=${price.storage}&price=${price.payableYearly}`;
+            
+            row.innerHTML = `
+                <td class="plan-cell">${price.storage} GB</td>
+                <td class="device-cell">${price.devices} Device${price.devices > 1 ? 's' : ''}</td>
+                <td class="price-cell">
+                    <div class="price-amount">${formatCurrency(price.payableMonthly)}</div>
+                    <div class="price-period">per month</div>
+                    <a href="${monthlyLink}" class="select-plan-btn">Select Plan</a>
+                </td>
+                <td class="price-cell">
+                    <div class="price-amount">${formatCurrency(price.payableYearly)}</div>
+                    <div class="price-period">per year</div>
+                    <a href="${yearlyLink}" class="select-plan-btn">Select Plan</a>
+                </td>
             `;
-            
-            notification.innerHTML = `
-                <i class="fas fa-sync-alt"></i>
-                <span>Prices have been updated!</span>
-                <button onclick="this.parentElement.remove()" 
-                        style="background: transparent; border: none; color: white; 
-                               margin-left: 15px; cursor: pointer; font-size: 1.1rem;">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Add animation
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes slideIn {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                }
-            `;
-            document.head.appendChild(style);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.remove();
-                }
-            }, 5000);
-        }
+            tableBody.appendChild(row);
+        });
+    }
 
-        // ====== FORMAT CURRENCY ======
-        function formatCurrency(amount) {
-            return '₹' + amount.toLocaleString('en-IN', {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            });
-        }
-
-        // ====== CALCULATE PRICES ======
-        function calculatePrices() {
-            const results = [];
+    // ====== INITIALIZE PAGE ======
+    async function initializePage() {
+        console.log('Initializing cloud storage page...');
+        
+        // Load pricing from Firebase
+        const pricingLoaded = await loadPricingFromFirebase();
+        
+        if (pricingLoaded) {
+            // Render pricing table
+            renderPricingTable();
             
-            pricingConfig.plans.forEach(plan => {
-                const calculatedMonthly = plan.storage * pricingConfig.dataRate;
-                
-                // Apply special discount if any
-                let grossMonthly = calculatedMonthly;
-                if (pricingConfig.specialDiscount > 0) {
-                    const discountAmount = calculatedMonthly * (pricingConfig.specialDiscount / 100);
-                    grossMonthly = calculatedMonthly - discountAmount;
-                }
-                
-                // Add GST
-                const gstAmountMonthly = grossMonthly * (pricingConfig.gstRate / 100);
-                const payableMonthly = Math.round(grossMonthly + gstAmountMonthly);
-                
-                // Yearly calculation
-                const calculatedYearly = calculatedMonthly * 12;
-                const normalDiscount = pricingConfig.normalDiscounts[plan.storage] || 0;
-                
-                // Apply discounts
-                let grossYearly = calculatedYearly;
-                if (normalDiscount > 0) {
-                    const normalDiscountAmount = calculatedYearly * (normalDiscount / 100);
-                    grossYearly -= normalDiscountAmount;
-                }
-                
-                if (pricingConfig.specialDiscount > 0) {
-                    const specialDiscountAmount = grossYearly * (pricingConfig.specialDiscount / 100);
-                    grossYearly -= specialDiscountAmount;
-                }
-                
-                // Add GST
-                const gstAmountYearly = grossYearly * (pricingConfig.gstRate / 100);
-                const payableYearly = Math.round(grossYearly + gstAmountYearly);
-                
-                results.push({
-                    storage: plan.storage,
-                    devices: plan.devices,
-                    payableMonthly,
-                    payableYearly,
-                    normalDiscount
-                });
-            });
+            // Listen for real-time updates (silent)
+            listenForPricingUpdates();
             
-            return results;
-        }
-
-        // ====== RENDER PRICING TABLE ======
-        function renderPricingTable() {
-            const tableBody = document.getElementById('pricing-table-body');
-            const prices = calculatePrices();
+            // Setup admin link (hidden by default)
+            setupAdminLink();
             
-            tableBody.innerHTML = '';
-            
-            prices.forEach((price, index) => {
-                const row = document.createElement('tr');
-                
-                // Create "Select Plan" buttons with proper links
-                const monthlyLink = `user-panel.html?plan=${price.storage}GB Monthly&size=${price.storage}&price=${price.payableMonthly}`;
-                const yearlyLink = `user-panel.html?plan=${price.storage}GB Yearly&size=${price.storage}&price=${price.payableYearly}`;
-                
-                row.innerHTML = `
-                    <td class="plan-cell">${price.storage} GB</td>
-                    <td class="device-cell">${price.devices} Device${price.devices > 1 ? 's' : ''}</td>
-                    <td class="price-cell">
-                        <div class="price-amount">${formatCurrency(price.payableMonthly)}</div>
-                        <div class="price-period">per month</div>
-                        <a href="${monthlyLink}" class="select-plan-btn">Select Plan</a>
-                    </td>
-                    <td class="price-cell">
-                        <div class="price-amount">${formatCurrency(price.payableYearly)}</div>
-                        <div class="price-period">per year</div>
-                        <a href="${yearlyLink}" class="select-plan-btn">Select Plan</a>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        // ====== ADMIN LINK MANAGEMENT ======
-        function setupAdminLink() {
-            const adminLink = document.getElementById('adminLinkBtn');
-            
-            // Check URL parameter for admin access
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('admin') === 'true') {
-                adminLink.style.display = 'block';
-                localStorage.setItem('odelya_admin_visible', 'true');
-            }
-            
-            // Check localStorage
-            const storedVisible = localStorage.getItem('odelya_admin_visible');
-            if (storedVisible === 'true') {
-                adminLink.style.display = 'block';
-            }
-            
-            // Keyboard shortcut: Ctrl+Alt+A to toggle
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'a') {
-                    e.preventDefault();
-                    
-                    const isVisible = adminLink.style.display === 'block';
-                    adminLink.style.display = isVisible ? 'none' : 'block';
-                    
-                    if (!isVisible) {
-                        localStorage.setItem('odelya_admin_visible', 'true');
-                    } else {
-                        localStorage.removeItem('odelya_admin_visible');
-                    }
-                    
-                    alert(`Admin link ${isVisible ? 'hidden' : 'shown'}`);
-                }
-            });
-        }
-
-        // ====== INITIALIZE PAGE ======
-        async function initializePage() {
-            console.log('Initializing cloud storage page...');
-            
-            // Load pricing from Firebase
-            const pricingLoaded = await loadPricingFromFirebase();
-            
-            if (pricingLoaded) {
-                // Render pricing table
-                renderPricingTable();
-                
-                // Listen for real-time updates
-                listenForPricingUpdates();
-                
-                // Setup admin link
-                setupAdminLink();
-                
-                console.log('✅ Page initialized successfully');
-            } else {
-                // Fallback to localStorage if Firebase fails
-                console.log('⚠️ Using localStorage as fallback');
-                renderPricingTable();
-                setupAdminLink();
-            }
-        }
-
-        // ====== START INITIALIZATION ======
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializePage);
+            console.log('✅ Page initialized successfully');
         } else {
-            initializePage();
+            // Fallback to localStorage if Firebase fails
+            console.log('⚠️ Using localStorage as fallback');
+            renderPricingTable();
+            setupAdminLink();
         }
-    </script>
+    }
+
+    // ====== START INITIALIZATION ======
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializePage);
+    } else {
+        initializePage();
+    }
+</script>
 </body>
 </html>
