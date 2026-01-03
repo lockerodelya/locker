@@ -7,6 +7,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+            authDomain: "odelya-user-data.firebaseapp.com",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.firebasestorage.app",
+            messagingSenderId: "590231118790",
+            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+            measurementId: "G-9SWTR9V32R"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        window.firebaseDb = db;
+        window.firebaseDoc = doc;
+        window.getDoc = getDoc;
+        window.setDoc = setDoc;
+        window.onSnapshot = onSnapshot;
+    </script>
+    
     <style>
         /* ====== CLOUD STORAGE PAGE STYLES ====== */
         /* Blue gradient theme matching your brand */
@@ -224,6 +249,26 @@
             margin-top: 5px;
         }
         
+        /* Select Plan Button */
+        .select-plan-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .select-plan-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+            color: white;
+        }
+        
         /* Confirmation Modal */
         .confirmation-modal {
             display: none;
@@ -336,70 +381,29 @@
             box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
         }
         
-        /* Admin Section (Hidden from public) */
-        .admin-section {
-            display: none;
-            background: #f5f5f5;
-            border: 2px dashed #757575;
-            border-radius: 10px;
-            padding: 30px;
-            margin-top: 50px;
+        /* Admin Link */
+        #adminFloatingLink {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
         }
         
-        .admin-section h3 {
-            color: #d32f2f;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-        }
-        
-        .admin-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        
-        .control-group {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .control-label {
-            display: block;
-            margin-bottom: 10px;
-            color: #424242;
-            font-weight: 500;
-        }
-        
-        .control-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-        
-        .control-input:focus {
-            border-color: #2196f3;
-            outline: none;
-        }
-        
-        .admin-btn {
-            background: #d32f2f;
+        #adminLinkBtn {
+            background: #1a237e;
             color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 20px;
+            padding: 12px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+            transition: all 0.3s ease;
         }
         
-        .admin-btn:hover {
-            background: #c62828;
+        #adminLinkBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
         
         /* Responsive Design */
@@ -440,10 +444,10 @@
             }
             
             .storage-hero p {
-        font-size: 1.05rem;
-        line-height: 1.5;
-        padding: 0 10px;
-        text-align: center;
+                font-size: 1.05rem;
+                line-height: 1.5;
+                padding: 0 10px;
+                text-align: center;
             }
             
             .storage-content {
@@ -523,7 +527,7 @@
                     <a href="/user.html">
                         <i class="fas fa-cogs"></i> User
                     </a>
-					<a href="/index.html#services">
+                    <a href="/index.html#services">
                         <i class="fas fa-toolbox"></i> Services
                     </a>
                     <a href="/payment.html">
@@ -547,141 +551,19 @@
                 </div>
             </div>
         </div>
-    
-        <!-- Dropdown JavaScript -->
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const hamburger = document.getElementById('hamburger');
-                const dropdown = document.getElementById('dropdown');
-                
-                if (hamburger && dropdown) {
-                    hamburger.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        dropdown.classList.toggle('active');
-                        
-                        const icon = hamburger.querySelector('i');
-                        if (dropdown.classList.contains('active')) {
-                            icon.classList.remove('fa-bars');
-                            icon.classList.add('fa-times');
-                        } else {
-                            icon.classList.remove('fa-times');
-                            icon.classList.add('fa-bars');
-                        }
-                    });
-                    
-                    document.addEventListener('click', function(e) {
-                        if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
-                            dropdown.classList.remove('active');
-                            const icon = hamburger.querySelector('i');
-                            icon.classList.remove('fa-times');
-                            icon.classList.add('fa-bars');
-                        }
-                    });
-                    
-                    dropdown.addEventListener('click', function(e) {
-                        if (e.target.tagName === 'A' || e.target.parentElement.tagName === 'A') {
-                            dropdown.classList.remove('active');
-                            const icon = hamburger.querySelector('i');
-                            icon.classList.remove('fa-times');
-                            icon.classList.add('fa-bars');
-                        }
-                    });
-                    
-                    document.addEventListener('keydown', function(e) {
-                        if (e.key === 'Escape' && dropdown.classList.contains('active')) {
-                            dropdown.classList.remove('active');
-                            const icon = hamburger.querySelector('i');
-                            icon.classList.remove('fa-times');
-                            icon.classList.add('fa-bars');
-                        }
-                    });
-                }
-            });
-        </script>
-        
-        <!-- Dropdown CSS -->
-        <style>
-            .dropdown {
-                display: none;
-                position: absolute;
-                top: 100%;
-                right: 20px;
-                background: white;
-                min-width: 220px;
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-                border-radius: 8px;
-                z-index: 1000;
-                padding: 10px 0;
-                border: 1px solid #e0e7ff;
-            }
-            
-            .dropdown.active {
-                display: block;
-                animation: fadeIn 0.3s ease;
-            }
-            
-            .dropdown a {
-                display: flex;
-                align-items: center;
-                padding: 12px 20px;
-                color: #37474f;
-                text-decoration: none;
-                font-weight: 500;
-                transition: all 0.3s ease;
-                border-left: 3px solid transparent;
-            }
-            
-            .dropdown a:hover {
-                background: #f8f9ff;
-                color: #4361ee;
-                border-left: 3px solid #4361ee;
-                padding-left: 25px;
-            }
-            
-            .dropdown a i {
-                width: 25px;
-                margin-right: 10px;
-                color: #4361ee;
-                font-size: 1.1rem;
-            }
-            
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(-10px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            
-            @media (max-width: 768px) {
-                .dropdown {
-                    right: 15px;
-                    min-width: 200px;
-                }
-            }
-            
-            @media (max-width: 480px) {
-                .dropdown {
-                    right: 10px;
-                    min-width: 180px;
-                }
-                
-                .dropdown a {
-                    padding: 10px 15px;
-                    font-size: 0.95rem;
-                }
-            }
-        </style>
     </header>
 
     <!-- ====== MAIN CONTENT ====== -->
     <main>
         <!-- Hero Section -->
-<section class="storage-hero">
-    <div class="container">
-        <h1><i class="fas fa-cloud-upload-alt"></i> Secure Cloud Storage</h1>
-        <p style="font-size: 1.2rem; max-width: 100%; line-height: 1.6; margin: 0 auto 20px;">
-            Military-grade encrypted cloud storage with end-to-end protection for your personal and business data
-        </p>
-    </div>
-</section>
+        <section class="storage-hero">
+            <div class="container">
+                <h1><i class="fas fa-cloud-upload-alt"></i> Secure Cloud Storage</h1>
+                <p style="font-size: 1.2rem; max-width: 100%; line-height: 1.6; margin: 0 auto 20px;">
+                    Military-grade encrypted cloud storage with end-to-end protection for your personal and business data
+                </p>
+            </div>
+        </section>
         
         <!-- Main Content -->
         <div class="storage-content">
@@ -718,8 +600,8 @@
             <section class="pricing-section">
                 <h2 class="section-title"><i class="fas fa-tags"></i> Storage Plans & Pricing</h2>
                 
-                <div class="gst-notice">
-                    <i class="fas fa-exclamation-circle"></i> All charges are inclusive of GST 18%
+                <div class="gst-notice" id="gstNotice">
+                    <i class="fas fa-exclamation-circle"></i> All charges are inclusive of GST <span id="gstRateDisplay">18</span>%
                 </div>
                 
                 <!-- Pricing Table -->
@@ -756,67 +638,10 @@
                     
                     <div class="modal-buttons">
                         <button class="modal-btn btn-no" id="btnNo">No, Cancel</button>
-                        <button class="modal-btn btn-yes" id="btnYes">Yes, Proceed</button>
+                        <button class="modal-btn btn-yes" id="btnYes">Yes, Proceed to Registration</button>
                     </div>
                 </div>
             </div>
-
-            <!-- Admin Section (Hidden from public - Only for you) -->
-            <!-- Hidden Admin Link (Only visible to you) -->
-<div style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
-    <a href="price-admin.html" 
-       style="background: #1a237e; color: white; padding: 12px 20px; border-radius: 50px; 
-              text-decoration: none; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-              display: none;" 
-       id="adminLink">
-        <i class="fas fa-cog"></i> Admin
-    </a>
-</div>
-
-<script>
-    // ====== LOAD PRICES FROM LOCALSTORAGE ======
-    function loadPriceConfig() {
-        const savedConfig = JSON.parse(localStorage.getItem('odelyaPriceConfig') || '{}');
-        
-        // Update pricingConfig with saved values
-        pricingConfig.dataRate = savedConfig.dataRate || 1.5;
-        pricingConfig.gstRate = savedConfig.gstRate || 18;
-        pricingConfig.specialDiscount = savedConfig.specialDiscount || 0;
-        
-        // Update admin controls if they exist
-        if (document.getElementById('dataRate')) {
-            document.getElementById('dataRate').value = pricingConfig.dataRate;
-            document.getElementById('gstRate').value = pricingConfig.gstRate;
-            document.getElementById('specialDiscount').value = pricingConfig.specialDiscount;
-        }
-    }
-    
-    // ====== SHOW/HIDE ADMIN LINK ======
-    // Only show admin link to you (based on IP or special condition)
-    function checkAdminAccess() {
-        // Method 1: Check for a special cookie/localStorage flag
-        if (localStorage.getItem('showAdminLink') === 'true') {
-            document.getElementById('adminLink').style.display = 'block';
-        }
-        
-        // Method 2: Special URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('admin') === 'true') {
-            document.getElementById('adminLink').style.display = 'block';
-            localStorage.setItem('showAdminLink', 'true');
-        }
-        
-        // Method 3: IP-based (requires backend)
-        // Method 4: Time-based (show only at certain times)
-    }
-    
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-        loadPriceConfig();
-        checkAdminAccess();
-        renderPricingTable(); // This should use the updated pricingConfig
-    });
-</script>
         </div>
     </main>
 
@@ -845,10 +670,16 @@
         </div>
     </footer>
 
+    <!-- Admin Floating Link (Hidden by default) -->
+    <div id="adminFloatingLink">
+        <a href="price-admin.html" id="adminLinkBtn">
+            <i class="fas fa-cog"></i> Admin
+        </a>
+    </div>
+
     <script>
-        // ====== PRICING CONFIGURATION ======
-        const pricingConfig = {
-            // Plans and their device allocations
+        // ====== FIREBASE PRICING CONFIGURATION ======
+        let pricingConfig = {
             plans: [
                 { storage: 10, devices: 1 },
                 { storage: 30, devices: 2 },
@@ -861,28 +692,164 @@
                 { storage: 500, devices: 5 }
             ],
             
-            // Normal discounts for yearly plans (by storage size)
             normalDiscounts: {
-                10: 5,   // 5% for 10GB
-                30: 5,   // 5% for 30GB
-                50: 10,  // 10% for 50GB
-                70: 10,  // 10% for 70GB
-                100: 15, // 15% for 100GB
-                200: 15, // 15% for 200GB
-                300: 20, // 20% for 300GB
-                400: 20, // 20% for 400GB
-                500: 25  // 25% for 500GB
+                10: 5,    // 5% for 10GB
+                30: 5,    // 5% for 30GB
+                50: 10,   // 10% for 50GB
+                70: 10,   // 10% for 70GB
+                100: 15,  // 15% for 100GB
+                200: 15,  // 15% for 200GB
+                300: 20,  // 20% for 300GB
+                400: 20,  // 20% for 400GB
+                500: 25   // 25% for 500GB
             },
             
-            // Admin configurable values
+            // These will be loaded from Firebase
             dataRate: 1.5,        // ₹ per GB
             gstRate: 18,          // GST percentage
             specialDiscount: 0,   // Special discount percentage
             
             // Current selection
             selectedPlan: null,
-            selectedPeriod: null
+            selectedPeriod: null,
+            selectedAmount: null
         };
+
+        // ====== LOAD PRICING FROM FIREBASE ======
+        async function loadPricingFromFirebase() {
+            try {
+                console.log('Loading pricing from Firebase...');
+                
+                const pricingRef = window.firebaseDoc(window.firebaseDb, "settings", "pricing");
+                const docSnap = await window.getDoc(pricingRef);
+                
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    pricingConfig.dataRate = data.dataRate || 1.5;
+                    pricingConfig.gstRate = data.gstRate || 18;
+                    pricingConfig.specialDiscount = data.specialDiscount || 0;
+                    
+                    // Update GST display
+                    document.getElementById('gstRateDisplay').textContent = pricingConfig.gstRate;
+                    
+                    console.log('✅ Pricing loaded from Firebase:', {
+                        dataRate: pricingConfig.dataRate,
+                        gstRate: pricingConfig.gstRate,
+                        discount: pricingConfig.specialDiscount
+                    });
+                    
+                    return true;
+                } else {
+                    // Create default pricing in Firebase
+                    await window.setDoc(pricingRef, {
+                        dataRate: 1.5,
+                        gstRate: 18,
+                        specialDiscount: 0,
+                        lastUpdated: new Date().toISOString()
+                    });
+                    
+                    console.log('⚠️ Created default pricing in Firebase');
+                    return true;
+                }
+            } catch (error) {
+                console.error('❌ Error loading pricing from Firebase:', error);
+                return false;
+            }
+        }
+
+        // ====== LISTEN FOR PRICING UPDATES ======
+        function listenForPricingUpdates() {
+            try {
+                const pricingRef = window.firebaseDoc(window.firebaseDb, "settings", "pricing");
+                
+                window.onSnapshot(pricingRef, (doc) => {
+                    if (doc.exists()) {
+                        const data = doc.data();
+                        
+                        pricingConfig.dataRate = data.dataRate || 1.5;
+                        pricingConfig.gstRate = data.gstRate || 18;
+                        pricingConfig.specialDiscount = data.specialDiscount || 0;
+                        
+                        // Update GST display
+                        document.getElementById('gstRateDisplay').textContent = pricingConfig.gstRate;
+                        
+                        // Re-render pricing table
+                        renderPricingTable();
+                        
+                        console.log('🔄 Prices updated in real-time');
+                        
+                        // Show notification
+                        showPriceUpdateNotification();
+                    }
+                });
+                
+                console.log('✅ Listening for pricing updates');
+            } catch (error) {
+                console.error('❌ Error setting up pricing listener:', error);
+            }
+        }
+
+        // ====== SHOW PRICE UPDATE NOTIFICATION ======
+        function showPriceUpdateNotification() {
+            // Remove existing notification
+            const existingNotif = document.getElementById('priceUpdateNotification');
+            if (existingNotif) existingNotif.remove();
+            
+            // Create new notification
+            const notification = document.createElement('div');
+            notification.id = 'priceUpdateNotification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #4caf50;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                z-index: 10001;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas fa-sync-alt"></i>
+                <span>Prices have been updated!</span>
+                <button onclick="this.parentElement.remove()" 
+                        style="background: transparent; border: none; color: white; 
+                               margin-left: 15px; cursor: pointer; font-size: 1.1rem;">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Add animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
 
         // ====== FORMAT CURRENCY ======
         function formatCurrency(amount) {
@@ -935,11 +902,7 @@
                     devices: plan.devices,
                     payableMonthly,
                     payableYearly,
-                    calculatedMonthly,
-                    calculatedYearly,
-                    normalDiscount,
-                    grossMonthly,
-                    grossYearly
+                    normalDiscount
                 });
             });
             
@@ -955,287 +918,97 @@
             
             prices.forEach((price, index) => {
                 const row = document.createElement('tr');
+                
+                // Create "Select Plan" buttons with proper links
+                const monthlyLink = `user-panel.html?plan=${price.storage}GB Monthly&size=${price.storage}&price=${price.payableMonthly}`;
+                const yearlyLink = `user-panel.html?plan=${price.storage}GB Yearly&size=${price.storage}&price=${price.payableYearly}`;
+                
                 row.innerHTML = `
                     <td class="plan-cell">${price.storage} GB</td>
                     <td class="device-cell">${price.devices} Device${price.devices > 1 ? 's' : ''}</td>
-                    <td class="price-cell" 
-                        data-plan="${price.storage}"
-                        data-period="monthly"
-                        data-monthly="${price.payableMonthly}"
-                        data-yearly="${price.payableYearly}"
-                        data-devices="${price.devices}">
+                    <td class="price-cell">
                         <div class="price-amount">${formatCurrency(price.payableMonthly)}</div>
                         <div class="price-period">per month</div>
+                        <a href="${monthlyLink}" class="select-plan-btn">Select Plan</a>
                     </td>
-                    <td class="price-cell"
-                        data-plan="${price.storage}"
-                        data-period="yearly"
-                        data-monthly="${price.payableMonthly}"
-                        data-yearly="${price.payableYearly}"
-                        data-devices="${price.devices}">
+                    <td class="price-cell">
                         <div class="price-amount">${formatCurrency(price.payableYearly)}</div>
                         <div class="price-period">per year</div>
+                        <a href="${yearlyLink}" class="select-plan-btn">Select Plan</a>
                     </td>
                 `;
                 tableBody.appendChild(row);
             });
+        }
+
+        // ====== ADMIN LINK MANAGEMENT ======
+        function setupAdminLink() {
+            const adminLink = document.getElementById('adminLinkBtn');
             
-            // Add click event to price cells
-            document.querySelectorAll('.price-cell').forEach(cell => {
-                cell.addEventListener('click', function() {
-                    // Remove selection from all cells
-                    document.querySelectorAll('.price-cell').forEach(c => {
-                        c.classList.remove('selected');
-                    });
+            // Check URL parameter for admin access
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === 'true') {
+                adminLink.style.display = 'block';
+                localStorage.setItem('odelya_admin_visible', 'true');
+            }
+            
+            // Check localStorage
+            const storedVisible = localStorage.getItem('odelya_admin_visible');
+            if (storedVisible === 'true') {
+                adminLink.style.display = 'block';
+            }
+            
+            // Keyboard shortcut: Ctrl+Alt+A to toggle
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'a') {
+                    e.preventDefault();
                     
-                    // Select this cell
-                    this.classList.add('selected');
+                    const isVisible = adminLink.style.display === 'block';
+                    adminLink.style.display = isVisible ? 'none' : 'block';
                     
-                    // Store selection
-                    pricingConfig.selectedPlan = this.dataset.plan;
-                    pricingConfig.selectedPeriod = this.dataset.period;
-                    pricingConfig.selectedMonthly = this.dataset.monthly;
-                    pricingConfig.selectedYearly = this.dataset.yearly;
-                    pricingConfig.selectedDevices = this.dataset.devices;
+                    if (!isVisible) {
+                        localStorage.setItem('odelya_admin_visible', 'true');
+                    } else {
+                        localStorage.removeItem('odelya_admin_visible');
+                    }
                     
-                    // Show confirmation modal
-                    showConfirmationModal();
-                });
+                    alert(`Admin link ${isVisible ? 'hidden' : 'shown'}`);
+                }
             });
         }
-
-        // ====== SHOW CONFIRMATION MODAL ======
-        function showConfirmationModal() {
-            const modal = document.getElementById('confirmationModal');
-            const details = document.getElementById('modalDetails');
-            
-            const monthlyAmount = parseInt(pricingConfig.selectedMonthly);
-            const yearlyAmount = parseInt(pricingConfig.selectedYearly);
-            const periodText = pricingConfig.selectedPeriod === 'monthly' ? 'Monthly' : 'Yearly';
-            const amount = pricingConfig.selectedPeriod === 'monthly' ? monthlyAmount : yearlyAmount;
-            
-            details.innerHTML = `
-                <div class="detail-row">
-                    <span class="detail-label">Storage Plan:</span>
-                    <span class="detail-value">${pricingConfig.selectedPlan} GB</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Number of Devices:</span>
-                    <span class="detail-value">${pricingConfig.selectedDevices}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Billing Period:</span>
-                    <span class="detail-value">${periodText}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Total Amount:</span>
-                    <span class="detail-value">${formatCurrency(amount)}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label" style="color: #4caf50;">Includes GST 18%</span>
-                    <span class="detail-value" style="color: #4caf50;">Yes</span>
-                </div>
-            `;
-            
-            modal.style.display = 'flex';
-        }
-
-        // ====== HIDE CONFIRMATION MODAL ======
-        function hideConfirmationModal() {
-            const modal = document.getElementById('confirmationModal');
-            modal.style.display = 'none';
-            
-            // Clear selection
-            document.querySelectorAll('.price-cell').forEach(c => {
-                c.classList.remove('selected');
-            });
-            
-            pricingConfig.selectedPlan = null;
-            pricingConfig.selectedPeriod = null;
-        }
-
-        // ====== REDIRECT TO PAYMENT PAGE ======
-        function redirectToPayment() {
-            // Store selected plan in sessionStorage for payment page
-            if (pricingConfig.selectedPlan && pricingConfig.selectedPeriod) {
-                sessionStorage.setItem('selectedPlan', pricingConfig.selectedPlan);
-                sessionStorage.setItem('selectedPeriod', pricingConfig.selectedPeriod);
-                sessionStorage.setItem('selectedDevices', pricingConfig.selectedDevices);
-                sessionStorage.setItem('selectedMonthly', pricingConfig.selectedMonthly);
-                sessionStorage.setItem('selectedYearly', pricingConfig.selectedYearly);
-            }
-            
-            // Redirect to payment page
-            window.location.href = 'payment.html';
-        }
-
-        // ====== ADMIN CONTROLS ======
-        function updateAdminValues() {
-            pricingConfig.dataRate = parseFloat(document.getElementById('dataRate').value) || 1.5;
-            pricingConfig.gstRate = parseFloat(document.getElementById('gstRate').value) || 18;
-            pricingConfig.specialDiscount = parseFloat(document.getElementById('specialDiscount').value) || 0;
-            
-            // Re-render pricing table with new values
-            renderPricingTable();
-            
-            // Show success message (you can enhance this with a proper notification)
-            alert('Pricing updated successfully!');
-        }
-
-        // ====== SHOW/HIDE ADMIN SECTION ======
-        // Add a secret key combination to show admin section
-        let adminKeySequence = [];
-        const adminSecretKey = '3838'; // You can change this secret code
-        
-        document.addEventListener('keydown', function(e) {
-            adminKeySequence.push(e.key);
-            if (adminKeySequence.length > 4) {
-                adminKeySequence.shift();
-            }
-            
-            if (adminKeySequence.join('') === adminSecretKey) {
-                const adminSection = document.getElementById('adminSection');
-                adminSection.style.display = 'block';
-                adminSection.scrollIntoView({ behavior: 'smooth' });
-                adminKeySequence = []; // Reset sequence
-            }
-        });
 
         // ====== INITIALIZE PAGE ======
-        document.addEventListener('DOMContentLoaded', function() {
-            // Render initial pricing table
-            renderPricingTable();
+        async function initializePage() {
+            console.log('Initializing cloud storage page...');
             
-            // Modal event listeners
-            document.getElementById('btnNo').addEventListener('click', hideConfirmationModal);
-            document.getElementById('btnYes').addEventListener('click', redirectToPayment);
+            // Load pricing from Firebase
+            const pricingLoaded = await loadPricingFromFirebase();
             
-            // Close modal when clicking outside
-            document.getElementById('confirmationModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    hideConfirmationModal();
-                }
-            });
-            
-            // Admin controls
-            document.getElementById('updatePricing').addEventListener('click', updateAdminValues);
-            
-            // Set initial admin values
-            document.getElementById('dataRate').value = pricingConfig.dataRate;
-            document.getElementById('gstRate').value = pricingConfig.gstRate;
-            document.getElementById('specialDiscount').value = pricingConfig.specialDiscount;
-            
-            // Escape key closes modal
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    hideConfirmationModal();
-                }
-            });
-        });
-    </script>
-
-<!-- Add Font Awesome for admin icon -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<!-- Add admin JavaScript -->
-<script src="cloud-storage-admin.js"></script>
-
-<script>
-    // ====== INTEGRATE WITH EXISTING CODE ======
-    
-    // Modify your existing pricingConfig to use loaded values
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize admin features
-        if (typeof initializeAdminFeatures === 'function') {
-            initializeAdminFeatures();
-        }
-        
-        // Load price config and update pricingConfig
-        if (typeof loadPriceConfig === 'function') {
-            const config = loadPriceConfig();
-            
-            // Update your existing pricingConfig
-            if (typeof pricingConfig !== 'undefined') {
-                pricingConfig.dataRate = config.dataRate;
-                pricingConfig.gstRate = config.gstRate;
-                pricingConfig.specialDiscount = config.specialDiscount;
-            }
-        }
-        
-        // Render pricing table with updated config
-        if (typeof renderPricingTable === 'function') {
-            renderPricingTable();
-        }
-    });
-    
-    // Function to manually refresh prices
-    function refreshPrices() {
-        if (typeof loadPriceConfig === 'function') {
-            const config = loadPriceConfig();
-            
-            if (typeof pricingConfig !== 'undefined') {
-                pricingConfig.dataRate = config.dataRate;
-                pricingConfig.gstRate = config.gstRate;
-                pricingConfig.specialDiscount = config.specialDiscount;
-                
-                if (typeof renderPricingTable === 'function') {
-                    renderPricingTable();
-                    alert('Prices refreshed from admin panel');
-                }
-            }
-        }
-    }
-</script>
-
-<!-- Admin System -->
-<script src="cloud-storage-admin.js"></script>
-
-<!-- Optional: Add debug info (remove in production) -->
-<div id="adminDebug" style="display: none; position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 12px; z-index: 9999;"></div>
-
-<script>
-// Simple integration with existing code
-document.addEventListener('DOMContentLoaded', function() {
-    // Wait a bit for admin system to initialize
-    setTimeout(function() {
-        // Update your pricingConfig with loaded values
-        if (typeof pricingConfig !== 'undefined' && typeof loadPriceConfig === 'function') {
-            const config = loadPriceConfig();
-            pricingConfig.dataRate = config.dataRate;
-            pricingConfig.gstRate = config.gstRate;
-            pricingConfig.specialDiscount = config.specialDiscount;
-            
-            // Re-render table if function exists
-            if (typeof renderPricingTable === 'function') {
+            if (pricingLoaded) {
+                // Render pricing table
                 renderPricingTable();
+                
+                // Listen for real-time updates
+                listenForPricingUpdates();
+                
+                // Setup admin link
+                setupAdminLink();
+                
+                console.log('✅ Page initialized successfully');
+            } else {
+                // Fallback to localStorage if Firebase fails
+                console.log('⚠️ Using localStorage as fallback');
+                renderPricingTable();
+                setupAdminLink();
             }
         }
-        
-        // Debug info (remove in production)
-        const debugDiv = document.getElementById('adminDebug');
-        if (debugDiv && localStorage.getItem('showAdminDebug') === 'true') {
-            debugDiv.style.display = 'block';
-            debugDiv.innerHTML = `
-                Admin System Loaded<br>
-                Config: ${localStorage.getItem('odelyaPriceConfig') ? '✓' : '✗'}<br>
-                Visible: ${document.getElementById('adminLinkBtn')?.style.display === 'block' ? '✓' : '✗'}
-            `;
+
+        // ====== START INITIALIZATION ======
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializePage);
+        } else {
+            initializePage();
         }
-    }, 500);
-    
-    // Debug shortcut: Ctrl+Alt+D
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'd') {
-            const debugDiv = document.getElementById('adminDebug');
-            if (debugDiv) {
-                const isVisible = debugDiv.style.display === 'block';
-                debugDiv.style.display = isVisible ? 'none' : 'block';
-                localStorage.setItem('showAdminDebug', !isVisible);
-            }
-        }
-    });
-});
-</script>
-    
+    </script>
 </body>
 </html>
