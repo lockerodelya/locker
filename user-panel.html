@@ -300,12 +300,12 @@
                 <div class="form-group">
                     <label for="aadhaar">Aadhaar Number</label>
                     <input type="text" id="aadhaar" placeholder="12-digit Aadhaar" maxlength="12">
-                    <div class="format-hint">12 digits only</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="pan">PAN Number</label>
                     <input type="text" id="pan" placeholder="ABCDE1234F" maxlength="10">
+                    <div class="error-message" id="panError"></div>
                     <div class="format-hint">Format: 5 letters + 4 numbers + 1 letter</div>
                 </div>
             </div>
@@ -327,6 +327,7 @@
                 <div class="form-group">
                     <label for="planSize" class="required">Plan (GB)</label>
                     <input type="text" id="planSize" placeholder="Will auto-fill from pricing table">
+                    <div class="error-message" id="planSizeError"></div>
                 </div>
                 
                 <div class="form-group">
@@ -346,12 +347,13 @@
                         </div>
                     </div>
                     <input type="hidden" id="totalDuration" value="0">
+                    <div class="error-message" id="durationError"></div>
                 </div>
                 
                 <div class="form-group">
                     <label for="planStartDate" class="required">Plan Start Date</label>
                     <input type="text" id="planStartDate" class="datepicker" placeholder="DD-MM-YYYY">
-                    <div class="error-message" id="startDateError"></div>
+                    <div class="error-message" id="planStartDateError"></div>
                 </div>
                 
                 <div class="form-group">
@@ -362,6 +364,7 @@
                 <div class="form-group">
                     <label for="planValue" class="required">Plan Value</label>
                     <input type="text" id="planValue" placeholder="INR amount">
+                    <div class="error-message" id="planValueError"></div>
                     <div class="format-hint">Enter amount in INR</div>
                 </div>
                 
@@ -564,35 +567,43 @@
         // Show error message
         function showError(fieldId, message) {
             const errorDiv = document.getElementById(fieldId + 'Error');
-            if (errorDiv) {
+            const fieldElement = document.getElementById(fieldId);
+            
+            if (errorDiv && fieldElement) {
                 errorDiv.textContent = message;
                 errorDiv.style.display = 'block';
-                document.getElementById(fieldId).style.borderColor = '#f44336';
+                fieldElement.style.borderColor = '#f44336';
             }
         }
         
-        // Hide error message
+        // Hide error message - FIXED VERSION
         function hideError(fieldId) {
             const errorDiv = document.getElementById(fieldId + 'Error');
+            const fieldElement = document.getElementById(fieldId);
+            
             if (errorDiv) {
                 errorDiv.style.display = 'none';
-                document.getElementById(fieldId).style.borderColor = '#e0e0e0';
+            }
+            
+            if (fieldElement) {
+                fieldElement.style.borderColor = '#e0e0e0';
             }
         }
         
-        // Form validation
+        // Form validation - FIXED VERSION
         function validateForm() {
             let isValid = true;
             
             // Clear all errors
-            hideError('fullName');
-            hideError('email');
-            hideError('phone');
-            hideError('username');
-            hideError('password');
-            hideError('startDate');
-            hideError('paymentMode');
-            hideError('planName');
+            const fieldIds = [
+                'fullName', 'email', 'phone', 'username', 'password',
+                'planStartDate', 'paymentMode', 'planName', 'planSize',
+                'planValue', 'pan'
+            ];
+            
+            fieldIds.forEach(fieldId => {
+                hideError(fieldId);
+            });
             
             // Check required fields
             const requiredFields = [
@@ -603,7 +614,9 @@
                 {id: 'password', name: 'Password'},
                 {id: 'planStartDate', name: 'Plan Start Date'},
                 {id: 'paymentMode', name: 'Payment Mode'},
-                {id: 'planName', name: 'Plan Name'}
+                {id: 'planName', name: 'Plan Name'},
+                {id: 'planSize', name: 'Plan Size'},
+                {id: 'planValue', name: 'Plan Value'}
             ];
             
             requiredFields.forEach(field => {
@@ -652,7 +665,7 @@
             
             // PAN validation (if provided)
             const pan = document.getElementById('pan').value;
-            if (pan && !validatePAN(pan.toUpperCase())) {
+            if (pan && pan.trim() !== '' && !validatePAN(pan.toUpperCase())) {
                 showError('pan', 'Invalid PAN format. Use: ABCDE1234F');
                 isValid = false;
             }
@@ -669,12 +682,14 @@
         
         // Submit form to Firebase
         async function submitForm() {
-            console.log('Submit button clicked'); // Debug
+            console.log('Submit button clicked');
             
             if (!validateForm()) {
-                alert('Please fix the errors in the form');
+                console.log('Form validation failed');
                 return;
             }
+            
+            console.log('Form validation passed');
             
             // Disable button and show loading
             const submitBtn = document.getElementById('submitBtn');
@@ -682,13 +697,13 @@
             submitBtn.textContent = 'Processing...';
             
             try {
-                console.log('Starting form submission...'); // Debug
+                console.log('Starting form submission...');
                 
                 // 1. Create user authentication
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
                 
-                console.log('Creating user with email:', email); // Debug
+                console.log('Creating user with email:', email);
                 
                 const userCredential = await createUserWithEmailAndPassword(
                     window.firebaseAuth, 
@@ -697,7 +712,7 @@
                 );
                 
                 const user = userCredential.user;
-                console.log('User created with ID:', user.uid); // Debug
+                console.log('User created with ID:', user.uid);
                 
                 // 2. Calculate total duration
                 const days = parseInt(document.getElementById('durationDays').value) || 0;
@@ -729,21 +744,21 @@
                     updatedAt: serverTimestamp()
                 };
                 
-                console.log('User data prepared:', userData); // Debug
+                console.log('User data prepared:', userData);
                 
                 // 4. Save to Firestore
-                console.log('Saving to Firestore...'); // Debug
+                console.log('Saving to Firestore...');
                 await setDoc(doc(window.firebaseDb, "users", user.uid), userData);
-                console.log('Data saved successfully!'); // Debug
+                console.log('Data saved successfully!');
                 
                 alert('✅ Registration successful! Redirecting to payment...');
                 
                 // 5. Redirect to payment page
-                const amount = userData.planValue.replace('INR ', '');
+                const amount = userData.planValue.replace('INR ', '').replace('INR', '').trim();
                 window.location.href = `https://www.odelya.online/payment.html?userId=${userData.userId}&amount=${amount}&email=${encodeURIComponent(email)}`;
                 
             } catch (error) {
-                console.error('Full Error:', error); // Debug
+                console.error('Full Error:', error);
                 
                 // Re-enable button
                 submitBtn.disabled = false;
@@ -759,7 +774,7 @@
                 } else if (error.code === 'auth/network-request-failed') {
                     alert('❌ Network error. Please check your internet connection.');
                 } else {
-                    alert('❌ Error: ' + error.message + '\n\nCheck console (F12) for details.');
+                    alert('❌ Error: ' + error.message);
                 }
             }
         }
@@ -832,6 +847,8 @@
         document.getElementById('email').addEventListener('input', () => hideError('email'));
         document.getElementById('paymentMode').addEventListener('change', () => hideError('paymentMode'));
         document.getElementById('planName').addEventListener('change', () => hideError('planName'));
+        document.getElementById('planSize').addEventListener('input', () => hideError('planSize'));
+        document.getElementById('planStartDate').addEventListener('input', () => hideError('planStartDate'));
         
         // Plan duration validation
         document.getElementById('durationDays').addEventListener('input', function() {
