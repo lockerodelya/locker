@@ -10,17 +10,16 @@
         import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
         import { getFirestore, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
         
-  
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
-  authDomain: "odelya-user-data.firebaseapp.com",
-  projectId: "odelya-user-data",
-  storageBucket: "odelya-user-data.firebasestorage.app",
-  messagingSenderId: "590231118790",
-  appId: "1:590231118790:web:572c355c8826ad9c9148c7",
-  measurementId: "G-9SWTR9V32R"
-};
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+            authDomain: "odelya-user-data.firebaseapp.com",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.firebasestorage.app",
+            messagingSenderId: "590231118790",
+            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+            measurementId: "G-9SWTR9V32R"
+        };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -174,32 +173,32 @@ const firebaseConfig = {
             }
         }
         
-        /* Plan duration selector */
-        .duration-options {
+        /* Plan duration boxes */
+        .duration-inputs {
             display: flex;
             gap: 10px;
-            margin-top: 5px;
         }
         
-        .duration-option {
+        .duration-box {
             flex: 1;
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .duration-box input {
+            width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
+            text-align: center;
+            font-size: 1rem;
         }
         
-        .duration-option:hover {
-            border-color: #4361ee;
-            background-color: #f0f4ff;
-        }
-        
-        .duration-option.selected {
-            border-color: #4361ee;
-            background-color: #4361ee;
-            color: white;
+        .duration-box span {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #666;
         }
         
         .loading {
@@ -283,22 +282,37 @@ const firebaseConfig = {
             <div class="form-grid">
                 <div class="form-group">
                     <label for="planName" class="required">Plan Name</label>
-                    <input type="text" id="planName" readonly class="disabled-input">
+                    <select id="planName" required>
+                        <option value="">Select Plan Type</option>
+                        <option value="Secure Cloud Storage">Secure Cloud Storage</option>
+                        <option value="Event Storage">Event Storage</option>
+                        <option value="Special Purpose Storage">Special Purpose Storage</option>
+                    </select>
+                    <div class="error-message" id="planNameError"></div>
                 </div>
                 
                 <div class="form-group">
                     <label for="planSize" class="required">Plan (GB)</label>
-                    <input type="text" id="planSize" readonly class="disabled-input">
+                    <input type="text" id="planSize" placeholder="Will auto-fill from pricing table">
                 </div>
                 
                 <div class="form-group">
                     <label class="required">Plan Duration</label>
-                    <div class="duration-options">
-                        <div class="duration-option" data-duration="30" onclick="selectDuration(30)">Days</div>
-                        <div class="duration-option" data-duration="1" onclick="selectDuration(1)">Months</div>
-                        <div class="duration-option selected" data-duration="12" onclick="selectDuration(12)">Years</div>
+                    <div class="duration-inputs">
+                        <div class="duration-box">
+                            <input type="number" id="durationDays" min="0" max="365" placeholder="Days" oninput="calculateEndDate()">
+                            <span>Days</span>
+                        </div>
+                        <div class="duration-box">
+                            <input type="number" id="durationMonths" min="0" max="12" placeholder="Months" oninput="calculateEndDate()">
+                            <span>Months</span>
+                        </div>
+                        <div class="duration-box">
+                            <input type="number" id="durationYears" min="0" max="10" placeholder="Years" oninput="calculateEndDate()">
+                            <span>Years</span>
+                        </div>
                     </div>
-                    <input type="hidden" id="planDuration" value="12">
+                    <input type="hidden" id="totalDuration" value="0">
                 </div>
                 
                 <div class="form-group">
@@ -314,17 +328,16 @@ const firebaseConfig = {
                 
                 <div class="form-group">
                     <label for="planValue" class="required">Plan Value (₹)</label>
-                    <input type="text" id="planValue" readonly class="disabled-input">
+                    <input type="text" id="planValue" placeholder="Will auto-fill from pricing table">
                 </div>
                 
                 <div class="form-group">
                     <label for="paymentMode" class="required">Payment Mode</label>
-                    <select id="paymentMode">
+                    <select id="paymentMode" required>
                         <option value="">Select payment mode</option>
                         <option value="UPI">UPI</option>
                         <option value="Bank Transfer">Bank Transfer</option>
-                        <option value="Credit Card">Credit Card</option>
-                        <option value="Debit Card">Debit Card</option>
+                        <option value="Cash">Cash</option>
                     </select>
                     <div class="error-message" id="paymentModeError"></div>
                 </div>
@@ -360,6 +373,18 @@ const firebaseConfig = {
     </div>
 
     <script>
+        // Generate 6-digit User ID with digits 2-9 only
+        function generateUserId() {
+            let userId = '';
+            const digits = '23456789'; // Only digits 2-9
+            
+            for (let i = 0; i < 6; i++) {
+                const randomIndex = Math.floor(Math.random() * digits.length);
+                userId += digits[randomIndex];
+            }
+            return userId;
+        }
+        
         // Initialize date pickers
         let dobPicker, startDatePicker;
         
@@ -380,26 +405,24 @@ const firebaseConfig = {
             autoFillPlanDetails();
         });
         
-        // Get URL parameters for plan details
-        function getUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                planName: params.get('plan') || '10 GB Monthly',
-                planSize: params.get('size') || '10',
-                planValue: params.get('price') || '18'
-            };
-        }
-        
         // Auto-fill plan details from URL
         function autoFillPlanDetails() {
-            const params = getUrlParams();
-            document.getElementById('planName').value = params.planName;
-            document.getElementById('planSize').value = params.planSize + ' GB';
-            document.getElementById('planValue').value = '₹' + params.planValue;
+            // Get parameters from URL
+            const params = new URLSearchParams(window.location.search);
+            const planSize = params.get('size') || '';
+            const planPrice = params.get('price') || '';
             
-            // Generate user ID (6 digits)
-            const userId = Math.floor(100000 + Math.random() * 900000);
-            document.getElementById('userId').value = userId.toString();
+            // Fill only if URL has parameters
+            if (planSize) {
+                document.getElementById('planSize').value = planSize + ' GB';
+            }
+            
+            if (planPrice) {
+                document.getElementById('planValue').value = '₹' + planPrice;
+            }
+            
+            // Generate user ID (6 digits, 2-9 only)
+            document.getElementById('userId').value = generateUserId();
             
             // Set today as start date
             const today = new Date();
@@ -414,44 +437,33 @@ const firebaseConfig = {
             calculateEndDate();
         }
         
-        // Duration selection
-        function selectDuration(duration) {
-            document.getElementById('planDuration').value = duration;
-            document.querySelectorAll('.duration-option').forEach(opt => {
-                opt.classList.remove('selected');
-                if(opt.dataset.duration == duration) {
-                    opt.classList.add('selected');
-                }
-            });
-            calculateEndDate();
-        }
-        
         // Calculate end date based on duration
         function calculateEndDate() {
             const startDateInput = document.getElementById('planStartDate').value;
-            const duration = parseInt(document.getElementById('planDuration').value);
+            if (!startDateInput) return;
             
-            if (startDateInput) {
+            const days = parseInt(document.getElementById('durationDays').value) || 0;
+            const months = parseInt(document.getElementById('durationMonths').value) || 0;
+            const years = parseInt(document.getElementById('durationYears').value) || 0;
+            
+            // Calculate total days for storage
+            const totalDays = days + (months * 30) + (years * 365);
+            document.getElementById('totalDuration').value = totalDays;
+            
+            if (totalDays > 0) {
                 const [day, month, year] = startDateInput.split('-').map(Number);
                 const startDate = new Date(year, month - 1, day);
                 const endDate = new Date(startDate);
                 
-                // Determine unit from selected option
-                const selectedOption = document.querySelector('.duration-option.selected');
-                const unit = selectedOption ? selectedOption.textContent.toLowerCase() : 'years';
-                
-                if (unit.includes('days')) {
-                    endDate.setDate(startDate.getDate() + duration);
-                } else if (unit.includes('months')) {
-                    endDate.setMonth(startDate.getMonth() + duration);
-                } else {
-                    endDate.setFullYear(startDate.getFullYear() + duration);
-                }
+                // Add all durations
+                endDate.setDate(startDate.getDate() + totalDays);
                 
                 const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
                                        (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
                                        endDate.getFullYear();
                 document.getElementById('planEndDate').value = formattedEndDate;
+            } else {
+                document.getElementById('planEndDate').value = '';
             }
         }
         
@@ -486,6 +498,7 @@ const firebaseConfig = {
             hideError('password');
             hideError('startDate');
             hideError('paymentMode');
+            hideError('planName');
             
             // Check required fields
             const requiredFields = [
@@ -495,7 +508,8 @@ const firebaseConfig = {
                 {id: 'username', name: 'Username'},
                 {id: 'password', name: 'Password'},
                 {id: 'planStartDate', name: 'Plan Start Date'},
-                {id: 'paymentMode', name: 'Payment Mode'}
+                {id: 'paymentMode', name: 'Payment Mode'},
+                {id: 'planName', name: 'Plan Name'}
             ];
             
             requiredFields.forEach(field => {
@@ -505,6 +519,13 @@ const firebaseConfig = {
                     isValid = false;
                 }
             });
+            
+            // Check plan duration
+            const totalDays = parseInt(document.getElementById('totalDuration').value) || 0;
+            if (totalDays === 0) {
+                alert('Please enter plan duration (days, months, or years)');
+                return false;
+            }
             
             // Email validation
             const email = document.getElementById('email').value;
@@ -539,10 +560,8 @@ const firebaseConfig = {
             
             // Disable button and show loading
             const submitBtn = document.getElementById('submitBtn');
-            const loading = document.getElementById('loading');
             submitBtn.disabled = true;
             submitBtn.textContent = 'Processing...';
-            loading.style.display = 'block';
             
             try {
                 // 1. Create user authentication
@@ -557,7 +576,13 @@ const firebaseConfig = {
                 
                 const user = userCredential.user;
                 
-                // 2. Prepare user data
+                // 2. Calculate total duration
+                const days = parseInt(document.getElementById('durationDays').value) || 0;
+                const months = parseInt(document.getElementById('durationMonths').value) || 0;
+                const years = parseInt(document.getElementById('durationYears').value) || 0;
+                const totalDays = days + (months * 30) + (years * 365);
+                
+                // 3. Prepare user data for Firebase
                 const userData = {
                     userId: document.getElementById('userId').value,
                     fullName: document.getElementById('fullName').value,
@@ -565,11 +590,11 @@ const firebaseConfig = {
                     phone: document.getElementById('phone').value,
                     dob: document.getElementById('dob').value || null,
                     aadhaar: document.getElementById('aadhaar').value || null,
-                    pan: document.getElementById('pan').value.toUpperCase() || null,
+                    pan: document.getElementById('pan').value || null,
                     
                     planName: document.getElementById('planName').value,
                     planSize: document.getElementById('planSize').value,
-                    planDuration: document.getElementById('planDuration').value,
+                    planDuration: totalDays + ' days',
                     planStartDate: document.getElementById('planStartDate').value,
                     planEndDate: document.getElementById('planEndDate').value,
                     planValue: document.getElementById('planValue').value,
@@ -581,15 +606,14 @@ const firebaseConfig = {
                     updatedAt: serverTimestamp()
                 };
                 
-                // 3. Save to Firestore
+                // 4. Save to Firestore (This saves to Firebase server)
                 await setDoc(doc(window.firebaseDb, "users", user.uid), userData);
                 
                 alert('✅ Registration successful! Redirecting to payment...');
                 
-                // 4. Redirect to payment page with user ID
-                setTimeout(() => {
-                    window.location.href = `https://www.odelya.online/payment.html?userId=${userData.userId}&amount=${userData.planValue.replace('₹', '')}&email=${encodeURIComponent(email)}`;
-                }, 1000);
+                // 5. Redirect to payment page
+                const amount = userData.planValue.replace('₹', '');
+                window.location.href = `https://www.odelya.online/payment.html?userId=${userData.userId}&amount=${amount}&email=${encodeURIComponent(email)}`;
                 
             } catch (error) {
                 console.error('Error:', error);
@@ -597,11 +621,10 @@ const firebaseConfig = {
                 // Re-enable button
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Continue to Payment';
-                loading.style.display = 'none';
                 
                 // Show user-friendly error messages
                 if (error.code === 'auth/email-already-in-use') {
-                    alert('❌ This email is already registered. Please use a different email or login.');
+                    alert('❌ This email is already registered. Please use a different email.');
                 } else if (error.code === 'auth/invalid-email') {
                     alert('❌ Please enter a valid email address.');
                 } else if (error.code === 'auth/weak-password') {
@@ -623,9 +646,16 @@ const firebaseConfig = {
             this.value = this.value.replace(/\D/g, '').slice(0, 12);
         });
         
-        // PAN formatting
+        // PAN formatting (5 letters + 4 numbers + 1 letter)
         document.getElementById('pan').addEventListener('input', function(e) {
-            this.value = this.value.replace(/[^A-Z0-9]/g, '').toUpperCase().slice(0, 10);
+            let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            
+            // Format as ABCDE1234F
+            if (value.length > 5) {
+                value = value.slice(0, 5) + value.slice(5, 9) + value.slice(9, 10);
+            }
+            
+            this.value = value;
         });
         
         // Real-time validation
@@ -634,6 +664,26 @@ const firebaseConfig = {
         document.getElementById('username').addEventListener('input', () => hideError('username'));
         document.getElementById('password').addEventListener('input', () => hideError('password'));
         document.getElementById('paymentMode').addEventListener('change', () => hideError('paymentMode'));
+        document.getElementById('planName').addEventListener('change', () => hideError('planName'));
+        
+        // Plan duration validation
+        document.getElementById('durationDays').addEventListener('input', function() {
+            if (this.value < 0) this.value = 0;
+            if (this.value > 365) this.value = 365;
+            calculateEndDate();
+        });
+        
+        document.getElementById('durationMonths').addEventListener('input', function() {
+            if (this.value < 0) this.value = 0;
+            if (this.value > 12) this.value = 12;
+            calculateEndDate();
+        });
+        
+        document.getElementById('durationYears').addEventListener('input', function() {
+            if (this.value < 0) this.value = 0;
+            if (this.value > 10) this.value = 10;
+            calculateEndDate();
+        });
     </script>
 </body>
 </html>
