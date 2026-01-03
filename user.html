@@ -369,7 +369,7 @@
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
             margin-bottom: 20px;
         }
@@ -377,6 +377,10 @@
         .form-row {
             display: flex;
             flex-direction: column;
+        }
+
+        .form-row.full-width {
+            grid-column: 1 / -1;
         }
 
         .form-row label {
@@ -763,7 +767,17 @@
         }
 
         .duration-input input {
-            padding-right: 40px;
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .duration-input input:focus {
+            border-color: #2196f3;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
         }
 
         .duration-label {
@@ -776,6 +790,7 @@
             background: #f5f5f5;
             padding: 2px 6px;
             border-radius: 4px;
+            pointer-events: none;
         }
 
         /* Calendar Icon */
@@ -789,10 +804,32 @@
             background: none;
             border: none;
             font-size: 1.2rem;
+            z-index: 2;
         }
 
         .date-input-wrapper {
             position: relative;
+        }
+
+        .date-input-wrapper input {
+            width: 100%;
+            padding-right: 40px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .duration-input-group {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .user-info-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
         }
     </style>
 </head>
@@ -958,26 +995,32 @@
                 <div class="form-section" id="addUserForm">
                     <h3><i class="fas fa-user-plus"></i> Add New User</h3>
                     <div class="form-grid">
+                        <!-- Column 1 -->
                         <div class="form-row">
                             <label><i class="fas fa-id-card"></i> User ID</label>
                             <input type="number" id="newUserId" placeholder="e.g., 100001" min="100000" max="999999" oninput="validateUserId()">
                             <div class="date-format">6 digits only (100000-999999)</div>
                             <div class="error-message" id="userIdError" style="display:none; margin-top:5px;"></div>
                         </div>
+                        
                         <div class="form-row">
                             <label><i class="fas fa-user"></i> Full Name</label>
                             <input type="text" id="newFullName" placeholder="Full Name">
                         </div>
+                        
                         <div class="form-row">
                             <label><i class="fas fa-envelope"></i> Email</label>
                             <input type="email" id="newEmail" placeholder="user@example.com">
                         </div>
+                        
                         <div class="form-row">
                             <label><i class="fas fa-phone"></i> Phone</label>
                             <input type="tel" id="newPhone" placeholder="9876543210" maxlength="10" oninput="validatePhone()">
                             <div class="date-format">10 digits only</div>
                             <div class="error-message" id="phoneError" style="display:none; margin-top:5px;"></div>
                         </div>
+                        
+                        <!-- Column 2 -->
                         <div class="form-row">
                             <label><i class="fas fa-calendar"></i> Date of Birth</label>
                             <div class="date-input-wrapper">
@@ -988,6 +1031,7 @@
                             </div>
                             <div class="date-format">Format: DD-MM-YYYY</div>
                         </div>
+                        
                         <div class="form-row">
                             <label><i class="fas fa-tag"></i> Plan Name</label>
                             <select id="newPlanName">
@@ -996,11 +1040,19 @@
                                 <option value="custom storage">Custom Storage</option>
                             </select>
                         </div>
+                        
                         <div class="form-row">
                             <label><i class="fas fa-database"></i> Plan (GB)</label>
                             <input type="text" id="newPlanGB" placeholder="e.g., 50 GB">
                         </div>
+                        
                         <div class="form-row">
+                            <label><i class="fas fa-rupee-sign"></i> Amount Paid</label>
+                            <input type="number" id="newAmount" placeholder="599">
+                        </div>
+                        
+                        <!-- Column 3 - Duration Fields (Full Width) -->
+                        <div class="form-row full-width">
                             <label><i class="fas fa-calendar-alt"></i> Duration</label>
                             <div class="duration-input-group">
                                 <div class="duration-input">
@@ -1018,6 +1070,8 @@
                             </div>
                             <div class="date-format">Enter duration in days, months, years</div>
                         </div>
+                        
+                        <!-- Column 4 - Date Fields -->
                         <div class="form-row">
                             <label><i class="fas fa-calendar-day"></i> Start Date</label>
                             <div class="date-input-wrapper">
@@ -1028,6 +1082,7 @@
                             </div>
                             <div class="date-format">Format: DD-MM-YYYY</div>
                         </div>
+                        
                         <div class="form-row">
                             <label><i class="fas fa-calendar-check"></i> End Date</label>
                             <div class="date-input-wrapper">
@@ -1038,10 +1093,7 @@
                             </div>
                             <div class="date-format">Auto-calculated based on duration</div>
                         </div>
-                        <div class="form-row">
-                            <label><i class="fas fa-rupee-sign"></i> Amount Paid</label>
-                            <input type="number" id="newAmount" placeholder="599">
-                        </div>
+                        
                         <div class="form-row">
                             <label><i class="fas fa-key"></i> Initial Password</label>
                             <input type="text" id="newPassword" placeholder="Enter initial password" value="odelya@123">
@@ -1174,7 +1226,7 @@
             name: 'System Administrator'
         };
 
-        // Initialize storage
+        // Initialize storage - NO SAMPLE USERS CREATED
         function initializeStorage() {
             // Create admin user if not exists
             if (!localStorage.getItem('user_ADMIN')) {
@@ -1200,8 +1252,8 @@
                 localStorage.setItem('user_ADMIN', JSON.stringify(adminUser));
             }
 
-            // Create sample users for testing
-            createSampleUsers();
+            // REMOVED: No sample users created by default
+            // createSampleUsers();
         }
 
         // ====== ADMIN FORM VALIDATIONS ======
@@ -2164,65 +2216,6 @@
 
         function rechargeNow() {
             showToast('Info', 'Recharge functionality will be configured later.');
-        }
-
-        // ====== SAMPLE DATA ======
-        function createSampleUsers() {
-            const sampleUsers = [
-                {
-                    userId: '100001',
-                    username: 'john_doe',
-                    password: 'odelya@123',
-                    initialPassword: 'odelya@123',
-                    fullName: 'John Doe',
-                    email: 'john@example.com',
-                    phone: '9876543210',
-                    dob: '15-05-1990',
-                    planName: 'cloud storage',
-                    planGB: '50 GB',
-                    durationDays: 30,
-                    durationMonths: 0,
-                    durationYears: 0,
-                    planDuration: '30 days',
-                    planStartDate: '01-01-2025',
-                    planEndDate: '31-01-2025',
-                    amountPaid: 599,
-                    isFirstLogin: true,
-                    isAdmin: false,
-                    createdAt: '2024-01-01',
-                    planHistory: []
-                },
-                {
-                    userId: '100002',
-                    username: 'jane_smith',
-                    password: 'odelya@123',
-                    initialPassword: 'odelya@123',
-                    fullName: 'Jane Smith',
-                    email: 'jane@example.com',
-                    phone: '9876543211',
-                    dob: '22-08-1985',
-                    planName: 'event guest storage',
-                    planGB: '100 GB',
-                    durationDays: 0,
-                    durationMonths: 1,
-                    durationYears: 0,
-                    planDuration: '1 months',
-                    planStartDate: '01-02-2025',
-                    planEndDate: '03-03-2025',
-                    amountPaid: 899,
-                    isFirstLogin: true,
-                    isAdmin: false,
-                    createdAt: '2024-01-02',
-                    planHistory: []
-                }
-            ];
-            
-            // Add sample users if they don't exist
-            sampleUsers.forEach(user => {
-                if (!localStorage.getItem('user_' + user.userId)) {
-                    localStorage.setItem('user_' + user.userId, JSON.stringify(user));
-                }
-            });
         }
 
         // ====== INITIALIZE ======
