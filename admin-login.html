@@ -94,14 +94,19 @@
                     const user = userCredential.user;
                     console.log("Admin logged in:", user.email);
                     
-                    // Check if this is actually an admin (simple check for now)
-                    // We'll make this proper later
-                    if (email.includes('admin') || email.includes('odelya')) {
-                        // Save to localStorage
-                        localStorage.setItem('admin_logged_in', 'true');
-                        localStorage.setItem('admin_email', user.email);
-                        localStorage.setItem('admin_uid', user.uid);
-                        
+// Check if this is actually an admin
+// FOR NOW: Let anyone with Firebase access login
+// We'll add proper admin check later
+if (true) {  // Remove this check for testing
+    // Save to localStorage
+    localStorage.setItem('admin_logged_in', 'true');
+    localStorage.setItem('admin_email', user.email);
+    localStorage.setItem('admin_uid', user.uid);
+    
+    // Redirect to dashboard
+    window.location.href = "admin-dashboard.html";
+} else {
+    
                         // Redirect to dashboard
                         window.location.href = "admin-dashboard.html";
                     } else {
