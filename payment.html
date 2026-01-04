@@ -1110,42 +1110,76 @@
         };
 
         // ====== URL PARAMETER EXTRACTION ======
-        function getUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                userId: params.get('userId') || '',
-                amount: params.get('amount') || '0',
-                email: params.get('email') || '',
-                planType: params.get('planType') || ''
-            };
-        }
-
-        // ====== INITIALIZATION ======
-        document.addEventListener('DOMContentLoaded', function() {
-            // Extract data from URL
-            const urlParams = getUrlParams();
+        
+        // ====== URL PARAMETER EXTRACTION ======
+function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    
+    // Try URL parameters first
+    let userId = params.get('userId') || '';
+    let amount = parseInt(params.get('amount')) || 0;
+    let email = params.get('email') || '';
+    let planType = params.get('planType') || '';
+    
+    // If no URL parameters, try sessionStorage (backup)
+    if (!userId || amount === 0) {
+        try {
+            const lastReg = JSON.parse(sessionStorage.getItem('lastRegistration') || '{}');
+            const fiveMinutesAgo = new Date().getTime() - (5 * 60 * 1000);
             
-            // Set payment state from URL parameters
-            paymentState.userId = urlParams.userId;
-            paymentState.totalAmount = parseInt(urlParams.amount) || 0;
-            paymentState.userEmail = decodeURIComponent(urlParams.email) || '';
-            paymentState.planType = urlParams.planType || '';
-            paymentState.planValue = 'INR ' + paymentState.totalAmount.toLocaleString();
-            
-            // Update display with user information
-            updateUserInfoDisplay();
-            
-            // Update amount displays
-            updateAmountDisplay();
-            
-            // Show user info section if we have data
-            if (paymentState.userId && paymentState.totalAmount > 0) {
-                elements.userInfo.classList.add('active');
+            // Only use if data is recent (last 5 minutes)
+            if (lastReg.timestamp && lastReg.timestamp > fiveMinutesAgo) {
+                console.log('Using sessionStorage backup data');
+                userId = lastReg.userId || userId;
+                amount = lastReg.amount || amount;
+                email = lastReg.email || email;
+                planType = lastReg.planType || planType;
             }
-            
-            // Terms modal is already shown by default (display: flex in CSS)
-            setupEventListeners();
-        });
+        } catch (e) {
+            console.error('Error reading sessionStorage:', e);
+        }
+    }
+    
+    return { userId, amount, email, planType };
+}
+
+// ====== INITIALIZATION ======
+document.addEventListener('DOMContentLoaded', function() {
+    // Extract data from URL or sessionStorage
+    const urlParams = getUrlParams();
+    
+    console.log('URL Parameters received:', urlParams);
+    
+    // Set payment state
+    paymentState.userId = urlParams.userId;
+    paymentState.totalAmount = urlParams.amount;
+    paymentState.userEmail = decodeURIComponent(urlParams.email) || '';
+    paymentState.planType = urlParams.planType;
+    paymentState.planValue = 'INR ' + paymentState.totalAmount.toLocaleString();
+    
+    // Debug log
+    console.log('Payment State:', paymentState);
+    
+    // Update display
+    updateUserInfoDisplay();
+    updateAmountDisplay();
+    
+    // Show user info section if we have data
+    if (paymentState.userId && paymentState.totalAmount > 0) {
+        elements.userInfo.classList.add('active');
+    } else {
+        // Show warning after a delay
+        setTimeout(() => {
+            const proceed = confirm('⚠️ No payment amount detected!\n\nYou may have accessed this page directly without completing registration.\n\nClick OK to go to registration page or Cancel to stay here.');
+            if (proceed) {
+                window.location.href = 'https://www.odelya.online/cloud-storage.html';
+            }
+        }, 500);
+    }
+    
+    // Terms modal is already shown by default
+    setupEventListeners();
+});
 
         // ====== UPDATE USER INFO DISPLAY ======
         function updateUserInfoDisplay() {
