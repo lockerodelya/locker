@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard - Odelya</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            color: #3a0ca3;
+        }
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-box h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .stat-box .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #3a0ca3;
+        }
+        table {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #4361ee;
+            color: white;
+        }
+        tr:hover {
+            background: #f9f9f9;
+        }
+        .status {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Odelya Admin Dashboard</h1>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="container">
+        <div class="stats">
+            <div class="stat-box">
+                <h3>Total Users</h3>
+                <div class="number" id="totalUsers">0</div>
+            </div>
+            <div class="stat-box">
+                <h3>Active Users</h3>
+                <div class="number" id="activeUsers">0</div>
+            </div>
+            <div class="stat-box">
+                <h3>Pending</h3>
+                <div class="number" id="pendingUsers">0</div>
+            </div>
+        </div>
+        
+        <h2 style="margin: 30px 0 15px 0;">All Registered Users</h2>
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Plan</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="usersList">
+                <!-- Users will appear here -->
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 40px;">
+                        Loading users...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Check if admin is logged in
+        window.onload = function() {
+            const isLoggedIn = localStorage.getItem('admin_logged_in');
+            if (!isLoggedIn) {
+                window.location.href = "admin-login.html";
+            } else {
+                loadUsers();
+            }
+        };
+        
+        function logout() {
+            localStorage.removeItem('admin_logged_in');
+            localStorage.removeItem('admin_email');
+            window.location.href = "admin-login.html";
+        }
+        
+        // We'll add Firebase code here in next step
+        function loadUsers() {
+            // This is where we'll load users from Firebase
+            // For now, let's just show a message
+            document.getElementById('usersList').innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 40px;">
+                        🔄 Next step: Connect to Firebase<br>
+                        <small>We'll add this in the next step</small>
+                    </td>
+                </tr>
+            `;
+        }
+    </script>
+</body>
+</html>
