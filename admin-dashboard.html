@@ -115,7 +115,109 @@
             background: #fff3cd;
             color: #856404;
         }
-    </style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #4361ee;
+            padding-bottom: 10px;
+        }
+        
+        .modal-header h2 {
+            color: #3a0ca3;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .user-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .detail-group {
+            margin-bottom: 15px;
+        }
+        
+        .detail-group label {
+            display: block;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .detail-group .value {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .modal-actions {
+            margin-top: 30px;
+            text-align: right;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        
+        .action-btn {
+            padding: 8px 20px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-close {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-edit {
+            background: #ffc107;
+            color: black;
+        }
+        
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+    
+            </style>
 </head>
 <body>
     <div class="header">
@@ -173,7 +275,148 @@
                 const adminEmail = localStorage.getItem('admin_email');
                 document.querySelector('.header h1').innerHTML = 
                     `Odelya Admin Dashboard <small style="font-size: 14px; color: #666;">(${adminEmail})</small>`;
-                
+        // View user details
+        function viewUserDetails(userId) {
+            console.log("Viewing user:", userId);
+            
+            // Show loading
+            document.getElementById('usersList').innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 40px;">
+                        🔄 Loading user details...
+                    </td>
+                </tr>
+            `;
+        // Show user details in modal
+        function showUserModal(user) {
+            console.log("Showing user modal:", user);
+            
+            // Create HTML for user details
+            let html = '';
+            
+            // Personal Information
+            html += `
+                <div class="detail-group">
+                    <label>User ID</label>
+                    <div class="value">${user.userId || 'N/A'}</div>
+                </div>
+                <div class="detail-group">
+                    <label>Full Name</label>
+                    <div class="value">${user.fullName || 'N/A'}</div>
+                </div>
+                <div class="detail-group">
+                    <label>Email</label>
+                    <div class="value">${user.email || 'N/A'}</div>
+                </div>
+                <div class="detail-group">
+                    <label>Phone</label>
+                    <div class="value">${user.phone || 'N/A'}</div>
+                </div>
+                <div class="detail-group">
+                    <label>Status</label>
+                    <div class="value" style="background: ${user.status === 'active' ? '#d4edda' : user.status === 'pending' ? '#fff3cd' : '#f8d7da'}; color: ${user.status === 'active' ? '#155724' : user.status === 'pending' ? '#856404' : '#721c24'}; font-weight: bold; padding: 5px 10px; border-radius: 20px; display: inline-block;">
+                        ${user.status || 'pending'}
+                    </div>
+                </div>
+            `;
+            
+            // Plan Details
+            html += `
+                <div class="detail-group">
+                    <label>Plan Name</label>
+                    <div class="value">${user.planName || 'N/A'}</div>
+                </div>
+                <div class="detail-group">
+                    <label>Plan Size</label>
+                    <div class="value">${user.planSize || 'N/A'}</div>
+                </div>
+                <div class="detail-group">
+                    <label>Plan Value</label>
+                    <div class="value">${user.planValue || 'N/A'}</div>
+                </div>
+                <div class="detail-group">
+                    <label>Payment Mode</label>
+                    <div class="value">${user.paymentMode || 'N/A'}</div>
+                </div>
+            `;
+            
+            // Additional Info
+            if (user.dob) html += `
+                <div class="detail-group">
+                    <label>Date of Birth</label>
+                    <div class="value">${user.dob}</div>
+                </div>
+            `;
+            
+            if (user.pan) html += `
+                <div class="detail-group">
+                    <label>PAN Number</label>
+                    <div class="value">${user.pan}</div>
+                </div>
+            `;
+            
+            if (user.aadhaar) html += `
+                <div class="detail-group">
+                    <label>Aadhaar Number</label>
+                    <div class="value">${user.aadhaar}</div>
+                </div>
+            `;
+            
+            if (user.username) html += `
+                <div class="detail-group">
+                    <label>Username</label>
+                    <div class="value">${user.username}</div>
+                </div>
+            `;
+            
+            if (user.planStartDate) html += `
+                <div class="detail-group">
+                    <label>Plan Start Date</label>
+                    <div class="value">${user.planStartDate}</div>
+                </div>
+            `;
+            
+            if (user.planEndDate) html += `
+                <div class="detail-group">
+                    <label>Plan End Date</label>
+                    <div class="value">${user.planEndDate}</div>
+                </div>
+            `;
+            
+            if (user.createdAt) html += `
+                <div class="detail-group">
+                    <label>Registered On</label>
+                    <div class="value">${user.createdAt.toDate ? user.createdAt.toDate().toLocaleString() : user.createdAt}</div>
+                </div>
+            `;
+            
+            // Update modal content
+            document.getElementById('userDetails').innerHTML = html;
+            
+            // Store current user ID for actions
+            window.currentUserId = user.id || '';
+            window.currentUserData = user;
+            
+            // Show modal
+            document.getElementById('userModal').style.display = 'flex';
+        }            
+            // Get user document
+            db.collection("users").doc(userId).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const user = doc.data();
+                        showUserModal(user);
+                    } else {
+                        alert("User not found!");
+                        loadUsers(); // Reload table
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error getting user:", error);
+                    alert("Error loading user: " + error.message);
+                    loadUsers(); // Reload table
+                });
+        }                
                 loadUsers();
             }
         };
@@ -248,10 +491,10 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button style="padding: 5px 10px; background: #4361ee; color: white; border: none; border-radius: 3px; cursor: pointer;">
-                                        View
-                                    </button>
-                                </td>
+            <button onclick="viewUserDetails('${doc.id}')" style="padding: 5px 10px; background: #4361ee; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                View Details
+            </button>
+        </td>
                             </tr>
                         `;
                     });
@@ -278,6 +521,52 @@
                     `;
                 });
         }
+            // Close modal
+        function closeModal() {
+            document.getElementById('userModal').style.display = 'none';
+            window.currentUserId = null;
+            window.currentUserData = null;
+        }
+        
+        // Approve user (placeholder for now)
+        function approveUser() {
+            if (!window.currentUserId) return;
+            
+            if (confirm("Approve this user and change status to 'active'?")) {
+                alert("Approval feature will be added in next step!");
+                // We'll implement this later
+            }
+        }
+        
+        // Edit user (placeholder for now)
+        function editUser() {
+            if (!window.currentUserId) return;
+            
+            alert("Edit feature will be added in next step!");
+            // We'll implement this later
+        }
+    
     </script>
+    <!-- User Details Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>User Details</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="user-details" id="userDetails">
+                <!-- User details will be loaded here -->
+            </div>
+            
+            <div class="modal-actions">
+                <button class="action-btn btn-approve" onclick="approveUser()">✅ Approve User</button>
+                <button class="action-btn btn-edit" onclick="editUser()">✏️ Edit</button>
+                <button class="action-btn btn-close" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+
 </body>
 </html>
