@@ -170,28 +170,114 @@
             if (!isLoggedIn) {
                 window.location.href = "admin-login.html";
             } else {
+                // Show who's logged in
+                const adminEmail = localStorage.getItem('admin_email');
+                document.querySelector('.header h1').innerHTML = 
+                    `Odelya Admin Dashboard <small style="font-size: 14px; color: #666;">(${adminEmail})</small>`;
+                
                 loadUsers();
             }
         };
         
         function logout() {
-            localStorage.removeItem('admin_logged_in');
-            localStorage.removeItem('admin_email');
-            window.location.href = "admin-login.html";
+            // Sign out from Firebase
+            auth.signOut().then(() => {
+                // Clear localStorage
+                localStorage.removeItem('admin_logged_in');
+                localStorage.removeItem('admin_email');
+                localStorage.removeItem('admin_uid');
+                
+                // Redirect to login
+                window.location.href = "admin-login.html";
+            });
         }
         
-        // We'll add Firebase code here in next step
+        // Load users from Firebase
         function loadUsers() {
-            // This is where we'll load users from Firebase
-            // For now, let's just show a message
+            console.log("Loading users from Firebase...");
+            
+            // Show loading message
             document.getElementById('usersList').innerHTML = `
                 <tr>
                     <td colspan="7" style="text-align: center; padding: 40px;">
-                        🔄 Next step: Connect to Firebase<br>
-                        <small>We'll add this in the next step</small>
+                        🔄 Loading users from database...
                     </td>
                 </tr>
             `;
+            
+            // Get all users from Firestore
+            db.collection("users").get()
+                .then((querySnapshot) => {
+                    console.log("Found users:", querySnapshot.size);
+                    
+                    if (querySnapshot.empty) {
+                        document.getElementById('usersList').innerHTML = `
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px;">
+                                    📭 No users found in database yet
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+                    
+                    // Count stats
+                    let totalUsers = 0;
+                    let activeUsers = 0;
+                    let pendingUsers = 0;
+                    let html = '';
+                    
+                    querySnapshot.forEach((doc) => {
+                        const user = doc.data();
+                        totalUsers++;
+                        
+                        // Count by status
+                        if (user.status === 'active') activeUsers++;
+                        if (user.status === 'pending') pendingUsers++;
+                        
+                        // Create table row
+                        html += `
+                            <tr>
+                                <td>${user.userId || 'N/A'}</td>
+                                <td>${user.fullName || 'N/A'}</td>
+                                <td>${user.email || 'N/A'}</td>
+                                <td>${user.phone || 'N/A'}</td>
+                                <td>${user.planName || 'N/A'}</td>
+                                <td>
+                                    <span class="status ${user.status || 'pending'}">
+                                        ${user.status || 'pending'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button style="padding: 5px 10px; background: #4361ee; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    // Update stats
+                    document.getElementById('totalUsers').textContent = totalUsers;
+                    document.getElementById('activeUsers').textContent = activeUsers;
+                    document.getElementById('pendingUsers').textContent = pendingUsers;
+                    
+                    // Update table
+                    document.getElementById('usersList').innerHTML = html;
+                    
+                    console.log("Users loaded successfully!");
+                })
+                .catch((error) => {
+                    console.error("Error loading users:", error);
+                    document.getElementById('usersList').innerHTML = `
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 40px; color: #dc3545;">
+                                ❌ Error loading users: ${error.message}<br>
+                                <small>Check browser console for details</small>
+                            </td>
+                        </tr>
+                    `;
+                });
         }
     </script>
 </body>
