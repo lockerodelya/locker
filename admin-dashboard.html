@@ -7,24 +7,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
     
-    <script>
-        // Your Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
-            authDomain: "odelya-user-data.firebasestorage.app",
-            projectId: "odelya-user-data",
-            storageBucket: "odelya-user-data.appspot.com",
-            messagingSenderId: "590231118790",
-            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
-            measurementId: "G-9SWTR9V32R"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-    </script>
-    
     <style>
         * {
             margin: 0;
@@ -115,6 +97,7 @@
             background: #fff3cd;
             color: #856404;
         }
+        
         /* Modal Styles */
         .modal {
             display: none;
@@ -216,8 +199,7 @@
             background: #28a745;
             color: white;
         }
-    
-            </style>
+    </style>
 </head>
 <body>
     <div class="header">
@@ -264,7 +246,47 @@
         </table>
     </div>
 
+    <!-- User Details Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>User Details</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="user-details" id="userDetails">
+                <!-- User details will be loaded here -->
+            </div>
+            
+            <div class="modal-actions">
+                <button class="action-btn btn-approve" onclick="approveUser()">✅ Approve User</button>
+                <button class="action-btn btn-edit" onclick="editUser()">✏️ Edit</button>
+                <button class="action-btn btn-close" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+            authDomain: "odelya-user-data.firebasestorage.app",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.appspot.com",
+            messagingSenderId: "590231118790",
+            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+            measurementId: "G-9SWTR9V32R"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Global variables
+        let currentUserId = null;
+        let currentUserData = null;
+
         // Check if admin is logged in
         window.onload = function() {
             const isLoggedIn = localStorage.getItem('admin_logged_in');
@@ -275,8 +297,27 @@
                 const adminEmail = localStorage.getItem('admin_email');
                 document.querySelector('.header h1').innerHTML = 
                     `Odelya Admin Dashboard <small style="font-size: 14px; color: #666;">(${adminEmail})</small>`;
+                
+                loadUsers();
+            }
+        };
+        
+        // Logout function
+        function logout() {
+            // Sign out from Firebase
+            auth.signOut().then(() => {
+                // Clear localStorage
+                localStorage.removeItem('admin_logged_in');
+                localStorage.removeItem('admin_email');
+                localStorage.removeItem('admin_uid');
+                
+                // Redirect to login
+                window.location.href = "admin-login.html";
+            });
+        }
+        
         // View user details
-        function viewUserDetails(userId) {
+        window.viewUserDetails = function(userId) {
             console.log("Viewing user:", userId);
             
             // Show loading
@@ -287,11 +328,30 @@
                     </td>
                 </tr>
             `;
+            
+            // Get user document
+            db.collection("users").doc(userId).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const user = doc.data();
+                        user.id = userId;
+                        showUserModal(user);
+                    } else {
+                        alert("User not found!");
+                        loadUsers();
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error getting user:", error);
+                    alert("Error loading user: " + error.message);
+                    loadUsers();
+                });
+        };
+        
         // Show user details in modal
         function showUserModal(user) {
             console.log("Showing user modal:", user);
             
-            // Create HTML for user details
             let html = '';
             
             // Personal Information
@@ -383,62 +443,59 @@
                 </div>
             `;
             
-            if (user.createdAt) html += `
-                <div class="detail-group">
-                    <label>Registered On</label>
-                    <div class="value">${user.createdAt.toDate ? user.createdAt.toDate().toLocaleString() : user.createdAt}</div>
-                </div>
-            `;
+            if (user.createdAt) {
+                let dateStr = user.createdAt;
+                if (user.createdAt.toDate) {
+                    dateStr = user.createdAt.toDate().toLocaleString();
+                }
+                html += `
+                    <div class="detail-group">
+                        <label>Registered On</label>
+                        <div class="value">${dateStr}</div>
+                    </div>
+                `;
+            }
             
             // Update modal content
             document.getElementById('userDetails').innerHTML = html;
             
             // Store current user ID for actions
-            window.currentUserId = user.id || '';
-            window.currentUserData = user;
+            currentUserId = user.id;
+            currentUserData = user;
             
             // Show modal
             document.getElementById('userModal').style.display = 'flex';
-        }            
-            // Get user document
-            db.collection("users").doc(userId).get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        const user = doc.data();
-                        showUserModal(user);
-                    } else {
-                        alert("User not found!");
-                        loadUsers(); // Reload table
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error getting user:", error);
-                    alert("Error loading user: " + error.message);
-                    loadUsers(); // Reload table
-                });
-        }                
-                loadUsers();
+        }
+        
+        // Close modal
+        window.closeModal = function() {
+            document.getElementById('userModal').style.display = 'none';
+            currentUserId = null;
+            currentUserData = null;
+            loadUsers();
+        };
+        
+        // Approve user
+        window.approveUser = function() {
+            if (!currentUserId) return;
+            
+            if (confirm("Approve this user and change status to 'active'?")) {
+                alert("✅ User approved! (Feature will be fully implemented in next step)");
+                closeModal();
             }
         };
         
-        function logout() {
-            // Sign out from Firebase
-            auth.signOut().then(() => {
-                // Clear localStorage
-                localStorage.removeItem('admin_logged_in');
-                localStorage.removeItem('admin_email');
-                localStorage.removeItem('admin_uid');
-                
-                // Redirect to login
-                window.location.href = "admin-login.html";
-            });
-        }
+        // Edit user
+        window.editUser = function() {
+            if (!currentUserId) return;
+            
+            alert("✏️ Edit feature will be added in next step!");
+        };
         
         // Load users from Firebase
         function loadUsers() {
             console.log("Loading users from Firebase...");
             
-            // Show loading message
             document.getElementById('usersList').innerHTML = `
                 <tr>
                     <td colspan="7" style="text-align: center; padding: 40px;">
@@ -463,7 +520,6 @@
                         return;
                     }
                     
-                    // Count stats
                     let totalUsers = 0;
                     let activeUsers = 0;
                     let pendingUsers = 0;
@@ -473,11 +529,9 @@
                         const user = doc.data();
                         totalUsers++;
                         
-                        // Count by status
                         if (user.status === 'active') activeUsers++;
                         if (user.status === 'pending') pendingUsers++;
                         
-                        // Create table row
                         html += `
                             <tr>
                                 <td>${user.userId || 'N/A'}</td>
@@ -491,20 +545,18 @@
                                     </span>
                                 </td>
                                 <td>
-            <button onclick="viewUserDetails('${doc.id}')" style="padding: 5px 10px; background: #4361ee; color: white; border: none; border-radius: 3px; cursor: pointer;">
-                View Details
-            </button>
-        </td>
+                                    <button onclick="viewUserDetails('${doc.id}')" style="padding: 5px 10px; background: #4361ee; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                                        View Details
+                                    </button>
+                                </td>
                             </tr>
                         `;
                     });
                     
-                    // Update stats
                     document.getElementById('totalUsers').textContent = totalUsers;
                     document.getElementById('activeUsers').textContent = activeUsers;
                     document.getElementById('pendingUsers').textContent = pendingUsers;
                     
-                    // Update table
                     document.getElementById('usersList').innerHTML = html;
                     
                     console.log("Users loaded successfully!");
@@ -514,59 +566,12 @@
                     document.getElementById('usersList').innerHTML = `
                         <tr>
                             <td colspan="7" style="text-align: center; padding: 40px; color: #dc3545;">
-                                ❌ Error loading users: ${error.message}<br>
-                                <small>Check browser console for details</small>
+                                ❌ Error loading users: ${error.message}
                             </td>
                         </tr>
                     `;
                 });
         }
-            // Close modal
-        function closeModal() {
-            document.getElementById('userModal').style.display = 'none';
-            window.currentUserId = null;
-            window.currentUserData = null;
-        }
-        
-        // Approve user (placeholder for now)
-        function approveUser() {
-            if (!window.currentUserId) return;
-            
-            if (confirm("Approve this user and change status to 'active'?")) {
-                alert("Approval feature will be added in next step!");
-                // We'll implement this later
-            }
-        }
-        
-        // Edit user (placeholder for now)
-        function editUser() {
-            if (!window.currentUserId) return;
-            
-            alert("Edit feature will be added in next step!");
-            // We'll implement this later
-        }
-    
     </script>
-    <!-- User Details Modal -->
-    <div id="userModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>User Details</h2>
-                <button class="close-modal" onclick="closeModal()">&times;</button>
-            </div>
-            
-            <div class="user-details" id="userDetails">
-                <!-- User details will be loaded here -->
-            </div>
-            
-            <div class="modal-actions">
-                <button class="action-btn btn-approve" onclick="approveUser()">✅ Approve User</button>
-                <button class="action-btn btn-edit" onclick="editUser()">✏️ Edit</button>
-                <button class="action-btn btn-close" onclick="closeModal()">Close</button>
-            </div>
-        </div>
-    </div>
-
-
 </body>
 </html>
