@@ -167,6 +167,16 @@
             background: #f8f9fa;
             border-radius: 5px;
             border: 1px solid #ddd;
+            min-height: 40px;
+        }
+        
+        .detail-group input,
+        .detail-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
         }
         
         .modal-actions {
@@ -195,8 +205,20 @@
             color: black;
         }
         
-        .btn-approve {
+        .btn-save {
             background: #28a745;
+            color: white;
+            display: none;
+        }
+        
+        .btn-cancel {
+            background: #dc3545;
+            color: white;
+            display: none;
+        }
+        
+        .btn-approve {
+            background: #4361ee;
             color: white;
         }
     </style>
@@ -260,7 +282,9 @@
             
             <div class="modal-actions">
                 <button class="action-btn btn-approve" onclick="approveUser()">✅ Approve User</button>
-                <button class="action-btn btn-edit" onclick="editUser()">✏️ Edit</button>
+                <button class="action-btn btn-edit" onclick="toggleEditMode()">✏️ Edit</button>
+                <button class="action-btn btn-save" onclick="saveChanges()">💾 Save</button>
+                <button class="action-btn btn-cancel" onclick="cancelEdit()">❌ Cancel</button>
                 <button class="action-btn btn-close" onclick="closeModal()">Close</button>
             </div>
         </div>
@@ -286,6 +310,7 @@
         // Global variables
         let currentUserId = null;
         let currentUserData = null;
+        let isEditMode = false;
 
         // Check if admin is logged in
         window.onload = function() {
@@ -335,7 +360,8 @@
                     if (doc.exists) {
                         const user = doc.data();
                         user.id = userId;
-                        showUserModal(user);
+                        currentUserData = user;
+                        showUserModal(user, false);
                     } else {
                         alert("User not found!");
                         loadUsers();
@@ -349,101 +375,104 @@
         };
         
         // Show user details in modal
-        function showUserModal(user) {
-            console.log("Showing user modal:", user);
+        function showUserModal(user, editMode = false) {
+            console.log("Showing user modal. Edit mode:", editMode);
+            isEditMode = editMode;
+            currentUserId = user.id;
             
             let html = '';
             
+            // Helper function to create field
+            function createField(label, fieldName, value, type = 'text') {
+                if (editMode) {
+                    if (type === 'select-status') {
+                        return `
+                            <div class="detail-group">
+                                <label>${label}</label>
+                                <select id="edit_${fieldName}">
+                                    <option value="pending" ${value === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="active" ${value === 'active' ? 'selected' : ''}>Active</option>
+                                    <option value="inactive" ${value === 'inactive' ? 'selected' : ''}>Inactive</option>
+                                    <option value="suspended" ${value === 'suspended' ? 'selected' : ''}>Suspended</option>
+                                </select>
+                            </div>
+                        `;
+                    } else if (type === 'select-plan') {
+                        return `
+                            <div class="detail-group">
+                                <label>${label}</label>
+                                <select id="edit_${fieldName}">
+                                    <option value="">Select Plan</option>
+                                    <option value="Secure Cloud Storage" ${value === 'Secure Cloud Storage' ? 'selected' : ''}>Secure Cloud Storage</option>
+                                    <option value="Event Storage" ${value === 'Event Storage' ? 'selected' : ''}>Event Storage</option>
+                                    <option value="Special Purpose Storage" ${value === 'Special Purpose Storage' ? 'selected' : ''}>Special Purpose Storage</option>
+                                </select>
+                            </div>
+                        `;
+                    } else if (type === 'select-payment') {
+                        return `
+                            <div class="detail-group">
+                                <label>${label}</label>
+                                <select id="edit_${fieldName}">
+                                    <option value="">Select Payment</option>
+                                    <option value="UPI" ${value === 'UPI' ? 'selected' : ''}>UPI</option>
+                                    <option value="Bank Transfer" ${value === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
+                                    <option value="Cash" ${value === 'Cash' ? 'selected' : ''}>Cash</option>
+                                </select>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="detail-group">
+                                <label>${label}</label>
+                                <input type="${type}" id="edit_${fieldName}" value="${value || ''}">
+                            </div>
+                        `;
+                    }
+                } else {
+                    let displayValue = value || 'N/A';
+                    let style = '';
+                    
+                    if (fieldName === 'status') {
+                        let bgColor = '#f8f9fa';
+                        let textColor = '#333';
+                        if (value === 'active') { bgColor = '#d4edda'; textColor = '#155724'; }
+                        else if (value === 'pending') { bgColor = '#fff3cd'; textColor = '#856404'; }
+                        else if (value === 'inactive' || value === 'suspended') { bgColor = '#f8d7da'; textColor = '#721c24'; }
+                        style = `background: ${bgColor}; color: ${textColor}; font-weight: bold; padding: 5px 10px; border-radius: 20px; display: inline-block;`;
+                    }
+                    
+                    return `
+                        <div class="detail-group">
+                            <label>${label}</label>
+                            <div class="value" style="${style}">${displayValue}</div>
+                        </div>
+                    `;
+                }
+            }
+            
             // Personal Information
-            html += `
-                <div class="detail-group">
-                    <label>User ID</label>
-                    <div class="value">${user.userId || 'N/A'}</div>
-                </div>
-                <div class="detail-group">
-                    <label>Full Name</label>
-                    <div class="value">${user.fullName || 'N/A'}</div>
-                </div>
-                <div class="detail-group">
-                    <label>Email</label>
-                    <div class="value">${user.email || 'N/A'}</div>
-                </div>
-                <div class="detail-group">
-                    <label>Phone</label>
-                    <div class="value">${user.phone || 'N/A'}</div>
-                </div>
-                <div class="detail-group">
-                    <label>Status</label>
-                    <div class="value" style="background: ${user.status === 'active' ? '#d4edda' : user.status === 'pending' ? '#fff3cd' : '#f8d7da'}; color: ${user.status === 'active' ? '#155724' : user.status === 'pending' ? '#856404' : '#721c24'}; font-weight: bold; padding: 5px 10px; border-radius: 20px; display: inline-block;">
-                        ${user.status || 'pending'}
-                    </div>
-                </div>
-            `;
+            html += createField('User ID', 'userId', user.userId);
+            html += createField('Full Name', 'fullName', user.fullName);
+            html += createField('Email', 'email', user.email, 'email');
+            html += createField('Phone', 'phone', user.phone, 'tel');
+            html += createField('Status', 'status', user.status, 'select-status');
             
             // Plan Details
-            html += `
-                <div class="detail-group">
-                    <label>Plan Name</label>
-                    <div class="value">${user.planName || 'N/A'}</div>
-                </div>
-                <div class="detail-group">
-                    <label>Plan Size</label>
-                    <div class="value">${user.planSize || 'N/A'}</div>
-                </div>
-                <div class="detail-group">
-                    <label>Plan Value</label>
-                    <div class="value">${user.planValue || 'N/A'}</div>
-                </div>
-                <div class="detail-group">
-                    <label>Payment Mode</label>
-                    <div class="value">${user.paymentMode || 'N/A'}</div>
-                </div>
-            `;
+            html += createField('Plan Name', 'planName', user.planName, 'select-plan');
+            html += createField('Plan Size', 'planSize', user.planSize);
+            html += createField('Plan Value', 'planValue', user.planValue);
+            html += createField('Payment Mode', 'paymentMode', user.paymentMode, 'select-payment');
             
             // Additional Info
-            if (user.dob) html += `
-                <div class="detail-group">
-                    <label>Date of Birth</label>
-                    <div class="value">${user.dob}</div>
-                </div>
-            `;
+            if (user.dob || editMode) html += createField('Date of Birth', 'dob', user.dob);
+            if (user.pan || editMode) html += createField('PAN Number', 'pan', user.pan);
+            if (user.aadhaar || editMode) html += createField('Aadhaar Number', 'aadhaar', user.aadhaar);
+            if (user.username || editMode) html += createField('Username', 'username', user.username);
+            if (user.planStartDate || editMode) html += createField('Plan Start Date', 'planStartDate', user.planStartDate);
+            if (user.planEndDate || editMode) html += createField('Plan End Date', 'planEndDate', user.planEndDate);
             
-            if (user.pan) html += `
-                <div class="detail-group">
-                    <label>PAN Number</label>
-                    <div class="value">${user.pan}</div>
-                </div>
-            `;
-            
-            if (user.aadhaar) html += `
-                <div class="detail-group">
-                    <label>Aadhaar Number</label>
-                    <div class="value">${user.aadhaar}</div>
-                </div>
-            `;
-            
-            if (user.username) html += `
-                <div class="detail-group">
-                    <label>Username</label>
-                    <div class="value">${user.username}</div>
-                </div>
-            `;
-            
-            if (user.planStartDate) html += `
-                <div class="detail-group">
-                    <label>Plan Start Date</label>
-                    <div class="value">${user.planStartDate}</div>
-                </div>
-            `;
-            
-            if (user.planEndDate) html += `
-                <div class="detail-group">
-                    <label>Plan End Date</label>
-                    <div class="value">${user.planEndDate}</div>
-                </div>
-            `;
-            
-            if (user.createdAt) {
+            if (user.createdAt && !editMode) {
                 let dateStr = user.createdAt;
                 if (user.createdAt.toDate) {
                     dateStr = user.createdAt.toDate().toLocaleString();
@@ -459,19 +488,100 @@
             // Update modal content
             document.getElementById('userDetails').innerHTML = html;
             
-            // Store current user ID for actions
-            currentUserId = user.id;
-            currentUserData = user;
+            // Show/hide buttons based on edit mode
+            if (editMode) {
+                document.querySelector('.btn-edit').style.display = 'none';
+                document.querySelector('.btn-approve').style.display = 'none';
+                document.querySelector('.btn-save').style.display = 'inline-block';
+                document.querySelector('.btn-cancel').style.display = 'inline-block';
+                document.querySelector('.btn-close').style.display = 'none';
+            } else {
+                document.querySelector('.btn-edit').style.display = 'inline-block';
+                document.querySelector('.btn-approve').style.display = 'inline-block';
+                document.querySelector('.btn-save').style.display = 'none';
+                document.querySelector('.btn-cancel').style.display = 'none';
+                document.querySelector('.btn-close').style.display = 'inline-block';
+            }
             
             // Show modal
             document.getElementById('userModal').style.display = 'flex';
         }
+        
+        // Toggle edit mode
+        window.toggleEditMode = function() {
+            showUserModal(currentUserData, true);
+        };
+        
+        // Cancel edit
+        window.cancelEdit = function() {
+            showUserModal(currentUserData, false);
+        };
+        
+        // Save changes
+        window.saveChanges = function() {
+            if (!currentUserId) return;
+            
+            // Collect all edited values
+            const updates = {
+                fullName: document.getElementById('edit_fullName')?.value || '',
+                email: document.getElementById('edit_email')?.value || '',
+                phone: document.getElementById('edit_phone')?.value || '',
+                status: document.getElementById('edit_status')?.value || 'pending',
+                planName: document.getElementById('edit_planName')?.value || '',
+                planSize: document.getElementById('edit_planSize')?.value || '',
+                planValue: document.getElementById('edit_planValue')?.value || '',
+                paymentMode: document.getElementById('edit_paymentMode')?.value || '',
+                dob: document.getElementById('edit_dob')?.value || null,
+                pan: document.getElementById('edit_pan')?.value || null,
+                aadhaar: document.getElementById('edit_aadhaar')?.value || null,
+                username: document.getElementById('edit_username')?.value || '',
+                planStartDate: document.getElementById('edit_planStartDate')?.value || '',
+                planEndDate: document.getElementById('edit_planEndDate')?.value || '',
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Remove empty values
+            Object.keys(updates).forEach(key => {
+                if (updates[key] === '' || updates[key] === null) {
+                    delete updates[key];
+                }
+            });
+            
+            console.log("Saving updates:", updates);
+            
+            // Show loading
+            document.querySelector('.btn-save').textContent = "Saving...";
+            document.querySelector('.btn-save').disabled = true;
+            
+            // Save to Firebase
+            db.collection("users").doc(currentUserId).update(updates)
+                .then(() => {
+                    console.log("User updated successfully!");
+                    alert("✅ User updated successfully!");
+                    
+                    // Update local data
+                    currentUserData = { ...currentUserData, ...updates };
+                    
+                    // Switch back to view mode
+                    showUserModal(currentUserData, false);
+                    
+                    // Reload users list
+                    loadUsers();
+                })
+                .catch((error) => {
+                    console.error("Error updating user:", error);
+                    alert("❌ Error updating user: " + error.message);
+                    document.querySelector('.btn-save').textContent = "💾 Save";
+                    document.querySelector('.btn-save').disabled = false;
+                });
+        };
         
         // Close modal
         window.closeModal = function() {
             document.getElementById('userModal').style.display = 'none';
             currentUserId = null;
             currentUserData = null;
+            isEditMode = false;
             loadUsers();
         };
         
@@ -480,16 +590,35 @@
             if (!currentUserId) return;
             
             if (confirm("Approve this user and change status to 'active'?")) {
-                alert("✅ User approved! (Feature will be fully implemented in next step)");
-                closeModal();
+                // Show loading
+                document.querySelector('.btn-approve').textContent = "Approving...";
+                document.querySelector('.btn-approve').disabled = true;
+                
+                // Update status to active
+                db.collection("users").doc(currentUserId).update({
+                    status: 'active',
+                    updatedAt: new Date().toISOString()
+                })
+                .then(() => {
+                    console.log("User approved!");
+                    alert("✅ User approved successfully!");
+                    
+                    // Update local data
+                    currentUserData.status = 'active';
+                    
+                    // Refresh modal
+                    showUserModal(currentUserData, false);
+                    
+                    // Reload users list
+                    loadUsers();
+                })
+                .catch((error) => {
+                    console.error("Error approving user:", error);
+                    alert("❌ Error approving user: " + error.message);
+                    document.querySelector('.btn-approve').textContent = "✅ Approve User";
+                    document.querySelector('.btn-approve').disabled = false;
+                });
             }
-        };
-        
-        // Edit user
-        window.editUser = function() {
-            if (!currentUserId) return;
-            
-            alert("✏️ Edit feature will be added in next step!");
         };
         
         // Load users from Firebase
