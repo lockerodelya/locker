@@ -933,11 +933,28 @@
                 
                 alert('✅ Registration successful! Redirecting to payment...');
                 
-                // 6. Redirect to payment page
-                window.location.href = `https://www.odelya.online/payment.html?userId=${userData.userId}&amount=${finalPrice}&email=${encodeURIComponent(email)}&planType=${planType}`;
-                
-            } catch (error) {
-                console.error('Full Error:', error);
+// In the submitForm() function, replace the redirect part with:
+
+// 6. Redirect to payment page with ALL parameters
+const paymentUrl = `https://www.odelya.online/payment.html?userId=${userData.userId}&amount=${finalPrice}&email=${encodeURIComponent(email)}&planType=${planType}`;
+
+console.log('Redirecting to payment page:', paymentUrl);
+
+// Save data to sessionStorage as backup
+sessionStorage.setItem('lastRegistration', JSON.stringify({
+    userId: userData.userId,
+    amount: finalPrice,
+    email: email,
+    planType: planType,
+    timestamp: new Date().getTime()
+}));
+
+alert('✅ Registration successful! Redirecting to payment...');
+
+// Redirect after a short delay
+setTimeout(() => {
+    window.location.href = paymentUrl;
+}, 1000);
                 
                 // Re-enable button
                 submitBtn.disabled = false;
