@@ -49,6 +49,55 @@
             margin: 0 auto;
         }
 
+        /* User Info Display */
+        .user-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto 30px;
+            max-width: 800px;
+            border: 2px solid #2196f3;
+            display: none;
+        }
+
+        .user-info.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .user-info h3 {
+            color: #0d47a1;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .user-detail-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .user-detail-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .user-detail-value {
+            font-weight: 600;
+            color: #0d47a1;
+            font-size: 1rem;
+        }
+
         /* Payment Steps */
         .payment-steps {
             display: flex;
@@ -625,6 +674,10 @@
                 font-size: 2.2rem;
             }
             
+            .user-details-grid {
+                grid-template-columns: 1fr;
+            }
+            
             .terms-content {
                 width: 95%;
                 height: 85vh;
@@ -832,6 +885,29 @@
             <p>Complete your payment and registration for Odelya services</p>
         </div>
 
+        <!-- User Information Display -->
+        <div class="user-info" id="userInfo">
+            <h3><i class="fas fa-user-circle"></i> Registration Details</h3>
+            <div class="user-details-grid">
+                <div class="user-detail-item">
+                    <div class="user-detail-label">User ID</div>
+                    <div class="user-detail-value" id="displayUserId">Loading...</div>
+                </div>
+                <div class="user-detail-item">
+                    <div class="user-detail-label">Plan Type</div>
+                    <div class="user-detail-value" id="displayPlanType">Loading...</div>
+                </div>
+                <div class="user-detail-item">
+                    <div class="user-detail-label">Email</div>
+                    <div class="user-detail-value" id="displayEmail">Loading...</div>
+                </div>
+                <div class="user-detail-item">
+                    <div class="user-detail-label">Plan Value</div>
+                    <div class="user-detail-value" id="displayPlanValue">Loading...</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Payment Steps -->
         <div class="payment-steps">
             <div class="steps-connector"></div>
@@ -911,6 +987,12 @@
                     <div class="qr-code">
                         <img src="images/sbiqr.jpg" alt="SBI UPI QR Code">
                     </div>
+                    <div class="warning-box">
+                        <h4><i class="fas fa-exclamation-circle"></i> Important Instructions</h4>
+                        <div class="warning-text">
+                            <strong>IMPORTANT:</strong> When paying via UPI, please use your <strong>User ID: <span id="upiUserId">Loading...</span></strong> or <strong>Name</strong> as the payment reference/description. This helps us identify your payment quickly and activate your service.
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Bank Transfer Details -->
@@ -963,8 +1045,8 @@
                         <div class="instructions-box">
                             <h4><i class="fas fa-list-ol"></i> Payment Instructions</h4>
                             <ol>
-                                <li>Transfer the <strong>exact amount</strong> shown above</li>
-                                <li>Use your <strong>User ID</strong> or <strong>Name</strong> as payment reference</li>
+                                <li>Transfer the <strong>exact amount: <span id="instructionAmount">INR 0</span></strong> shown above</li>
+                                <li>Use your <strong>User ID: <span id="instructionUserId">Loading...</span></strong> or <strong>Name</strong> as payment reference</li>
                                 <li>Keep the transaction receipt/screenshot</li>
                                 <li>Payments are verified within 24-48 hours</li>
                                 <li>Your service will be activated after payment verification</li>
@@ -976,7 +1058,7 @@
                 <!-- Action Buttons -->
                 <div class="action-buttons">
                     <button class="btn btn-completed" id="btnCompleted">
-                        <i class="fas fa-check-circle"></i> Completed
+                        <i class="fas fa-check-circle"></i> I Have Completed Payment
                     </button>
                 </div>
             </div>
@@ -991,7 +1073,11 @@
             currentStep: 1,
             agreedToTerms: false,
             paymentMode: null,
-            totalAmount: 1000 // Default amount, you can set this dynamically later
+            totalAmount: 0,
+            userId: '',
+            userEmail: '',
+            planType: '',
+            planValue: ''
         };
 
         // ====== DOM ELEMENTS ======
@@ -1012,15 +1098,68 @@
             bankDetails: document.getElementById('bankDetails'),
             finalAmountDisplay: document.getElementById('finalAmount'),
             transferAmount: document.getElementById('transferAmount'),
-            paymentDetailsSection: document.getElementById('paymentDetailsSection')
+            paymentDetailsSection: document.getElementById('paymentDetailsSection'),
+            userInfo: document.getElementById('userInfo'),
+            displayUserId: document.getElementById('displayUserId'),
+            displayPlanType: document.getElementById('displayPlanType'),
+            displayEmail: document.getElementById('displayEmail'),
+            displayPlanValue: document.getElementById('displayPlanValue'),
+            upiUserId: document.getElementById('upiUserId'),
+            instructionUserId: document.getElementById('instructionUserId'),
+            instructionAmount: document.getElementById('instructionAmount')
         };
+
+        // ====== URL PARAMETER EXTRACTION ======
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                userId: params.get('userId') || '',
+                amount: params.get('amount') || '0',
+                email: params.get('email') || '',
+                planType: params.get('planType') || ''
+            };
+        }
 
         // ====== INITIALIZATION ======
         document.addEventListener('DOMContentLoaded', function() {
+            // Extract data from URL
+            const urlParams = getUrlParams();
+            
+            // Set payment state from URL parameters
+            paymentState.userId = urlParams.userId;
+            paymentState.totalAmount = parseInt(urlParams.amount) || 0;
+            paymentState.userEmail = decodeURIComponent(urlParams.email) || '';
+            paymentState.planType = urlParams.planType || '';
+            paymentState.planValue = 'INR ' + paymentState.totalAmount.toLocaleString();
+            
+            // Update display with user information
+            updateUserInfoDisplay();
+            
+            // Update amount displays
+            updateAmountDisplay();
+            
+            // Show user info section if we have data
+            if (paymentState.userId && paymentState.totalAmount > 0) {
+                elements.userInfo.classList.add('active');
+            }
+            
             // Terms modal is already shown by default (display: flex in CSS)
             setupEventListeners();
-            updateAmountDisplay();
         });
+
+        // ====== UPDATE USER INFO DISPLAY ======
+        function updateUserInfoDisplay() {
+            elements.displayUserId.textContent = paymentState.userId || 'Not provided';
+            elements.displayPlanType.textContent = paymentState.planType ? 
+                (paymentState.planType === 'monthly' ? 'Monthly Plan' : 'Yearly Plan') : 
+                'Not specified';
+            elements.displayEmail.textContent = paymentState.userEmail || 'Not provided';
+            elements.displayPlanValue.textContent = paymentState.planValue;
+            
+            // Update UPI and instruction user IDs
+            elements.upiUserId.textContent = paymentState.userId || 'Loading...';
+            elements.instructionUserId.textContent = paymentState.userId || 'Loading...';
+        }
 
         // ====== SETUP EVENT LISTENERS ======
         function setupEventListeners() {
@@ -1033,9 +1172,7 @@
             elements.modeUPI.addEventListener('click', () => selectPaymentMode('upi'));
             elements.modeBank.addEventListener('click', () => selectPaymentMode('bank'));
             
-            elements.btnCompleted.addEventListener('click', () => {
-                window.location.href = 'https://www.odelya.online/index.html';
-            });
+            elements.btnCompleted.addEventListener('click', handlePaymentCompletion);
         }
 
         // ====== TERMS AGREEMENT ======
@@ -1063,8 +1200,14 @@
 
         // ====== AMOUNT DISPLAY ======
         function updateAmountDisplay() {
-            elements.finalAmountDisplay.textContent = `INR ${paymentState.totalAmount.toLocaleString()}`;
-            elements.transferAmount.textContent = `INR ${paymentState.totalAmount.toLocaleString()}`;
+            const formattedAmount = paymentState.totalAmount.toLocaleString();
+            
+            // Update all amount displays
+            elements.finalAmountDisplay.textContent = `INR ${formattedAmount}`;
+            elements.transferAmount.textContent = `INR ${formattedAmount}`;
+            elements.instructionAmount.textContent = `INR ${formattedAmount}`;
+            
+            console.log('Amount updated:', paymentState.totalAmount);
         }
 
         // ====== PAYMENT MODE SELECTION ======
@@ -1085,22 +1228,29 @@
             }
         }
 
-        // Function to set amount dynamically from outside
-        window.setPaymentAmount = function(amount) {
-            paymentState.totalAmount = amount;
-            updateAmountDisplay();
-        };
+        // ====== PAYMENT COMPLETION HANDLER ======
+        function handlePaymentCompletion() {
+            // Show confirmation message
+            alert(`✅ Payment recorded successfully!\n\nUser ID: ${paymentState.userId}\nAmount: ${paymentState.planValue}\n\nWe will verify your payment within 24-48 hours and activate your service.`);
+            
+            // Redirect to homepage
+            setTimeout(() => {
+                window.location.href = 'https://www.odelya.online/index.html';
+            }, 1500);
+        }
 
-        // Function to handle agreement and redirect to next page
-        window.proceedAfterAgreement = function() {
-            if (paymentState.agreedToTerms) {
-                // You can set the redirection URL here
-                // window.location.href = 'YOUR_NEXT_PAGE_URL';
-                console.log('Redirecting to next page...');
-                // For now, just show the payment section
-                agreeToTerms();
-            }
-        };
+        // ====== FALLBACK FOR DIRECT ACCESS ======
+        // If someone accesses payment.html directly without amount
+        if (!paymentState.totalAmount || paymentState.totalAmount === 0) {
+            // Show warning and suggest going back
+            setTimeout(() => {
+                const proceed = confirm('⚠️ No payment amount detected!\n\nYou may have accessed this page directly without completing registration.\n\nClick OK to go to registration page or Cancel to stay here.');
+                if (proceed) {
+                    window.location.href = 'https://www.odelya.online/cloud-storage.html';
+                }
+            }, 1000);
+        }
+
         // JavaScript End
     </script>
 </body>
