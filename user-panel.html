@@ -852,6 +852,16 @@
         }
         
         // Submit form to Firebase
+
+        async function submitForm() {
+    console.log('Submit button clicked');
+    console.log('Plan Type variable:', planType); // ADD THIS LINE
+    
+    if (!validateForm()) {
+        console.log('Form validation failed');
+        return;
+    }
+        
         async function submitForm() {
             console.log('Submit button clicked');
             
@@ -930,6 +940,17 @@
                 console.log('Saving to Firestore...');
                 await setDoc(doc(window.firebaseDb, "users", user.uid), userData);
                 console.log('Data saved successfully!');
+
+                // ========== ADD DEBUG LOGGING HERE ==========
+        console.log('=== DEBUG: Registration Data ===');
+        console.log('User ID:', userData.userId);
+        console.log('Final Price:', finalPrice);
+        console.log('Plan Type:', planType);
+        console.log('Email:', email);
+        
+        const paymentUrl = `https://www.odelya.online/payment.html?userId=${userData.userId}&amount=${finalPrice}&email=${encodeURIComponent(email)}&planType=${planType}`;
+        console.log('Payment URL:', paymentUrl);
+        // ========== END DEBUG LOGGING ==========
                 
                 alert('✅ Registration successful! Redirecting to payment...');
                 
