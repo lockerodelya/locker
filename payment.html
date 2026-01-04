@@ -140,17 +140,60 @@
             color: #666;
         }
 
-        .qr-code {
+        /* UPI Container for Desktop */
+        .upi-details-container {
+            display: block;
+        }
+
+        .upi-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .qr-code-container {
             text-align: center;
             margin: 15px 0;
         }
 
-        .qr-code img {
+        .qr-code-container img {
             max-width: 300px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             padding: 10px;
             background: white;
+        }
+
+        .upi-instructions-container {
+            background: #e8f5e9;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 6px solid #4caf50;
+        }
+
+        .upi-instructions-container h4 {
+            color: #1b5e20;
+            font-size: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upi-instructions-container ol {
+            padding-left: 18px;
+            margin-bottom: 15px;
+        }
+
+        .upi-instructions-container li {
+            margin-bottom: 10px;
+            font-size: 15px;
+            color: #424242;
+            line-height: 1.5;
+        }
+
+        .upi-instructions-container strong {
+            color: #1b5e20;
         }
 
         .qr-title {
@@ -337,6 +380,27 @@
             }
         }
 
+        /* Desktop Layout for UPI */
+        @media (min-width: 769px) {
+            .upi-content-wrapper {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 40px;
+                max-width: 1000px;
+                margin: 0 auto;
+            }
+            
+            .qr-code-container {
+                flex: 0 0 auto;
+                margin: 0;
+            }
+            
+            .upi-instructions-container {
+                flex: 1;
+                margin-top: 0;
+            }
+        }
+
         /* Mobile Responsive Fixes */
         @media (max-width: 768px) {
             .header h1 {
@@ -365,7 +429,7 @@
                 font-size: 1.2rem;
             }
             
-            .qr-code img {
+            .qr-code-container img {
                 max-width: 250px;
                 width: 100%;
             }
@@ -393,14 +457,17 @@
                 padding: 8px;
             }
             
+            .upi-instructions-container,
             .instructions-box {
                 padding: 15px;
             }
             
+            .upi-instructions-container h4,
             .instructions-box h4 {
                 font-size: 16px;
             }
             
+            .upi-instructions-container li,
             .instructions-box li {
                 font-size: 14px;
             }
@@ -443,7 +510,7 @@
                 font-size: 1.6rem;
             }
             
-            .qr-code img {
+            .qr-code-container img {
                 max-width: 220px;
             }
             
@@ -460,6 +527,7 @@
                 font-size: 1.2rem;
             }
             
+            .upi-instructions-container li,
             .instructions-box li {
                 font-size: 13px;
             }
@@ -528,8 +596,23 @@
                 <!-- UPI Payment Details -->
                 <div class="upi-details active" id="upiDetails">
                     <div class="qr-title">Scan to Pay via UPI</div>
-                    <div class="qr-code">
-                        <img src="images/sbiqr.jpg" alt="SBI UPI QR Code">
+                    <div class="upi-details-container">
+                        <div class="upi-content-wrapper">
+                            <div class="qr-code-container">
+                                <img src="images/sbiqr.jpg" alt="SBI UPI QR Code">
+                            </div>
+                            <div class="upi-instructions-container">
+                                <h4><i class="fas fa-list-ol"></i> Payment Instructions</h4>
+                                <ol>
+                                    <li>Please pay the <strong>exact amount: <span id="upiInstructionAmount">INR 0</span></strong></li>
+                                    <li>Please share transaction details via:<br>
+                                        <strong>WhatsApp: +91-9674130001</strong><br>
+                                        <strong>Email: care.ompl@gmail.com</strong>
+                                    </li>
+                                    <li>Service will be activated within 48 hours only after successful payment verification</li>
+                                </ol>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -630,7 +713,8 @@
             displayPlanType: document.getElementById('displayPlanType'),
             displayEmail: document.getElementById('displayEmail'),
             displayPlanValue: document.getElementById('displayPlanValue'),
-            instructionAmount: document.getElementById('instructionAmount')
+            instructionAmount: document.getElementById('instructionAmount'),
+            upiInstructionAmount: document.getElementById('upiInstructionAmount')
         };
 
         // ====== URL PARAMETER EXTRACTION ======
@@ -723,6 +807,7 @@
             // Update amount displays
             elements.transferAmount.textContent = `INR ${formattedAmount}`;
             elements.instructionAmount.textContent = `INR ${formattedAmount}`;
+            elements.upiInstructionAmount.textContent = `INR ${formattedAmount}`;
             
             console.log('Amount updated:', paymentState.totalAmount);
         }
