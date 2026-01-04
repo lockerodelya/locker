@@ -50,13 +50,13 @@
         <h2>🔐 Admin Login</h2>
         <input type="email" id="email" placeholder="Admin Email">
         <input type="password" id="password" placeholder="Admin Password">
-        <button onclick="login()">Login</button>
+        <button id="loginBtn">Login</button>
         <p style="margin-top: 20px; color: #666; font-size: 14px;">
             This is a secure admin portal
         </p>
     </div>
 
-    <!-- Add Firebase SDK at the TOP of your page -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -65,9 +65,9 @@
         // Your Firebase configuration (SAME as user-panel.html)
         const firebaseConfig = {
             apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
-            authDomain: "odelya-user-data.firebaseapp.com",
+            authDomain: "odelya-user-data.firebasestorage.app",
             projectId: "odelya-user-data",
-            storageBucket: "odelya-user-data.firebasestorage.app",
+            storageBucket: "odelya-user-data.appspot.com",
             messagingSenderId: "590231118790",
             appId: "1:590231118790:web:572c355c8826ad9c9148c7",
             measurementId: "G-9SWTR9V32R"
@@ -78,12 +78,13 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // Login function
         function login() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
             // Show loading
-            const btn = event.target;
+            const btn = document.getElementById('loginBtn');
             btn.disabled = true;
             btn.textContent = "Logging in...";
             
@@ -94,27 +95,15 @@
                     const user = userCredential.user;
                     console.log("Admin logged in:", user.email);
                     
-// Check if this is actually an admin
-// FOR NOW: Let anyone with Firebase access login
-// We'll add proper admin check later
-if (true) {  // Remove this check for testing
-    // Save to localStorage
-    localStorage.setItem('admin_logged_in', 'true');
-    localStorage.setItem('admin_email', user.email);
-    localStorage.setItem('admin_uid', user.uid);
-    
-    // Redirect to dashboard
-    window.location.href = "admin-dashboard.html";
-} else {
-    
-                        // Redirect to dashboard
-                        window.location.href = "admin-dashboard.html";
-                    } else {
-                        alert("⚠️ This email doesn't have admin access!");
-                        btn.disabled = false;
-                        btn.textContent = "Login";
-                        auth.signOut();
-                    }
+                    // TEMPORARY: Allow any Firebase user to login
+                    // We'll add proper admin check later
+                    // Save to localStorage
+                    localStorage.setItem('admin_logged_in', 'true');
+                    localStorage.setItem('admin_email', user.email);
+                    localStorage.setItem('admin_uid', user.uid);
+                    
+                    // Redirect to dashboard
+                    window.location.href = "admin-dashboard.html";
                 })
                 .catch((error) => {
                     // Handle Errors
@@ -124,7 +113,7 @@ if (true) {  // Remove this check for testing
                     if (error.code === 'auth/wrong-password') {
                         errorMessage = "Wrong password!";
                     } else if (error.code === 'auth/user-not-found') {
-                        errorMessage = "No admin found with this email!";
+                        errorMessage = "No user found with this email!";
                     } else {
                         errorMessage = error.message;
                     }
@@ -135,6 +124,9 @@ if (true) {  // Remove this check for testing
                 });
         }
         
+        // Setup button click
+        document.getElementById('loginBtn').addEventListener('click', login);
+        
         // Allow pressing Enter to login
         document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
@@ -142,6 +134,5 @@ if (true) {  // Remove this check for testing
             }
         });
     </script>
-    
 </body>
 </html>
