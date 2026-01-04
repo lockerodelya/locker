@@ -595,7 +595,7 @@
 
                 <!-- UPI Payment Details -->
                 <div class="upi-details active" id="upiDetails">
-                    <div class="qr-title">Scan to Pay via UPI</div>
+                    <div class="qr-title">Please pay exact: <span id="upiTitleAmount">INR 0</span></div>
                     <div class="upi-details-container">
                         <div class="upi-content-wrapper">
                             <div class="qr-code-container">
@@ -714,7 +714,8 @@
             displayEmail: document.getElementById('displayEmail'),
             displayPlanValue: document.getElementById('displayPlanValue'),
             instructionAmount: document.getElementById('instructionAmount'),
-            upiInstructionAmount: document.getElementById('upiInstructionAmount')
+            upiInstructionAmount: document.getElementById('upiInstructionAmount'),
+            upiTitleAmount: document.getElementById('upiTitleAmount')
         };
 
         // ====== URL PARAMETER EXTRACTION ======
@@ -808,6 +809,7 @@
             elements.transferAmount.textContent = `INR ${formattedAmount}`;
             elements.instructionAmount.textContent = `INR ${formattedAmount}`;
             elements.upiInstructionAmount.textContent = `INR ${formattedAmount}`;
+            elements.upiTitleAmount.textContent = `INR ${formattedAmount}`;
             
             console.log('Amount updated:', paymentState.totalAmount);
         }
