@@ -534,53 +534,651 @@
             autoFillPlanDetails();
         });
         
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odelya - User Registration</title>
+    <!-- Firebase SDK Version 9 (Modular) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+        import { getFirestore, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+        
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+            authDomain: "odelya-user-data.firebaseapp.com",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.firebasestorage.app",
+            messagingSenderId: "590231118790",
+            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+            measurementId: "G-9SWTR9V32R"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // Make available globally
+        window.firebaseAuth = auth;
+        window.firebaseDb = db;
+        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+        window.setDoc = setDoc;
+        window.doc = doc;
+        window.serverTimestamp = serverTimestamp;
+    </script>
+    
+    <!-- Flatpickr for calendar -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .form-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .form-content {
+            padding: 40px;
+        }
+        
+        .section-title {
+            color: #3a0ca3;
+            font-size: 1.5rem;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4361ee;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input, .form-group select {
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .disabled-input {
+            background-color: #f5f5f5;
+            color: #666;
+            cursor: not-allowed;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #f44336;
+        }
+        
+        .form-footer {
+            text-align: center;
+            padding: 30px 0;
+            border-top: 2px solid #eee;
+        }
+        
+        .continue-btn {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .continue-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
+        }
+        
+        .continue-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* For small screens */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-content {
+                padding: 20px;
+            }
+        }
+        
+        /* Plan duration boxes */
+        .duration-inputs {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .duration-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .duration-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .duration-box span {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .error-message {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .format-hint {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        .password-requirements {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }
+        
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin: 3px 0;
+        }
+        
+        .requirement.valid {
+            color: #4CAF50;
+        }
+        
+        .requirement.invalid {
+            color: #f44336;
+        }
+        
+        .checkmark {
+            margin-right: 5px;
+        }
+        
+        .has-error {
+            border-color: #f44336 !important;
+        }
+        
+        .price-breakdown {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .price-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            color: #0d47a1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <h1>User Details</h1>
+            <p>Complete your registration for Odelya Cloud Storage</p>
+        </div>
+        
+        <div class="form-content">
+            <!-- Personal Information Section -->
+            <h2 class="section-title">Personal Information</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="status" class="required">Status</label>
+                    <select id="status" disabled class="disabled-input">
+                        <option value="pending">Pending</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userId" class="required">User ID</label>
+                    <input type="text" id="userId" readonly class="disabled-input" placeholder="Auto-generated">
+                </div>
+                
+                <div class="form-group">
+                    <label for="fullName" class="required">Full Name</label>
+                    <input type="text" id="fullName" required placeholder="Enter your full name">
+                    <div class="error-message" id="fullNameError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="required">Email ID</label>
+                    <input type="email" id="email" required placeholder="example@domain.com">
+                    <div class="error-message" id="emailError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone" class="required">Phone Number</label>
+                    <input type="tel" id="phone" required placeholder="10-digit mobile number" maxlength="10">
+                    <div class="error-message" id="phoneError"></div>
+                    <div class="format-hint">10 digits only</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="text" id="dob" class="datepicker" placeholder="DD-MM-YYYY">
+                </div>
+                
+                <div class="form-group">
+                    <label for="aadhaar">Aadhaar Number</label>
+                    <input type="text" id="aadhaar" placeholder="12-digit Aadhaar" maxlength="12">
+                </div>
+                
+                <div class="form-group">
+                    <label for="pan">PAN Number</label>
+                    <input type="text" id="pan" placeholder="ABCDE1234F" maxlength="10">
+                    <div class="error-message" id="panError"></div>
+                    <div class="format-hint">Format: 5 letters + 4 numbers + 1 letter</div>
+                </div>
+            </div>
+            
+            <!-- Plan Details Section -->
+            <h2 class="section-title">Plan Details</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="planName" class="required">Plan Name</label>
+                    <select id="planName" required>
+                        <option value="">Select Plan Type</option>
+                        <option value="Secure Cloud Storage">Secure Cloud Storage</option>
+                        <option value="Event Storage">Event Storage</option>
+                        <option value="Special Purpose Storage">Special Purpose Storage</option>
+                    </select>
+                    <div class="error-message" id="planNameError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="planSize" class="required">Plan (GB)</label>
+                    <input type="text" id="planSize" readonly class="disabled-input" placeholder="Will auto-fill from pricing table">
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Plan Duration</label>
+                    <div class="duration-inputs">
+                        <div class="duration-box">
+                            <input type="number" id="durationYears" min="0" max="10" placeholder="Years" oninput="calculatePlanPrice()">
+                            <span>Years</span>
+                        </div>
+                        <div class="duration-box">
+                            <input type="number" id="durationMonths" min="0" max="11" placeholder="Months" oninput="calculatePlanPrice()">
+                            <span>Months</span>
+                        </div>
+                        <div class="duration-box">
+                            <input type="number" id="durationDays" min="0" max="30" placeholder="Days" oninput="calculatePlanPrice()">
+                            <span>Days</span>
+                        </div>
+                    </div>
+                    <div class="error-message" id="durationError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="planStartDate" class="required">Plan Start Date</label>
+                    <input type="text" id="planStartDate" class="datepicker" placeholder="DD-MM-YYYY">
+                    <div class="error-message" id="startDateError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="planEndDate" class="required">Plan End Date</label>
+                    <input type="text" id="planEndDate" readonly class="disabled-input" placeholder="Auto-calculated">
+                </div>
+                
+                <div class="form-group">
+                    <label for="planValue" class="required">Plan Value</label>
+                    <input type="text" id="planValue" readonly class="disabled-input" placeholder="Calculated price will appear here">
+                    <div class="price-breakdown" id="priceBreakdown" style="display: none;">
+                        <!-- Price breakdown will appear here -->
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="paymentMode" class="required">Payment Mode</label>
+                    <select id="paymentMode" required>
+                        <option value="">Select payment mode</option>
+                        <option value="UPI">UPI</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <option value="Cash">Cash</option>
+                    </select>
+                    <div class="error-message" id="paymentModeError"></div>
+                </div>
+            </div>
+            
+            <!-- Authentication Section -->
+            <h2 class="section-title">Account Security</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="username" class="required">Username</label>
+                    <input type="text" id="username" required placeholder="Choose username (8-12 characters)">
+                    <div class="error-message" id="usernameError"></div>
+                    <div class="format-hint">8-12 characters, letters and numbers only</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="required">Password</label>
+                    <input type="password" id="password" required placeholder="Create a strong password">
+                    <div class="error-message" id="passwordError"></div>
+                    <div class="password-requirements">
+                        <div class="requirement invalid" id="reqLength">
+                            <span class="checkmark">❌</span> At least 8 characters
+                        </div>
+                        <div class="requirement invalid" id="reqUpper">
+                            <span class="checkmark">❌</span> At least 1 uppercase letter
+                        </div>
+                        <div class="requirement invalid" id="reqLower">
+                            <span class="checkmark">❌</span> At least 1 lowercase letter
+                        </div>
+                        <div class="requirement invalid" id="reqNumber">
+                            <span class="checkmark">❌</span> At least 1 number
+                        </div>
+                        <div class="requirement invalid" id="reqSpecial">
+                            <span class="checkmark">❌</span> At least 1 special character (@$!%*?&)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <p>Registering user... Please wait.</p>
+        </div>
+        
+        <div class="form-footer">
+            <button class="continue-btn" onclick="submitForm()" id="submitBtn">Continue to Payment</button>
+            <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
+                You will be redirected to payment page after successful registration
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let planType = ''; // 'monthly' or 'yearly'
+        let baseMonthlyPrice = 0; // Actual monthly price from pricing table
+        let baseYearlyPrice = 0; // Actual yearly price from pricing table
+        let originalPlanValue = ''; // Original plan value from URL
+        
+        // Debug: Log all URL parameters
+        console.log('=== DEBUG: URL Parameters ===');
+        const params = new URLSearchParams(window.location.search);
+        params.forEach((value, key) => {
+            console.log(`${key}: ${value}`);
+        });
+        console.log('=============================');
+        
+        // Generate 6-digit User ID with digits 2-9 only
+        function generateUserId() {
+            let userId = '';
+            const digits = '23456789'; // Only digits 2-9
+            
+            for (let i = 0; i < 6; i++) {
+                const randomIndex = Math.floor(Math.random() * digits.length);
+                userId += digits[randomIndex];
+            }
+            return userId;
+        }
+        
+        // Validate PAN format (5 letters + 4 numbers + 1 letter)
+        function validatePAN(pan) {
+            const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+            return panRegex.test(pan);
+        }
+        
+        // Validate password format
+        function validatePassword(password) {
+            const minLength = password.length >= 8;
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[@$!%*?&]/.test(password);
+            
+            // Update requirement indicators
+            updateRequirement('reqLength', minLength);
+            updateRequirement('reqUpper', hasUpper);
+            updateRequirement('reqLower', hasLower);
+            updateRequirement('reqNumber', hasNumber);
+            updateRequirement('reqSpecial', hasSpecial);
+            
+            return minLength && hasUpper && hasLower && hasNumber && hasSpecial;
+        }
+        
+        function updateRequirement(elementId, isValid) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.classList.toggle('valid', isValid);
+                element.classList.toggle('invalid', !isValid);
+                const checkmark = element.querySelector('.checkmark');
+                if (checkmark) {
+                    checkmark.textContent = isValid ? '✅' : '❌';
+                }
+            }
+        }
+        
+        // Validate username (8-12 characters, alphanumeric only)
+        function validateUsername(username) {
+            const usernameRegex = /^[a-zA-Z0-9]{8,12}$/;
+            return usernameRegex.test(username);
+        }
+        
+        // Initialize date pickers
+        let dobPicker, startDatePicker;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM fully loaded');
+            
+            dobPicker = flatpickr("#dob", {
+                dateFormat: "d-m-Y",
+                allowInput: true
+            });
+            
+            startDatePicker = flatpickr("#planStartDate", {
+                dateFormat: "d-m-Y",
+                allowInput: true,
+                onChange: function(selectedDates, dateStr, instance) {
+                    calculateEndDate();
+                }
+            });
+            
+            // Call autoFillPlanDetails with a slight delay to ensure DOM is ready
+            setTimeout(() => {
+                autoFillPlanDetails();
+            }, 100);
+        });
+        
         // Auto-fill plan details from URL
         function autoFillPlanDetails() {
+            console.log('Auto-filling plan details from URL...');
+            console.log('Current URL:', window.location.href);
+            
             // Get parameters from URL
-            const params = new URLSearchParams(window.location.search);
-            const planNameFromUrl = params.get('plan') || '';
-            const planSize = params.get('size') || '';
-            const planPrice = params.get('price') || '';
+            const urlParams = new URLSearchParams(window.location.search);
+            const planNameFromUrl = urlParams.get('plan') || '';
+            const planSize = urlParams.get('size') || '';
+            const planPrice = urlParams.get('price') || '';
+            
+            console.log('URL Parameters:', {
+                plan: planNameFromUrl,
+                size: planSize,
+                price: planPrice
+            });
             
             // Store original plan value
             originalPlanValue = planPrice;
             
             // Determine if monthly or yearly plan
-            if (planNameFromUrl.toLowerCase().includes('monthly')) {
+            const planNameLower = planNameFromUrl.toLowerCase();
+            console.log('Plan name (lowercase):', planNameLower);
+            
+            if (planNameLower.includes('monthly') || planNameLower.includes('per month')) {
                 planType = 'monthly';
-                baseMonthlyPrice = parseInt(planPrice);
-                baseYearlyPrice = 0; // Not available for monthly selection
+                baseMonthlyPrice = parseFloat(planPrice) || 0;
+                baseYearlyPrice = 0;
+                
+                console.log('Monthly plan detected. Price:', baseMonthlyPrice);
                 
                 // Monthly plan: Disable yearly input
-                document.getElementById('durationYears').disabled = true;
-                document.getElementById('durationYears').style.backgroundColor = '#f5f5f5';
-                document.getElementById('durationYears').placeholder = 'N/A for monthly';
+                const yearsInput = document.getElementById('durationYears');
+                yearsInput.disabled = true;
+                yearsInput.style.backgroundColor = '#f5f5f5';
+                yearsInput.placeholder = 'N/A for monthly';
                 
                 // Set default: 1 month
                 document.getElementById('durationMonths').value = 1;
-            } else if (planNameFromUrl.toLowerCase().includes('yearly')) {
+            } else if (planNameLower.includes('yearly') || planNameLower.includes('per year') || planNameLower.includes('annual')) {
                 planType = 'yearly';
-                baseYearlyPrice = parseInt(planPrice);
+                baseYearlyPrice = parseFloat(planPrice) || 0;
                 
                 // Calculate approximate monthly price (for reference only)
                 baseMonthlyPrice = Math.round(baseYearlyPrice / 12);
                 
+                console.log('Yearly plan detected. Price:', baseYearlyPrice, 'Monthly approx:', baseMonthlyPrice);
+                
                 // Yearly plan: All inputs enabled
+                const yearsInput = document.getElementById('durationYears');
+                yearsInput.disabled = false;
+                yearsInput.style.backgroundColor = '';
+                yearsInput.placeholder = 'Years';
+                
                 // Set default: 1 year
                 document.getElementById('durationYears').value = 1;
+            } else {
+                // Default to yearly if cannot determine
+                planType = 'yearly';
+                baseYearlyPrice = parseFloat(planPrice) || 0;
+                baseMonthlyPrice = Math.round(baseYearlyPrice / 12);
+                console.log('Plan type not detected, defaulting to yearly');
             }
             
+            console.log('Final plan type:', planType);
+            console.log('Base monthly price:', baseMonthlyPrice);
+            console.log('Base yearly price:', baseYearlyPrice);
+            
             // Fill plan details
-            document.getElementById('planSize').value = planSize + ' GB';
-            document.getElementById('planValue').value = 'INR ' + planPrice;
+            if (planSize) {
+                document.getElementById('planSize').value = planSize + ' GB';
+            }
+            
+            if (planPrice) {
+                document.getElementById('planValue').value = 'INR ' + planPrice;
+            }
             
             // Fill plan name based on URL
-            if (planNameFromUrl.includes('Secure Cloud')) {
-                document.getElementById('planName').value = 'Secure Cloud Storage';
-            } else if (planNameFromUrl.includes('Event')) {
-                document.getElementById('planName').value = 'Event Storage';
-            } else if (planNameFromUrl.includes('Special')) {
-                document.getElementById('planName').value = 'Special Purpose Storage';
+            const planSelect = document.getElementById('planName');
+            if (planNameFromUrl) {
+                if (planNameFromUrl.includes('Secure Cloud') || planNameFromUrl.includes('Secure')) {
+                    planSelect.value = 'Secure Cloud Storage';
+                } else if (planNameFromUrl.includes('Event')) {
+                    planSelect.value = 'Event Storage';
+                } else if (planNameFromUrl.includes('Special')) {
+                    planSelect.value = 'Special Purpose Storage';
+                } else {
+                    // Try to match based on keywords
+                    if (planNameFromUrl.toLowerCase().includes('secure')) {
+                        planSelect.value = 'Secure Cloud Storage';
+                    } else if (planNameFromUrl.toLowerCase().includes('event')) {
+                        planSelect.value = 'Event Storage';
+                    } else if (planNameFromUrl.toLowerCase().includes('special')) {
+                        planSelect.value = 'Special Purpose Storage';
+                    }
+                }
             }
             
             // Generate user ID (6 digits, 2-9 only)
@@ -599,6 +1197,13 @@
             // Calculate initial price
             calculatePlanPrice();
             calculateEndDate();
+            
+            // Add debug output
+            console.log('Auto-fill completed. Plan details:');
+            console.log('- Plan Name:', planSelect.value);
+            console.log('- Plan Size:', document.getElementById('planSize').value);
+            console.log('- Plan Value:', document.getElementById('planValue').value);
+            console.log('- Plan Type:', planType);
         }
         
         // Calculate plan price based on duration
@@ -767,6 +1372,301 @@
             fieldIds.forEach(fieldId => {
                 hideError(fieldId);
             });
+            
+            // Check required fields
+            const requiredFields = [
+                {id: 'fullName', name: 'Full Name'},
+                {id: 'email', name: 'Email ID'},
+                {id: 'phone', name: 'Phone Number'},
+                {id: 'username', name: 'Username'},
+                {id: 'password', name: 'Password'},
+                {id: 'planStartDate', name: 'Plan Start Date'},
+                {id: 'paymentMode', name: 'Payment Mode'},
+                {id: 'planName', name: 'Plan Name'}
+            ];
+            
+            requiredFields.forEach(field => {
+                const value = document.getElementById(field.id).value.trim();
+                if (!value) {
+                    showError(field.id, `${field.name} is required`);
+                    isValid = false;
+                }
+            });
+            
+            // Check plan duration
+            const years = parseInt(document.getElementById('durationYears').value) || 0;
+            const months = parseInt(document.getElementById('durationMonths').value) || 0;
+            const days = parseInt(document.getElementById('durationDays').value) || 0;
+            
+            if (planType === 'monthly') {
+                // For monthly plan: at least months or days should be > 0
+                if (months === 0 && days === 0) {
+                    showError('durationError', 'Please enter months or days for monthly plan');
+                    isValid = false;
+                }
+                // For monthly plan: years should be 0
+                if (years > 0) {
+                    showError('durationError', 'Years cannot be entered for monthly plan');
+                    isValid = false;
+                }
+            } else if (planType === 'yearly') {
+                // For yearly plan: at least one field should be > 0
+                if (years === 0 && months === 0 && days === 0) {
+                    showError('durationError', 'Please enter years, months, or days for yearly plan');
+                    isValid = false;
+                }
+            }
+            
+            // Email validation
+            const email = document.getElementById('email').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                showError('email', 'Please enter a valid email address');
+                isValid = false;
+            }
+            
+            // Phone validation (10 digits)
+            const phone = document.getElementById('phone').value;
+            if (phone && !/^\d{10}$/.test(phone)) {
+                showError('phone', 'Please enter a valid 10-digit phone number');
+                isValid = false;
+            }
+            
+            // Username validation (8-12 characters)
+            const username = document.getElementById('username').value;
+            if (username && !validateUsername(username)) {
+                showError('username', 'Username must be 8-12 characters (letters and numbers only)');
+                isValid = false;
+            }
+            
+            // Password validation
+            const password = document.getElementById('password').value;
+            if (password && !validatePassword(password)) {
+                showError('password', 'Password does not meet requirements');
+                isValid = false;
+            }
+            
+            // PAN validation (if provided)
+            const pan = document.getElementById('pan').value;
+            if (pan && pan.trim() !== '' && !validatePAN(pan.toUpperCase())) {
+                showError('pan', 'Invalid PAN format. Use: ABCDE1234F');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        // Submit form to Firebase
+        async function submitForm() {
+            console.log('Submit button clicked');
+            console.log('Plan Type variable:', planType);
+            
+            if (!validateForm()) {
+                console.log('Form validation failed');
+                return;
+            }
+            
+            console.log('Form validation passed');
+            
+            // Disable button and show loading
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+            
+            try {
+                console.log('Starting form submission...');
+                
+                // 1. Create user authentication
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                console.log('Creating user with email:', email);
+                
+                const userCredential = await createUserWithEmailAndPassword(
+                    window.firebaseAuth, 
+                    email, 
+                    password
+                );
+                
+                const user = userCredential.user;
+                console.log('User created with ID:', user.uid);
+                
+                // 2. Get duration values
+                const years = parseInt(document.getElementById('durationYears').value) || 0;
+                const months = parseInt(document.getElementById('durationMonths').value) || 0;
+                const days = parseInt(document.getElementById('durationDays').value) || 0;
+                
+                // 3. Calculate final price
+                const finalPrice = calculatePlanPrice();
+                
+                // 4. Prepare user data for Firebase
+                const userData = {
+                    userId: document.getElementById('userId').value,
+                    fullName: document.getElementById('fullName').value,
+                    email: email,
+                    phone: document.getElementById('phone').value,
+                    dob: document.getElementById('dob').value || null,
+                    aadhaar: document.getElementById('aadhaar').value || null,
+                    pan: document.getElementById('pan').value.toUpperCase() || null,
+                    
+                    planName: document.getElementById('planName').value,
+                    planSize: document.getElementById('planSize').value,
+                    planType: planType,
+                    planDuration: {
+                        years: years,
+                        months: months,
+                        days: days,
+                        totalDays: days + (months * 30) + (years * 365)
+                    },
+                    planStartDate: document.getElementById('planStartDate').value,
+                    planEndDate: document.getElementById('planEndDate').value,
+                    planValue: 'INR ' + finalPrice,
+                    originalPlanValue: 'INR ' + originalPlanValue,
+                    paymentMode: document.getElementById('paymentMode').value,
+                    
+                    username: document.getElementById('username').value,
+                    status: 'pending',
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                };
+                
+                console.log('User data prepared:', userData);
+                
+                // 5. Save to Firestore
+                console.log('Saving to Firestore...');
+                await setDoc(doc(window.firebaseDb, "users", user.uid), userData);
+                console.log('Data saved successfully!');
+
+                // ========== ADD DEBUG LOGGING HERE ==========
+                console.log('=== DEBUG: Registration Data ===');
+                console.log('User ID:', userData.userId);
+                console.log('Final Price:', finalPrice);
+                console.log('Plan Type:', planType);
+                console.log('Email:', email);
+                
+                // 6. Redirect to payment page with ALL parameters
+                const paymentUrl = `https://www.odelya.online/payment.html?userId=${userData.userId}&amount=${finalPrice}&email=${encodeURIComponent(email)}&planType=${planType}`;
+                console.log('Payment URL:', paymentUrl);
+                
+                // Save data to sessionStorage as backup
+                sessionStorage.setItem('lastRegistration', JSON.stringify({
+                    userId: userData.userId,
+                    amount: finalPrice,
+                    email: email,
+                    planType: planType,
+                    timestamp: new Date().getTime()
+                }));
+                
+                alert('✅ Registration successful! Redirecting to payment...');
+                
+                // Redirect after a short delay
+                setTimeout(() => {
+                    window.location.href = paymentUrl;
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Continue to Payment';
+                
+                // Show user-friendly error messages
+                if (error.code === 'auth/email-already-in-use') {
+                    alert('❌ This email is already registered. Please use a different email.');
+                } else if (error.code === 'auth/invalid-email') {
+                    alert('❌ Please enter a valid email address.');
+                } else if (error.code === 'auth/weak-password') {
+                    alert('❌ Password is too weak. Please use at least 8 characters with uppercase, lowercase, number and special character.');
+                } else if (error.code === 'auth/network-request-failed') {
+                    alert('❌ Network error. Please check your internet connection.');
+                } else {
+                    alert('❌ Error: ' + error.message);
+                }
+            }
+        }
+        
+        // Phone number formatting (only numbers)
+        document.getElementById('phone').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            hideError('phone');
+        });
+        
+        // Aadhaar formatting (only numbers)
+        document.getElementById('aadhaar').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 12);
+        });
+        
+        // PAN formatting (5 letters + 4 numbers + 1 letter)
+        document.getElementById('pan').addEventListener('input', function(e) {
+            let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            
+            // Limit to 10 characters
+            value = value.slice(0, 10);
+            
+            // Auto-format: First 5 positions for letters, next 4 for numbers, last 1 for letter
+            let formatted = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i < 5) {
+                    // First 5: only letters
+                    formatted += /[A-Z]/.test(value[i]) ? value[i] : '';
+                } else if (i < 9) {
+                    // Next 4: only numbers
+                    formatted += /[0-9]/.test(value[i]) ? value[i] : '';
+                } else {
+                    // Last 1: only letters
+                    formatted += /[A-Z]/.test(value[i]) ? value[i] : '';
+                }
+            }
+            
+            this.value = formatted;
+            hideError('pan');
+        });
+        
+        // Username validation on input
+        document.getElementById('username').addEventListener('input', function(e) {
+            // Remove spaces and special characters
+            this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
+            hideError('username');
+        });
+        
+        // Password validation on input
+        document.getElementById('password').addEventListener('input', function(e) {
+            validatePassword(this.value);
+            hideError('password');
+        });
+        
+        // Real-time validation for other fields
+        document.getElementById('fullName').addEventListener('input', () => hideError('fullName'));
+        document.getElementById('email').addEventListener('input', () => hideError('email'));
+        document.getElementById('paymentMode').addEventListener('change', () => hideError('paymentMode'));
+        document.getElementById('planName').addEventListener('change', () => hideError('planName'));
+        document.getElementById('planStartDate').addEventListener('input', () => hideError('planStartDate'));
+        
+        // Duration validation and calculation
+        document.getElementById('durationDays').addEventListener('input', function() {
+            if (this.value < 0) this.value = 0;
+            if (this.value > 30) this.value = 30;
+            calculatePlanPrice();
+            hideError('durationError');
+        });
+        
+        document.getElementById('durationMonths').addEventListener('input', function() {
+            if (this.value < 0) this.value = 0;
+            if (this.value > 11) this.value = 11;
+            calculatePlanPrice();
+            hideError('durationError');
+        });
+        
+        document.getElementById('durationYears').addEventListener('input', function() {
+            if (this.value < 0) this.value = 0;
+            if (this.value > 10) this.value = 10;
+            calculatePlanPrice();
+            hideError('durationError');
+        });
+    </script>
+</body>
+</html>            });
             
             // Check required fields
             const requiredFields = [
