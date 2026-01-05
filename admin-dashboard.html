@@ -100,6 +100,14 @@
             background: #fff3cd;
             color: #856404;
         }
+        .status.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status.suspended {
+            background: #6c757d;
+            color: white;
+        }
         
         /* Modal Styles */
         .modal {
@@ -119,7 +127,7 @@
             background: white;
             padding: 30px;
             border-radius: 10px;
-            max-width: 800px;
+            max-width: 900px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
@@ -149,8 +157,8 @@
         
         .user-details {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
         }
         
         .detail-group {
@@ -171,6 +179,7 @@
             border-radius: 5px;
             border: 1px solid #ddd;
             min-height: 40px;
+            word-break: break-word;
         }
         
         .detail-group input,
@@ -181,6 +190,7 @@
             border-radius: 5px;
             font-size: 14px;
         }
+        
         .field-with-clear {
             display: flex;
             align-items: center;
@@ -209,6 +219,7 @@
         .clear-btn:hover {
             background: #dc3545;
         }
+        
         .modal-actions {
             margin-top: 30px;
             text-align: right;
@@ -250,6 +261,43 @@
         .btn-approve {
             background: #4361ee;
             color: white;
+        }
+        
+        .section-title {
+            grid-column: 1 / -1;
+            font-size: 18px;
+            color: #3a0ca3;
+            margin: 10px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .password-field {
+            background: #fff3cd !important;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+        
+        .show-password-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 5px;
         }
     </style>
 </head>
@@ -316,7 +364,7 @@
                 <button class="action-btn btn-save" onclick="saveChanges()">💾 Save</button>
                 <button class="action-btn btn-cancel" onclick="cancelEdit()">❌ Cancel</button>
                 <button class="action-btn btn-pdf" onclick="generatePDF()" style="background: #6f42c1;">📄 PDF</button>
-                <button class="action-btn btn-password" onclick="changePasswordPrompt()" style="background: #17a2b8;">🔑 Password</button>
+                <button class="action-btn btn-password" onclick="changePassword()" style="background: #17a2b8;">🔑 Password</button>
                 <button class="action-btn btn-delete" onclick="deleteUser()" style="background: #dc3545;">🗑️ Delete</button>
                 <button class="action-btn btn-close" onclick="closeModal()">Close</button>
             </div>
@@ -401,6 +449,7 @@
         let currentUserId = null;
         let currentUserData = null;
         let isEditMode = false;
+        let currentPasswordVisible = false;
 
         // Check if admin is logged in
         window.onload = function() {
@@ -483,7 +532,7 @@
                 if (editMode) {
                     let fieldHtml = '';
                     
-                    if (type === 'select-status') {
+                    if (fieldName === 'status') {
                         fieldHtml = `
                             <select id="edit_${fieldName}">
                                 <option value="pending" ${value === 'pending' ? 'selected' : ''}>Pending</option>
@@ -492,7 +541,7 @@
                                 <option value="suspended" ${value === 'suspended' ? 'selected' : ''}>Suspended</option>
                             </select>
                         `;
-                    } else if (type === 'select-plan') {
+                    } else if (fieldName === 'planName') {
                         fieldHtml = `
                             <select id="edit_${fieldName}">
                                 <option value="">Select Plan</option>
@@ -501,7 +550,7 @@
                                 <option value="Special Purpose Storage" ${value === 'Special Purpose Storage' ? 'selected' : ''}>Special Purpose Storage</option>
                             </select>
                         `;
-                    } else if (type === 'select-payment') {
+                    } else if (fieldName === 'paymentMode') {
                         fieldHtml = `
                             <select id="edit_${fieldName}">
                                 <option value="">Select Payment</option>
@@ -509,6 +558,18 @@
                                 <option value="Bank Transfer" ${value === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
                                 <option value="Cash" ${value === 'Cash' ? 'selected' : ''}>Cash</option>
                             </select>
+                        `;
+                    } else if (fieldName === 'userType') {
+                        fieldHtml = `
+                            <select id="edit_${fieldName}">
+                                <option value="new user" ${value === 'new user' ? 'selected' : ''}>New User</option>
+                                <option value="existing user" ${value === 'existing user' ? 'selected' : ''}>Existing User</option>
+                            </select>
+                        `;
+                    } else if (fieldName === 'password') {
+                        fieldHtml = `
+                            <input type="password" id="edit_${fieldName}" value="${value || ''}" style="font-family: monospace;">
+                            <button type="button" class="show-password-btn" onclick="togglePasswordVisibility('edit_${fieldName}', this)">👁️ Show</button>
                         `;
                     } else {
                         fieldHtml = `<input type="${type}" id="edit_${fieldName}" value="${value || ''}">`;
@@ -542,8 +603,25 @@
                         let textColor = '#333';
                         if (value === 'active') { bgColor = '#d4edda'; textColor = '#155724'; }
                         else if (value === 'pending') { bgColor = '#fff3cd'; textColor = '#856404'; }
-                        else if (value === 'inactive' || value === 'suspended') { bgColor = '#f8d7da'; textColor = '#721c24'; }
+                        else if (value === 'inactive') { bgColor = '#f8d7da'; textColor = '#721c24'; }
+                        else if (value === 'suspended') { bgColor = '#6c757d'; textColor = 'white'; }
                         style = `background: ${bgColor}; color: ${textColor}; font-weight: bold; padding: 5px 10px; border-radius: 20px; display: inline-block;`;
+                    }
+                    
+                    if (fieldName === 'password') {
+                        const displayPassword = currentPasswordVisible ? (value || 'N/A') : '••••••••';
+                        return `
+                            <div class="detail-group">
+                                <label>${label}</label>
+                                <div class="value password-field" id="passwordDisplay" style="${style}">
+                                    ${displayPassword}
+                                    <button type="button" class="copy-btn" onclick="copyToClipboard('${value || ''}')">📋 Copy</button>
+                                </div>
+                                <button type="button" class="show-password-btn" onclick="togglePasswordDisplay()">
+                                    ${currentPasswordVisible ? '🙈 Hide' : '👁️ Show'} Password
+                                </button>
+                            </div>
+                        `;
                     }
                     
                     // For view mode, show clear button only if field has value
@@ -568,39 +646,72 @@
                 }
             }
             
-            // Personal Information
+            // Format date to dd-mm-yyyy HH:MM:SS
+            function formatDateTime(dateValue) {
+                if (!dateValue) return 'N/A';
+                
+                try {
+                    let date;
+                    if (dateValue.toDate) {
+                        date = dateValue.toDate();
+                    } else if (typeof dateValue === 'string') {
+                        date = new Date(dateValue);
+                    } else {
+                        date = dateValue;
+                    }
+                    
+                    if (isNaN(date.getTime())) return 'Invalid Date';
+                    
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const year = date.getFullYear();
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+                    
+                    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+                } catch (e) {
+                    return 'Invalid Date';
+                }
+            }
+            
+            // LEFT COLUMN - Personal Information
+            html += `<div class="left-column">`;
             html += createField('User ID', 'userId', user.userId);
-            html += createField('Full Name', 'fullName', user.fullName);
             html += createField('Email', 'email', user.email, 'email');
             html += createField('Phone', 'phone', user.phone, 'tel');
-            html += createField('Status', 'status', user.status, 'select-status');
+            html += createField('Date of Birth', 'dob', user.dob, 'text', true);
+            html += createField('Aadhaar Number', 'aadhaar', user.aadhaar, 'text', true);
+            html += createField('PAN Number', 'pan', user.pan, 'text', true);
+            html += createField('Username', 'username', user.username);
+            html += createField('Password', 'password', user.password);
+            html += `</div>`;
             
-            // Plan Details
-            html += createField('Plan Name', 'planName', user.planName, 'select-plan');
+            // RIGHT COLUMN - Account & Plan Information
+            html += `<div class="right-column">`;
+            html += createField('Status', 'status', user.status);
+            html += createField('Plan Name', 'planName', user.planName);
             html += createField('Plan Size', 'planSize', user.planSize);
             html += createField('Plan Value', 'planValue', user.planValue);
-            html += createField('Payment Mode', 'paymentMode', user.paymentMode, 'select-payment');
+            html += createField('Plan Start Date', 'planStartDate', user.planStartDate);
+            html += createField('Plan End Date', 'planEndDate', user.planEndDate);
             
-            // Additional Info (fields that can be cleared)
-            if (user.dob || editMode) html += createField('Date of Birth', 'dob', user.dob, 'text', true);
-            if (user.pan || editMode) html += createField('PAN Number', 'pan', user.pan, 'text', true);
-            if (user.aadhaar || editMode) html += createField('Aadhaar Number', 'aadhaar', user.aadhaar, 'text', true);
-            if (user.username || editMode) html += createField('Username', 'username', user.username);
-            if (user.planStartDate || editMode) html += createField('Plan Start Date', 'planStartDate', user.planStartDate);
-            if (user.planEndDate || editMode) html += createField('Plan End Date', 'planEndDate', user.planEndDate);
-            
-            if (user.createdAt && !editMode) {
-                let dateStr = user.createdAt;
-                if (user.createdAt.toDate) {
-                    dateStr = user.createdAt.toDate().toLocaleString();
-                }
+            // Registered On (formatted)
+            if (user.createdAt) {
                 html += `
                     <div class="detail-group">
                         <label>Registered On</label>
-                        <div class="value">${dateStr}</div>
+                        <div class="value">${formatDateTime(user.createdAt)}</div>
                     </div>
                 `;
             }
+            
+            // New/Existing User dropdown
+            html += createField('User Type', 'userType', user.userType || 'new user', 'select');
+            
+            // Payment Mode
+            html += createField('Payment Mode', 'paymentMode', user.paymentMode);
+            html += `</div>`;
             
             // Update modal content
             document.getElementById('userDetails').innerHTML = html;
@@ -619,9 +730,46 @@
                 document.querySelector('.btn-cancel').style.display = 'none';
                 document.querySelector('.btn-close').style.display = 'inline-block';
             }
-            
-            // Show modal (already shown when loading)
         }
+        
+        // Toggle password visibility in edit mode
+        window.togglePasswordVisibility = function(inputId, button) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈 Hide';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁️ Show';
+            }
+        };
+        
+        // Toggle password display in view mode
+        window.togglePasswordDisplay = function() {
+            currentPasswordVisible = !currentPasswordVisible;
+            const passwordDisplay = document.getElementById('passwordDisplay');
+            if (passwordDisplay) {
+                const password = currentUserData.password || '';
+                passwordDisplay.innerHTML = currentPasswordVisible ? 
+                    password + ' <button type="button" class="copy-btn" onclick="copyToClipboard(\'' + password + '\')">📋 Copy</button>' : 
+                    '•••••••• <button type="button" class="copy-btn" onclick="copyToClipboard(\'' + password + '\')">📋 Copy</button>';
+                
+                // Update the button text
+                const button = event.target;
+                button.textContent = currentPasswordVisible ? '🙈 Hide Password' : '👁️ Show Password';
+            }
+        };
+        
+        // Copy to clipboard
+        window.copyToClipboard = function(text) {
+            if (!text || text === 'N/A') return;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Password copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        };
         
         // Toggle edit mode
         window.toggleEditMode = function() {
@@ -630,6 +778,7 @@
         
         // Cancel edit
         window.cancelEdit = function() {
+            currentPasswordVisible = false;
             showUserModal(currentUserData, false);
         };
         
@@ -640,20 +789,22 @@
             
             // Collect all edited values
             const updates = {
-                fullName: document.getElementById('edit_fullName')?.value || '',
+                userId: document.getElementById('edit_userId')?.value || '',
                 email: document.getElementById('edit_email')?.value || '',
                 phone: document.getElementById('edit_phone')?.value || '',
+                dob: document.getElementById('edit_dob')?.value || null,
+                aadhaar: document.getElementById('edit_aadhaar')?.value || null,
+                pan: document.getElementById('edit_pan')?.value || null,
+                username: document.getElementById('edit_username')?.value || '',
+                password: document.getElementById('edit_password')?.value || '',
                 status: document.getElementById('edit_status')?.value || 'pending',
                 planName: document.getElementById('edit_planName')?.value || '',
                 planSize: document.getElementById('edit_planSize')?.value || '',
                 planValue: document.getElementById('edit_planValue')?.value || '',
-                paymentMode: document.getElementById('edit_paymentMode')?.value || '',
-                dob: document.getElementById('edit_dob')?.value || null,
-                pan: document.getElementById('edit_pan')?.value || null,
-                aadhaar: document.getElementById('edit_aadhaar')?.value || null,
-                username: document.getElementById('edit_username')?.value || '',
                 planStartDate: document.getElementById('edit_planStartDate')?.value || '',
                 planEndDate: document.getElementById('edit_planEndDate')?.value || '',
+                userType: document.getElementById('edit_userType')?.value || 'new user',
+                paymentMode: document.getElementById('edit_paymentMode')?.value || '',
                 updatedAt: new Date().toISOString()
             };
             
@@ -680,6 +831,7 @@
                     currentUserData = { ...currentUserData, ...updates };
                     
                     // Switch back to view mode
+                    currentPasswordVisible = false;
                     showUserModal(currentUserData, false);
                     
                     // Reload users list
@@ -693,12 +845,58 @@
                 });
         };
         
+        // Change password function
+        window.changePassword = function() {
+            if (!currentUserId) return;
+            
+            const newPassword = prompt("Enter new password for this user:\n\nPassword will be stored in plain text in Firestore.\nThe user will need to use this password to login to user-panel.html", currentUserData.password || "");
+            
+            if (newPassword === null) return; // User cancelled
+            
+            if (newPassword.length < 6) {
+                alert("Password must be at least 6 characters!");
+                return;
+            }
+            
+            if (confirm(`Change password for ${currentUserData.email}?\n\nNew password: ${newPassword}\n\nThis will update the password in Firestore.`)) {
+                logAdminAction('CHANGE_PASSWORD', `Changed password for user: ${currentUserData.email}`);
+                
+                // Show loading
+                const originalText = event.target.textContent;
+                event.target.textContent = "Updating...";
+                event.target.disabled = true;
+                
+                // Update password in Firestore
+                db.collection("users").doc(currentUserId).update({
+                    password: newPassword,
+                    updatedAt: new Date().toISOString()
+                })
+                .then(() => {
+                    console.log("Password updated successfully!");
+                    alert("✅ Password updated successfully!\n\nUser can now login with this password on user-panel.html");
+                    
+                    // Update local data
+                    currentUserData.password = newPassword;
+                    
+                    // Refresh modal
+                    showUserModal(currentUserData, false);
+                })
+                .catch((error) => {
+                    console.error("Error updating password:", error);
+                    alert("❌ Error updating password: " + error.message);
+                    event.target.textContent = originalText;
+                    event.target.disabled = false;
+                });
+            }
+        };
+        
         // Close modal
         window.closeModal = function() {
             document.getElementById('userModal').style.display = 'none';
             currentUserId = null;
             currentUserData = null;
             isEditMode = false;
+            currentPasswordVisible = false;
             loadUsers();
         };
         
@@ -819,40 +1017,6 @@
                     });
             }
         };
-
-        // Change password prompt
-        window.changePasswordPrompt = function() {
-            if (!currentUserId) return;
-            
-            const newPassword = prompt("Enter new password for this user:\n\nPassword must be at least 8 characters with:\n- Uppercase letter\n- Lowercase letter\n- Number\n- Special character (@$!%*?&)", "");
-            
-            if (!newPassword) return; // User cancelled
-            
-            if (newPassword.length < 8) {
-                alert("Password must be at least 8 characters!");
-                return;
-            }
-
-            // Simple password validation
-            const hasUpper = /[A-Z]/.test(newPassword);
-            const hasLower = /[a-z]/.test(newPassword);
-            const hasNumber = /[0-9]/.test(newPassword);
-            const hasSpecial = /[@$!%*?&]/.test(newPassword);
-            
-            if (!hasUpper || !hasLower || !hasNumber || !hasSpecial) {
-                alert("Password must contain:\n- Uppercase letter\n- Lowercase letter\n- Number\n- Special character (@$!%*?&)");
-                return;
-            }
-            
-            if (confirm(`Change password for ${currentUserData.email}?\n\nNote: This requires Firebase Admin SDK on backend. You'll need to implement a server function.`)) {
-                alert("🔒 Password change requires backend setup.\n\nTo implement:\n1. Create a Cloud Function\n2. Use Admin SDK to change password\n3. Call it from here");
-                
-                // For now, we'll just log it
-                console.log("Password change requested for:", currentUserData.email);
-                console.log("New password would be:", newPassword);
-                alert("Password change logged in console. Backend implementation needed.");
-            }
-        };
         
         // Generate PDF for current user
         window.generatePDF = function() {
@@ -894,14 +1058,13 @@
                 
                 const personalInfo = [
                     ['User ID', currentUserData.userId || 'N/A'],
-                    ['Full Name', currentUserData.fullName || 'N/A'],
                     ['Email', currentUserData.email || 'N/A'],
                     ['Phone', currentUserData.phone || 'N/A'],
-                    ['Status', currentUserData.status || 'pending'],
                     ['Date of Birth', currentUserData.dob || 'N/A'],
-                    ['PAN Number', currentUserData.pan || 'N/A'],
                     ['Aadhaar Number', currentUserData.aadhaar || 'N/A'],
-                    ['Username', currentUserData.username || 'N/A']
+                    ['PAN Number', currentUserData.pan || 'N/A'],
+                    ['Username', currentUserData.username || 'N/A'],
+                    ['Password', currentUserData.password || 'N/A']
                 ];
                 
                 personalInfo.forEach(([label, value]) => {
@@ -912,23 +1075,25 @@
                     y += 8;
                 });
                 
-                // Plan Details Section
+                // Account & Plan Details Section
                 y += 5;
                 doc.setFont('helvetica', 'bold');
-                doc.text('Plan Details', 20, y);
+                doc.text('Account & Plan Details', 20, y);
                 y += 10;
                 doc.setFont('helvetica', 'normal');
                 
-                const planInfo = [
+                const accountInfo = [
+                    ['Status', currentUserData.status || 'pending'],
                     ['Plan Name', currentUserData.planName || 'N/A'],
                     ['Plan Size', currentUserData.planSize || 'N/A'],
                     ['Plan Value', currentUserData.planValue || 'N/A'],
-                    ['Payment Mode', currentUserData.paymentMode || 'N/A'],
                     ['Plan Start Date', currentUserData.planStartDate || 'N/A'],
-                    ['Plan End Date', currentUserData.planEndDate || 'N/A']
+                    ['Plan End Date', currentUserData.planEndDate || 'N/A'],
+                    ['User Type', currentUserData.userType || 'new user'],
+                    ['Payment Mode', currentUserData.paymentMode || 'N/A']
                 ];
                 
-                planInfo.forEach(([label, value]) => {
+                accountInfo.forEach(([label, value]) => {
                     doc.setFont('helvetica', 'bold');
                     doc.text(`${label}:`, 20, y);
                     doc.setFont('helvetica', 'normal');
@@ -946,19 +1111,31 @@
                     
                     let regDate = currentUserData.createdAt;
                     if (currentUserData.createdAt.toDate) {
-                        regDate = currentUserData.createdAt.toDate().toLocaleString();
+                        regDate = currentUserData.createdAt.toDate();
+                    } else if (typeof regDate === 'string') {
+                        regDate = new Date(regDate);
                     }
                     
-                    doc.text(`Registered On: ${regDate}`, 20, y);
+                    const day = String(regDate.getDate()).padStart(2, '0');
+                    const month = String(regDate.getMonth() + 1).padStart(2, '0');
+                    const year = regDate.getFullYear();
+                    const hours = String(regDate.getHours()).padStart(2, '0');
+                    const minutes = String(regDate.getMinutes()).padStart(2, '0');
+                    const seconds = String(regDate.getSeconds()).padStart(2, '0');
+                    
+                    doc.text(`Registered On: ${day}-${month}-${year} ${hours}:${minutes}:${seconds}`, 20, y);
                     y += 8;
                     
                     if (currentUserData.updatedAt) {
                         let updateDate = currentUserData.updatedAt;
                         if (typeof updateDate === 'string') {
-                            updateDate = new Date(updateDate).toLocaleString();
+                            updateDate = new Date(updateDate);
+                            const updateDay = String(updateDate.getDate()).padStart(2, '0');
+                            const updateMonth = String(updateDate.getMonth() + 1).padStart(2, '0');
+                            const updateYear = updateDate.getFullYear();
+                            doc.text(`Last Updated: ${updateDay}-${updateMonth}-${updateYear}`, 20, y);
+                            y += 8;
                         }
-                        doc.text(`Last Updated: ${updateDate}`, 20, y);
-                        y += 8;
                     }
                 }
                 
