@@ -433,14 +433,14 @@
             <h2 class="section-title">Account Security</h2>
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="username" class="required">Username</label>
+                    <label for="username" class="required">Account Username</label>
                     <input type="text" id="username" required placeholder="Choose username (8-12 characters)">
                     <div class="error-message" id="usernameError"></div>
                     <div class="format-hint">8-12 characters, letters and numbers only</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="password" class="required">Password</label>
+                    <label for="password" class="required">Account Password</label>
                     <input type="password" id="password" required placeholder="Create a strong password">
                     <div class="error-message" id="passwordError"></div>
                     <div class="password-requirements">
@@ -638,12 +638,23 @@
             // Fill plan name based on URL
             const planSelect = document.getElementById('planName');
             if (planNameFromUrl) {
-                if (planNameFromUrl.includes('Secure Cloud') || planNameFromUrl.includes('Secure')) {
+                // Check if coming from cloud-storage.html page
+                const referrer = document.referrer;
+                if (referrer.includes('cloud-storage.html')) {
+                    // Force "Secure Cloud Storage" if coming from cloud-storage.html
                     planSelect.value = 'Secure Cloud Storage';
-                } else if (planNameFromUrl.includes('Event')) {
-                    planSelect.value = 'Event Storage';
-                } else if (planNameFromUrl.includes('Special')) {
-                    planSelect.value = 'Special Purpose Storage';
+                    planSelect.disabled = true;
+                    planSelect.style.backgroundColor = '#f5f5f5';
+                    console.log('Coming from cloud-storage.html, plan name locked to Secure Cloud Storage');
+                } else {
+                    // Regular logic for other pages
+                    if (planNameFromUrl.includes('Secure Cloud') || planNameFromUrl.includes('Secure')) {
+                        planSelect.value = 'Secure Cloud Storage';
+                    } else if (planNameFromUrl.includes('Event')) {
+                        planSelect.value = 'Event Storage';
+                    } else if (planNameFromUrl.includes('Special')) {
+                        planSelect.value = 'Special Purpose Storage';
+                    }
                 }
             }
             
@@ -821,8 +832,8 @@
                 {id: 'fullName', name: 'Full Name'},
                 {id: 'email', name: 'Email ID'},
                 {id: 'phone', name: 'Phone Number'},
-                {id: 'username', name: 'Username'},
-                {id: 'password', name: 'Password'},
+                {id: 'username', name: 'Account Username'},
+                {id: 'password', name: 'Account Password'},
                 {id: 'planStartDate', name: 'Plan Start Date'},
                 {id: 'paymentMode', name: 'Payment Mode'},
                 {id: 'planName', name: 'Plan Name'}
@@ -943,7 +954,7 @@
                 // 4. Calculate final price
                 const finalPrice = calculatePlanPrice();
                 
-                // 5. Prepare user data for Firebase
+                // 5. Prepare user data for Firebase - Store plain text password
                 const userData = {
                     userId: userId,
                     fullName: document.getElementById('fullName').value,
@@ -969,6 +980,7 @@
                     paymentMode: document.getElementById('paymentMode').value,
                     
                     username: document.getElementById('username').value,
+                    password: password, // Store plain text password as requested
                     status: 'pending',
                     createdAt: window.firebaseTimestamp(),
                     updatedAt: window.firebaseTimestamp(),
