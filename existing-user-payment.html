@@ -88,24 +88,27 @@
             background: rgba(255,255,255,0.2);
             color: white;
             border: 2px solid rgba(255,255,255,0.3);
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
             transition: all 0.3s;
             backdrop-filter: blur(5px);
             z-index: 1;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+            border: none;
+            outline: none;
         }
         
         .back-btn:hover {
             background: rgba(255,255,255,0.3);
             border-color: rgba(255,255,255,0.5);
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
         .content {
@@ -500,8 +503,8 @@
             .back-btn {
                 top: 10px;
                 left: 10px;
-                padding: 6px 12px;
-                font-size: 12px;
+                padding: 8px 15px;
+                font-size: 14px;
             }
             
             .plan-details-grid {
@@ -537,6 +540,11 @@
             
             .section-title {
                 font-size: 18px;
+            }
+            
+            .back-btn {
+                padding: 6px 12px;
+                font-size: 13px;
             }
             
             .pricing-table th,
@@ -658,6 +666,9 @@
         </div>
     </div>
 
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script>
         // Firebase configuration (same as your other pages)
         const firebaseConfig = {
@@ -701,6 +712,8 @@
         
         // On page load
         window.onload = function() {
+            console.log('Page loaded, checking user authentication...');
+            
             // Get user data from localStorage
             userId = localStorage.getItem('user_id');
             const userEmail = localStorage.getItem('user_email');
@@ -713,6 +726,8 @@
                 return;
             }
             
+            console.log('User authenticated, loading data...');
+            
             // Load user data from Firebase
             loadUserData(userId);
             
@@ -720,8 +735,9 @@
             loadPricingConfig();
         };
         
-        // Back to Dashboard function
+        // Fixed: Back to Dashboard function - properly redirects to user-login.html
         function goBackToDashboard() {
+            console.log('Back button clicked, redirecting to user-login.html');
             window.location.href = 'user-login.html';
         }
         
@@ -745,6 +761,7 @@
                 .then((doc) => {
                     if (doc.exists) {
                         currentUserData = doc.data();
+                        console.log('User data loaded:', currentUserData);
                         displayCurrentPlan();
                     } else {
                         showMessage('User data not found', 'error');
@@ -934,7 +951,7 @@
                 tableBody.appendChild(row);
             });
             
-            console.log('Pricing table rendered');
+            console.log('Pricing table rendered successfully');
         }
         
         // Select plan
@@ -961,6 +978,8 @@
             // Enable continue button
             document.getElementById('continueBtn').disabled = false;
             document.getElementById('selectedPlanSummary').style.display = 'block';
+            
+            console.log('Plan selected:', selectedPlan);
         }
         
         // Update summary
@@ -1013,6 +1032,8 @@
             // Save payment record to Firestore
             db.collection("payments").add(paymentData)
                 .then((docRef) => {
+                    console.log('Payment record created:', docRef.id);
+                    
                     // Store payment ID in sessionStorage
                     sessionStorage.setItem('currentPaymentId', docRef.id);
                     sessionStorage.setItem('selectedRechargePlan', JSON.stringify({
@@ -1038,6 +1059,13 @@
                     document.getElementById('continueBtn').disabled = false;
                 });
         }
+        
+        // Add keyboard shortcut for back button (Esc key)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                goBackToDashboard();
+            }
+        });
     </script>
 </body>
 </html>
