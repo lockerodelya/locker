@@ -1,4 +1,4 @@
-                           <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Admin Dashboard - Odelya</title>
@@ -181,7 +181,7 @@
             border-radius: 5px;
             font-size: 14px;
         }
-                .field-with-clear {
+        .field-with-clear {
             display: flex;
             align-items: center;
             gap: 5px;
@@ -310,16 +310,16 @@
                 <!-- User details will be loaded here -->
             </div>
             
-<div class="modal-actions">
-    <button class="action-btn btn-approve" onclick="approveUser()">✅ Approve User</button>
-    <button class="action-btn btn-edit" onclick="toggleEditMode()">✏️ Edit</button>
-    <button class="action-btn btn-save" onclick="saveChanges()">💾 Save</button>
-    <button class="action-btn btn-cancel" onclick="cancelEdit()">❌ Cancel</button>
-    <button class="action-btn btn-pdf" onclick="generatePDF()" style="background: #6f42c1;">📄 PDF</button>
-    <button class="action-btn btn-password" onclick="changePasswordPrompt()" style="background: #17a2b8;">🔑 Password</button>
-    <button class="action-btn btn-delete" onclick="deleteUser()" style="background: #dc3545;">🗑️ Delete</button>
-    <button class="action-btn btn-close" onclick="closeModal()">Close</button>
-</div>
+            <div class="modal-actions">
+                <button class="action-btn btn-approve" onclick="approveUser()">✅ Approve User</button>
+                <button class="action-btn btn-edit" onclick="toggleEditMode()">✏️ Edit</button>
+                <button class="action-btn btn-save" onclick="saveChanges()">💾 Save</button>
+                <button class="action-btn btn-cancel" onclick="cancelEdit()">❌ Cancel</button>
+                <button class="action-btn btn-pdf" onclick="generatePDF()" style="background: #6f42c1;">📄 PDF</button>
+                <button class="action-btn btn-password" onclick="changePasswordPrompt()" style="background: #17a2b8;">🔑 Password</button>
+                <button class="action-btn btn-delete" onclick="deleteUser()" style="background: #dc3545;">🗑️ Delete</button>
+                <button class="action-btn btn-close" onclick="closeModal()">Close</button>
+            </div>
         </div>
     </div>
 
@@ -403,7 +403,7 @@
         let isEditMode = false;
 
         // Check if admin is logged in
-             window.onload = function() {
+        window.onload = function() {
             const isLoggedIn = localStorage.getItem('admin_logged_in');
             if (!isLoggedIn) {
                 window.location.href = "admin-login.html";
@@ -439,13 +439,14 @@
             console.log("Viewing user:", userId);
             
             // Show loading
-            document.getElementById('usersList').innerHTML = `
-                <tr>
-                    <td colspan="7" style="text-align: center; padding: 40px;">
-                        🔄 Loading user details...
-                    </td>
-                </tr>
+            document.getElementById('userDetails').innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                    🔄 Loading user details...
+                </div>
             `;
+            
+            // Show modal first with loading state
+            document.getElementById('userModal').style.display = 'flex';
             
             // Get user document
             db.collection("users").doc(userId).get()
@@ -457,12 +458,14 @@
                         showUserModal(user, false);
                     } else {
                         alert("User not found!");
+                        closeModal();
                         loadUsers();
                     }
                 })
                 .catch((error) => {
                     console.error("Error getting user:", error);
                     alert("Error loading user: " + error.message);
+                    closeModal();
                     loadUsers();
                 });
         };
@@ -475,7 +478,7 @@
             
             let html = '';
             
-                        // Helper function to create field with clear button
+            // Helper function to create field with clear button
             function createField(label, fieldName, value, type = 'text', canClear = false) {
                 if (editMode) {
                     let fieldHtml = '';
@@ -578,7 +581,6 @@
             html += createField('Plan Value', 'planValue', user.planValue);
             html += createField('Payment Mode', 'paymentMode', user.paymentMode, 'select-payment');
             
-            // Additional Info
             // Additional Info (fields that can be cleared)
             if (user.dob || editMode) html += createField('Date of Birth', 'dob', user.dob, 'text', true);
             if (user.pan || editMode) html += createField('PAN Number', 'pan', user.pan, 'text', true);
@@ -612,14 +614,13 @@
                 document.querySelector('.btn-close').style.display = 'none';
             } else {
                 document.querySelector('.btn-edit').style.display = 'inline-block';
-                document.querySelector('.btn-approve').style.display = 'inline-block';
+                document.querySelector('.btn-approve').style.display = user.status === 'pending' ? 'inline-block' : 'none';
                 document.querySelector('.btn-save').style.display = 'none';
                 document.querySelector('.btn-cancel').style.display = 'none';
                 document.querySelector('.btn-close').style.display = 'inline-block';
             }
             
-            // Show modal
-            document.getElementById('userModal').style.display = 'flex';
+            // Show modal (already shown when loading)
         }
         
         // Toggle edit mode
@@ -635,8 +636,8 @@
         // Save changes
         window.saveChanges = function() {
             if (!currentUserId) return;
-        logAdminAction('UPDATE_USER', `Updated user: ${currentUserData.email}`);
-          
+            logAdminAction('UPDATE_USER', `Updated user: ${currentUserData.email}`);
+            
             // Collect all edited values
             const updates = {
                 fullName: document.getElementById('edit_fullName')?.value || '',
@@ -702,9 +703,9 @@
         };
         
         // Approve user
-      logAdminAction('APPROVE_USER', `Approved user: ${currentUserData.email}`);  
-      window.approveUser = function() {
+        window.approveUser = function() {
             if (!currentUserId) return;
+            logAdminAction('APPROVE_USER', `Approved user: ${currentUserData.email}`);  
             
             if (confirm("Approve this user and change status to 'active'?")) {
                 // Show loading
@@ -739,9 +740,9 @@
         };
 
         // Delete user
-logAdminAction('DELETE_USER', `Deleted user: ${currentUserData.email}`);
-      window.deleteUser = function() {
+        window.deleteUser = function() {
             if (!currentUserId) return;
+            logAdminAction('DELETE_USER', `Deleted user: ${currentUserData.email}`);
             
             if (confirm("⚠️ WARNING: Are you sure you want to delete this user?\n\nThis will permanently delete all their data from the database.\nThis action cannot be undone!")) {
                 // Double confirmation for safety
@@ -782,25 +783,6 @@ logAdminAction('DELETE_USER', `Deleted user: ${currentUserData.email}`);
                 const input = document.getElementById('edit_' + fieldName);
                 if (input) {
                     input.value = '';
-                }
-                
-                // Optional: Auto-save this change
-                if (confirm("Save this change now?")) {
-                    const updates = {};
-                    updates[fieldName] = null; // Set to null to delete field in Firebase
-                    
-                    db.collection("users").doc(currentUserId).update(updates)
-                        .then(() => {
-                            console.log(`Field ${fieldName} cleared!`);
-                            alert(`✅ ${fieldName} cleared!`);
-                            
-                            // Update local data
-                            currentUserData[fieldName] = null;
-                        })
-                        .catch((error) => {
-                            console.error("Error clearing field:", error);
-                            alert("❌ Error: " + error.message);
-                        });
                 }
             }
         };
@@ -851,10 +833,31 @@ logAdminAction('DELETE_USER', `Deleted user: ${currentUserData.email}`);
                 return;
             }
 
+            // Simple password validation
+            const hasUpper = /[A-Z]/.test(newPassword);
+            const hasLower = /[a-z]/.test(newPassword);
+            const hasNumber = /[0-9]/.test(newPassword);
+            const hasSpecial = /[@$!%*?&]/.test(newPassword);
+            
+            if (!hasUpper || !hasLower || !hasNumber || !hasSpecial) {
+                alert("Password must contain:\n- Uppercase letter\n- Lowercase letter\n- Number\n- Special character (@$!%*?&)");
+                return;
+            }
+            
+            if (confirm(`Change password for ${currentUserData.email}?\n\nNote: This requires Firebase Admin SDK on backend. You'll need to implement a server function.`)) {
+                alert("🔒 Password change requires backend setup.\n\nTo implement:\n1. Create a Cloud Function\n2. Use Admin SDK to change password\n3. Call it from here");
+                
+                // For now, we'll just log it
+                console.log("Password change requested for:", currentUserData.email);
+                console.log("New password would be:", newPassword);
+                alert("Password change logged in console. Backend implementation needed.");
+            }
+        };
+        
         // Generate PDF for current user
-        logAdminAction('GENERATE_PDF', `Generated PDF for user: ${currentUserData.email}`);
-          window.generatePDF = function() {
+        window.generatePDF = function() {
             if (!currentUserData) return;
+            logAdminAction('GENERATE_PDF', `Generated PDF for user: ${currentUserData.email}`);
             
             // Show loading
             const originalText = event.target.textContent;
@@ -981,26 +984,6 @@ logAdminAction('DELETE_USER', `Deleted user: ${currentUserData.email}`);
                 event.target.textContent = originalText;
                 event.target.disabled = false;
             }
-        };          
-            // Simple password validation
-            const hasUpper = /[A-Z]/.test(newPassword);
-            const hasLower = /[a-z]/.test(newPassword);
-            const hasNumber = /[0-9]/.test(newPassword);
-            const hasSpecial = /[@$!%*?&]/.test(newPassword);
-            
-            if (!hasUpper || !hasLower || !hasNumber || !hasSpecial) {
-                alert("Password must contain:\n- Uppercase letter\n- Lowercase letter\n- Number\n- Special character (@$!%*?&)");
-                return;
-            }
-            
-            if (confirm(`Change password for ${currentUserData.email}?\n\nNote: This requires Firebase Admin SDK on backend. You'll need to implement a server function.`)) {
-                alert("🔒 Password change requires backend setup.\n\nTo implement:\n1. Create a Cloud Function\n2. Use Admin SDK to change password\n3. Call it from here");
-                
-                // For now, we'll just log it
-                console.log("Password change requested for:", currentUserData.email);
-                console.log("New password would be:", newPassword);
-                alert("Password change logged in console. Backend implementation needed.");
-            }
         };
       
         // Quick delete from table
@@ -1025,7 +1008,6 @@ logAdminAction('DELETE_USER', `Deleted user: ${currentUserData.email}`);
             }
         };
 
-        
         // Load users from Firebase
         function loadUsers() {
             console.log("Loading users from Firebase...");
@@ -1066,28 +1048,28 @@ logAdminAction('DELETE_USER', `Deleted user: ${currentUserData.email}`);
                         if (user.status === 'active') activeUsers++;
                         if (user.status === 'pending') pendingUsers++;
                         
-                     html += `
-    <tr>
-        <td>${user.userId || 'N/A'}</td>
-        <td>${user.fullName || 'N/A'}</td>
-        <td>${user.email || 'N/A'}</td>
-        <td>${user.phone || 'N/A'}</td>
-        <td>${user.planName || 'N/A'}</td>
-        <td>
-            <span class="status ${user.status || 'pending'}">
-                ${user.status || 'pending'}
-            </span>
-        </td>
-        <td>
-            <button onclick="viewUserDetails('${doc.id}')" style="padding: 5px 10px; background: #4361ee; color: white; border: none; border-radius: 3px; cursor: pointer; margin-right: 5px;">
-                View
-            </button>
-            <button onclick="quickDelete('${doc.id}', '${user.fullName || user.email}')" style="padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer;">
-                Delete
-            </button>
-        </td>
-    </tr>
-`;
+                        html += `
+                            <tr>
+                                <td>${user.userId || 'N/A'}</td>
+                                <td>${user.fullName || 'N/A'}</td>
+                                <td>${user.email || 'N/A'}</td>
+                                <td>${user.phone || 'N/A'}</td>
+                                <td>${user.planName || 'N/A'}</td>
+                                <td>
+                                    <span class="status ${user.status || 'pending'}">
+                                        ${user.status || 'pending'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button onclick="viewUserDetails('${doc.id}')" style="padding: 5px 10px; background: #4361ee; color: white; border: none; border-radius: 3px; cursor: pointer; margin-right: 5px;">
+                                        View
+                                    </button>
+                                    <button onclick="quickDelete('${doc.id}', '${user.fullName || user.email}')" style="padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
                     });
                     
                     document.getElementById('totalUsers').textContent = totalUsers;
