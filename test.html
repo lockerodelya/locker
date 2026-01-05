@@ -1,0 +1,168 @@
+    <!-- ====== FIXED HEADER ====== -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="images/logo1.jpg" alt="Odelya Locker Logo" class="logo-image">
+                <span>Locker</span>
+            </div>
+            
+            <!-- Navigation Container (Home + Hamburger) -->
+            <div class="nav-right">
+                <!-- Home Tab -->
+                <a href="/index.html" class="home-nav">Home</a>
+                
+                <!-- Hamburger Menu -->
+                <button class="hamburger" id="hamburger">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <!-- Dropdown Menu -->
+                <div class="dropdown" id="dropdown">
+                    <a href="/user-login.html">
+                        <i class="fas fa-cogs"></i> User
+                    </a>
+					
+                    <a href="/payment.html">
+                        <i class="fas fa-credit-card"></i> Payment
+                    </a>
+                    <a href="/security.html">
+                        <i class="fas fa-shield-alt"></i> Data Security
+                    </a>
+                    <a href="/terms.html">
+                        <i class="fas fa-file-contract"></i> Terms
+                    </a>
+                    <a href="/privacy-policy.html">
+                        <i class="fas fa-user-shield"></i> Privacy Policy
+                    </a>
+                    <a href="/contact.html">
+                        <i class="fas fa-envelope"></i> Contact
+                    </a>
+                    <a href="/about.html">
+                        <i class="fas fa-users"></i> About
+                    </a>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Dropdown JavaScript -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const hamburger = document.getElementById('hamburger');
+                const dropdown = document.getElementById('dropdown');
+                
+                if (hamburger && dropdown) {
+                    hamburger.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        dropdown.classList.toggle('active');
+                        
+                        const icon = hamburger.querySelector('i');
+                        if (dropdown.classList.contains('active')) {
+                            icon.classList.remove('fa-bars');
+                            icon.classList.add('fa-times');
+                        } else {
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        }
+                    });
+                    
+                    document.addEventListener('click', function(e) {
+                        if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
+                            dropdown.classList.remove('active');
+                            const icon = hamburger.querySelector('i');
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        }
+                    });
+                    
+                    dropdown.addEventListener('click', function(e) {
+                        if (e.target.tagName === 'A' || e.target.parentElement.tagName === 'A') {
+                            dropdown.classList.remove('active');
+                            const icon = hamburger.querySelector('i');
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        }
+                    });
+                    
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape' && dropdown.classList.contains('active')) {
+                            dropdown.classList.remove('active');
+                            const icon = hamburger.querySelector('i');
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        }
+                    });
+                }
+            });
+        </script>
+        
+        <!-- Dropdown CSS -->
+        <style>
+            .dropdown {
+                display: none;
+                position: absolute;
+                top: 100%;
+                right: 20px;
+                background: white;
+                min-width: 220px;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+                border-radius: 8px;
+                z-index: 1000;
+                padding: 10px 0;
+                border: 1px solid #e0e7ff;
+            }
+            
+            .dropdown.active {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+            
+            .dropdown a {
+                display: flex;
+                align-items: center;
+                padding: 12px 20px;
+                color: #37474f;
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                border-left: 3px solid transparent;
+            }
+            
+            .dropdown a:hover {
+                background: #f8f9ff;
+                color: #4361ee;
+                border-left: 3px solid #4361ee;
+                padding-left: 25px;
+            }
+            
+            .dropdown a i {
+                width: 25px;
+                margin-right: 10px;
+                color: #4361ee;
+                font-size: 1.1rem;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(-10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            @media (max-width: 768px) {
+                .dropdown {
+                    right: 15px;
+                    min-width: 200px;
+                }
+            }
+            
+            @media (max-width: 480px) {
+                .dropdown {
+                    right: 10px;
+                    min-width: 180px;
+                }
+                
+                .dropdown a {
+                    padding: 10px 15px;
+                    font-size: 0.95rem;
+                }
+            }
+        </style>
+    </header>
