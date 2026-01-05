@@ -1446,12 +1446,17 @@
                 });
         }
         
-        // Recharge Now function
-        function rechargeNow() {
-            showMessage('dashboardMessage', 'Recharge feature will be available soon!', 'info');
-            // You can link this to your recharge page later
-            // window.location.href = "recharge.html";
-        }
+        // Recharge Now function - UPDATED VERSION
+function rechargeNow() {
+    if (!currentUserData) {
+        showMessage('dashboardMessage', 'Please login first', 'error');
+        return;
+    }
+    
+    // Always redirect to existing-user-payment.html
+    // The plan selection logic will be handled in that page based on Firebase data
+    window.location.href = 'existing-user-payment.html';
+}
         
 // Replace the generatePDF() function with this corrected version:
 
