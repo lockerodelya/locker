@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>User Login - Odelya Cloud Storage</title>
+    <!-- Viewport meta tag for proper mobile scaling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
@@ -44,7 +46,7 @@
             display: none;
             transform: translateY(0);
             transition: transform 0.3s ease;
-            width: 100%;
+            width: 90%;
             max-width: 500px;
             margin: 0 auto;
         }
@@ -599,7 +601,8 @@
         
         @media (max-width: 768px) {
             .login-box {
-                max-width: 90%;
+                width: 95%;
+                max-width: 95%;
             }
             
             .login-content {
@@ -609,6 +612,12 @@
             .login-content h2 {
                 font-size: 28px;
                 margin-bottom: 30px;
+            }
+            
+            .dashboard {
+                width: 100%;
+                border-radius: 15px;
+                min-height: 100vh;
             }
             
             .dashboard-grid {
@@ -656,8 +665,11 @@
             }
             
             .login-box {
-                max-width: 95%;
+                width: 100%;
+                max-width: 100%;
                 border-radius: 15px;
+                max-height: 90vh;
+                overflow-y: auto;
             }
             
             .login-content {
@@ -670,12 +682,12 @@
             }
             
             .form-group input {
-                padding: 12px;
-                font-size: 15px;
+                padding: 14px;
+                font-size: 16px;
             }
             
             .login-btn {
-                padding: 15px;
+                padding: 16px;
                 font-size: 16px;
             }
             
@@ -688,7 +700,7 @@
             }
             
             .action-btn {
-                padding: 15px;
+                padding: 16px;
                 font-size: 15px;
             }
             
@@ -735,6 +747,30 @@
         }
         
         @media (max-width: 360px) {
+            .login-box {
+                width: 100%;
+                border-radius: 12px;
+            }
+            
+            .login-content {
+                padding: 20px 15px;
+            }
+            
+            .login-content h2 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+            
+            .form-group input {
+                padding: 14px 12px;
+                font-size: 16px;
+            }
+            
+            .login-btn {
+                padding: 16px;
+                font-size: 16px;
+            }
+            
             .modal-content {
                 padding: 20px 15px;
                 max-height: 75vh;
@@ -1602,211 +1638,208 @@
                 });
         }
         
-       // Recharge Now function - UPDATED VERSION
-function rechargeNow() {
-    if (!currentUserData) {
-        showMessage('dashboardMessage', 'Please login first', 'error');
-        return;
-    }
-    
-    // Always redirect to existing-user-payment.html
-    // The plan selection logic will be handled in that page based on Firebase data
-    window.location.href = 'existing-user-payment.html';
-}
-        
-// Replace the generatePDF() function with this corrected version:
-
-// Generate PDF with two columns (fixed overlapping issue)
-function generatePDF() {
-    if (!currentUserData) return;
-    
-    // Show loading
-    const originalText = event.target.textContent;
-    event.target.textContent = "Creating PDF...";
-    event.target.disabled = true;
-    
-    try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        // Add logo/title
-        doc.setFontSize(24);
-        doc.setTextColor(58, 12, 163); // #3a0ca3
-        doc.text('Odelya Cloud Storage', 105, 25, { align: 'center' });
-        
-        doc.setFontSize(18);
-        doc.setTextColor(0, 0, 0);
-        doc.text('User Account Details', 105, 35, { align: 'center' });
-        
-        doc.setFontSize(10);
-        doc.setTextColor(100, 100, 100);
-        doc.text(`Generated: ${new Date().toLocaleString()}`, 105, 45, { align: 'center' });
-        
-        // Draw two columns - with proper spacing
-        const column1X = 15; // Left margin
-        const column2X = 105; // Right column starts at middle
-        let column1Y = 65; // Starting Y for left column
-        let column2Y = 65; // Starting Y for right column
-        const columnWidth = 80; // Width for each column
-        
-        // Personal Information Column
-        doc.setFontSize(14);
-        doc.setTextColor(58, 12, 163);
-        doc.text('Personal Information', column1X, column1Y);
-        column1Y += 8;
-        
-        doc.setFontSize(11);
-        doc.setTextColor(0, 0, 0);
-        
-        const personalInfo = [
-            ['User ID', currentUserData.userId || 'N/A'],
-            ['Status', currentUserData.status || 'pending'],
-            ['Full Name', currentUserData.fullName || 'N/A'],
-            ['Email', currentUserData.email || 'N/A'],
-            ['Phone', currentUserData.phone || 'N/A'],
-            ['Date of Birth', currentUserData.dob || 'N/A'],
-            ['Username', currentUserData.username || 'N/A']
-        ];
-        
-        personalInfo.forEach(([label, value]) => {
-            doc.setFont('helvetica', 'bold');
-            doc.text(`${label}:`, column1X, column1Y);
-            
-            // Split long values into multiple lines
-            const valueStr = value.toString();
-            const maxLineLength = 30; // Characters per line
-            const lines = [];
-            
-            for (let i = 0; i < valueStr.length; i += maxLineLength) {
-                lines.push(valueStr.substring(i, i + maxLineLength));
+        // Recharge Now function - UPDATED VERSION
+        function rechargeNow() {
+            if (!currentUserData) {
+                showMessage('dashboardMessage', 'Please login first', 'error');
+                return;
             }
             
-            if (lines.length === 1) {
-                doc.setFont('helvetica', 'normal');
-                doc.text(lines[0], column1X + 25, column1Y);
-                column1Y += 8;
-            } else {
-                // Multi-line value
-                lines.forEach((line, index) => {
-                    doc.setFont('helvetica', 'normal');
-                    const yPos = column1Y + (index * 4);
-                    doc.text(line, column1X + 25, yPos);
-                });
-                column1Y += (lines.length * 4) + 4;
-            }
-        });
-        
-        // Add some spacing before registration info
-        column1Y += 5;
-        
-        // Registration Info
-        doc.setFont('helvetica', 'bold');
-        doc.text('Registration Information', column1X, column1Y);
-        column1Y += 8;
-        doc.setFont('helvetica', 'normal');
-        
-        if (currentUserData.createdAt) {
-            let regDate = currentUserData.createdAt;
-            if (currentUserData.createdAt.toDate) {
-                regDate = currentUserData.createdAt.toDate();
-            } else if (typeof regDate === 'string') {
-                regDate = new Date(regDate);
-            }
-            
-            const day = String(regDate.getDate()).padStart(2, '0');
-            const month = String(regDate.getMonth() + 1).padStart(2, '0');
-            const year = regDate.getFullYear();
-            const hours = String(regDate.getHours()).padStart(2, '0');
-            const minutes = String(regDate.getMinutes()).padStart(2, '0');
-            const seconds = String(regDate.getSeconds()).padStart(2, '0');
-            
-            const regDateStr = `Registered On: ${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
-            
-            // Split registration date if too long
-            const regLines = [];
-            for (let i = 0; i < regDateStr.length; i += 45) {
-                regLines.push(regDateStr.substring(i, i + 45));
-            }
-            
-            regLines.forEach((line, index) => {
-                doc.text(line, column1X, column1Y + (index * 4));
-            });
-            
-            column1Y += (regLines.length * 4) + 8;
+            // Always redirect to existing-user-payment.html
+            // The plan selection logic will be handled in that page based on Firebase data
+            window.location.href = 'existing-user-payment.html';
         }
         
-        // Plan Details Column
-        doc.setFontSize(14);
-        doc.setTextColor(58, 12, 163);
-        doc.text('Plan Details', column2X, column2Y);
-        column2Y += 8;
-        
-        doc.setFontSize(11);
-        doc.setTextColor(0, 0, 0);
-        
-        const planInfo = [
-            ['Plan Name', currentUserData.planName || 'N/A'],
-            ['Plan Size', currentUserData.planSize || 'N/A'],
-            ['Plan Value', currentUserData.planValue || 'N/A'],
-            ['Plan Start Date', currentUserData.planStartDate || 'N/A'],
-            ['Plan End Date', currentUserData.planEndDate || 'N/A']
-        ];
-        
-        planInfo.forEach(([label, value]) => {
-            doc.setFont('helvetica', 'bold');
-            doc.text(`${label}:`, column2X, column2Y);
-            doc.setFont('helvetica', 'normal');
+        // Generate PDF with two columns (fixed overlapping issue)
+        function generatePDF() {
+            if (!currentUserData) return;
             
-            // Handle long values for plan details too
-            const valueStr = value.toString();
-            const maxLineLength = 25;
-            const lines = [];
+            // Show loading
+            const originalText = event.target.textContent;
+            event.target.textContent = "Creating PDF...";
+            event.target.disabled = true;
             
-            for (let i = 0; i < valueStr.length; i += maxLineLength) {
-                lines.push(valueStr.substring(i, i + maxLineLength));
-            }
-            
-            if (lines.length === 1) {
-                doc.text(lines[0], column2X + 30, column2Y);
-                column2Y += 8;
-            } else {
-                lines.forEach((line, index) => {
-                    const yPos = column2Y + (index * 4);
-                    doc.text(line, column2X + 30, yPos);
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Add logo/title
+                doc.setFontSize(24);
+                doc.setTextColor(58, 12, 163); // #3a0ca3
+                doc.text('Odelya Cloud Storage', 105, 25, { align: 'center' });
+                
+                doc.setFontSize(18);
+                doc.setTextColor(0, 0, 0);
+                doc.text('User Account Details', 105, 35, { align: 'center' });
+                
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                doc.text(`Generated: ${new Date().toLocaleString()}`, 105, 45, { align: 'center' });
+                
+                // Draw two columns - with proper spacing
+                const column1X = 15; // Left margin
+                const column2X = 105; // Right column starts at middle
+                let column1Y = 65; // Starting Y for left column
+                let column2Y = 65; // Starting Y for right column
+                const columnWidth = 80; // Width for each column
+                
+                // Personal Information Column
+                doc.setFontSize(14);
+                doc.setTextColor(58, 12, 163);
+                doc.text('Personal Information', column1X, column1Y);
+                column1Y += 8;
+                
+                doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
+                
+                const personalInfo = [
+                    ['User ID', currentUserData.userId || 'N/A'],
+                    ['Status', currentUserData.status || 'pending'],
+                    ['Full Name', currentUserData.fullName || 'N/A'],
+                    ['Email', currentUserData.email || 'N/A'],
+                    ['Phone', currentUserData.phone || 'N/A'],
+                    ['Date of Birth', currentUserData.dob || 'N/A'],
+                    ['Username', currentUserData.username || 'N/A']
+                ];
+                
+                personalInfo.forEach(([label, value]) => {
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(`${label}:`, column1X, column1Y);
+                    
+                    // Split long values into multiple lines
+                    const valueStr = value.toString();
+                    const maxLineLength = 30; // Characters per line
+                    const lines = [];
+                    
+                    for (let i = 0; i < valueStr.length; i += maxLineLength) {
+                        lines.push(valueStr.substring(i, i + maxLineLength));
+                    }
+                    
+                    if (lines.length === 1) {
+                        doc.setFont('helvetica', 'normal');
+                        doc.text(lines[0], column1X + 25, column1Y);
+                        column1Y += 8;
+                    } else {
+                        // Multi-line value
+                        lines.forEach((line, index) => {
+                            doc.setFont('helvetica', 'normal');
+                            const yPos = column1Y + (index * 4);
+                            doc.text(line, column1X + 25, yPos);
+                        });
+                        column1Y += (lines.length * 4) + 4;
+                    }
                 });
-                column2Y += (lines.length * 4) + 4;
+                
+                // Add some spacing before registration info
+                column1Y += 5;
+                
+                // Registration Info
+                doc.setFont('helvetica', 'bold');
+                doc.text('Registration Information', column1X, column1Y);
+                column1Y += 8;
+                doc.setFont('helvetica', 'normal');
+                
+                if (currentUserData.createdAt) {
+                    let regDate = currentUserData.createdAt;
+                    if (currentUserData.createdAt.toDate) {
+                        regDate = currentUserData.createdAt.toDate();
+                    } else if (typeof regDate === 'string') {
+                        regDate = new Date(regDate);
+                    }
+                    
+                    const day = String(regDate.getDate()).padStart(2, '0');
+                    const month = String(regDate.getMonth() + 1).padStart(2, '0');
+                    const year = regDate.getFullYear();
+                    const hours = String(regDate.getHours()).padStart(2, '0');
+                    const minutes = String(regDate.getMinutes()).padStart(2, '0');
+                    const seconds = String(regDate.getSeconds()).padStart(2, '0');
+                    
+                    const regDateStr = `Registered On: ${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+                    
+                    // Split registration date if too long
+                    const regLines = [];
+                    for (let i = 0; i < regDateStr.length; i += 45) {
+                        regLines.push(regDateStr.substring(i, i + 45));
+                    }
+                    
+                    regLines.forEach((line, index) => {
+                        doc.text(line, column1X, column1Y + (index * 4));
+                    });
+                    
+                    column1Y += (regLines.length * 4) + 8;
+                }
+                
+                // Plan Details Column
+                doc.setFontSize(14);
+                doc.setTextColor(58, 12, 163);
+                doc.text('Plan Details', column2X, column2Y);
+                column2Y += 8;
+                
+                doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
+                
+                const planInfo = [
+                    ['Plan Name', currentUserData.planName || 'N/A'],
+                    ['Plan Size', currentUserData.planSize || 'N/A'],
+                    ['Plan Value', currentUserData.planValue || 'N/A'],
+                    ['Plan Start Date', currentUserData.planStartDate || 'N/A'],
+                    ['Plan End Date', currentUserData.planEndDate || 'N/A']
+                ];
+                
+                planInfo.forEach(([label, value]) => {
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(`${label}:`, column2X, column2Y);
+                    doc.setFont('helvetica', 'normal');
+                    
+                    // Handle long values for plan details too
+                    const valueStr = value.toString();
+                    const maxLineLength = 25;
+                    const lines = [];
+                    
+                    for (let i = 0; i < valueStr.length; i += maxLineLength) {
+                        lines.push(valueStr.substring(i, i + maxLineLength));
+                    }
+                    
+                    if (lines.length === 1) {
+                        doc.text(lines[0], column2X + 30, column2Y);
+                        column2Y += 8;
+                    } else {
+                        lines.forEach((line, index) => {
+                            const yPos = column2Y + (index * 4);
+                            doc.text(line, column2X + 30, yPos);
+                        });
+                        column2Y += (lines.length * 4) + 4;
+                    }
+                });
+                
+                // Add recharge note at the bottom
+                const pageHeight = doc.internal.pageSize.height;
+                const footerY = pageHeight - 20;
+                
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Odelya Cloud Storage - User Copy', 105, footerY, { align: 'center' });
+                
+                // Optional: Add page border
+                doc.setDrawColor(200, 200, 200);
+                doc.setLineWidth(0.5);
+                doc.rect(10, 10, 190, pageHeight - 20);
+                
+                // Save PDF
+                const fileName = `Odelya_User_${currentUserData.userId || currentUserData.username}_${new Date().getTime()}.pdf`;
+                doc.save(fileName);
+                
+                showMessage('dashboardMessage', 'PDF downloaded successfully!', 'success');
+                
+            } catch (error) {
+                console.error("Error generating PDF:", error);
+                showMessage('dashboardMessage', 'Error generating PDF', 'error');
+            } finally {
+                // Restore button
+                event.target.textContent = originalText;
+                event.target.disabled = false;
             }
-        });
-        
-        // Add recharge note at the bottom
-        const pageHeight = doc.internal.pageSize.height;
-        const footerY = pageHeight - 20;
-        
-        doc.setFontSize(10);
-        doc.setTextColor(100, 100, 100);
-        doc.text('Odelya Cloud Storage - User Copy', 105, footerY, { align: 'center' });
-        
-        // Optional: Add page border
-        doc.setDrawColor(200, 200, 200);
-        doc.setLineWidth(0.5);
-        doc.rect(10, 10, 190, pageHeight - 20);
-        
-        // Save PDF
-        const fileName = `Odelya_User_${currentUserData.userId || currentUserData.username}_${new Date().getTime()}.pdf`;
-        doc.save(fileName);
-        
-        showMessage('dashboardMessage', 'PDF downloaded successfully!', 'success');
-        
-    } catch (error) {
-        console.error("Error generating PDF:", error);
-        showMessage('dashboardMessage', 'Error generating PDF', 'error');
-    } finally {
-        // Restore button
-        event.target.textContent = originalText;
-        event.target.disabled = false;
-    }
-}
-        
+        }
     </script>
 </body>
 </html>
