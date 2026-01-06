@@ -1350,23 +1350,24 @@
                 );
                 console.log('Data saved successfully!');
                 
-                // 7. Redirect to payment page with updated parameters
-                const startDate = document.getElementById('planStartDate').value;
-                const endDate = document.getElementById('planEndDate').value;
+// 7. Redirect to payment page with updated parameters
+const startDate = document.getElementById('planStartDate').value;
+const endDate = document.getElementById('planEndDate').value;
+const paymentMode = document.getElementById('paymentMode').value; // ← ADD THIS LINE
+
+const paymentUrl = `https://www.odelya.online/payment.html?userId=${userId}&amount=${finalPrice}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&planType=${planType}&paymentMethod=${encodeURIComponent(paymentMode)}`; // ← ADD paymentMethod parameter
                 
-                const paymentUrl = `https://www.odelya.online/payment.html?userId=${userId}&amount=${finalPrice}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&planType=${planType}`;
-                console.log('Redirecting to:', paymentUrl);
-                
-                // Save to session storage as backup
-                sessionStorage.setItem('odelya_registration', JSON.stringify({
-                    userId: userId,
-                    amount: finalPrice,
-                    email: email,
-                    startDate: startDate,
-                    endDate: endDate,
-                    planType: planType,
-                    timestamp: new Date().getTime()
-                }));
+// Save to session storage as backup
+sessionStorage.setItem('odelya_registration', JSON.stringify({
+    userId: userId,
+    amount: finalPrice,
+    email: email,
+    startDate: startDate,
+    endDate: endDate,
+    planType: planType,
+    paymentMethod: paymentMode, // ← ADD THIS LINE
+    timestamp: new Date().getTime()
+}));
                 
                 alert('✅ Registration successful! Redirecting to payment...');
                 
