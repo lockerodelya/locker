@@ -77,7 +77,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px; /* Increased for widescreens */
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -140,6 +140,22 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 25px;
             margin-bottom: 30px;
+        }
+        
+        /* Wider grid for larger screens */
+        @media (min-width: 1200px) {
+            .form-grid {
+                grid-template-columns: repeat(3, 1fr); /* Three columns on widescreens */
+            }
+            
+            /* Make certain fields span multiple columns */
+            .form-group:has(#planValue) {
+                grid-column: span 2;
+            }
+            
+            .form-group:has(#paymentMode) {
+                grid-column: span 1;
+            }
         }
         
         .form-group {
@@ -262,6 +278,47 @@
             text-decoration: underline;
         }
         
+        /* Payment Processing Tags */
+        .payment-tags {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            border: 2px solid #4361ee;
+        }
+        
+        .payment-tag {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .payment-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .payment-tag-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .payment-tag-value {
+            font-size: 1.1rem;
+            color: #3a0ca3;
+            font-weight: 700;
+        }
+        
         /* For small screens */
         @media (max-width: 768px) {
             .form-grid {
@@ -287,6 +344,24 @@
             
             .form-header h1 {
                 margin-top: 10px;
+            }
+            
+            .payment-tags {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+        }
+        
+        /* Medium screens */
+        @media (min-width: 769px) and (max-width: 1199px) {
+            .payment-tags {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                padding: 15px;
+            }
+            
+            .payment-tag {
+                padding: 12px;
             }
         }
         
@@ -497,13 +572,15 @@
                 
                 <div class="form-group">
                     <label for="planStartDate" class="required">Plan Start Date</label>
-                    <input type="text" id="planStartDate" class="datepicker" placeholder="DD-MM-YYYY">
+                    <input type="text" id="planStartDate" class="datepicker" placeholder="DD-MM-YYYY (Select Date)">
                     <div class="error-message" id="startDateError"></div>
+                    <div class="format-hint">Select the date when your plan should start</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="planEndDate" class="required">Plan End Date</label>
                     <input type="text" id="planEndDate" readonly class="disabled-input" placeholder="Auto-calculated">
+                    <div class="format-hint">Based on start date and duration</div>
                 </div>
                 
                 <div class="form-group">
@@ -557,6 +634,22 @@
                             <span class="checkmark">❌</span> At least 1 special character (@$!%*?&)
                         </div>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Payment Processing Summary -->
+            <div class="payment-tags" id="paymentTags" style="display: none;">
+                <div class="payment-tag">
+                    <div class="payment-tag-label">Plan Start Date</div>
+                    <div class="payment-tag-value" id="tagStartDate">--</div>
+                </div>
+                <div class="payment-tag">
+                    <div class="payment-tag-label">Plan End Date</div>
+                    <div class="payment-tag-value" id="tagEndDate">--</div>
+                </div>
+                <div class="payment-tag">
+                    <div class="payment-tag-label">Total Plan Value</div>
+                    <div class="payment-tag-value" id="tagPlanValue">INR 0</div>
                 </div>
             </div>
             
@@ -661,6 +754,28 @@
             }
         }
         
+        // Update payment tags display
+        function updatePaymentTags() {
+            const startDate = document.getElementById('planStartDate').value;
+            const endDate = document.getElementById('planEndDate').value;
+            const planValue = document.getElementById('planValue').value;
+            
+            const paymentTags = document.getElementById('paymentTags');
+            
+            if (startDate && endDate && planValue !== 'INR 0') {
+                // Update tag values
+                document.getElementById('tagStartDate').textContent = startDate || '--';
+                document.getElementById('tagEndDate').textContent = endDate || '--';
+                document.getElementById('tagPlanValue').textContent = planValue || 'INR 0';
+                
+                // Show payment tags
+                paymentTags.style.display = 'grid';
+            } else {
+                // Hide payment tags if not all data is available
+                paymentTags.style.display = 'none';
+            }
+        }
+        
         // Check if all required fields are filled and terms are checked
         function checkFormValidity() {
             const requiredFields = [
@@ -730,6 +845,9 @@
                 submitBtn.disabled = true;
                 submitBtn.classList.remove('enabled');
             }
+            
+            // Update payment tags visibility
+            updatePaymentTags();
         }
         
         // Initialize date pickers
@@ -741,15 +859,20 @@
             // Initialize date pickers
             dobPicker = flatpickr("#dob", {
                 dateFormat: "d-m-Y",
-                allowInput: true
+                allowInput: true,
+                minDate: "01-01-1900",
+                maxDate: "today"
             });
             
+            // Plan Start Date picker - starts blank
             startDatePicker = flatpickr("#planStartDate", {
                 dateFormat: "d-m-Y",
                 allowInput: true,
+                minDate: "today", // Cannot select past dates
                 onChange: function(selectedDates, dateStr, instance) {
                     calculateEndDate();
                     updateSubmitButton();
+                    updatePaymentTags();
                 }
             });
             
@@ -832,6 +955,8 @@
             
             if (planPrice) {
                 document.getElementById('planValue').value = 'INR ' + planPrice;
+            } else {
+                document.getElementById('planValue').value = 'INR 0';
             }
             
             // Fill plan name based on URL
@@ -860,12 +985,10 @@
             // Generate user ID (6 digits, 2-9 only)
             document.getElementById('userId').value = generateUserId();
             
-            // Set today as start date
-            const today = new Date();
-            const formattedDate = today.getDate().toString().padStart(2, '0') + '-' + 
-                                 (today.getMonth() + 1).toString().padStart(2, '0') + '-' + 
-                                 today.getFullYear();
-            document.getElementById('planStartDate').value = formattedDate;
+            // REMOVED: Do NOT set today as start date automatically
+            // Leave plan start date blank for manual selection
+            document.getElementById('planStartDate').value = '';
+            document.getElementById('planStartDate').placeholder = 'DD-MM-YYYY (Select Date)';
             
             // Set status to pending
             document.getElementById('status').value = 'pending';
@@ -873,6 +996,9 @@
             // Calculate initial price and end date
             calculatePlanPrice();
             calculateEndDate();
+            
+            // Update payment tags
+            updatePaymentTags();
         }
         
         // Calculate plan price based on duration
@@ -955,13 +1081,20 @@
                 priceBreakdown.style.display = 'none';
             }
             
+            // Update payment tags
+            updatePaymentTags();
+            
             return totalPrice;
         }
         
         // Calculate end date based on duration
         function calculateEndDate() {
             const startDateInput = document.getElementById('planStartDate').value;
-            if (!startDateInput) return;
+            if (!startDateInput) {
+                document.getElementById('planEndDate').value = '';
+                updatePaymentTags();
+                return;
+            }
             
             const years = parseInt(document.getElementById('durationYears').value) || 0;
             const months = parseInt(document.getElementById('durationMonths').value) || 0;
@@ -983,6 +1116,9 @@
             } else {
                 document.getElementById('planEndDate').value = '';
             }
+            
+            // Update payment tags
+            updatePaymentTags();
         }
         
         // Show error message
@@ -1203,8 +1339,11 @@
                 );
                 console.log('Data saved successfully!');
                 
-                // 7. Redirect to payment page
-                const paymentUrl = `https://www.odelya.online/payment.html?userId=${userId}&amount=${finalPrice}&email=${encodeURIComponent(email)}&planType=${planType}`;
+                // 7. Redirect to payment page with updated parameters
+                const startDate = document.getElementById('planStartDate').value;
+                const endDate = document.getElementById('planEndDate').value;
+                
+                const paymentUrl = `https://www.odelya.online/payment.html?userId=${userId}&amount=${finalPrice}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&planType=${planType}`;
                 console.log('Redirecting to:', paymentUrl);
                 
                 // Save to session storage as backup
@@ -1212,6 +1351,8 @@
                     userId: userId,
                     amount: finalPrice,
                     email: email,
+                    startDate: startDate,
+                    endDate: endDate,
                     planType: planType,
                     timestamp: new Date().getTime()
                 }));
