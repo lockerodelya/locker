@@ -870,6 +870,7 @@
                 allowInput: true,
                 minDate: "today", // Cannot select past dates
                 onChange: function(selectedDates, dateStr, instance) {
+                    // When start date changes, recalculate end date
                     calculateEndDate();
                     updateSubmitButton();
                     updatePaymentTags();
@@ -1081,15 +1082,21 @@
                 priceBreakdown.style.display = 'none';
             }
             
+            // IMPORTANT: Recalculate end date when duration changes
+            // This is the fix for the issue you mentioned
+            calculateEndDate();
+            
             // Update payment tags
             updatePaymentTags();
             
             return totalPrice;
         }
         
-        // Calculate end date based on duration
+        // Calculate end date based on duration AND start date
         function calculateEndDate() {
             const startDateInput = document.getElementById('planStartDate').value;
+            
+            // If start date is not selected, clear end date
             if (!startDateInput) {
                 document.getElementById('planEndDate').value = '';
                 updatePaymentTags();
@@ -1102,20 +1109,24 @@
             
             const totalDays = days + (months * 30) + (years * 365);
             
-            if (totalDays > 0) {
-                const [day, month, year] = startDateInput.split('-').map(Number);
-                const startDate = new Date(year, month - 1, day);
-                const endDate = new Date(startDate);
-                
-                endDate.setDate(startDate.getDate() + totalDays);
-                
-                const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
-                                       (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
-                                       endDate.getFullYear();
-                document.getElementById('planEndDate').value = formattedEndDate;
-            } else {
+            // If duration is 0, clear end date
+            if (totalDays === 0) {
                 document.getElementById('planEndDate').value = '';
+                updatePaymentTags();
+                return;
             }
+            
+            // Calculate end date
+            const [day, month, year] = startDateInput.split('-').map(Number);
+            const startDate = new Date(year, month - 1, day);
+            const endDate = new Date(startDate);
+            
+            endDate.setDate(startDate.getDate() + totalDays);
+            
+            const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
+                                   (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                                   endDate.getFullYear();
+            document.getElementById('planEndDate').value = formattedEndDate;
             
             // Update payment tags
             updatePaymentTags();
@@ -1443,11 +1454,11 @@
                 updateSubmitButton();
             });
             
-            // Duration calculation events
+            // Duration calculation events - FIXED: Now recalculates end date when duration changes
             document.getElementById('durationDays').addEventListener('input', function() {
                 if (this.value < 0) this.value = 0;
                 if (this.value > 30) this.value = 30;
-                calculatePlanPrice();
+                calculatePlanPrice(); // This now calls calculateEndDate() internally
                 hideError('durationError');
                 updateSubmitButton();
             });
@@ -1455,7 +1466,7 @@
             document.getElementById('durationMonths').addEventListener('input', function() {
                 if (this.value < 0) this.value = 0;
                 if (this.value > 11) this.value = 11;
-                calculatePlanPrice();
+                calculatePlanPrice(); // This now calls calculateEndDate() internally
                 hideError('durationError');
                 updateSubmitButton();
             });
@@ -1463,7 +1474,26 @@
             document.getElementById('durationYears').addEventListener('input', function() {
                 if (this.value < 0) this.value = 0;
                 if (this.value > 10) this.value = 10;
-                calculatePlanPrice();
+                calculatePlanPrice(); // This now calls calculateEndDate() internally
+                hideError('durationError');
+                updateSubmitButton();
+            });
+            
+            // Also recalculate end date when duration changes via up/down arrows
+            document.getElementById('durationDays').addEventListener('change', function() {
+                calculatePlanPrice(); // This now calls calculateEndDate() internally
+                hideError('durationError');
+                updateSubmitButton();
+            });
+            
+            document.getElementById('durationMonths').addEventListener('change', function() {
+                calculatePlanPrice(); // This now calls calculateEndDate() internally
+                hideError('durationError');
+                updateSubmitButton();
+            });
+            
+            document.getElementById('durationYears').addEventListener('change', function() {
+                calculatePlanPrice(); // This now calls calculateEndDate() internally
                 hideError('durationError');
                 updateSubmitButton();
             });
