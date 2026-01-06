@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>User Login - Odelya Cloud Storage</title>
-    <!-- Viewport meta tag for proper mobile scaling -->
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>User Login - Odelya Cloud Storage</title>
+    
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
@@ -11,31 +12,186 @@
     <!-- jsPDF for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        /* ====== RESET & BASE STYLES ====== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #3a0ca3 0%, #4361ee 100%);
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 70px; /* Height of fixed header */
+        }
+        
+        /* ====== FIXED HEADER STYLES ====== */
+        header {
+            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            padding: 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            height: 70px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo-image {
+            height: 50px;
+            width: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        
+        .home-nav {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .home-nav:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .hamburger {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .hamburger:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+        
+        /* Dropdown Styles */
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 20px;
+            background: white;
+            min-width: 220px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            z-index: 1000;
+            padding: 10px 0;
+            border: 1px solid #e0e7ff;
+        }
+        
+        .dropdown.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .dropdown a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #37474f;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .dropdown a:hover {
+            background: #f8f9ff;
+            color: #4361ee;
+            border-left: 3px solid #4361ee;
+            padding-left: 25px;
+        }
+        
+        .dropdown a i {
+            width: 25px;
+            margin-right: 10px;
+            color: #4361ee;
+            font-size: 1.1rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ====== MAIN CONTENT AREA ====== */
+        main {
+            flex: 1;
+            padding: 30px 20px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            min-height: calc(100vh - 140px); /* Viewport minus header & footer */
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
         }
         
-        .container {
+        /* Login Container */
+        .login-container {
             width: 100%;
-            max-width: 1200px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
         }
         
         .login-box {
@@ -43,12 +199,12 @@
             border-radius: 20px;
             box-shadow: 0 25px 60px rgba(0,0,0,0.3);
             overflow: hidden;
-            display: none;
             transform: translateY(0);
             transition: transform 0.3s ease;
             width: 90%;
             max-width: 500px;
             margin: 0 auto;
+            display: block;
         }
         
         .dashboard {
@@ -396,7 +552,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.7);
-            z-index: 1000;
+            z-index: 2000;
             justify-content: center;
             align-items: center;
             backdrop-filter: blur(5px);
@@ -583,7 +739,68 @@
             width: 100%;
         }
         
-        /* Responsive Design */
+        /* ====== FIXED FOOTER STYLES ====== */
+        footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+            color: white;
+            padding: 25px 0;
+            width: 100%;
+            height: 70px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-text {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .company-name {
+            font-size: 1rem;
+            color: #ecf0f1;
+            font-weight: 500;
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            color: #bdc3c7;
+        }
+        
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: #3498db;
+            transform: translateY(-2px);
+        }
+        
+        .separator {
+            color: #7f8c8d;
+        }
+        
+        /* ====== RESPONSIVE DESIGN ====== */
         @media (max-width: 992px) {
             .dashboard-grid {
                 gap: 30px;
@@ -596,6 +813,12 @@
             .action-buttons {
                 grid-template-columns: 1fr;
                 gap: 15px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
             }
         }
         
@@ -657,11 +880,54 @@
             .modal-header h2 {
                 font-size: 22px;
             }
+            
+            .dropdown {
+                right: 15px;
+                min-width: 200px;
+            }
+            
+            .footer-links {
+                gap: 10px;
+            }
+            
+            .separator {
+                display: none;
+            }
+            
+            .footer-links a {
+                margin: 0 5px;
+            }
         }
         
         @media (max-width: 480px) {
             body {
-                padding: 15px 10px;
+                padding-top: 70px;
+            }
+            
+            .header-container {
+                padding: 0 15px;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .logo-image {
+                height: 40px;
+            }
+            
+            .home-nav {
+                display: none;
+            }
+            
+            .dropdown {
+                right: 10px;
+                min-width: 180px;
+            }
+            
+            .dropdown a {
+                padding: 10px 15px;
+                font-size: 0.95rem;
             }
             
             .login-box {
@@ -743,6 +1009,15 @@
                 width: 35px;
                 height: 35px;
                 font-size: 24px;
+            }
+            
+            .footer-content {
+                padding: 0 15px;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 8px;
             }
         }
         
@@ -862,111 +1137,186 @@
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div class="container">
-        <div class="login-box" id="loginBox">
-            <div class="login-content">
-                <h2 style="text-align: center; color: #3a0ca3; margin-bottom: 40px; font-size: 32px;">User Login</h2>
+    <!-- ====== FIXED HEADER ====== -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="images/logo1.jpg" alt="Odelya Locker Logo" class="logo-image">
+                <span>Locker</span>
+            </div>
+            
+            <!-- Navigation Container (Home + Hamburger) -->
+            <div class="nav-right">
+                <!-- Home Tab -->
+                <a href="/index.html" class="home-nav">Home</a>
                 
-                <div class="message" id="loginMessage"></div>
+                <!-- Hamburger Menu -->
+                <button class="hamburger" id="hamburger">
+                    <i class="fas fa-bars"></i>
+                </button>
                 
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" name="username" required placeholder="Enter your username">
-                    </div>
+                <!-- Dropdown Menu -->
+                <div class="dropdown" id="dropdown">
+                    <a href="/user-login.html">
+                        <i class="fas fa-cogs"></i> User
+                    </a>
                     
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required placeholder="Enter your password">
-                    </div>
-                    
-                    <button type="submit" class="login-btn" id="loginBtn">
-                        <span id="loginBtnText">Login</span>
-                        <span class="loading" id="loginLoading" style="display: none;"></span>
-                    </button>
-                </form>
-                
-                <div class="forgot-password">
-                    <a class="forgot-link" onclick="showForgotPassword()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
-                        </svg>
-                        Forgot Password?
+                    <a href="/payment.html">
+                        <i class="fas fa-credit-card"></i> Payment
+                    </a>
+                    <a href="/security.html">
+                        <i class="fas fa-shield-alt"></i> Data Security
+                    </a>
+                    <a href="/terms.html">
+                        <i class="fas fa-file-contract"></i> Terms
+                    </a>
+                    <a href="/privacy-policy.html">
+                        <i class="fas fa-user-shield"></i> Privacy Policy
+                    </a>
+                    <a href="/contact.html">
+                        <i class="fas fa-envelope"></i> Contact
+                    </a>
+                    <a href="/about.html">
+                        <i class="fas fa-users"></i> About
                     </a>
                 </div>
             </div>
         </div>
-        
-        <!-- User Dashboard -->
-        <div class="dashboard" id="dashboard">
-            <div class="header">
-                <h1>Odelya Cloud Storage - User Dashboard</h1>
-                <button class="logout-btn" onclick="logout()">Logout</button>
-            </div>
-            
-            <div class="dashboard-content">
-                <div class="message" id="dashboardMessage"></div>
-                
-                <!-- Two Column Dashboard Layout -->
-                <div class="dashboard-grid">
-                    <!-- Left Column - Personal Information -->
-                    <div class="dashboard-section">
-                        <div class="section-header">
-                            <div class="section-icon">
-                                👤
-                            </div>
-                            <h3 class="section-title">Personal Information</h3>
-                        </div>
-                        
-                        <div id="personalInfo">
-                            <!-- Personal details will be loaded here -->
-                        </div>
-                    </div>
+    </header>
+
+    <!-- ====== MAIN CONTENT ====== -->
+    <main>
+        <!-- Login Screen -->
+        <div class="login-container">
+            <div class="login-box" id="loginBox">
+                <div class="login-content">
+                    <h2 style="text-align: center; color: #3a0ca3; margin-bottom: 40px; font-size: 32px;">User Login</h2>
                     
-                    <!-- Right Column - Plan Information -->
-                    <div class="dashboard-section">
-                        <div class="section-header">
-                            <div class="section-icon">
-                                📋
-                            </div>
-                            <h3 class="section-title">Plan Details</h3>
+                    <div class="message" id="loginMessage"></div>
+                    
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" required placeholder="Enter your username">
                         </div>
                         
-                        <div id="planInfo">
-                            <!-- Plan details will be loaded here -->
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" required placeholder="Enter your password">
                         </div>
+                        
+                        <button type="submit" class="login-btn" id="loginBtn">
+                            <span id="loginBtnText">Login</span>
+                            <span class="loading" id="loginLoading" style="display: none;"></span>
+                        </button>
+                    </form>
+                    
+                    <div class="forgot-password">
+                        <a class="forgot-link" onclick="showForgotPassword()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                            </svg>
+                            Forgot Password?
+                        </a>
                     </div>
                 </div>
+            </div>
+            
+            <!-- User Dashboard -->
+            <div class="dashboard" id="dashboard">
+                <div class="header">
+                    <h1>Odelya Cloud Storage - User Dashboard</h1>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
                 
-                <!-- Action Buttons -->
-                <div class="action-buttons">
-                    <button class="action-btn btn-change-password" onclick="showChangePasswordModal()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
-                        </svg>
-                        Change Password
-                    </button>
+                <div class="dashboard-content">
+                    <div class="message" id="dashboardMessage"></div>
                     
-                    <button class="action-btn btn-pdf" onclick="generatePDF()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M5.523 10.424c.14-.082.293-.162.459-.238a7.878 7.878 0 0 1-.45.606c-.28.337-.498.516-.635.572a.5.5 0 0 1-.357-.133.5.5 0 0 1-.136-.364c0-.153.045-.262.136-.345.09-.082.21-.147.367-.195l.004-.002c.112-.039.231-.073.349-.099l.001-.001c.124-.029.253-.054.387-.076a6.9 6.9 0 0 1 1.669-.084c.42.042.81.126 1.168.252.359.126.664.302.92.532.256.23.453.516.589.848.135.332.202.708.202 1.126 0 .418-.067.794-.202 1.126a2.23 2.23 0 0 1-.589.848c-.256.23-.561.406-.92.532-.358.126-.749.21-1.168.252-.563.06-1.137.006-1.706-.084a7.875 7.875 0 0 1-.387-.076l-.001-.001a14.67 14.67 0 0 1-.349-.099l-.004-.002a1.38 1.38 0 0 1-.367-.195.5.5 0 0 1-.136-.364c0-.153.045-.262.136-.345.09-.082.21-.147.367-.195l.004-.002c.112-.039.231-.073.349-.099l.001-.001c.124-.029.253-.054.387-.076.36-.07.738-.094 1.137-.064.41.032.794.132 1.15.301.356.17.658.411.907.722.25.311.376.677.376 1.102 0 .425-.126.791-.376 1.102a1.98 1.98 0 0 1-.907.722 2.84 2.84 0 0 1-1.15.301c-.398.03-.776.006-1.137-.064-.134-.022-.263-.047-.387-.076l-.001-.001a14.67 14.67 0 0 1-.349-.099l-.004-.002a1.82 1.82 0 0 1-.459-.238 5.04 5.04 0 0 1-.408-.249.5.5 0 0 1 .408-.87z"/>
-                            <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
-                        </svg>
-                        Download PDF
-                    </button>
+                    <!-- Two Column Dashboard Layout -->
+                    <div class="dashboard-grid">
+                        <!-- Left Column - Personal Information -->
+                        <div class="dashboard-section">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    👤
+                                </div>
+                                <h3 class="section-title">Personal Information</h3>
+                            </div>
+                            
+                            <div id="personalInfo">
+                                <!-- Personal details will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column - Plan Information -->
+                        <div class="dashboard-section">
+                            <div class="section-header">
+                                <div class="section-icon">
+                                    📋
+                                </div>
+                                <h3 class="section-title">Plan Details</h3>
+                            </div>
+                            
+                            <div id="planInfo">
+                                <!-- Plan details will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
                     
-                    <button class="action-btn btn-recharge" onclick="rechargeNow()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
-                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
-                        </svg>
-                        Recharge Now
-                    </button>
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="action-btn btn-change-password" onclick="showChangePasswordModal()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                            </svg>
+                            Change Password
+                        </button>
+                        
+                        <button class="action-btn btn-pdf" onclick="generatePDF()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M5.523 10.424c.14-.082.293-.162.459-.238a7.878 7.878 0 0 1-.45.606c-.28.337-.498.516-.635.572a.5.5 0 0 1-.357-.133.5.5 0 0 1-.136-.364c0-.153.045-.262.136-.345.09-.082.21-.147.367-.195l.004-.002c.112-.039.231-.073.349-.099l.001-.001c.124-.029.253-.054.387-.076a6.9 6.9 0 0 1 1.669-.084c.42.042.81.126 1.168.252.359.126.664.302.92.532.256.23.453.516.589.848.135.332.202.708.202 1.126 0 .418-.067.794-.202 1.126a2.23 2.23 0 0 1-.589.848c-.256.23-.561.406-.92.532-.358.126-.749.21-1.168.252-.563.06-1.137.006-1.706-.084a7.875 7.875 0 0 1-.387-.076l-.001-.001a14.67 14.67 0 0 1-.349-.099l-.004-.002a1.38 1.38 0 0 1-.367-.195.5.5 0 0 1-.136-.364c0-.153.045-.262.136-.345.09-.082.21-.147.367-.195l.004-.002c.112-.039.231-.073.349-.099l.001-.001c.124-.029.253-.054.387-.076.36-.07.738-.094 1.137-.064.41.032.794.132 1.15.301.356.17.658.411.907.722.25.311.376.677.376 1.102 0 .425-.126.791-.376 1.102a1.98 1.98 0 0 1-.907.722 2.84 2.84 0 0 1-1.15.301c-.398.03-.776.006-1.137-.064-.134-.022-.263-.047-.387-.076l-.001-.001a14.67 14.67 0 0 1-.349-.099l-.004-.002a1.82 1.82 0 0 1-.459-.238 5.04 5.04 0 0 1-.408-.249.5.5 0 0 1 .408-.87z"/>
+                                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
+                            </svg>
+                            Download PDF
+                        </button>
+                        
+                        <button class="action-btn btn-recharge" onclick="rechargeNow()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                            </svg>
+                            Recharge Now
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
+    
+    <!-- ====== FIXED FOOTER ====== -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-text">
+                <p class="company-name">A Product of Odelya Management Pvt Ltd</p>
+                <p class="copyright">© 2025 OMPL | All rights reserved</p>
+
+                <!-- Footer Links -->
+                <div class="footer-links">
+                    <a href="/index.html">Home</a>
+                    <span class="separator">|</span>
+                    <a href="/security.html">Data Security</a>
+                    <span class="separator">|</span>
+                    <a href="/terms.html">Terms</a>
+                    <span class="separator">|</span>
+                    <a href="/privacy-policy.html">Privacy Policy</a>
+                    <span class="separator">|</span>
+                    <a href="/contact.html">Contact</a>
+                    <span class="separator">|</span>
+                    <a href="/about.html">About</a>
+                </div>
+            </div>
+        </div>
+    </footer>
     
     <!-- Change Password Modal -->
     <div id="changePasswordModal" class="modal">
@@ -1070,6 +1420,55 @@
     </div>
 
     <script>
+        // Dropdown JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger');
+            const dropdown = document.getElementById('dropdown');
+            
+            if (hamburger && dropdown) {
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('active');
+                    
+                    const icon = hamburger.querySelector('i');
+                    if (dropdown.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
+                        dropdown.classList.remove('active');
+                        const icon = hamburger.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+                
+                dropdown.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'A' || e.target.parentElement.tagName === 'A') {
+                        dropdown.classList.remove('active');
+                        const icon = hamburger.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+                
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && dropdown.classList.contains('active')) {
+                        dropdown.classList.remove('active');
+                        const icon = hamburger.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+        });
+        
         // Firebase configuration (same as admin dashboard)
         const firebaseConfig = {
             apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
