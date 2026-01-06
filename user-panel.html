@@ -90,6 +90,31 @@
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative;
+        }
+        
+        .change-plan-btn {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .change-plan-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-50%) scale(1.05);
         }
         
         .form-header h1 {
@@ -173,7 +198,7 @@
             box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
         }
         
-        .continue-btn:hover {
+        .continue-btn:hover:not(:disabled) {
             transform: translateY(-3px);
             box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
         }
@@ -183,6 +208,58 @@
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
+            opacity: 0.7;
+        }
+        
+        .continue-btn.enabled {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            opacity: 1;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .continue-btn.enabled:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
+        }
+        
+        /* Terms & Conditions Styles */
+        .terms-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .terms-checkbox {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #4361ee;
+        }
+        
+        .terms-label {
+            font-size: 1rem;
+            color: #333;
+            cursor: pointer;
+        }
+        
+        .terms-link {
+            color: #4361ee;
+            text-decoration: underline;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .terms-link:hover {
+            color: #3a0ca3;
+            text-decoration: underline;
         }
         
         /* For small screens */
@@ -193,6 +270,23 @@
             
             .form-content {
                 padding: 20px;
+            }
+            
+            .form-header {
+                padding: 30px 20px;
+            }
+            
+            .change-plan-btn {
+                position: relative;
+                left: 0;
+                top: 0;
+                transform: none;
+                margin-bottom: 15px;
+                display: inline-block;
+            }
+            
+            .form-header h1 {
+                margin-top: 10px;
             }
         }
         
@@ -301,6 +395,9 @@
 <body>
     <div class="container">
         <div class="form-header">
+            <a href="https://www.odelya.online/cloud-storage.html" class="change-plan-btn">
+                ← Change Plan
+            </a>
             <h1>User Details</h1>
             <p>Complete your registration for Odelya Cloud Storage</p>
         </div>
@@ -462,6 +559,15 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Terms & Conditions Section -->
+            <div class="terms-container">
+                <input type="checkbox" id="termsCheckbox" class="terms-checkbox">
+                <label for="termsCheckbox" class="terms-label">
+                    I agree to the 
+                    <span class="terms-link" onclick="openTerms()">terms & conditions of Odelya</span>
+                </label>
+            </div>
         </div>
         
         <div class="loading" id="loading">
@@ -469,7 +575,7 @@
         </div>
         
         <div class="form-footer">
-            <button class="continue-btn" onclick="submitForm()" id="submitBtn">Continue to Payment</button>
+            <button class="continue-btn" onclick="submitForm()" id="submitBtn" disabled>Continue to Payment</button>
             <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
                 You will be redirected to payment page after successful registration
             </p>
@@ -537,6 +643,95 @@
             return usernameRegex.test(username);
         }
         
+        // Open terms & conditions in new window
+        function openTerms() {
+            const termsUrl = 'https://www.odelya.online/terms.html';
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // For mobile, open in new window with history handling
+                const newWindow = window.open(termsUrl, '_blank');
+                // Store reference to registration page for back button handling
+                if (newWindow) {
+                    newWindow.registrationPage = window.location.href;
+                }
+            } else {
+                // For desktop, open in new window without back button
+                window.open(termsUrl, '_blank', 'noopener,noreferrer');
+            }
+        }
+        
+        // Check if all required fields are filled and terms are checked
+        function checkFormValidity() {
+            const requiredFields = [
+                'fullName', 'email', 'phone', 'username', 'password',
+                'planStartDate', 'paymentMode', 'planName'
+            ];
+            
+            // Check all required fields
+            for (const fieldId of requiredFields) {
+                const field = document.getElementById(fieldId);
+                if (!field || !field.value.trim()) {
+                    return false;
+                }
+            }
+            
+            // Check plan duration
+            const years = parseInt(document.getElementById('durationYears').value) || 0;
+            const months = parseInt(document.getElementById('durationMonths').value) || 0;
+            const days = parseInt(document.getElementById('durationDays').value) || 0;
+            
+            if (planType === 'monthly') {
+                if (months === 0 && days === 0) return false;
+                if (years > 0) return false;
+            } else if (planType === 'yearly') {
+                if (years === 0 && months === 0 && days === 0) return false;
+            }
+            
+            // Check email format
+            const email = document.getElementById('email').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) return false;
+            
+            // Check phone format (10 digits)
+            const phone = document.getElementById('phone').value;
+            if (!/^\d{10}$/.test(phone)) return false;
+            
+            // Check username format
+            const username = document.getElementById('username').value;
+            if (!validateUsername(username)) return false;
+            
+            // Check password requirements
+            const password = document.getElementById('password').value;
+            if (!validatePassword(password)) return false;
+            
+            // Check PAN if provided
+            const pan = document.getElementById('pan').value;
+            if (pan && pan.trim() !== '' && !validatePAN(pan.toUpperCase())) {
+                return false;
+            }
+            
+            // Check terms & conditions checkbox
+            const termsChecked = document.getElementById('termsCheckbox').checked;
+            if (!termsChecked) return false;
+            
+            return true;
+        }
+        
+        // Update submit button state
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            const isValid = checkFormValidity();
+            
+            if (isValid) {
+                submitBtn.disabled = false;
+                submitBtn.classList.add('enabled');
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('enabled');
+            }
+        }
+        
         // Initialize date pickers
         let dobPicker, startDatePicker;
         
@@ -554,6 +749,7 @@
                 allowInput: true,
                 onChange: function(selectedDates, dateStr, instance) {
                     calculateEndDate();
+                    updateSubmitButton();
                 }
             });
             
@@ -562,6 +758,9 @@
             
             // Setup event listeners
             setupEventListeners();
+            
+            // Initial button state
+            updateSubmitButton();
         });
         
         // Auto-fill plan details from URL
@@ -904,6 +1103,13 @@
                 isValid = false;
             }
             
+            // Check terms & conditions
+            const termsChecked = document.getElementById('termsCheckbox').checked;
+            if (!termsChecked) {
+                alert('Please agree to the terms & conditions before continuing.');
+                isValid = false;
+            }
+            
             return isValid;
         }
         
@@ -1023,6 +1229,7 @@
                 // Re-enable button
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Continue to Payment';
+                updateSubmitButton();
                 
                 // Show user-friendly error messages
                 let errorMessage = 'Registration failed. ';
@@ -1051,11 +1258,13 @@
             document.getElementById('phone').addEventListener('input', function(e) {
                 this.value = this.value.replace(/\D/g, '').slice(0, 10);
                 hideError('phone');
+                updateSubmitButton();
             });
             
             // Aadhaar formatting
             document.getElementById('aadhaar').addEventListener('input', function(e) {
                 this.value = this.value.replace(/\D/g, '').slice(0, 12);
+                updateSubmitButton();
             });
             
             // PAN formatting
@@ -1076,18 +1285,21 @@
                 
                 this.value = formatted;
                 hideError('pan');
+                updateSubmitButton();
             });
             
             // Username validation
             document.getElementById('username').addEventListener('input', function(e) {
                 this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
                 hideError('username');
+                updateSubmitButton();
             });
             
             // Password validation
             document.getElementById('password').addEventListener('input', function(e) {
                 validatePassword(this.value);
                 hideError('password');
+                updateSubmitButton();
             });
             
             // Duration calculation events
@@ -1096,6 +1308,7 @@
                 if (this.value > 30) this.value = 30;
                 calculatePlanPrice();
                 hideError('durationError');
+                updateSubmitButton();
             });
             
             document.getElementById('durationMonths').addEventListener('input', function() {
@@ -1103,6 +1316,7 @@
                 if (this.value > 11) this.value = 11;
                 calculatePlanPrice();
                 hideError('durationError');
+                updateSubmitButton();
             });
             
             document.getElementById('durationYears').addEventListener('input', function() {
@@ -1110,16 +1324,35 @@
                 if (this.value > 10) this.value = 10;
                 calculatePlanPrice();
                 hideError('durationError');
+                updateSubmitButton();
             });
             
             // Other field validations
-            document.getElementById('fullName').addEventListener('input', () => hideError('fullName'));
-            document.getElementById('email').addEventListener('input', () => hideError('email'));
-            document.getElementById('paymentMode').addEventListener('change', () => hideError('paymentMode'));
-            document.getElementById('planName').addEventListener('change', () => hideError('planName'));
+            document.getElementById('fullName').addEventListener('input', () => {
+                hideError('fullName');
+                updateSubmitButton();
+            });
+            document.getElementById('email').addEventListener('input', () => {
+                hideError('email');
+                updateSubmitButton();
+            });
+            document.getElementById('paymentMode').addEventListener('change', () => {
+                hideError('paymentMode');
+                updateSubmitButton();
+            });
+            document.getElementById('planName').addEventListener('change', () => {
+                hideError('planName');
+                updateSubmitButton();
+            });
             document.getElementById('planStartDate').addEventListener('input', () => {
                 calculateEndDate();
                 hideError('planStartDate');
+                updateSubmitButton();
+            });
+            
+            // Terms & conditions checkbox
+            document.getElementById('termsCheckbox').addEventListener('change', () => {
+                updateSubmitButton();
             });
         }
         
@@ -1127,6 +1360,7 @@
         window.calculatePlanPrice = calculatePlanPrice;
         window.calculateEndDate = calculateEndDate;
         window.submitForm = submitForm;
+        window.openTerms = openTerms;
     </script>
 </body>
 </html>
