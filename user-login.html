@@ -95,6 +95,7 @@
             padding: 8px 16px;
             border-radius: 6px;
             transition: all 0.3s ease;
+            display: block; /* Always show on all devices */
         }
         
         .home-nav:hover {
@@ -739,15 +740,16 @@
             width: 100%;
         }
         
-        /* ====== FIXED FOOTER STYLES ====== */
+        /* ====== FIXED FOOTER STYLES (RESTORED) ====== */
         footer {
             background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
             color: white;
             padding: 25px 0;
             width: 100%;
-            height: 70px;
+            min-height: 120px;
             display: flex;
             align-items: center;
+            margin-top: auto;
         }
         
         .footer-content {
@@ -756,39 +758,47 @@
             margin: 0 auto;
             padding: 0 20px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
+            gap: 15px;
         }
         
         .footer-text {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            align-items: center;
+            gap: 10px;
+            text-align: center;
+            width: 100%;
         }
         
         .company-name {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #ecf0f1;
-            font-weight: 500;
+            font-weight: 600;
         }
         
         .copyright {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #bdc3c7;
         }
         
         .footer-links {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 15px;
             flex-wrap: wrap;
+            margin-top: 10px;
         }
         
         .footer-links a {
             color: #ecf0f1;
             text-decoration: none;
             font-size: 1rem;
+            font-weight: 600;
             transition: all 0.3s ease;
+            padding: 2px 8px;
         }
         
         .footer-links a:hover {
@@ -813,12 +823,6 @@
             .action-buttons {
                 grid-template-columns: 1fr;
                 gap: 15px;
-            }
-            
-            .footer-content {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
             }
         }
         
@@ -887,7 +891,38 @@
             }
             
             .footer-links {
-                gap: 10px;
+                gap: 12px;
+            }
+            
+            .footer-links a {
+                font-size: 0.95rem;
+            }
+            
+            .separator {
+                display: inline-block;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .nav-right {
+                gap: 15px;
+            }
+            
+            .home-nav {
+                padding: 6px 12px;
+                font-size: 1rem;
+            }
+            
+            .hamburger {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+            
+            .footer-links {
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: center;
             }
             
             .separator {
@@ -917,7 +952,15 @@
             }
             
             .home-nav {
-                display: none;
+                padding: 5px 10px;
+                font-size: 0.95rem;
+                display: block; /* Still show on mobile */
+            }
+            
+            .hamburger {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
             }
             
             .dropdown {
@@ -1013,15 +1056,43 @@
             
             .footer-content {
                 padding: 0 15px;
+                gap: 10px;
             }
             
             .footer-links {
                 flex-direction: column;
                 gap: 8px;
             }
+            
+            .footer-links a {
+                font-size: 0.9rem;
+            }
+            
+            .company-name {
+                font-size: 1rem;
+            }
+            
+            .copyright {
+                font-size: 0.85rem;
+            }
         }
         
         @media (max-width: 360px) {
+            .nav-right {
+                gap: 10px;
+            }
+            
+            .home-nav {
+                padding: 4px 8px;
+                font-size: 0.9rem;
+            }
+            
+            .hamburger {
+                width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+            }
+            
             .login-box {
                 width: 100%;
                 border-radius: 12px;
@@ -1074,6 +1145,14 @@
                 font-size: 14px;
                 margin-left: 6px;
                 margin-bottom: 5px;
+            }
+            
+            .footer-links {
+                gap: 6px;
+            }
+            
+            .footer-links a {
+                font-size: 0.85rem;
             }
         }
         
@@ -1147,7 +1226,7 @@
             
             <!-- Navigation Container (Home + Hamburger) -->
             <div class="nav-right">
-                <!-- Home Tab -->
+                <!-- Home Tab - ALWAYS VISIBLE NOW -->
                 <a href="/index.html" class="home-nav">Home</a>
                 
                 <!-- Hamburger Menu -->
@@ -1293,7 +1372,7 @@
         </div>
     </main>
     
-    <!-- ====== FIXED FOOTER ====== -->
+    <!-- ====== FIXED FOOTER (RESTORED) ====== -->
     <footer>
         <div class="container footer-content">
             <div class="footer-text">
@@ -1302,17 +1381,17 @@
 
                 <!-- Footer Links -->
                 <div class="footer-links">
-                    <a href="/index.html">Home</a>
+                    <a href="/index.html" style="font-size: 1.1em; font-weight: 600;">Home</a>
                     <span class="separator">|</span>
-                    <a href="/security.html">Data Security</a>
+                    <a href="/security.html" style="font-size: 1.1em; font-weight: 600;">Data Security</a>
                     <span class="separator">|</span>
-                    <a href="/terms.html">Terms</a>
+                    <a href="/terms.html" style="font-size: 1.1em; font-weight: 600;">Terms</a>
                     <span class="separator">|</span>
-                    <a href="/privacy-policy.html">Privacy Policy</a>
+                    <a href="/privacy-policy.html" style="font-size: 1.1em; font-weight: 600;">Privacy Policy</a>
                     <span class="separator">|</span>
-                    <a href="/contact.html">Contact</a>
+                    <a href="/contact.html" style="font-size: 1.1em; font-weight: 600;">Contact</a>
                     <span class="separator">|</span>
-                    <a href="/about.html">About</a>
+                    <a href="/about.html" style="font-size: 1.1em; font-weight: 600;">About</a>
                 </div>
             </div>
         </div>
