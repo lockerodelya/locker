@@ -39,55 +39,6 @@
             margin-bottom: 5px;
         }
 
-        /* User Info Display */
-        .user-info {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 10px auto 20px;
-            max-width: 800px;
-            border: 2px solid #2196f3;
-            display: none;
-        }
-
-        .user-info.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .user-info h3 {
-            color: #0d47a1;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        .user-detail-item {
-            background: white;
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 4px solid #2196f3;
-        }
-
-        .user-detail-label {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 5px;
-        }
-
-        .user-detail-value {
-            font-weight: 600;
-            color: #0d47a1;
-            font-size: 1rem;
-        }
-
         .payment-details-section {
             background: white;
             border-radius: 15px;
@@ -554,14 +505,6 @@
                 font-size: 14px;
                 padding: 0 5px;
             }
-            
-            .user-info {
-                border-radius: 0;
-                margin: 0;
-                padding: 20px 15px;
-                border-left: none;
-                border-right: none;
-            }
         }
 
         @media (max-width: 480px) {
@@ -655,29 +598,6 @@
             <h1>Payment Processing</h1>
         </div>
 
-        <!-- User Information Display -->
-        <div class="user-info" id="userInfo">
-            <h3><i class="fas fa-user-circle"></i> Registration Details</h3>
-            <div class="user-details-grid">
-                <div class="user-detail-item">
-                    <div class="user-detail-label">User ID</div>
-                    <div class="user-detail-value" id="displayUserId">Loading...</div>
-                </div>
-                <div class="user-detail-item">
-                    <div class="user-detail-label">Plan Type</div>
-                    <div class="user-detail-value" id="displayPlanType">Loading...</div>
-                </div>
-                <div class="user-detail-item">
-                    <div class="user-detail-label">Email</div>
-                    <div class="user-detail-value" id="displayEmail">Loading...</div>
-                </div>
-                <div class="user-detail-item">
-                    <div class="user-detail-label">Plan Value</div>
-                    <div class="user-detail-value" id="displayPlanValue">Loading...</div>
-                </div>
-            </div>
-        </div>
-
         <!-- Payment Details Section -->
         <div class="payment-details-section" id="paymentDetailsSection">
             <div class="payment-content">
@@ -694,7 +614,7 @@
                 </div>
 
                 <!-- UPI Payment Details -->
-                <div class="upi-details active" id="upiDetails">
+                <div class="upi-details" id="upiDetails">
                     <div class="qr-title">Please pay exact: <span id="upiTitleAmount">INR 0</span></div>
                     <div class="upi-content-wrapper">
                         <div class="qr-code-container">
@@ -795,7 +715,8 @@
             userId: '',
             userEmail: '',
             planType: '',
-            planValue: ''
+            planValue: '',
+            paymentMethodFromRegistration: '' // Added to store payment method from registration
         };
 
         // ====== DOM ELEMENTS ======
@@ -806,11 +727,6 @@
             upiDetails: document.getElementById('upiDetails'),
             bankDetails: document.getElementById('bankDetails'),
             transferAmount: document.getElementById('transferAmount'),
-            userInfo: document.getElementById('userInfo'),
-            displayUserId: document.getElementById('displayUserId'),
-            displayPlanType: document.getElementById('displayPlanType'),
-            displayEmail: document.getElementById('displayEmail'),
-            displayPlanValue: document.getElementById('displayPlanValue'),
             instructionAmount: document.getElementById('instructionAmount'),
             upiInstructionAmount: document.getElementById('upiInstructionAmount'),
             upiTitleAmount: document.getElementById('upiTitleAmount')
@@ -825,6 +741,7 @@
             let amount = parseInt(params.get('amount')) || 0;
             let email = params.get('email') || '';
             let planType = params.get('planType') || '';
+            let paymentMethod = params.get('paymentMethod') || ''; // Get payment method from URL
             
             // If no URL parameters, try sessionStorage (backup)
             if (!userId || amount === 0) {
@@ -839,13 +756,14 @@
                         amount = lastReg.amount || amount;
                         email = lastReg.email || email;
                         planType = lastReg.planType || planType;
+                        paymentMethod = lastReg.paymentMethod || paymentMethod;
                     }
                 } catch (e) {
                     console.error('Error reading sessionStorage:', e);
                 }
             }
             
-            return { userId, amount, email, planType };
+            return { userId, amount, email, planType, paymentMethod };
         }
 
         // ====== INITIALIZATION ======
@@ -861,34 +779,57 @@
             paymentState.userEmail = decodeURIComponent(urlParams.email) || '';
             paymentState.planType = urlParams.planType;
             paymentState.planValue = 'INR ' + paymentState.totalAmount.toLocaleString();
+            paymentState.paymentMethodFromRegistration = urlParams.paymentMethod || '';
             
             // Debug log
             console.log('Payment State:', paymentState);
+            console.log('Payment Method from Registration:', paymentState.paymentMethodFromRegistration);
             
             // Update display
-            updateUserInfoDisplay();
             updateAmountDisplay();
-            
-            // Show user info section if we have data
-            if (paymentState.userId && paymentState.totalAmount > 0) {
-                elements.userInfo.classList.add('active');
-            }
             
             // Setup event listeners
             setupEventListeners();
             
-            // Start with UPI payment mode selected by default
-            selectPaymentMode('upi');
+            // Automatically select payment mode based on registration
+            autoSelectPaymentMode();
         });
 
-        // ====== UPDATE USER INFO DISPLAY ======
-        function updateUserInfoDisplay() {
-            elements.displayUserId.textContent = paymentState.userId || 'Not provided';
-            elements.displayPlanType.textContent = paymentState.planType ? 
-                (paymentState.planType === 'monthly' ? 'Monthly Plan' : 'Yearly Plan') : 
-                'Not specified';
-            elements.displayEmail.textContent = paymentState.userEmail || 'Not provided';
-            elements.displayPlanValue.textContent = paymentState.planValue;
+        // ====== AUTO SELECT PAYMENT MODE ======
+        function autoSelectPaymentMode() {
+            const paymentMethod = paymentState.paymentMethodFromRegistration.toLowerCase();
+            
+            console.log('Auto-selecting payment mode based on:', paymentMethod);
+            
+            // Default to UPI if no payment method is specified
+            if (!paymentMethod) {
+                console.log('No payment method specified, defaulting to UPI');
+                selectPaymentMode('upi');
+                return;
+            }
+            
+            // Check for UPI related terms
+            if (paymentMethod.includes('upi')) {
+                console.log('Selecting UPI mode');
+                selectPaymentMode('upi');
+            } 
+            // Check for Bank Transfer related terms
+            else if (paymentMethod.includes('bank') || paymentMethod.includes('transfer') || 
+                     paymentMethod.includes('account') || paymentMethod.includes('neft') || 
+                     paymentMethod.includes('rtgs')) {
+                console.log('Selecting Bank Transfer mode');
+                selectPaymentMode('bank');
+            }
+            // Check for Cash (Cash payments might also use bank transfer for documentation)
+            else if (paymentMethod.includes('cash')) {
+                console.log('Cash selected, showing Bank Transfer for reference');
+                selectPaymentMode('bank');
+            }
+            // Default to UPI
+            else {
+                console.log('Payment method not recognized, defaulting to UPI');
+                selectPaymentMode('upi');
+            }
         }
 
         // ====== SETUP EVENT LISTENERS ======
@@ -924,9 +865,11 @@
             if (mode === 'upi') {
                 elements.modeUPI.classList.add('selected');
                 elements.upiDetails.classList.add('active');
+                console.log('UPI payment mode selected');
             } else {
                 elements.modeBank.classList.add('selected');
                 elements.bankDetails.classList.add('active');
+                console.log('Bank Transfer payment mode selected');
             }
         }
 
