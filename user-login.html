@@ -1479,53 +1479,54 @@ footer {
 
     <script>
         // Dropdown JavaScript
-        document.addEventListener('DOMContentLoaded', function() {
-            const hamburger = document.getElementById('hamburger');
-            const dropdown = document.getElementById('dropdown');
+// Dropdown JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.getElementById('hamburger');
+    const dropdown = document.getElementById('dropdown');
+    
+    if (hamburger && dropdown) {
+        hamburger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.classList.toggle('show'); // Changed from 'active' to 'show'
             
-            if (hamburger && dropdown) {
-                hamburger.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    dropdown.classList.toggle('active');
-                    
-                    const icon = hamburger.querySelector('i');
-                    if (dropdown.classList.contains('active')) {
-                        icon.classList.remove('fa-bars');
-                        icon.classList.add('fa-times');
-                    } else {
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                document.addEventListener('click', function(e) {
-                    if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
-                        dropdown.classList.remove('active');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                dropdown.addEventListener('click', function(e) {
-                    if (e.target.tagName === 'A' || e.target.parentElement.tagName === 'A') {
-                        dropdown.classList.remove('active');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && dropdown.classList.contains('active')) {
-                        dropdown.classList.remove('active');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
+            const icon = hamburger.querySelector('i');
+            if (dropdown.classList.contains('show')) { // Changed from 'active' to 'show'
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
             }
         });
+        
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
+                dropdown.classList.remove('show'); // Changed from 'active' to 'show'
+                const icon = hamburger.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        dropdown.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' || e.target.parentElement.tagName === 'A') {
+                dropdown.classList.remove('show'); // Changed from 'active' to 'show'
+                const icon = hamburger.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && dropdown.classList.contains('show')) { // Changed from 'active' to 'show'
+                dropdown.classList.remove('show'); // Changed from 'active' to 'show'
+                const icon = hamburger.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+    }
+});
         
         // Firebase configuration (same as admin dashboard)
         const firebaseConfig = {
