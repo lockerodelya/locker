@@ -427,7 +427,7 @@
         let isEditMode = false;
         let currentPasswordVisible = false;
 
-        // Format date to dd-mm-yyyy HH:MM:SS - MOVED TO GLOBAL SCOPE
+        // Format date to dd-mm-yyyy HH:MM:SS AM/PM
         function formatDateTime(dateValue) {
             if (!dateValue) return 'N/A';
             
@@ -446,11 +446,52 @@
                 const day = String(date.getDate()).padStart(2, '0');
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const year = date.getFullYear();
-                const hours = String(date.getHours()).padStart(2, '0');
+                
+                let hours = date.getHours();
                 const minutes = String(date.getMinutes()).padStart(2, '0');
                 const seconds = String(date.getSeconds()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
                 
-                return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                hours = String(hours).padStart(2, '0');
+                
+                return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+            } catch (e) {
+                return 'Invalid Date';
+            }
+        }
+
+        // Format date for PDF header (dd-mm-yy hh:mm:ss am/pm)
+        function formatDateTimeForPDFHeader(dateValue) {
+            if (!dateValue) return 'N/A';
+            
+            try {
+                let date;
+                if (dateValue.toDate) {
+                    date = dateValue.toDate();
+                } else if (typeof dateValue === 'string') {
+                    date = new Date(dateValue);
+                } else {
+                    date = new Date();
+                }
+                
+                if (isNaN(date.getTime())) return 'Invalid Date';
+                
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = String(date.getFullYear()).slice(-2);
+                
+                let hours = date.getHours();
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                const seconds = String(date.getSeconds()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'pm' : 'am';
+                
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                hours = String(hours).padStart(2, '0');
+                
+                return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${ampm}`;
             } catch (e) {
                 return 'Invalid Date';
             }
@@ -1036,7 +1077,7 @@
             }
         };
         
-        // Generate PDF for current user
+        // Generate PDF for current user - FIXED VERSION
         window.generatePDF = function() {
             if (!currentUserData) return;
             logAdminAction('GENERATE_PDF', `Generated PDF for user: ${currentUserData.email}`);
@@ -1050,27 +1091,40 @@
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 
+                // Set margins (0.5 inch = 0.5 * 72 = 36 points)
+                const leftMargin = 36;
+                const rightMargin = 36;
+                const pageWidth = doc.internal.pageSize.width;
+                const usableWidth = pageWidth - leftMargin - rightMargin;
+                
                 // Add logo/title
                 doc.setFontSize(20);
                 doc.setTextColor(58, 12, 163); // #3a0ca3
-                doc.text('Odelya Cloud Storage', 105, 20, { align: 'center' });
+                doc.text('Odelya Cloud Storage', leftMargin + (usableWidth / 2), 20, { align: 'center' });
                 
                 doc.setFontSize(16);
                 doc.setTextColor(0, 0, 0);
-                doc.text('User Registration Details', 105, 30, { align: 'center' });
+                doc.text('User Registration Details', leftMargin + (usableWidth / 2), 30, { align: 'center' });
                 
+                // Use new format for header date: dd-mm-yy hh:mm:ss am/pm
                 doc.setFontSize(10);
                 doc.setTextColor(100, 100, 100);
-                doc.text(`Generated: ${new Date().toLocaleString()}`, 105, 40, { align: 'center' });
+                const generatedDateTime = formatDateTimeForPDFHeader(new Date());
+                doc.text(`Generated: ${generatedDateTime}`, leftMargin + (usableWidth / 2), 40, { align: 'center' });
                 
                 // User details in two columns
                 let y = 60;
                 doc.setFontSize(12);
                 doc.setTextColor(0, 0, 0);
                 
+                // Calculate column widths
+                const columnWidth = usableWidth / 2;
+                const leftColumnX = leftMargin;
+                const rightColumnX = leftMargin + columnWidth + 10; // Add 10pt gap between columns
+                
                 // Left Column - Personal Information
                 doc.setFont('helvetica', 'bold');
-                doc.text('Personal Information', 20, y);
+                doc.text('Personal Information', leftColumnX, y);
                 y += 10;
                 doc.setFont('helvetica', 'normal');
                 
@@ -1088,16 +1142,28 @@
                 
                 personalInfo.forEach(([label, value]) => {
                     doc.setFont('helvetica', 'bold');
-                    doc.text(`${label}:`, 20, y);
+                    doc.text(`${label}:`, leftColumnX, y);
                     doc.setFont('helvetica', 'normal');
-                    doc.text(value, 70, y);
-                    y += 8;
+                    // Split long values into multiple lines
+                    const maxWidth = columnWidth - 30; // Leave space for label
+                    const lines = doc.splitTextToSize(value || 'N/A', maxWidth);
+                    if (lines.length > 1) {
+                        doc.text(lines[0], leftColumnX + 40, y);
+                        for (let i = 1; i < lines.length; i++) {
+                            y += 6;
+                            doc.text(lines[i], leftColumnX + 40, y);
+                        }
+                        y += 8;
+                    } else {
+                        doc.text(value || 'N/A', leftColumnX + 40, y);
+                        y += 8;
+                    }
                 });
                 
                 // Right Column - Account & Plan Details
                 y = 60; // Reset Y position for right column
                 doc.setFont('helvetica', 'bold');
-                doc.text('Account & Plan Details', 110, y);
+                doc.text('Account & Plan Details', rightColumnX, y);
                 y += 10;
                 doc.setFont('helvetica', 'normal');
                 
@@ -1115,40 +1181,66 @@
                 
                 accountInfo.forEach(([label, value]) => {
                     doc.setFont('helvetica', 'bold');
-                    doc.text(`${label}:`, 110, y);
+                    doc.text(`${label}:`, rightColumnX, y);
                     doc.setFont('helvetica', 'normal');
-                    doc.text(value, 160, y);
-                    y += 8;
+                    // Split long values into multiple lines
+                    const maxWidth = columnWidth - 30; // Leave space for label
+                    const lines = doc.splitTextToSize(value || 'N/A', maxWidth);
+                    if (lines.length > 1) {
+                        doc.text(lines[0], rightColumnX + 50, y);
+                        for (let i = 1; i < lines.length; i++) {
+                            y += 6;
+                            doc.text(lines[i], rightColumnX + 50, y);
+                        }
+                        y += 8;
+                    } else {
+                        doc.text(value || 'N/A', rightColumnX + 50, y);
+                        y += 8;
+                    }
                 });
                 
-                // Agreement Section
+                // Agreement Section - Ensure it fits within margins
                 y += 10;
+                const pageHeight = doc.internal.pageSize.height;
+                
+                // Check if we need a new page for agreement
+                if (y > pageHeight - 40) {
+                    doc.addPage();
+                    y = 40;
+                }
+                
                 doc.setFont('helvetica', 'bold');
-                doc.text('Agreement', 20, y);
+                doc.text('Agreement', leftColumnX, y);
                 y += 8;
                 doc.setFont('helvetica', 'normal');
-                doc.text('✓ I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy,', 20, y);
-                y += 8;
-                doc.text('and all other applicable policies of Odelya Cloud Storage.', 20, y);
                 
-                // Footer - Fixed overlapping issue
-                const pageHeight = doc.internal.pageSize.height;
-                const footerY = pageHeight - 20;
+                // Split agreement text to fit within margins
+                const agreementText = '✓ I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
+                const agreementLines = doc.splitTextToSize(agreementText, usableWidth);
                 
-                doc.setFontSize(10);
+                agreementLines.forEach((line, index) => {
+                    if (y > pageHeight - 30) {
+                        doc.addPage();
+                        y = 40;
+                    }
+                    doc.text(line, leftColumnX, y);
+                    y += 6;
+                });
+                
+                // Footer Section - Fixed overlapping
+                const footerY = pageHeight - 15;
+                
+                doc.setFontSize(9);
                 doc.setTextColor(100, 100, 100);
                 const adminEmail = localStorage.getItem('admin_email') || 'Admin';
                 
-                // Left aligned text
-                doc.text(`Generated by: ${adminEmail}`, 20, footerY);
-                
-                // Center aligned text
-                doc.text('Odelya Cloud Storage - Secure Data Management', 105, footerY, { align: 'center' });
-                
-                // Right aligned text with proper positioning
+                // Line 1: Generated by and User ID
+                doc.text(`Generated by: ${adminEmail}`, leftColumnX, footerY);
                 const userIdText = `User ID: ${currentUserData.userId || 'N/A'}`;
-                const textWidth = doc.getStringUnitWidth(userIdText) * doc.internal.getFontSize() / doc.internal.scaleFactor;
-                doc.text(userIdText, 190 - textWidth, footerY);
+                doc.text(userIdText, pageWidth - rightMargin, footerY, { align: 'right' });
+                
+                // Line 2: Center text on a new line
+                doc.text('Odelya Cloud Storage - Secure Data Management', leftMargin + (usableWidth / 2), footerY + 8, { align: 'center' });
                 
                 // Save PDF with new naming convention: phone number_full name
                 const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
