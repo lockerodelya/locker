@@ -145,6 +145,16 @@
         
         .modal-header h2 {
             color: #3a0ca3;
+            flex: 1;
+        }
+        
+        .user-id-header {
+            font-size: 14px;
+            color: #666;
+            background: #f8f9fa;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
         }
         
         .close-modal {
@@ -299,6 +309,29 @@
             font-size: 12px;
             margin-left: 5px;
         }
+        
+        .agreement-row {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .tick-mark {
+            color: #28a745;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+        
+        .left-column, .right-column {
+            display: flex;
+            flex-direction: column;
+        }
     </style>
 </head>
 <body>
@@ -351,6 +384,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>User Details</h2>
+                <div class="user-id-header" id="modalUserIdDisplay">User ID: Loading...</div>
                 <button class="close-modal" onclick="closeModal()">&times;</button>
             </div>
             
@@ -503,6 +537,10 @@
                         const user = doc.data();
                         user.id = userId;
                         currentUserData = user;
+                        
+                        // Update user ID in header
+                        document.getElementById('modalUserIdDisplay').textContent = `User ID: ${user.userId || 'N/A'}`;
+                        
                         showUserModal(user, false);
                     } else {
                         alert("User not found!");
@@ -676,13 +714,13 @@
             
             // LEFT COLUMN - Personal Information
             html += `<div class="left-column">`;
-            html += createField('User ID', 'userId', user.userId);
             html += createField('Full Name', 'fullName', user.fullName);
             html += createField('Email', 'email', user.email, 'email');
             html += createField('Phone', 'phone', user.phone, 'tel');
             html += createField('Date of Birth', 'dob', user.dob, 'text', true);
             html += createField('Aadhaar Number', 'aadhaar', user.aadhaar, 'text', true);
             html += createField('PAN Number', 'pan', user.pan, 'text', true);
+            html += createField('GSTIN', 'gstin', user.gstin, 'text', true);
             html += createField('Username', 'username', user.username);
             html += createField('Password', 'password', user.password);
             html += `</div>`;
@@ -711,6 +749,12 @@
             
             // Payment Mode
             html += createField('Payment Mode', 'paymentMode', user.paymentMode);
+            html += `</div>`;
+            
+            // Agreement row - spans both columns
+            html += `<div class="agreement-row">`;
+            html += `<span class="tick-mark">✓</span>`;
+            html += `<span>I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.</span>`;
             html += `</div>`;
             
             // Update modal content
@@ -796,6 +840,7 @@
                 dob: document.getElementById('edit_dob')?.value || null,
                 aadhaar: document.getElementById('edit_aadhaar')?.value || null,
                 pan: document.getElementById('edit_pan')?.value || null,
+                gstin: document.getElementById('edit_gstin')?.value || null,
                 username: document.getElementById('edit_username')?.value || '',
                 password: document.getElementById('edit_password')?.value || '',
                 status: document.getElementById('edit_status')?.value || 'pending',
@@ -1018,25 +1063,25 @@
                 doc.setTextColor(100, 100, 100);
                 doc.text(`Generated: ${new Date().toLocaleString()}`, 105, 40, { align: 'center' });
                 
-                // User details
+                // User details in two columns
                 let y = 60;
                 doc.setFontSize(12);
                 doc.setTextColor(0, 0, 0);
                 
-                // Personal Information Section
+                // Left Column - Personal Information
                 doc.setFont('helvetica', 'bold');
                 doc.text('Personal Information', 20, y);
                 y += 10;
                 doc.setFont('helvetica', 'normal');
                 
                 const personalInfo = [
-                    ['User ID', currentUserData.userId || 'N/A'],
                     ['Full Name', currentUserData.fullName || 'N/A'],
                     ['Email', currentUserData.email || 'N/A'],
                     ['Phone', currentUserData.phone || 'N/A'],
                     ['Date of Birth', currentUserData.dob || 'N/A'],
                     ['Aadhaar Number', currentUserData.aadhaar || 'N/A'],
                     ['PAN Number', currentUserData.pan || 'N/A'],
+                    ['GSTIN', currentUserData.gstin || 'N/A'],
                     ['Username', currentUserData.username || 'N/A'],
                     ['Password', currentUserData.password || 'N/A']
                 ];
@@ -1049,10 +1094,10 @@
                     y += 8;
                 });
                 
-                // Account & Plan Details Section
-                y += 5;
+                // Right Column - Account & Plan Details
+                y = 60; // Reset Y position for right column
                 doc.setFont('helvetica', 'bold');
-                doc.text('Account & Plan Details', 20, y);
+                doc.text('Account & Plan Details', 110, y);
                 y += 10;
                 doc.setFont('helvetica', 'normal');
                 
@@ -1063,55 +1108,28 @@
                     ['Plan Value', currentUserData.planValue || 'N/A'],
                     ['Plan Start Date', currentUserData.planStartDate || 'N/A'],
                     ['Plan End Date', currentUserData.planEndDate || 'N/A'],
+                    ['Registered On', currentUserData.createdAt ? formatDateTime(currentUserData.createdAt) : 'N/A'],
                     ['User Type', currentUserData.userType || 'new user'],
                     ['Payment Mode', currentUserData.paymentMode || 'N/A']
                 ];
                 
                 accountInfo.forEach(([label, value]) => {
                     doc.setFont('helvetica', 'bold');
-                    doc.text(`${label}:`, 20, y);
+                    doc.text(`${label}:`, 110, y);
                     doc.setFont('helvetica', 'normal');
-                    doc.text(value, 70, y);
+                    doc.text(value, 160, y);
                     y += 8;
                 });
                 
-                // Registration Info
-                if (currentUserData.createdAt) {
-                    y += 5;
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('Registration Information', 20, y);
-                    y += 10;
-                    doc.setFont('helvetica', 'normal');
-                    
-                    let regDate = currentUserData.createdAt;
-                    if (currentUserData.createdAt.toDate) {
-                        regDate = currentUserData.createdAt.toDate();
-                    } else if (typeof regDate === 'string') {
-                        regDate = new Date(regDate);
-                    }
-                    
-                    const day = String(regDate.getDate()).padStart(2, '0');
-                    const month = String(regDate.getMonth() + 1).padStart(2, '0');
-                    const year = regDate.getFullYear();
-                    const hours = String(regDate.getHours()).padStart(2, '0');
-                    const minutes = String(regDate.getMinutes()).padStart(2, '0');
-                    const seconds = String(regDate.getSeconds()).padStart(2, '0');
-                    
-                    doc.text(`Registered On: ${day}-${month}-${year} ${hours}:${minutes}:${seconds}`, 20, y);
-                    y += 8;
-                    
-                    if (currentUserData.updatedAt) {
-                        let updateDate = currentUserData.updatedAt;
-                        if (typeof updateDate === 'string') {
-                            updateDate = new Date(updateDate);
-                            const updateDay = String(updateDate.getDate()).padStart(2, '0');
-                            const updateMonth = String(updateDate.getMonth() + 1).padStart(2, '0');
-                            const updateYear = updateDate.getFullYear();
-                            doc.text(`Last Updated: ${updateDay}-${updateMonth}-${updateYear}`, 20, y);
-                            y += 8;
-                        }
-                    }
-                }
+                // Agreement Section
+                y += 10;
+                doc.setFont('helvetica', 'bold');
+                doc.text('Agreement', 20, y);
+                y += 8;
+                doc.setFont('helvetica', 'normal');
+                doc.text('✓ I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy,', 20, y);
+                y += 8;
+                doc.text('and all other applicable policies of Odelya Cloud Storage.', 20, y);
                 
                 // Footer - Fixed overlapping issue
                 const pageHeight = doc.internal.pageSize.height;
@@ -1132,8 +1150,10 @@
                 const textWidth = doc.getStringUnitWidth(userIdText) * doc.internal.getFontSize() / doc.internal.scaleFactor;
                 doc.text(userIdText, 190 - textWidth, footerY);
                 
-                // Save PDF
-                const fileName = `Odelya_User_${currentUserData.userId || currentUserData.email}_${new Date().getTime()}.pdf`;
+                // Save PDF with new naming convention: phone number_full name
+                const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
+                const fullName = (currentUserData.fullName || 'user').replace(/\s+/g, '_');
+                const fileName = `${phoneNumber}_${fullName}.pdf`;
                 doc.save(fileName);
                 
                 console.log("PDF generated successfully!");
