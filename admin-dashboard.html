@@ -1255,29 +1255,40 @@ window.generatePDF = function() {
         // Compact agreement text
         const agreementText = '✓ I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
         
-        // Split into two lines if needed
-        const maxLineWidth = pageWidth - leftMargin - rightMargin;
-        if (doc.getTextWidth(agreementText) > maxLineWidth) {
-            const words = agreementText.split(' ');
-            let line1 = '';
-            let line2 = '';
-            
-            for (const word of words) {
-                if (doc.getTextWidth(line1 + word + ' ') <= maxLineWidth) {
-                    line1 += word + ' ';
-                } else {
-                    line2 += word + ' ';
-                }
-            }
-            
-            doc.text(line1.trim(), leftMargin, y);
-            y += 5;
-            doc.text(line2.trim(), leftMargin, y);
-            y += 8;
-        } else {
-            doc.text(agreementText, leftMargin, y);
-            y += 8;
-        }
+  // AGREEMENT SECTION - Forced two lines within margins
+doc.setFontSize(10);
+doc.setFont('helvetica', 'bold');
+doc.text('AGREEMENT', leftMargin, y);
+y += 6;
+
+doc.setFont('helvetica', 'normal');
+
+// Pre-split the agreement text into two balanced lines
+const agreementLine1 = '✓ I agree to the Terms & Conditions, Privacy Policy,';
+const agreementLine2 = 'Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
+
+// Ensure both lines fit within margins
+const maxLineWidth = pageWidth - leftMargin - rightMargin;
+
+// Check if either line is too long and adjust if necessary
+let line1ToUse = agreementLine1;
+let line2ToUse = agreementLine2;
+
+// If first line is too long, make it shorter
+if (doc.getTextWidth(line1ToUse) > maxLineWidth) {
+    line1ToUse = '✓ I agree to the Terms & Conditions, Privacy Policy';
+}
+
+// If second line is too long, adjust it
+if (doc.getTextWidth(line2ToUse) > maxLineWidth) {
+    line2ToUse = 'Data Retention Policy, and all other Odelya Cloud Storage policies.';
+}
+
+// Draw the two lines
+doc.text(line1ToUse, leftMargin, y);
+y += 5;
+doc.text(line2ToUse, leftMargin, y);
+y += 8;
         
         // FOOTER - Bottom of page
         const footerY = pageHeight - 15;
