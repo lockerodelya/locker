@@ -127,6 +127,77 @@
             padding: 40px;
         }
         
+        /* NEW: User Type Toggle Button Styles */
+        .user-type-toggle {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0 40px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .toggle-container {
+            display: flex;
+            background: #f0f0f0;
+            border-radius: 50px;
+            padding: 5px;
+            width: 400px;
+            max-width: 100%;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .toggle-option {
+            flex: 1;
+            padding: 15px 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            color: #666;
+            border: 2px solid transparent;
+        }
+        
+        .toggle-option:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+        
+        .toggle-option.selected {
+            background: #28a745; /* Green color */
+            color: white;
+            border-color: #28a745;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .toggle-option.selected:first-child {
+            background: #28a745; /* Green color */
+            color: white;
+        }
+        
+        .toggle-option.selected:last-child {
+            background: #28a745; /* Green color */
+            color: white;
+        }
+        
+        .toggle-warning {
+            text-align: center;
+            margin-top: 15px;
+            color: #f44336;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: none;
+        }
+        
+        /* Form disabled state */
+        .form-disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            user-select: none;
+        }
+        
         .section-title {
             color: #3a0ca3;
             font-size: 1.5rem;
@@ -350,6 +421,17 @@
                 grid-template-columns: 1fr;
                 padding: 15px;
             }
+            
+            .toggle-container {
+                width: 100%;
+                flex-direction: column;
+                border-radius: 15px;
+            }
+            
+            .toggle-option {
+                border-radius: 10px;
+                margin-bottom: 5px;
+            }
         }
         
         /* Medium screens */
@@ -497,207 +579,224 @@
         </div>
         
         <div class="form-content">
+            <!-- NEW: User Type Toggle Button -->
+            <div class="user-type-toggle">
+                <div class="toggle-container">
+                    <div class="toggle-option" id="individualToggle" onclick="selectUserType('individual')">
+                        Individual
+                    </div>
+                    <div class="toggle-option" id="companyToggle" onclick="selectUserType('company')">
+                        Company
+                    </div>
+                </div>
+            </div>
+            <div class="toggle-warning" id="toggleWarning">
+                Please select Individual or Company to activate the form
+            </div>
+            
             <!-- Personal Information Section -->
-            <h2 class="section-title">Personal Information</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="status" class="required">Status</label>
-                    <select id="status" disabled class="disabled-input">
-                        <option value="pending">Pending</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="userId" class="required">User ID</label>
-                    <input type="text" id="userId" readonly class="disabled-input" placeholder="Auto-generated">
-                </div>
-                
-                <div class="form-group">
-                    <label for="fullName" class="required">Full Name</label>
-                    <input type="text" id="fullName" required placeholder="Enter your full name">
-                    <div class="error-message" id="fullNameError"></div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email" class="required">Email ID</label>
-                    <input type="email" id="email" required placeholder="example@domain.com">
-                    <div class="error-message" id="emailError"></div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="phone" class="required">Phone Number</label>
-                    <input type="tel" id="phone" required placeholder="10-digit mobile number" maxlength="10">
-                    <div class="error-message" id="phoneError"></div>
-                    <div class="format-hint">10 digits only</div>
-                </div>
-                
-                <!-- FIXED: DOB is now required -->
-                <div class="form-group">
-                    <label for="dob" class="required">Date of Birth</label>
-                    <input type="text" id="dob" class="datepicker" placeholder="DD-MM-YYYY" required>
-                    <div class="error-message" id="dobError"></div>
-                </div>
-                
-                <!-- FIXED: Aadhaar is now required -->
-                <div class="form-group">
-                    <label for="aadhaar" class="required">Aadhaar Number</label>
-                    <input type="text" id="aadhaar" placeholder="12-digit Aadhaar" maxlength="12" required>
-                    <div class="error-message" id="aadhaarError"></div>
-                </div>
-                
-                <!-- FIXED: PAN is now required -->
-                <div class="form-group">
-                    <label for="pan" class="required">PAN Number</label>
-                    <input type="text" id="pan" placeholder="ABCDE1234F" maxlength="10" required>
-                    <div class="error-message" id="panError"></div>
-                    <div class="format-hint">Format: 5 letters + 4 numbers + 1 letter</div>
-                </div>
-                
-                <!-- NEW: GSTIN Field - OPTIONAL (no asterisk) -->
-                <div class="form-group">
-                    <label for="gstin">GSTIN</label>
-                    <input type="text" id="gstin" placeholder="22ABCDE1234F1Z5" maxlength="15">
-                    <div class="error-message" id="gstinError"></div>
-                    <div class="gstin-hint">15 characters: 2 state code + 10 PAN + 3 entity + 1 checksum</div>
-                </div>
-            </div>
-            
-            <!-- Plan Details Section -->
-            <h2 class="section-title">Plan Details</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="planName" class="required">Plan Name</label>
-                    <select id="planName" required>
-                        <option value="">Select Plan Type</option>
-                        <option value="Secure Cloud Storage">Secure Cloud Storage</option>
-                        <option value="Event Storage">Event Storage</option>
-                        <option value="Special Purpose Storage">Special Purpose Storage</option>
-                    </select>
-                    <div class="error-message" id="planNameError"></div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="planSize" class="required">Plan (GB)</label>
-                    <input type="text" id="planSize" readonly class="disabled-input" placeholder="Will auto-fill from pricing table">
-                </div>
-                
-                <div class="form-group">
-                    <label class="required">Plan Duration</label>
-                    <div class="duration-inputs">
-                        <div class="duration-box">
-                            <input type="number" id="durationYears" min="0" max="10" placeholder="Years">
-                            <span>Years</span>
-                        </div>
-                        <div class="duration-box">
-                            <input type="number" id="durationMonths" min="0" max="11" placeholder="Months">
-                            <span>Months</span>
-                        </div>
-                        <div class="duration-box">
-                            <input type="number" id="durationDays" min="0" max="30" placeholder="Days">
-                            <span>Days</span>
-                        </div>
+            <div id="formSections">
+                <h2 class="section-title">Personal Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="status" class="required">Status</label>
+                        <select id="status" disabled class="disabled-input">
+                            <option value="pending">Pending</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
                     </div>
-                    <div class="error-message" id="durationError"></div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="planStartDate" class="required">Plan Start Date</label>
-                    <input type="text" id="planStartDate" class="datepicker" placeholder="DD-MM-YYYY (Select Date)">
-                    <div class="error-message" id="startDateError"></div>
-                    <div class="format-hint">Select the date when your plan should start</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="planEndDate" class="required">Plan End Date</label>
-                    <input type="text" id="planEndDate" readonly class="disabled-input" placeholder="Auto-calculated">
-                    <div class="format-hint">Based on start date and duration</div>
-                </div>
-                
-                <!-- UPDATED: Bigger font for Plan Value -->
-                <div class="form-group payment-important">
-                    <label for="planValue" class="required">Plan Value</label>
-                    <input type="text" id="planValue" readonly class="disabled-input" placeholder="Calculated price will appear here">
-                    <div class="price-breakdown" id="priceBreakdown" style="display: none;">
-                        <!-- Price breakdown will appear here -->
+                    
+                    <div class="form-group">
+                        <label for="userId" class="required">User ID</label>
+                        <input type="text" id="userId" readonly class="disabled-input" placeholder="Auto-generated">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fullName" class="required">Full Name</label>
+                        <input type="text" id="fullName" required placeholder="Enter your full name">
+                        <div class="error-message" id="fullNameError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="required">Email ID</label>
+                        <input type="email" id="email" required placeholder="example@domain.com">
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone" class="required">Phone Number</label>
+                        <input type="tel" id="phone" required placeholder="10-digit mobile number" maxlength="10">
+                        <div class="error-message" id="phoneError"></div>
+                        <div class="format-hint">10 digits only</div>
+                    </div>
+                    
+                    <!-- FIXED: DOB is now required -->
+                    <div class="form-group">
+                        <label for="dob" class="required">Date of Birth</label>
+                        <input type="text" id="dob" class="datepicker" placeholder="DD-MM-YYYY" required>
+                        <div class="error-message" id="dobError"></div>
+                    </div>
+                    
+                    <!-- FIXED: Aadhaar is now required -->
+                    <div class="form-group">
+                        <label for="aadhaar" class="required">Aadhaar Number</label>
+                        <input type="text" id="aadhaar" placeholder="12-digit Aadhaar" maxlength="12" required>
+                        <div class="error-message" id="aadhaarError"></div>
+                    </div>
+                    
+                    <!-- FIXED: PAN is now required -->
+                    <div class="form-group">
+                        <label for="pan" class="required">PAN Number</label>
+                        <input type="text" id="pan" placeholder="ABCDE1234F" maxlength="10" required>
+                        <div class="error-message" id="panError"></div>
+                        <div class="format-hint">Format: 5 letters + 4 numbers + 1 letter</div>
+                    </div>
+                    
+                    <!-- NEW: GSTIN Field - OPTIONAL (no asterisk) -->
+                    <div class="form-group">
+                        <label for="gstin">GSTIN</label>
+                        <input type="text" id="gstin" placeholder="22ABCDE1234F1Z5" maxlength="15">
+                        <div class="error-message" id="gstinError"></div>
+                        <div class="gstin-hint">15 characters: 2 state code + 10 PAN + 3 entity + 1 checksum</div>
                     </div>
                 </div>
                 
-                <!-- UPDATED: Bigger font for Payment Mode -->
-                <div class="form-group payment-important">
-                    <label for="paymentMode" class="required">Payment Mode</label>
-                    <select id="paymentMode" required>
-                        <option value="">Select payment mode</option>
-                        <option value="UPI">UPI</option>
-                        <option value="Bank Transfer">Bank Transfer</option>
-                        <option value="Cash">Cash</option>
-                    </select>
-                    <div class="error-message" id="paymentModeError"></div>
-                </div>
-            </div>
-            
-            <!-- Authentication Section -->
-            <h2 class="section-title">Account Security</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <!-- UPDATED: Changed from "8-12 characters" to reflect max 12 chars -->
-                    <label for="username" class="required">Account Username</label>
-                    <input type="text" id="username" required placeholder="Choose username (8-12 characters)" maxlength="12">
-                    <div class="error-message" id="usernameError"></div>
-                    <div class="format-hint">8-12 characters, letters and numbers only</div>
+                <!-- Plan Details Section -->
+                <h2 class="section-title">Plan Details</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="planName" class="required">Plan Name</label>
+                        <select id="planName" required>
+                            <option value="">Select Plan Type</option>
+                            <option value="Secure Cloud Storage">Secure Cloud Storage</option>
+                            <option value="Event Storage">Event Storage</option>
+                            <option value="Special Purpose Storage">Special Purpose Storage</option>
+                        </select>
+                        <div class="error-message" id="planNameError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="planSize" class="required">Plan (GB)</label>
+                        <input type="text" id="planSize" readonly class="disabled-input" placeholder="Will auto-fill from pricing table">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="required">Plan Duration</label>
+                        <div class="duration-inputs">
+                            <div class="duration-box">
+                                <input type="number" id="durationYears" min="0" max="10" placeholder="Years">
+                                <span>Years</span>
+                            </div>
+                            <div class="duration-box">
+                                <input type="number" id="durationMonths" min="0" max="11" placeholder="Months">
+                                <span>Months</span>
+                            </div>
+                            <div class="duration-box">
+                                <input type="number" id="durationDays" min="0" max="30" placeholder="Days">
+                                <span>Days</span>
+                            </div>
+                        </div>
+                        <div class="error-message" id="durationError"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="planStartDate" class="required">Plan Start Date</label>
+                        <input type="text" id="planStartDate" class="datepicker" placeholder="DD-MM-YYYY (Select Date)">
+                        <div class="error-message" id="startDateError"></div>
+                        <div class="format-hint">Select the date when your plan should start</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="planEndDate" class="required">Plan End Date</label>
+                        <input type="text" id="planEndDate" readonly class="disabled-input" placeholder="Auto-calculated">
+                        <div class="format-hint">Based on start date and duration</div>
+                    </div>
+                    
+                    <!-- UPDATED: Bigger font for Plan Value -->
+                    <div class="form-group payment-important">
+                        <label for="planValue" class="required">Plan Value</label>
+                        <input type="text" id="planValue" readonly class="disabled-input" placeholder="Calculated price will appear here">
+                        <div class="price-breakdown" id="priceBreakdown" style="display: none;">
+                            <!-- Price breakdown will appear here -->
+                        </div>
+                    </div>
+                    
+                    <!-- UPDATED: Bigger font for Payment Mode -->
+                    <div class="form-group payment-important">
+                        <label for="paymentMode" class="required">Payment Mode</label>
+                        <select id="paymentMode" required>
+                            <option value="">Select payment mode</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="Cash">Cash</option>
+                        </select>
+                        <div class="error-message" id="paymentModeError"></div>
+                    </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="password" class="required">Account Password</label>
-                    <input type="password" id="password" required placeholder="Create a strong password" maxlength="12">
-                    <div class="error-message" id="passwordError"></div>
-                    <div class="password-requirements">
-                        <div class="requirement invalid" id="reqLength">
-                            <span class="checkmark">❌</span> At least 8 characters
-                        </div>
-                        <div class="requirement invalid" id="reqUpper">
-                            <span class="checkmark">❌</span> At least 1 uppercase letter
-                        </div>
-                        <div class="requirement invalid" id="reqLower">
-                            <span class="checkmark">❌</span> At least 1 lowercase letter
-                        </div>
-                        <div class="requirement invalid" id="reqNumber">
-                            <span class="checkmark">❌</span> At least 1 number
-                        </div>
-                        <div class="requirement invalid" id="reqSpecial">
-                            <span class="checkmark">❌</span> At least 1 special character (@$!%*?&)
+                <!-- Authentication Section -->
+                <h2 class="section-title">Account Security</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <!-- UPDATED: Changed from "8-12 characters" to reflect max 12 chars -->
+                        <label for="username" class="required">Account Username</label>
+                        <input type="text" id="username" required placeholder="Choose username (8-12 characters)" maxlength="12">
+                        <div class="error-message" id="usernameError"></div>
+                        <div class="format-hint">8-12 characters, letters and numbers only</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="required">Account Password</label>
+                        <input type="password" id="password" required placeholder="Create a strong password" maxlength="12">
+                        <div class="error-message" id="passwordError"></div>
+                        <div class="password-requirements">
+                            <div class="requirement invalid" id="reqLength">
+                                <span class="checkmark">❌</span> At least 8 characters
+                            </div>
+                            <div class="requirement invalid" id="reqUpper">
+                                <span class="checkmark">❌</span> At least 1 uppercase letter
+                            </div>
+                            <div class="requirement invalid" id="reqLower">
+                                <span class="checkmark">❌</span> At least 1 lowercase letter
+                            </div>
+                            <div class="requirement invalid" id="reqNumber">
+                                <span class="checkmark">❌</span> At least 1 number
+                            </div>
+                            <div class="requirement invalid" id="reqSpecial">
+                                <span class="checkmark">❌</span> At least 1 special character (@$!%*?&)
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Payment Processing Summary -->
-            <!-- UPDATED: Bigger font for Total Plan Value tag -->
-            <div class="payment-tags" id="paymentTags" style="display: none;">
-                <div class="payment-tag">
-                    <div class="payment-tag-label">Plan Start Date</div>
-                    <div class="payment-tag-value" id="tagStartDate">--</div>
+                
+                <!-- Payment Processing Summary -->
+                <!-- UPDATED: Bigger font for Total Plan Value tag -->
+                <div class="payment-tags" id="paymentTags" style="display: none;">
+                    <div class="payment-tag">
+                        <div class="payment-tag-label">Plan Start Date</div>
+                        <div class="payment-tag-value" id="tagStartDate">--</div>
+                    </div>
+                    <div class="payment-tag">
+                        <div class="payment-tag-label">Plan End Date</div>
+                        <div class="payment-tag-value" id="tagEndDate">--</div>
+                    </div>
+                    <div class="payment-tag">
+                        <div class="payment-tag-label">Total Plan Value</div>
+                        <div class="payment-tag-value" id="tagPlanValue" style="font-size: 1.3rem;">INR 0</div>
+                    </div>
                 </div>
-                <div class="payment-tag">
-                    <div class="payment-tag-label">Plan End Date</div>
-                    <div class="payment-tag-value" id="tagEndDate">--</div>
+                
+                <!-- Terms & Conditions Section -->
+                <!-- UPDATED: Only "terms & conditions" is underlined -->
+                <div class="terms-container">
+                    <input type="checkbox" id="termsCheckbox" class="terms-checkbox">
+                    <label for="termsCheckbox" class="terms-label">
+                        I agree to the 
+                        <span class="terms-link" onclick="openTerms()">terms & conditions</span>
+                        of Odelya Management Pvt Ltd
+                    </label>
                 </div>
-                <div class="payment-tag">
-                    <div class="payment-tag-label">Total Plan Value</div>
-                    <div class="payment-tag-value" id="tagPlanValue" style="font-size: 1.3rem;">INR 0</div>
-                </div>
-            </div>
-            
-            <!-- Terms & Conditions Section -->
-            <!-- UPDATED: Only "terms & conditions" is underlined -->
-            <div class="terms-container">
-                <input type="checkbox" id="termsCheckbox" class="terms-checkbox">
-                <label for="termsCheckbox" class="terms-label">
-                    I agree to the 
-                    <span class="terms-link" onclick="openTerms()">terms & conditions</span>
-                    of Odelya Management Pvt Ltd
-                </label>
             </div>
         </div>
         
@@ -719,6 +818,114 @@
         let baseMonthlyPrice = 0; // Actual monthly price from pricing table
         let baseYearlyPrice = 0; // Actual yearly price from pricing table
         let originalPlanValue = ''; // Original plan value from URL
+        let selectedUserType = null; // 'individual' or 'company'
+        
+        // NEW: User Type Selection Function
+        function selectUserType(type) {
+            selectedUserType = type;
+            
+            // Update toggle UI
+            const individualToggle = document.getElementById('individualToggle');
+            const companyToggle = document.getElementById('companyToggle');
+            const toggleWarning = document.getElementById('toggleWarning');
+            const formSections = document.getElementById('formSections');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (type === 'individual') {
+                individualToggle.classList.add('selected');
+                companyToggle.classList.remove('selected');
+                
+                // For Individual: Activate all form sections
+                formSections.classList.remove('form-disabled');
+                
+                // Enable all form inputs
+                enableFormInputs(true);
+                
+                // Hide warning
+                toggleWarning.style.display = 'none';
+                
+                console.log('Individual selected - all form sections activated');
+            } else if (type === 'company') {
+                individualToggle.classList.remove('selected');
+                companyToggle.classList.add('selected');
+                
+                // For Company: Activate all form sections
+                formSections.classList.remove('form-disabled');
+                
+                // Enable all form inputs
+                enableFormInputs(true);
+                
+                // Hide warning
+                toggleWarning.style.display = 'none';
+                
+                console.log('Company selected - all form sections activated');
+                
+                // Note: You can add specific Company logic here later
+                // For now, all fields are enabled just like Individual
+            }
+            
+            // Update submit button
+            updateSubmitButton();
+        }
+        
+        // NEW: Enable/Disable Form Inputs
+        function enableFormInputs(enable) {
+            const formInputs = document.querySelectorAll('#formSections input, #formSections select');
+            
+            formInputs.forEach(input => {
+                // Skip already disabled inputs (like userId, status, planSize, planEndDate, planValue)
+                if (input.classList.contains('disabled-input') && input.hasAttribute('readonly')) {
+                    // Keep these disabled/readonly
+                    return;
+                }
+                
+                if (enable) {
+                    input.disabled = false;
+                    input.style.backgroundColor = '';
+                    input.style.cursor = 'text';
+                    
+                    // Special handling for date pickers
+                    if (input.id === 'dob' || input.id === 'planStartDate') {
+                        input.disabled = false;
+                        input.style.backgroundColor = '';
+                    }
+                } else {
+                    input.disabled = true;
+                    input.style.backgroundColor = '#f5f5f5';
+                    input.style.cursor = 'not-allowed';
+                    
+                    // Special handling for date pickers
+                    if (input.id === 'dob' || input.id === 'planStartDate') {
+                        input.disabled = true;
+                        input.style.backgroundColor = '#f5f5f5';
+                    }
+                }
+            });
+            
+            // Special handling for duration inputs
+            const durationYears = document.getElementById('durationYears');
+            const durationMonths = document.getElementById('durationMonths');
+            const durationDays = document.getElementById('durationDays');
+            
+            if (enable) {
+                // Re-apply monthly/yearly plan restrictions
+                if (planType === 'monthly') {
+                    durationYears.disabled = true;
+                    durationYears.style.backgroundColor = '#f5f5f5';
+                    durationYears.placeholder = 'N/A for monthly';
+                } else {
+                    durationYears.disabled = false;
+                    durationYears.style.backgroundColor = '';
+                    durationYears.placeholder = 'Years';
+                }
+                
+                durationMonths.disabled = false;
+                durationMonths.style.backgroundColor = '';
+                
+                durationDays.disabled = false;
+                durationDays.style.backgroundColor = '';
+            }
+        }
         
         // Generate 6-digit User ID with digits 2-9 only
         function generateUserId() {
@@ -830,6 +1037,11 @@
         
         // Check if all required fields are filled and terms are checked
         function checkFormValidity() {
+            // NEW: Check if user type is selected
+            if (!selectedUserType) {
+                return false;
+            }
+            
             const requiredFields = [
                 'fullName', 'email', 'phone', 'username', 'password',
                 'planStartDate', 'paymentMode', 'planName', 'dob', 'aadhaar', 'pan'
@@ -917,6 +1129,15 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM Content Loaded');
+            
+            // NEW: Initially disable form sections until user type is selected
+            const formSections = document.getElementById('formSections');
+            formSections.classList.add('form-disabled');
+            enableFormInputs(false);
+            
+            // Show warning message
+            const toggleWarning = document.getElementById('toggleWarning');
+            toggleWarning.style.display = 'block';
             
             // Initialize date pickers
             dobPicker = flatpickr("#dob", {
@@ -1229,6 +1450,14 @@
         function validateForm() {
             let isValid = true;
             
+            // NEW: Check if user type is selected
+            if (!selectedUserType) {
+                const toggleWarning = document.getElementById('toggleWarning');
+                toggleWarning.style.display = 'block';
+                toggleWarning.textContent = 'Please select Individual or Company to continue';
+                return false;
+            }
+            
             // Clear all errors
             const fieldIds = [
                 'fullName', 'email', 'phone', 'username', 'password',
@@ -1395,6 +1624,7 @@
                 // 5. Prepare user data for Firebase - Store plain text password
                 const userData = {
                     userId: userId,
+                    userType: selectedUserType, // NEW: Store user type
                     fullName: document.getElementById('fullName').value,
                     email: email,
                     phone: document.getElementById('phone').value,
@@ -1446,6 +1676,7 @@ const paymentUrl = `https://www.odelya.online/payment.html?userId=${userId}&amou
 // Save to session storage as backup
 sessionStorage.setItem('odelya_registration', JSON.stringify({
     userId: userId,
+    userType: selectedUserType, // NEW: Store user type
     amount: finalPrice,
     email: email,
     startDate: startDate,
@@ -1639,6 +1870,7 @@ sessionStorage.setItem('odelya_registration', JSON.stringify({
         window.calculateEndDate = calculateEndDate;
         window.submitForm = submitForm;
         window.openTerms = openTerms;
+        window.selectUserType = selectUserType;
     </script>
 </body>
 </html>
