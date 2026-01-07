@@ -1077,8 +1077,7 @@
             }
         };
         
-        // Generate PDF for current user - FIXED VERSION
-       // Generate PDF for current user - FIXED VERSION
+// Generate PDF for current user - NEW LAYOUT VERSION
 window.generatePDF = function() {
     if (!currentUserData) return;
     logAdminAction('GENERATE_PDF', `Generated PDF for user: ${currentUserData.email}`);
@@ -1092,46 +1091,45 @@ window.generatePDF = function() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // Set margins (0.5 inch = 0.5 * 72 = 36 points)
+        // Set margins
         const leftMargin = 36;
         const rightMargin = 36;
-        const topMargin = 36;
-        const bottomMargin = 36;
+        const topMargin = 30;
+        const bottomMargin = 30;
         const pageWidth = doc.internal.pageSize.width;
         const pageHeight = doc.internal.pageSize.height;
         const usableWidth = pageWidth - leftMargin - rightMargin;
+        const centerX = pageWidth / 2;
         
-        // Add logo/title
+        // Header Section
         doc.setFontSize(20);
         doc.setTextColor(58, 12, 163); // #3a0ca3
-        doc.text('Odelya Cloud Storage', pageWidth / 2, topMargin, { align: 'center' });
+        doc.text('Odelya Cloud Storage', centerX, topMargin, { align: 'center' });
         
         doc.setFontSize(16);
         doc.setTextColor(0, 0, 0);
-        doc.text('User Registration Details', pageWidth / 2, topMargin + 10, { align: 'center' });
+        doc.text('User Registration Details', centerX, topMargin + 10, { align: 'center' });
         
-        // Use new format for header date: dd-mm-yy hh:mm:ss am/pm
+        // Generated timestamp
         doc.setFontSize(10);
         doc.setTextColor(100, 100, 100);
         const generatedDateTime = formatDateTimeForPDFHeader(new Date());
-        doc.text(`Generated: ${generatedDateTime}`, pageWidth / 2, topMargin + 20, { align: 'center' });
+        doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 20, { align: 'center' });
         
-        // User details in two columns
         let y = topMargin + 40;
+        
+        // SECTION 1: PERSONAL INFORMATION - Centered
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(58, 12, 163); // Purple color for section headers
+        doc.text('PERSONAL INFORMATION', centerX, y, { align: 'center' });
+        y += 10;
+        
         doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
         doc.setTextColor(0, 0, 0);
         
-        // Calculate column widths
-        const columnWidth = usableWidth / 2;
-        const leftColumnX = leftMargin;
-        const rightColumnX = leftMargin + columnWidth + 10; // Add 10pt gap between columns
-        
-        // Left Column - Personal Information
-        doc.setFont('helvetica', 'bold');
-        doc.text('Personal Information', leftColumnX, y);
-        y += 10;
-        doc.setFont('helvetica', 'normal');
-        
+        // Personal info table-like layout (centered content)
         const personalInfo = [
             ['Full Name', currentUserData.fullName || 'N/A'],
             ['Email', currentUserData.email || 'N/A'],
@@ -1144,6 +1142,10 @@ window.generatePDF = function() {
             ['Password', currentUserData.password || 'N/A']
         ];
         
+        // Calculate maximum label width for alignment
+        const labelColonWidth = 100; // Fixed width for labels (with colon)
+        const valueStartX = leftMargin + labelColonWidth + 10;
+        
         personalInfo.forEach(([label, value]) => {
             // Check if we need a new page
             if (y > pageHeight - 50) {
@@ -1151,38 +1153,49 @@ window.generatePDF = function() {
                 y = topMargin;
             }
             
+            // Label (with colon)
             doc.setFont('helvetica', 'bold');
-            doc.text(`${label}:`, leftColumnX, y);
+            doc.text(`${label}:`, leftMargin, y);
+            
+            // Value
             doc.setFont('helvetica', 'normal');
             
-            // Split long values into multiple lines with proper width
-            const maxWidth = columnWidth - 40; // Reduced width to prevent overflow
+            // Split long values into multiple lines
+            const maxWidth = pageWidth - valueStartX - rightMargin;
             const lines = doc.splitTextToSize(value || 'N/A', maxWidth);
             
             // Draw the first line
             if (lines[0]) {
-                doc.text(lines[0], leftColumnX + 35, y);
+                doc.text(lines[0], valueStartX, y);
             }
             
             // Draw additional lines if needed
             for (let i = 1; i < lines.length; i++) {
-                y += 6;
+                y += 7;
                 if (y > pageHeight - 50) {
                     doc.addPage();
                     y = topMargin;
+                    doc.setFont('helvetica', 'normal');
                 }
-                doc.text(lines[i], leftColumnX + 35, y);
+                doc.text(lines[i], valueStartX, y);
             }
             y += 10;
         });
         
-        // Right Column - Account & Plan Details
-        y = topMargin + 40; // Reset Y position for right column
-        doc.setFont('helvetica', 'bold');
-        doc.text('Account & Plan Details', rightColumnX, y);
-        y += 10;
-        doc.setFont('helvetica', 'normal');
+        y += 10; // Add space between sections
         
+        // SECTION 2: ACCOUNT & PLAN DETAILS - Centered
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(58, 12, 163);
+        doc.text('ACCOUNT & PLAN DETAILS', centerX, y, { align: 'center' });
+        y += 10;
+        
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        
+        // Account info table-like layout
         const accountInfo = [
             ['Status', currentUserData.status || 'pending'],
             ['Plan Name', currentUserData.planName || 'N/A'],
@@ -1202,50 +1215,61 @@ window.generatePDF = function() {
                 y = topMargin;
             }
             
+            // Label (with colon)
             doc.setFont('helvetica', 'bold');
-            doc.text(`${label}:`, rightColumnX, y);
+            doc.text(`${label}:`, leftMargin, y);
+            
+            // Value
             doc.setFont('helvetica', 'normal');
             
-            // Split long values into multiple lines with proper width
-            const maxWidth = columnWidth - 40; // Reduced width to prevent overflow
+            // Split long values into multiple lines
+            const maxWidth = pageWidth - valueStartX - rightMargin;
             const lines = doc.splitTextToSize(value || 'N/A', maxWidth);
             
             // Draw the first line
             if (lines[0]) {
-                doc.text(lines[0], rightColumnX + 45, y);
+                doc.text(lines[0], valueStartX, y);
             }
             
             // Draw additional lines if needed
             for (let i = 1; i < lines.length; i++) {
-                y += 6;
+                y += 7;
                 if (y > pageHeight - 50) {
                     doc.addPage();
                     y = topMargin;
+                    doc.setFont('helvetica', 'normal');
                 }
-                doc.text(lines[i], rightColumnX + 45, y);
+                doc.text(lines[i], valueStartX, y);
             }
             y += 10;
         });
         
-        // Agreement Section - FIXED to stay within margins
-        y += 10;
+        y += 10; // Add space before agreement
         
+        // AGREEMENT SECTION - Left aligned (not centered)
         // Check if we need a new page for agreement
         if (y > pageHeight - 60) {
             doc.addPage();
             y = topMargin;
         }
         
+        // Draw a horizontal line before agreement
+        doc.setDrawColor(200, 200, 200);
+        doc.line(leftMargin, y, pageWidth - rightMargin, y);
+        y += 10;
+        
+        doc.setFontSize(11);
         doc.setFont('helvetica', 'bold');
-        doc.text('Agreement', leftMargin, y);
+        doc.text('AGREEMENT', leftMargin, y);
         y += 8;
+        
         doc.setFont('helvetica', 'normal');
         
-        // Agreement text with tick mark
+        // Agreement text with tick mark - LEFT ALIGNED
         const agreementText = '✓ I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
         
-        // Split agreement text to fit within usable width (not full page width)
-        const agreementLines = doc.splitTextToSize(agreementText, usableWidth - 10);
+        // Split agreement text to fit within usable width
+        const agreementLines = doc.splitTextToSize(agreementText, usableWidth);
         
         agreementLines.forEach((line, index) => {
             if (y > pageHeight - bottomMargin) {
@@ -1256,20 +1280,20 @@ window.generatePDF = function() {
             y += 7;
         });
         
-        // Footer Section - Fixed positioning
+        // FOOTER SECTION
         const footerY = pageHeight - 20;
         
         doc.setFontSize(9);
         doc.setTextColor(100, 100, 100);
         const adminEmail = localStorage.getItem('admin_email') || 'Admin';
         
-        // Line 1: Generated by and User ID - properly positioned
+        // Line 1: Generated by and User ID
         doc.text(`Generated by: ${adminEmail}`, leftMargin, footerY);
         const userIdText = `User ID: ${currentUserData.userId || 'N/A'}`;
         doc.text(userIdText, pageWidth - rightMargin, footerY, { align: 'right' });
         
         // Line 2: Center text on a new line
-        doc.text('Odelya Cloud Storage - Secure Data Management', pageWidth / 2, footerY + 8, { align: 'center' });
+        doc.text('Odelya Cloud Storage - Secure Data Management', centerX, footerY + 8, { align: 'center' });
         
         // Save PDF with new naming convention: phone number_full name
         const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
