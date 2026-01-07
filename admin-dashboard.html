@@ -1245,19 +1245,24 @@ window.generatePDF = function() {
         y += 10;
         
 
-// AGREEMENT SECTION - Simple approach
+// AGREEMENT SECTION - With font specification
 doc.setFontSize(10);
 doc.setFont('helvetica', 'bold');
 doc.text('AGREEMENT', leftMargin, y);
 y += 6;
 
-doc.setFont('helvetica', 'normal');
+// Try different font for the tick mark
+doc.setFont('zapfdingbats', 'normal'); // This font has good symbols
+doc.text('✔', leftMargin, y); // Or use '3' for checkmark in zapfdingbats
 
-// Use a simple asterisk or plus instead of tick mark
-const line1 = '• I agree to the Terms & Conditions, Privacy Policy,';
+// Switch back to normal font for text
+doc.setFont('helvetica', 'normal');
+doc.setTextColor(0, 0, 0);
+
+const line1 = 'I agree to the Terms & Conditions, Privacy Policy,';
 const line2 = 'Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
 
-doc.text(line1, leftMargin, y);
+doc.text(line1, leftMargin + 5, y); // Start after the tick mark
 y += 5;
 doc.text(line2, leftMargin, y);
 y += 8;
