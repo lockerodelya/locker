@@ -566,6 +566,13 @@
             font-size: 0.85rem;
             margin-top: 5px;
         }
+        
+        /* NEW: Date of Incorporation hint */
+        .doi-hint {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -596,9 +603,10 @@
             
             <!-- Personal Information Section -->
             <div id="formSections">
-                <h2 class="section-title">Personal Information</h2>
-                <div class="form-grid">
-                    <div class="form-group">
+                <h2 class="section-title" id="personalInfoTitle">Personal Information</h2>
+                <div class="form-grid" id="personalInfoGrid">
+                    <!-- Individual Form Fields (Initially visible) -->
+                    <div class="form-group individual-field">
                         <label for="status" class="required">Status</label>
                         <select id="status" disabled class="disabled-input">
                             <option value="pending">Pending</option>
@@ -607,62 +615,113 @@
                         </select>
                     </div>
                     
-                    <div class="form-group">
+                    <div class="form-group individual-field">
                         <label for="userId" class="required">User ID</label>
                         <input type="text" id="userId" readonly class="disabled-input" placeholder="Auto-generated">
                     </div>
                     
-                    <div class="form-group">
+                    <div class="form-group individual-field">
                         <label for="fullName" class="required">Full Name</label>
                         <input type="text" id="fullName" required placeholder="Enter your full name">
                         <div class="error-message" id="fullNameError"></div>
                     </div>
                     
-                    <div class="form-group">
+                    <div class="form-group individual-field">
                         <label for="email" class="required">Email ID</label>
                         <input type="email" id="email" required placeholder="example@domain.com">
                         <div class="error-message" id="emailError"></div>
                     </div>
                     
-                    <div class="form-group">
+                    <div class="form-group individual-field">
                         <label for="phone" class="required">Phone Number</label>
                         <input type="tel" id="phone" required placeholder="10-digit mobile number" maxlength="10">
                         <div class="error-message" id="phoneError"></div>
                         <div class="format-hint">10 digits only</div>
                     </div>
                     
-                    <!-- FIXED: DOB is now required -->
-                    <div class="form-group">
+                    <div class="form-group individual-field">
                         <label for="dob" class="required">Date of Birth</label>
                         <input type="text" id="dob" class="datepicker" placeholder="DD-MM-YYYY" required>
                         <div class="error-message" id="dobError"></div>
                     </div>
                     
-                    <!-- FIXED: Aadhaar is now required -->
-                    <div class="form-group">
+                    <div class="form-group individual-field">
                         <label for="aadhaar" class="required">Aadhaar Number</label>
                         <input type="text" id="aadhaar" placeholder="12-digit Aadhaar" maxlength="12" required>
                         <div class="error-message" id="aadhaarError"></div>
                     </div>
                     
-                    <!-- FIXED: PAN is now required -->
-                    <div class="form-group">
+                    <div class="form-group individual-field">
                         <label for="pan" class="required">PAN Number</label>
                         <input type="text" id="pan" placeholder="ABCDE1234F" maxlength="10" required>
                         <div class="error-message" id="panError"></div>
                         <div class="format-hint">Format: 5 letters + 4 numbers + 1 letter</div>
                     </div>
                     
-                    <!-- NEW: GSTIN Field - OPTIONAL (no asterisk) -->
-                    <div class="form-group">
+                    <div class="form-group individual-field">
                         <label for="gstin">GSTIN</label>
                         <input type="text" id="gstin" placeholder="22ABCDE1234F1Z5" maxlength="15">
                         <div class="error-message" id="gstinError"></div>
                         <div class="gstin-hint">15 characters: 2 state code + 10 PAN + 3 entity + 1 checksum</div>
                     </div>
+                    
+                    <!-- Company Form Fields (Initially hidden) -->
+                    <div class="form-group company-field" style="display: none;">
+                        <label for="companyStatus" class="required">Status</label>
+                        <select id="companyStatus" disabled class="disabled-input">
+                            <option value="pending">Pending</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group company-field" style="display: none;">
+                        <label for="companyUserId" class="required">User ID</label>
+                        <input type="text" id="companyUserId" readonly class="disabled-input" placeholder="Auto-generated">
+                    </div>
+                    
+                    <div class="form-group company-field" style="display: none;">
+                        <label for="companyName" class="required">Company Name</label>
+                        <input type="text" id="companyName" placeholder="Enter company name">
+                        <div class="error-message" id="companyNameError"></div>
+                    </div>
+                    
+                    <div class="form-group company-field" style="display: none;">
+                        <label for="companyEmail" class="required">Email ID</label>
+                        <input type="email" id="companyEmail" placeholder="company@domain.com">
+                        <div class="error-message" id="companyEmailError"></div>
+                    </div>
+                    
+                    <div class="form-group company-field" style="display: none;">
+                        <label for="companyPhone" class="required">Phone Number</label>
+                        <input type="tel" id="companyPhone" placeholder="10-digit mobile number" maxlength="10">
+                        <div class="error-message" id="companyPhoneError"></div>
+                        <div class="format-hint">10 digits only</div>
+                    </div>
+                    
+                    <div class="form-group company-field" style="display: none;">
+                        <label for="dateOfIncorporation" class="required">Date of Incorporation</label>
+                        <input type="text" id="dateOfIncorporation" class="datepicker" placeholder="DD-MM-YYYY">
+                        <div class="error-message" id="dateOfIncorporationError"></div>
+                        <div class="doi-hint">Date when company was incorporated</div>
+                    </div>
+                    
+                    <div class="form-group company-field" style="display: none;">
+                        <label for="companyPan" class="required">PAN Number</label>
+                        <input type="text" id="companyPan" placeholder="ABCDE1234F" maxlength="10">
+                        <div class="error-message" id="companyPanError"></div>
+                        <div class="format-hint">Format: 5 letters + 4 numbers + 1 letter</div>
+                    </div>
+                    
+                    <div class="form-group company-field" style="display: none;">
+                        <label for="companyGstin">GSTIN</label>
+                        <input type="text" id="companyGstin" placeholder="22ABCDE1234F1Z5" maxlength="15">
+                        <div class="error-message" id="companyGstinError"></div>
+                        <div class="gstin-hint">15 characters: 2 state code + 10 PAN + 3 entity + 1 checksum</div>
+                    </div>
                 </div>
                 
-                <!-- Plan Details Section -->
+                <!-- Plan Details Section (Unchanged) -->
                 <h2 class="section-title">Plan Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
@@ -713,7 +772,6 @@
                         <div class="format-hint">Based on start date and duration</div>
                     </div>
                     
-                    <!-- UPDATED: Bigger font for Plan Value -->
                     <div class="form-group payment-important">
                         <label for="planValue" class="required">Plan Value</label>
                         <input type="text" id="planValue" readonly class="disabled-input" placeholder="Calculated price will appear here">
@@ -722,7 +780,6 @@
                         </div>
                     </div>
                     
-                    <!-- UPDATED: Bigger font for Payment Mode -->
                     <div class="form-group payment-important">
                         <label for="paymentMode" class="required">Payment Mode</label>
                         <select id="paymentMode" required>
@@ -735,11 +792,10 @@
                     </div>
                 </div>
                 
-                <!-- Authentication Section -->
+                <!-- Authentication Section (Unchanged) -->
                 <h2 class="section-title">Account Security</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <!-- UPDATED: Changed from "8-12 characters" to reflect max 12 chars -->
                         <label for="username" class="required">Account Username</label>
                         <input type="text" id="username" required placeholder="Choose username (8-12 characters)" maxlength="12">
                         <div class="error-message" id="usernameError"></div>
@@ -771,7 +827,6 @@
                 </div>
                 
                 <!-- Payment Processing Summary -->
-                <!-- UPDATED: Bigger font for Total Plan Value tag -->
                 <div class="payment-tags" id="paymentTags" style="display: none;">
                     <div class="payment-tag">
                         <div class="payment-tag-label">Plan Start Date</div>
@@ -788,7 +843,6 @@
                 </div>
                 
                 <!-- Terms & Conditions Section -->
-                <!-- UPDATED: Only "terms & conditions" is underlined -->
                 <div class="terms-container">
                     <input type="checkbox" id="termsCheckbox" class="terms-checkbox">
                     <label for="termsCheckbox" class="terms-label">
@@ -819,6 +873,7 @@
         let baseYearlyPrice = 0; // Actual yearly price from pricing table
         let originalPlanValue = ''; // Original plan value from URL
         let selectedUserType = null; // 'individual' or 'company'
+        let doiPicker; // Date of Incorporation date picker
         
         // NEW: User Type Selection Function
         function selectUserType(type) {
@@ -829,78 +884,183 @@
             const companyToggle = document.getElementById('companyToggle');
             const toggleWarning = document.getElementById('toggleWarning');
             const formSections = document.getElementById('formSections');
-            const submitBtn = document.getElementById('submitBtn');
+            const personalInfoTitle = document.getElementById('personalInfoTitle');
             
             if (type === 'individual') {
                 individualToggle.classList.add('selected');
                 companyToggle.classList.remove('selected');
                 
-                // For Individual: Activate all form sections
-                formSections.classList.remove('form-disabled');
+                // For Individual: Show individual fields, hide company fields
+                showIndividualFields();
                 
-                // Enable all form inputs
+                // Update section title
+                personalInfoTitle.textContent = 'Personal Information';
+                
+                // Activate form sections
+                formSections.classList.remove('form-disabled');
                 enableFormInputs(true);
                 
                 // Hide warning
                 toggleWarning.style.display = 'none';
                 
-                console.log('Individual selected - all form sections activated');
+                console.log('Individual selected - individual form fields activated');
             } else if (type === 'company') {
                 individualToggle.classList.remove('selected');
                 companyToggle.classList.add('selected');
                 
-                // For Company: Activate all form sections
-                formSections.classList.remove('form-disabled');
+                // For Company: Show company fields, hide individual fields
+                showCompanyFields();
                 
-                // Enable all form inputs
+                // Update section title
+                personalInfoTitle.textContent = 'Company Information';
+                
+                // Activate form sections
+                formSections.classList.remove('form-disabled');
                 enableFormInputs(true);
                 
                 // Hide warning
                 toggleWarning.style.display = 'none';
                 
-                console.log('Company selected - all form sections activated');
-                
-                // Note: You can add specific Company logic here later
-                // For now, all fields are enabled just like Individual
+                console.log('Company selected - company form fields activated');
             }
             
             // Update submit button
             updateSubmitButton();
         }
         
+        // NEW: Show Individual Fields
+        function showIndividualFields() {
+            // Show individual fields
+            const individualFields = document.querySelectorAll('.individual-field');
+            individualFields.forEach(field => {
+                field.style.display = 'flex';
+            });
+            
+            // Hide company fields
+            const companyFields = document.querySelectorAll('.company-field');
+            companyFields.forEach(field => {
+                field.style.display = 'none';
+            });
+            
+            // Set required status for individual fields
+            document.getElementById('fullName').required = true;
+            document.getElementById('email').required = true;
+            document.getElementById('phone').required = true;
+            document.getElementById('dob').required = true;
+            document.getElementById('aadhaar').required = true;
+            document.getElementById('pan').required = true;
+            document.getElementById('gstin').required = false;
+            
+            // Copy auto-generated values to individual fields
+            const userId = document.getElementById('userId').value;
+            const status = document.getElementById('status').value;
+            
+            document.getElementById('companyUserId').value = userId;
+            document.getElementById('companyStatus').value = status;
+        }
+        
+        // NEW: Show Company Fields
+        function showCompanyFields() {
+            // Show company fields
+            const companyFields = document.querySelectorAll('.company-field');
+            companyFields.forEach(field => {
+                field.style.display = 'flex';
+            });
+            
+            // Hide individual fields
+            const individualFields = document.querySelectorAll('.individual-field');
+            individualFields.forEach(field => {
+                field.style.display = 'none';
+            });
+            
+            // Set required status for company fields
+            document.getElementById('companyName').required = true;
+            document.getElementById('companyEmail').required = true;
+            document.getElementById('companyPhone').required = true;
+            document.getElementById('dateOfIncorporation').required = true;
+            document.getElementById('companyPan').required = true;
+            document.getElementById('companyGstin').required = false;
+            
+            // Copy auto-generated values to company fields
+            const userId = document.getElementById('userId').value;
+            const status = document.getElementById('status').value;
+            
+            document.getElementById('companyUserId').value = userId;
+            document.getElementById('companyStatus').value = status;
+            
+            // Initialize Date of Incorporation date picker if not already initialized
+            if (!doiPicker) {
+                doiPicker = flatpickr("#dateOfIncorporation", {
+                    dateFormat: "d-m-Y",
+                    allowInput: true,
+                    maxDate: "today",
+                    onChange: function(selectedDates, dateStr, instance) {
+                        hideError('dateOfIncorporation');
+                        updateSubmitButton();
+                    }
+                });
+            }
+        }
+        
         // NEW: Enable/Disable Form Inputs
         function enableFormInputs(enable) {
-            const formInputs = document.querySelectorAll('#formSections input, #formSections select');
-            
-            formInputs.forEach(input => {
-                // Skip already disabled inputs (like userId, status, planSize, planEndDate, planValue)
-                if (input.classList.contains('disabled-input') && input.hasAttribute('readonly')) {
-                    // Keep these disabled/readonly
-                    return;
-                }
-                
-                if (enable) {
-                    input.disabled = false;
-                    input.style.backgroundColor = '';
-                    input.style.cursor = 'text';
+            if (selectedUserType === 'individual') {
+                // Enable/disable individual fields
+                const individualInputs = document.querySelectorAll('.individual-field input, .individual-field select');
+                individualInputs.forEach(input => {
+                    if (input.classList.contains('disabled-input') && input.hasAttribute('readonly')) {
+                        return; // Keep these disabled/readonly
+                    }
                     
-                    // Special handling for date pickers
-                    if (input.id === 'dob' || input.id === 'planStartDate') {
+                    if (enable) {
                         input.disabled = false;
                         input.style.backgroundColor = '';
-                    }
-                } else {
-                    input.disabled = true;
-                    input.style.backgroundColor = '#f5f5f5';
-                    input.style.cursor = 'not-allowed';
-                    
-                    // Special handling for date pickers
-                    if (input.id === 'dob' || input.id === 'planStartDate') {
+                        input.style.cursor = 'text';
+                        
+                        if (input.id === 'dob' || input.id === 'planStartDate') {
+                            input.disabled = false;
+                            input.style.backgroundColor = '';
+                        }
+                    } else {
                         input.disabled = true;
                         input.style.backgroundColor = '#f5f5f5';
+                        input.style.cursor = 'not-allowed';
+                        
+                        if (input.id === 'dob' || input.id === 'planStartDate') {
+                            input.disabled = true;
+                            input.style.backgroundColor = '#f5f5f5';
+                        }
                     }
-                }
-            });
+                });
+            } else if (selectedUserType === 'company') {
+                // Enable/disable company fields
+                const companyInputs = document.querySelectorAll('.company-field input, .company-field select');
+                companyInputs.forEach(input => {
+                    if (input.classList.contains('disabled-input') && input.hasAttribute('readonly')) {
+                        return; // Keep these disabled/readonly
+                    }
+                    
+                    if (enable) {
+                        input.disabled = false;
+                        input.style.backgroundColor = '';
+                        input.style.cursor = 'text';
+                        
+                        if (input.id === 'dateOfIncorporation' || input.id === 'planStartDate') {
+                            input.disabled = false;
+                            input.style.backgroundColor = '';
+                        }
+                    } else {
+                        input.disabled = true;
+                        input.style.backgroundColor = '#f5f5f5';
+                        input.style.cursor = 'not-allowed';
+                        
+                        if (input.id === 'dateOfIncorporation' || input.id === 'planStartDate') {
+                            input.disabled = true;
+                            input.style.backgroundColor = '#f5f5f5';
+                        }
+                    }
+                });
+            }
             
             // Special handling for duration inputs
             const durationYears = document.getElementById('durationYears');
@@ -1042,15 +1202,75 @@
                 return false;
             }
             
-            const requiredFields = [
-                'fullName', 'email', 'phone', 'username', 'password',
-                'planStartDate', 'paymentMode', 'planName', 'dob', 'aadhaar', 'pan'
+            // Check common required fields (Plan Details and Account Security)
+            const commonRequiredFields = [
+                'username', 'password', 'planStartDate', 'paymentMode', 'planName'
             ];
             
-            // Check all required fields
-            for (const fieldId of requiredFields) {
+            for (const fieldId of commonRequiredFields) {
                 const field = document.getElementById(fieldId);
                 if (!field || !field.value.trim()) {
+                    return false;
+                }
+            }
+            
+            // Check user type specific fields
+            if (selectedUserType === 'individual') {
+                const individualRequiredFields = [
+                    'fullName', 'email', 'phone', 'dob', 'aadhaar', 'pan'
+                ];
+                
+                for (const fieldId of individualRequiredFields) {
+                    const field = document.getElementById(fieldId);
+                    if (!field || !field.value.trim()) {
+                        return false;
+                    }
+                }
+                
+                // Validate individual-specific formats
+                const email = document.getElementById('email').value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) return false;
+                
+                const phone = document.getElementById('phone').value;
+                if (!/^\d{10}$/.test(phone)) return false;
+                
+                const aadhaar = document.getElementById('aadhaar').value;
+                if (!validateAadhaar(aadhaar)) return false;
+                
+                const pan = document.getElementById('pan').value;
+                if (!validatePAN(pan.toUpperCase())) return false;
+                
+                const gstin = document.getElementById('gstin').value;
+                if (gstin && gstin.trim() !== '' && !validateGSTIN(gstin.toUpperCase())) {
+                    return false;
+                }
+                
+            } else if (selectedUserType === 'company') {
+                const companyRequiredFields = [
+                    'companyName', 'companyEmail', 'companyPhone', 'dateOfIncorporation', 'companyPan'
+                ];
+                
+                for (const fieldId of companyRequiredFields) {
+                    const field = document.getElementById(fieldId);
+                    if (!field || !field.value.trim()) {
+                        return false;
+                    }
+                }
+                
+                // Validate company-specific formats
+                const companyEmail = document.getElementById('companyEmail').value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(companyEmail)) return false;
+                
+                const companyPhone = document.getElementById('companyPhone').value;
+                if (!/^\d{10}$/.test(companyPhone)) return false;
+                
+                const companyPan = document.getElementById('companyPan').value;
+                if (!validatePAN(companyPan.toUpperCase())) return false;
+                
+                const companyGstin = document.getElementById('companyGstin').value;
+                if (companyGstin && companyGstin.trim() !== '' && !validateGSTIN(companyGstin.toUpperCase())) {
                     return false;
                 }
             }
@@ -1067,19 +1287,6 @@
                 if (years === 0 && months === 0 && days === 0) return false;
             }
             
-            // Check email format
-            const email = document.getElementById('email').value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) return false;
-            
-            // Check phone format (10 digits)
-            const phone = document.getElementById('phone').value;
-            if (!/^\d{10}$/.test(phone)) return false;
-            
-            // Check Aadhaar format (12 digits)
-            const aadhaar = document.getElementById('aadhaar').value;
-            if (!validateAadhaar(aadhaar)) return false;
-            
             // Check username format
             const username = document.getElementById('username').value;
             if (!validateUsername(username)) return false;
@@ -1087,18 +1294,6 @@
             // Check password requirements
             const password = document.getElementById('password').value;
             if (!validatePassword(password)) return false;
-            
-            // Check PAN format
-            const pan = document.getElementById('pan').value;
-            if (!validatePAN(pan.toUpperCase())) {
-                return false;
-            }
-            
-            // Check GSTIN format (optional)
-            const gstin = document.getElementById('gstin').value;
-            if (gstin && gstin.trim() !== '' && !validateGSTIN(gstin.toUpperCase())) {
-                return false;
-            }
             
             // Check terms & conditions checkbox
             const termsChecked = document.getElementById('termsCheckbox').checked;
@@ -1272,7 +1467,9 @@
             }
             
             // Generate user ID (6 digits, 2-9 only)
-            document.getElementById('userId').value = generateUserId();
+            const userId = generateUserId();
+            document.getElementById('userId').value = userId;
+            document.getElementById('companyUserId').value = userId;
             
             // REMOVED: Do NOT set today as start date automatically
             // Leave plan start date blank for manual selection
@@ -1281,6 +1478,7 @@
             
             // Set status to pending
             document.getElementById('status').value = 'pending';
+            document.getElementById('companyStatus').value = 'pending';
             
             // Calculate initial price and end date
             calculatePlanPrice();
@@ -1462,7 +1660,8 @@
             const fieldIds = [
                 'fullName', 'email', 'phone', 'username', 'password',
                 'planStartDate', 'paymentMode', 'planName', 'pan', 'gstin',
-                'dob', 'aadhaar'
+                'dob', 'aadhaar', 'companyName', 'companyEmail', 'companyPhone',
+                'dateOfIncorporation', 'companyPan', 'companyGstin'
             ];
             
             fieldIds.forEach(fieldId => {
@@ -1470,14 +1669,8 @@
             });
             hideError('durationError');
             
-            // Check required fields
-            const requiredFields = [
-                {id: 'fullName', name: 'Full Name'},
-                {id: 'email', name: 'Email ID'},
-                {id: 'phone', name: 'Phone Number'},
-                {id: 'dob', name: 'Date of Birth'},
-                {id: 'aadhaar', name: 'Aadhaar Number'},
-                {id: 'pan', name: 'PAN Number'},
+            // Check common required fields
+            const commonRequiredFields = [
                 {id: 'username', name: 'Account Username'},
                 {id: 'password', name: 'Account Password'},
                 {id: 'planStartDate', name: 'Plan Start Date'},
@@ -1485,13 +1678,50 @@
                 {id: 'planName', name: 'Plan Name'}
             ];
             
-            requiredFields.forEach(field => {
+            commonRequiredFields.forEach(field => {
                 const value = document.getElementById(field.id).value.trim();
                 if (!value) {
                     showError(field.id, `${field.name} is required`);
                     isValid = false;
                 }
             });
+            
+            // Check user type specific fields
+            if (selectedUserType === 'individual') {
+                const individualRequiredFields = [
+                    {id: 'fullName', name: 'Full Name'},
+                    {id: 'email', name: 'Email ID'},
+                    {id: 'phone', name: 'Phone Number'},
+                    {id: 'dob', name: 'Date of Birth'},
+                    {id: 'aadhaar', name: 'Aadhaar Number'},
+                    {id: 'pan', name: 'PAN Number'}
+                ];
+                
+                individualRequiredFields.forEach(field => {
+                    const value = document.getElementById(field.id).value.trim();
+                    if (!value) {
+                        showError(field.id, `${field.name} is required`);
+                        isValid = false;
+                    }
+                });
+                
+            } else if (selectedUserType === 'company') {
+                const companyRequiredFields = [
+                    {id: 'companyName', name: 'Company Name'},
+                    {id: 'companyEmail', name: 'Email ID'},
+                    {id: 'companyPhone', name: 'Phone Number'},
+                    {id: 'dateOfIncorporation', name: 'Date of Incorporation'},
+                    {id: 'companyPan', name: 'PAN Number'}
+                ];
+                
+                companyRequiredFields.forEach(field => {
+                    const value = document.getElementById(field.id).value.trim();
+                    if (!value) {
+                        showError(field.id, `${field.name} is required`);
+                        isValid = false;
+                    }
+                });
+            }
             
             // Check plan duration
             const years = parseInt(document.getElementById('durationYears').value) || 0;
@@ -1515,25 +1745,44 @@
             }
             
             // Email validation
-            const email = document.getElementById('email').value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (email && !emailRegex.test(email)) {
-                showError('email', 'Please enter a valid email address');
-                isValid = false;
+            if (selectedUserType === 'individual') {
+                const email = document.getElementById('email').value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (email && !emailRegex.test(email)) {
+                    showError('email', 'Please enter a valid email address');
+                    isValid = false;
+                }
+            } else if (selectedUserType === 'company') {
+                const companyEmail = document.getElementById('companyEmail').value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (companyEmail && !emailRegex.test(companyEmail)) {
+                    showError('companyEmail', 'Please enter a valid email address');
+                    isValid = false;
+                }
             }
             
             // Phone validation (10 digits)
-            const phone = document.getElementById('phone').value;
-            if (phone && !/^\d{10}$/.test(phone)) {
-                showError('phone', 'Please enter a valid 10-digit phone number');
-                isValid = false;
+            if (selectedUserType === 'individual') {
+                const phone = document.getElementById('phone').value;
+                if (phone && !/^\d{10}$/.test(phone)) {
+                    showError('phone', 'Please enter a valid 10-digit phone number');
+                    isValid = false;
+                }
+            } else if (selectedUserType === 'company') {
+                const companyPhone = document.getElementById('companyPhone').value;
+                if (companyPhone && !/^\d{10}$/.test(companyPhone)) {
+                    showError('companyPhone', 'Please enter a valid 10-digit phone number');
+                    isValid = false;
+                }
             }
             
-            // Aadhaar validation (12 digits)
-            const aadhaar = document.getElementById('aadhaar').value;
-            if (aadhaar && !validateAadhaar(aadhaar)) {
-                showError('aadhaar', 'Please enter a valid 12-digit Aadhaar number');
-                isValid = false;
+            // Aadhaar validation (12 digits) - only for individual
+            if (selectedUserType === 'individual') {
+                const aadhaar = document.getElementById('aadhaar').value;
+                if (aadhaar && !validateAadhaar(aadhaar)) {
+                    showError('aadhaar', 'Please enter a valid 12-digit Aadhaar number');
+                    isValid = false;
+                }
             }
             
             // Username validation (8-12 characters)
@@ -1551,17 +1800,33 @@
             }
             
             // PAN validation
-            const pan = document.getElementById('pan').value;
-            if (pan && !validatePAN(pan.toUpperCase())) {
-                showError('pan', 'Invalid PAN format. Use: ABCDE1234F');
-                isValid = false;
+            if (selectedUserType === 'individual') {
+                const pan = document.getElementById('pan').value;
+                if (pan && !validatePAN(pan.toUpperCase())) {
+                    showError('pan', 'Invalid PAN format. Use: ABCDE1234F');
+                    isValid = false;
+                }
+            } else if (selectedUserType === 'company') {
+                const companyPan = document.getElementById('companyPan').value;
+                if (companyPan && !validatePAN(companyPan.toUpperCase())) {
+                    showError('companyPan', 'Invalid PAN format. Use: ABCDE1234F');
+                    isValid = false;
+                }
             }
             
             // GSTIN validation (optional)
-            const gstin = document.getElementById('gstin').value;
-            if (gstin && gstin.trim() !== '' && !validateGSTIN(gstin.toUpperCase())) {
-                showError('gstin', 'Invalid GSTIN format. Use: 22ABCDE1234F1Z5');
-                isValid = false;
+            if (selectedUserType === 'individual') {
+                const gstin = document.getElementById('gstin').value;
+                if (gstin && gstin.trim() !== '' && !validateGSTIN(gstin.toUpperCase())) {
+                    showError('gstin', 'Invalid GSTIN format. Use: 22ABCDE1234F1Z5');
+                    isValid = false;
+                }
+            } else if (selectedUserType === 'company') {
+                const companyGstin = document.getElementById('companyGstin').value;
+                if (companyGstin && companyGstin.trim() !== '' && !validateGSTIN(companyGstin.toUpperCase())) {
+                    showError('companyGstin', 'Invalid GSTIN format. Use: 22ABCDE1234F1Z5');
+                    isValid = false;
+                }
             }
             
             // Check terms & conditions
@@ -1596,10 +1861,30 @@
                     throw new Error('Firebase not properly initialized. Please refresh the page.');
                 }
                 
-                // 1. Get form data
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                const userId = document.getElementById('userId').value;
+                // 1. Get form data based on user type
+                let email, password, userId, fullName, phone, dob, aadhaar, pan, gstin;
+                
+                if (selectedUserType === 'individual') {
+                    email = document.getElementById('email').value;
+                    password = document.getElementById('password').value;
+                    userId = document.getElementById('userId').value;
+                    fullName = document.getElementById('fullName').value;
+                    phone = document.getElementById('phone').value;
+                    dob = document.getElementById('dob').value;
+                    aadhaar = document.getElementById('aadhaar').value;
+                    pan = document.getElementById('pan').value.toUpperCase();
+                    gstin = document.getElementById('gstin').value.toUpperCase() || null;
+                } else if (selectedUserType === 'company') {
+                    email = document.getElementById('companyEmail').value;
+                    password = document.getElementById('password').value;
+                    userId = document.getElementById('companyUserId').value;
+                    fullName = document.getElementById('companyName').value;
+                    phone = document.getElementById('companyPhone').value;
+                    dob = document.getElementById('dateOfIncorporation').value;
+                    pan = document.getElementById('companyPan').value.toUpperCase();
+                    gstin = document.getElementById('companyGstin').value.toUpperCase() || null;
+                    aadhaar = null; // Company doesn't have Aadhaar
+                }
                 
                 console.log('Creating user with email:', email);
                 
@@ -1624,14 +1909,14 @@
                 // 5. Prepare user data for Firebase - Store plain text password
                 const userData = {
                     userId: userId,
-                    userType: selectedUserType, // NEW: Store user type
-                    fullName: document.getElementById('fullName').value,
+                    userType: selectedUserType,
+                    fullName: fullName,
                     email: email,
-                    phone: document.getElementById('phone').value,
-                    dob: document.getElementById('dob').value,
-                    aadhaar: document.getElementById('aadhaar').value,
-                    pan: document.getElementById('pan').value.toUpperCase(),
-                    gstin: document.getElementById('gstin').value.toUpperCase() || null,
+                    phone: phone,
+                    dob: dob,
+                    aadhaar: aadhaar,
+                    pan: pan,
+                    gstin: gstin,
                     
                     planName: document.getElementById('planName').value,
                     planSize: document.getElementById('planSize').value,
@@ -1666,25 +1951,25 @@
                 );
                 console.log('Data saved successfully!');
                 
-// 7. Redirect to payment page with updated parameters
-const startDate = document.getElementById('planStartDate').value;
-const endDate = document.getElementById('planEndDate').value;
-const paymentMode = document.getElementById('paymentMode').value;
-
-const paymentUrl = `https://www.odelya.online/payment.html?userId=${userId}&amount=${finalPrice}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&planType=${planType}&paymentMethod=${encodeURIComponent(paymentMode)}`;
+                // 7. Redirect to payment page with updated parameters
+                const startDate = document.getElementById('planStartDate').value;
+                const endDate = document.getElementById('planEndDate').value;
+                const paymentMode = document.getElementById('paymentMode').value;
                 
-// Save to session storage as backup
-sessionStorage.setItem('odelya_registration', JSON.stringify({
-    userId: userId,
-    userType: selectedUserType, // NEW: Store user type
-    amount: finalPrice,
-    email: email,
-    startDate: startDate,
-    endDate: endDate,
-    planType: planType,
-    paymentMethod: paymentMode,
-    timestamp: new Date().getTime()
-}));
+                const paymentUrl = `https://www.odelya.online/payment.html?userId=${userId}&amount=${finalPrice}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&planType=${planType}&paymentMethod=${encodeURIComponent(paymentMode)}`;
+                
+                // Save to session storage as backup
+                sessionStorage.setItem('odelya_registration', JSON.stringify({
+                    userId: userId,
+                    userType: selectedUserType,
+                    amount: finalPrice,
+                    email: email,
+                    startDate: startDate,
+                    endDate: endDate,
+                    planType: planType,
+                    paymentMethod: paymentMode,
+                    timestamp: new Date().getTime()
+                }));
                 
                 alert('✅ Registration successful! Redirecting to payment...');
                 
@@ -1724,21 +2009,19 @@ sessionStorage.setItem('odelya_registration', JSON.stringify({
         
         // Setup event listeners
         function setupEventListeners() {
-            // Phone number formatting
+            // Individual field listeners
             document.getElementById('phone').addEventListener('input', function(e) {
                 this.value = this.value.replace(/\D/g, '').slice(0, 10);
                 hideError('phone');
                 updateSubmitButton();
             });
             
-            // Aadhaar formatting
             document.getElementById('aadhaar').addEventListener('input', function(e) {
                 this.value = this.value.replace(/\D/g, '').slice(0, 12);
                 hideError('aadhaar');
                 updateSubmitButton();
             });
             
-            // PAN formatting
             document.getElementById('pan').addEventListener('input', function(e) {
                 let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
                 value = value.slice(0, 10);
@@ -1759,7 +2042,6 @@ sessionStorage.setItem('odelya_registration', JSON.stringify({
                 updateSubmitButton();
             });
             
-            // NEW: GSTIN formatting
             document.getElementById('gstin').addEventListener('input', function(e) {
                 let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
                 value = value.slice(0, 15);
@@ -1768,14 +2050,48 @@ sessionStorage.setItem('odelya_registration', JSON.stringify({
                 updateSubmitButton();
             });
             
-            // Username validation
+            // Company field listeners
+            document.getElementById('companyPhone').addEventListener('input', function(e) {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+                hideError('companyPhone');
+                updateSubmitButton();
+            });
+            
+            document.getElementById('companyPan').addEventListener('input', function(e) {
+                let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                value = value.slice(0, 10);
+                
+                let formatted = '';
+                for (let i = 0; i < value.length; i++) {
+                    if (i < 5) {
+                        formatted += /[A-Z]/.test(value[i]) ? value[i] : '';
+                    } else if (i < 9) {
+                        formatted += /[0-9]/.test(value[i]) ? value[i] : '';
+                    } else {
+                        formatted += /[A-Z]/.test(value[i]) ? value[i] : '';
+                    }
+                }
+                
+                this.value = formatted;
+                hideError('companyPan');
+                updateSubmitButton();
+            });
+            
+            document.getElementById('companyGstin').addEventListener('input', function(e) {
+                let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                value = value.slice(0, 15);
+                this.value = value;
+                hideError('companyGstin');
+                updateSubmitButton();
+            });
+            
+            // Common field listeners
             document.getElementById('username').addEventListener('input', function(e) {
                 this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
                 hideError('username');
                 updateSubmitButton();
             });
             
-            // Password validation with max 12 characters
             document.getElementById('password').addEventListener('input', function(e) {
                 // Enforce max length
                 if (this.value.length > 12) {
@@ -1786,13 +2102,39 @@ sessionStorage.setItem('odelya_registration', JSON.stringify({
                 updateSubmitButton();
             });
             
-            // DOB validation
             document.getElementById('dob').addEventListener('input', function(e) {
                 hideError('dob');
                 updateSubmitButton();
             });
             
-            // Duration calculation events - FIXED: Now recalculates end date when duration changes
+            document.getElementById('dateOfIncorporation').addEventListener('input', function(e) {
+                hideError('dateOfIncorporation');
+                updateSubmitButton();
+            });
+            
+            // Individual field input listeners
+            document.getElementById('fullName').addEventListener('input', () => {
+                hideError('fullName');
+                updateSubmitButton();
+            });
+            
+            document.getElementById('email').addEventListener('input', () => {
+                hideError('email');
+                updateSubmitButton();
+            });
+            
+            // Company field input listeners
+            document.getElementById('companyName').addEventListener('input', () => {
+                hideError('companyName');
+                updateSubmitButton();
+            });
+            
+            document.getElementById('companyEmail').addEventListener('input', () => {
+                hideError('companyEmail');
+                updateSubmitButton();
+            });
+            
+            // Duration calculation events
             document.getElementById('durationDays').addEventListener('input', function() {
                 if (this.value < 0) this.value = 0;
                 if (this.value > 30) this.value = 30;
@@ -1817,7 +2159,6 @@ sessionStorage.setItem('odelya_registration', JSON.stringify({
                 updateSubmitButton();
             });
             
-            // Also recalculate end date when duration changes via up/down arrows
             document.getElementById('durationDays').addEventListener('change', function() {
                 calculatePlanPrice(); // This now calls calculateEndDate() internally
                 hideError('durationError');
@@ -1837,22 +2178,16 @@ sessionStorage.setItem('odelya_registration', JSON.stringify({
             });
             
             // Other field validations
-            document.getElementById('fullName').addEventListener('input', () => {
-                hideError('fullName');
-                updateSubmitButton();
-            });
-            document.getElementById('email').addEventListener('input', () => {
-                hideError('email');
-                updateSubmitButton();
-            });
             document.getElementById('paymentMode').addEventListener('change', () => {
                 hideError('paymentMode');
                 updateSubmitButton();
             });
+            
             document.getElementById('planName').addEventListener('change', () => {
                 hideError('planName');
                 updateSubmitButton();
             });
+            
             document.getElementById('planStartDate').addEventListener('input', () => {
                 calculateEndDate();
                 hideError('planStartDate');
