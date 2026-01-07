@@ -1245,26 +1245,33 @@ window.generatePDF = function() {
         y += 10;
         
 
-// AGREEMENT SECTION - With font specification
+// AGREEMENT SECTION - With drawn tick mark
 doc.setFontSize(10);
 doc.setFont('helvetica', 'bold');
 doc.text('AGREEMENT', leftMargin, y);
 y += 6;
 
-// Try different font for the tick mark
-doc.setFont('zapfdingbats', 'normal'); // This font has good symbols
-doc.text('✔', leftMargin, y); // Or use '3' for checkmark in zapfdingbats
-
-// Switch back to normal font for text
 doc.setFont('helvetica', 'normal');
-doc.setTextColor(0, 0, 0);
 
+// First draw the text without tick mark
 const line1 = 'I agree to the Terms & Conditions, Privacy Policy,';
 const line2 = 'Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
 
-doc.text(line1, leftMargin + 5, y); // Start after the tick mark
+// Draw a manual tick mark (small check symbol)
+doc.setDrawColor(0, 128, 0); // Green color for tick
+doc.setLineWidth(0.5);
+const tickX = leftMargin;
+const tickY = y - 1;
+
+// Draw a small checkmark: two short lines forming a check
+doc.line(tickX, tickY + 2, tickX + 1, tickY + 3); // Diagonal up
+doc.line(tickX + 1, tickY + 3, tickX + 3, tickY); // Diagonal down
+
+// Now draw the text starting after the tick mark
+doc.setTextColor(0, 0, 0);
+doc.text(line1, leftMargin + 5, y); // Start 5px after tick mark
 y += 5;
-doc.text(line2, leftMargin, y);
+doc.text(line2, leftMargin, y); // Second line starts at normal margin
 y += 8;
         
         // FOOTER - Bottom of page
