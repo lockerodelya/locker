@@ -1077,7 +1077,7 @@
             }
         };
         
-// Generate PDF for current user - NEW LAYOUT VERSION
+// Generate PDF for current user - COMPACT SINGLE PAGE LAYOUT
 window.generatePDF = function() {
     if (!currentUserData) return;
     logAdminAction('GENERATE_PDF', `Generated PDF for user: ${currentUserData.email}`);
@@ -1092,210 +1092,207 @@ window.generatePDF = function() {
         const doc = new jsPDF();
         
         // Set margins
-        const leftMargin = 36;
-        const rightMargin = 36;
-        const topMargin = 30;
-        const bottomMargin = 30;
+        const leftMargin = 20;
+        const rightMargin = 20;
+        const topMargin = 20;
         const pageWidth = doc.internal.pageSize.width;
         const pageHeight = doc.internal.pageSize.height;
-        const usableWidth = pageWidth - leftMargin - rightMargin;
         const centerX = pageWidth / 2;
         
-        // Header Section
-        doc.setFontSize(20);
-        doc.setTextColor(58, 12, 163); // #3a0ca3
-        doc.text('Odelya Cloud Storage', centerX, topMargin, { align: 'center' });
-        
+        // HEADER - Top Section
         doc.setFontSize(16);
-        doc.setTextColor(0, 0, 0);
-        doc.text('User Registration Details', centerX, topMargin + 10, { align: 'center' });
+        doc.setTextColor(58, 12, 163); // #3a0ca3
+        doc.text('ODELYA CLOUD STORAGE', centerX, topMargin, { align: 'center' });
         
-        // Generated timestamp
-        doc.setFontSize(10);
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text('USER REGISTRATION DETAILS', centerX, topMargin + 8, { align: 'center' });
+        
+        // Timestamp
+        doc.setFontSize(9);
         doc.setTextColor(100, 100, 100);
         const generatedDateTime = formatDateTimeForPDFHeader(new Date());
-        doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 20, { align: 'center' });
+        doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 16, { align: 'center' });
+        
+        // User ID
+        doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 24, { align: 'center' });
         
         let y = topMargin + 40;
         
-        // SECTION 1: PERSONAL INFORMATION - Centered
-        doc.setFontSize(14);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(58, 12, 163); // Purple color for section headers
-        doc.text('PERSONAL INFORMATION', centerX, y, { align: 'center' });
-        y += 10;
-        
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(0, 0, 0);
-        
-        // Personal info table-like layout (centered content)
-        const personalInfo = [
-            ['Full Name', currentUserData.fullName || 'N/A'],
-            ['Email', currentUserData.email || 'N/A'],
-            ['Phone', currentUserData.phone || 'N/A'],
-            ['Date of Birth', currentUserData.dob || 'N/A'],
-            ['Aadhaar Number', currentUserData.aadhaar || 'N/A'],
-            ['PAN Number', currentUserData.pan || 'N/A'],
-            ['GSTIN', currentUserData.gstin || 'N/A'],
-            ['Username', currentUserData.username || 'N/A'],
-            ['Password', currentUserData.password || 'N/A']
-        ];
-        
-        // Calculate maximum label width for alignment
-        const labelColonWidth = 100; // Fixed width for labels (with colon)
-        const valueStartX = leftMargin + labelColonWidth + 10;
-        
-        personalInfo.forEach(([label, value]) => {
-            // Check if we need a new page
-            if (y > pageHeight - 50) {
-                doc.addPage();
-                y = topMargin;
-            }
-            
-            // Label (with colon)
-            doc.setFont('helvetica', 'bold');
-            doc.text(`${label}:`, leftMargin, y);
-            
-            // Value
-            doc.setFont('helvetica', 'normal');
-            
-            // Split long values into multiple lines
-            const maxWidth = pageWidth - valueStartX - rightMargin;
-            const lines = doc.splitTextToSize(value || 'N/A', maxWidth);
-            
-            // Draw the first line
-            if (lines[0]) {
-                doc.text(lines[0], valueStartX, y);
-            }
-            
-            // Draw additional lines if needed
-            for (let i = 1; i < lines.length; i++) {
-                y += 7;
-                if (y > pageHeight - 50) {
-                    doc.addPage();
-                    y = topMargin;
-                    doc.setFont('helvetica', 'normal');
-                }
-                doc.text(lines[i], valueStartX, y);
-            }
-            y += 10;
-        });
-        
-        y += 10; // Add space between sections
-        
-        // SECTION 2: ACCOUNT & PLAN DETAILS - Centered
-        doc.setFontSize(14);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(58, 12, 163);
-        doc.text('ACCOUNT & PLAN DETAILS', centerX, y, { align: 'center' });
-        y += 10;
-        
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(0, 0, 0);
-        
-        // Account info table-like layout
-        const accountInfo = [
-            ['Status', currentUserData.status || 'pending'],
-            ['Plan Name', currentUserData.planName || 'N/A'],
-            ['Plan Size', currentUserData.planSize || 'N/A'],
-            ['Plan Value', currentUserData.planValue || 'N/A'],
-            ['Plan Start Date', currentUserData.planStartDate || 'N/A'],
-            ['Plan End Date', currentUserData.planEndDate || 'N/A'],
-            ['Registered On', currentUserData.createdAt ? formatDateTime(currentUserData.createdAt) : 'N/A'],
-            ['User Type', currentUserData.userType || 'new user'],
-            ['Payment Mode', currentUserData.paymentMode || 'N/A']
-        ];
-        
-        accountInfo.forEach(([label, value]) => {
-            // Check if we need a new page
-            if (y > pageHeight - 50) {
-                doc.addPage();
-                y = topMargin;
-            }
-            
-            // Label (with colon)
-            doc.setFont('helvetica', 'bold');
-            doc.text(`${label}:`, leftMargin, y);
-            
-            // Value
-            doc.setFont('helvetica', 'normal');
-            
-            // Split long values into multiple lines
-            const maxWidth = pageWidth - valueStartX - rightMargin;
-            const lines = doc.splitTextToSize(value || 'N/A', maxWidth);
-            
-            // Draw the first line
-            if (lines[0]) {
-                doc.text(lines[0], valueStartX, y);
-            }
-            
-            // Draw additional lines if needed
-            for (let i = 1; i < lines.length; i++) {
-                y += 7;
-                if (y > pageHeight - 50) {
-                    doc.addPage();
-                    y = topMargin;
-                    doc.setFont('helvetica', 'normal');
-                }
-                doc.text(lines[i], valueStartX, y);
-            }
-            y += 10;
-        });
-        
-        y += 10; // Add space before agreement
-        
-        // AGREEMENT SECTION - Left aligned (not centered)
-        // Check if we need a new page for agreement
-        if (y > pageHeight - 60) {
-            doc.addPage();
-            y = topMargin;
-        }
-        
-        // Draw a horizontal line before agreement
+        // Draw a thin line separator
         doc.setDrawColor(200, 200, 200);
         doc.line(leftMargin, y, pageWidth - rightMargin, y);
         y += 10;
         
-        doc.setFontSize(11);
+        // SECTION 1: PERSONAL INFORMATION - Compact layout
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(58, 12, 163);
+        doc.text('PERSONAL INFORMATION', leftMargin, y);
+        y += 8;
+        
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        
+        // Personal Info in compact format
+        const personalData = [
+            {label: 'Full Name', value: currentUserData.fullName || 'N/A'},
+            {label: 'Email', value: currentUserData.email || 'N/A'},
+            {label: 'Phone', value: currentUserData.phone || 'N/A'},
+            {label: 'Date of Birth', value: currentUserData.dob || 'N/A'},
+            {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
+            {label: 'PAN', value: currentUserData.pan || 'N/A'},
+            {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
+            {label: 'Username', value: currentUserData.username || 'N/A'},
+            {label: 'Password', value: currentUserData.password || 'N/A'}
+        ];
+        
+        // Calculate max label width for alignment
+        doc.setFont('helvetica', 'bold');
+        let maxLabelWidth = 0;
+        personalData.forEach(item => {
+            const width = doc.getTextWidth(item.label + ': ');
+            if (width > maxLabelWidth) maxLabelWidth = width;
+        });
+        
+        const valueStartX = leftMargin + maxLabelWidth + 2;
+        
+        // Draw personal info - all in single lines
+        personalData.forEach(item => {
+            // Label
+            doc.setFont('helvetica', 'bold');
+            doc.text(item.label + ':', leftMargin, y);
+            
+            // Value (truncate if too long)
+            doc.setFont('helvetica', 'normal');
+            const maxValueWidth = pageWidth - valueStartX - rightMargin;
+            let displayValue = item.value;
+            
+            if (displayValue.length > 30 && item.label !== 'Email') {
+                displayValue = displayValue.substring(0, 30) + '...';
+            }
+            
+            doc.text(displayValue, valueStartX, y);
+            y += 6;
+        });
+        
+        y += 4; // Small gap
+        
+        // Draw another separator line
+        doc.setDrawColor(200, 200, 200);
+        doc.line(leftMargin, y, pageWidth - rightMargin, y);
+        y += 10;
+        
+        // SECTION 2: ACCOUNT & PLAN DETAILS
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(58, 12, 163);
+        doc.text('ACCOUNT & PLAN DETAILS', leftMargin, y);
+        y += 8;
+        
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        
+        // Account Info in compact format
+        const accountData = [
+            {label: 'Status', value: (currentUserData.status || 'pending').toUpperCase()},
+            {label: 'Plan Name', value: currentUserData.planName || 'N/A'},
+            {label: 'Plan Size', value: currentUserData.planSize || 'N/A'},
+            {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
+            {label: 'Plan Start Date', value: currentUserData.planStartDate || 'N/A'},
+            {label: 'Plan End Date', value: currentUserData.planEndDate || 'N/A'},
+            {label: 'Registered On', value: currentUserData.createdAt ? formatDateTime(currentUserData.createdAt) : 'N/A'},
+            {label: 'User Type', value: currentUserData.userType || 'new user'},
+            {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'}
+        ];
+        
+        // Calculate max label width for this section
+        doc.setFont('helvetica', 'bold');
+        maxLabelWidth = 0;
+        accountData.forEach(item => {
+            const width = doc.getTextWidth(item.label + ': ');
+            if (width > maxLabelWidth) maxLabelWidth = width;
+        });
+        
+        const accValueStartX = leftMargin + maxLabelWidth + 2;
+        
+        // Draw account info - all in single lines
+        accountData.forEach(item => {
+            // Label
+            doc.setFont('helvetica', 'bold');
+            doc.text(item.label + ':', leftMargin, y);
+            
+            // Value (truncate if too long)
+            doc.setFont('helvetica', 'normal');
+            const maxValueWidth = pageWidth - accValueStartX - rightMargin;
+            let displayValue = item.value;
+            
+            if (displayValue.length > 30) {
+                displayValue = displayValue.substring(0, 30) + '...';
+            }
+            
+            doc.text(displayValue, accValueStartX, y);
+            y += 6;
+        });
+        
+        y += 4; // Small gap
+        
+        // Draw final separator line
+        doc.setDrawColor(200, 200, 200);
+        doc.line(leftMargin, y, pageWidth - rightMargin, y);
+        y += 10;
+        
+        // AGREEMENT SECTION - Simple and compact
+        doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
         doc.text('AGREEMENT', leftMargin, y);
-        y += 8;
+        y += 6;
         
         doc.setFont('helvetica', 'normal');
         
-        // Agreement text with tick mark - LEFT ALIGNED
+        // Compact agreement text
         const agreementText = '✓ I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
         
-        // Split agreement text to fit within usable width
-        const agreementLines = doc.splitTextToSize(agreementText, usableWidth);
-        
-        agreementLines.forEach((line, index) => {
-            if (y > pageHeight - bottomMargin) {
-                doc.addPage();
-                y = topMargin;
+        // Split into two lines if needed
+        const maxLineWidth = pageWidth - leftMargin - rightMargin;
+        if (doc.getTextWidth(agreementText) > maxLineWidth) {
+            const words = agreementText.split(' ');
+            let line1 = '';
+            let line2 = '';
+            
+            for (const word of words) {
+                if (doc.getTextWidth(line1 + word + ' ') <= maxLineWidth) {
+                    line1 += word + ' ';
+                } else {
+                    line2 += word + ' ';
+                }
             }
-            doc.text(line, leftMargin, y);
-            y += 7;
-        });
+            
+            doc.text(line1.trim(), leftMargin, y);
+            y += 5;
+            doc.text(line2.trim(), leftMargin, y);
+            y += 8;
+        } else {
+            doc.text(agreementText, leftMargin, y);
+            y += 8;
+        }
         
-        // FOOTER SECTION
-        const footerY = pageHeight - 20;
+        // FOOTER - Bottom of page
+        const footerY = pageHeight - 15;
         
-        doc.setFontSize(9);
+        doc.setFontSize(8);
         doc.setTextColor(100, 100, 100);
         const adminEmail = localStorage.getItem('admin_email') || 'Admin';
         
-        // Line 1: Generated by and User ID
+        // Generated by
         doc.text(`Generated by: ${adminEmail}`, leftMargin, footerY);
-        const userIdText = `User ID: ${currentUserData.userId || 'N/A'}`;
-        doc.text(userIdText, pageWidth - rightMargin, footerY, { align: 'right' });
         
-        // Line 2: Center text on a new line
-        doc.text('Odelya Cloud Storage - Secure Data Management', centerX, footerY + 8, { align: 'center' });
+        // Page info
+        doc.text(`Page 1 of 1`, centerX, footerY, { align: 'center' });
         
-        // Save PDF with new naming convention: phone number_full name
+        // Save PDF
         const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
         const fullName = (currentUserData.fullName || 'user').replace(/\s+/g, '_');
         const fileName = `${phoneNumber}_${fullName}.pdf`;
