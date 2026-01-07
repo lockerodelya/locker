@@ -533,24 +533,29 @@
                     <div class="format-hint">10 digits only</div>
                 </div>
                 
+                <!-- FIXED: DOB is now required -->
                 <div class="form-group">
-                    <label for="dob">Date of Birth</label>
-                    <input type="text" id="dob" class="datepicker" placeholder="DD-MM-YYYY">
+                    <label for="dob" class="required">Date of Birth</label>
+                    <input type="text" id="dob" class="datepicker" placeholder="DD-MM-YYYY" required>
+                    <div class="error-message" id="dobError"></div>
                 </div>
                 
+                <!-- FIXED: Aadhaar is now required -->
                 <div class="form-group">
-                    <label for="aadhaar">Aadhaar Number</label>
-                    <input type="text" id="aadhaar" placeholder="12-digit Aadhaar" maxlength="12">
+                    <label for="aadhaar" class="required">Aadhaar Number</label>
+                    <input type="text" id="aadhaar" placeholder="12-digit Aadhaar" maxlength="12" required>
+                    <div class="error-message" id="aadhaarError"></div>
                 </div>
                 
+                <!-- FIXED: PAN is now required -->
                 <div class="form-group">
-                    <label for="pan">PAN Number</label>
-                    <input type="text" id="pan" placeholder="ABCDE1234F" maxlength="10">
+                    <label for="pan" class="required">PAN Number</label>
+                    <input type="text" id="pan" placeholder="ABCDE1234F" maxlength="10" required>
                     <div class="error-message" id="panError"></div>
                     <div class="format-hint">Format: 5 letters + 4 numbers + 1 letter</div>
                 </div>
                 
-                <!-- NEW: GSTIN Field -->
+                <!-- NEW: GSTIN Field - OPTIONAL (no asterisk) -->
                 <div class="form-group">
                     <label for="gstin">GSTIN</label>
                     <input type="text" id="gstin" placeholder="22ABCDE1234F1Z5" maxlength="15">
@@ -733,7 +738,12 @@
             return panRegex.test(pan);
         }
         
-        // Validate GSTIN format (Indian GSTIN)
+        // Validate Aadhaar format (12 digits)
+        function validateAadhaar(aadhaar) {
+            return /^\d{12}$/.test(aadhaar);
+        }
+        
+        // Validate GSTIN format (Indian GSTIN) - Optional
         function validateGSTIN(gstin) {
             if (!gstin || gstin.trim() === '') return true; // Optional field
             
@@ -822,7 +832,7 @@
         function checkFormValidity() {
             const requiredFields = [
                 'fullName', 'email', 'phone', 'username', 'password',
-                'planStartDate', 'paymentMode', 'planName'
+                'planStartDate', 'paymentMode', 'planName', 'dob', 'aadhaar', 'pan'
             ];
             
             // Check all required fields
@@ -854,6 +864,10 @@
             const phone = document.getElementById('phone').value;
             if (!/^\d{10}$/.test(phone)) return false;
             
+            // Check Aadhaar format (12 digits)
+            const aadhaar = document.getElementById('aadhaar').value;
+            if (!validateAadhaar(aadhaar)) return false;
+            
             // Check username format
             const username = document.getElementById('username').value;
             if (!validateUsername(username)) return false;
@@ -862,13 +876,13 @@
             const password = document.getElementById('password').value;
             if (!validatePassword(password)) return false;
             
-            // Check PAN if provided
+            // Check PAN format
             const pan = document.getElementById('pan').value;
-            if (pan && pan.trim() !== '' && !validatePAN(pan.toUpperCase())) {
+            if (!validatePAN(pan.toUpperCase())) {
                 return false;
             }
             
-            // Check GSTIN if provided
+            // Check GSTIN format (optional)
             const gstin = document.getElementById('gstin').value;
             if (gstin && gstin.trim() !== '' && !validateGSTIN(gstin.toUpperCase())) {
                 return false;
@@ -909,7 +923,11 @@
                 dateFormat: "d-m-Y",
                 allowInput: true,
                 minDate: "01-01-1900",
-                maxDate: "today"
+                maxDate: "today",
+                onChange: function(selectedDates, dateStr, instance) {
+                    hideError('dob');
+                    updateSubmitButton();
+                }
             });
             
             // Plan Start Date picker - starts blank
@@ -920,6 +938,7 @@
                 onChange: function(selectedDates, dateStr, instance) {
                     // When start date changes, recalculate end date
                     calculateEndDate();
+                    hideError('planStartDate');
                     updateSubmitButton();
                     updatePaymentTags();
                 }
@@ -1213,7 +1232,8 @@
             // Clear all errors
             const fieldIds = [
                 'fullName', 'email', 'phone', 'username', 'password',
-                'planStartDate', 'paymentMode', 'planName', 'pan', 'gstin'
+                'planStartDate', 'paymentMode', 'planName', 'pan', 'gstin',
+                'dob', 'aadhaar'
             ];
             
             fieldIds.forEach(fieldId => {
@@ -1226,6 +1246,9 @@
                 {id: 'fullName', name: 'Full Name'},
                 {id: 'email', name: 'Email ID'},
                 {id: 'phone', name: 'Phone Number'},
+                {id: 'dob', name: 'Date of Birth'},
+                {id: 'aadhaar', name: 'Aadhaar Number'},
+                {id: 'pan', name: 'PAN Number'},
                 {id: 'username', name: 'Account Username'},
                 {id: 'password', name: 'Account Password'},
                 {id: 'planStartDate', name: 'Plan Start Date'},
@@ -1277,6 +1300,13 @@
                 isValid = false;
             }
             
+            // Aadhaar validation (12 digits)
+            const aadhaar = document.getElementById('aadhaar').value;
+            if (aadhaar && !validateAadhaar(aadhaar)) {
+                showError('aadhaar', 'Please enter a valid 12-digit Aadhaar number');
+                isValid = false;
+            }
+            
             // Username validation (8-12 characters)
             const username = document.getElementById('username').value;
             if (username && !validateUsername(username)) {
@@ -1291,14 +1321,14 @@
                 isValid = false;
             }
             
-            // PAN validation (if provided)
+            // PAN validation
             const pan = document.getElementById('pan').value;
-            if (pan && pan.trim() !== '' && !validatePAN(pan.toUpperCase())) {
+            if (pan && !validatePAN(pan.toUpperCase())) {
                 showError('pan', 'Invalid PAN format. Use: ABCDE1234F');
                 isValid = false;
             }
             
-            // GSTIN validation (if provided)
+            // GSTIN validation (optional)
             const gstin = document.getElementById('gstin').value;
             if (gstin && gstin.trim() !== '' && !validateGSTIN(gstin.toUpperCase())) {
                 showError('gstin', 'Invalid GSTIN format. Use: 22ABCDE1234F1Z5');
@@ -1368,9 +1398,9 @@
                     fullName: document.getElementById('fullName').value,
                     email: email,
                     phone: document.getElementById('phone').value,
-                    dob: document.getElementById('dob').value || null,
-                    aadhaar: document.getElementById('aadhaar').value || null,
-                    pan: document.getElementById('pan').value.toUpperCase() || null,
+                    dob: document.getElementById('dob').value,
+                    aadhaar: document.getElementById('aadhaar').value,
+                    pan: document.getElementById('pan').value.toUpperCase(),
                     gstin: document.getElementById('gstin').value.toUpperCase() || null,
                     
                     planName: document.getElementById('planName').value,
@@ -1409,9 +1439,9 @@
 // 7. Redirect to payment page with updated parameters
 const startDate = document.getElementById('planStartDate').value;
 const endDate = document.getElementById('planEndDate').value;
-const paymentMode = document.getElementById('paymentMode').value; // ← ADD THIS LINE
+const paymentMode = document.getElementById('paymentMode').value;
 
-const paymentUrl = `https://www.odelya.online/payment.html?userId=${userId}&amount=${finalPrice}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&planType=${planType}&paymentMethod=${encodeURIComponent(paymentMode)}`; // ← ADD paymentMethod parameter
+const paymentUrl = `https://www.odelya.online/payment.html?userId=${userId}&amount=${finalPrice}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&planType=${planType}&paymentMethod=${encodeURIComponent(paymentMode)}`;
                 
 // Save to session storage as backup
 sessionStorage.setItem('odelya_registration', JSON.stringify({
@@ -1421,7 +1451,7 @@ sessionStorage.setItem('odelya_registration', JSON.stringify({
     startDate: startDate,
     endDate: endDate,
     planType: planType,
-    paymentMethod: paymentMode, // ← ADD THIS LINE
+    paymentMethod: paymentMode,
     timestamp: new Date().getTime()
 }));
                 
@@ -1473,6 +1503,7 @@ sessionStorage.setItem('odelya_registration', JSON.stringify({
             // Aadhaar formatting
             document.getElementById('aadhaar').addEventListener('input', function(e) {
                 this.value = this.value.replace(/\D/g, '').slice(0, 12);
+                hideError('aadhaar');
                 updateSubmitButton();
             });
             
@@ -1521,6 +1552,12 @@ sessionStorage.setItem('odelya_registration', JSON.stringify({
                 }
                 validatePassword(this.value);
                 hideError('password');
+                updateSubmitButton();
+            });
+            
+            // DOB validation
+            document.getElementById('dob').addEventListener('input', function(e) {
+                hideError('dob');
                 updateSubmitButton();
             });
             
