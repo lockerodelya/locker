@@ -1438,7 +1438,7 @@ footer {
                                 <div class="section-icon">
                                     👤
                                 </div>
-                                <h3 class="section-title">Personal Information</h3>
+                                <h3 class="section-title" id="personalSectionTitle">Personal Information</h3>
                             </div>
                             
                             <div id="personalInfo">
@@ -1912,6 +1912,9 @@ footer {
         function loadUserDashboard() {
             if (!currentUserData) return;
             
+            // Change section title for regular user
+            document.getElementById('personalSectionTitle').textContent = 'Personal Information';
+            
             // Format date
             function formatDate(dateValue) {
                 if (!dateValue) return 'N/A';
@@ -1944,7 +1947,7 @@ footer {
                 }
             }
             
-            // LEFT COLUMN - Personal Information
+            // LEFT COLUMN - Personal Information (for regular user)
             let personalHtml = '';
             personalHtml += `<div class="detail-group">
                 <label>User ID</label>
@@ -2024,6 +2027,9 @@ footer {
             // Change dashboard title for companies
             document.querySelector('.dashboard .header h1').textContent = 'Odelya Cloud Storage - Company Dashboard';
             
+            // Change section title for company
+            document.getElementById('personalSectionTitle').textContent = 'Company Information';
+            
             // Format date function
             function formatDate(dateValue) {
                 if (!dateValue) return 'N/A';
@@ -2086,9 +2092,10 @@ footer {
                 <div class="value">${currentUserData.phone || 'N/A'}</div>
             </div>`;
             
+            // Use dateOfIncorporation field instead of dob for companies
             personalHtml += `<div class="detail-group">
-                <label>Registration Date</label>
-                <div class="value">${formatDate(currentUserData.registrationDate)}</div>
+                <label>Date of Incorporation</label>
+                <div class="value">${formatDate(currentUserData.dateOfIncorporation || currentUserData.dob)}</div>
             </div>`;
             
             personalHtml += `<div class="detail-group">
@@ -2165,8 +2172,9 @@ footer {
             currentUser = null;
             currentUserData = null;
             
-            // Reset dashboard title
+            // Reset dashboard title and section title
             document.querySelector('.dashboard .header h1').textContent = 'Odelya Cloud Storage - User Dashboard';
+            document.getElementById('personalSectionTitle').textContent = 'Personal Information';
             
             // Show login screen
             showLogin();
@@ -2500,7 +2508,7 @@ footer {
                         ['Company Name', currentUserData.companyName || 'N/A'],
                         ['Email', currentUserData.email || 'N/A'],
                         ['Phone', currentUserData.phone || 'N/A'],
-                        ['Registration Date', currentUserData.registrationDate || 'N/A'],
+                        ['Date of Incorporation', currentUserData.dateOfIncorporation || currentUserData.dob || 'N/A'],
                         ['Username', currentUserData.username || 'N/A'],
                         ['Contact Person', currentUserData.contactPerson || 'N/A']
                     ];
