@@ -1687,51 +1687,18 @@ footer {
         let currentUserData = null;
         let loginCheckInterval = null;
 
-// On page load
-window.onload = function() {
-    showLogin();
-    
-    // Check if user was already logged in
-    const userLoggedIn = localStorage.getItem('user_logged_in');
-    const userId = localStorage.getItem('user_id');
-    const userType = localStorage.getItem('user_type');
-    
-    if (userLoggedIn && userId) {
-        // Check status for the correct collection
-        const collectionName = userType === 'company' ? 'companies' : 'users';
-        
-        db.collection(collectionName).doc(userId).get()
-            .then((doc) => {
-                if (doc.exists) {
-                    const userData = doc.data();
-                    if (userData.status === 'active') {
-                        currentUser = userId;
-                        currentUserData = userData;
-                        currentUserData.userType = userType;
-                        
-                        startStatusCheck();
-                        
-                        if (userType === 'company') {
-                            loadCompanyDashboard();
-                        } else {
-                            loadUserDashboard();
-                        }
-                        
-                        showDashboard();
-                    } else {
-                        logout();
-                    }
-                } else {
-                    logout();
-                }
-            })
-            .catch((error) => {
-                console.error("Error checking login status:", error);
-                logout();
-            });
-    }
-};
-
+        // On page load
+        window.onload = function() {
+            showLogin();
+            
+            // Check if user was already logged in
+            const userLoggedIn = localStorage.getItem('user_logged_in');
+            const userId = localStorage.getItem('user_id');
+            
+            if (userLoggedIn && userId) {
+                checkUserStatus(userId);
+            }
+        };
         
         // Show login screen
         function showLogin() {
@@ -1765,261 +1732,261 @@ window.onload = function() {
             login();
         });
         
-// Login function
-function login() {
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-    
-    if (!username || !password) {
-        showMessage('loginMessage', 'Please enter both username and password', 'error');
-        return;
-    }
-    
-    // Show loading
-    const loginBtnText = document.getElementById('loginBtnText');
-    const loginLoading = document.getElementById('loginLoading');
-    loginBtnText.textContent = 'Logging in...';
-    loginLoading.style.display = 'inline-block';
-    
-    // First, try to login as regular user
-    db.collection("users")
-        .where("username", "==", username)
-        .where("password", "==", password)
-        .get()
-        .then((userQuerySnapshot) => {
-            if (!userQuerySnapshot.empty) {
-                // Regular user found
-                handleUserLogin(userQuerySnapshot.docs[0]);
+        // Login function
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            if (!username || !password) {
+                showMessage('loginMessage', 'Please enter both username and password', 'error');
                 return;
             }
             
-            // If not found in users, try companies collection
-            return db.collection("companies")
+            // Show loading
+            const loginBtnText = document.getElementById('loginBtnText');
+            const loginLoading = document.getElementById('loginLoading');
+            loginBtnText.textContent = 'Logging in...';
+            loginLoading.style.display = 'inline-block';
+            
+            // First, try to login as regular user
+            db.collection("users")
                 .where("username", "==", username)
                 .where("password", "==", password)
                 .get()
-                .then((companyQuerySnapshot) => {
-                    if (companyQuerySnapshot.empty) {
-                        showMessage('loginMessage', 'Invalid username or password', 'error');
-                        loginBtnText.textContent = 'Login';
-                        loginLoading.style.display = 'none';
+                .then((userQuerySnapshot) => {
+                    if (!userQuerySnapshot.empty) {
+                        // Regular user found
+                        handleUserLogin(userQuerySnapshot.docs[0]);
                         return;
                     }
                     
-                    // Company found
-                    handleCompanyLogin(companyQuerySnapshot.docs[0]);
+                    // If not found in users, try companies collection
+                    return db.collection("companies")
+                        .where("username", "==", username)
+                        .where("password", "==", password)
+                        .get()
+                        .then((companyQuerySnapshot) => {
+                            if (companyQuerySnapshot.empty) {
+                                showMessage('loginMessage', 'Invalid username or password', 'error');
+                                loginBtnText.textContent = 'Login';
+                                loginLoading.style.display = 'none';
+                                return;
+                            }
+                            
+                            // Company found
+                            handleCompanyLogin(companyQuerySnapshot.docs[0]);
+                        });
+                })
+                .catch((error) => {
+                    console.error("Login error:", error);
+                    showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
+                    loginBtnText.textContent = 'Login';
+                    loginLoading.style.display = 'none';
                 });
-        })
-        .catch((error) => {
-            console.error("Login error:", error);
-            showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
-            loginBtnText.textContent = 'Login';
-            loginLoading.style.display = 'none';
-        });
-}
-
-// Handle regular user login
-function handleUserLogin(userDoc) {
-    const user = userDoc.data();
-    
-    // Check if user is active
-    if (user.status !== 'active') {
-        showMessage('loginMessage', 'Your account is not active. Please contact administrator.', 'error');
-        document.getElementById('loginBtnText').textContent = 'Login';
-        document.getElementById('loginLoading').style.display = 'none';
-        return;
-    }
-    
-    // Login successful for regular user
-    currentUser = userDoc.id;
-    currentUserData = user;
-    currentUserData.userType = 'user'; // Add user type identifier
-    
-    // Save to localStorage
-    localStorage.setItem('user_logged_in', 'true');
-    localStorage.setItem('user_id', userDoc.id);
-    localStorage.setItem('user_email', user.email || '');
-    localStorage.setItem('user_type', 'user');
-    
-    // Start checking user status periodically
-    startStatusCheck();
-    
-    // Load user dashboard
-    loadUserDashboard();
-    
-    showDashboard();
-    
-    document.getElementById('loginBtnText').textContent = 'Login';
-    document.getElementById('loginLoading').style.display = 'none';
-    document.getElementById('loginForm').reset();
-}
-
-// Handle company login
-function handleCompanyLogin(companyDoc) {
-    const company = companyDoc.data();
-    
-    // Check if company is active
-    if (company.status !== 'active') {
-        showMessage('loginMessage', 'Your company account is not active. Please contact administrator.', 'error');
-        document.getElementById('loginBtnText').textContent = 'Login';
-        document.getElementById('loginLoading').style.display = 'none';
-        return;
-    }
-    
-    // Login successful for company
-    currentUser = companyDoc.id;
-    currentUserData = company;
-    currentUserData.userType = 'company'; // Add user type identifier
-    
-    // Save to localStorage
-    localStorage.setItem('user_logged_in', 'true');
-    localStorage.setItem('user_id', companyDoc.id);
-    localStorage.setItem('user_email', company.email || '');
-    localStorage.setItem('user_type', 'company');
-    
-    // Start checking user status periodically
-    startStatusCheck();
-    
-    // Load company dashboard (you might want to customize this)
-    loadCompanyDashboard();
-    
-    showDashboard();
-    
-    document.getElementById('loginBtnText').textContent = 'Login';
-    document.getElementById('loginLoading').style.display = 'none';
-    document.getElementById('loginForm').reset();
-}
-
-// Load company dashboard (customized for companies)
-function loadCompanyDashboard() {
-    if (!currentUserData) return;
-    
-    // Change dashboard title for companies
-    document.querySelector('.dashboard .header h1').textContent = 'Odelya Cloud Storage - Company Dashboard';
-    
-    // Format date function
-    function formatDate(dateValue) {
-        if (!dateValue) return 'N/A';
+        }
         
-        try {
-            let date;
-            if (typeof dateValue === 'string') {
-                const parts = dateValue.split('-');
-                if (parts.length === 3) {
-                    date = new Date(parts[2], parts[1] - 1, parts[0]);
-                } else {
-                    date = new Date(dateValue);
-                }
-            } else if (dateValue.toDate) {
-                date = dateValue.toDate();
-            } else {
-                date = dateValue;
+        // Handle regular user login
+        function handleUserLogin(userDoc) {
+            const user = userDoc.data();
+            
+            // Check if user is active
+            if (user.status !== 'active') {
+                showMessage('loginMessage', 'Your account is not active. Please contact administrator.', 'error');
+                document.getElementById('loginBtnText').textContent = 'Login';
+                document.getElementById('loginLoading').style.display = 'none';
+                return;
             }
             
-            if (isNaN(date.getTime())) return 'Invalid Date';
+            // Login successful for regular user
+            currentUser = userDoc.id;
+            currentUserData = user;
+            currentUserData.userType = 'user'; // Add user type identifier
             
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const year = date.getFullYear();
+            // Save to localStorage
+            localStorage.setItem('user_logged_in', 'true');
+            localStorage.setItem('user_id', userDoc.id);
+            localStorage.setItem('user_email', user.email || '');
+            localStorage.setItem('user_type', 'user');
             
-            return `${day}-${month}-${year}`;
-        } catch (e) {
-            return 'Invalid Date';
+            // Start checking user status periodically
+            startStatusCheck();
+            
+            // Load user dashboard
+            loadUserDashboard();
+            
+            showDashboard();
+            
+            document.getElementById('loginBtnText').textContent = 'Login';
+            document.getElementById('loginLoading').style.display = 'none';
+            document.getElementById('loginForm').reset();
         }
-    }
-    
-    // LEFT COLUMN - Company Information
-    let personalHtml = '';
-    personalHtml += `<div class="detail-group">
-        <label>Company ID</label>
-        <div class="value">${currentUserData.companyId || 'N/A'}</div>
-    </div>`;
-    
-    personalHtml += `<div class="detail-group">
-        <label>Status</label>
-        <div class="value">
-            <span class="status ${currentUserData.status || 'pending'}">
-                ${currentUserData.status || 'pending'}
-            </span>
-        </div>
-    </div>`;
-    
-    personalHtml += `<div class="detail-group">
-        <label>Company Name</label>
-        <div class="value">${currentUserData.companyName || 'N/A'}</div>
-    </div>`;
-    
-    personalHtml += `<div class="detail-group">
-        <label>Email</label>
-        <div class="value">${currentUserData.email || 'N/A'}</div>
-    </div>`;
-    
-    personalHtml += `<div class="detail-group">
-        <label>Phone</label>
-        <div class="value">${currentUserData.phone || 'N/A'}</div>
-    </div>`;
-    
-    personalHtml += `<div class="detail-group">
-        <label>Registration Date</label>
-        <div class="value">${formatDate(currentUserData.registrationDate)}</div>
-    </div>`;
-    
-    personalHtml += `<div class="detail-group">
-        <label>Username</label>
-        <div class="value">${currentUserData.username || 'N/A'}</div>
-    </div>`;
-    
-    personalHtml += `<div class="detail-group">
-        <label>Contact Person</label>
-        <div class="value">${currentUserData.contactPerson || 'N/A'}</div>
-    </div>`;
-    
-    document.getElementById('personalInfo').innerHTML = personalHtml;
-    
-    // RIGHT COLUMN - Plan Information (for companies)
-    let planHtml = '';
-    planHtml += `<div class="detail-group">
-        <label>Plan Name</label>
-        <div class="value">${currentUserData.planName || 'N/A'}</div>
-    </div>`;
-    
-    planHtml += `<div class="detail-group">
-        <label>Plan Size</label>
-        <div class="value">${currentUserData.planSize || 'N/A'}</div>
-    </div>`;
-    
-    planHtml += `<div class="detail-group">
-        <label>Plan Value</label>
-        <div class="value">${currentUserData.planValue || 'N/A'}</div>
-    </div>`;
-    
-    planHtml += `<div class="detail-group">
-        <label>Plan Start Date</label>
-        <div class="value">${formatDate(currentUserData.planStartDate)}</div>
-    </div>`;
-    
-    planHtml += `<div class="detail-group">
-        <label>Plan End Date</label>
-        <div class="value">${formatDate(currentUserData.planEndDate)}</div>
-    </div>`;
-    
-    // Add company-specific fields
-    if (currentUserData.businessType) {
-        planHtml += `<div class="detail-group">
-            <label>Business Type</label>
-            <div class="value">${currentUserData.businessType || 'N/A'}</div>
-        </div>`;
-    }
-    
-    if (currentUserData.address) {
-        planHtml += `<div class="detail-group">
-            <label>Address</label>
-            <div class="value">${currentUserData.address || 'N/A'}</div>
-        </div>`;
-    }
-    
-    document.getElementById('planInfo').innerHTML = planHtml;
-}            
+        
+        // Handle company login
+        function handleCompanyLogin(companyDoc) {
+            const company = companyDoc.data();
+            
+            // Check if company is active
+            if (company.status !== 'active') {
+                showMessage('loginMessage', 'Your company account is not active. Please contact administrator.', 'error');
+                document.getElementById('loginBtnText').textContent = 'Login';
+                document.getElementById('loginLoading').style.display = 'none';
+                return;
+            }
+            
+            // Login successful for company
+            currentUser = companyDoc.id;
+            currentUserData = company;
+            currentUserData.userType = 'company'; // Add user type identifier
+            
+            // Save to localStorage
+            localStorage.setItem('user_logged_in', 'true');
+            localStorage.setItem('user_id', companyDoc.id);
+            localStorage.setItem('user_email', company.email || '');
+            localStorage.setItem('user_type', 'company');
+            
+            // Start checking user status periodically
+            startStatusCheck();
+            
+            // Load company dashboard
+            loadCompanyDashboard();
+            
+            showDashboard();
+            
+            document.getElementById('loginBtnText').textContent = 'Login';
+            document.getElementById('loginLoading').style.display = 'none';
+            document.getElementById('loginForm').reset();
+        }
+        
+        // Start checking user status
+        function startStatusCheck() {
+            if (loginCheckInterval) {
+                clearInterval(loginCheckInterval);
+            }
+            
+            loginCheckInterval = setInterval(() => {
+                if (currentUser) {
+                    checkUserStatus(currentUser);
+                }
+            }, 30000); // Check every 30 seconds
+        }
+        
+        // Check user status
+        function checkUserStatus(userId) {
+            const userType = localStorage.getItem('user_type') || 'user';
+            const collectionName = userType === 'company' ? 'companies' : 'users';
+            
+            db.collection(collectionName).doc(userId).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const user = doc.data();
+                        
+                        // If user/company is no longer active, log them out
+                        if (user.status !== 'active') {
+                            showMessage('dashboardMessage', 'Your account is no longer active. Please contact administrator.', 'error');
+                            setTimeout(() => {
+                                logout();
+                            }, 3000);
+                        } else {
+                            // Update local data if user/company is still active
+                            currentUserData = user;
+                            currentUserData.userType = userType;
+                            
+                            // Load appropriate dashboard
+                            if (userType === 'company') {
+                                loadCompanyDashboard();
+                            } else {
+                                loadUserDashboard();
+                            }
+                        }
+                    } else {
+                        // User/company document doesn't exist anymore
+                        logout();
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error checking user status:", error);
+                });
+        }
+        
+        // Load user dashboard with two columns
+        function loadUserDashboard() {
+            if (!currentUserData) return;
+            
+            // Format date
+            function formatDate(dateValue) {
+                if (!dateValue) return 'N/A';
+                
+                try {
+                    let date;
+                    if (typeof dateValue === 'string') {
+                        // Try to parse date string
+                        const parts = dateValue.split('-');
+                        if (parts.length === 3) {
+                            date = new Date(parts[2], parts[1] - 1, parts[0]);
+                        } else {
+                            date = new Date(dateValue);
+                        }
+                    } else if (dateValue.toDate) {
+                        date = dateValue.toDate();
+                    } else {
+                        date = dateValue;
+                    }
+                    
+                    if (isNaN(date.getTime())) return 'Invalid Date';
+                    
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const year = date.getFullYear();
+                    
+                    return `${day}-${month}-${year}`;
+                } catch (e) {
+                    return 'Invalid Date';
+                }
+            }
+            
+            // LEFT COLUMN - Personal Information
+            let personalHtml = '';
+            personalHtml += `<div class="detail-group">
+                <label>User ID</label>
+                <div class="value">${currentUserData.userId || 'N/A'}</div>
+            </div>`;
+            
+            personalHtml += `<div class="detail-group">
+                <label>Status</label>
+                <div class="value">
+                    <span class="status ${currentUserData.status || 'pending'}">
+                        ${currentUserData.status || 'pending'}
+                    </span>
+                </div>
+            </div>`;
+            
+            personalHtml += `<div class="detail-group">
+                <label>Full Name</label>
+                <div class="value">${currentUserData.fullName || 'N/A'}</div>
+            </div>`;
+            
+            personalHtml += `<div class="detail-group">
+                <label>Email</label>
+                <div class="value">${currentUserData.email || 'N/A'}</div>
+            </div>`;
+            
+            personalHtml += `<div class="detail-group">
+                <label>Phone</label>
+                <div class="value">${currentUserData.phone || 'N/A'}</div>
+            </div>`;
+            
+            personalHtml += `<div class="detail-group">
+                <label>Date of Birth</label>
+                <div class="value">${formatDate(currentUserData.dob)}</div>
+            </div>`;
+            
+            personalHtml += `<div class="detail-group">
+                <label>Username</label>
+                <div class="value">${currentUserData.username || 'N/A'}</div>
+            </div>`;
+            
+            document.getElementById('personalInfo').innerHTML = personalHtml;
+            
             // RIGHT COLUMN - Plan Information
             let planHtml = '';
             planHtml += `<div class="detail-group">
@@ -2050,30 +2017,161 @@ function loadCompanyDashboard() {
             document.getElementById('planInfo').innerHTML = planHtml;
         }
         
-// Logout function
-function logout() {
-    if (loginCheckInterval) {
-        clearInterval(loginCheckInterval);
-        loginCheckInterval = null;
-    }
-    
-    // Clear localStorage
-    localStorage.removeItem('user_logged_in');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('user_email');
-    localStorage.removeItem('user_type');
-    
-    // Reset variables
-    currentUser = null;
-    currentUserData = null;
-    
-    // Reset dashboard title
-    document.querySelector('.dashboard .header h1').textContent = 'Odelya Cloud Storage - User Dashboard';
-    
-    // Show login screen
-    showLogin();
-    showMessage('loginMessage', 'You have been logged out successfully.', 'success');
-}
+        // Load company dashboard (customized for companies)
+        function loadCompanyDashboard() {
+            if (!currentUserData) return;
+            
+            // Change dashboard title for companies
+            document.querySelector('.dashboard .header h1').textContent = 'Odelya Cloud Storage - Company Dashboard';
+            
+            // Format date function
+            function formatDate(dateValue) {
+                if (!dateValue) return 'N/A';
+                
+                try {
+                    let date;
+                    if (typeof dateValue === 'string') {
+                        const parts = dateValue.split('-');
+                        if (parts.length === 3) {
+                            date = new Date(parts[2], parts[1] - 1, parts[0]);
+                        } else {
+                            date = new Date(dateValue);
+                        }
+                    } else if (dateValue.toDate) {
+                        date = dateValue.toDate();
+                    } else {
+                        date = dateValue;
+                    }
+                    
+                    if (isNaN(date.getTime())) return 'Invalid Date';
+                    
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const year = date.getFullYear();
+                    
+                    return `${day}-${month}-${year}`;
+                } catch (e) {
+                    return 'Invalid Date';
+                }
+            }
+            
+            // LEFT COLUMN - Company Information
+            let personalHtml = '';
+            personalHtml += `<div class="detail-group">
+                <label>Company ID</label>
+                <div class="value">${currentUserData.companyId || 'N/A'}</div>
+            </div>`;
+            
+            personalHtml += `<div class="detail-group">
+                <label>Status</label>
+                <div class="value">
+                    <span class="status ${currentUserData.status || 'pending'}">
+                        ${currentUserData.status || 'pending'}
+                    </span>
+                </div>
+            </div>`;
+            
+            personalHtml += `<div class="detail-group">
+                <label>Company Name</label>
+                <div class="value">${currentUserData.companyName || 'N/A'}</div>
+            </div>`;
+            
+            personalHtml += `<div class="detail-group">
+                <label>Email</label>
+                <div class="value">${currentUserData.email || 'N/A'}</div>
+            </div>`;
+            
+            personalHtml += `<div class="detail-group">
+                <label>Phone</label>
+                <div class="value">${currentUserData.phone || 'N/A'}</div>
+            </div>`;
+            
+            personalHtml += `<div class="detail-group">
+                <label>Registration Date</label>
+                <div class="value">${formatDate(currentUserData.registrationDate)}</div>
+            </div>`;
+            
+            personalHtml += `<div class="detail-group">
+                <label>Username</label>
+                <div class="value">${currentUserData.username || 'N/A'}</div>
+            </div>`;
+            
+            personalHtml += `<div class="detail-group">
+                <label>Contact Person</label>
+                <div class="value">${currentUserData.contactPerson || 'N/A'}</div>
+            </div>`;
+            
+            document.getElementById('personalInfo').innerHTML = personalHtml;
+            
+            // RIGHT COLUMN - Plan Information (for companies)
+            let planHtml = '';
+            planHtml += `<div class="detail-group">
+                <label>Plan Name</label>
+                <div class="value">${currentUserData.planName || 'N/A'}</div>
+            </div>`;
+            
+            planHtml += `<div class="detail-group">
+                <label>Plan Size</label>
+                <div class="value">${currentUserData.planSize || 'N/A'}</div>
+            </div>`;
+            
+            planHtml += `<div class="detail-group">
+                <label>Plan Value</label>
+                <div class="value">${currentUserData.planValue || 'N/A'}</div>
+            </div>`;
+            
+            planHtml += `<div class="detail-group">
+                <label>Plan Start Date</label>
+                <div class="value">${formatDate(currentUserData.planStartDate)}</div>
+            </div>`;
+            
+            planHtml += `<div class="detail-group">
+                <label>Plan End Date</label>
+                <div class="value">${formatDate(currentUserData.planEndDate)}</div>
+            </div>`;
+            
+            // Add company-specific fields
+            if (currentUserData.businessType) {
+                planHtml += `<div class="detail-group">
+                    <label>Business Type</label>
+                    <div class="value">${currentUserData.businessType || 'N/A'}</div>
+                </div>`;
+            }
+            
+            if (currentUserData.address) {
+                planHtml += `<div class="detail-group">
+                    <label>Address</label>
+                    <div class="value">${currentUserData.address || 'N/A'}</div>
+                </div>`;
+            }
+            
+            document.getElementById('planInfo').innerHTML = planHtml;
+        }
+        
+        // Logout function
+        function logout() {
+            if (loginCheckInterval) {
+                clearInterval(loginCheckInterval);
+                loginCheckInterval = null;
+            }
+            
+            // Clear localStorage
+            localStorage.removeItem('user_logged_in');
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('user_email');
+            localStorage.removeItem('user_type');
+            
+            // Reset variables
+            currentUser = null;
+            currentUserData = null;
+            
+            // Reset dashboard title
+            document.querySelector('.dashboard .header h1').textContent = 'Odelya Cloud Storage - User Dashboard';
+            
+            // Show login screen
+            showLogin();
+            showMessage('loginMessage', 'You have been logged out successfully.', 'success');
+        }
         
         // Show change password modal
         function showChangePasswordModal() {
@@ -2191,8 +2289,11 @@ function logout() {
             changeBtn.textContent = 'Changing...';
             changeBtn.disabled = true;
             
-            // Update password in Firestore
-            db.collection("users").doc(currentUser).update({
+            // Update password in Firestore - use correct collection
+            const userType = localStorage.getItem('user_type') || 'user';
+            const collectionName = userType === 'company' ? 'companies' : 'users';
+            
+            db.collection(collectionName).doc(currentUser).update({
                 password: newPassword,
                 updatedAt: new Date().toISOString()
             })
@@ -2297,7 +2398,6 @@ function logout() {
                     const user = userDoc.data();
                     
                     // Check DOB (simple string comparison for now)
-                    // In real implementation, you might want to normalize DOB format
                     if (user.dob !== dob) {
                         showMessage('forgotMessage', 'Date of Birth does not match our records', 'error');
                         resetBtn.textContent = 'Reset Password';
@@ -2344,7 +2444,6 @@ function logout() {
             }
             
             // Always redirect to existing-user-payment.html
-            // The plan selection logic will be handled in that page based on Firebase data
             window.location.href = 'existing-user-payment.html';
         }
         
@@ -2368,7 +2467,9 @@ function logout() {
                 
                 doc.setFontSize(18);
                 doc.setTextColor(0, 0, 0);
-                doc.text('User Account Details', 105, 35, { align: 'center' });
+                const userType = localStorage.getItem('user_type') || 'user';
+                const dashboardTitle = userType === 'company' ? 'Company Account Details' : 'User Account Details';
+                doc.text(dashboardTitle, 105, 35, { align: 'center' });
                 
                 doc.setFontSize(10);
                 doc.setTextColor(100, 100, 100);
@@ -2379,26 +2480,41 @@ function logout() {
                 const column2X = 105; // Right column starts at middle
                 let column1Y = 65; // Starting Y for left column
                 let column2Y = 65; // Starting Y for right column
-                const columnWidth = 80; // Width for each column
                 
                 // Personal Information Column
                 doc.setFontSize(14);
                 doc.setTextColor(58, 12, 163);
-                doc.text('Personal Information', column1X, column1Y);
+                const personalTitle = userType === 'company' ? 'Company Information' : 'Personal Information';
+                doc.text(personalTitle, column1X, column1Y);
                 column1Y += 8;
                 
                 doc.setFontSize(11);
                 doc.setTextColor(0, 0, 0);
                 
-                const personalInfo = [
-                    ['User ID', currentUserData.userId || 'N/A'],
-                    ['Status', currentUserData.status || 'pending'],
-                    ['Full Name', currentUserData.fullName || 'N/A'],
-                    ['Email', currentUserData.email || 'N/A'],
-                    ['Phone', currentUserData.phone || 'N/A'],
-                    ['Date of Birth', currentUserData.dob || 'N/A'],
-                    ['Username', currentUserData.username || 'N/A']
-                ];
+                // Personal info data based on user type
+                let personalInfo = [];
+                if (userType === 'company') {
+                    personalInfo = [
+                        ['Company ID', currentUserData.companyId || 'N/A'],
+                        ['Status', currentUserData.status || 'pending'],
+                        ['Company Name', currentUserData.companyName || 'N/A'],
+                        ['Email', currentUserData.email || 'N/A'],
+                        ['Phone', currentUserData.phone || 'N/A'],
+                        ['Registration Date', currentUserData.registrationDate || 'N/A'],
+                        ['Username', currentUserData.username || 'N/A'],
+                        ['Contact Person', currentUserData.contactPerson || 'N/A']
+                    ];
+                } else {
+                    personalInfo = [
+                        ['User ID', currentUserData.userId || 'N/A'],
+                        ['Status', currentUserData.status || 'pending'],
+                        ['Full Name', currentUserData.fullName || 'N/A'],
+                        ['Email', currentUserData.email || 'N/A'],
+                        ['Phone', currentUserData.phone || 'N/A'],
+                        ['Date of Birth', currentUserData.dob || 'N/A'],
+                        ['Username', currentUserData.username || 'N/A']
+                    ];
+                }
                 
                 personalInfo.forEach(([label, value]) => {
                     doc.setFont('helvetica', 'bold');
@@ -2516,7 +2632,8 @@ function logout() {
                 
                 doc.setFontSize(10);
                 doc.setTextColor(100, 100, 100);
-                doc.text('Odelya Cloud Storage - User Copy', 105, footerY, { align: 'center' });
+                const copyType = userType === 'company' ? 'Company Copy' : 'User Copy';
+                doc.text(`Odelya Cloud Storage - ${copyType}`, 105, footerY, { align: 'center' });
                 
                 // Optional: Add page border
                 doc.setDrawColor(200, 200, 200);
@@ -2524,7 +2641,7 @@ function logout() {
                 doc.rect(10, 10, 190, pageHeight - 20);
                 
                 // Save PDF
-                const fileName = `Odelya_User_${currentUserData.userId || currentUserData.username}_${new Date().getTime()}.pdf`;
+                const fileName = `Odelya_${userType}_${currentUserData.userId || currentUserData.username}_${new Date().getTime()}.pdf`;
                 doc.save(fileName);
                 
                 showMessage('dashboardMessage', 'PDF downloaded successfully!', 'success');
