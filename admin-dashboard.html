@@ -40,9 +40,10 @@
             cursor: pointer;
         }
         .container {
-            max-width: 1200px;
+            max-width: none;
             margin: 30px auto;
             padding: 0 20px;
+            width: 100%;
         }
         .stats {
             display: grid;
@@ -67,30 +68,96 @@
             font-weight: bold;
             color: #3a0ca3;
         }
+        
+        /* Updated Table Styles - Wider and more spacious */
+        .table-container {
+            width: 95%;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+        
         table {
             width: 100%;
+            min-width: 1200px; /* Ensure table is wide enough on desktop */
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             border-collapse: collapse;
         }
+        
         th, td {
-            padding: 12px 15px;
+            padding: 15px 20px; /* Increased padding for more space */
             text-align: left;
             border-bottom: 1px solid #ddd;
+            white-space: nowrap; /* Prevent text wrapping */
         }
+        
         th {
             background: #4361ee;
             color: white;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
         }
+        
+        td {
+            font-size: 14px;
+        }
+        
         tr:hover {
             background: #f9f9f9;
         }
+        
+        /* Make specific columns wider */
+        th:nth-child(1), td:nth-child(1) { /* User ID */
+            min-width: 120px;
+        }
+        
+        th:nth-child(2), td:nth-child(2) { /* User Type */
+            min-width: 100px;
+        }
+        
+        th:nth-child(3), td:nth-child(3) { /* Name */
+            min-width: 180px;
+            max-width: 250px;
+            white-space: normal; /* Allow name to wrap if needed */
+            word-break: break-word;
+        }
+        
+        th:nth-child(4), td:nth-child(4) { /* Email */
+            min-width: 200px;
+            max-width: 300px;
+            white-space: normal;
+            word-break: break-all;
+        }
+        
+        th:nth-child(5), td:nth-child(5) { /* Phone */
+            min-width: 130px;
+        }
+        
+        th:nth-child(6), td:nth-child(6) { /* Plan */
+            min-width: 150px;
+            max-width: 200px;
+            white-space: normal;
+        }
+        
+        th:nth-child(7), td:nth-child(7) { /* Status */
+            min-width: 100px;
+        }
+        
+        th:nth-child(8), td:nth-child(8) { /* Actions */
+            min-width: 150px;
+            text-align: center;
+        }
+        
         .status {
-            padding: 4px 10px;
+            padding: 6px 12px; /* Slightly larger */
             border-radius: 20px;
             font-size: 12px;
             font-weight: bold;
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
         }
         .status.active {
             background: #d4edda;
@@ -107,6 +174,37 @@
         .status.suspended {
             background: #6c757d;
             color: white;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .table-container {
+                width: 98%;
+            }
+            
+            th, td {
+                padding: 12px 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .table-container {
+                width: 100%;
+                margin: 0;
+            }
+            
+            table {
+                min-width: 1000px; /* Still wider than screen for horizontal scroll */
+            }
+            
+            th, td {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
         }
         
         /* Modal Styles */
@@ -336,12 +434,12 @@
         /* User Type Badge Styles */
         .user-type-badge {
             display: inline-block;
-            padding: 3px 10px;
+            padding: 4px 12px; /* Slightly larger */
             border-radius: 20px;
             font-size: 11px;
             font-weight: bold;
-            margin-left: 10px;
-            vertical-align: middle;
+            min-width: 70px;
+            text-align: center;
         }
         
         .user-type-individual {
@@ -351,6 +449,33 @@
         
         .user-type-company {
             background: #6f42c1;
+            color: white;
+        }
+        
+        /* Action buttons in table */
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        
+        .view-btn {
+            background: #4361ee;
+            color: white;
+        }
+        
+        .delete-btn {
+            background: #dc3545;
             color: white;
         }
     </style>
@@ -377,28 +502,30 @@
             </div>
         </div>
         
-        <h2 style="margin: 30px 0 15px 0;">All Registered Users</h2>
-        <table id="usersTable">
-            <thead>
-                <tr>
-                    <th>User ID</th>
-                    <th>User Type</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Plan</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="usersList">
-                <tr>
-                    <td colspan="8" style="text-align: center; padding: 40px;">
-                        Loading users...
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <h2 style="margin: 30px 0 15px 0; width: 95%; margin-left: auto; margin-right: auto;">All Registered Users</h2>
+        <div class="table-container">
+            <table id="usersTable">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>User Type</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Plan</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersList">
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px;">
+                            Loading users...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- User Details Modal -->
@@ -1485,12 +1612,10 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button onclick="viewUserDetails('${doc.id}')" style="padding: 5px 10px; background: #4361ee; color: white; border: none; border-radius: 3px; cursor: pointer; margin-right: 5px;">
-                                        View
-                                    </button>
-                                    <button onclick="quickDelete('${doc.id}', '${userName}')" style="padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer;">
-                                        Delete
-                                    </button>
+                                    <div class="action-buttons">
+                                        <button class="view-btn" onclick="viewUserDetails('${doc.id}')">View</button>
+                                        <button class="delete-btn" onclick="quickDelete('${doc.id}', '${userName}')">Delete</button>
+                                    </div>
                                 </td>
                             </tr>
                         `;
