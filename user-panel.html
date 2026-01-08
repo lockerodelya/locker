@@ -1839,173 +1839,212 @@
             return isValid;
         }
         
-        // Submit form to Firebase
-        async function submitForm() {
-            console.log('Submit button clicked');
-            
-            if (!validateForm()) {
-                console.log('Form validation failed');
-                return;
-            }
-            
-            console.log('Form validation passed');
-            
-            // Disable button and show loading
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Processing...';
-            
-            try {
-                // Check if Firebase is initialized
-                if (!window.firebaseAuth || !window.firebaseCreateUser) {
-                    throw new Error('Firebase not properly initialized. Please refresh the page.');
-                }
-                
-                // 1. Get form data based on user type
-                let email, password, userId, fullName, phone, dob, aadhaar, pan, gstin;
-                
-                if (selectedUserType === 'individual') {
-                    email = document.getElementById('email').value;
-                    password = document.getElementById('password').value;
-                    userId = document.getElementById('userId').value;
-                    fullName = document.getElementById('fullName').value;
-                    phone = document.getElementById('phone').value;
-                    dob = document.getElementById('dob').value;
-                    aadhaar = document.getElementById('aadhaar').value;
-                    pan = document.getElementById('pan').value.toUpperCase();
-                    gstin = document.getElementById('gstin').value.toUpperCase() || null;
-                } else if (selectedUserType === 'company') {
-                    email = document.getElementById('companyEmail').value;
-                    password = document.getElementById('password').value;
-                    userId = document.getElementById('companyUserId').value;
-                    fullName = document.getElementById('companyName').value;
-                    phone = document.getElementById('companyPhone').value;
-                    dob = document.getElementById('dateOfIncorporation').value;
-                    pan = document.getElementById('companyPan').value.toUpperCase();
-                    gstin = document.getElementById('companyGstin').value.toUpperCase() || null;
-                    aadhaar = null; // Company doesn't have Aadhaar
-                }
-                
-                console.log('Creating user with email:', email);
-                
-                // 2. Create user authentication
-                const userCredential = await window.firebaseCreateUser(
-                    window.firebaseAuth, 
-                    email, 
-                    password
-                );
-                
-                const user = userCredential.user;
-                console.log('User created with ID:', user.uid);
-                
-                // 3. Get duration values
-                const years = parseInt(document.getElementById('durationYears').value) || 0;
-                const months = parseInt(document.getElementById('durationMonths').value) || 0;
-                const days = parseInt(document.getElementById('durationDays').value) || 0;
-                
-                // 4. Calculate final price
-                const finalPrice = calculatePlanPrice();
-                
-                // 5. Prepare user data for Firebase - Store plain text password
-                const userData = {
-                    userId: userId,
-                    userType: selectedUserType,
-                    fullName: fullName,
-                    email: email,
-                    phone: phone,
-                    dob: dob,
-                    aadhaar: aadhaar,
-                    pan: pan,
-                    gstin: gstin,
-                    
-                    planName: document.getElementById('planName').value,
-                    planSize: document.getElementById('planSize').value,
-                    planType: planType,
-                    planDuration: {
-                        years: years,
-                        months: months,
-                        days: days,
-                        totalDays: days + (months * 30) + (years * 365)
-                    },
-                    planStartDate: document.getElementById('planStartDate').value,
-                    planEndDate: document.getElementById('planEndDate').value,
-                    planValue: 'INR ' + finalPrice,
-                    originalPlanValue: 'INR ' + originalPlanValue,
-                    paymentMode: document.getElementById('paymentMode').value,
-                    
-                    username: document.getElementById('username').value,
-                    password: password, // Store plain text password as requested
-                    status: 'pending',
-                    createdAt: window.firebaseTimestamp(),
-                    updatedAt: window.firebaseTimestamp(),
-                    firebaseUid: user.uid
-                };
-                
-                console.log('User data prepared:', userData);
-                
-                // 6. Save to Firestore
-                console.log('Saving to Firestore...');
-                await window.firebaseSetDoc(
-                    window.firebaseDoc(window.firebaseDb, "users", user.uid), 
-                    userData
-                );
-                console.log('Data saved successfully!');
-                
-                // 7. Redirect to payment page with updated parameters
-                const startDate = document.getElementById('planStartDate').value;
-                const endDate = document.getElementById('planEndDate').value;
-                const paymentMode = document.getElementById('paymentMode').value;
-                
-                const paymentUrl = `https://www.odelya.online/payment.html?userId=${userId}&amount=${finalPrice}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&planType=${planType}&paymentMethod=${encodeURIComponent(paymentMode)}`;
-                
-                // Save to session storage as backup
-                sessionStorage.setItem('odelya_registration', JSON.stringify({
-                    userId: userId,
-                    userType: selectedUserType,
-                    amount: finalPrice,
-                    email: email,
-                    startDate: startDate,
-                    endDate: endDate,
-                    planType: planType,
-                    paymentMethod: paymentMode,
-                    timestamp: new Date().getTime()
-                }));
-                
-                alert('✅ Registration successful! Redirecting to payment...');
-                
-                // Redirect
-                setTimeout(() => {
-                    window.location.href = paymentUrl;
-                }, 1500);
-                
-            } catch (error) {
-                console.error('Registration error:', error);
-                
-                // Re-enable button
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Continue to Payment';
-                updateSubmitButton();
-                
-                // Show user-friendly error messages
-                let errorMessage = 'Registration failed. ';
-                
-                if (error.code === 'auth/email-already-in-use') {
-                    errorMessage += 'This email is already registered.';
-                } else if (error.code === 'auth/invalid-email') {
-                    errorMessage += 'Please enter a valid email address.';
-                } else if (error.code === 'auth/weak-password') {
-                    errorMessage += 'Password is too weak. Use at least 8 characters with uppercase, lowercase, number and special character.';
-                } else if (error.code === 'auth/network-request-failed') {
-                    errorMessage += 'Network error. Check your internet connection.';
-                } else if (error.code === 'permission-denied') {
-                    errorMessage += 'Firebase permission denied. Please check Firebase rules.';
-                } else {
-                    errorMessage += error.message || 'Please try again.';
-                }
-                
-                alert('❌ ' + errorMessage);
-            }
+   // Submit form to Firebase
+async function submitForm() {
+    console.log('Submit button clicked');
+    
+    if (!validateForm()) {
+        console.log('Form validation failed');
+        return;
+    }
+    
+    console.log('Form validation passed');
+    
+    // Disable button and show loading
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Processing...';
+    
+    try {
+        // Check if Firebase is initialized
+        if (!window.firebaseAuth || !window.firebaseCreateUser) {
+            throw new Error('Firebase not properly initialized. Please refresh the page.');
         }
+        
+        // 1. Get form data based on user type
+        let email, password, userId, userData;
+        
+        if (selectedUserType === 'individual') {
+            email = document.getElementById('email').value;
+            password = document.getElementById('password').value;
+            userId = document.getElementById('userId').value;
+            
+            userData = {
+                userId: userId,
+                userType: selectedUserType,
+                fullName: document.getElementById('fullName').value,
+                email: email,
+                phone: document.getElementById('phone').value,
+                dob: document.getElementById('dob').value,
+                aadhaar: document.getElementById('aadhaar').value,
+                pan: document.getElementById('pan').value.toUpperCase(),
+                gstin: document.getElementById('gstin').value.toUpperCase() || null,
+                
+                // Common fields
+                planName: document.getElementById('planName').value,
+                planSize: document.getElementById('planSize').value,
+                planType: planType,
+                planDuration: {
+                    years: parseInt(document.getElementById('durationYears').value) || 0,
+                    months: parseInt(document.getElementById('durationMonths').value) || 0,
+                    days: parseInt(document.getElementById('durationDays').value) || 0
+                },
+                planStartDate: document.getElementById('planStartDate').value,
+                planEndDate: document.getElementById('planEndDate').value,
+                planValue: document.getElementById('planValue').value,
+                originalPlanValue: 'INR ' + originalPlanValue,
+                paymentMode: document.getElementById('paymentMode').value,
+                
+                username: document.getElementById('username').value,
+                password: password, // Store plain text password as requested
+                status: 'pending',
+                createdAt: window.firebaseTimestamp(),
+                updatedAt: window.firebaseTimestamp()
+            };
+            
+            // Calculate total days for duration
+            userData.planDuration.totalDays = userData.planDuration.days + 
+                                            (userData.planDuration.months * 30) + 
+                                            (userData.planDuration.years * 365);
+            
+        } else if (selectedUserType === 'company') {
+            email = document.getElementById('companyEmail').value;
+            password = document.getElementById('password').value;
+            userId = document.getElementById('companyUserId').value;
+            
+            userData = {
+                userId: userId,
+                userType: selectedUserType,
+                companyName: document.getElementById('companyName').value,
+                email: email,
+                phone: document.getElementById('companyPhone').value,
+                dateOfIncorporation: document.getElementById('dateOfIncorporation').value,
+                pan: document.getElementById('companyPan').value.toUpperCase(),
+                gstin: document.getElementById('companyGstin').value.toUpperCase() || null,
+                
+                // Common fields
+                planName: document.getElementById('planName').value,
+                planSize: document.getElementById('planSize').value,
+                planType: planType,
+                planDuration: {
+                    years: parseInt(document.getElementById('durationYears').value) || 0,
+                    months: parseInt(document.getElementById('durationMonths').value) || 0,
+                    days: parseInt(document.getElementById('durationDays').value) || 0
+                },
+                planStartDate: document.getElementById('planStartDate').value,
+                planEndDate: document.getElementById('planEndDate').value,
+                planValue: document.getElementById('planValue').value,
+                originalPlanValue: 'INR ' + originalPlanValue,
+                paymentMode: document.getElementById('paymentMode').value,
+                
+                username: document.getElementById('username').value,
+                password: password, // Store plain text password as requested
+                status: 'pending',
+                createdAt: window.firebaseTimestamp(),
+                updatedAt: window.firebaseTimestamp()
+            };
+            
+            // Calculate total days for duration
+            userData.planDuration.totalDays = userData.planDuration.days + 
+                                            (userData.planDuration.months * 30) + 
+                                            (userData.planDuration.years * 365);
+        }
+        
+        console.log('Creating user with email:', email);
+        console.log('User data prepared:', userData);
+        
+        // 2. Create user authentication
+        const userCredential = await window.firebaseCreateUser(
+            window.firebaseAuth, 
+            email, 
+            password
+        );
+        
+        const user = userCredential.user;
+        console.log('User created with ID:', user.uid);
+        
+        // Add Firebase UID to user data
+        userData.firebaseUid = user.uid;
+        
+        // 3. Save to Firestore - Use userId as document ID for admin dashboard
+        console.log('Saving to Firestore...');
+        
+        // Save in both locations:
+        // 1. Under users collection with Firebase UID (for authentication)
+        // 2. Under admin-dashboard collection with userId (for admin panel)
+        
+        await window.firebaseSetDoc(
+            window.firebaseDoc(window.firebaseDb, "users", user.uid), 
+            userData
+        );
+        
+        // Also save to admin-dashboard collection for easy admin access
+        await window.firebaseSetDoc(
+            window.firebaseDoc(window.firebaseDb, "admin-dashboard", userId), 
+            userData
+        );
+        
+        console.log('Data saved successfully to both collections!');
+        
+        // 4. Calculate final price for payment
+        const finalPrice = calculatePlanPrice();
+        
+        // 5. Prepare payment redirect URL
+        const startDate = document.getElementById('planStartDate').value;
+        const endDate = document.getElementById('planEndDate').value;
+        const paymentMode = document.getElementById('paymentMode').value;
+        
+        const paymentUrl = `https://www.odelya.online/payment.html?userId=${userId}&amount=${finalPrice}&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}&planType=${planType}&paymentMethod=${encodeURIComponent(paymentMode)}&userType=${selectedUserType}`;
+        
+        // 6. Save to session storage as backup
+        sessionStorage.setItem('odelya_registration', JSON.stringify({
+            userId: userId,
+            userType: selectedUserType,
+            amount: finalPrice,
+            email: email,
+            startDate: startDate,
+            endDate: endDate,
+            planType: planType,
+            paymentMethod: paymentMode,
+            timestamp: new Date().getTime(),
+            userData: userData
+        }));
+        
+        alert('✅ Registration successful! Redirecting to payment...');
+        
+        // 7. Redirect to payment page
+        setTimeout(() => {
+            window.location.href = paymentUrl;
+        }, 1500);
+        
+    } catch (error) {
+        console.error('Registration error:', error);
+        
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Continue to Payment';
+        updateSubmitButton();
+        
+        // Show user-friendly error messages
+        let errorMessage = 'Registration failed. ';
+        
+        if (error.code === 'auth/email-already-in-use') {
+            errorMessage += 'This email is already registered.';
+        } else if (error.code === 'auth/invalid-email') {
+            errorMessage += 'Please enter a valid email address.';
+        } else if (error.code === 'auth/weak-password') {
+            errorMessage += 'Password is too weak. Use at least 8 characters with uppercase, lowercase, number and special character.';
+        } else if (error.code === 'auth/network-request-failed') {
+            errorMessage += 'Network error. Check your internet connection.';
+        } else if (error.code === 'permission-denied') {
+            errorMessage += 'Firebase permission denied. Please check Firebase rules.';
+        } else {
+            errorMessage += error.message || 'Please try again.';
+        }
+        
+        alert('❌ ' + errorMessage);
+    }
+}
         
         // Setup event listeners
         function setupEventListeners() {
