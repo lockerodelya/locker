@@ -25,11 +25,13 @@
             padding: 15px 30px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             display: flex;
-            justify-content: space-between;
+            justify-content: center; /* Center the content */
             align-items: center;
+            position: relative; /* For logout button positioning */
         }
         .header h1 {
             color: #3a0ca3;
+            text-align: center; /* Center the text */
         }
         .logout-btn {
             background: #dc3545;
@@ -38,6 +40,8 @@
             padding: 8px 20px;
             border-radius: 5px;
             cursor: pointer;
+            position: absolute;
+            right: 30px; /* Position logout button on the right */
         }
         .container {
             max-width: none;
@@ -171,10 +175,6 @@
             background: #f8d7da;
             color: #721c24;
         }
-        .status.suspended {
-            background: #6c757d;
-            color: white;
-        }
         
         /* Responsive adjustments */
         @media (max-width: 1200px) {
@@ -204,6 +204,20 @@
             th, td {
                 padding: 10px 12px;
                 font-size: 13px;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
+            .logout-btn {
+                right: 15px;
+                padding: 6px 15px;
+                font-size: 14px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
             }
         }
         
@@ -478,6 +492,15 @@
             background: #dc3545;
             color: white;
         }
+        
+        /* Section heading centered */
+        .section-heading {
+            text-align: center;
+            margin: 30px 0 15px 0;
+            width: 95%;
+            margin-left: auto;
+            margin-right: auto;
+        }
     </style>
 </head>
 <body>
@@ -493,16 +516,24 @@
                 <div class="number" id="totalUsers">0</div>
             </div>
             <div class="stat-box">
+                <h3>Individual Users</h3>
+                <div class="number" id="individualUsers">0</div>
+            </div>
+            <div class="stat-box">
+                <h3>Company Users</h3>
+                <div class="number" id="companyUsers">0</div>
+            </div>
+            <div class="stat-box">
                 <h3>Active Users</h3>
                 <div class="number" id="activeUsers">0</div>
             </div>
             <div class="stat-box">
-                <h3>Pending</h3>
-                <div class="number" id="pendingUsers">0</div>
+                <h3>Inactive Users</h3>
+                <div class="number" id="inactiveUsers">0</div>
             </div>
         </div>
         
-        <h2 style="margin: 30px 0 15px 0; width: 95%; margin-left: auto; margin-right: auto;">All Registered Users</h2>
+        <h2 class="section-heading">All Registered Users</h2>
         <div class="table-container">
             <table id="usersTable">
                 <thead>
@@ -709,10 +740,7 @@
             if (!isLoggedIn) {
                 window.location.href = "admin-login.html";
             } else {
-                // Show who's logged in
-                const adminEmail = localStorage.getItem('admin_email');
-                document.querySelector('.header h1').innerHTML = 
-                    `Odelya Admin Dashboard <small style="font-size: 14px; color: #666;">(${adminEmail})</small>`;
+                // Removed the email display from header
                 
                 // Setup auto-logout
                 setupAutoLogout();
@@ -795,7 +823,6 @@
                                 <option value="pending" ${value === 'pending' ? 'selected' : ''}>Pending</option>
                                 <option value="active" ${value === 'active' ? 'selected' : ''}>Active</option>
                                 <option value="inactive" ${value === 'inactive' ? 'selected' : ''}>Inactive</option>
-                                <option value="suspended" ${value === 'suspended' ? 'selected' : ''}>Suspended</option>
                             </select>
                         `;
                     } else if (fieldName === 'planName') {
@@ -861,7 +888,6 @@
                         if (value === 'active') { bgColor = '#d4edda'; textColor = '#155724'; }
                         else if (value === 'pending') { bgColor = '#fff3cd'; textColor = '#856404'; }
                         else if (value === 'inactive') { bgColor = '#f8d7da'; textColor = '#721c24'; }
-                        else if (value === 'suspended') { bgColor = '#6c757d'; textColor = 'white'; }
                         style = `background: ${bgColor}; color: ${textColor}; font-weight: bold; padding: 5px 10px; border-radius: 20px; display: inline-block;`;
                     }
                     
@@ -1580,16 +1606,26 @@
                     }
                     
                     let totalUsers = 0;
+                    let individualUsers = 0;
+                    let companyUsers = 0;
                     let activeUsers = 0;
-                    let pendingUsers = 0;
+                    let inactiveUsers = 0;
                     let html = '';
                     
                     querySnapshot.forEach((doc) => {
                         const user = doc.data();
                         totalUsers++;
                         
+                        // Count by user type
+                        if (user.userType === 'individual') {
+                            individualUsers++;
+                        } else if (user.userType === 'company') {
+                            companyUsers++;
+                        }
+                        
+                        // Count by status
                         if (user.status === 'active') activeUsers++;
-                        if (user.status === 'pending') pendingUsers++;
+                        if (user.status === 'inactive') inactiveUsers++;
                         
                         const userType = user.userType || 'individual';
                         const userName = userType === 'individual' ? (user.fullName || 'N/A') : (user.companyName || 'N/A');
@@ -1621,9 +1657,12 @@
                         `;
                     });
                     
+                    // Update all statistic boxes
                     document.getElementById('totalUsers').textContent = totalUsers;
+                    document.getElementById('individualUsers').textContent = individualUsers;
+                    document.getElementById('companyUsers').textContent = companyUsers;
                     document.getElementById('activeUsers').textContent = activeUsers;
-                    document.getElementById('pendingUsers').textContent = pendingUsers;
+                    document.getElementById('inactiveUsers').textContent = inactiveUsers;
                     
                     document.getElementById('usersList').innerHTML = html;
                     
