@@ -261,20 +261,38 @@
         }
         
         .user-id-header {
-            font-size: 14px;
-            color: #666;
+            font-size: 16px; /* Increased font size */
+            color: #3a0ca3; /* Changed to match heading color */
             background: #f8f9fa;
-            padding: 5px 15px;
+            padding: 8px 20px; /* Increased padding */
             border-radius: 20px;
-            border: 1px solid #ddd;
+            border: 2px solid #4361ee; /* Thicker border */
+            font-weight: bold;
+            margin-right: 20px; /* Space before status */
         }
         
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #666;
+        .modal-status {
+            font-size: 14px;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+            min-width: 100px;
+            text-align: center;
+        }
+        
+        .modal-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .modal-status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .modal-status.inactive {
+            background: #f8d7da;
+            color: #721c24;
         }
         
         .user-details {
@@ -565,7 +583,7 @@
             <div class="modal-header">
                 <h2>User Details</h2>
                 <div class="user-id-header" id="modalUserIdDisplay">User ID: Loading...</div>
-                <button class="close-modal" onclick="closeModal()">&times;</button>
+                <div class="modal-status" id="modalStatusDisplay">Status</div>
             </div>
             
             <div class="user-details" id="userDetails">
@@ -740,8 +758,6 @@
             if (!isLoggedIn) {
                 window.location.href = "admin-login.html";
             } else {
-                // Removed the email display from header
-                
                 // Setup auto-logout
                 setupAutoLogout();
                 
@@ -785,8 +801,13 @@
                         user.id = userId;
                         currentUserData = user;
                         
-                        // Update user ID in header
+                        // Update user ID in header (left side)
                         document.getElementById('modalUserIdDisplay').textContent = `User ID: ${user.userId || 'N/A'}`;
+                        
+                        // Update status in header (right side)
+                        const statusDisplay = document.getElementById('modalStatusDisplay');
+                        statusDisplay.textContent = user.status || 'pending';
+                        statusDisplay.className = 'modal-status ' + (user.status || 'pending');
                         
                         showUserModal(user, false);
                     } else {
@@ -961,26 +982,17 @@
             
             // RIGHT COLUMN - Account & Plan Information (Common for both)
             html += `<div class="right-column">`;
-            html += createField('User ID', 'userId', user.userId);
-            html += createField('Status', 'status', user.status);
+            // Removed User ID from here (now in header)
+            // Removed Status from here (now in header)
             html += createField('Plan Name', 'planName', user.planName);
             html += createField('Plan Size', 'planSize', user.planSize);
             html += createField('Plan Type', 'planType', user.planType);
-            html += createField('Plan Value', 'planValue', user.planValue);
             html += createField('Plan Start Date', 'planStartDate', user.planStartDate);
             html += createField('Plan End Date', 'planEndDate', user.planEndDate);
+            html += createField('Plan Value', 'planValue', user.planValue); // Moved before payment mode
+            html += createField('Payment Mode', 'paymentMode', user.paymentMode);
             
-            // Show plan duration if available
-            if (user.planDuration) {
-                const duration = user.planDuration;
-                const durationText = `${duration.years || 0} years, ${duration.months || 0} months, ${duration.days || 0} days`;
-                html += `
-                    <div class="detail-group">
-                        <label>Plan Duration</label>
-                        <div class="value">${durationText}</div>
-                    </div>
-                `;
-            }
+            // Removed plan duration section
             
             // Registered On (formatted)
             if (user.createdAt) {
@@ -1002,8 +1014,6 @@
                 `;
             }
             
-            // Payment Mode
-            html += createField('Payment Mode', 'paymentMode', user.paymentMode);
             html += `</div>`;
             
             // Agreement row - spans both columns
@@ -1145,6 +1155,11 @@
                     // Update local data
                     currentUserData = { ...currentUserData, ...updates };
                     
+                    // Update status display in header
+                    const statusDisplay = document.getElementById('modalStatusDisplay');
+                    statusDisplay.textContent = updates.status || currentUserData.status;
+                    statusDisplay.className = 'modal-status ' + (updates.status || currentUserData.status);
+                    
                     // Switch back to view mode
                     currentPasswordVisible = false;
                     showUserModal(currentUserData, false);
@@ -1236,6 +1251,11 @@
                     
                     // Update local data
                     currentUserData.status = 'active';
+                    
+                    // Update status display in header
+                    const statusDisplay = document.getElementById('modalStatusDisplay');
+                    statusDisplay.textContent = 'active';
+                    statusDisplay.className = 'modal-status active';
                     
                     // Refresh modal
                     showUserModal(currentUserData, false);
@@ -1447,11 +1467,11 @@
                     {label: 'Plan Name', value: currentUserData.planName || 'N/A'},
                     {label: 'Plan Size', value: currentUserData.planSize || 'N/A'},
                     {label: 'Plan Type', value: currentUserData.planType || 'N/A'},
-                    {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
                     {label: 'Plan Start Date', value: currentUserData.planStartDate || 'N/A'},
                     {label: 'Plan End Date', value: currentUserData.planEndDate || 'N/A'},
-                    {label: 'Registered On', value: currentUserData.createdAt ? formatDateTime(currentUserData.createdAt) : 'N/A'},
-                    {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'}
+                    {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
+                    {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'},
+                    {label: 'Registered On', value: currentUserData.createdAt ? formatDateTime(currentUserData.createdAt) : 'N/A'}
                 ];
                 
                 // Calculate max label width for this section
