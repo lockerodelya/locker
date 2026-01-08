@@ -332,6 +332,27 @@
             display: flex;
             flex-direction: column;
         }
+        
+        /* User Type Badge Styles */
+        .user-type-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        .user-type-individual {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .user-type-company {
+            background: #6f42c1;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -361,6 +382,7 @@
             <thead>
                 <tr>
                     <th>User ID</th>
+                    <th>User Type</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
@@ -371,7 +393,7 @@
             </thead>
             <tbody id="usersList">
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 40px;">
+                    <td colspan="8" style="text-align: center; padding: 40px;">
                         Loading users...
                     </td>
                 </tr>
@@ -628,11 +650,12 @@
         
         // Show user details in modal
         function showUserModal(user, editMode = false) {
-            console.log("Showing user modal. Edit mode:", editMode);
+            console.log("Showing user modal. Edit mode:", editMode, "User type:", user.userType);
             isEditMode = editMode;
             currentUserId = user.id;
             
             let html = '';
+            const userType = user.userType || 'individual';
             
             // Helper function to create field with clear button
             function createField(label, fieldName, value, type = 'text', canClear = false) {
@@ -669,8 +692,8 @@
                     } else if (fieldName === 'userType') {
                         fieldHtml = `
                             <select id="edit_${fieldName}">
-                                <option value="new user" ${value === 'new user' ? 'selected' : ''}>New User</option>
-                                <option value="existing user" ${value === 'existing user' ? 'selected' : ''}>Existing User</option>
+                                <option value="individual" ${value === 'individual' ? 'selected' : ''}>Individual</option>
+                                <option value="company" ${value === 'company' ? 'selected' : ''}>Company</option>
                             </select>
                         `;
                     } else if (fieldName === 'password') {
@@ -682,8 +705,8 @@
                         fieldHtml = `<input type="${type}" id="edit_${fieldName}" value="${value || ''}">`;
                     }
                     
-                    // Add clear button for fields that can be cleared (except DOB)
-                    if (canClear && value && fieldName !== 'dob') {
+                    // Add clear button for fields that can be cleared (except DOB and DOI)
+                    if (canClear && value && fieldName !== 'dob' && fieldName !== 'dateOfIncorporation') {
                         return `
                             <div class="detail-group">
                                 <label>${label}</label>
@@ -731,8 +754,8 @@
                         `;
                     }
                     
-                    // For view mode, show clear button only for fields that can be cleared (except DOB)
-                    if (canClear && value && fieldName !== 'dob') {
+                    // For view mode, show clear button only for fields that can be cleared
+                    if (canClear && value && fieldName !== 'dob' && fieldName !== 'dateOfIncorporation') {
                         return `
                             <div class="detail-group">
                                 <label>${label}</label>
@@ -753,27 +776,58 @@
                 }
             }
             
-            // LEFT COLUMN - Personal Information
+            // LEFT COLUMN - User Type Specific Information
             html += `<div class="left-column">`;
-            html += createField('Full Name', 'fullName', user.fullName);
-            html += createField('Email', 'email', user.email, 'email');
-            html += createField('Phone', 'phone', user.phone, 'tel');
-            html += createField('Date of Birth', 'dob', user.dob, 'text', true);
-            html += createField('Aadhaar Number', 'aadhaar', user.aadhaar, 'text', true);
-            html += createField('PAN Number', 'pan', user.pan, 'text', true);
-            html += createField('GSTIN', 'gstin', user.gstin, 'text', true);
+            
+            // User Type selector
+            html += createField('User Type', 'userType', userType, 'select');
+            
+            if (userType === 'individual') {
+                // Individual fields
+                html += createField('Full Name', 'fullName', user.fullName);
+                html += createField('Email', 'email', user.email, 'email');
+                html += createField('Phone', 'phone', user.phone, 'tel');
+                html += createField('Date of Birth', 'dob', user.dob, 'text', true);
+                html += createField('Aadhaar Number', 'aadhaar', user.aadhaar, 'text', true);
+                html += createField('PAN Number', 'pan', user.pan, 'text', true);
+                html += createField('GSTIN', 'gstin', user.gstin, 'text', true);
+            } else if (userType === 'company') {
+                // Company fields
+                html += createField('Company Name', 'companyName', user.companyName);
+                html += createField('Email', 'email', user.email, 'email');
+                html += createField('Phone', 'phone', user.phone, 'tel');
+                html += createField('Date of Incorporation', 'dateOfIncorporation', user.dateOfIncorporation, 'text', true);
+                html += createField('PAN Number', 'pan', user.pan, 'text', true);
+                html += createField('GSTIN', 'gstin', user.gstin, 'text', true);
+            }
+            
+            // Common fields for both user types
             html += createField('Username', 'username', user.username);
             html += createField('Password', 'password', user.password);
             html += `</div>`;
             
-            // RIGHT COLUMN - Account & Plan Information
+            // RIGHT COLUMN - Account & Plan Information (Common for both)
             html += `<div class="right-column">`;
+            html += createField('User ID', 'userId', user.userId);
             html += createField('Status', 'status', user.status);
             html += createField('Plan Name', 'planName', user.planName);
             html += createField('Plan Size', 'planSize', user.planSize);
+            html += createField('Plan Type', 'planType', user.planType);
             html += createField('Plan Value', 'planValue', user.planValue);
             html += createField('Plan Start Date', 'planStartDate', user.planStartDate);
             html += createField('Plan End Date', 'planEndDate', user.planEndDate);
+            
+            // Show plan duration if available
+            if (user.planDuration) {
+                const duration = user.planDuration;
+                const durationText = `${duration.years || 0} years, ${duration.months || 0} months, ${duration.days || 0} days`;
+                html += `
+                    <div class="detail-group">
+                        <label>Plan Duration</label>
+                        <div class="value">${durationText}</div>
+                    </div>
+                `;
+            }
             
             // Registered On (formatted)
             if (user.createdAt) {
@@ -785,14 +839,21 @@
                 `;
             }
             
-            // New/Existing User dropdown
-            html += createField('User Type', 'userType', user.userType || 'new user', 'select');
+            // Updated At (if available)
+            if (user.updatedAt) {
+                html += `
+                    <div class="detail-group">
+                        <label>Last Updated</label>
+                        <div class="value">${formatDateTime(user.updatedAt)}</div>
+                    </div>
+                `;
+            }
             
             // Payment Mode
             html += createField('Payment Mode', 'paymentMode', user.paymentMode);
             html += `</div>`;
             
- // Agreement row - spans both columns
+            // Agreement row - spans both columns
             html += `<div class="agreement-row">`;
             html += `<span class="tick-mark">✓</span>`;
             html += `<span>I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.</span>`;
@@ -872,16 +933,13 @@
             if (!currentUserId) return;
             logAdminAction('UPDATE_USER', `Updated user: ${currentUserData.email}`);
             
+            // Get user type
+            const userType = document.getElementById('edit_userType')?.value || 'individual';
+            
             // Collect all edited values
             const updates = {
                 userId: document.getElementById('edit_userId')?.value || '',
-                fullName: document.getElementById('edit_fullName')?.value || '',
-                email: document.getElementById('edit_email')?.value || '',
-                phone: document.getElementById('edit_phone')?.value || '',
-                dob: document.getElementById('edit_dob')?.value || null,
-                aadhaar: document.getElementById('edit_aadhaar')?.value || null,
-                pan: document.getElementById('edit_pan')?.value || null,
-                gstin: document.getElementById('edit_gstin')?.value || null,
+                userType: userType,
                 username: document.getElementById('edit_username')?.value || '',
                 password: document.getElementById('edit_password')?.value || '',
                 status: document.getElementById('edit_status')?.value || 'pending',
@@ -890,10 +948,27 @@
                 planValue: document.getElementById('edit_planValue')?.value || '',
                 planStartDate: document.getElementById('edit_planStartDate')?.value || '',
                 planEndDate: document.getElementById('edit_planEndDate')?.value || '',
-                userType: document.getElementById('edit_userType')?.value || 'new user',
                 paymentMode: document.getElementById('edit_paymentMode')?.value || '',
                 updatedAt: new Date().toISOString()
             };
+            
+            // Add user type specific fields
+            if (userType === 'individual') {
+                updates.fullName = document.getElementById('edit_fullName')?.value || '';
+                updates.email = document.getElementById('edit_email')?.value || '';
+                updates.phone = document.getElementById('edit_phone')?.value || '';
+                updates.dob = document.getElementById('edit_dob')?.value || null;
+                updates.aadhaar = document.getElementById('edit_aadhaar')?.value || null;
+                updates.pan = document.getElementById('edit_pan')?.value || null;
+                updates.gstin = document.getElementById('edit_gstin')?.value || null;
+            } else if (userType === 'company') {
+                updates.companyName = document.getElementById('edit_companyName')?.value || '';
+                updates.email = document.getElementById('edit_email')?.value || '';
+                updates.phone = document.getElementById('edit_phone')?.value || '';
+                updates.dateOfIncorporation = document.getElementById('edit_dateOfIncorporation')?.value || null;
+                updates.pan = document.getElementById('edit_pan')?.value || null;
+                updates.gstin = document.getElementById('edit_gstin')?.value || null;
+            }
             
             // Remove empty values
             Object.keys(updates).forEach(key => {
@@ -1039,11 +1114,11 @@
             }
         };
         
-        // Clear field directly from view mode (except DOB)
+        // Clear field directly from view mode (except DOB and DOI)
         window.clearFieldDirect = function(fieldName) {
             if (!currentUserId) return;
-            if (fieldName === 'dob') {
-                alert("DOB cannot be cleared as it is an essential field.");
+            if (fieldName === 'dob' || fieldName === 'dateOfIncorporation') {
+                alert("Date field cannot be cleared as it is an essential field.");
                 return;
             }
             
@@ -1077,233 +1152,255 @@
             }
         };
         
-// Generate PDF for current user - COMPACT SINGLE PAGE LAYOUT
-window.generatePDF = function() {
-    if (!currentUserData) return;
-    logAdminAction('GENERATE_PDF', `Generated PDF for user: ${currentUserData.email}`);
-    
-    // Show loading
-    const originalText = event.target.textContent;
-    event.target.textContent = "Creating PDF...";
-    event.target.disabled = true;
-    
-    try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        // Set margins
-        const leftMargin = 20;
-        const rightMargin = 20;
-        const topMargin = 20;
-        const pageWidth = doc.internal.pageSize.width;
-        const pageHeight = doc.internal.pageSize.height;
-        const centerX = pageWidth / 2;
-        
-        // HEADER - Top Section
-        doc.setFontSize(16);
-        doc.setTextColor(58, 12, 163); // #3a0ca3
-        doc.text('ODELYA CLOUD STORAGE', centerX, topMargin, { align: 'center' });
-        
-        doc.setFontSize(14);
-        doc.setTextColor(0, 0, 0);
-        doc.text('USER REGISTRATION DETAILS', centerX, topMargin + 8, { align: 'center' });
-        
-        // Timestamp
-        doc.setFontSize(9);
-        doc.setTextColor(100, 100, 100);
-        const generatedDateTime = formatDateTimeForPDFHeader(new Date());
-        doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 16, { align: 'center' });
-        
-        // User ID
-        doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 24, { align: 'center' });
-        
-        let y = topMargin + 40;
-        
-        // Draw a thin line separator
-        doc.setDrawColor(200, 200, 200);
-        doc.line(leftMargin, y, pageWidth - rightMargin, y);
-        y += 10;
-        
-        // SECTION 1: PERSONAL INFORMATION - Compact layout
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(58, 12, 163);
-        doc.text('PERSONAL INFORMATION', leftMargin, y);
-        y += 8;
-        
-        doc.setFontSize(10);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(0, 0, 0);
-        
-        // Personal Info in compact format
-        const personalData = [
-            {label: 'Full Name', value: currentUserData.fullName || 'N/A'},
-            {label: 'Email', value: currentUserData.email || 'N/A'},
-            {label: 'Phone', value: currentUserData.phone || 'N/A'},
-            {label: 'Date of Birth', value: currentUserData.dob || 'N/A'},
-            {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
-            {label: 'PAN', value: currentUserData.pan || 'N/A'},
-            {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
-            {label: 'Username', value: currentUserData.username || 'N/A'},
-            {label: 'Password', value: currentUserData.password || 'N/A'}
-        ];
-        
-        // Calculate max label width for alignment
-        doc.setFont('helvetica', 'bold');
-        let maxLabelWidth = 0;
-        personalData.forEach(item => {
-            const width = doc.getTextWidth(item.label + ': ');
-            if (width > maxLabelWidth) maxLabelWidth = width;
-        });
-        
-        const valueStartX = leftMargin + maxLabelWidth + 2;
-        
-        // Draw personal info - all in single lines
-        personalData.forEach(item => {
-            // Label
-            doc.setFont('helvetica', 'bold');
-            doc.text(item.label + ':', leftMargin, y);
+        // Generate PDF for current user - COMPACT SINGLE PAGE LAYOUT
+        window.generatePDF = function() {
+            if (!currentUserData) return;
+            logAdminAction('GENERATE_PDF', `Generated PDF for user: ${currentUserData.email}`);
             
-            // Value (truncate if too long)
-            doc.setFont('helvetica', 'normal');
-            const maxValueWidth = pageWidth - valueStartX - rightMargin;
-            let displayValue = item.value;
+            // Show loading
+            const originalText = event.target.textContent;
+            event.target.textContent = "Creating PDF...";
+            event.target.disabled = true;
             
-            if (displayValue.length > 30 && item.label !== 'Email') {
-                displayValue = displayValue.substring(0, 30) + '...';
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Set margins
+                const leftMargin = 20;
+                const rightMargin = 20;
+                const topMargin = 20;
+                const pageWidth = doc.internal.pageSize.width;
+                const pageHeight = doc.internal.pageSize.height;
+                const centerX = pageWidth / 2;
+                
+                // HEADER - Top Section
+                doc.setFontSize(16);
+                doc.setTextColor(58, 12, 163); // #3a0ca3
+                doc.text('ODELYA CLOUD STORAGE', centerX, topMargin, { align: 'center' });
+                
+                doc.setFontSize(14);
+                doc.setTextColor(0, 0, 0);
+                doc.text('USER REGISTRATION DETAILS', centerX, topMargin + 8, { align: 'center' });
+                
+                // Timestamp
+                doc.setFontSize(9);
+                doc.setTextColor(100, 100, 100);
+                const generatedDateTime = formatDateTimeForPDFHeader(new Date());
+                doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 16, { align: 'center' });
+                
+                // User ID
+                doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 24, { align: 'center' });
+                
+                let y = topMargin + 40;
+                
+                // Draw a thin line separator
+                doc.setDrawColor(200, 200, 200);
+                doc.line(leftMargin, y, pageWidth - rightMargin, y);
+                y += 10;
+                
+                // SECTION 1: PERSONAL INFORMATION - Compact layout
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(58, 12, 163);
+                doc.text('PERSONAL INFORMATION', leftMargin, y);
+                y += 8;
+                
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(0, 0, 0);
+                
+                // Personal Info in compact format - based on user type
+                const userType = currentUserData.userType || 'individual';
+                let personalData = [];
+
+                if (userType === 'individual') {
+                    personalData = [
+                        {label: 'User Type', value: 'Individual'},
+                        {label: 'Full Name', value: currentUserData.fullName || 'N/A'},
+                        {label: 'Email', value: currentUserData.email || 'N/A'},
+                        {label: 'Phone', value: currentUserData.phone || 'N/A'},
+                        {label: 'Date of Birth', value: currentUserData.dob || 'N/A'},
+                        {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
+                        {label: 'PAN', value: currentUserData.pan || 'N/A'},
+                        {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
+                        {label: 'Username', value: currentUserData.username || 'N/A'},
+                        {label: 'Password', value: currentUserData.password || 'N/A'}
+                    ];
+                } else if (userType === 'company') {
+                    personalData = [
+                        {label: 'User Type', value: 'Company'},
+                        {label: 'Company Name', value: currentUserData.companyName || 'N/A'},
+                        {label: 'Email', value: currentUserData.email || 'N/A'},
+                        {label: 'Phone', value: currentUserData.phone || 'N/A'},
+                        {label: 'Date of Incorp.', value: currentUserData.dateOfIncorporation || 'N/A'},
+                        {label: 'PAN', value: currentUserData.pan || 'N/A'},
+                        {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
+                        {label: 'Username', value: currentUserData.username || 'N/A'},
+                        {label: 'Password', value: currentUserData.password || 'N/A'}
+                    ];
+                }
+                
+                // Calculate max label width for alignment
+                doc.setFont('helvetica', 'bold');
+                let maxLabelWidth = 0;
+                personalData.forEach(item => {
+                    const width = doc.getTextWidth(item.label + ': ');
+                    if (width > maxLabelWidth) maxLabelWidth = width;
+                });
+                
+                const valueStartX = leftMargin + maxLabelWidth + 2;
+                
+                // Draw personal info - all in single lines
+                personalData.forEach(item => {
+                    // Label
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(item.label + ':', leftMargin, y);
+                    
+                    // Value (truncate if too long)
+                    doc.setFont('helvetica', 'normal');
+                    const maxValueWidth = pageWidth - valueStartX - rightMargin;
+                    let displayValue = item.value;
+                    
+                    if (displayValue.length > 30 && item.label !== 'Email') {
+                        displayValue = displayValue.substring(0, 30) + '...';
+                    }
+                    
+                    doc.text(displayValue, valueStartX, y);
+                    y += 6;
+                });
+                
+                y += 4; // Small gap
+                
+                // Draw another separator line
+                doc.setDrawColor(200, 200, 200);
+                doc.line(leftMargin, y, pageWidth - rightMargin, y);
+                y += 10;
+                
+                // SECTION 2: ACCOUNT & PLAN DETAILS
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(58, 12, 163);
+                doc.text('ACCOUNT & PLAN DETAILS', leftMargin, y);
+                y += 8;
+                
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(0, 0, 0);
+                
+                // Account Info in compact format
+                const accountData = [
+                    {label: 'Status', value: (currentUserData.status || 'pending').toUpperCase()},
+                    {label: 'Plan Name', value: currentUserData.planName || 'N/A'},
+                    {label: 'Plan Size', value: currentUserData.planSize || 'N/A'},
+                    {label: 'Plan Type', value: currentUserData.planType || 'N/A'},
+                    {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
+                    {label: 'Plan Start Date', value: currentUserData.planStartDate || 'N/A'},
+                    {label: 'Plan End Date', value: currentUserData.planEndDate || 'N/A'},
+                    {label: 'Registered On', value: currentUserData.createdAt ? formatDateTime(currentUserData.createdAt) : 'N/A'},
+                    {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'}
+                ];
+                
+                // Calculate max label width for this section
+                doc.setFont('helvetica', 'bold');
+                maxLabelWidth = 0;
+                accountData.forEach(item => {
+                    const width = doc.getTextWidth(item.label + ': ');
+                    if (width > maxLabelWidth) maxLabelWidth = width;
+                });
+                
+                const accValueStartX = leftMargin + maxLabelWidth + 2;
+                
+                // Draw account info - all in single lines
+                accountData.forEach(item => {
+                    // Label
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(item.label + ':', leftMargin, y);
+                    
+                    // Value (truncate if too long)
+                    doc.setFont('helvetica', 'normal');
+                    const maxValueWidth = pageWidth - accValueStartX - rightMargin;
+                    let displayValue = item.value;
+                    
+                    if (displayValue.length > 30) {
+                        displayValue = displayValue.substring(0, 30) + '...';
+                    }
+                    
+                    doc.text(displayValue, accValueStartX, y);
+                    y += 6;
+                });
+                
+                y += 4; // Small gap
+                
+                // Draw final separator line
+                doc.setDrawColor(200, 200, 200);
+                doc.line(leftMargin, y, pageWidth - rightMargin, y);
+                y += 10;
+                
+                // AGREEMENT SECTION - With drawn tick mark
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text('AGREEMENT', leftMargin, y);
+                y += 6;
+                
+                doc.setFont('helvetica', 'normal');
+                
+                // First draw the text without tick mark
+                const line1 = 'I agree to the Terms & Conditions, Privacy Policy,';
+                const line2 = 'Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
+                
+                // Draw a manual tick mark (small check symbol)
+                doc.setDrawColor(0, 128, 0); // Green color for tick
+                doc.setLineWidth(0.5);
+                const tickX = leftMargin;
+                const tickY = y - 1;
+                
+                // Draw a small checkmark: two short lines forming a check
+                doc.line(tickX, tickY + 2, tickX + 1, tickY + 3); // Diagonal up
+                doc.line(tickX + 1, tickY + 3, tickX + 3, tickY); // Diagonal down
+                
+                // Now draw the text starting after the tick mark
+                doc.setTextColor(0, 0, 0);
+                doc.text(line1, leftMargin + 5, y); // Start 5px after tick mark
+                y += 5;
+                doc.text(line2, leftMargin, y); // Second line starts at normal margin
+                y += 8;
+                
+                // FOOTER - Bottom of page
+                const footerY = pageHeight - 15;
+                
+                doc.setFontSize(8);
+                doc.setTextColor(100, 100, 100);
+                const adminEmail = localStorage.getItem('admin_email') || 'Admin';
+                
+                // Generated by
+                doc.text(`Generated by: ${adminEmail}`, leftMargin, footerY);
+                
+                // Page info
+                doc.text(`Page 1 of 1`, centerX, footerY, { align: 'center' });
+                
+                // Save PDF
+                const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
+                let nameForFile = '';
+                if (userType === 'individual') {
+                    nameForFile = (currentUserData.fullName || 'individual_user').replace(/\s+/g, '_');
+                } else {
+                    nameForFile = (currentUserData.companyName || 'company_user').replace(/\s+/g, '_');
+                }
+                const fileName = `${phoneNumber}_${nameForFile}.pdf`;
+                doc.save(fileName);
+                
+                console.log("PDF generated successfully!");
+                
+            } catch (error) {
+                console.error("Error generating PDF:", error);
+                alert("❌ Error generating PDF: " + error.message);
+            } finally {
+                // Restore button
+                event.target.textContent = originalText;
+                event.target.disabled = false;
             }
-            
-            doc.text(displayValue, valueStartX, y);
-            y += 6;
-        });
-        
-        y += 4; // Small gap
-        
-        // Draw another separator line
-        doc.setDrawColor(200, 200, 200);
-        doc.line(leftMargin, y, pageWidth - rightMargin, y);
-        y += 10;
-        
-        // SECTION 2: ACCOUNT & PLAN DETAILS
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(58, 12, 163);
-        doc.text('ACCOUNT & PLAN DETAILS', leftMargin, y);
-        y += 8;
-        
-        doc.setFontSize(10);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(0, 0, 0);
-        
-        // Account Info in compact format
-        const accountData = [
-            {label: 'Status', value: (currentUserData.status || 'pending').toUpperCase()},
-            {label: 'Plan Name', value: currentUserData.planName || 'N/A'},
-            {label: 'Plan Size', value: currentUserData.planSize || 'N/A'},
-            {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
-            {label: 'Plan Start Date', value: currentUserData.planStartDate || 'N/A'},
-            {label: 'Plan End Date', value: currentUserData.planEndDate || 'N/A'},
-            {label: 'Registered On', value: currentUserData.createdAt ? formatDateTime(currentUserData.createdAt) : 'N/A'},
-            {label: 'User Type', value: currentUserData.userType || 'new user'},
-            {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'}
-        ];
-        
-        // Calculate max label width for this section
-        doc.setFont('helvetica', 'bold');
-        maxLabelWidth = 0;
-        accountData.forEach(item => {
-            const width = doc.getTextWidth(item.label + ': ');
-            if (width > maxLabelWidth) maxLabelWidth = width;
-        });
-        
-        const accValueStartX = leftMargin + maxLabelWidth + 2;
-        
-        // Draw account info - all in single lines
-        accountData.forEach(item => {
-            // Label
-            doc.setFont('helvetica', 'bold');
-            doc.text(item.label + ':', leftMargin, y);
-            
-            // Value (truncate if too long)
-            doc.setFont('helvetica', 'normal');
-            const maxValueWidth = pageWidth - accValueStartX - rightMargin;
-            let displayValue = item.value;
-            
-            if (displayValue.length > 30) {
-                displayValue = displayValue.substring(0, 30) + '...';
-            }
-            
-            doc.text(displayValue, accValueStartX, y);
-            y += 6;
-        });
-        
-        y += 4; // Small gap
-        
-        // Draw final separator line
-        doc.setDrawColor(200, 200, 200);
-        doc.line(leftMargin, y, pageWidth - rightMargin, y);
-        y += 10;
-        
-
-// AGREEMENT SECTION - With drawn tick mark
-doc.setFontSize(10);
-doc.setFont('helvetica', 'bold');
-doc.text('AGREEMENT', leftMargin, y);
-y += 6;
-
-doc.setFont('helvetica', 'normal');
-
-// First draw the text without tick mark
-const line1 = 'I agree to the Terms & Conditions, Privacy Policy,';
-const line2 = 'Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
-
-// Draw a manual tick mark (small check symbol)
-doc.setDrawColor(0, 128, 0); // Green color for tick
-doc.setLineWidth(0.5);
-const tickX = leftMargin;
-const tickY = y - 1;
-
-// Draw a small checkmark: two short lines forming a check
-doc.line(tickX, tickY + 2, tickX + 1, tickY + 3); // Diagonal up
-doc.line(tickX + 1, tickY + 3, tickX + 3, tickY); // Diagonal down
-
-// Now draw the text starting after the tick mark
-doc.setTextColor(0, 0, 0);
-doc.text(line1, leftMargin + 5, y); // Start 5px after tick mark
-y += 5;
-doc.text(line2, leftMargin, y); // Second line starts at normal margin
-y += 8;
-        
-        // FOOTER - Bottom of page
-        const footerY = pageHeight - 15;
-        
-        doc.setFontSize(8);
-        doc.setTextColor(100, 100, 100);
-        const adminEmail = localStorage.getItem('admin_email') || 'Admin';
-        
-        // Generated by
-        doc.text(`Generated by: ${adminEmail}`, leftMargin, footerY);
-        
-        // Page info
-        doc.text(`Page 1 of 1`, centerX, footerY, { align: 'center' });
-        
-        // Save PDF
-        const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
-        const fullName = (currentUserData.fullName || 'user').replace(/\s+/g, '_');
-        const fileName = `${phoneNumber}_${fullName}.pdf`;
-        doc.save(fileName);
-        
-        console.log("PDF generated successfully!");
-        
-    } catch (error) {
-        console.error("Error generating PDF:", error);
-        alert("❌ Error generating PDF: " + error.message);
-    } finally {
-        // Restore button
-        event.target.textContent = originalText;
-        event.target.disabled = false;
-    }
-};
+        };
       
         // Quick delete from table
         window.quickDelete = function(userId, userName) {
@@ -1333,7 +1430,7 @@ y += 8;
             
             document.getElementById('usersList').innerHTML = `
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 40px;">
+                    <td colspan="8" style="text-align: center; padding: 40px;">
                         🔄 Loading users from database...
                     </td>
                 </tr>
@@ -1347,7 +1444,7 @@ y += 8;
                     if (querySnapshot.empty) {
                         document.getElementById('usersList').innerHTML = `
                             <tr>
-                                <td colspan="7" style="text-align: center; padding: 40px;">
+                                <td colspan="8" style="text-align: center; padding: 40px;">
                                     📭 No users found in database yet
                                 </td>
                             </tr>
@@ -1367,10 +1464,18 @@ y += 8;
                         if (user.status === 'active') activeUsers++;
                         if (user.status === 'pending') pendingUsers++;
                         
+                        const userType = user.userType || 'individual';
+                        const userName = userType === 'individual' ? (user.fullName || 'N/A') : (user.companyName || 'N/A');
+                        
                         html += `
                             <tr>
                                 <td>${user.userId || 'N/A'}</td>
-                                <td>${user.fullName || 'N/A'}</td>
+                                <td>
+                                    <span class="user-type-badge user-type-${userType}">
+                                        ${userType.toUpperCase()}
+                                    </span>
+                                </td>
+                                <td>${userName}</td>
                                 <td>${user.email || 'N/A'}</td>
                                 <td>${user.phone || 'N/A'}</td>
                                 <td>${user.planName || 'N/A'}</td>
@@ -1383,7 +1488,7 @@ y += 8;
                                     <button onclick="viewUserDetails('${doc.id}')" style="padding: 5px 10px; background: #4361ee; color: white; border: none; border-radius: 3px; cursor: pointer; margin-right: 5px;">
                                         View
                                     </button>
-                                    <button onclick="quickDelete('${doc.id}', '${user.fullName || user.email}')" style="padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                                    <button onclick="quickDelete('${doc.id}', '${userName}')" style="padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer;">
                                         Delete
                                     </button>
                                 </td>
@@ -1403,7 +1508,7 @@ y += 8;
                     console.error("Error loading users:", error);
                     document.getElementById('usersList').innerHTML = `
                         <tr>
-                            <td colspan="7" style="text-align: center; padding: 40px; color: #dc3545;">
+                            <td colspan="8" style="text-align: center; padding: 40px; color: #dc3545;">
                                 ❌ Error loading users: ${error.message}
                             </td>
                         </tr>
