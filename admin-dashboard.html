@@ -976,7 +976,7 @@
             const userType = user.userType || 'individual';
             
             // Helper function to create field
-            function createField(label, fieldName, value, type = 'text', canClear = false) {
+            function createField(label, fieldName, value, type = 'text', canClear = false, isStable = false) {
                 if (editMode) {
                     let fieldHtml = '';
                     
@@ -1018,11 +1018,15 @@
                             <input type="password" id="edit_${fieldName}" value="${value || ''}" style="font-family: monospace;">
                             <button type="button" class="show-password-btn" onclick="togglePasswordVisibility('edit_${fieldName}', this)">👁️ Show</button>
                         `;
+                    } else if (isStable) {
+                        // For stable fields (Aadhaar, PAN, GSTIN), make them read-only
+                        fieldHtml = `<input type="${type}" id="edit_${fieldName}" value="${value || ''}" readonly style="background: #f8f9fa; color: #666;">`;
                     } else {
                         fieldHtml = `<input type="${type}" id="edit_${fieldName}" value="${value || ''}">`;
                     }
                     
-                    if (canClear && value && fieldName !== 'dob' && fieldName !== 'dateOfIncorporation') {
+                    if (canClear && value && fieldName !== 'dob' && fieldName !== 'dateOfIncorporation' && !isStable) {
+                        // Don't add clear button for stable fields
                         return `
                             <div class="detail-group">
                                 <label>${label}</label>
@@ -1069,13 +1073,14 @@
                         `;
                     }
                     
-                    if (canClear && value && fieldName !== 'dob' && fieldName !== 'dateOfIncorporation') {
+                    if (canClear && value && fieldName !== 'dob' && fieldName !== 'dateOfIncorporation' && !isStable) {
+                        // Don't show clear button for stable fields
                         return `
                             <div class="detail-group">
                                 <label>${label}</label>
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <div class="value" style="${style}; flex: 1;">${displayValue}</div>
-                                    <button class="clear-btn" onclick="clearFieldDirect('${fieldName}')" title="Clear this field" style="background: #6c757d;">×</button>
+                                    ${!isStable ? '<button class="clear-btn" onclick="clearFieldDirect(\'' + fieldName + '\')" title="Clear this field" style="background: #6c757d;">×</button>' : ''}
                                 </div>
                             </div>
                         `;
@@ -1100,16 +1105,18 @@
                 html += createField('Email', 'email', user.email, 'email');
                 html += createField('Phone', 'phone', user.phone, 'tel');
                 html += createField('Date of Birth', 'dob', user.dob, 'text', true);
-                html += createField('Aadhaar Number', 'aadhaar', user.aadhaar, 'text', true);
-                html += createField('PAN Number', 'pan', user.pan, 'text', true);
-                html += createField('GSTIN', 'gstin', user.gstin, 'text', true);
+                // STABLE FIELDS - Aadhaar, PAN, GSTIN (no clear option)
+                html += createField('Aadhaar Number', 'aadhaar', user.aadhaar, 'text', false, true);
+                html += createField('PAN Number', 'pan', user.pan, 'text', false, true);
+                html += createField('GSTIN', 'gstin', user.gstin, 'text', false, true);
             } else if (userType === 'company') {
                 html += createField('Company Name', 'companyName', user.companyName);
                 html += createField('Email', 'email', user.email, 'email');
                 html += createField('Phone', 'phone', user.phone, 'tel');
                 html += createField('Date of Incorporation', 'dateOfIncorporation', user.dateOfIncorporation, 'text', true);
-                html += createField('PAN Number', 'pan', user.pan, 'text', true);
-                html += createField('GSTIN', 'gstin', user.gstin, 'text', true);
+                // STABLE FIELDS - PAN, GSTIN (no clear option)
+                html += createField('PAN Number', 'pan', user.pan, 'text', false, true);
+                html += createField('GSTIN', 'gstin', user.gstin, 'text', false, true);
             }
             
             html += createField('Username', 'username', user.username);
@@ -1220,7 +1227,7 @@
             showUserModal(currentUserData, false);
         };
         
-        // Save changes
+        // Save changes - prevent saving stable fields
         window.saveChanges = function() {
             if (!currentUserId) return;
             logAdminAction('UPDATE_USER', `Updated user: ${currentUserData.email}`);
@@ -1247,16 +1254,15 @@
                 updates.email = document.getElementById('edit_email')?.value || '';
                 updates.phone = document.getElementById('edit_phone')?.value || '';
                 updates.dob = document.getElementById('edit_dob')?.value || null;
-                updates.aadhaar = document.getElementById('edit_aadhaar')?.value || null;
-                updates.pan = document.getElementById('edit_pan')?.value || null;
-                updates.gstin = document.getElementById('edit_gstin')?.value || null;
+                // Stable fields - we don't update these from edit mode
+                // aadhaar, pan, gstin remain unchanged
             } else if (userType === 'company') {
                 updates.companyName = document.getElementById('edit_companyName')?.value || '';
                 updates.email = document.getElementById('edit_email')?.value || '';
                 updates.phone = document.getElementById('edit_phone')?.value || '';
                 updates.dateOfIncorporation = document.getElementById('edit_dateOfIncorporation')?.value || null;
-                updates.pan = document.getElementById('edit_pan')?.value || null;
-                updates.gstin = document.getElementById('edit_gstin')?.value || null;
+                // Stable fields - we don't update these from edit mode
+                // pan, gstin remain unchanged
             }
             
             Object.keys(updates).forEach(key => {
@@ -1273,7 +1279,7 @@
             db.collection("users").doc(currentUserId).update(updates)
                 .then(() => {
                     console.log("User updated successfully!");
-                    alert("✅ User updated successfully!");
+                    alert("✅ User updated successfully!\n\nNote: Aadhaar, PAN, and GSTIN fields are stable and cannot be modified.");
                     
                     currentUserData = { ...currentUserData, ...updates };
                     
@@ -1379,9 +1385,16 @@
             }
         };
 
-        // Clear individual field
+        // Clear individual field - prevent clearing stable fields
         window.clearField = function(fieldName) {
             if (!currentUserId) return;
+            
+            // Prevent clearing stable fields
+            const stableFields = ['aadhaar', 'pan', 'gstin'];
+            if (stableFields.includes(fieldName)) {
+                alert("This field cannot be cleared. Aadhaar, PAN, and GSTIN are stable fields.");
+                return;
+            }
             
             if (confirm(`Clear the ${fieldName} field? This will remove it from the user's record.`)) {
                 const input = document.getElementById('edit_' + fieldName);
@@ -1391,11 +1404,18 @@
             }
         };
         
-        // Clear field directly from view mode
+        // Clear field directly from view mode - prevent clearing stable fields
         window.clearFieldDirect = function(fieldName) {
             if (!currentUserId) return;
             if (fieldName === 'dob' || fieldName === 'dateOfIncorporation') {
                 alert("Date field cannot be cleared as it is an essential field.");
+                return;
+            }
+            
+            // Prevent clearing stable fields
+            const stableFields = ['aadhaar', 'pan', 'gstin'];
+            if (stableFields.includes(fieldName)) {
+                alert("This field cannot be cleared. Aadhaar, PAN, and GSTIN are stable fields.");
                 return;
             }
             
