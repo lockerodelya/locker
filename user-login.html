@@ -809,6 +809,58 @@ header {
             width: 100%;
         }
         
+        /* Terms and Conditions Agreement */
+        .terms-agreement {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            grid-column: span 2;
+        }
+        
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .terms-checkbox input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .terms-checkbox label {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+            cursor: pointer;
+            font-weight: normal;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+        
+        .terms-checkbox strong {
+            color: #3a0ca3;
+        }
+        
+        .tick-mark {
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .terms-footer {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+        
 /* ====== FIXED FOOTER ====== */
 footer {
     background-color: #191970;
@@ -1514,6 +1566,20 @@ footer {
                         </div>
                     </div>
                     
+                    <!-- Terms & Conditions Agreement - SPANS BOTH COLUMNS -->
+                    <div class="terms-agreement" id="termsAgreement">
+                        <div class="terms-checkbox">
+                            <input type="checkbox" id="termsCheckbox" checked disabled>
+                            <label for="termsCheckbox">
+                                <span class="tick-mark">✓</span>
+                                <strong>I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Secure Cloud Storage.</strong>
+                            </label>
+                        </div>
+                        <div class="terms-footer">
+                            This agreement is automatically accepted upon registration
+                        </div>
+                    </div>
+                    
                     <!-- Action Buttons -->
                     <div class="action-buttons">
                         <button class="action-btn btn-change-password" onclick="showChangePasswordModal()">
@@ -1997,28 +2063,13 @@ footer {
                 }
             }
             
-            // LEFT COLUMN - Personal/Company Information
+            // LEFT COLUMN - Personal Information (for individual users)
             let personalHtml = '';
             
-            // Common fields for all user types
-            personalHtml += `<div class="detail-group">
-                <label>User ID</label>
-                <div class="value">${currentUserData.userId || currentUserData.companyId || 'N/A'}</div>
-            </div>`;
-            
-            personalHtml += `<div class="detail-group">
-                <label>Status</label>
-                <div class="value">
-                    <span class="status ${currentUserData.status || 'pending'}">
-                        ${currentUserData.status || 'pending'}
-                    </span>
-                </div>
-            </div>`;
-            
-            // Specific fields based on user type
             if (userType === 'individual') {
+                // Display the requested fields in order
                 personalHtml += `<div class="detail-group">
-                    <label>Full Name</label>
+                    <label>Name</label>
                     <div class="value">${currentUserData.fullName || 'N/A'}</div>
                 </div>`;
                 
@@ -2037,22 +2088,33 @@ footer {
                     <div class="value">${formatDate(currentUserData.dob)}</div>
                 </div>`;
                 
-                // Individual specific fields - Aadhaar, PAN (No delete option)
-                if (currentUserData.aadhaarNo) {
-                    personalHtml += `<div class="detail-group">
-                        <label>Aadhaar Number</label>
-                        <div class="value" style="cursor: default; user-select: none;">${currentUserData.aadhaarNo}</div>
-                    </div>`;
-                }
+                personalHtml += `<div class="detail-group">
+                    <label>Aadhaar Number</label>
+                    <div class="value" style="cursor: default; user-select: none;">${currentUserData.aadhaarNo || 'N/A'}</div>
+                </div>`;
                 
-                if (currentUserData.panNo) {
-                    personalHtml += `<div class="detail-group">
-                        <label>PAN Number</label>
-                        <div class="value" style="cursor: default; user-select: none;">${currentUserData.panNo}</div>
-                    </div>`;
-                }
+                personalHtml += `<div class="detail-group">
+                    <label>PAN Number</label>
+                    <div class="value" style="cursor: default; user-select: none;">${currentUserData.panNo || 'N/A'}</div>
+                </div>`;
+                
+                personalHtml += `<div class="detail-group">
+                    <label>GSTIN Number</label>
+                    <div class="value" style="cursor: default; user-select: none;">${currentUserData.gstinNo || 'N/A'}</div>
+                </div>`;
+                
+                personalHtml += `<div class="detail-group">
+                    <label>Username</label>
+                    <div class="value">${currentUserData.username || 'N/A'}</div>
+                </div>`;
             } 
             else if (userType === 'company') {
+                // Company fields
+                personalHtml += `<div class="detail-group">
+                    <label>Company ID</label>
+                    <div class="value">${currentUserData.companyId || 'N/A'}</div>
+                </div>`;
+                
                 personalHtml += `<div class="detail-group">
                     <label>Company Name</label>
                     <div class="value">${currentUserData.companyName || 'N/A'}</div>
@@ -2073,21 +2135,24 @@ footer {
                     <div class="value">${formatDate(currentUserData.dateOfIncorporation || currentUserData.dob)}</div>
                 </div>`;
                 
-                // Company specific fields - GSTIN (No delete option)
-                if (currentUserData.gstinNo) {
-                    personalHtml += `<div class="detail-group">
-                        <label>GSTIN Number</label>
-                        <div class="value" style="cursor: default; user-select: none;">${currentUserData.gstinNo}</div>
-                    </div>`;
-                }
+                personalHtml += `<div class="detail-group">
+                    <label>GSTIN Number</label>
+                    <div class="value" style="cursor: default; user-select: none;">${currentUserData.gstinNo || 'N/A'}</div>
+                </div>`;
                 
-                // Contact Person removed as requested
-                // Removed: personalHtml += `<div class="detail-group"><label>Contact Person</label>...
+                personalHtml += `<div class="detail-group">
+                    <label>Username</label>
+                    <div class="value">${currentUserData.username || 'N/A'}</div>
+                </div>`;
             }
             
             personalHtml += `<div class="detail-group">
-                <label>Username</label>
-                <div class="value">${currentUserData.username || 'N/A'}</div>
+                <label>Status</label>
+                <div class="value">
+                    <span class="status ${currentUserData.status || 'pending'}">
+                        ${currentUserData.status || 'pending'}
+                    </span>
+                </div>
             </div>`;
             
             document.getElementById('personalInfo').innerHTML = personalHtml;
@@ -2108,8 +2173,8 @@ footer {
                 </div>`;
                 
                 planHtml += `<div class="detail-group">
-                    <label>Plan Value</label>
-                    <div class="value">${currentUserData.planValue || 'N/A'}</div>
+                    <label>Plan Type</label>
+                    <div class="value">${currentUserData.planType || 'N/A'}</div>
                 </div>`;
                 
                 planHtml += `<div class="detail-group">
@@ -2121,12 +2186,52 @@ footer {
                     <label>Plan End Date</label>
                     <div class="value">${formatDate(currentUserData.planEndDate)}</div>
                 </div>`;
+                
+                planHtml += `<div class="detail-group">
+                    <label>Plan Value</label>
+                    <div class="value">${currentUserData.planValue || 'N/A'}</div>
+                </div>`;
+                
+                planHtml += `<div class="detail-group">
+                    <label>Payment Mode</label>
+                    <div class="value">${currentUserData.paymentMode || 'N/A'}</div>
+                </div>`;
             } else {
                 planHtml += `<div class="detail-group">
                     <label>Plan Status</label>
                     <div class="value">No active plan</div>
                 </div>`;
             }
+            
+            // Registration date
+            planHtml += `<div class="detail-group">
+                <label>Registration Date</label>
+                <div class="value">`;
+            
+            if (currentUserData.createdAt) {
+                let regDate = currentUserData.createdAt;
+                if (currentUserData.createdAt.toDate) {
+                    regDate = currentUserData.createdAt.toDate();
+                } else if (typeof regDate === 'string') {
+                    regDate = new Date(regDate);
+                }
+                
+                if (!isNaN(regDate.getTime())) {
+                    const day = String(regDate.getDate()).padStart(2, '0');
+                    const month = String(regDate.getMonth() + 1).padStart(2, '0');
+                    const year = regDate.getFullYear();
+                    const hours = String(regDate.getHours()).padStart(2, '0');
+                    const minutes = String(regDate.getMinutes()).padStart(2, '0');
+                    
+                    planHtml += `${day}-${month}-${year} ${hours}:${minutes}`;
+                } else {
+                    planHtml += 'N/A';
+                }
+            } else {
+                planHtml += 'N/A';
+            }
+            
+            planHtml += `</div></div>`;
             
             document.getElementById('planInfo').innerHTML = planHtml;
         }
@@ -2514,39 +2619,28 @@ footer {
                 
                 if (userType === 'individual') {
                     personalInfo = [
-                        ['User ID', currentUserData.userId || 'N/A'],
-                        ['Status', currentUserData.status || 'pending'],
-                        ['Full Name', currentUserData.fullName || 'N/A'],
+                        ['Name', currentUserData.fullName || 'N/A'],
                         ['Email', currentUserData.email || 'N/A'],
                         ['Phone', currentUserData.phone || 'N/A'],
                         ['Date of Birth', currentUserData.dob || 'N/A'],
-                        ['Username', currentUserData.username || 'N/A']
+                        ['Aadhaar Number', currentUserData.aadhaarNo || 'N/A'],
+                        ['PAN Number', currentUserData.panNo || 'N/A'],
+                        ['GSTIN Number', currentUserData.gstinNo || 'N/A'],
+                        ['Username', currentUserData.username || 'N/A'],
+                        ['Status', currentUserData.status || 'pending']
                     ];
-                    
-                    // Add Aadhaar and PAN if available
-                    if (currentUserData.aadhaarNo) {
-                        personalInfo.push(['Aadhaar Number', currentUserData.aadhaarNo]);
-                    }
-                    if (currentUserData.panNo) {
-                        personalInfo.push(['PAN Number', currentUserData.panNo]);
-                    }
                 } 
                 else if (userType === 'company') {
                     personalInfo = [
-                        ['Company ID', currentUserData.companyId || 'N/A'],
-                        ['Status', currentUserData.status || 'pending'],
                         ['Company Name', currentUserData.companyName || 'N/A'],
+                        ['Company ID', currentUserData.companyId || 'N/A'],
                         ['Email', currentUserData.email || 'N/A'],
                         ['Phone', currentUserData.phone || 'N/A'],
                         ['Date of Incorporation', currentUserData.dateOfIncorporation || currentUserData.dob || 'N/A'],
-                        ['Username', currentUserData.username || 'N/A']
-                        // Contact Person removed as requested
+                        ['GSTIN Number', currentUserData.gstinNo || 'N/A'],
+                        ['Username', currentUserData.username || 'N/A'],
+                        ['Status', currentUserData.status || 'pending']
                     ];
-                    
-                    // Add GSTIN if available
-                    if (currentUserData.gstinNo) {
-                        personalInfo.push(['GSTIN Number', currentUserData.gstinNo]);
-                    }
                 }
                 
                 personalInfo.forEach(([label, value]) => {
@@ -2577,45 +2671,6 @@ footer {
                     }
                 });
                 
-                // Add some spacing before registration info
-                column1Y += 5;
-                
-                // Registration Info
-                doc.setFont('helvetica', 'bold');
-                doc.text('Registration Information', column1X, column1Y);
-                column1Y += 8;
-                doc.setFont('helvetica', 'normal');
-                
-                if (currentUserData.createdAt) {
-                    let regDate = currentUserData.createdAt;
-                    if (currentUserData.createdAt.toDate) {
-                        regDate = currentUserData.createdAt.toDate();
-                    } else if (typeof regDate === 'string') {
-                        regDate = new Date(regDate);
-                    }
-                    
-                    const day = String(regDate.getDate()).padStart(2, '0');
-                    const month = String(regDate.getMonth() + 1).padStart(2, '0');
-                    const year = regDate.getFullYear();
-                    const hours = String(regDate.getHours()).padStart(2, '0');
-                    const minutes = String(regDate.getMinutes()).padStart(2, '0');
-                    const seconds = String(regDate.getSeconds()).padStart(2, '0');
-                    
-                    const regDateStr = `Registered On: ${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
-                    
-                    // Split registration date if too long
-                    const regLines = [];
-                    for (let i = 0; i < regDateStr.length; i += 45) {
-                        regLines.push(regDateStr.substring(i, i + 45));
-                    }
-                    
-                    regLines.forEach((line, index) => {
-                        doc.text(line, column1X, column1Y + (index * 4));
-                    });
-                    
-                    column1Y += (regLines.length * 4) + 8;
-                }
-                
                 // Plan Details Column
                 doc.setFontSize(14);
                 doc.setTextColor(58, 12, 163);
@@ -2631,9 +2686,11 @@ footer {
                     planInfo = [
                         ['Plan Name', currentUserData.planName || 'N/A'],
                         ['Plan Size', currentUserData.planSize || 'N/A'],
-                        ['Plan Value', currentUserData.planValue || 'N/A'],
+                        ['Plan Type', currentUserData.planType || 'N/A'],
                         ['Plan Start Date', currentUserData.planStartDate || 'N/A'],
-                        ['Plan End Date', currentUserData.planEndDate || 'N/A']
+                        ['Plan End Date', currentUserData.planEndDate || 'N/A'],
+                        ['Plan Value', currentUserData.planValue || 'N/A'],
+                        ['Payment Mode', currentUserData.paymentMode || 'N/A']
                     ];
                 } else {
                     planInfo = [['Plan Status', 'No active plan']];
@@ -2664,6 +2721,45 @@ footer {
                         column2Y += (lines.length * 4) + 4;
                     }
                 });
+                
+                // Registration date
+                doc.setFont('helvetica', 'bold');
+                doc.text('Registration Date:', column2X, column2Y);
+                doc.setFont('helvetica', 'normal');
+                
+                let regDateStr = 'N/A';
+                if (currentUserData.createdAt) {
+                    let regDate = currentUserData.createdAt;
+                    if (currentUserData.createdAt.toDate) {
+                        regDate = currentUserData.createdAt.toDate();
+                    } else if (typeof regDate === 'string') {
+                        regDate = new Date(regDate);
+                    }
+                    
+                    if (!isNaN(regDate.getTime())) {
+                        const day = String(regDate.getDate()).padStart(2, '0');
+                        const month = String(regDate.getMonth() + 1).padStart(2, '0');
+                        const year = regDate.getFullYear();
+                        const hours = String(regDate.getHours()).padStart(2, '0');
+                        const minutes = String(regDate.getMinutes()).padStart(2, '0');
+                        
+                        regDateStr = `${day}-${month}-${year} ${hours}:${minutes}`;
+                    }
+                }
+                
+                doc.text(regDateStr, column2X + 40, column2Y);
+                column2Y += 8;
+                
+                // Add Terms & Conditions at the bottom
+                column2Y += 10;
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Terms & Conditions Agreement:', column2X, column2Y);
+                column2Y += 5;
+                doc.setFontSize(9);
+                doc.text('✓ I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy,', column2X, column2Y);
+                column2Y += 4;
+                doc.text('and all other applicable policies of Odelya Secure Cloud Storage.', column2X, column2Y);
                 
                 // Add recharge note at the bottom
                 const pageHeight = doc.internal.pageSize.height;
