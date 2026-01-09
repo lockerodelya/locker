@@ -25,13 +25,13 @@
             padding: 15px 30px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             display: flex;
-            justify-content: center; /* Center the content */
+            justify-content: center;
             align-items: center;
-            position: relative; /* For logout button positioning */
+            position: relative;
         }
         .header h1 {
             color: #3a0ca3;
-            text-align: center; /* Center the text */
+            text-align: center;
         }
         .logout-btn {
             background: #dc3545;
@@ -41,7 +41,7 @@
             border-radius: 5px;
             cursor: pointer;
             position: absolute;
-            right: 30px; /* Position logout button on the right */
+            right: 30px;
         }
         .container {
             max-width: none;
@@ -49,31 +49,47 @@
             padding: 0 20px;
             width: 100%;
         }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+        
+        /* Filter Tabs - Now at the top */
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 25px 0 35px 0;
+            flex-wrap: wrap;
         }
-        .stat-box {
+        .filter-tab {
+            padding: 12px 25px;
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .stat-box h3 {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        .stat-box .number {
-            font-size: 32px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
             font-weight: bold;
-            color: #3a0ca3;
+            color: #555;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-tab:hover {
+            background: #4361ee;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .filter-tab.active {
+            background: #3a0ca3;
+            color: white;
+            box-shadow: 0 4px 10px rgba(58, 12, 163, 0.3);
+        }
+        .filter-tab .count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
         }
         
-        /* Updated Table Styles - Wider and more spacious */
+        /* Updated Table Styles */
         .table-container {
             width: 95%;
             margin: 0 auto;
@@ -82,7 +98,7 @@
         
         table {
             width: 100%;
-            min-width: 1200px; /* Ensure table is wide enough on desktop */
+            min-width: 1200px;
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -90,10 +106,10 @@
         }
         
         th, td {
-            padding: 15px 20px; /* Increased padding for more space */
+            padding: 15px 20px;
             text-align: left;
             border-bottom: 1px solid #ddd;
-            white-space: nowrap; /* Prevent text wrapping */
+            white-space: nowrap;
         }
         
         th {
@@ -113,49 +129,49 @@
         }
         
         /* Make specific columns wider */
-        th:nth-child(1), td:nth-child(1) { /* User ID */
+        th:nth-child(1), td:nth-child(1) {
             min-width: 120px;
         }
         
-        th:nth-child(2), td:nth-child(2) { /* User Type */
+        th:nth-child(2), td:nth-child(2) {
             min-width: 100px;
         }
         
-        th:nth-child(3), td:nth-child(3) { /* Name */
+        th:nth-child(3), td:nth-child(3) {
             min-width: 180px;
             max-width: 250px;
-            white-space: normal; /* Allow name to wrap if needed */
+            white-space: normal;
             word-break: break-word;
         }
         
-        th:nth-child(4), td:nth-child(4) { /* Email */
+        th:nth-child(4), td:nth-child(4) {
             min-width: 200px;
             max-width: 300px;
             white-space: normal;
             word-break: break-all;
         }
         
-        th:nth-child(5), td:nth-child(5) { /* Phone */
+        th:nth-child(5), td:nth-child(5) {
             min-width: 130px;
         }
         
-        th:nth-child(6), td:nth-child(6) { /* Plan */
+        th:nth-child(6), td:nth-child(6) {
             min-width: 150px;
             max-width: 200px;
             white-space: normal;
         }
         
-        th:nth-child(7), td:nth-child(7) { /* Status */
+        th:nth-child(7), td:nth-child(7) {
             min-width: 100px;
         }
         
-        th:nth-child(8), td:nth-child(8) { /* Actions */
+        th:nth-child(8), td:nth-child(8) {
             min-width: 150px;
             text-align: center;
         }
         
         .status {
-            padding: 6px 12px; /* Slightly larger */
+            padding: 6px 12px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: bold;
@@ -167,13 +183,13 @@
             background: #d4edda;
             color: #155724;
         }
-        .status.pending {
-            background: #fff3cd;
-            color: #856404;
-        }
         .status.inactive {
             background: #f8d7da;
             color: #721c24;
+        }
+        .status.suspended {
+            background: #6c757d;
+            color: white;
         }
         
         /* Responsive adjustments */
@@ -198,7 +214,7 @@
             }
             
             table {
-                min-width: 1000px; /* Still wider than screen for horizontal scroll */
+                min-width: 1000px;
             }
             
             th, td {
@@ -218,6 +234,32 @@
             
             .header h1 {
                 font-size: 20px;
+            }
+            
+            .filter-tabs {
+                gap: 8px;
+                margin: 15px 0 25px 0;
+            }
+            
+            .filter-tab {
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .filter-tabs {
+                gap: 6px;
+            }
+            
+            .filter-tab {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+            
+            .filter-tab .count {
+                padding: 1px 6px;
+                font-size: 10px;
             }
         }
         
@@ -261,14 +303,14 @@
         }
         
         .user-id-header {
-            font-size: 16px; /* Increased font size */
-            color: #3a0ca3; /* Changed to match heading color */
+            font-size: 16px;
+            color: #3a0ca3;
             background: #f8f9fa;
-            padding: 8px 20px; /* Increased padding */
+            padding: 8px 20px;
             border-radius: 20px;
-            border: 2px solid #4361ee; /* Thicker border */
+            border: 2px solid #4361ee;
             font-weight: bold;
-            margin-right: 20px; /* Space before status */
+            margin-right: 20px;
         }
         
         .modal-status {
@@ -280,11 +322,6 @@
             text-align: center;
         }
         
-        .modal-status.pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
         .modal-status.active {
             background: #d4edda;
             color: #155724;
@@ -293,6 +330,11 @@
         .modal-status.inactive {
             background: #f8d7da;
             color: #721c24;
+        }
+        
+        .modal-status.suspended {
+            background: #6c757d;
+            color: white;
         }
         
         .user-details {
@@ -466,7 +508,7 @@
         /* User Type Badge Styles */
         .user-type-badge {
             display: inline-block;
-            padding: 4px 12px; /* Slightly larger */
+            padding: 4px 12px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: bold;
@@ -519,6 +561,14 @@
             margin-left: auto;
             margin-right: auto;
         }
+        
+        /* No users message */
+        .no-users {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -528,27 +578,26 @@
     </div>
     
     <div class="container">
-        <div class="stats">
-            <div class="stat-box">
-                <h3>Total Users</h3>
-                <div class="number" id="totalUsers">0</div>
-            </div>
-            <div class="stat-box">
-                <h3>Individual Users</h3>
-                <div class="number" id="individualUsers">0</div>
-            </div>
-            <div class="stat-box">
-                <h3>Company Users</h3>
-                <div class="number" id="companyUsers">0</div>
-            </div>
-            <div class="stat-box">
-                <h3>Active Users</h3>
-                <div class="number" id="activeUsers">0</div>
-            </div>
-            <div class="stat-box">
-                <h3>Inactive Users</h3>
-                <div class="number" id="inactiveUsers">0</div>
-            </div>
+        <!-- Filter Tabs - Now the main navigation -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterUsers('all')" id="tab-all">
+                👥 All Users <span class="count" id="count-all">0</span>
+            </button>
+            <button class="filter-tab" onclick="filterUsers('individual')" id="tab-individual">
+                👤 Individual <span class="count" id="count-individual">0</span>
+            </button>
+            <button class="filter-tab" onclick="filterUsers('company')" id="tab-company">
+                🏢 Company <span class="count" id="count-company">0</span>
+            </button>
+            <button class="filter-tab" onclick="filterUsers('active')" id="tab-active">
+                ✅ Active <span class="count" id="count-active">0</span>
+            </button>
+            <button class="filter-tab" onclick="filterUsers('inactive')" id="tab-inactive">
+                ⏸️ Inactive <span class="count" id="count-inactive">0</span>
+            </button>
+            <button class="filter-tab" onclick="filterUsers('suspended')" id="tab-suspended">
+                ⚠️ Suspended <span class="count" id="count-suspended">0</span>
+            </button>
         </div>
         
         <h2 class="section-heading">All Registered Users</h2>
@@ -624,6 +673,8 @@
         let currentUserData = null;
         let isEditMode = false;
         let currentPasswordVisible = false;
+        let allUsers = [];
+        let currentFilter = 'all';
 
         // Format date to dd-mm-yyyy HH:MM:SS AM/PM
         function formatDateTime(dateValue) {
@@ -651,7 +702,7 @@
                 const ampm = hours >= 12 ? 'PM' : 'AM';
                 
                 hours = hours % 12;
-                hours = hours ? hours : 12; // the hour '0' should be '12'
+                hours = hours ? hours : 12;
                 hours = String(hours).padStart(2, '0');
                 
                 return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${ampm}`;
@@ -660,7 +711,7 @@
             }
         }
 
-        // Format date for PDF header (dd-mm-yy hh:mm:ss am/pm)
+        // Format date for PDF header
         function formatDateTimeForPDFHeader(dateValue) {
             if (!dateValue) return 'N/A';
             
@@ -686,7 +737,7 @@
                 const ampm = hours >= 12 ? 'pm' : 'am';
                 
                 hours = hours % 12;
-                hours = hours ? hours : 12; // the hour '0' should be '12'
+                hours = hours ? hours : 12;
                 hours = String(hours).padStart(2, '0');
                 
                 return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${ampm}`;
@@ -701,14 +752,12 @@
             
             function resetTimer() {
                 clearTimeout(timeout);
-                // 30 minutes = 30 * 60 * 1000 = 1,800,000 ms
                 timeout = setTimeout(() => {
                     alert('Session expired due to inactivity. Please login again.');
                     logout();
                 }, 30 * 60 * 1000);
             }
             
-            // Reset timer on user activity
             ['click', 'mousemove', 'keypress', 'scroll'].forEach(event => {
                 document.addEventListener(event, resetTimer);
             });
@@ -719,7 +768,6 @@
         // Security: Get client IP and log admin actions
         async function logAdminAction(action, details = '') {
             try {
-                // Get IP address (approximate)
                 let ipAddress = 'Unknown';
                 try {
                     const response = await fetch('https://api.ipify.org?format=json');
@@ -744,9 +792,6 @@
                 
                 console.log('🔐 ADMIN ACTION:', logEntry);
                 
-                // Save to Firestore if you create an 'admin_logs' collection
-                // db.collection("admin_logs").add(logEntry);
-                
             } catch (error) {
                 console.error("Error logging action:", error);
             }
@@ -758,42 +803,141 @@
             if (!isLoggedIn) {
                 window.location.href = "admin-login.html";
             } else {
-                // Setup auto-logout
                 setupAutoLogout();
-                
                 loadUsers();
             }
         };
         
         // Logout function
         function logout() {
-            // Sign out from Firebase
             auth.signOut().then(() => {
-                // Clear localStorage
                 localStorage.removeItem('admin_logged_in');
                 localStorage.removeItem('admin_email');
                 localStorage.removeItem('admin_uid');
-                
-                // Redirect to login
                 window.location.href = "admin-login.html";
             });
+        }
+        
+        // Filter users based on selected tab
+        function filterUsers(filterType) {
+            currentFilter = filterType;
+            
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(`tab-${filterType}`).classList.add('active');
+            
+            // Render filtered users
+            renderFilteredUsers();
+        }
+        
+        // Render users based on current filter
+        function renderFilteredUsers() {
+            let filteredUsers = [];
+            
+            switch(currentFilter) {
+                case 'all':
+                    filteredUsers = allUsers;
+                    break;
+                case 'individual':
+                    filteredUsers = allUsers.filter(user => user.userType === 'individual');
+                    break;
+                case 'company':
+                    filteredUsers = allUsers.filter(user => user.userType === 'company');
+                    break;
+                case 'active':
+                    filteredUsers = allUsers.filter(user => user.status === 'active');
+                    break;
+                case 'inactive':
+                    filteredUsers = allUsers.filter(user => user.status === 'inactive');
+                    break;
+                case 'suspended':
+                    filteredUsers = allUsers.filter(user => user.status === 'suspended');
+                    break;
+                default:
+                    filteredUsers = allUsers;
+            }
+            
+            // Update counts in tabs
+            updateTabCounts();
+            
+            // Render table
+            if (filteredUsers.length === 0) {
+                document.getElementById('usersList').innerHTML = `
+                    <tr>
+                        <td colspan="8" class="no-users">
+                            📭 No users found for this filter
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            let html = '';
+            filteredUsers.forEach(user => {
+                const userType = user.userType || 'individual';
+                const userName = userType === 'individual' ? (user.fullName || 'N/A') : (user.companyName || 'N/A');
+                
+                html += `
+                    <tr>
+                        <td>${user.userId || 'N/A'}</td>
+                        <td>
+                            <span class="user-type-badge user-type-${userType}">
+                                ${userType.toUpperCase()}
+                            </span>
+                        </td>
+                        <td>${userName}</td>
+                        <td>${user.email || 'N/A'}</td>
+                        <td>${user.phone || 'N/A'}</td>
+                        <td>${user.planName || 'N/A'}</td>
+                        <td>
+                            <span class="status ${user.status || 'inactive'}">
+                                ${user.status || 'inactive'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="view-btn" onclick="viewUserDetails('${user.id}')">View</button>
+                                <button class="delete-btn" onclick="quickDelete('${user.id}', '${userName}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            document.getElementById('usersList').innerHTML = html;
+        }
+        
+        // Update counts in filter tabs
+        function updateTabCounts() {
+            const totalCount = allUsers.length;
+            const individualCount = allUsers.filter(u => u.userType === 'individual').length;
+            const companyCount = allUsers.filter(u => u.userType === 'company').length;
+            const activeCount = allUsers.filter(u => u.status === 'active').length;
+            const inactiveCount = allUsers.filter(u => u.status === 'inactive').length;
+            const suspendedCount = allUsers.filter(u => u.status === 'suspended').length;
+            
+            document.getElementById('count-all').textContent = totalCount;
+            document.getElementById('count-individual').textContent = individualCount;
+            document.getElementById('count-company').textContent = companyCount;
+            document.getElementById('count-active').textContent = activeCount;
+            document.getElementById('count-inactive').textContent = inactiveCount;
+            document.getElementById('count-suspended').textContent = suspendedCount;
         }
         
         // View user details
         window.viewUserDetails = function(userId) {
             console.log("Viewing user:", userId);
             
-            // Show loading
             document.getElementById('userDetails').innerHTML = `
                 <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
                     🔄 Loading user details...
                 </div>
             `;
             
-            // Show modal first with loading state
             document.getElementById('userModal').style.display = 'flex';
             
-            // Get user document
             db.collection("users").doc(userId).get()
                 .then((doc) => {
                     if (doc.exists) {
@@ -801,13 +945,11 @@
                         user.id = userId;
                         currentUserData = user;
                         
-                        // Update user ID in header (left side)
                         document.getElementById('modalUserIdDisplay').textContent = `User ID: ${user.userId || 'N/A'}`;
                         
-                        // Update status in header (right side)
                         const statusDisplay = document.getElementById('modalStatusDisplay');
-                        statusDisplay.textContent = user.status || 'pending';
-                        statusDisplay.className = 'modal-status ' + (user.status || 'pending');
+                        statusDisplay.textContent = user.status || 'inactive';
+                        statusDisplay.className = 'modal-status ' + (user.status || 'inactive');
                         
                         showUserModal(user, false);
                     } else {
@@ -833,7 +975,7 @@
             let html = '';
             const userType = user.userType || 'individual';
             
-            // Helper function to create field with clear button
+            // Helper function to create field
             function createField(label, fieldName, value, type = 'text', canClear = false) {
                 if (editMode) {
                     let fieldHtml = '';
@@ -841,9 +983,9 @@
                     if (fieldName === 'status') {
                         fieldHtml = `
                             <select id="edit_${fieldName}">
-                                <option value="pending" ${value === 'pending' ? 'selected' : ''}>Pending</option>
                                 <option value="active" ${value === 'active' ? 'selected' : ''}>Active</option>
                                 <option value="inactive" ${value === 'inactive' ? 'selected' : ''}>Inactive</option>
+                                <option value="suspended" ${value === 'suspended' ? 'selected' : ''}>Suspended</option>
                             </select>
                         `;
                     } else if (fieldName === 'planName') {
@@ -880,7 +1022,6 @@
                         fieldHtml = `<input type="${type}" id="edit_${fieldName}" value="${value || ''}">`;
                     }
                     
-                    // Add clear button for fields that can be cleared (except DOB and DOI)
                     if (canClear && value && fieldName !== 'dob' && fieldName !== 'dateOfIncorporation') {
                         return `
                             <div class="detail-group">
@@ -907,8 +1048,8 @@
                         let bgColor = '#f8f9fa';
                         let textColor = '#333';
                         if (value === 'active') { bgColor = '#d4edda'; textColor = '#155724'; }
-                        else if (value === 'pending') { bgColor = '#fff3cd'; textColor = '#856404'; }
                         else if (value === 'inactive') { bgColor = '#f8d7da'; textColor = '#721c24'; }
+                        else if (value === 'suspended') { bgColor = '#6c757d'; textColor = 'white'; }
                         style = `background: ${bgColor}; color: ${textColor}; font-weight: bold; padding: 5px 10px; border-radius: 20px; display: inline-block;`;
                     }
                     
@@ -928,7 +1069,6 @@
                         `;
                     }
                     
-                    // For view mode, show clear button only for fields that can be cleared
                     if (canClear && value && fieldName !== 'dob' && fieldName !== 'dateOfIncorporation') {
                         return `
                             <div class="detail-group">
@@ -950,14 +1090,12 @@
                 }
             }
             
-            // LEFT COLUMN - User Type Specific Information
+            // LEFT COLUMN
             html += `<div class="left-column">`;
             
-            // User Type selector
             html += createField('User Type', 'userType', userType, 'select');
             
             if (userType === 'individual') {
-                // Individual fields
                 html += createField('Full Name', 'fullName', user.fullName);
                 html += createField('Email', 'email', user.email, 'email');
                 html += createField('Phone', 'phone', user.phone, 'tel');
@@ -966,7 +1104,6 @@
                 html += createField('PAN Number', 'pan', user.pan, 'text', true);
                 html += createField('GSTIN', 'gstin', user.gstin, 'text', true);
             } else if (userType === 'company') {
-                // Company fields
                 html += createField('Company Name', 'companyName', user.companyName);
                 html += createField('Email', 'email', user.email, 'email');
                 html += createField('Phone', 'phone', user.phone, 'tel');
@@ -975,26 +1112,21 @@
                 html += createField('GSTIN', 'gstin', user.gstin, 'text', true);
             }
             
-            // Common fields for both user types
             html += createField('Username', 'username', user.username);
             html += createField('Password', 'password', user.password);
             html += `</div>`;
             
-            // RIGHT COLUMN - Account & Plan Information (Common for both)
+            // RIGHT COLUMN
             html += `<div class="right-column">`;
-            // Removed User ID from here (now in header)
-            // Removed Status from here (now in header)
+            html += createField('Status', 'status', user.status || 'inactive');
             html += createField('Plan Name', 'planName', user.planName);
             html += createField('Plan Size', 'planSize', user.planSize);
             html += createField('Plan Type', 'planType', user.planType);
             html += createField('Plan Start Date', 'planStartDate', user.planStartDate);
             html += createField('Plan End Date', 'planEndDate', user.planEndDate);
-            html += createField('Plan Value', 'planValue', user.planValue); // Moved before payment mode
+            html += createField('Plan Value', 'planValue', user.planValue);
             html += createField('Payment Mode', 'paymentMode', user.paymentMode);
             
-            // Removed plan duration section
-            
-            // Registered On (formatted)
             if (user.createdAt) {
                 html += `
                     <div class="detail-group">
@@ -1004,7 +1136,6 @@
                 `;
             }
             
-            // Updated At (if available)
             if (user.updatedAt) {
                 html += `
                     <div class="detail-group">
@@ -1016,16 +1147,15 @@
             
             html += `</div>`;
             
-            // Agreement row - spans both columns
+            // Agreement row
             html += `<div class="agreement-row">`;
             html += `<span class="tick-mark">✓</span>`;
             html += `<span>I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.</span>`;
             html += `</div>`;
             
-            // Update modal content
             document.getElementById('userDetails').innerHTML = html;
             
-            // Show/hide buttons based on edit mode
+            // Show/hide buttons
             if (editMode) {
                 document.querySelector('.btn-edit').style.display = 'none';
                 document.querySelector('.btn-approve').style.display = 'none';
@@ -1034,7 +1164,7 @@
                 document.querySelector('.btn-close').style.display = 'none';
             } else {
                 document.querySelector('.btn-edit').style.display = 'inline-block';
-                document.querySelector('.btn-approve').style.display = user.status === 'pending' ? 'inline-block' : 'none';
+                document.querySelector('.btn-approve').style.display = (user.status === 'inactive') ? 'inline-block' : 'none';
                 document.querySelector('.btn-save').style.display = 'none';
                 document.querySelector('.btn-cancel').style.display = 'none';
                 document.querySelector('.btn-close').style.display = 'inline-block';
@@ -1063,7 +1193,6 @@
                     password + ' <button type="button" class="copy-btn" onclick="copyToClipboard(\'' + password + '\')">📋 Copy</button>' : 
                     '•••••••• <button type="button" class="copy-btn" onclick="copyToClipboard(\'' + password + '\')">📋 Copy</button>';
                 
-                // Update the button text
                 const button = event.target;
                 button.textContent = currentPasswordVisible ? '🙈 Hide Password' : '👁️ Show Password';
             }
@@ -1096,16 +1225,14 @@
             if (!currentUserId) return;
             logAdminAction('UPDATE_USER', `Updated user: ${currentUserData.email}`);
             
-            // Get user type
             const userType = document.getElementById('edit_userType')?.value || 'individual';
             
-            // Collect all edited values
             const updates = {
                 userId: document.getElementById('edit_userId')?.value || '',
                 userType: userType,
                 username: document.getElementById('edit_username')?.value || '',
                 password: document.getElementById('edit_password')?.value || '',
-                status: document.getElementById('edit_status')?.value || 'pending',
+                status: document.getElementById('edit_status')?.value || 'inactive',
                 planName: document.getElementById('edit_planName')?.value || '',
                 planSize: document.getElementById('edit_planSize')?.value || '',
                 planValue: document.getElementById('edit_planValue')?.value || '',
@@ -1115,7 +1242,6 @@
                 updatedAt: new Date().toISOString()
             };
             
-            // Add user type specific fields
             if (userType === 'individual') {
                 updates.fullName = document.getElementById('edit_fullName')?.value || '';
                 updates.email = document.getElementById('edit_email')?.value || '';
@@ -1133,7 +1259,6 @@
                 updates.gstin = document.getElementById('edit_gstin')?.value || null;
             }
             
-            // Remove empty values
             Object.keys(updates).forEach(key => {
                 if (updates[key] === '' || updates[key] === null) {
                     delete updates[key];
@@ -1142,29 +1267,23 @@
             
             console.log("Saving updates:", updates);
             
-            // Show loading
             document.querySelector('.btn-save').textContent = "Saving...";
             document.querySelector('.btn-save').disabled = true;
             
-            // Save to Firebase
             db.collection("users").doc(currentUserId).update(updates)
                 .then(() => {
                     console.log("User updated successfully!");
                     alert("✅ User updated successfully!");
                     
-                    // Update local data
                     currentUserData = { ...currentUserData, ...updates };
                     
-                    // Update status display in header
                     const statusDisplay = document.getElementById('modalStatusDisplay');
                     statusDisplay.textContent = updates.status || currentUserData.status;
                     statusDisplay.className = 'modal-status ' + (updates.status || currentUserData.status);
                     
-                    // Switch back to view mode
                     currentPasswordVisible = false;
                     showUserModal(currentUserData, false);
                     
-                    // Reload users list
                     loadUsers();
                 })
                 .catch((error) => {
@@ -1181,7 +1300,7 @@
             
             const newPassword = prompt("Enter new password for this user:\n\nPassword will be stored in plain text in Firestore.\nThe user will need to use this password to login to user-panel.html", currentUserData.password || "");
             
-            if (newPassword === null) return; // User cancelled
+            if (newPassword === null) return;
             
             if (newPassword.length < 6) {
                 alert("Password must be at least 6 characters!");
@@ -1191,12 +1310,10 @@
             if (confirm(`Change password for ${currentUserData.email}?\n\nNew password: ${newPassword}\n\nThis will update the password in Firestore.`)) {
                 logAdminAction('CHANGE_PASSWORD', `Changed password for user: ${currentUserData.email}`);
                 
-                // Show loading
                 const originalText = event.target.textContent;
                 event.target.textContent = "Updating...";
                 event.target.disabled = true;
                 
-                // Update password in Firestore
                 db.collection("users").doc(currentUserId).update({
                     password: newPassword,
                     updatedAt: new Date().toISOString()
@@ -1205,10 +1322,7 @@
                     console.log("Password updated successfully!");
                     alert("✅ Password updated successfully!\n\nUser can now login with this password on user-panel.html");
                     
-                    // Update local data
                     currentUserData.password = newPassword;
-                    
-                    // Refresh modal
                     showUserModal(currentUserData, false);
                 })
                 .catch((error) => {
@@ -1230,17 +1344,15 @@
             loadUsers();
         };
         
-        // Approve user
+        // Approve user (activate from inactive)
         window.approveUser = function() {
             if (!currentUserId) return;
             logAdminAction('APPROVE_USER', `Approved user: ${currentUserData.email}`);  
             
             if (confirm("Approve this user and change status to 'active'?")) {
-                // Show loading
                 document.querySelector('.btn-approve').textContent = "Approving...";
                 document.querySelector('.btn-approve').disabled = true;
                 
-                // Update status to active
                 db.collection("users").doc(currentUserId).update({
                     status: 'active',
                     updatedAt: new Date().toISOString()
@@ -1249,18 +1361,13 @@
                     console.log("User approved!");
                     alert("✅ User approved successfully!");
                     
-                    // Update local data
                     currentUserData.status = 'active';
                     
-                    // Update status display in header
                     const statusDisplay = document.getElementById('modalStatusDisplay');
                     statusDisplay.textContent = 'active';
                     statusDisplay.className = 'modal-status active';
                     
-                    // Refresh modal
                     showUserModal(currentUserData, false);
-                    
-                    // Reload users list
                     loadUsers();
                 })
                 .catch((error) => {
@@ -1272,14 +1379,11 @@
             }
         };
 
-        // Delete user function removed from modal - only available from table
-
-        // Clear individual field (from edit mode)
+        // Clear individual field
         window.clearField = function(fieldName) {
             if (!currentUserId) return;
             
             if (confirm(`Clear the ${fieldName} field? This will remove it from the user's record.`)) {
-                // Clear the input field
                 const input = document.getElementById('edit_' + fieldName);
                 if (input) {
                     input.value = '';
@@ -1287,7 +1391,7 @@
             }
         };
         
-        // Clear field directly from view mode (except DOB and DOI)
+        // Clear field directly from view mode
         window.clearFieldDirect = function(fieldName) {
             if (!currentUserId) return;
             if (fieldName === 'dob' || fieldName === 'dateOfIncorporation') {
@@ -1300,7 +1404,6 @@
                 const updates = {};
                 updates[fieldName] = null;
                 
-                // Show loading
                 const btn = event.target;
                 btn.textContent = "...";
                 btn.disabled = true;
@@ -1310,10 +1413,7 @@
                         console.log(`Field ${fieldName} cleared!`);
                         alert(`✅ ${fieldName} cleared!`);
                         
-                        // Update local data
                         currentUserData[fieldName] = null;
-                        
-                        // Refresh the modal
                         showUserModal(currentUserData, false);
                     })
                     .catch((error) => {
@@ -1325,12 +1425,11 @@
             }
         };
         
-        // Generate PDF for current user - COMPACT SINGLE PAGE LAYOUT
+        // Generate PDF for current user
         window.generatePDF = function() {
             if (!currentUserData) return;
             logAdminAction('GENERATE_PDF', `Generated PDF for user: ${currentUserData.email}`);
             
-            // Show loading
             const originalText = event.target.textContent;
             event.target.textContent = "Creating PDF...";
             event.target.disabled = true;
@@ -1339,7 +1438,6 @@
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 
-                // Set margins
                 const leftMargin = 20;
                 const rightMargin = 20;
                 const topMargin = 20;
@@ -1347,32 +1445,29 @@
                 const pageHeight = doc.internal.pageSize.height;
                 const centerX = pageWidth / 2;
                 
-                // HEADER - Top Section
+                // HEADER
                 doc.setFontSize(16);
-                doc.setTextColor(58, 12, 163); // #3a0ca3
+                doc.setTextColor(58, 12, 163);
                 doc.text('ODELYA CLOUD STORAGE', centerX, topMargin, { align: 'center' });
                 
                 doc.setFontSize(14);
                 doc.setTextColor(0, 0, 0);
                 doc.text('USER REGISTRATION DETAILS', centerX, topMargin + 8, { align: 'center' });
                 
-                // Timestamp
                 doc.setFontSize(9);
                 doc.setTextColor(100, 100, 100);
                 const generatedDateTime = formatDateTimeForPDFHeader(new Date());
                 doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 16, { align: 'center' });
                 
-                // User ID
                 doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 24, { align: 'center' });
                 
                 let y = topMargin + 40;
                 
-                // Draw a thin line separator
                 doc.setDrawColor(200, 200, 200);
                 doc.line(leftMargin, y, pageWidth - rightMargin, y);
                 y += 10;
                 
-                // SECTION 1: PERSONAL INFORMATION - Compact layout
+                // SECTION 1: PERSONAL INFORMATION
                 doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
                 doc.setTextColor(58, 12, 163);
@@ -1383,7 +1478,6 @@
                 doc.setFont('helvetica', 'normal');
                 doc.setTextColor(0, 0, 0);
                 
-                // Personal Info in compact format - based on user type
                 const userType = currentUserData.userType || 'individual';
                 let personalData = [];
 
@@ -1414,7 +1508,6 @@
                     ];
                 }
                 
-                // Calculate max label width for alignment
                 doc.setFont('helvetica', 'bold');
                 let maxLabelWidth = 0;
                 personalData.forEach(item => {
@@ -1424,15 +1517,11 @@
                 
                 const valueStartX = leftMargin + maxLabelWidth + 2;
                 
-                // Draw personal info - all in single lines
                 personalData.forEach(item => {
-                    // Label
                     doc.setFont('helvetica', 'bold');
                     doc.text(item.label + ':', leftMargin, y);
                     
-                    // Value (truncate if too long)
                     doc.setFont('helvetica', 'normal');
-                    const maxValueWidth = pageWidth - valueStartX - rightMargin;
                     let displayValue = item.value;
                     
                     if (displayValue.length > 30 && item.label !== 'Email') {
@@ -1443,9 +1532,8 @@
                     y += 6;
                 });
                 
-                y += 4; // Small gap
+                y += 4;
                 
-                // Draw another separator line
                 doc.setDrawColor(200, 200, 200);
                 doc.line(leftMargin, y, pageWidth - rightMargin, y);
                 y += 10;
@@ -1461,9 +1549,8 @@
                 doc.setFont('helvetica', 'normal');
                 doc.setTextColor(0, 0, 0);
                 
-                // Account Info in compact format
                 const accountData = [
-                    {label: 'Status', value: (currentUserData.status || 'pending').toUpperCase()},
+                    {label: 'Status', value: (currentUserData.status || 'inactive').toUpperCase()},
                     {label: 'Plan Name', value: currentUserData.planName || 'N/A'},
                     {label: 'Plan Size', value: currentUserData.planSize || 'N/A'},
                     {label: 'Plan Type', value: currentUserData.planType || 'N/A'},
@@ -1474,7 +1561,6 @@
                     {label: 'Registered On', value: currentUserData.createdAt ? formatDateTime(currentUserData.createdAt) : 'N/A'}
                 ];
                 
-                // Calculate max label width for this section
                 doc.setFont('helvetica', 'bold');
                 maxLabelWidth = 0;
                 accountData.forEach(item => {
@@ -1484,15 +1570,11 @@
                 
                 const accValueStartX = leftMargin + maxLabelWidth + 2;
                 
-                // Draw account info - all in single lines
                 accountData.forEach(item => {
-                    // Label
                     doc.setFont('helvetica', 'bold');
                     doc.text(item.label + ':', leftMargin, y);
                     
-                    // Value (truncate if too long)
                     doc.setFont('helvetica', 'normal');
-                    const maxValueWidth = pageWidth - accValueStartX - rightMargin;
                     let displayValue = item.value;
                     
                     if (displayValue.length > 30) {
@@ -1503,14 +1585,13 @@
                     y += 6;
                 });
                 
-                y += 4; // Small gap
+                y += 4;
                 
-                // Draw final separator line
                 doc.setDrawColor(200, 200, 200);
                 doc.line(leftMargin, y, pageWidth - rightMargin, y);
                 y += 10;
                 
-                // AGREEMENT SECTION - With drawn tick mark
+                // AGREEMENT SECTION
                 doc.setFontSize(10);
                 doc.setFont('helvetica', 'bold');
                 doc.text('AGREEMENT', leftMargin, y);
@@ -1518,38 +1599,31 @@
                 
                 doc.setFont('helvetica', 'normal');
                 
-                // First draw the text without tick mark
                 const line1 = 'I agree to the Terms & Conditions, Privacy Policy,';
                 const line2 = 'Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
                 
-                // Draw a manual tick mark (small check symbol)
-                doc.setDrawColor(0, 128, 0); // Green color for tick
+                doc.setDrawColor(0, 128, 0);
                 doc.setLineWidth(0.5);
                 const tickX = leftMargin;
                 const tickY = y - 1;
                 
-                // Draw a small checkmark: two short lines forming a check
-                doc.line(tickX, tickY + 2, tickX + 1, tickY + 3); // Diagonal up
-                doc.line(tickX + 1, tickY + 3, tickX + 3, tickY); // Diagonal down
+                doc.line(tickX, tickY + 2, tickX + 1, tickY + 3);
+                doc.line(tickX + 1, tickY + 3, tickX + 3, tickY);
                 
-                // Now draw the text starting after the tick mark
                 doc.setTextColor(0, 0, 0);
-                doc.text(line1, leftMargin + 5, y); // Start 5px after tick mark
+                doc.text(line1, leftMargin + 5, y);
                 y += 5;
-                doc.text(line2, leftMargin, y); // Second line starts at normal margin
+                doc.text(line2, leftMargin, y);
                 y += 8;
                 
-                // FOOTER - Bottom of page
+                // FOOTER
                 const footerY = pageHeight - 15;
                 
                 doc.setFontSize(8);
                 doc.setTextColor(100, 100, 100);
                 const adminEmail = localStorage.getItem('admin_email') || 'Admin';
                 
-                // Generated by
                 doc.text(`Generated by: ${adminEmail}`, leftMargin, footerY);
-                
-                // Page info
                 doc.text(`Page 1 of 1`, centerX, footerY, { align: 'center' });
                 
                 // Save PDF
@@ -1569,7 +1643,6 @@
                 console.error("Error generating PDF:", error);
                 alert("❌ Error generating PDF: " + error.message);
             } finally {
-                // Restore button
                 event.target.textContent = originalText;
                 event.target.disabled = false;
             }
@@ -1578,7 +1651,6 @@
         // Quick delete from table
         window.quickDelete = function(userId, userName) {
             if (confirm(`Delete user: ${userName}?\n\nThis will permanently remove them from the database.`)) {
-                // Show loading on the button
                 event.target.textContent = "Deleting...";
                 event.target.disabled = true;
                 
@@ -1586,7 +1658,7 @@
                     .then(() => {
                         console.log("User deleted!");
                         alert("✅ User deleted!");
-                        loadUsers(); // Reload the table
+                        loadUsers();
                     })
                     .catch((error) => {
                         console.error("Error deleting user:", error);
@@ -1609,7 +1681,6 @@
                 </tr>
             `;
             
-            // Get all users from Firestore
             db.collection("users").get()
                 .then((querySnapshot) => {
                     console.log("Found users:", querySnapshot.size);
@@ -1617,74 +1688,40 @@
                     if (querySnapshot.empty) {
                         document.getElementById('usersList').innerHTML = `
                             <tr>
-                                <td colspan="8" style="text-align: center; padding: 40px;">
+                                <td colspan="8" class="no-users">
                                     📭 No users found in database yet
                                 </td>
                             </tr>
                         `;
+                        
+                        // Set all counts to 0
+                        updateTabCounts();
+                        allUsers = [];
                         return;
                     }
                     
-                    let totalUsers = 0;
-                    let individualUsers = 0;
-                    let companyUsers = 0;
-                    let activeUsers = 0;
-                    let inactiveUsers = 0;
-                    let html = '';
+                    allUsers = [];
                     
                     querySnapshot.forEach((doc) => {
                         const user = doc.data();
-                        totalUsers++;
+                        user.id = doc.id;
+                        allUsers.push(user);
                         
-                        // Count by user type
-                        if (user.userType === 'individual') {
-                            individualUsers++;
-                        } else if (user.userType === 'company') {
-                            companyUsers++;
+                        // Ensure new users have inactive status by default
+                        if (!user.status) {
+                            db.collection("users").doc(doc.id).update({
+                                status: 'inactive'
+                            }).catch(error => {
+                                console.error("Error setting default status:", error);
+                            });
                         }
-                        
-                        // Count by status
-                        if (user.status === 'active') activeUsers++;
-                        if (user.status === 'inactive') inactiveUsers++;
-                        
-                        const userType = user.userType || 'individual';
-                        const userName = userType === 'individual' ? (user.fullName || 'N/A') : (user.companyName || 'N/A');
-                        
-                        html += `
-                            <tr>
-                                <td>${user.userId || 'N/A'}</td>
-                                <td>
-                                    <span class="user-type-badge user-type-${userType}">
-                                        ${userType.toUpperCase()}
-                                    </span>
-                                </td>
-                                <td>${userName}</td>
-                                <td>${user.email || 'N/A'}</td>
-                                <td>${user.phone || 'N/A'}</td>
-                                <td>${user.planName || 'N/A'}</td>
-                                <td>
-                                    <span class="status ${user.status || 'pending'}">
-                                        ${user.status || 'pending'}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="view-btn" onclick="viewUserDetails('${doc.id}')">View</button>
-                                        <button class="delete-btn" onclick="quickDelete('${doc.id}', '${userName}')">Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
                     });
                     
-                    // Update all statistic boxes
-                    document.getElementById('totalUsers').textContent = totalUsers;
-                    document.getElementById('individualUsers').textContent = individualUsers;
-                    document.getElementById('companyUsers').textContent = companyUsers;
-                    document.getElementById('activeUsers').textContent = activeUsers;
-                    document.getElementById('inactiveUsers').textContent = inactiveUsers;
+                    // Update tab counts
+                    updateTabCounts();
                     
-                    document.getElementById('usersList').innerHTML = html;
+                    // Render filtered users based on current filter
+                    renderFilteredUsers();
                     
                     console.log("Users loaded successfully!");
                 })
