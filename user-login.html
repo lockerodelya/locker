@@ -303,6 +303,49 @@ header {
             padding: 40px;
         }
         
+        /* ====== USER TYPE TOGGLE ====== */
+        .user-type-toggle {
+            display: flex;
+            background: #f0f2f5;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 25px;
+            border: 2px solid #e1e5eb;
+        }
+        
+        .user-type-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .user-type-btn i {
+            font-size: 18px;
+        }
+        
+        .user-type-btn.active {
+            background: linear-gradient(135deg, #3a0ca3 0%, #4361ee 100%);
+            color: white;
+            box-shadow: 0 3px 10px rgba(67, 97, 238, 0.3);
+        }
+        
+        .user-type-btn:not(.active):hover {
+            background: rgba(67, 97, 238, 0.1);
+            color: #3a0ca3;
+        }
+        
+        /* ====== LOGIN FIELDS ====== */
         .form-group {
             margin-bottom: 25px;
         }
@@ -1391,9 +1434,19 @@ footer {
                     
                     <div class="message" id="loginMessage"></div>
                     
+                    <!-- User Type Toggle -->
+                    <div class="user-type-toggle" id="userTypeToggle">
+                        <button type="button" class="user-type-btn active" data-type="individual">
+                            <i class="fas fa-user"></i> Individual
+                        </button>
+                        <button type="button" class="user-type-btn" data-type="company">
+                            <i class="fas fa-building"></i> Company
+                        </button>
+                    </div>
+                    
                     <form id="loginForm">
                         <div class="form-group">
-                            <label for="username">Username</label>
+                            <label for="username" id="usernameLabel">Username</label>
                             <input type="text" id="username" name="username" required placeholder="Enter your username">
                         </div>
                         
@@ -1403,7 +1456,7 @@ footer {
                         </div>
                         
                         <button type="submit" class="login-btn" id="loginBtn">
-                            <span id="loginBtnText">Login</span>
+                            <span id="loginBtnText">Login as Individual</span>
                             <span class="loading" id="loginLoading" style="display: none;"></span>
                         </button>
                     </form>
@@ -1423,7 +1476,7 @@ footer {
             <div class="dashboard" id="dashboard">
                 <!-- Dashboard Header with centered title and visible logout button -->
                 <div class="header">
-                    <h1>Odelya Cloud Storage - User Dashboard</h1>
+                    <h1 id="dashboardTitle">Odelya Cloud Storage - User Dashboard</h1>
                     <button class="logout-btn" onclick="logout()">Logout</button>
                 </div>
                 
@@ -1618,87 +1671,62 @@ footer {
     </div>
 
     <script>
-        // Dropdown JavaScript
-        document.addEventListener('DOMContentLoaded', function() {
-            const hamburger = document.getElementById('hamburger');
-            const dropdown = document.getElementById('dropdown');
-            
-            if (hamburger && dropdown) {
-                hamburger.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    dropdown.classList.toggle('show');
-                    
-                    const icon = hamburger.querySelector('i');
-                    if (dropdown.classList.contains('show')) {
-                        icon.classList.remove('fa-bars');
-                        icon.classList.add('fa-times');
-                    } else {
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                document.addEventListener('click', function(e) {
-                    if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
-                        dropdown.classList.remove('show');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                dropdown.addEventListener('click', function(e) {
-                    if (e.target.tagName === 'A' || e.target.parentElement.tagName === 'A') {
-                        dropdown.classList.remove('show');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && dropdown.classList.contains('show')) {
-                        dropdown.classList.remove('show');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-            }
-        });
-        
-        // Firebase configuration (same as admin dashboard)
-        const firebaseConfig = {
-            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
-            authDomain: "odelya-user-data.firebasestorage.app",
-            projectId: "odelya-user-data",
-            storageBucket: "odelya-user-data.appspot.com",
-            messagingSenderId: "590231118790",
-            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
-            measurementId: "G-9SWTR9V32R"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        
         // Global variables
         let currentUser = null;
         let currentUserData = null;
         let loginCheckInterval = null;
+        let currentUserType = 'individual'; // 'individual' or 'company'
 
         // On page load
         window.onload = function() {
             showLogin();
+            setupUserTypeToggle();
             
             // Check if user was already logged in
             const userLoggedIn = localStorage.getItem('user_logged_in');
             const userId = localStorage.getItem('user_id');
+            const userType = localStorage.getItem('user_type');
             
-            if (userLoggedIn && userId) {
+            if (userLoggedIn && userId && userType) {
+                currentUserType = userType;
                 checkUserStatus(userId);
             }
         };
+        
+        // Setup user type toggle
+        function setupUserTypeToggle() {
+            const toggleButtons = document.querySelectorAll('.user-type-btn');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const loginBtnText = document.getElementById('loginBtnText');
+            
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Update active state
+                    toggleButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update current user type
+                    currentUserType = this.dataset.type;
+                    
+                    // Update button text
+                    loginBtnText.textContent = `Login as ${this.dataset.type === 'individual' ? 'Individual' : 'Company'}`;
+                    
+                    // Clear form fields
+                    usernameInput.value = '';
+                    passwordInput.value = '';
+                    
+                    // Update placeholder based on user type
+                    if (currentUserType === 'company') {
+                        usernameInput.placeholder = 'Enter company username';
+                        passwordInput.placeholder = 'Enter company password';
+                    } else {
+                        usernameInput.placeholder = 'Enter your username';
+                        passwordInput.placeholder = 'Enter your password';
+                    }
+                });
+            });
+        }
         
         // Show login screen
         function showLogin() {
@@ -1748,65 +1776,91 @@ footer {
             loginBtnText.textContent = 'Logging in...';
             loginLoading.style.display = 'inline-block';
             
-            // First, try to login as regular user
+            if (currentUserType === 'individual') {
+                // Login as individual - only check users collection
+                loginAsIndividual(username, password);
+            } else {
+                // Login as company - only check companies collection
+                loginAsCompany(username, password);
+            }
+        }
+        
+        // Login as individual
+        function loginAsIndividual(username, password) {
             db.collection("users")
                 .where("username", "==", username)
                 .where("password", "==", password)
                 .get()
-                .then((userQuerySnapshot) => {
-                    if (!userQuerySnapshot.empty) {
-                        // Regular user found
-                        handleUserLogin(userQuerySnapshot.docs[0]);
+                .then((querySnapshot) => {
+                    if (querySnapshot.empty) {
+                        showMessage('loginMessage', 'Invalid individual username or password', 'error');
+                        resetLoginButton();
                         return;
                     }
                     
-                    // If not found in users, try companies collection
-                    return db.collection("companies")
-                        .where("username", "==", username)
-                        .where("password", "==", password)
-                        .get()
-                        .then((companyQuerySnapshot) => {
-                            if (companyQuerySnapshot.empty) {
-                                showMessage('loginMessage', 'Invalid username or password', 'error');
-                                loginBtnText.textContent = 'Login';
-                                loginLoading.style.display = 'none';
-                                return;
-                            }
-                            
-                            // Company found
-                            handleCompanyLogin(companyQuerySnapshot.docs[0]);
-                        });
+                    // Individual user found
+                    handleUserLogin(querySnapshot.docs[0]);
                 })
                 .catch((error) => {
-                    console.error("Login error:", error);
+                    console.error("Individual login error:", error);
                     showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
-                    loginBtnText.textContent = 'Login';
-                    loginLoading.style.display = 'none';
+                    resetLoginButton();
                 });
         }
         
-        // Handle regular user login
+        // Login as company
+        function loginAsCompany(username, password) {
+            db.collection("companies")
+                .where("username", "==", username)
+                .where("password", "==", password)
+                .get()
+                .then((querySnapshot) => {
+                    if (querySnapshot.empty) {
+                        showMessage('loginMessage', 'Invalid company username or password', 'error');
+                        resetLoginButton();
+                        return;
+                    }
+                    
+                    // Company found
+                    handleCompanyLogin(querySnapshot.docs[0]);
+                })
+                .catch((error) => {
+                    console.error("Company login error:", error);
+                    showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
+                    resetLoginButton();
+                });
+        }
+        
+        // Reset login button state
+        function resetLoginButton() {
+            const loginBtnText = document.getElementById('loginBtnText');
+            const loginLoading = document.getElementById('loginLoading');
+            loginBtnText.textContent = currentUserType === 'individual' ? 'Login as Individual' : 'Login as Company';
+            loginLoading.style.display = 'none';
+        }
+        
+        // Handle individual user login
         function handleUserLogin(userDoc) {
             const user = userDoc.data();
             
             // Check if user is active
             if (user.status !== 'active') {
-                showMessage('loginMessage', 'Your account is not active. Please contact administrator.', 'error');
-                document.getElementById('loginBtnText').textContent = 'Login';
-                document.getElementById('loginLoading').style.display = 'none';
+                showMessage('loginMessage', 'Your individual account is not active. Please contact administrator.', 'error');
+                resetLoginButton();
                 return;
             }
             
-            // Login successful for regular user
+            // Login successful for individual user
             currentUser = userDoc.id;
             currentUserData = user;
-            currentUserData.userType = 'user'; // Add user type identifier
+            currentUserData.userType = 'individual';
+            currentUserType = 'individual';
             
             // Save to localStorage
             localStorage.setItem('user_logged_in', 'true');
             localStorage.setItem('user_id', userDoc.id);
             localStorage.setItem('user_email', user.email || '');
-            localStorage.setItem('user_type', 'user');
+            localStorage.setItem('user_type', 'individual');
             
             // Start checking user status periodically
             startStatusCheck();
@@ -1816,8 +1870,7 @@ footer {
             
             showDashboard();
             
-            document.getElementById('loginBtnText').textContent = 'Login';
-            document.getElementById('loginLoading').style.display = 'none';
+            resetLoginButton();
             document.getElementById('loginForm').reset();
         }
         
@@ -1828,15 +1881,15 @@ footer {
             // Check if company is active
             if (company.status !== 'active') {
                 showMessage('loginMessage', 'Your company account is not active. Please contact administrator.', 'error');
-                document.getElementById('loginBtnText').textContent = 'Login';
-                document.getElementById('loginLoading').style.display = 'none';
+                resetLoginButton();
                 return;
             }
             
             // Login successful for company
             currentUser = companyDoc.id;
             currentUserData = company;
-            currentUserData.userType = 'company'; // Add user type identifier
+            currentUserData.userType = 'company';
+            currentUserType = 'company';
             
             // Save to localStorage
             localStorage.setItem('user_logged_in', 'true');
@@ -1852,8 +1905,7 @@ footer {
             
             showDashboard();
             
-            document.getElementById('loginBtnText').textContent = 'Login';
-            document.getElementById('loginLoading').style.display = 'none';
+            resetLoginButton();
             document.getElementById('loginForm').reset();
         }
         
@@ -1872,7 +1924,7 @@ footer {
         
         // Check user status
         function checkUserStatus(userId) {
-            const userType = localStorage.getItem('user_type') || 'user';
+            const userType = localStorage.getItem('user_type') || currentUserType;
             const collectionName = userType === 'company' ? 'companies' : 'users';
             
             db.collection(collectionName).doc(userId).get()
@@ -1908,11 +1960,14 @@ footer {
                 });
         }
         
-        // Load user dashboard with two columns
+        // Load individual user dashboard
         function loadUserDashboard() {
             if (!currentUserData) return;
             
-            // Change section title for regular user
+            // Update dashboard title
+            document.getElementById('dashboardTitle').textContent = 'Odelya Cloud Storage - Individual Dashboard';
+            
+            // Change section title for individual user
             document.getElementById('personalSectionTitle').textContent = 'Personal Information';
             
             // Format date
@@ -1947,7 +2002,7 @@ footer {
                 }
             }
             
-            // LEFT COLUMN - Personal Information (for regular user)
+            // LEFT COLUMN - Personal Information (for individual user)
             let personalHtml = '';
             personalHtml += `<div class="detail-group">
                 <label>User ID</label>
@@ -2020,12 +2075,12 @@ footer {
             document.getElementById('planInfo').innerHTML = planHtml;
         }
         
-        // Load company dashboard (customized for companies)
+        // Load company dashboard
         function loadCompanyDashboard() {
             if (!currentUserData) return;
             
-            // Change dashboard title for companies
-            document.querySelector('.dashboard .header h1').textContent = 'Odelya Cloud Storage - Company Dashboard';
+            // Update dashboard title
+            document.getElementById('dashboardTitle').textContent = 'Odelya Cloud Storage - Company Dashboard';
             
             // Change section title for company
             document.getElementById('personalSectionTitle').textContent = 'Company Information';
@@ -2171,10 +2226,25 @@ footer {
             // Reset variables
             currentUser = null;
             currentUserData = null;
+            currentUserType = 'individual';
             
             // Reset dashboard title and section title
-            document.querySelector('.dashboard .header h1').textContent = 'Odelya Cloud Storage - User Dashboard';
+            document.getElementById('dashboardTitle').textContent = 'Odelya Cloud Storage - User Dashboard';
             document.getElementById('personalSectionTitle').textContent = 'Personal Information';
+            
+            // Reset login button
+            const loginBtnText = document.getElementById('loginBtnText');
+            loginBtnText.textContent = 'Login as Individual';
+            
+            // Reset user type toggle
+            const toggleButtons = document.querySelectorAll('.user-type-btn');
+            toggleButtons.forEach(btn => {
+                if (btn.dataset.type === 'individual') {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
             
             // Show login screen
             showLogin();
@@ -2297,8 +2367,8 @@ footer {
             changeBtn.textContent = 'Changing...';
             changeBtn.disabled = true;
             
-            // Update password in Firestore - use correct collection
-            const userType = localStorage.getItem('user_type') || 'user';
+            // Update password in Firestore - use correct collection based on user type
+            const userType = localStorage.getItem('user_type') || currentUserType;
             const collectionName = userType === 'company' ? 'companies' : 'users';
             
             db.collection(collectionName).doc(currentUser).update({
@@ -2347,7 +2417,7 @@ footer {
             resetPassword();
         });
         
-        // Reset password function
+        // Reset password function - UPDATED to handle both individual and company
         function resetPassword() {
             const email = document.getElementById('forgotEmail').value.trim();
             const phone = document.getElementById('forgotPhone').value.trim();
@@ -2389,14 +2459,18 @@ footer {
             resetBtn.textContent = 'Resetting...';
             resetBtn.disabled = true;
             
+            // Determine which collection to search based on current user type
+            const collectionName = currentUserType === 'company' ? 'companies' : 'users';
+            const dobField = currentUserType === 'company' ? 'dateOfIncorporation' : 'dob';
+            
             // Find user by email, phone and DOB
-            db.collection("users")
+            db.collection(collectionName)
                 .where("email", "==", email)
                 .where("phone", "==", phone)
                 .get()
                 .then((querySnapshot) => {
                     if (querySnapshot.empty) {
-                        showMessage('forgotMessage', 'No user found with provided details', 'error');
+                        showMessage('forgotMessage', `No ${currentUserType} found with provided details`, 'error');
                         resetBtn.textContent = 'Reset Password';
                         resetBtn.disabled = false;
                         return;
@@ -2406,15 +2480,15 @@ footer {
                     const user = userDoc.data();
                     
                     // Check DOB (simple string comparison for now)
-                    if (user.dob !== dob) {
-                        showMessage('forgotMessage', 'Date of Birth does not match our records', 'error');
+                    if (user[dobField] !== dob) {
+                        showMessage('forgotMessage', `${currentUserType === 'company' ? 'Date of Incorporation' : 'Date of Birth'} does not match our records`, 'error');
                         resetBtn.textContent = 'Reset Password';
                         resetBtn.disabled = false;
                         return;
                     }
                     
                     // Update password
-                    db.collection("users").doc(userDoc.id).update({
+                    db.collection(collectionName).doc(userDoc.id).update({
                         password: newPassword,
                         updatedAt: new Date().toISOString()
                     })
@@ -2444,7 +2518,7 @@ footer {
                 });
         }
         
-        // Recharge Now function - UPDATED VERSION
+        // Recharge Now function
         function rechargeNow() {
             if (!currentUserData) {
                 showMessage('dashboardMessage', 'Please login first', 'error');
@@ -2455,7 +2529,7 @@ footer {
             window.location.href = 'existing-user-payment.html';
         }
         
-        // Generate PDF with two columns (fixed overlapping issue)
+        // Generate PDF with two columns
         function generatePDF() {
             if (!currentUserData) return;
             
@@ -2475,8 +2549,8 @@ footer {
                 
                 doc.setFontSize(18);
                 doc.setTextColor(0, 0, 0);
-                const userType = localStorage.getItem('user_type') || 'user';
-                const dashboardTitle = userType === 'company' ? 'Company Account Details' : 'User Account Details';
+                const userType = localStorage.getItem('user_type') || currentUserType;
+                const dashboardTitle = userType === 'company' ? 'Company Account Details' : 'Individual Account Details';
                 doc.text(dashboardTitle, 105, 35, { align: 'center' });
                 
                 doc.setFontSize(10);
@@ -2640,7 +2714,7 @@ footer {
                 
                 doc.setFontSize(10);
                 doc.setTextColor(100, 100, 100);
-                const copyType = userType === 'company' ? 'Company Copy' : 'User Copy';
+                const copyType = userType === 'company' ? 'Company Copy' : 'Individual Copy';
                 doc.text(`Odelya Cloud Storage - ${copyType}`, 105, footerY, { align: 'center' });
                 
                 // Optional: Add page border
@@ -2649,7 +2723,7 @@ footer {
                 doc.rect(10, 10, 190, pageHeight - 20);
                 
                 // Save PDF
-                const fileName = `Odelya_${userType}_${currentUserData.userId || currentUserData.username}_${new Date().getTime()}.pdf`;
+                const fileName = `Odelya_${userType}_${currentUserData.userId || currentUserData.companyId || currentUserData.username}_${new Date().getTime()}.pdf`;
                 doc.save(fileName);
                 
                 showMessage('dashboardMessage', 'PDF downloaded successfully!', 'success');
@@ -2663,6 +2737,70 @@ footer {
                 event.target.disabled = false;
             }
         }
+
+        // Dropdown JavaScript (from original code)
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger');
+            const dropdown = document.getElementById('dropdown');
+            
+            if (hamburger && dropdown) {
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('show');
+                    
+                    const icon = hamburger.querySelector('i');
+                    if (dropdown.classList.contains('show')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
+                        dropdown.classList.remove('show');
+                        const icon = hamburger.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+                
+                dropdown.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'A' || e.target.parentElement.tagName === 'A') {
+                        dropdown.classList.remove('show');
+                        const icon = hamburger.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+                
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && dropdown.classList.contains('show')) {
+                        dropdown.classList.remove('show');
+                        const icon = hamburger.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+        });
+        
+        // Firebase configuration (same as admin dashboard)
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+            authDomain: "odelya-user-data.firebasestorage.app",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.appspot.com",
+            messagingSenderId: "590231118790",
+            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+            measurementId: "G-9SWTR9V32R"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
     </script>
 </body>
 </html>
