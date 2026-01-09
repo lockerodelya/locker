@@ -1671,6 +1671,73 @@ footer {
     </div>
 
     <script>
+        // Dropdown JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger');
+            const dropdown = document.getElementById('dropdown');
+            
+            if (hamburger && dropdown) {
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('show');
+                    
+                    const icon = hamburger.querySelector('i');
+                    if (dropdown.classList.contains('show')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
+                        dropdown.classList.remove('show');
+                        const icon = hamburger.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+                
+                dropdown.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'A' || e.target.parentElement.tagName === 'A') {
+                        dropdown.classList.remove('show');
+                        const icon = hamburger.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+                
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && dropdown.classList.contains('show')) {
+                        dropdown.classList.remove('show');
+                        const icon = hamburger.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+            
+            // Setup user type toggle
+            setupUserTypeToggle();
+        });
+        
+        // Firebase configuration (same as admin dashboard)
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+            authDomain: "odelya-user-data.firebasestorage.app",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.appspot.com",
+            messagingSenderId: "590231118790",
+            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+            measurementId: "G-9SWTR9V32R"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
         // Global variables
         let currentUser = null;
         let currentUserData = null;
@@ -1680,7 +1747,6 @@ footer {
         // On page load
         window.onload = function() {
             showLogin();
-            setupUserTypeToggle();
             
             // Check if user was already logged in
             const userLoggedIn = localStorage.getItem('user_logged_in');
@@ -1760,7 +1826,7 @@ footer {
             login();
         });
         
-        // Login function
+        // Login function - UPDATED VERSION
         function login() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
@@ -1776,137 +1842,111 @@ footer {
             loginBtnText.textContent = 'Logging in...';
             loginLoading.style.display = 'inline-block';
             
-            if (currentUserType === 'individual') {
-                // Login as individual - only check users collection
-                loginAsIndividual(username, password);
+            // Check which user type is selected
+            const individualBtn = document.querySelector('[data-type="individual"]');
+            const isIndividual = individualBtn.classList.contains('active');
+            
+            if (isIndividual) {
+                // ONLY check users collection for individual login
+                db.collection("users")
+                    .where("username", "==", username)
+                    .where("password", "==", password)
+                    .get()
+                    .then((querySnapshot) => {
+                        if (querySnapshot.empty) {
+                            showMessage('loginMessage', 'Invalid username or password for individual account', 'error');
+                            loginBtnText.textContent = 'Login as Individual';
+                            loginLoading.style.display = 'none';
+                            return;
+                        }
+                        
+                        // Handle individual login
+                        const userDoc = querySnapshot.docs[0];
+                        const user = userDoc.data();
+                        
+                        if (user.status !== 'active') {
+                            showMessage('loginMessage', 'Your individual account is not active. Please contact administrator.', 'error');
+                            loginBtnText.textContent = 'Login as Individual';
+                            loginLoading.style.display = 'none';
+                            return;
+                        }
+                        
+                        // Individual login successful
+                        currentUser = userDoc.id;
+                        currentUserData = user;
+                        currentUserData.userType = 'individual';
+                        currentUserType = 'individual';
+                        
+                        localStorage.setItem('user_logged_in', 'true');
+                        localStorage.setItem('user_id', userDoc.id);
+                        localStorage.setItem('user_email', user.email || '');
+                        localStorage.setItem('user_type', 'individual');
+                        
+                        startStatusCheck();
+                        loadUserDashboard();
+                        showDashboard();
+                        
+                        loginBtnText.textContent = 'Login as Individual';
+                        loginLoading.style.display = 'none';
+                        document.getElementById('loginForm').reset();
+                    })
+                    .catch((error) => {
+                        console.error("Individual login error:", error);
+                        showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
+                        loginBtnText.textContent = 'Login as Individual';
+                        loginLoading.style.display = 'none';
+                    });
             } else {
-                // Login as company - only check companies collection
-                loginAsCompany(username, password);
+                // ONLY check companies collection for company login
+                db.collection("companies")
+                    .where("username", "==", username)
+                    .where("password", "==", password)
+                    .get()
+                    .then((querySnapshot) => {
+                        if (querySnapshot.empty) {
+                            showMessage('loginMessage', 'Invalid username or password for company account', 'error');
+                            loginBtnText.textContent = 'Login as Company';
+                            loginLoading.style.display = 'none';
+                            return;
+                        }
+                        
+                        // Handle company login
+                        const companyDoc = querySnapshot.docs[0];
+                        const company = companyDoc.data();
+                        
+                        if (company.status !== 'active') {
+                            showMessage('loginMessage', 'Your company account is not active. Please contact administrator.', 'error');
+                            loginBtnText.textContent = 'Login as Company';
+                            loginLoading.style.display = 'none';
+                            return;
+                        }
+                        
+                        // Company login successful
+                        currentUser = companyDoc.id;
+                        currentUserData = company;
+                        currentUserData.userType = 'company';
+                        currentUserType = 'company';
+                        
+                        localStorage.setItem('user_logged_in', 'true');
+                        localStorage.setItem('user_id', companyDoc.id);
+                        localStorage.setItem('user_email', company.email || '');
+                        localStorage.setItem('user_type', 'company');
+                        
+                        startStatusCheck();
+                        loadCompanyDashboard();
+                        showDashboard();
+                        
+                        loginBtnText.textContent = 'Login as Company';
+                        loginLoading.style.display = 'none';
+                        document.getElementById('loginForm').reset();
+                    })
+                    .catch((error) => {
+                        console.error("Company login error:", error);
+                        showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
+                        loginBtnText.textContent = 'Login as Company';
+                        loginLoading.style.display = 'none';
+                    });
             }
-        }
-        
-        // Login as individual
-        function loginAsIndividual(username, password) {
-            db.collection("users")
-                .where("username", "==", username)
-                .where("password", "==", password)
-                .get()
-                .then((querySnapshot) => {
-                    if (querySnapshot.empty) {
-                        showMessage('loginMessage', 'Invalid individual username or password', 'error');
-                        resetLoginButton();
-                        return;
-                    }
-                    
-                    // Individual user found
-                    handleUserLogin(querySnapshot.docs[0]);
-                })
-                .catch((error) => {
-                    console.error("Individual login error:", error);
-                    showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
-                    resetLoginButton();
-                });
-        }
-        
-        // Login as company
-        function loginAsCompany(username, password) {
-            db.collection("companies")
-                .where("username", "==", username)
-                .where("password", "==", password)
-                .get()
-                .then((querySnapshot) => {
-                    if (querySnapshot.empty) {
-                        showMessage('loginMessage', 'Invalid company username or password', 'error');
-                        resetLoginButton();
-                        return;
-                    }
-                    
-                    // Company found
-                    handleCompanyLogin(querySnapshot.docs[0]);
-                })
-                .catch((error) => {
-                    console.error("Company login error:", error);
-                    showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
-                    resetLoginButton();
-                });
-        }
-        
-        // Reset login button state
-        function resetLoginButton() {
-            const loginBtnText = document.getElementById('loginBtnText');
-            const loginLoading = document.getElementById('loginLoading');
-            loginBtnText.textContent = currentUserType === 'individual' ? 'Login as Individual' : 'Login as Company';
-            loginLoading.style.display = 'none';
-        }
-        
-        // Handle individual user login
-        function handleUserLogin(userDoc) {
-            const user = userDoc.data();
-            
-            // Check if user is active
-            if (user.status !== 'active') {
-                showMessage('loginMessage', 'Your individual account is not active. Please contact administrator.', 'error');
-                resetLoginButton();
-                return;
-            }
-            
-            // Login successful for individual user
-            currentUser = userDoc.id;
-            currentUserData = user;
-            currentUserData.userType = 'individual';
-            currentUserType = 'individual';
-            
-            // Save to localStorage
-            localStorage.setItem('user_logged_in', 'true');
-            localStorage.setItem('user_id', userDoc.id);
-            localStorage.setItem('user_email', user.email || '');
-            localStorage.setItem('user_type', 'individual');
-            
-            // Start checking user status periodically
-            startStatusCheck();
-            
-            // Load user dashboard
-            loadUserDashboard();
-            
-            showDashboard();
-            
-            resetLoginButton();
-            document.getElementById('loginForm').reset();
-        }
-        
-        // Handle company login
-        function handleCompanyLogin(companyDoc) {
-            const company = companyDoc.data();
-            
-            // Check if company is active
-            if (company.status !== 'active') {
-                showMessage('loginMessage', 'Your company account is not active. Please contact administrator.', 'error');
-                resetLoginButton();
-                return;
-            }
-            
-            // Login successful for company
-            currentUser = companyDoc.id;
-            currentUserData = company;
-            currentUserData.userType = 'company';
-            currentUserType = 'company';
-            
-            // Save to localStorage
-            localStorage.setItem('user_logged_in', 'true');
-            localStorage.setItem('user_id', companyDoc.id);
-            localStorage.setItem('user_email', company.email || '');
-            localStorage.setItem('user_type', 'company');
-            
-            // Start checking user status periodically
-            startStatusCheck();
-            
-            // Load company dashboard
-            loadCompanyDashboard();
-            
-            showDashboard();
-            
-            resetLoginButton();
-            document.getElementById('loginForm').reset();
         }
         
         // Start checking user status
@@ -1960,7 +2000,7 @@ footer {
                 });
         }
         
-        // Load individual user dashboard
+        // Load individual user dashboard with two columns
         function loadUserDashboard() {
             if (!currentUserData) return;
             
@@ -2075,7 +2115,7 @@ footer {
             document.getElementById('planInfo').innerHTML = planHtml;
         }
         
-        // Load company dashboard
+        // Load company dashboard (customized for companies)
         function loadCompanyDashboard() {
             if (!currentUserData) return;
             
@@ -2460,8 +2500,10 @@ footer {
             resetBtn.disabled = true;
             
             // Determine which collection to search based on current user type
-            const collectionName = currentUserType === 'company' ? 'companies' : 'users';
-            const dobField = currentUserType === 'company' ? 'dateOfIncorporation' : 'dob';
+            const individualBtn = document.querySelector('[data-type="individual"]');
+            const isIndividual = individualBtn.classList.contains('active');
+            const collectionName = isIndividual ? 'users' : 'companies';
+            const dobField = isIndividual ? 'dob' : 'dateOfIncorporation';
             
             // Find user by email, phone and DOB
             db.collection(collectionName)
@@ -2470,7 +2512,7 @@ footer {
                 .get()
                 .then((querySnapshot) => {
                     if (querySnapshot.empty) {
-                        showMessage('forgotMessage', `No ${currentUserType} found with provided details`, 'error');
+                        showMessage('forgotMessage', `No ${isIndividual ? 'individual' : 'company'} found with provided details`, 'error');
                         resetBtn.textContent = 'Reset Password';
                         resetBtn.disabled = false;
                         return;
@@ -2481,7 +2523,7 @@ footer {
                     
                     // Check DOB (simple string comparison for now)
                     if (user[dobField] !== dob) {
-                        showMessage('forgotMessage', `${currentUserType === 'company' ? 'Date of Incorporation' : 'Date of Birth'} does not match our records`, 'error');
+                        showMessage('forgotMessage', `${isIndividual ? 'Date of Birth' : 'Date of Incorporation'} does not match our records`, 'error');
                         resetBtn.textContent = 'Reset Password';
                         resetBtn.disabled = false;
                         return;
@@ -2737,70 +2779,6 @@ footer {
                 event.target.disabled = false;
             }
         }
-
-        // Dropdown JavaScript (from original code)
-        document.addEventListener('DOMContentLoaded', function() {
-            const hamburger = document.getElementById('hamburger');
-            const dropdown = document.getElementById('dropdown');
-            
-            if (hamburger && dropdown) {
-                hamburger.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    dropdown.classList.toggle('show');
-                    
-                    const icon = hamburger.querySelector('i');
-                    if (dropdown.classList.contains('show')) {
-                        icon.classList.remove('fa-bars');
-                        icon.classList.add('fa-times');
-                    } else {
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                document.addEventListener('click', function(e) {
-                    if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
-                        dropdown.classList.remove('show');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                dropdown.addEventListener('click', function(e) {
-                    if (e.target.tagName === 'A' || e.target.parentElement.tagName === 'A') {
-                        dropdown.classList.remove('show');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && dropdown.classList.contains('show')) {
-                        dropdown.classList.remove('show');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-            }
-        });
-        
-        // Firebase configuration (same as admin dashboard)
-        const firebaseConfig = {
-            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
-            authDomain: "odelya-user-data.firebasestorage.app",
-            projectId: "odelya-user-data",
-            storageBucket: "odelya-user-data.appspot.com",
-            messagingSenderId: "590231118790",
-            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
-            measurementId: "G-9SWTR9V32R"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
     </script>
 </body>
 </html>
