@@ -2554,242 +2554,274 @@ footer {
             window.location.href = 'existing-user-payment.html';
         }
         
-        // Generate PDF with two columns
-        function generatePDF() {
-            if (!currentUserData) return;
+// Generate PDF with two columns
+function generatePDF() {
+    if (!currentUserData) return;
+    
+    // Show loading
+    const originalText = event.target.textContent;
+    event.target.textContent = "Creating PDF...";
+    event.target.disabled = true;
+    
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Add logo/title
+        doc.setFontSize(24);
+        doc.setTextColor(58, 12, 163); // #3a0ca3
+        doc.text('Odelya Cloud Storage', 105, 25, { align: 'center' });
+        
+        doc.setFontSize(18);
+        doc.setTextColor(0, 0, 0);
+        const userType = localStorage.getItem('user_type') || currentUserType;
+        let dashboardTitle = '';
+        switch(userType) {
+            case 'individual':
+                dashboardTitle = 'Individual Account Details';
+                break;
+            case 'company':
+                dashboardTitle = 'Company Account Details';
+                break;
+        }
+        doc.text(dashboardTitle, 105, 35, { align: 'center' });
+        
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 105, 45, { align: 'center' });
+        
+        // Draw two columns - with proper spacing
+        const column1X = 15; // Left margin
+        const column2X = 105; // Right column starts at middle
+        let column1Y = 65; // Starting Y for left column
+        let column2Y = 65; // Starting Y for right column
+        
+        // Personal Information Column
+        doc.setFontSize(14);
+        doc.setTextColor(58, 12, 163);
+        let personalTitle = '';
+        switch(userType) {
+            case 'individual':
+                personalTitle = 'Personal Information';
+                break;
+            case 'company':
+                personalTitle = 'Company Information';
+                break;
+        }
+        doc.text(personalTitle, column1X, column1Y);
+        column1Y += 8;
+        
+        doc.setFontSize(11);
+        doc.setTextColor(0, 0, 0);
+        
+        // Personal info data based on user type
+        let personalInfo = [];
+        
+        if (userType === 'individual') {
+            personalInfo = [
+                ['Name', currentUserData.fullName || 'N/A'],
+                ['Email', currentUserData.email || 'N/A'],
+                ['Phone', currentUserData.phone || 'N/A'],
+                ['Date of Birth', currentUserData.dob || 'N/A'],
+                ['Aadhaar Number', currentUserData.aadhaarNo || 'N/A'],
+                ['PAN Number', currentUserData.panNo || 'N/A'],
+                ['GSTIN Number', currentUserData.gstinNo || 'N/A'],
+                ['Username', currentUserData.username || 'N/A']
+                // STATUS REMOVED FROM PDF
+            ];
+        } 
+        else if (userType === 'company') {
+            personalInfo = [
+                ['Company Name', currentUserData.companyName || 'N/A'],
+                ['Company ID', currentUserData.companyId || 'N/A'],
+                ['Email', currentUserData.email || 'N/A'],
+                ['Phone', currentUserData.phone || 'N/A'],
+                ['Date of Incorporation', currentUserData.dateOfIncorporation || currentUserData.dob || 'N/A'],
+                ['GSTIN Number', currentUserData.gstinNo || 'N/A'],
+                ['Username', currentUserData.username || 'N/A']
+                // STATUS REMOVED FROM PDF
+            ];
+        }
+        
+        personalInfo.forEach(([label, value]) => {
+            doc.setFont('helvetica', 'bold');
+            doc.text(`${label}:`, column1X, column1Y);
             
-            // Show loading
-            const originalText = event.target.textContent;
-            event.target.textContent = "Creating PDF...";
-            event.target.disabled = true;
+            // Split long values into multiple lines
+            const valueStr = value.toString();
+            const maxLineLength = 30; // Characters per line
+            const lines = [];
             
-            try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                
-                // Add logo/title
-                doc.setFontSize(24);
-                doc.setTextColor(58, 12, 163); // #3a0ca3
-                doc.text('Odelya Cloud Storage', 105, 25, { align: 'center' });
-                
-                doc.setFontSize(18);
-                doc.setTextColor(0, 0, 0);
-                const userType = localStorage.getItem('user_type') || currentUserType;
-                let dashboardTitle = '';
-                switch(userType) {
-                    case 'individual':
-                        dashboardTitle = 'Individual Account Details';
-                        break;
-                    case 'company':
-                        dashboardTitle = 'Company Account Details';
-                        break;
-                }
-                doc.text(dashboardTitle, 105, 35, { align: 'center' });
-                
-                doc.setFontSize(10);
-                doc.setTextColor(100, 100, 100);
-                doc.text(`Generated: ${new Date().toLocaleString()}`, 105, 45, { align: 'center' });
-                
-                // Draw two columns - with proper spacing
-                const column1X = 15; // Left margin
-                const column2X = 105; // Right column starts at middle
-                let column1Y = 65; // Starting Y for left column
-                let column2Y = 65; // Starting Y for right column
-                
-                // Personal Information Column
-                doc.setFontSize(14);
-                doc.setTextColor(58, 12, 163);
-                let personalTitle = '';
-                switch(userType) {
-                    case 'individual':
-                        personalTitle = 'Personal Information';
-                        break;
-                    case 'company':
-                        personalTitle = 'Company Information';
-                        break;
-                }
-                doc.text(personalTitle, column1X, column1Y);
-                column1Y += 8;
-                
-                doc.setFontSize(11);
-                doc.setTextColor(0, 0, 0);
-                
-                // Personal info data based on user type
-                let personalInfo = [];
-                
-                if (userType === 'individual') {
-                    personalInfo = [
-                        ['Name', currentUserData.fullName || 'N/A'],
-                        ['Email', currentUserData.email || 'N/A'],
-                        ['Phone', currentUserData.phone || 'N/A'],
-                        ['Date of Birth', currentUserData.dob || 'N/A'],
-                        ['Aadhaar Number', currentUserData.aadhaarNo || 'N/A'],
-                        ['PAN Number', currentUserData.panNo || 'N/A'],
-                        ['GSTIN Number', currentUserData.gstinNo || 'N/A'],
-                        ['Username', currentUserData.username || 'N/A'],
-                        ['Status', currentUserData.status || 'pending']
-                    ];
-                } 
-                else if (userType === 'company') {
-                    personalInfo = [
-                        ['Company Name', currentUserData.companyName || 'N/A'],
-                        ['Company ID', currentUserData.companyId || 'N/A'],
-                        ['Email', currentUserData.email || 'N/A'],
-                        ['Phone', currentUserData.phone || 'N/A'],
-                        ['Date of Incorporation', currentUserData.dateOfIncorporation || currentUserData.dob || 'N/A'],
-                        ['GSTIN Number', currentUserData.gstinNo || 'N/A'],
-                        ['Username', currentUserData.username || 'N/A'],
-                        ['Status', currentUserData.status || 'pending']
-                    ];
-                }
-                
-                personalInfo.forEach(([label, value]) => {
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(`${label}:`, column1X, column1Y);
-                    
-                    // Split long values into multiple lines
-                    const valueStr = value.toString();
-                    const maxLineLength = 30; // Characters per line
-                    const lines = [];
-                    
-                    for (let i = 0; i < valueStr.length; i += maxLineLength) {
-                        lines.push(valueStr.substring(i, i + maxLineLength));
-                    }
-                    
-                    if (lines.length === 1) {
-                        doc.setFont('helvetica', 'normal');
-                        doc.text(lines[0], column1X + 25, column1Y);
-                        column1Y += 8;
-                    } else {
-                        // Multi-line value
-                        lines.forEach((line, index) => {
-                            doc.setFont('helvetica', 'normal');
-                            const yPos = column1Y + (index * 4);
-                            doc.text(line, column1X + 25, yPos);
-                        });
-                        column1Y += (lines.length * 4) + 4;
-                    }
-                });
-                
-                // Plan Details Column
-                doc.setFontSize(14);
-                doc.setTextColor(58, 12, 163);
-                doc.text('Plan Details', column2X, column2Y);
-                column2Y += 8;
-                
-                doc.setFontSize(11);
-                doc.setTextColor(0, 0, 0);
-                
-                let planInfo = [];
-                
-                if (currentUserData.planName) {
-                    planInfo = [
-                        ['Plan Name', currentUserData.planName || 'N/A'],
-                        ['Plan Size', currentUserData.planSize || 'N/A'],
-                        ['Plan Type', currentUserData.planType || 'N/A'],
-                        ['Plan Start Date', currentUserData.planStartDate || 'N/A'],
-                        ['Plan End Date', currentUserData.planEndDate || 'N/A'],
-                        ['Plan Value', currentUserData.planValue || 'N/A'],
-                        ['Payment Mode', currentUserData.paymentMode || 'N/A']
-                    ];
-                } else {
-                    planInfo = [['Plan Status', 'No active plan']];
-                }
-                
-                planInfo.forEach(([label, value]) => {
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(`${label}:`, column2X, column2Y);
-                    doc.setFont('helvetica', 'normal');
-                    
-                    // Handle long values for plan details too
-                    const valueStr = value.toString();
-                    const maxLineLength = 25;
-                    const lines = [];
-                    
-                    for (let i = 0; i < valueStr.length; i += maxLineLength) {
-                        lines.push(valueStr.substring(i, i + maxLineLength));
-                    }
-                    
-                    if (lines.length === 1) {
-                        doc.text(lines[0], column2X + 30, column2Y);
-                        column2Y += 8;
-                    } else {
-                        lines.forEach((line, index) => {
-                            const yPos = column2Y + (index * 4);
-                            doc.text(line, column2X + 30, yPos);
-                        });
-                        column2Y += (lines.length * 4) + 4;
-                    }
-                });
-                
-                // Registration date
-                doc.setFont('helvetica', 'bold');
-                doc.text('Registration Date:', column2X, column2Y);
+            for (let i = 0; i < valueStr.length; i += maxLineLength) {
+                lines.push(valueStr.substring(i, i + maxLineLength));
+            }
+            
+            if (lines.length === 1) {
                 doc.setFont('helvetica', 'normal');
-                
-                let regDateStr = 'N/A';
-                if (currentUserData.createdAt) {
-                    let regDate = currentUserData.createdAt;
-                    if (currentUserData.createdAt.toDate) {
-                        regDate = currentUserData.createdAt.toDate();
-                    } else if (typeof regDate === 'string') {
-                        regDate = new Date(regDate);
-                    }
-                    
-                    if (!isNaN(regDate.getTime())) {
-                        const day = String(regDate.getDate()).padStart(2, '0');
-                        const month = String(regDate.getMonth() + 1).padStart(2, '0');
-                        const year = regDate.getFullYear();
-                        const hours = String(regDate.getHours()).padStart(2, '0');
-                        const minutes = String(regDate.getMinutes()).padStart(2, '0');
-                        
-                        regDateStr = `${day}-${month}-${year} ${hours}:${minutes}`;
-                    }
-                }
-                
-                doc.text(regDateStr, column2X + 40, column2Y);
+                doc.text(lines[0], column1X + 25, column1Y);
+                column1Y += 8;
+            } else {
+                // Multi-line value
+                lines.forEach((line, index) => {
+                    doc.setFont('helvetica', 'normal');
+                    const yPos = column1Y + (index * 4);
+                    doc.text(line, column1X + 25, yPos);
+                });
+                column1Y += (lines.length * 4) + 4;
+            }
+        });
+        
+        // Plan Details Column
+        doc.setFontSize(14);
+        doc.setTextColor(58, 12, 163);
+        doc.text('Plan Details', column2X, column2Y);
+        column2Y += 8;
+        
+        doc.setFontSize(11);
+        doc.setTextColor(0, 0, 0);
+        
+        let planInfo = [];
+        
+        if (currentUserData.planName) {
+            planInfo = [
+                ['Plan Name', currentUserData.planName || 'N/A'],
+                ['Plan Size', currentUserData.planSize || 'N/A'],
+                ['Plan Type', currentUserData.planType || 'N/A'],
+                ['Plan Start Date', currentUserData.planStartDate || 'N/A'],
+                ['Plan End Date', currentUserData.planEndDate || 'N/A'],
+                ['Plan Value', currentUserData.planValue || 'N/A'],
+                ['Payment Mode', currentUserData.paymentMode || 'N/A']
+            ];
+        } else {
+            planInfo = [['Plan Status', 'No active plan']];
+        }
+        
+        planInfo.forEach(([label, value]) => {
+            doc.setFont('helvetica', 'bold');
+            doc.text(`${label}:`, column2X, column2Y);
+            doc.setFont('helvetica', 'normal');
+            
+            // Handle long values for plan details too
+            const valueStr = value.toString();
+            const maxLineLength = 25;
+            const lines = [];
+            
+            for (let i = 0; i < valueStr.length; i += maxLineLength) {
+                lines.push(valueStr.substring(i, i + maxLineLength));
+            }
+            
+            if (lines.length === 1) {
+                doc.text(lines[0], column2X + 30, column2Y);
                 column2Y += 8;
+            } else {
+                lines.forEach((line, index) => {
+                    const yPos = column2Y + (index * 4);
+                    doc.text(line, column2X + 30, yPos);
+                });
+                column2Y += (lines.length * 4) + 4;
+            }
+        });
+        
+        // Registration date - Added to plan info column
+        doc.setFont('helvetica', 'bold');
+        doc.text('Registration Date:', column2X, column2Y);
+        doc.setFont('helvetica', 'normal');
+        
+        let regDateStr = 'N/A';
+        if (currentUserData.createdAt) {
+            let regDate = currentUserData.createdAt;
+            if (currentUserData.createdAt.toDate) {
+                regDate = currentUserData.createdAt.toDate();
+            } else if (typeof regDate === 'string') {
+                regDate = new Date(regDate);
+            }
+            
+            if (!isNaN(regDate.getTime())) {
+                const day = String(regDate.getDate()).padStart(2, '0');
+                const month = String(regDate.getMonth() + 1).padStart(2, '0');
+                const year = regDate.getFullYear();
+                const hours = String(regDate.getHours()).padStart(2, '0');
+                const minutes = String(regDate.getMinutes()).padStart(2, '0');
                 
-                // Add Terms & Conditions at the bottom
-                column2Y += 10;
-                doc.setFontSize(10);
-                doc.setTextColor(100, 100, 100);
-                doc.text('Terms & Conditions Agreement:', column2X, column2Y);
-                column2Y += 5;
-                doc.setFontSize(9);
-                doc.text('✓ I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy,', column2X, column2Y);
-                column2Y += 4;
-                doc.text('and all other applicable policies of Odelya Secure Cloud Storage.', column2X, column2Y);
-                
-                // Add recharge note at the bottom
-                const pageHeight = doc.internal.pageSize.height;
-                const footerY = pageHeight - 20;
-                
-                doc.setFontSize(10);
-                doc.setTextColor(100, 100, 100);
-                const copyType = userType === 'company' ? 'Company Copy' : 'Individual Copy';
-                doc.text(`Odelya Cloud Storage - ${copyType}`, 105, footerY, { align: 'center' });
-                
-                // Optional: Add page border
-                doc.setDrawColor(200, 200, 200);
-                doc.setLineWidth(0.5);
-                doc.rect(10, 10, 190, pageHeight - 20);
-                
-                // Save PDF
-                const fileName = `Odelya_${userType}_${currentUserData.userId || currentUserData.companyId || currentUserData.username}_${new Date().getTime()}.pdf`;
-                doc.save(fileName);
-                
-                showMessage('dashboardMessage', 'PDF downloaded successfully!', 'success');
-                
-            } catch (error) {
-                console.error("Error generating PDF:", error);
-                showMessage('dashboardMessage', 'Error generating PDF', 'error');
-            } finally {
-                // Restore button
-                event.target.textContent = originalText;
-                event.target.disabled = false;
+                regDateStr = `${day}-${month}-${year} ${hours}:${minutes}`;
             }
         }
+        
+        doc.text(regDateStr, column2X + 40, column2Y);
+        column2Y += 8;
+        
+        // Add recharge note at the bottom
+        const pageHeight = doc.internal.pageSize.height;
+        const footerY = pageHeight - 40; // Moved up to make space for agreement
+        
+        // AGREEMENT SECTION - SPANS ACROSS THE PAGE (NOT TWO COLUMNS)
+        const agreementY = footerY - 15;
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        
+        // Agreement text - centered and spans full width
+        const agreementText = '✓ I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Secure Cloud Storage.';
+        
+        // Split agreement into multiple lines if needed
+        const maxAgreementLength = 80; // Characters per line for agreement
+        const agreementLines = [];
+        
+        for (let i = 0; i < agreementText.length; i += maxAgreementLength) {
+            agreementLines.push(agreementText.substring(i, i + maxAgreementLength));
+        }
+        
+        // Draw a background box for agreement
+        doc.setFillColor(248, 249, 250); // Light gray background
+        const boxHeight = (agreementLines.length * 5) + 8;
+        const boxWidth = 180;
+        const boxX = 15;
+        const boxY = agreementY - 5;
+        
+        doc.roundedRect(boxX, boxY, boxWidth, boxHeight, 3, 3, 'F');
+        
+        // Add border
+        doc.setDrawColor(233, 236, 239);
+        doc.setLineWidth(0.5);
+        doc.roundedRect(boxX, boxY, boxWidth, boxHeight, 3, 3);
+        
+        // Add agreement text
+        doc.setTextColor(0, 0, 0);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Terms & Conditions Agreement:', 20, agreementY + 3);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        agreementLines.forEach((line, index) => {
+            doc.text(line, 20, agreementY + 8 + (index * 4));
+        });
+        
+        // Footer text
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        const copyType = userType === 'company' ? 'Company Copy' : 'Individual Copy';
+        doc.text(`Odelya Cloud Storage - ${copyType}`, 105, pageHeight - 10, { align: 'center' });
+        
+        // Optional: Add page border
+        doc.setDrawColor(200, 200, 200);
+        doc.setLineWidth(0.5);
+        doc.rect(10, 10, 190, pageHeight - 20);
+        
+        // Save PDF
+        const fileName = `Odelya_${userType}_${currentUserData.userId || currentUserData.companyId || currentUserData.username}_${new Date().getTime()}.pdf`;
+        doc.save(fileName);
+        
+        showMessage('dashboardMessage', 'PDF downloaded successfully!', 'success');
+        
+    } catch (error) {
+        console.error("Error generating PDF:", error);
+        showMessage('dashboardMessage', 'Error generating PDF', 'error');
+    } finally {
+        // Restore button
+        event.target.textContent = originalText;
+        event.target.disabled = false;
+    }
+}
+
 
         // Dropdown JavaScript (from original code)
         document.addEventListener('DOMContentLoaded', function() {
