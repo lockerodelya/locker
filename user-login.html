@@ -1442,6 +1442,9 @@ footer {
                         <button type="button" class="user-type-btn" data-type="company">
                             <i class="fas fa-building"></i> Company
                         </button>
+                        <button type="button" class="user-type-btn" data-type="guest">
+                            <i class="fas fa-user-friends"></i> Guest
+                        </button>
                     </div>
                     
                     <form id="loginForm">
@@ -1534,7 +1537,7 @@ footer {
                         <button class="action-btn btn-recharge" onclick="rechargeNow()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
-                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 16 0zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
                             </svg>
                             Recharge Now
                         </button>
@@ -1675,7 +1678,7 @@ footer {
         let currentUser = null;
         let currentUserData = null;
         let loginCheckInterval = null;
-        let currentUserType = 'individual'; // 'individual' or 'company'
+        let currentUserType = 'individual'; // 'individual', 'company', or 'guest'
 
         // On page load
         window.onload = function() {
@@ -1710,20 +1713,29 @@ footer {
                     currentUserType = this.dataset.type;
                     
                     // Update button text
-                    loginBtnText.textContent = `Login as ${this.dataset.type === 'individual' ? 'Individual' : 'Company'}`;
+                    let buttonText = '';
+                    switch(currentUserType) {
+                        case 'individual':
+                            buttonText = 'Individual';
+                            usernameInput.placeholder = 'Enter individual username';
+                            break;
+                        case 'company':
+                            buttonText = 'Company';
+                            usernameInput.placeholder = 'Enter company username';
+                            break;
+                        case 'guest':
+                            buttonText = 'Guest';
+                            usernameInput.placeholder = 'Enter guest username';
+                            break;
+                    }
+                    loginBtnText.textContent = `Login as ${buttonText}`;
                     
                     // Clear form fields
                     usernameInput.value = '';
                     passwordInput.value = '';
                     
-                    // Update placeholder based on user type
-                    if (currentUserType === 'company') {
-                        usernameInput.placeholder = 'Enter company username';
-                        passwordInput.placeholder = 'Enter company password';
-                    } else {
-                        usernameInput.placeholder = 'Enter your username';
-                        passwordInput.placeholder = 'Enter your password';
-                    }
+                    // Update placeholder
+                    passwordInput.placeholder = 'Enter your password';
                 });
             });
         }
@@ -1776,20 +1788,25 @@ footer {
             loginBtnText.textContent = 'Logging in...';
             loginLoading.style.display = 'inline-block';
             
-            if (currentUserType === 'individual') {
-                // Login as individual - only check users collection
-                loginAsIndividual(username, password);
-            } else {
-                // Login as company - only check companies collection
-                loginAsCompany(username, password);
+            switch(currentUserType) {
+                case 'individual':
+                    loginAsIndividual(username, password);
+                    break;
+                case 'company':
+                    loginAsCompany(username, password);
+                    break;
+                case 'guest':
+                    loginAsGuest(username, password);
+                    break;
             }
         }
         
-        // Login as individual
+        // Login as individual - ONLY for individuals, not guests
         function loginAsIndividual(username, password) {
             db.collection("users")
                 .where("username", "==", username)
                 .where("password", "==", password)
+                .where("userType", "==", "individual") // IMPORTANT: Only individual users
                 .get()
                 .then((querySnapshot) => {
                     if (querySnapshot.empty) {
@@ -1799,7 +1816,7 @@ footer {
                     }
                     
                     // Individual user found
-                    handleUserLogin(querySnapshot.docs[0]);
+                    handleUserLogin(querySnapshot.docs[0], 'individual');
                 })
                 .catch((error) => {
                     console.error("Individual login error:", error);
@@ -1810,9 +1827,10 @@ footer {
         
         // Login as company
         function loginAsCompany(username, password) {
-            db.collection("companies")
+            db.collection("users")
                 .where("username", "==", username)
                 .where("password", "==", password)
+                .where("userType", "==", "company") // IMPORTANT: Only company users
                 .get()
                 .then((querySnapshot) => {
                     if (querySnapshot.empty) {
@@ -1822,10 +1840,34 @@ footer {
                     }
                     
                     // Company found
-                    handleCompanyLogin(querySnapshot.docs[0]);
+                    handleUserLogin(querySnapshot.docs[0], 'company');
                 })
                 .catch((error) => {
                     console.error("Company login error:", error);
+                    showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
+                    resetLoginButton();
+                });
+        }
+        
+        // Login as guest - ONLY for guests
+        function loginAsGuest(username, password) {
+            db.collection("users")
+                .where("username", "==", username)
+                .where("password", "==", password)
+                .where("userType", "==", "guest") // IMPORTANT: Only guest users
+                .get()
+                .then((querySnapshot) => {
+                    if (querySnapshot.empty) {
+                        showMessage('loginMessage', 'Invalid guest username or password', 'error');
+                        resetLoginButton();
+                        return;
+                    }
+                    
+                    // Guest found
+                    handleUserLogin(querySnapshot.docs[0], 'guest');
+                })
+                .catch((error) => {
+                    console.error("Guest login error:", error);
                     showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
                     resetLoginButton();
                 });
@@ -1835,73 +1877,50 @@ footer {
         function resetLoginButton() {
             const loginBtnText = document.getElementById('loginBtnText');
             const loginLoading = document.getElementById('loginLoading');
-            loginBtnText.textContent = currentUserType === 'individual' ? 'Login as Individual' : 'Login as Company';
+            let buttonText = '';
+            switch(currentUserType) {
+                case 'individual':
+                    buttonText = 'Individual';
+                    break;
+                case 'company':
+                    buttonText = 'Company';
+                    break;
+                case 'guest':
+                    buttonText = 'Guest';
+                    break;
+            }
+            loginBtnText.textContent = `Login as ${buttonText}`;
             loginLoading.style.display = 'none';
         }
         
-        // Handle individual user login
-        function handleUserLogin(userDoc) {
+        // Handle user login (for all types)
+        function handleUserLogin(userDoc, userType) {
             const user = userDoc.data();
             
             // Check if user is active
             if (user.status !== 'active') {
-                showMessage('loginMessage', 'Your individual account is not active. Please contact administrator.', 'error');
+                showMessage('loginMessage', `Your ${userType} account is not active. Please contact administrator.`, 'error');
                 resetLoginButton();
                 return;
             }
             
-            // Login successful for individual user
+            // Login successful
             currentUser = userDoc.id;
             currentUserData = user;
-            currentUserData.userType = 'individual';
-            currentUserType = 'individual';
+            currentUserData.userType = userType;
+            currentUserType = userType;
             
             // Save to localStorage
             localStorage.setItem('user_logged_in', 'true');
             localStorage.setItem('user_id', userDoc.id);
             localStorage.setItem('user_email', user.email || '');
-            localStorage.setItem('user_type', 'individual');
+            localStorage.setItem('user_type', userType);
             
             // Start checking user status periodically
             startStatusCheck();
             
-            // Load user dashboard
-            loadUserDashboard();
-            
-            showDashboard();
-            
-            resetLoginButton();
-            document.getElementById('loginForm').reset();
-        }
-        
-        // Handle company login
-        function handleCompanyLogin(companyDoc) {
-            const company = companyDoc.data();
-            
-            // Check if company is active
-            if (company.status !== 'active') {
-                showMessage('loginMessage', 'Your company account is not active. Please contact administrator.', 'error');
-                resetLoginButton();
-                return;
-            }
-            
-            // Login successful for company
-            currentUser = companyDoc.id;
-            currentUserData = company;
-            currentUserData.userType = 'company';
-            currentUserType = 'company';
-            
-            // Save to localStorage
-            localStorage.setItem('user_logged_in', 'true');
-            localStorage.setItem('user_id', companyDoc.id);
-            localStorage.setItem('user_email', company.email || '');
-            localStorage.setItem('user_type', 'company');
-            
-            // Start checking user status periodically
-            startStatusCheck();
-            
-            // Load company dashboard
-            loadCompanyDashboard();
+            // Load appropriate dashboard
+            loadDashboard(userType);
             
             showDashboard();
             
@@ -1925,33 +1944,28 @@ footer {
         // Check user status
         function checkUserStatus(userId) {
             const userType = localStorage.getItem('user_type') || currentUserType;
-            const collectionName = userType === 'company' ? 'companies' : 'users';
             
-            db.collection(collectionName).doc(userId).get()
+            db.collection("users").doc(userId).get()
                 .then((doc) => {
                     if (doc.exists) {
                         const user = doc.data();
                         
-                        // If user/company is no longer active, log them out
+                        // If user is no longer active, log them out
                         if (user.status !== 'active') {
                             showMessage('dashboardMessage', 'Your account is no longer active. Please contact administrator.', 'error');
                             setTimeout(() => {
                                 logout();
                             }, 3000);
                         } else {
-                            // Update local data if user/company is still active
+                            // Update local data if user is still active
                             currentUserData = user;
                             currentUserData.userType = userType;
                             
                             // Load appropriate dashboard
-                            if (userType === 'company') {
-                                loadCompanyDashboard();
-                            } else {
-                                loadUserDashboard();
-                            }
+                            loadDashboard(userType);
                         }
                     } else {
-                        // User/company document doesn't exist anymore
+                        // User document doesn't exist anymore
                         logout();
                     }
                 })
@@ -1960,15 +1974,39 @@ footer {
                 });
         }
         
-        // Load individual user dashboard
-        function loadUserDashboard() {
+        // Load appropriate dashboard based on user type
+        function loadDashboard(userType) {
             if (!currentUserData) return;
             
             // Update dashboard title
-            document.getElementById('dashboardTitle').textContent = 'Odelya Cloud Storage - Individual Dashboard';
+            let dashboardTitle = '';
+            switch(userType) {
+                case 'individual':
+                    dashboardTitle = 'Odelya Cloud Storage - Individual Dashboard';
+                    break;
+                case 'company':
+                    dashboardTitle = 'Odelya Cloud Storage - Company Dashboard';
+                    break;
+                case 'guest':
+                    dashboardTitle = 'Odelya Cloud Storage - Guest Dashboard';
+                    break;
+            }
+            document.getElementById('dashboardTitle').textContent = dashboardTitle;
             
-            // Change section title for individual user
-            document.getElementById('personalSectionTitle').textContent = 'Personal Information';
+            // Change section title based on user type
+            let sectionTitle = '';
+            switch(userType) {
+                case 'individual':
+                    sectionTitle = 'Personal Information';
+                    break;
+                case 'company':
+                    sectionTitle = 'Company Information';
+                    break;
+                case 'guest':
+                    sectionTitle = 'Guest Information';
+                    break;
+            }
+            document.getElementById('personalSectionTitle').textContent = sectionTitle;
             
             // Format date
             function formatDate(dateValue) {
@@ -2002,11 +2040,13 @@ footer {
                 }
             }
             
-            // LEFT COLUMN - Personal Information (for individual user)
+            // LEFT COLUMN - Personal/Company/Guest Information
             let personalHtml = '';
+            
+            // Common fields for all user types
             personalHtml += `<div class="detail-group">
                 <label>User ID</label>
-                <div class="value">${currentUserData.userId || 'N/A'}</div>
+                <div class="value">${currentUserData.userId || currentUserData.companyId || 'N/A'}</div>
             </div>`;
             
             personalHtml += `<div class="detail-group">
@@ -2018,25 +2058,90 @@ footer {
                 </div>
             </div>`;
             
-            personalHtml += `<div class="detail-group">
-                <label>Full Name</label>
-                <div class="value">${currentUserData.fullName || 'N/A'}</div>
-            </div>`;
-            
-            personalHtml += `<div class="detail-group">
-                <label>Email</label>
-                <div class="value">${currentUserData.email || 'N/A'}</div>
-            </div>`;
-            
-            personalHtml += `<div class="detail-group">
-                <label>Phone</label>
-                <div class="value">${currentUserData.phone || 'N/A'}</div>
-            </div>`;
-            
-            personalHtml += `<div class="detail-group">
-                <label>Date of Birth</label>
-                <div class="value">${formatDate(currentUserData.dob)}</div>
-            </div>`;
+            // Specific fields based on user type
+            if (userType === 'individual') {
+                personalHtml += `<div class="detail-group">
+                    <label>Full Name</label>
+                    <div class="value">${currentUserData.fullName || 'N/A'}</div>
+                </div>`;
+                
+                personalHtml += `<div class="detail-group">
+                    <label>Email</label>
+                    <div class="value">${currentUserData.email || 'N/A'}</div>
+                </div>`;
+                
+                personalHtml += `<div class="detail-group">
+                    <label>Phone</label>
+                    <div class="value">${currentUserData.phone || 'N/A'}</div>
+                </div>`;
+                
+                personalHtml += `<div class="detail-group">
+                    <label>Date of Birth</label>
+                    <div class="value">${formatDate(currentUserData.dob)}</div>
+                </div>`;
+            } 
+            else if (userType === 'company') {
+                personalHtml += `<div class="detail-group">
+                    <label>Company Name</label>
+                    <div class="value">${currentUserData.companyName || 'N/A'}</div>
+                </div>`;
+                
+                personalHtml += `<div class="detail-group">
+                    <label>Email</label>
+                    <div class="value">${currentUserData.email || 'N/A'}</div>
+                </div>`;
+                
+                personalHtml += `<div class="detail-group">
+                    <label>Phone</label>
+                    <div class="value">${currentUserData.phone || 'N/A'}</div>
+                </div>`;
+                
+                personalHtml += `<div class="detail-group">
+                    <label>Date of Incorporation</label>
+                    <div class="value">${formatDate(currentUserData.dateOfIncorporation || currentUserData.dob)}</div>
+                </div>`;
+                
+                personalHtml += `<div class="detail-group">
+                    <label>Contact Person</label>
+                    <div class="value">${currentUserData.contactPerson || 'N/A'}</div>
+                </div>`;
+            } 
+            else if (userType === 'guest') {
+                personalHtml += `<div class="detail-group">
+                    <label>Guest Name</label>
+                    <div class="value">${currentUserData.fullName || currentUserData.guestName || 'N/A'}</div>
+                </div>`;
+                
+                personalHtml += `<div class="detail-group">
+                    <label>Email</label>
+                    <div class="value">${currentUserData.email || 'N/A'}</div>
+                </div>`;
+                
+                personalHtml += `<div class="detail-group">
+                    <label>Phone</label>
+                    <div class="value">${currentUserData.phone || 'N/A'}</div>
+                </div>`;
+                
+                personalHtml += `<div class="detail-group">
+                    <label>Registration Date</label>
+                    <div class="value">${formatDate(currentUserData.registrationDate || currentUserData.dob)}</div>
+                </div>`;
+                
+                // Guest specific fields
+                if (currentUserData.hostName) {
+                    personalHtml += `<div class="detail-group">
+                        <label>Host Name</label>
+                        <div class="value">${currentUserData.hostName}</div>
+                    </div>`;
+                }
+                
+                if (currentUserData.purpose) {
+                    personalHtml += `<div class="detail-group">
+                        <label>Purpose</label>
+                        <div class="value">${currentUserData.purpose}</div>
+                    </div>`;
+                }
+            }
             
             personalHtml += `<div class="detail-group">
                 <label>Username</label>
@@ -2047,163 +2152,55 @@ footer {
             
             // RIGHT COLUMN - Plan Information
             let planHtml = '';
-            planHtml += `<div class="detail-group">
-                <label>Plan Name</label>
-                <div class="value">${currentUserData.planName || 'N/A'}</div>
-            </div>`;
             
-            planHtml += `<div class="detail-group">
-                <label>Plan Size</label>
-                <div class="value">${currentUserData.planSize || 'N/A'}</div>
-            </div>`;
-            
-            planHtml += `<div class="detail-group">
-                <label>Plan Value</label>
-                <div class="value">${currentUserData.planValue || 'N/A'}</div>
-            </div>`;
-            
-            planHtml += `<div class="detail-group">
-                <label>Plan Start Date</label>
-                <div class="value">${formatDate(currentUserData.planStartDate)}</div>
-            </div>`;
-            
-            planHtml += `<div class="detail-group">
-                <label>Plan End Date</label>
-                <div class="value">${formatDate(currentUserData.planEndDate)}</div>
-            </div>`;
-            
-            document.getElementById('planInfo').innerHTML = planHtml;
-        }
-        
-        // Load company dashboard
-        function loadCompanyDashboard() {
-            if (!currentUserData) return;
-            
-            // Update dashboard title
-            document.getElementById('dashboardTitle').textContent = 'Odelya Cloud Storage - Company Dashboard';
-            
-            // Change section title for company
-            document.getElementById('personalSectionTitle').textContent = 'Company Information';
-            
-            // Format date function
-            function formatDate(dateValue) {
-                if (!dateValue) return 'N/A';
-                
-                try {
-                    let date;
-                    if (typeof dateValue === 'string') {
-                        const parts = dateValue.split('-');
-                        if (parts.length === 3) {
-                            date = new Date(parts[2], parts[1] - 1, parts[0]);
-                        } else {
-                            date = new Date(dateValue);
-                        }
-                    } else if (dateValue.toDate) {
-                        date = dateValue.toDate();
-                    } else {
-                        date = dateValue;
-                    }
-                    
-                    if (isNaN(date.getTime())) return 'Invalid Date';
-                    
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const year = date.getFullYear();
-                    
-                    return `${day}-${month}-${year}`;
-                } catch (e) {
-                    return 'Invalid Date';
-                }
-            }
-            
-            // LEFT COLUMN - Company Information
-            let personalHtml = '';
-            personalHtml += `<div class="detail-group">
-                <label>Company ID</label>
-                <div class="value">${currentUserData.companyId || 'N/A'}</div>
-            </div>`;
-            
-            personalHtml += `<div class="detail-group">
-                <label>Status</label>
-                <div class="value">
-                    <span class="status ${currentUserData.status || 'pending'}">
-                        ${currentUserData.status || 'pending'}
-                    </span>
-                </div>
-            </div>`;
-            
-            personalHtml += `<div class="detail-group">
-                <label>Company Name</label>
-                <div class="value">${currentUserData.companyName || 'N/A'}</div>
-            </div>`;
-            
-            personalHtml += `<div class="detail-group">
-                <label>Email</label>
-                <div class="value">${currentUserData.email || 'N/A'}</div>
-            </div>`;
-            
-            personalHtml += `<div class="detail-group">
-                <label>Phone</label>
-                <div class="value">${currentUserData.phone || 'N/A'}</div>
-            </div>`;
-            
-            // Use dateOfIncorporation field instead of dob for companies
-            personalHtml += `<div class="detail-group">
-                <label>Date of Incorporation</label>
-                <div class="value">${formatDate(currentUserData.dateOfIncorporation || currentUserData.dob)}</div>
-            </div>`;
-            
-            personalHtml += `<div class="detail-group">
-                <label>Username</label>
-                <div class="value">${currentUserData.username || 'N/A'}</div>
-            </div>`;
-            
-            personalHtml += `<div class="detail-group">
-                <label>Contact Person</label>
-                <div class="value">${currentUserData.contactPerson || 'N/A'}</div>
-            </div>`;
-            
-            document.getElementById('personalInfo').innerHTML = personalHtml;
-            
-            // RIGHT COLUMN - Plan Information (for companies)
-            let planHtml = '';
-            planHtml += `<div class="detail-group">
-                <label>Plan Name</label>
-                <div class="value">${currentUserData.planName || 'N/A'}</div>
-            </div>`;
-            
-            planHtml += `<div class="detail-group">
-                <label>Plan Size</label>
-                <div class="value">${currentUserData.planSize || 'N/A'}</div>
-            </div>`;
-            
-            planHtml += `<div class="detail-group">
-                <label>Plan Value</label>
-                <div class="value">${currentUserData.planValue || 'N/A'}</div>
-            </div>`;
-            
-            planHtml += `<div class="detail-group">
-                <label>Plan Start Date</label>
-                <div class="value">${formatDate(currentUserData.planStartDate)}</div>
-            </div>`;
-            
-            planHtml += `<div class="detail-group">
-                <label>Plan End Date</label>
-                <div class="value">${formatDate(currentUserData.planEndDate)}</div>
-            </div>`;
-            
-            // Add company-specific fields
-            if (currentUserData.businessType) {
+            // Check if user has a plan (guests might not have plans)
+            if (currentUserData.planName) {
                 planHtml += `<div class="detail-group">
-                    <label>Business Type</label>
-                    <div class="value">${currentUserData.businessType || 'N/A'}</div>
+                    <label>Plan Name</label>
+                    <div class="value">${currentUserData.planName || 'N/A'}</div>
                 </div>`;
-            }
-            
-            if (currentUserData.address) {
+                
                 planHtml += `<div class="detail-group">
-                    <label>Address</label>
-                    <div class="value">${currentUserData.address || 'N/A'}</div>
+                    <label>Plan Size</label>
+                    <div class="value">${currentUserData.planSize || 'N/A'}</div>
+                </div>`;
+                
+                planHtml += `<div class="detail-group">
+                    <label>Plan Value</label>
+                    <div class="value">${currentUserData.planValue || 'N/A'}</div>
+                </div>`;
+                
+                planHtml += `<div class="detail-group">
+                    <label>Plan Start Date</label>
+                    <div class="value">${formatDate(currentUserData.planStartDate)}</div>
+                </div>`;
+                
+                planHtml += `<div class="detail-group">
+                    <label>Plan End Date</label>
+                    <div class="value">${formatDate(currentUserData.planEndDate)}</div>
+                </div>`;
+            } else if (userType === 'guest') {
+                // Guest specific info if no plan
+                planHtml += `<div class="detail-group">
+                    <label>Access Type</label>
+                    <div class="value">${currentUserData.accessType || 'Temporary'}</div>
+                </div>`;
+                
+                planHtml += `<div class="detail-group">
+                    <label>Access Duration</label>
+                    <div class="value">${currentUserData.accessDuration || 'N/A'}</div>
+                </div>`;
+                
+                if (currentUserData.accessExpiry) {
+                    planHtml += `<div class="detail-group">
+                        <label>Access Expiry</label>
+                        <div class="value">${formatDate(currentUserData.accessExpiry)}</div>
+                    </div>`;
+                }
+            } else {
+                planHtml += `<div class="detail-group">
+                    <label>Plan Status</label>
+                    <div class="value">No active plan</div>
                 </div>`;
             }
             
@@ -2367,11 +2364,8 @@ footer {
             changeBtn.textContent = 'Changing...';
             changeBtn.disabled = true;
             
-            // Update password in Firestore - use correct collection based on user type
-            const userType = localStorage.getItem('user_type') || currentUserType;
-            const collectionName = userType === 'company' ? 'companies' : 'users';
-            
-            db.collection(collectionName).doc(currentUser).update({
+            // Update password in Firestore
+            db.collection("users").doc(currentUser).update({
                 password: newPassword,
                 updatedAt: new Date().toISOString()
             })
@@ -2417,7 +2411,7 @@ footer {
             resetPassword();
         });
         
-        // Reset password function - UPDATED to handle both individual and company
+        // Reset password function
         function resetPassword() {
             const email = document.getElementById('forgotEmail').value.trim();
             const phone = document.getElementById('forgotPhone').value.trim();
@@ -2459,14 +2453,11 @@ footer {
             resetBtn.textContent = 'Resetting...';
             resetBtn.disabled = true;
             
-            // Determine which collection to search based on current user type
-            const collectionName = currentUserType === 'company' ? 'companies' : 'users';
-            const dobField = currentUserType === 'company' ? 'dateOfIncorporation' : 'dob';
-            
-            // Find user by email, phone and DOB
-            db.collection(collectionName)
+            // Find user by email, phone and DOB based on current user type
+            db.collection("users")
                 .where("email", "==", email)
                 .where("phone", "==", phone)
+                .where("userType", "==", currentUserType) // Filter by user type
                 .get()
                 .then((querySnapshot) => {
                     if (querySnapshot.empty) {
@@ -2480,6 +2471,11 @@ footer {
                     const user = userDoc.data();
                     
                     // Check DOB (simple string comparison for now)
+                    let dobField = 'dob';
+                    if (currentUserType === 'company') {
+                        dobField = 'dateOfIncorporation';
+                    }
+                    
                     if (user[dobField] !== dob) {
                         showMessage('forgotMessage', `${currentUserType === 'company' ? 'Date of Incorporation' : 'Date of Birth'} does not match our records`, 'error');
                         resetBtn.textContent = 'Reset Password';
@@ -2488,7 +2484,7 @@ footer {
                     }
                     
                     // Update password
-                    db.collection(collectionName).doc(userDoc.id).update({
+                    db.collection("users").doc(userDoc.id).update({
                         password: newPassword,
                         updatedAt: new Date().toISOString()
                     })
@@ -2525,6 +2521,12 @@ footer {
                 return;
             }
             
+            // Check if user is a guest (guests typically don't recharge)
+            if (currentUserType === 'guest') {
+                showMessage('dashboardMessage', 'Guest accounts cannot recharge. Please contact administrator.', 'error');
+                return;
+            }
+            
             // Always redirect to existing-user-payment.html
             window.location.href = 'existing-user-payment.html';
         }
@@ -2550,7 +2552,18 @@ footer {
                 doc.setFontSize(18);
                 doc.setTextColor(0, 0, 0);
                 const userType = localStorage.getItem('user_type') || currentUserType;
-                const dashboardTitle = userType === 'company' ? 'Company Account Details' : 'Individual Account Details';
+                let dashboardTitle = '';
+                switch(userType) {
+                    case 'individual':
+                        dashboardTitle = 'Individual Account Details';
+                        break;
+                    case 'company':
+                        dashboardTitle = 'Company Account Details';
+                        break;
+                    case 'guest':
+                        dashboardTitle = 'Guest Account Details';
+                        break;
+                }
                 doc.text(dashboardTitle, 105, 35, { align: 'center' });
                 
                 doc.setFontSize(10);
@@ -2566,7 +2579,18 @@ footer {
                 // Personal Information Column
                 doc.setFontSize(14);
                 doc.setTextColor(58, 12, 163);
-                const personalTitle = userType === 'company' ? 'Company Information' : 'Personal Information';
+                let personalTitle = '';
+                switch(userType) {
+                    case 'individual':
+                        personalTitle = 'Personal Information';
+                        break;
+                    case 'company':
+                        personalTitle = 'Company Information';
+                        break;
+                    case 'guest':
+                        personalTitle = 'Guest Information';
+                        break;
+                }
                 doc.text(personalTitle, column1X, column1Y);
                 column1Y += 8;
                 
@@ -2575,7 +2599,19 @@ footer {
                 
                 // Personal info data based on user type
                 let personalInfo = [];
-                if (userType === 'company') {
+                
+                if (userType === 'individual') {
+                    personalInfo = [
+                        ['User ID', currentUserData.userId || 'N/A'],
+                        ['Status', currentUserData.status || 'pending'],
+                        ['Full Name', currentUserData.fullName || 'N/A'],
+                        ['Email', currentUserData.email || 'N/A'],
+                        ['Phone', currentUserData.phone || 'N/A'],
+                        ['Date of Birth', currentUserData.dob || 'N/A'],
+                        ['Username', currentUserData.username || 'N/A']
+                    ];
+                } 
+                else if (userType === 'company') {
                     personalInfo = [
                         ['Company ID', currentUserData.companyId || 'N/A'],
                         ['Status', currentUserData.status || 'pending'],
@@ -2586,16 +2622,24 @@ footer {
                         ['Username', currentUserData.username || 'N/A'],
                         ['Contact Person', currentUserData.contactPerson || 'N/A']
                     ];
-                } else {
+                } 
+                else if (userType === 'guest') {
                     personalInfo = [
-                        ['User ID', currentUserData.userId || 'N/A'],
+                        ['Guest ID', currentUserData.userId || currentUserData.guestId || 'N/A'],
                         ['Status', currentUserData.status || 'pending'],
-                        ['Full Name', currentUserData.fullName || 'N/A'],
+                        ['Guest Name', currentUserData.fullName || currentUserData.guestName || 'N/A'],
                         ['Email', currentUserData.email || 'N/A'],
                         ['Phone', currentUserData.phone || 'N/A'],
-                        ['Date of Birth', currentUserData.dob || 'N/A'],
+                        ['Registration Date', currentUserData.registrationDate || currentUserData.dob || 'N/A'],
                         ['Username', currentUserData.username || 'N/A']
                     ];
+                    
+                    if (currentUserData.hostName) {
+                        personalInfo.push(['Host Name', currentUserData.hostName]);
+                    }
+                    if (currentUserData.purpose) {
+                        personalInfo.push(['Purpose', currentUserData.purpose]);
+                    }
                 }
                 
                 personalInfo.forEach(([label, value]) => {
@@ -2674,13 +2718,28 @@ footer {
                 doc.setFontSize(11);
                 doc.setTextColor(0, 0, 0);
                 
-                const planInfo = [
-                    ['Plan Name', currentUserData.planName || 'N/A'],
-                    ['Plan Size', currentUserData.planSize || 'N/A'],
-                    ['Plan Value', currentUserData.planValue || 'N/A'],
-                    ['Plan Start Date', currentUserData.planStartDate || 'N/A'],
-                    ['Plan End Date', currentUserData.planEndDate || 'N/A']
-                ];
+                let planInfo = [];
+                
+                if (currentUserData.planName) {
+                    planInfo = [
+                        ['Plan Name', currentUserData.planName || 'N/A'],
+                        ['Plan Size', currentUserData.planSize || 'N/A'],
+                        ['Plan Value', currentUserData.planValue || 'N/A'],
+                        ['Plan Start Date', currentUserData.planStartDate || 'N/A'],
+                        ['Plan End Date', currentUserData.planEndDate || 'N/A']
+                    ];
+                } else if (userType === 'guest') {
+                    planInfo = [
+                        ['Access Type', currentUserData.accessType || 'Temporary'],
+                        ['Access Duration', currentUserData.accessDuration || 'N/A']
+                    ];
+                    
+                    if (currentUserData.accessExpiry) {
+                        planInfo.push(['Access Expiry', currentUserData.accessExpiry]);
+                    }
+                } else {
+                    planInfo = [['Plan Status', 'No active plan']];
+                }
                 
                 planInfo.forEach(([label, value]) => {
                     doc.setFont('helvetica', 'bold');
@@ -2714,7 +2773,7 @@ footer {
                 
                 doc.setFontSize(10);
                 doc.setTextColor(100, 100, 100);
-                const copyType = userType === 'company' ? 'Company Copy' : 'Individual Copy';
+                const copyType = userType === 'company' ? 'Company Copy' : (userType === 'guest' ? 'Guest Copy' : 'Individual Copy');
                 doc.text(`Odelya Cloud Storage - ${copyType}`, 105, footerY, { align: 'center' });
                 
                 // Optional: Add page border
