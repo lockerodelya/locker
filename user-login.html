@@ -1434,16 +1434,13 @@ footer {
                     
                     <div class="message" id="loginMessage"></div>
                     
-                    <!-- User Type Toggle -->
+                    <!-- User Type Toggle - ONLY Individual and Company -->
                     <div class="user-type-toggle" id="userTypeToggle">
                         <button type="button" class="user-type-btn active" data-type="individual">
                             <i class="fas fa-user"></i> Individual
                         </button>
                         <button type="button" class="user-type-btn" data-type="company">
                             <i class="fas fa-building"></i> Company
-                        </button>
-                        <button type="button" class="user-type-btn" data-type="guest">
-                            <i class="fas fa-user-friends"></i> Guest
                         </button>
                     </div>
                     
@@ -1528,7 +1525,7 @@ footer {
                         
                         <button class="action-btn btn-pdf" onclick="generatePDF()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M5.523 10.424c.14-.082.293-.162.459-.238a7.878 7.878 0 0 1-.45.606c-.28.337-.498.516-.635.572a.5.5 0 0 1-.357-.133.5.5 0 0 1-.136-.364c0-.153.045-.262.136-.345.09-.082.21-.147.367-.195l.004-.002c.112-.039.231-.073.349-.099l.001-.001c.124-.029.253-.054.387-.076a6.9 6.9 0 0 1 1.669-.084c.42.042.81.126 1.168.252.359.126.664.302.92.532.256.23.453.516.589.848.135.332.202.708.202 1.126 0 .418-.067.794-.202 1.126a2.23 2.23 0 0 1-.589.848c-.256.23-.561.406-.92.532-.358.126-.749.21-1.168.252-.563.06-1.137.006-1.706-.084a7.875 7.875 0 0 1-.387-.076l-.001-.001a14.67 14.67 0 0 1-.349-.099l-.004-.002a1.38 1.38 0 0 1-.367-.195.5.5 0 0 1-.136-.364c0-.153.045-.262.136-.345.09-.082.21-.147.367-.195l.004-.002c.112-.039.231-.073.349-.099l.001-.001c.124-.029.253-.054.387-.076.36-.07.738-.094 1.137-.064.41.032.794.132 1.15.301.356.17.658.411.907.722.25.311.376.677.376 1.102 0 .425-.126.791-.376 1.102a1.98 1.98 0 0 1-.907.722 2.84 2.84 0 0 1-1.15.301c-.398.03-.776.006-1.137-.064-.134-.022-.263-.047-.387-.076l-.001-.001a14.67 14.67 0 0 1-.349-.099l-.004-.002a1.82 1.82 0 0 1-.459-.238 5.04 5.04 0 0 1-.408-.249.5.5 0 0 1 .408-.87z"/>
+                                <path d="M5.523 10.424c.14-.082.293-.162.459-.238a7.878 7.878 0 0 1-.45.606c-.28.337-.498.516-.635.572a.5.5 0 0 1-.357-.133.5.5 0 0 1-.136-.364c0-.153.045-.262.136-.345.09-.082.21-.147.367-.195l.004-.002c.112-.039.231-.073.349-.099l.001-.001c.124-.029.253-.054.387-.076a6.9 6.9 0 0 1 1.669-.084c.42.042.81.126 1.168.252.359.126.664.302.92.532.256.23.453.516.589.848.135.332.202.708.202 1.126 0 .418-.067.794-.202 1.126a2.23 2.23 0 0 1-.589.848c-.256.23-.561.406-.92.532-.358.126-.749.21-1.168.252-.563.06-1.137.006-1.706-.084a7.875 7.875 0 0 1-.387-.076l-.001-.001a14.67 14.67 0 0 1-.349-.099l-.004-.002a1.82 1.82 0 0 1-.459-.238 5.04 5.04 0 0 1-.408-.249.5.5 0 0 1 .408-.87z"/>
                                 <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
                             </svg>
                             Download PDF
@@ -1678,7 +1675,7 @@ footer {
         let currentUser = null;
         let currentUserData = null;
         let loginCheckInterval = null;
-        let currentUserType = 'individual'; // 'individual', 'company', or 'guest'
+        let currentUserType = 'individual'; // 'individual' or 'company'
 
         // On page load
         window.onload = function() {
@@ -1722,10 +1719,6 @@ footer {
                         case 'company':
                             buttonText = 'Company';
                             usernameInput.placeholder = 'Enter company username';
-                            break;
-                        case 'guest':
-                            buttonText = 'Guest';
-                            usernameInput.placeholder = 'Enter guest username';
                             break;
                     }
                     loginBtnText.textContent = `Login as ${buttonText}`;
@@ -1795,13 +1788,10 @@ footer {
                 case 'company':
                     loginAsCompany(username, password);
                     break;
-                case 'guest':
-                    loginAsGuest(username, password);
-                    break;
             }
         }
         
-        // Login as individual - ONLY for individuals, not guests
+        // Login as individual - ONLY for individuals
         function loginAsIndividual(username, password) {
             db.collection("users")
                 .where("username", "==", username)
@@ -1849,30 +1839,6 @@ footer {
                 });
         }
         
-        // Login as guest - ONLY for guests
-        function loginAsGuest(username, password) {
-            db.collection("users")
-                .where("username", "==", username)
-                .where("password", "==", password)
-                .where("userType", "==", "guest") // IMPORTANT: Only guest users
-                .get()
-                .then((querySnapshot) => {
-                    if (querySnapshot.empty) {
-                        showMessage('loginMessage', 'Invalid guest username or password', 'error');
-                        resetLoginButton();
-                        return;
-                    }
-                    
-                    // Guest found
-                    handleUserLogin(querySnapshot.docs[0], 'guest');
-                })
-                .catch((error) => {
-                    console.error("Guest login error:", error);
-                    showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
-                    resetLoginButton();
-                });
-        }
-        
         // Reset login button state
         function resetLoginButton() {
             const loginBtnText = document.getElementById('loginBtnText');
@@ -1884,9 +1850,6 @@ footer {
                     break;
                 case 'company':
                     buttonText = 'Company';
-                    break;
-                case 'guest':
-                    buttonText = 'Guest';
                     break;
             }
             loginBtnText.textContent = `Login as ${buttonText}`;
@@ -1987,9 +1950,6 @@ footer {
                 case 'company':
                     dashboardTitle = 'Odelya Cloud Storage - Company Dashboard';
                     break;
-                case 'guest':
-                    dashboardTitle = 'Odelya Cloud Storage - Guest Dashboard';
-                    break;
             }
             document.getElementById('dashboardTitle').textContent = dashboardTitle;
             
@@ -2001,9 +1961,6 @@ footer {
                     break;
                 case 'company':
                     sectionTitle = 'Company Information';
-                    break;
-                case 'guest':
-                    sectionTitle = 'Guest Information';
                     break;
             }
             document.getElementById('personalSectionTitle').textContent = sectionTitle;
@@ -2040,7 +1997,7 @@ footer {
                 }
             }
             
-            // LEFT COLUMN - Personal/Company/Guest Information
+            // LEFT COLUMN - Personal/Company Information
             let personalHtml = '';
             
             // Common fields for all user types
@@ -2079,6 +2036,21 @@ footer {
                     <label>Date of Birth</label>
                     <div class="value">${formatDate(currentUserData.dob)}</div>
                 </div>`;
+                
+                // Individual specific fields - Aadhaar, PAN (No delete option)
+                if (currentUserData.aadhaarNo) {
+                    personalHtml += `<div class="detail-group">
+                        <label>Aadhaar Number</label>
+                        <div class="value" style="cursor: default; user-select: none;">${currentUserData.aadhaarNo}</div>
+                    </div>`;
+                }
+                
+                if (currentUserData.panNo) {
+                    personalHtml += `<div class="detail-group">
+                        <label>PAN Number</label>
+                        <div class="value" style="cursor: default; user-select: none;">${currentUserData.panNo}</div>
+                    </div>`;
+                }
             } 
             else if (userType === 'company') {
                 personalHtml += `<div class="detail-group">
@@ -2101,46 +2073,16 @@ footer {
                     <div class="value">${formatDate(currentUserData.dateOfIncorporation || currentUserData.dob)}</div>
                 </div>`;
                 
-                personalHtml += `<div class="detail-group">
-                    <label>Contact Person</label>
-                    <div class="value">${currentUserData.contactPerson || 'N/A'}</div>
-                </div>`;
-            } 
-            else if (userType === 'guest') {
-                personalHtml += `<div class="detail-group">
-                    <label>Guest Name</label>
-                    <div class="value">${currentUserData.fullName || currentUserData.guestName || 'N/A'}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Email</label>
-                    <div class="value">${currentUserData.email || 'N/A'}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Phone</label>
-                    <div class="value">${currentUserData.phone || 'N/A'}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Registration Date</label>
-                    <div class="value">${formatDate(currentUserData.registrationDate || currentUserData.dob)}</div>
-                </div>`;
-                
-                // Guest specific fields
-                if (currentUserData.hostName) {
+                // Company specific fields - GSTIN (No delete option)
+                if (currentUserData.gstinNo) {
                     personalHtml += `<div class="detail-group">
-                        <label>Host Name</label>
-                        <div class="value">${currentUserData.hostName}</div>
+                        <label>GSTIN Number</label>
+                        <div class="value" style="cursor: default; user-select: none;">${currentUserData.gstinNo}</div>
                     </div>`;
                 }
                 
-                if (currentUserData.purpose) {
-                    personalHtml += `<div class="detail-group">
-                        <label>Purpose</label>
-                        <div class="value">${currentUserData.purpose}</div>
-                    </div>`;
-                }
+                // Contact Person removed as requested
+                // Removed: personalHtml += `<div class="detail-group"><label>Contact Person</label>...
             }
             
             personalHtml += `<div class="detail-group">
@@ -2153,7 +2095,7 @@ footer {
             // RIGHT COLUMN - Plan Information
             let planHtml = '';
             
-            // Check if user has a plan (guests might not have plans)
+            // Check if user has a plan
             if (currentUserData.planName) {
                 planHtml += `<div class="detail-group">
                     <label>Plan Name</label>
@@ -2179,24 +2121,6 @@ footer {
                     <label>Plan End Date</label>
                     <div class="value">${formatDate(currentUserData.planEndDate)}</div>
                 </div>`;
-            } else if (userType === 'guest') {
-                // Guest specific info if no plan
-                planHtml += `<div class="detail-group">
-                    <label>Access Type</label>
-                    <div class="value">${currentUserData.accessType || 'Temporary'}</div>
-                </div>`;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Access Duration</label>
-                    <div class="value">${currentUserData.accessDuration || 'N/A'}</div>
-                </div>`;
-                
-                if (currentUserData.accessExpiry) {
-                    planHtml += `<div class="detail-group">
-                        <label>Access Expiry</label>
-                        <div class="value">${formatDate(currentUserData.accessExpiry)}</div>
-                    </div>`;
-                }
             } else {
                 planHtml += `<div class="detail-group">
                     <label>Plan Status</label>
@@ -2521,12 +2445,6 @@ footer {
                 return;
             }
             
-            // Check if user is a guest (guests typically don't recharge)
-            if (currentUserType === 'guest') {
-                showMessage('dashboardMessage', 'Guest accounts cannot recharge. Please contact administrator.', 'error');
-                return;
-            }
-            
             // Always redirect to existing-user-payment.html
             window.location.href = 'existing-user-payment.html';
         }
@@ -2560,9 +2478,6 @@ footer {
                     case 'company':
                         dashboardTitle = 'Company Account Details';
                         break;
-                    case 'guest':
-                        dashboardTitle = 'Guest Account Details';
-                        break;
                 }
                 doc.text(dashboardTitle, 105, 35, { align: 'center' });
                 
@@ -2587,9 +2502,6 @@ footer {
                     case 'company':
                         personalTitle = 'Company Information';
                         break;
-                    case 'guest':
-                        personalTitle = 'Guest Information';
-                        break;
                 }
                 doc.text(personalTitle, column1X, column1Y);
                 column1Y += 8;
@@ -2610,6 +2522,14 @@ footer {
                         ['Date of Birth', currentUserData.dob || 'N/A'],
                         ['Username', currentUserData.username || 'N/A']
                     ];
+                    
+                    // Add Aadhaar and PAN if available
+                    if (currentUserData.aadhaarNo) {
+                        personalInfo.push(['Aadhaar Number', currentUserData.aadhaarNo]);
+                    }
+                    if (currentUserData.panNo) {
+                        personalInfo.push(['PAN Number', currentUserData.panNo]);
+                    }
                 } 
                 else if (userType === 'company') {
                     personalInfo = [
@@ -2619,26 +2539,13 @@ footer {
                         ['Email', currentUserData.email || 'N/A'],
                         ['Phone', currentUserData.phone || 'N/A'],
                         ['Date of Incorporation', currentUserData.dateOfIncorporation || currentUserData.dob || 'N/A'],
-                        ['Username', currentUserData.username || 'N/A'],
-                        ['Contact Person', currentUserData.contactPerson || 'N/A']
-                    ];
-                } 
-                else if (userType === 'guest') {
-                    personalInfo = [
-                        ['Guest ID', currentUserData.userId || currentUserData.guestId || 'N/A'],
-                        ['Status', currentUserData.status || 'pending'],
-                        ['Guest Name', currentUserData.fullName || currentUserData.guestName || 'N/A'],
-                        ['Email', currentUserData.email || 'N/A'],
-                        ['Phone', currentUserData.phone || 'N/A'],
-                        ['Registration Date', currentUserData.registrationDate || currentUserData.dob || 'N/A'],
                         ['Username', currentUserData.username || 'N/A']
+                        // Contact Person removed as requested
                     ];
                     
-                    if (currentUserData.hostName) {
-                        personalInfo.push(['Host Name', currentUserData.hostName]);
-                    }
-                    if (currentUserData.purpose) {
-                        personalInfo.push(['Purpose', currentUserData.purpose]);
+                    // Add GSTIN if available
+                    if (currentUserData.gstinNo) {
+                        personalInfo.push(['GSTIN Number', currentUserData.gstinNo]);
                     }
                 }
                 
@@ -2728,15 +2635,6 @@ footer {
                         ['Plan Start Date', currentUserData.planStartDate || 'N/A'],
                         ['Plan End Date', currentUserData.planEndDate || 'N/A']
                     ];
-                } else if (userType === 'guest') {
-                    planInfo = [
-                        ['Access Type', currentUserData.accessType || 'Temporary'],
-                        ['Access Duration', currentUserData.accessDuration || 'N/A']
-                    ];
-                    
-                    if (currentUserData.accessExpiry) {
-                        planInfo.push(['Access Expiry', currentUserData.accessExpiry]);
-                    }
                 } else {
                     planInfo = [['Plan Status', 'No active plan']];
                 }
@@ -2773,7 +2671,7 @@ footer {
                 
                 doc.setFontSize(10);
                 doc.setTextColor(100, 100, 100);
-                const copyType = userType === 'company' ? 'Company Copy' : (userType === 'guest' ? 'Guest Copy' : 'Individual Copy');
+                const copyType = userType === 'company' ? 'Company Copy' : 'Individual Copy';
                 doc.text(`Odelya Cloud Storage - ${copyType}`, 105, footerY, { align: 'center' });
                 
                 // Optional: Add page border
