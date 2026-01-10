@@ -1143,6 +1143,25 @@
             
             return minLength && maxLength && hasUpper && hasLower && hasNumber && hasSpecial;
         }
+
+        // Validate confirm password matches password
+function validateConfirmPassword() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (confirmPassword === '') {
+        showError('confirmPassword', 'Please confirm your password');
+        return false;
+    }
+    
+    if (password !== confirmPassword) {
+        showError('confirmPassword', 'Passwords do not match');
+        return false;
+    }
+    
+    hideError('confirmPassword');
+    return true;
+}
         
         function updateRequirement(elementId, isValid) {
             const element = document.getElementById(elementId);
@@ -1301,7 +1320,16 @@
             // Check password requirements
             const password = document.getElementById('password').value;
             if (!validatePassword(password)) return false;
-            
+
+// Check password requirements
+const password = document.getElementById('password').value;
+if (!validatePassword(password)) return false;
+
+// NEW: Check confirm password
+const confirmPassword = document.getElementById('confirmPassword').value;
+if (!confirmPassword) return false;
+if (password !== confirmPassword) return false;
+        
             // Check terms & conditions checkbox
             const termsChecked = document.getElementById('termsCheckbox').checked;
             if (!termsChecked) return false;
