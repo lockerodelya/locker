@@ -1144,17 +1144,17 @@
             return minLength && maxLength && hasUpper && hasLower && hasNumber && hasSpecial;
         }
 
-        // Validate confirm password matches password
+// Validate confirm password matches password
 function validateConfirmPassword() {
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+    const passwordCheck = document.getElementById('password').value;
+    const confirmPasswordCheck = document.getElementById('confirmPassword').value;
     
-    if (confirmPassword === '') {
+    if (confirmPasswordCheck === '') {
         showError('confirmPassword', 'Please confirm your password');
         return false;
     }
     
-    if (password !== confirmPassword) {
+    if (passwordCheck !== confirmPasswordCheck) {
         showError('confirmPassword', 'Passwords do not match');
         return false;
     }
@@ -1317,13 +1317,14 @@ function validateConfirmPassword() {
             const username = document.getElementById('username').value;
             if (!validateUsername(username)) return false;
             
-            // Check password requirements
-            const password = document.getElementById('password').value;
-            if (!validatePassword(password)) return false;
-
 // Check password requirements
-const password = document.getElementById('password').value;
-if (!validatePassword(password)) return false;
+const passwordCheck = document.getElementById('password').value;
+if (!validatePassword(passwordCheck)) return false;
+
+// NEW: Check confirm password
+const confirmPasswordCheck = document.getElementById('confirmPassword').value;
+if (!confirmPasswordCheck) return false;
+if (passwordCheck !== confirmPasswordCheck) return false;
 
 // NEW: Check confirm password
 const confirmPassword = document.getElementById('confirmPassword').value;
@@ -1827,17 +1828,20 @@ if (password !== confirmPassword) return false;
                 isValid = false;
             }
             
-            // Password validation
-            const password = document.getElementById('password').value;
-            if (password && !validatePassword(password)) {
-                showError('password', 'Password does not meet requirements');
-                isValid = false;
-            }
-
-            // Password validation
-const password = document.getElementById('password').value;
-if (password && !validatePassword(password)) {
+// Password validation
+const passwordVal = document.getElementById('password').value;
+if (passwordVal && !validatePassword(passwordVal)) {
     showError('password', 'Password does not meet requirements');
+    isValid = false;
+}
+
+// NEW: Confirm password validation
+const confirmPasswordVal = document.getElementById('confirmPassword').value;
+if (!confirmPasswordVal) {
+    showError('confirmPassword', 'Please confirm your password');
+    isValid = false;
+} else if (passwordVal !== confirmPasswordVal) {
+    showError('confirmPassword', 'Passwords do not match');
     isValid = false;
 }
 
