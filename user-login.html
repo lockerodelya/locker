@@ -2067,10 +2067,10 @@ footer {
             let personalHtml = '';
             
             if (userType === 'individual') {
-                // Display the requested fields in order
+                // Display the requested fields in order - FIXED FIELD NAMES
                 personalHtml += `<div class="detail-group">
                     <label>Name</label>
-                    <div class="value">${currentUserData.fullName || 'N/A'}</div>
+                    <div class="value">${currentUserData.fullName || currentUserData.name || 'N/A'}</div>
                 </div>`;
                 
                 personalHtml += `<div class="detail-group">
@@ -2080,27 +2080,33 @@ footer {
                 
                 personalHtml += `<div class="detail-group">
                     <label>Phone</label>
-                    <div class="value">${currentUserData.phone || 'N/A'}</div>
+                    <div class="value">${currentUserData.phone || currentUserData.mobile || 'N/A'}</div>
                 </div>`;
                 
                 personalHtml += `<div class="detail-group">
                     <label>Date of Birth</label>
-                    <div class="value">${formatDate(currentUserData.dob)}</div>
+                    <div class="value">${formatDate(currentUserData.dob || currentUserData.dateOfBirth || 'N/A')}</div>
                 </div>`;
                 
+                // FIXED: Check for different field name variations
+                const aadhaarField = currentUserData.aadhaarNo || currentUserData.aadhaar || currentUserData.aadhaarNumber || 'N/A';
                 personalHtml += `<div class="detail-group">
                     <label>Aadhaar Number</label>
-                    <div class="value" style="cursor: default; user-select: none;">${currentUserData.aadhaarNo || 'N/A'}</div>
+                    <div class="value" style="cursor: default; user-select: none;">${aadhaarField}</div>
                 </div>`;
                 
+                // FIXED: Check for different field name variations
+                const panField = currentUserData.panNo || currentUserData.pan || currentUserData.panNumber || 'N/A';
                 personalHtml += `<div class="detail-group">
                     <label>PAN Number</label>
-                    <div class="value" style="cursor: default; user-select: none;">${currentUserData.panNo || 'N/A'}</div>
+                    <div class="value" style="cursor: default; user-select: none;">${panField}</div>
                 </div>`;
                 
+                // FIXED: Check for different field name variations
+                const gstinField = currentUserData.gstinNo || currentUserData.gstin || currentUserData.gstNumber || 'N/A';
                 personalHtml += `<div class="detail-group">
                     <label>GSTIN Number</label>
-                    <div class="value" style="cursor: default; user-select: none;">${currentUserData.gstinNo || 'N/A'}</div>
+                    <div class="value" style="cursor: default; user-select: none;">${gstinField}</div>
                 </div>`;
                 
                 personalHtml += `<div class="detail-group">
@@ -2109,15 +2115,15 @@ footer {
                 </div>`;
             } 
             else if (userType === 'business') {
-                // Business fields
+                // Business fields - FIXED FIELD NAMES
                 personalHtml += `<div class="detail-group">
                     <label>Business ID</label>
-                    <div class="value">${currentUserData.businessId || 'N/A'}</div>
+                    <div class="value">${currentUserData.businessId || currentUserData.businessID || 'N/A'}</div>
                 </div>`;
                 
                 personalHtml += `<div class="detail-group">
                     <label>Business Name</label>
-                    <div class="value">${currentUserData.businessName || 'N/A'}</div>
+                    <div class="value">${currentUserData.businessName || currentUserData.companyName || 'N/A'}</div>
                 </div>`;
                 
                 personalHtml += `<div class="detail-group">
@@ -2127,17 +2133,19 @@ footer {
                 
                 personalHtml += `<div class="detail-group">
                     <label>Phone</label>
-                    <div class="value">${currentUserData.phone || 'N/A'}</div>
+                    <div class="value">${currentUserData.phone || currentUserData.mobile || 'N/A'}</div>
                 </div>`;
                 
                 personalHtml += `<div class="detail-group">
                     <label>Date of Incorporation</label>
-                    <div class="value">${formatDate(currentUserData.dateOfIncorporation || currentUserData.dob)}</div>
+                    <div class="value">${formatDate(currentUserData.dateOfIncorporation || currentUserData.incorporationDate || currentUserData.dob || 'N/A')}</div>
                 </div>`;
                 
+                // FIXED: Check for different field name variations for business GSTIN
+                const gstinField = currentUserData.gstinNo || currentUserData.gstin || currentUserData.gstNumber || 'N/A';
                 personalHtml += `<div class="detail-group">
                     <label>GSTIN Number</label>
-                    <div class="value" style="cursor: default; user-select: none;">${currentUserData.gstinNo || 'N/A'}</div>
+                    <div class="value" style="cursor: default; user-select: none;">${gstinField}</div>
                 </div>`;
                 
                 personalHtml += `<div class="detail-group">
@@ -2169,32 +2177,32 @@ footer {
                 
                 planHtml += `<div class="detail-group">
                     <label>Plan Size</label>
-                    <div class="value">${currentUserData.planSize || 'N/A'}</div>
+                    <div class="value">${currentUserData.planSize || currentUserData.storageSize || 'N/A'}</div>
                 </div>`;
                 
                 planHtml += `<div class="detail-group">
                     <label>Plan Type</label>
-                    <div class="value">${currentUserData.planType || 'N/A'}</div>
+                    <div class="value">${currentUserData.planType || currentUserData.planCategory || 'N/A'}</div>
                 </div>`;
                 
                 planHtml += `<div class="detail-group">
                     <label>Plan Start Date</label>
-                    <div class="value">${formatDate(currentUserData.planStartDate)}</div>
+                    <div class="value">${formatDate(currentUserData.planStartDate || currentUserData.startDate)}</div>
                 </div>`;
                 
                 planHtml += `<div class="detail-group">
                     <label>Plan End Date</label>
-                    <div class="value">${formatDate(currentUserData.planEndDate)}</div>
+                    <div class="value">${formatDate(currentUserData.planEndDate || currentUserData.endDate)}</div>
                 </div>`;
                 
                 planHtml += `<div class="detail-group">
                     <label>Plan Value</label>
-                    <div class="value">${currentUserData.planValue || 'N/A'}</div>
+                    <div class="value">${currentUserData.planValue || currentUserData.planPrice || 'N/A'}</div>
                 </div>`;
                 
                 planHtml += `<div class="detail-group">
                     <label>Payment Mode</label>
-                    <div class="value">${currentUserData.paymentMode || 'N/A'}</div>
+                    <div class="value">${currentUserData.paymentMode || currentUserData.paymentMethod || 'N/A'}</div>
                 </div>`;
             } else {
                 planHtml += `<div class="detail-group">
@@ -2208,15 +2216,15 @@ footer {
                 <label>Registration Date</label>
                 <div class="value">`;
             
-            if (currentUserData.createdAt) {
-                let regDate = currentUserData.createdAt;
-                if (currentUserData.createdAt.toDate) {
-                    regDate = currentUserData.createdAt.toDate();
+            if (currentUserData.createdAt || currentUserData.registrationDate) {
+                let regDate = currentUserData.createdAt || currentUserData.registrationDate;
+                if (regDate && regDate.toDate) {
+                    regDate = regDate.toDate();
                 } else if (typeof regDate === 'string') {
                     regDate = new Date(regDate);
                 }
                 
-                if (!isNaN(regDate.getTime())) {
+                if (regDate && !isNaN(regDate.getTime())) {
                     const day = String(regDate.getDate()).padStart(2, '0');
                     const month = String(regDate.getMonth() + 1).padStart(2, '0');
                     const year = regDate.getFullYear();
@@ -2502,7 +2510,7 @@ footer {
                     // Check DOB (simple string comparison for now)
                     let dobField = 'dob';
                     if (currentUserType === 'business') {
-                        dobField = 'dateOfIncorporation';
+                        dobField = 'dateOfIncorporation' || 'incorporationDate' || 'dob';
                     }
                     
                     if (user[dobField] !== dob) {
@@ -2618,28 +2626,33 @@ function generatePDF() {
         let personalInfo = [];
         
         if (userType === 'individual') {
+            // Get field values with fallbacks
+            const aadhaarField = currentUserData.aadhaarNo || currentUserData.aadhaar || currentUserData.aadhaarNumber || 'N/A';
+            const panField = currentUserData.panNo || currentUserData.pan || currentUserData.panNumber || 'N/A';
+            const gstinField = currentUserData.gstinNo || currentUserData.gstin || currentUserData.gstNumber || 'N/A';
+            
             personalInfo = [
-                ['Name', currentUserData.fullName || 'N/A'],
+                ['Name', currentUserData.fullName || currentUserData.name || 'N/A'],
                 ['Email', currentUserData.email || 'N/A'],
-                ['Phone', currentUserData.phone || 'N/A'],
-                ['Date of Birth', currentUserData.dob || 'N/A'],
-                ['Aadhaar Number', currentUserData.aadhaarNo || 'N/A'],
-                ['PAN Number', currentUserData.panNo || 'N/A'],
-                ['GSTIN Number', currentUserData.gstinNo || 'N/A'],
+                ['Phone', currentUserData.phone || currentUserData.mobile || 'N/A'],
+                ['Date of Birth', currentUserData.dob || currentUserData.dateOfBirth || 'N/A'],
+                ['Aadhaar Number', aadhaarField],
+                ['PAN Number', panField],
+                ['GSTIN Number', gstinField],
                 ['Username', currentUserData.username || 'N/A']
-                // STATUS REMOVED FROM PDF
             ];
         } 
         else if (userType === 'business') {
+            const gstinField = currentUserData.gstinNo || currentUserData.gstin || currentUserData.gstNumber || 'N/A';
+            
             personalInfo = [
-                ['Business Name', currentUserData.businessName || 'N/A'],
-                ['Business ID', currentUserData.businessId || 'N/A'],
+                ['Business Name', currentUserData.businessName || currentUserData.companyName || 'N/A'],
+                ['Business ID', currentUserData.businessId || currentUserData.businessID || 'N/A'],
                 ['Email', currentUserData.email || 'N/A'],
-                ['Phone', currentUserData.phone || 'N/A'],
-                ['Date of Incorporation', currentUserData.dateOfIncorporation || currentUserData.dob || 'N/A'],
-                ['GSTIN Number', currentUserData.gstinNo || 'N/A'],
+                ['Phone', currentUserData.phone || currentUserData.mobile || 'N/A'],
+                ['Date of Incorporation', currentUserData.dateOfIncorporation || currentUserData.incorporationDate || currentUserData.dob || 'N/A'],
+                ['GSTIN Number', gstinField],
                 ['Username', currentUserData.username || 'N/A']
-                // STATUS REMOVED FROM PDF
             ];
         }
         
@@ -2685,12 +2698,12 @@ function generatePDF() {
         if (currentUserData.planName) {
             planInfo = [
                 ['Plan Name', currentUserData.planName || 'N/A'],
-                ['Plan Size', currentUserData.planSize || 'N/A'],
-                ['Plan Type', currentUserData.planType || 'N/A'],
-                ['Plan Start Date', currentUserData.planStartDate || 'N/A'],
-                ['Plan End Date', currentUserData.planEndDate || 'N/A'],
-                ['Plan Value', currentUserData.planValue || 'N/A'],
-                ['Payment Mode', currentUserData.paymentMode || 'N/A']
+                ['Plan Size', currentUserData.planSize || currentUserData.storageSize || 'N/A'],
+                ['Plan Type', currentUserData.planType || currentUserData.planCategory || 'N/A'],
+                ['Plan Start Date', currentUserData.planStartDate || currentUserData.startDate || 'N/A'],
+                ['Plan End Date', currentUserData.planEndDate || currentUserData.endDate || 'N/A'],
+                ['Plan Value', currentUserData.planValue || currentUserData.planPrice || 'N/A'],
+                ['Payment Mode', currentUserData.paymentMode || currentUserData.paymentMethod || 'N/A']
             ];
         } else {
             planInfo = [['Plan Status', 'No active plan']];
@@ -2728,15 +2741,15 @@ function generatePDF() {
         doc.setFont('helvetica', 'normal');
         
         let regDateStr = 'N/A';
-        if (currentUserData.createdAt) {
-            let regDate = currentUserData.createdAt;
-            if (currentUserData.createdAt.toDate) {
-                regDate = currentUserData.createdAt.toDate();
+        if (currentUserData.createdAt || currentUserData.registrationDate) {
+            let regDate = currentUserData.createdAt || currentUserData.registrationDate;
+            if (regDate && regDate.toDate) {
+                regDate = regDate.toDate();
             } else if (typeof regDate === 'string') {
                 regDate = new Date(regDate);
             }
             
-            if (!isNaN(regDate.getTime())) {
+            if (regDate && !isNaN(regDate.getTime())) {
                 const day = String(regDate.getDate()).padStart(2, '0');
                 const month = String(regDate.getMonth() + 1).padStart(2, '0');
                 const year = regDate.getFullYear();
