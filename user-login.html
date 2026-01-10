@@ -2297,71 +2297,89 @@ footer {
             document.getElementById('changePasswordModal').style.display = 'none';
         }
         
-        // Check password strength
-        function checkPasswordStrength() {
-            const password = document.getElementById('newPassword').value;
-            const strengthMeter = document.getElementById('passwordStrength');
-            
-            let strength = 0;
-            
-            // Length check
-            if (password.length >= 8) strength++;
-            
-            // Upper case check
-            if (/[A-Z]/.test(password)) strength++;
-            
-            // Lower case check
-            if (/[a-z]/.test(password)) strength++;
-            
-            // Number check
-            if (/[0-9]/.test(password)) strength++;
-            
-            // Special character check
-            if (/[@$!%*?&]/.test(password)) strength++;
-            
-            // Update strength meter
-            strengthMeter.className = 'strength-meter';
-            if (strength <= 2) {
-                strengthMeter.classList.add('strength-weak');
-            } else if (strength <= 4) {
-                strengthMeter.classList.add('strength-medium');
-            } else {
-                strengthMeter.classList.add('strength-strong');
-            }
-        }
+// Check password strength
+function checkPasswordStrength() {
+    const password = document.getElementById('newPassword').value;
+    const strengthMeter = document.getElementById('passwordStrength');
+    const strengthContainer = strengthMeter.parentElement;
+    
+    // Show/hide container based on password input
+    if (password.length === 0) {
+        strengthContainer.style.display = 'none';
+        return;
+    } else {
+        strengthContainer.style.display = 'block';
+    }
+    
+    let strength = 0;
+    
+    // Length check
+    if (password.length >= 8) strength++;
+    
+    // Upper case check
+    if (/[A-Z]/.test(password)) strength++;
+    
+    // Lower case check
+    if (/[a-z]/.test(password)) strength++;
+    
+    // Number check
+    if (/[0-9]/.test(password)) strength++;
+    
+    // Special character check
+    if (/[@$!%*?&]/.test(password)) strength++;
+    
+    // Update strength meter
+    strengthMeter.className = 'strength-meter';
+    if (strength <= 2) {
+        strengthMeter.classList.add('strength-weak');
+    } else if (strength <= 4) {
+        strengthMeter.classList.add('strength-medium');
+    } else {
+        strengthMeter.classList.add('strength-strong');
+    }
+}
         
-        // Check forgot password strength
-        function checkForgotPasswordStrength() {
-            const password = document.getElementById('forgotNewPassword').value;
-            const strengthMeter = document.getElementById('forgotPasswordStrength');
-            
-            let strength = 0;
-            
-            // Length check
-            if (password.length >= 8) strength++;
-            
-            // Upper case check
-            if (/[A-Z]/.test(password)) strength++;
-            
-            // Lower case check
-            if (/[a-z]/.test(password)) strength++;
-            
-            // Number check
-            if (/[0-9]/.test(password)) strength++;
-            
-            // Special character check
-            if (/[@$!%*?&]/.test(password)) strength++;
-            
-            // Update strength meter
-            strengthMeter.className = 'strength-meter';
-            if (strength <= 2) {
-                strengthMeter.classList.add('strength-weak');
-            } else if (strength <= 4) {
-                strengthMeter.classList.add('strength-medium');
-            } else {
-                strengthMeter.classList.add('strength-strong');
-            }
-        }
+// Check forgot password strength
+function checkForgotPasswordStrength() {
+    const password = document.getElementById('forgotNewPassword').value;
+    const strengthMeter = document.getElementById('forgotPasswordStrength');
+    const strengthContainer = strengthMeter.parentElement;
+    
+    // Show/hide container based on password input
+    if (password.length === 0) {
+        strengthContainer.style.display = 'none';
+        return;
+    } else {
+        strengthContainer.style.display = 'block';
+    }
+    
+    let strength = 0;
+    
+    // Length check
+    if (password.length >= 8) strength++;
+    
+    // Upper case check
+    if (/[A-Z]/.test(password)) strength++;
+    
+    // Lower case check
+    if (/[a-z]/.test(password)) strength++;
+    
+    // Number check
+    if (/[0-9]/.test(password)) strength++;
+    
+    // Special character check
+    if (/[@$!%*?&]/.test(password)) strength++;
+    
+    // Update strength meter
+    strengthMeter.className = 'strength-meter';
+    if (strength <= 2) {
+        strengthMeter.classList.add('strength-weak');
+    } else if (strength <= 4) {
+        strengthMeter.classList.add('strength-medium');
+    } else {
+        strengthMeter.classList.add('strength-strong');
+    }
+}
         
         // Change password form submission
         document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
