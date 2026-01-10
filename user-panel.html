@@ -1833,6 +1833,23 @@ if (password !== confirmPassword) return false;
                 showError('password', 'Password does not meet requirements');
                 isValid = false;
             }
+
+            // Password validation
+const password = document.getElementById('password').value;
+if (password && !validatePassword(password)) {
+    showError('password', 'Password does not meet requirements');
+    isValid = false;
+}
+
+// NEW: Confirm password validation
+const confirmPassword = document.getElementById('confirmPassword').value;
+if (!confirmPassword) {
+    showError('confirmPassword', 'Please confirm your password');
+    isValid = false;
+} else if (password !== confirmPassword) {
+    showError('confirmPassword', 'Passwords do not match');
+    isValid = false;
+}
             
             // PAN validation
             if (selectedUserType === 'individual') {
