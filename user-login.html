@@ -1486,13 +1486,13 @@ footer {
                     
                     <div class="message" id="loginMessage"></div>
                     
-                    <!-- User Type Toggle - ONLY Individual and Company -->
+                    <!-- User Type Toggle - ONLY Individual and Business -->
                     <div class="user-type-toggle" id="userTypeToggle">
                         <button type="button" class="user-type-btn active" data-type="individual">
                             <i class="fas fa-user"></i> Individual
                         </button>
-                        <button type="button" class="user-type-btn" data-type="company">
-                            <i class="fas fa-building"></i> Company
+                        <button type="button" class="user-type-btn" data-type="business">
+                            <i class="fas fa-building"></i> Business
                         </button>
                     </div>
                     
@@ -1741,7 +1741,7 @@ footer {
         let currentUser = null;
         let currentUserData = null;
         let loginCheckInterval = null;
-        let currentUserType = 'individual'; // 'individual' or 'company'
+        let currentUserType = 'individual'; // 'individual' or 'business'
 
         // On page load
         window.onload = function() {
@@ -1782,9 +1782,9 @@ footer {
                             buttonText = 'Individual';
                             usernameInput.placeholder = 'Enter individual username';
                             break;
-                        case 'company':
-                            buttonText = 'Company';
-                            usernameInput.placeholder = 'Enter company username';
+                        case 'business':
+                            buttonText = 'Business';
+                            usernameInput.placeholder = 'Enter business username';
                             break;
                     }
                     loginBtnText.textContent = `Login as ${buttonText}`;
@@ -1851,8 +1851,8 @@ footer {
                 case 'individual':
                     loginAsIndividual(username, password);
                     break;
-                case 'company':
-                    loginAsCompany(username, password);
+                case 'business':
+                    loginAsBusiness(username, password);
                     break;
             }
         }
@@ -1881,25 +1881,25 @@ footer {
                 });
         }
         
-        // Login as company
-        function loginAsCompany(username, password) {
+        // Login as business
+        function loginAsBusiness(username, password) {
             db.collection("users")
                 .where("username", "==", username)
                 .where("password", "==", password)
-                .where("userType", "==", "company") // IMPORTANT: Only company users
+                .where("userType", "==", "business") // IMPORTANT: Only business users
                 .get()
                 .then((querySnapshot) => {
                     if (querySnapshot.empty) {
-                        showMessage('loginMessage', 'Invalid company username or password', 'error');
+                        showMessage('loginMessage', 'Invalid business username or password', 'error');
                         resetLoginButton();
                         return;
                     }
                     
-                    // Company found
-                    handleUserLogin(querySnapshot.docs[0], 'company');
+                    // Business found
+                    handleUserLogin(querySnapshot.docs[0], 'business');
                 })
                 .catch((error) => {
-                    console.error("Company login error:", error);
+                    console.error("Business login error:", error);
                     showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
                     resetLoginButton();
                 });
@@ -1914,8 +1914,8 @@ footer {
                 case 'individual':
                     buttonText = 'Individual';
                     break;
-                case 'company':
-                    buttonText = 'Company';
+                case 'business':
+                    buttonText = 'Business';
                     break;
             }
             loginBtnText.textContent = `Login as ${buttonText}`;
@@ -2013,8 +2013,8 @@ footer {
                 case 'individual':
                     dashboardTitle = 'Odelya Cloud Storage - Individual Dashboard';
                     break;
-                case 'company':
-                    dashboardTitle = 'Odelya Cloud Storage - Company Dashboard';
+                case 'business':
+                    dashboardTitle = 'Odelya Cloud Storage - Business Dashboard';
                     break;
             }
             document.getElementById('dashboardTitle').textContent = dashboardTitle;
@@ -2025,8 +2025,8 @@ footer {
                 case 'individual':
                     sectionTitle = 'Personal Information';
                     break;
-                case 'company':
-                    sectionTitle = 'Company Information';
+                case 'business':
+                    sectionTitle = 'Business Information';
                     break;
             }
             document.getElementById('personalSectionTitle').textContent = sectionTitle;
@@ -2108,16 +2108,16 @@ footer {
                     <div class="value">${currentUserData.username || 'N/A'}</div>
                 </div>`;
             } 
-            else if (userType === 'company') {
-                // Company fields
+            else if (userType === 'business') {
+                // Business fields
                 personalHtml += `<div class="detail-group">
-                    <label>Company ID</label>
-                    <div class="value">${currentUserData.companyId || 'N/A'}</div>
+                    <label>Business ID</label>
+                    <div class="value">${currentUserData.businessId || 'N/A'}</div>
                 </div>`;
                 
                 personalHtml += `<div class="detail-group">
-                    <label>Company Name</label>
-                    <div class="value">${currentUserData.companyName || 'N/A'}</div>
+                    <label>Business Name</label>
+                    <div class="value">${currentUserData.businessName || 'N/A'}</div>
                 </div>`;
                 
                 personalHtml += `<div class="detail-group">
@@ -2501,12 +2501,12 @@ footer {
                     
                     // Check DOB (simple string comparison for now)
                     let dobField = 'dob';
-                    if (currentUserType === 'company') {
+                    if (currentUserType === 'business') {
                         dobField = 'dateOfIncorporation';
                     }
                     
                     if (user[dobField] !== dob) {
-                        showMessage('forgotMessage', `${currentUserType === 'company' ? 'Date of Incorporation' : 'Date of Birth'} does not match our records`, 'error');
+                        showMessage('forgotMessage', `${currentUserType === 'business' ? 'Date of Incorporation' : 'Date of Birth'} does not match our records`, 'error');
                         resetBtn.textContent = 'Reset Password';
                         resetBtn.disabled = false;
                         return;
@@ -2580,8 +2580,8 @@ function generatePDF() {
             case 'individual':
                 dashboardTitle = 'Individual Account Details';
                 break;
-            case 'company':
-                dashboardTitle = 'Company Account Details';
+            case 'business':
+                dashboardTitle = 'Business Account Details';
                 break;
         }
         doc.text(dashboardTitle, 105, 35, { align: 'center' });
@@ -2604,8 +2604,8 @@ function generatePDF() {
             case 'individual':
                 personalTitle = 'Personal Information';
                 break;
-            case 'company':
-                personalTitle = 'Company Information';
+            case 'business':
+                personalTitle = 'Business Information';
                 break;
         }
         doc.text(personalTitle, column1X, column1Y);
@@ -2630,10 +2630,10 @@ function generatePDF() {
                 // STATUS REMOVED FROM PDF
             ];
         } 
-        else if (userType === 'company') {
+        else if (userType === 'business') {
             personalInfo = [
-                ['Company Name', currentUserData.companyName || 'N/A'],
-                ['Company ID', currentUserData.companyId || 'N/A'],
+                ['Business Name', currentUserData.businessName || 'N/A'],
+                ['Business ID', currentUserData.businessId || 'N/A'],
                 ['Email', currentUserData.email || 'N/A'],
                 ['Phone', currentUserData.phone || 'N/A'],
                 ['Date of Incorporation', currentUserData.dateOfIncorporation || currentUserData.dob || 'N/A'],
@@ -2798,7 +2798,7 @@ function generatePDF() {
         // Footer text
         doc.setFontSize(10);
         doc.setTextColor(100, 100, 100);
-        const copyType = userType === 'company' ? 'Company Copy' : 'Individual Copy';
+        const copyType = userType === 'business' ? 'Business Copy' : 'Individual Copy';
         doc.text(`Odelya Cloud Storage - ${copyType}`, 105, pageHeight - 10, { align: 'center' });
         
         // Optional: Add page border
@@ -2807,7 +2807,7 @@ function generatePDF() {
         doc.rect(10, 10, 190, pageHeight - 20);
         
         // Save PDF
-        const fileName = `Odelya_${userType}_${currentUserData.userId || currentUserData.companyId || currentUserData.username}_${new Date().getTime()}.pdf`;
+        const fileName = `Odelya_${userType}_${currentUserData.userId || currentUserData.businessId || currentUserData.username}_${new Date().getTime()}.pdf`;
         doc.save(fileName);
         
         showMessage('dashboardMessage', 'PDF downloaded successfully!', 'success');
