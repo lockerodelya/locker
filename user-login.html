@@ -2767,21 +2767,30 @@ function generatePDF() {
         const pageHeight = doc.internal.pageSize.height;
         const footerY = pageHeight - 40; // Moved up to make space for agreement
         
-        // AGREEMENT SECTION - SPANS ACROSS THE PAGE (NOT TWO COLUMNS)
-        const agreementY = footerY - 15;
-        doc.setFontSize(10);
-        doc.setTextColor(0, 0, 0);
-        
-        // Agreement text - centered and spans full width
-        const agreementText = '✓ I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Secure Cloud Storage.';
-        
-        // Split agreement into multiple lines if needed
-        const maxAgreementLength = 80; // Characters per line for agreement
-        const agreementLines = [];
-        
-        for (let i = 0; i < agreementText.length; i += maxAgreementLength) {
-            agreementLines.push(agreementText.substring(i, i + maxAgreementLength));
-        }
+// AGREEMENT SECTION
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text('AGREEMENT', leftMargin, y);
+                y += 6;
+                
+                doc.setFont('helvetica', 'normal');
+                
+                const line1 = 'I agree to the Terms & Conditions, Privacy Policy,';
+                const line2 = 'Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
+                
+                doc.setDrawColor(0, 128, 0);
+                doc.setLineWidth(0.5);
+                const tickX = leftMargin;
+                const tickY = y - 1;
+                
+                doc.line(tickX, tickY + 2, tickX + 1, tickY + 3);
+                doc.line(tickX + 1, tickY + 3, tickX + 3, tickY);
+                
+                doc.setTextColor(0, 0, 0);
+                doc.text(line1, leftMargin + 5, y);
+                y += 5;
+                doc.text(line2, leftMargin, y);
+                y += 8;
         
         // Draw a background box for agreement
         doc.setFillColor(248, 249, 250); // Light gray background
