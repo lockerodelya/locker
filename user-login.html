@@ -2763,56 +2763,50 @@ function generatePDF() {
         doc.text(regDateStr, column2X + 40, column2Y);
         column2Y += 8;
         
-        // Add recharge note at the bottom
+        // AGREEMENT SECTION - Properly formatted with line breaks
         const pageHeight = doc.internal.pageSize.height;
-        const footerY = pageHeight - 40; // Moved up to make space for agreement
+        const leftMargin = 15;
+        let agreementY = Math.max(column1Y, column2Y) + 10;
         
-        // AGREEMENT SECTION - SPANS ACROSS THE PAGE (NOT TWO COLUMNS)
-        const agreementY = footerY - 15;
-        doc.setFontSize(10);
-        doc.setTextColor(0, 0, 0);
-        
-        // Agreement text - centered and spans full width
-        const agreementText = '✓ I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Secure Cloud Storage.';
-        
-        // Split agreement into multiple lines if needed
-        const maxAgreementLength = 80; // Characters per line for agreement
-        const agreementLines = [];
-        
-        for (let i = 0; i < agreementText.length; i += maxAgreementLength) {
-            agreementLines.push(agreementText.substring(i, i + maxAgreementLength));
+        // Check if we need a new page
+        if (agreementY > pageHeight - 40) {
+            doc.addPage();
+            agreementY = 20;
         }
         
-        // Draw a background box for agreement
-        doc.setFillColor(248, 249, 250); // Light gray background
-        const boxHeight = (agreementLines.length * 5) + 8;
-        const boxWidth = 180;
-        const boxX = 15;
-        const boxY = agreementY - 5;
-        
-        doc.roundedRect(boxX, boxY, boxWidth, boxHeight, 3, 3, 'F');
-        
-        // Add border
-        doc.setDrawColor(233, 236, 239);
-        doc.setLineWidth(0.5);
-        doc.roundedRect(boxX, boxY, boxWidth, boxHeight, 3, 3);
-        
-        // Add agreement text
-        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
-        doc.text('Terms & Conditions Agreement:', 20, agreementY + 3);
+        doc.text('AGREEMENT', leftMargin, agreementY);
+        agreementY += 6;
         
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        agreementLines.forEach((line, index) => {
-            doc.text(line, 20, agreementY + 8 + (index * 4));
-        });
+        
+        // Agreement text broken into lines that fit within page margins
+        const line1 = 'I agree to the Terms & Conditions, Privacy Policy,';
+        const line2 = 'Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
+        
+        // Draw green tick mark
+        doc.setDrawColor(0, 128, 0);
+        doc.setLineWidth(0.5);
+        const tickX = leftMargin;
+        const tickY = agreementY - 1;
+        
+        doc.line(tickX, tickY + 2, tickX + 1, tickY + 3);
+        doc.line(tickX + 1, tickY + 3, tickX + 3, tickY);
+        
+        // Draw agreement text with tick mark
+        doc.setTextColor(0, 0, 0);
+        doc.text(line1, leftMargin + 5, agreementY);
+        agreementY += 5;
+        doc.text(line2, leftMargin, agreementY);
+        agreementY += 8;
         
         // Footer text
         doc.setFontSize(10);
         doc.setTextColor(100, 100, 100);
         const copyType = userType === 'business' ? 'Business Copy' : 'Individual Copy';
-        doc.text(`Odelya Cloud Storage - ${copyType}`, 105, pageHeight - 10, { align: 'center' });
+        const footerY = pageHeight - 10;
+        doc.text(`Odelya Cloud Storage - ${copyType}`, 105, footerY, { align: 'center' });
         
         // Optional: Add page border
         doc.setDrawColor(200, 200, 200);
