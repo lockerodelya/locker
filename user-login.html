@@ -2625,7 +2625,7 @@ function generatePDF() {
         let column1Y = 65; // Starting Y for left column
         let column2Y = 65; // Starting Y for right column
         
-        // Personal Information Column
+        // Personal Information Column - REARRANGED FIELDS
         doc.setFontSize(14);
         doc.setTextColor(58, 12, 163);
         let personalTitle = '';
@@ -2643,11 +2643,11 @@ function generatePDF() {
         doc.setFontSize(11);
         doc.setTextColor(0, 0, 0);
         
-        // Personal info data based on user type
+        // Personal info data based on user type - REARRANGED ORDER
         let personalInfo = [];
         
         if (userType === 'individual') {
-            // Get field values with fallbacks
+            // Get field values with fallbacks - IN SPECIFIED ORDER
             const aadhaarField = currentUserData.aadhaarNo || currentUserData.aadhaar || currentUserData.aadhaarNumber || 'N/A';
             const panField = currentUserData.panNo || currentUserData.pan || currentUserData.panNumber || 'N/A';
             const gstinField = currentUserData.gstinNo || currentUserData.gstin || currentUserData.gstNumber || 'N/A';
@@ -2656,7 +2656,7 @@ function generatePDF() {
                 ['Name', currentUserData.fullName || currentUserData.name || 'N/A'],
                 ['Email', currentUserData.email || 'N/A'],
                 ['Phone', currentUserData.phone || currentUserData.mobile || 'N/A'],
-                ['Date of Birth', currentUserData.dob || currentUserData.dateOfBirth || 'N/A'],
+                ['DOB', currentUserData.dob || currentUserData.dateOfBirth || 'N/A'],
                 ['Aadhaar No', aadhaarField],
                 ['PAN No', panField],
                 ['GSTIN No', gstinField],
@@ -2664,15 +2664,17 @@ function generatePDF() {
             ];
         } 
         else if (userType === 'business') {
+            // BUSINESS FIELDS - REMOVED BUSINESS ID, REARRANGED ORDER
             const gstinField = currentUserData.gstinNo || currentUserData.gstin || currentUserData.gstNumber || 'N/A';
             
             personalInfo = [
-                ['Business Name', currentUserData.businessName || currentUserData.companyName || 'N/A'],
-                ['Business ID', currentUserData.businessId || currentUserData.businessID || 'N/A'],
+                ['Name', currentUserData.businessName || currentUserData.companyName || 'N/A'],
                 ['Email', currentUserData.email || 'N/A'],
                 ['Phone', currentUserData.phone || currentUserData.mobile || 'N/A'],
-                ['Date of Incorporation', currentUserData.dateOfIncorporation || currentUserData.incorporationDate || currentUserData.dob || 'N/A'],
-                ['GSTIN Number', gstinField],
+                ['DOI', currentUserData.dateOfIncorporation || currentUserData.incorporationDate || currentUserData.dob || 'N/A'],
+                ['Aadhaar No', currentUserData.aadhaarNo || currentUserData.aadhaar || currentUserData.aadhaarNumber || 'N/A'],
+                ['PAN No', currentUserData.panNo || currentUserData.pan || currentUserData.panNumber || 'N/A'],
+                ['GSTIN No', gstinField],
                 ['Username', currentUserData.username || 'N/A']
             ];
         }
@@ -2705,7 +2707,7 @@ function generatePDF() {
             }
         });
         
-        // Plan Details Column
+        // Plan Details Column - REARRANGED FIELDS
         doc.setFontSize(14);
         doc.setTextColor(58, 12, 163);
         doc.text('Plan Details', column2X, column2Y);
@@ -2717,12 +2719,13 @@ function generatePDF() {
         let planInfo = [];
         
         if (currentUserData.planName) {
+            // Plan info in specified order: plan name, plan size, plan type, plan start date, plan end date, plan value, payment mode, reg date
             planInfo = [
                 ['Plan Name', currentUserData.planName || 'N/A'],
                 ['Plan Size', currentUserData.planSize || currentUserData.storageSize || 'N/A'],
                 ['Plan Type', currentUserData.planType || currentUserData.planCategory || 'N/A'],
-                ['Plan Start Date', currentUserData.planStartDate || currentUserData.startDate || 'N/A'],
-                ['Plan End Date', currentUserData.planEndDate || currentUserData.endDate || 'N/A'],
+                ['Plan Start Date', formatDateForPDF(currentUserData.planStartDate || currentUserData.startDate)],
+                ['Plan End Date', formatDateForPDF(currentUserData.planEndDate || currentUserData.endDate)],
                 ['Plan Value', currentUserData.planValue || currentUserData.planPrice || 'N/A'],
                 ['Payment Mode', currentUserData.paymentMode || currentUserData.paymentMethod || 'N/A']
             ];
@@ -2756,9 +2759,9 @@ function generatePDF() {
             }
         });
         
-        // Registration date - Added to plan info column
+        // Registration date - Added to plan info column (8th item in your list)
         doc.setFont('helvetica', 'bold');
-        doc.text('Registration Date:', column2X, column2Y);
+        doc.text('Reg Date:', column2X, column2Y);
         doc.setFont('helvetica', 'normal');
         
         let regDateStr = 'N/A';
@@ -2781,7 +2784,7 @@ function generatePDF() {
             }
         }
         
-        doc.text(regDateStr, column2X + 40, column2Y);
+        doc.text(regDateStr, column2X + 30, column2Y);
         column2Y += 8;
         
         // AGREEMENT SECTION - Properly formatted with line breaks
@@ -2847,6 +2850,38 @@ function generatePDF() {
         // Restore button
         event.target.textContent = originalText;
         event.target.disabled = false;
+    }
+    
+    // Helper function to format dates for PDF
+    function formatDateForPDF(dateValue) {
+        if (!dateValue) return 'N/A';
+        
+        try {
+            let date;
+            if (typeof dateValue === 'string') {
+                // Try to parse date string
+                const parts = dateValue.split('-');
+                if (parts.length === 3) {
+                    date = new Date(parts[2], parts[1] - 1, parts[0]);
+                } else {
+                    date = new Date(dateValue);
+                }
+            } else if (dateValue.toDate) {
+                date = dateValue.toDate();
+            } else {
+                date = dateValue;
+            }
+            
+            if (isNaN(date.getTime())) return 'Invalid Date';
+            
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            
+            return `${day}-${month}-${year}`;
+        } catch (e) {
+            return 'Invalid Date';
+        }
     }
 }
 
