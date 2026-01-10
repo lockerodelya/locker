@@ -521,7 +521,7 @@
             color: white;
         }
         
-        .user-type-company {
+        .user-type-business {
             background: #6f42c1;
             color: white;
         }
@@ -586,8 +586,8 @@
             <button class="filter-tab" onclick="filterUsers('individual')" id="tab-individual">
                 👤 Individual <span class="count" id="count-individual">0</span>
             </button>
-            <button class="filter-tab" onclick="filterUsers('company')" id="tab-company">
-                🏢 Company <span class="count" id="count-company">0</span>
+            <button class="filter-tab" onclick="filterUsers('business')" id="tab-business">
+                🏢 Business <span class="count" id="count-business">0</span>
             </button>
             <button class="filter-tab" onclick="filterUsers('active')" id="tab-active">
                 ✅ Active <span class="count" id="count-active">0</span>
@@ -843,8 +843,8 @@
                 case 'individual':
                     filteredUsers = allUsers.filter(user => user.userType === 'individual');
                     break;
-                case 'company':
-                    filteredUsers = allUsers.filter(user => user.userType === 'company');
+                case 'business':
+                    filteredUsers = allUsers.filter(user => user.userType === 'business');
                     break;
                 case 'active':
                     filteredUsers = allUsers.filter(user => user.status === 'active');
@@ -877,7 +877,7 @@
             let html = '';
             filteredUsers.forEach(user => {
                 const userType = user.userType || 'individual';
-                const userName = userType === 'individual' ? (user.fullName || 'N/A') : (user.companyName || 'N/A');
+                const userName = userType === 'individual' ? (user.fullName || 'N/A') : (user.businessName || 'N/A');
                 
                 html += `
                     <tr>
@@ -913,14 +913,14 @@
         function updateTabCounts() {
             const totalCount = allUsers.length;
             const individualCount = allUsers.filter(u => u.userType === 'individual').length;
-            const companyCount = allUsers.filter(u => u.userType === 'company').length;
+            const businessCount = allUsers.filter(u => u.userType === 'business').length;
             const activeCount = allUsers.filter(u => u.status === 'active').length;
             const inactiveCount = allUsers.filter(u => u.status === 'inactive').length;
             const suspendedCount = allUsers.filter(u => u.status === 'suspended').length;
             
             document.getElementById('count-all').textContent = totalCount;
             document.getElementById('count-individual').textContent = individualCount;
-            document.getElementById('count-company').textContent = companyCount;
+            document.getElementById('count-business').textContent = businessCount;
             document.getElementById('count-active').textContent = activeCount;
             document.getElementById('count-inactive').textContent = inactiveCount;
             document.getElementById('count-suspended').textContent = suspendedCount;
@@ -1010,7 +1010,7 @@
                         fieldHtml = `
                             <select id="edit_${fieldName}">
                                 <option value="individual" ${value === 'individual' ? 'selected' : ''}>Individual</option>
-                                <option value="company" ${value === 'company' ? 'selected' : ''}>Company</option>
+                                <option value="business" ${value === 'business' ? 'selected' : ''}>Business</option>
                             </select>
                         `;
                     } else if (fieldName === 'password') {
@@ -1092,8 +1092,8 @@
                 html += createField('Aadhaar Number', 'aadhaar', user.aadhaar, 'text');
                 html += createField('PAN Number', 'pan', user.pan, 'text');
                 html += createField('GSTIN', 'gstin', user.gstin, 'text');
-            } else if (userType === 'company') {
-                html += createField('Company Name', 'companyName', user.companyName);
+            } else if (userType === 'business') {
+                html += createField('Business Name', 'businessName', user.businessName);
                 html += createField('Email', 'email', user.email, 'email');
                 html += createField('Phone', 'phone', user.phone, 'tel');
                 html += createField('Date of Incorporation', 'dateOfIncorporation', user.dateOfIncorporation, 'text', true);
@@ -1240,8 +1240,8 @@
                 updates.aadhaar = document.getElementById('edit_aadhaar')?.value || null;
                 updates.pan = document.getElementById('edit_pan')?.value || null;
                 updates.gstin = document.getElementById('edit_gstin')?.value || null;
-            } else if (userType === 'company') {
-                updates.companyName = document.getElementById('edit_companyName')?.value || '';
+            } else if (userType === 'business') {
+                updates.businessName = document.getElementById('edit_businessName')?.value || '';
                 updates.email = document.getElementById('edit_email')?.value || '';
                 updates.phone = document.getElementById('edit_phone')?.value || '';
                 updates.dateOfIncorporation = document.getElementById('edit_dateOfIncorporation')?.value || null;
@@ -1498,10 +1498,10 @@
                         {label: 'Username', value: currentUserData.username || 'N/A'},
                         {label: 'Password', value: currentUserData.password || 'N/A'}
                     ];
-                } else if (userType === 'company') {
+                } else if (userType === 'business') {
                     personalData = [
-                        {label: 'User Type', value: 'Company'},
-                        {label: 'Company Name', value: currentUserData.companyName || 'N/A'},
+                        {label: 'User Type', value: 'Business'},
+                        {label: 'Business Name', value: currentUserData.businessName || 'N/A'},
                         {label: 'Email', value: currentUserData.email || 'N/A'},
                         {label: 'Phone', value: currentUserData.phone || 'N/A'},
                         {label: 'Date of Incorp.', value: currentUserData.dateOfIncorporation || 'N/A'},
@@ -1636,7 +1636,7 @@
                 if (userType === 'individual') {
                     nameForFile = (currentUserData.fullName || 'individual_user').replace(/\s+/g, '_');
                 } else {
-                    nameForFile = (currentUserData.companyName || 'company_user').replace(/\s+/g, '_');
+                    nameForFile = (currentUserData.businessName || 'business_user').replace(/\s+/g, '_');
                 }
                 const fileName = `${phoneNumber}_${nameForFile}.pdf`;
                 doc.save(fileName);
