@@ -2003,246 +2003,255 @@ footer {
                 });
         }
         
-        // Load appropriate dashboard based on user type
-        function loadDashboard(userType) {
-            if (!currentUserData) return;
-            
-            // Update dashboard title
-            let dashboardTitle = '';
-            switch(userType) {
-                case 'individual':
-                    dashboardTitle = 'Odelya Cloud Storage - Individual Dashboard';
-                    break;
-                case 'business':
-                    dashboardTitle = 'Odelya Cloud Storage - Business Dashboard';
-                    break;
-            }
-            document.getElementById('dashboardTitle').textContent = dashboardTitle;
-            
-            // Change section title based on user type
-            let sectionTitle = '';
-            switch(userType) {
-                case 'individual':
-                    sectionTitle = 'Personal Information';
-                    break;
-                case 'business':
-                    sectionTitle = 'Business Information';
-                    break;
-            }
-            document.getElementById('personalSectionTitle').textContent = sectionTitle;
-            
-            // Format date
-            function formatDate(dateValue) {
-                if (!dateValue) return 'N/A';
-                
-                try {
-                    let date;
-                    if (typeof dateValue === 'string') {
-                        // Try to parse date string
-                        const parts = dateValue.split('-');
-                        if (parts.length === 3) {
-                            date = new Date(parts[2], parts[1] - 1, parts[0]);
-                        } else {
-                            date = new Date(dateValue);
-                        }
-                    } else if (dateValue.toDate) {
-                        date = dateValue.toDate();
-                    } else {
-                        date = dateValue;
-                    }
-                    
-                    if (isNaN(date.getTime())) return 'Invalid Date';
-                    
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const year = date.getFullYear();
-                    
-                    return `${day}-${month}-${year}`;
-                } catch (e) {
-                    return 'Invalid Date';
-                }
-            }
-            
-            // LEFT COLUMN - Personal Information (for individual users)
-            let personalHtml = '';
-            
-            if (userType === 'individual') {
-                // Display the requested fields in order - FIXED FIELD NAMES
-                personalHtml += `<div class="detail-group">
-                    <label>Name</label>
-                    <div class="value">${currentUserData.fullName || currentUserData.name || 'N/A'}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Email</label>
-                    <div class="value">${currentUserData.email || 'N/A'}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Phone</label>
-                    <div class="value">${currentUserData.phone || currentUserData.mobile || 'N/A'}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Date of Birth</label>
-                    <div class="value">${formatDate(currentUserData.dob || currentUserData.dateOfBirth || 'N/A')}</div>
-                </div>`;
-                
-                // FIXED: Check for different field name variations
-                const aadhaarField = currentUserData.aadhaarNo || currentUserData.aadhaar || currentUserData.aadhaarNumber || 'N/A';
-                personalHtml += `<div class="detail-group">
-                    <label>Aadhaar No</label>
-                    <div class="value" style="cursor: default; user-select: none;">${aadhaarField}</div>
-                </div>`;
-                
-                // FIXED: Check for different field name variations
-                const panField = currentUserData.panNo || currentUserData.pan || currentUserData.panNumber || 'N/A';
-                personalHtml += `<div class="detail-group">
-                    <label>PAN No</label>
-                    <div class="value" style="cursor: default; user-select: none;">${panField}</div>
-                </div>`;
-                
-                // FIXED: Check for different field name variations
-                const gstinField = currentUserData.gstinNo || currentUserData.gstin || currentUserData.gstNumber || 'N/A';
-                personalHtml += `<div class="detail-group">
-                    <label>GSTIN No</label>
-                    <div class="value" style="cursor: default; user-select: none;">${gstinField}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Username</label>
-                    <div class="value">${currentUserData.username || 'N/A'}</div>
-                </div>`;
-            } 
-            else if (userType === 'business') {
-                // Business fields - FIXED FIELD NAMES
-                personalHtml += `<div class="detail-group">
-                    <label>Business ID</label>
-                    <div class="value">${currentUserData.businessId || currentUserData.businessID || 'N/A'}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Business Name</label>
-                    <div class="value">${currentUserData.businessName || currentUserData.companyName || 'N/A'}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Email</label>
-                    <div class="value">${currentUserData.email || 'N/A'}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Phone</label>
-                    <div class="value">${currentUserData.phone || currentUserData.mobile || 'N/A'}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Date of Incorporation</label>
-                    <div class="value">${formatDate(currentUserData.dateOfIncorporation || currentUserData.incorporationDate || currentUserData.dob || 'N/A')}</div>
-                </div>`;
-                
-                // FIXED: Check for different field name variations for business GSTIN
-                const gstinField = currentUserData.gstinNo || currentUserData.gstin || currentUserData.gstNumber || 'N/A';
-                personalHtml += `<div class="detail-group">
-                    <label>GSTIN No</label>
-                    <div class="value" style="cursor: default; user-select: none;">${gstinField}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Username</label>
-                    <div class="value">${currentUserData.username || 'N/A'}</div>
-                </div>`;
-            }
-            
-            personalHtml += `<div class="detail-group">
-                <label>Status</label>
-                <div class="value">
-                    <span class="status ${currentUserData.status || 'pending'}">
-                        ${currentUserData.status || 'pending'}
-                    </span>
-                </div>
-            </div>`;
-            
-            document.getElementById('personalInfo').innerHTML = personalHtml;
-            
-            // RIGHT COLUMN - Plan Information
-            let planHtml = '';
-            
-            // Check if user has a plan
-            if (currentUserData.planName) {
-                planHtml += `<div class="detail-group">
-                    <label>Plan Name</label>
-                    <div class="value">${currentUserData.planName || 'N/A'}</div>
-                </div>`;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Plan Size</label>
-                    <div class="value">${currentUserData.planSize || currentUserData.storageSize || 'N/A'}</div>
-                </div>`;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Plan Type</label>
-                    <div class="value">${currentUserData.planType || currentUserData.planCategory || 'N/A'}</div>
-                </div>`;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Plan Start Date</label>
-                    <div class="value">${formatDate(currentUserData.planStartDate || currentUserData.startDate)}</div>
-                </div>`;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Plan End Date</label>
-                    <div class="value">${formatDate(currentUserData.planEndDate || currentUserData.endDate)}</div>
-                </div>`;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Plan Value</label>
-                    <div class="value">${currentUserData.planValue || currentUserData.planPrice || 'N/A'}</div>
-                </div>`;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Payment Mode</label>
-                    <div class="value">${currentUserData.paymentMode || currentUserData.paymentMethod || 'N/A'}</div>
-                </div>`;
-            } else {
-                planHtml += `<div class="detail-group">
-                    <label>Plan Status</label>
-                    <div class="value">No active plan</div>
-                </div>`;
-            }
-            
-            // Registration date
-            planHtml += `<div class="detail-group">
-                <label>Registration Date</label>
-                <div class="value">`;
-            
-            if (currentUserData.createdAt || currentUserData.registrationDate) {
-                let regDate = currentUserData.createdAt || currentUserData.registrationDate;
-                if (regDate && regDate.toDate) {
-                    regDate = regDate.toDate();
-                } else if (typeof regDate === 'string') {
-                    regDate = new Date(regDate);
-                }
-                
-                if (regDate && !isNaN(regDate.getTime())) {
-                    const day = String(regDate.getDate()).padStart(2, '0');
-                    const month = String(regDate.getMonth() + 1).padStart(2, '0');
-                    const year = regDate.getFullYear();
-                    const hours = String(regDate.getHours()).padStart(2, '0');
-                    const minutes = String(regDate.getMinutes()).padStart(2, '0');
-                    
-                    planHtml += `${day}-${month}-${year} ${hours}:${minutes}`;
+// Load appropriate dashboard based on user type
+function loadDashboard(userType) {
+    if (!currentUserData) return;
+    
+    // Update dashboard title
+    let dashboardTitle = '';
+    switch(userType) {
+        case 'individual':
+            dashboardTitle = 'Odelya Cloud Storage - Individual Dashboard';
+            break;
+        case 'business':
+            dashboardTitle = 'Odelya Cloud Storage - Business Dashboard';
+            break;
+    }
+    document.getElementById('dashboardTitle').textContent = dashboardTitle;
+    
+    // Change section title based on user type
+    let sectionTitle = '';
+    switch(userType) {
+        case 'individual':
+            sectionTitle = 'Personal Information';
+            break;
+        case 'business':
+            sectionTitle = 'Business Information';
+            break;
+    }
+    document.getElementById('personalSectionTitle').textContent = sectionTitle;
+    
+    // Format date
+    function formatDate(dateValue) {
+        if (!dateValue) return 'N/A';
+        
+        try {
+            let date;
+            if (typeof dateValue === 'string') {
+                // Try to parse date string
+                const parts = dateValue.split('-');
+                if (parts.length === 3) {
+                    date = new Date(parts[2], parts[1] - 1, parts[0]);
                 } else {
-                    planHtml += 'N/A';
+                    date = new Date(dateValue);
                 }
+            } else if (dateValue.toDate) {
+                date = dateValue.toDate();
             } else {
-                planHtml += 'N/A';
+                date = dateValue;
             }
             
-            planHtml += `</div></div>`;
+            if (isNaN(date.getTime())) return 'Invalid Date';
             
-            document.getElementById('planInfo').innerHTML = planHtml;
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            
+            return `${day}-${month}-${year}`;
+        } catch (e) {
+            return 'Invalid Date';
         }
+    }
+    
+    // LEFT COLUMN - Personal Information (SYNCHRONIZED WITH PDF FORMAT)
+    let personalHtml = '';
+    
+    if (userType === 'individual') {
+        // Display the requested fields in order - SYNCHRONIZED WITH PDF
+        personalHtml += `<div class="detail-group">
+            <label>Name</label>
+            <div class="value">${currentUserData.fullName || currentUserData.name || 'N/A'}</div>
+        </div>`;
+        
+        personalHtml += `<div class="detail-group">
+            <label>Email</label>
+            <div class="value">${currentUserData.email || 'N/A'}</div>
+        </div>`;
+        
+        personalHtml += `<div class="detail-group">
+            <label>Phone</label>
+            <div class="value">${currentUserData.phone || currentUserData.mobile || 'N/A'}</div>
+        </div>`;
+        
+        personalHtml += `<div class="detail-group">
+            <label>DOB</label>
+            <div class="value">${formatDate(currentUserData.dob || currentUserData.dateOfBirth || 'N/A')}</div>
+        </div>`;
+        
+        // Aadhaar field
+        const aadhaarField = currentUserData.aadhaarNo || currentUserData.aadhaar || currentUserData.aadhaarNumber || 'N/A';
+        personalHtml += `<div class="detail-group">
+            <label>Aadhaar No</label>
+            <div class="value" style="cursor: default; user-select: none;">${aadhaarField}</div>
+        </div>`;
+        
+        // PAN field
+        const panField = currentUserData.panNo || currentUserData.pan || currentUserData.panNumber || 'N/A';
+        personalHtml += `<div class="detail-group">
+            <label>PAN No</label>
+            <div class="value" style="cursor: default; user-select: none;">${panField}</div>
+        </div>`;
+        
+        // GSTIN field
+        const gstinField = currentUserData.gstinNo || currentUserData.gstin || currentUserData.gstNumber || 'N/A';
+        personalHtml += `<div class="detail-group">
+            <label>GSTIN No</label>
+            <div class="value" style="cursor: default; user-select: none;">${gstinField}</div>
+        </div>`;
+        
+        personalHtml += `<div class="detail-group">
+            <label>Username</label>
+            <div class="value">${currentUserData.username || 'N/A'}</div>
+        </div>`;
+    } 
+    else if (userType === 'business') {
+        // Business fields - SYNCHRONIZED WITH PDF (NO BUSINESS ID, NEW ORDER)
+        personalHtml += `<div class="detail-group">
+            <label>Name</label>
+            <div class="value">${currentUserData.businessName || currentUserData.companyName || 'N/A'}</div>
+        </div>`;
+        
+        personalHtml += `<div class="detail-group">
+            <label>Email</label>
+            <div class="value">${currentUserData.email || 'N/A'}</div>
+        </div>`;
+        
+        personalHtml += `<div class="detail-group">
+            <label>Phone</label>
+            <div class="value">${currentUserData.phone || currentUserData.mobile || 'N/A'}</div>
+        </div>`;
+        
+        personalHtml += `<div class="detail-group">
+            <label>DOI</label>
+            <div class="value">${formatDate(currentUserData.dateOfIncorporation || currentUserData.incorporationDate || currentUserData.dob || 'N/A')}</div>
+        </div>`;
+        
+        // Aadhaar field for business (if exists)
+        const aadhaarField = currentUserData.aadhaarNo || currentUserData.aadhaar || currentUserData.aadhaarNumber || 'N/A';
+        personalHtml += `<div class="detail-group">
+            <label>Aadhaar No</label>
+            <div class="value" style="cursor: default; user-select: none;">${aadhaarField}</div>
+        </div>`;
+        
+        // PAN field for business (if exists)
+        const panField = currentUserData.panNo || currentUserData.pan || currentUserData.panNumber || 'N/A';
+        personalHtml += `<div class="detail-group">
+            <label>PAN No</label>
+            <div class="value" style="cursor: default; user-select: none;">${panField}</div>
+        </div>`;
+        
+        // GSTIN field for business
+        const gstinField = currentUserData.gstinNo || currentUserData.gstin || currentUserData.gstNumber || 'N/A';
+        personalHtml += `<div class="detail-group">
+            <label>GSTIN No</label>
+            <div class="value" style="cursor: default; user-select: none;">${gstinField}</div>
+        </div>`;
+        
+        personalHtml += `<div class="detail-group">
+            <label>Username</label>
+            <div class="value">${currentUserData.username || 'N/A'}</div>
+        </div>`;
+    }
+    
+    personalHtml += `<div class="detail-group">
+        <label>Status</label>
+        <div class="value">
+            <span class="status ${currentUserData.status || 'pending'}">
+                ${currentUserData.status || 'pending'}
+            </span>
+        </div>
+    </div>`;
+    
+    document.getElementById('personalInfo').innerHTML = personalHtml;
+    
+    // RIGHT COLUMN - Plan Information (SYNCHRONIZED WITH PDF FORMAT)
+    let planHtml = '';
+    
+    // Check if user has a plan
+    if (currentUserData.planName) {
+        planHtml += `<div class="detail-group">
+            <label>Plan Name</label>
+            <div class="value">${currentUserData.planName || 'N/A'}</div>
+        </div>`;
+        
+        planHtml += `<div class="detail-group">
+            <label>Plan Size</label>
+            <div class="value">${currentUserData.planSize || currentUserData.storageSize || 'N/A'}</div>
+        </div>`;
+        
+        planHtml += `<div class="detail-group">
+            <label>Plan Type</label>
+            <div class="value">${currentUserData.planType || currentUserData.planCategory || 'N/A'}</div>
+        </div>`;
+        
+        planHtml += `<div class="detail-group">
+            <label>Plan Start Date</label>
+            <div class="value">${formatDate(currentUserData.planStartDate || currentUserData.startDate)}</div>
+        </div>`;
+        
+        planHtml += `<div class="detail-group">
+            <label>Plan End Date</label>
+            <div class="value">${formatDate(currentUserData.planEndDate || currentUserData.endDate)}</div>
+        </div>`;
+        
+        planHtml += `<div class="detail-group">
+            <label>Plan Value</label>
+            <div class="value">${currentUserData.planValue || currentUserData.planPrice || 'N/A'}</div>
+        </div>`;
+        
+        planHtml += `<div class="detail-group">
+            <label>Payment Mode</label>
+            <div class="value">${currentUserData.paymentMode || currentUserData.paymentMethod || 'N/A'}</div>
+        </div>`;
+    } else {
+        planHtml += `<div class="detail-group">
+            <label>Plan Status</label>
+            <div class="value">No active plan</div>
+        </div>`;
+    }
+    
+    // Registration date (called Reg Date in PDF)
+    planHtml += `<div class="detail-group">
+        <label>Reg Date</label>
+        <div class="value">`;
+    
+    if (currentUserData.createdAt || currentUserData.registrationDate) {
+        let regDate = currentUserData.createdAt || currentUserData.registrationDate;
+        if (regDate && regDate.toDate) {
+            regDate = regDate.toDate();
+        } else if (typeof regDate === 'string') {
+            regDate = new Date(regDate);
+        }
+        
+        if (regDate && !isNaN(regDate.getTime())) {
+            const day = String(regDate.getDate()).padStart(2, '0');
+            const month = String(regDate.getMonth() + 1).padStart(2, '0');
+            const year = regDate.getFullYear();
+            const hours = String(regDate.getHours()).padStart(2, '0');
+            const minutes = String(regDate.getMinutes()).padStart(2, '0');
+            
+            planHtml += `${day}-${month}-${year} ${hours}:${minutes}`;
+        } else {
+            planHtml += 'N/A';
+        }
+    } else {
+        planHtml += 'N/A';
+    }
+    
+    planHtml += `</div></div>`;
+    
+    document.getElementById('planInfo').innerHTML = planHtml;
+}
         
         // Logout function
         function logout() {
