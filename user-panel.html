@@ -1693,7 +1693,7 @@ if (password !== confirmPassword) return false;
             
             // Clear all errors
             const fieldIds = [
-                'fullName', 'email', 'phone', 'username', 'password',
+                'fullName', 'email', 'phone', 'username', 'password', 'confirmPassword',
                 'planStartDate', 'paymentMode', 'planName', 'pan', 'gstin',
                 'dob', 'aadhaar', 'companyName', 'companyEmail', 'companyPhone',
                 'dateOfIncorporation', 'companyPan', 'companyGstin'
@@ -2192,7 +2192,14 @@ async function submitForm() {
                 hideError('password');
                 updateSubmitButton();
             });
-            
+            document.getElementById('confirmPassword').addEventListener('input', function(e) {
+    // Enforce max length
+    if (this.value.length > 12) {
+        this.value = this.value.slice(0, 12);
+    }
+    validateConfirmPassword();
+    updateSubmitButton();
+});
             document.getElementById('dob').addEventListener('input', function(e) {
                 hideError('dob');
                 updateSubmitButton();
