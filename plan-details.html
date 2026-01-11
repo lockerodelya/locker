@@ -684,79 +684,68 @@
             return totalPrice;
         }
         
-        // Calculate end date based on duration AND start date (end of month calculation)
-        function calculateEndDate() {
-            const startDateInput = document.getElementById('planStartDate').value;
-            
-            // If start date is not selected, clear end date
-            if (!startDateInput) {
-                document.getElementById('planEndDate').value = '';
-                updateContinueButton();
-                return;
-            }
-            
-            const years = parseInt(document.getElementById('durationYears').value) || 0;
-            const months = parseInt(document.getElementById('durationMonths').value) || 0;
-            
-            // If duration is 0, clear end date
-            if (years === 0 && months === 0) {
-                document.getElementById('planEndDate').value = '';
-                updateContinueButton();
-                return;
-            }
-            
-            // Parse start date
-            const [day, month, year] = startDateInput.split('-').map(Number);
-            const startDate = new Date(year, month - 1, day);
-            
-            console.log('Start Date:', startDate);
-            console.log('Start Day:', day);
-            console.log('Years:', years, 'Months:', months);
-            
-            // Calculate end date
-            let endDate = new Date(startDate);
-            
-            // Check if start date is 1st of month and duration is exactly 1 month
-            const isFirstDayOfMonth = (day === 1);
-            const isOneMonth = (years === 0 && months === 1) || (planType === 'monthly' && years === 0 && months === 1);
-            const isOneYear = (planType === 'yearly' && years === 1 && months === 0);
-            
-            if (isFirstDayOfMonth && (isOneMonth || isOneYear)) {
-                // Special case: Start date is 1st and duration is exactly 1 month or 1 year
-                // End date should be last day of the SAME month (for 1 month) or same month next year (for 1 year)
-                
-                if (isOneMonth) {
-                    // For 1 month: End date is last day of current month
-                    endDate.setMonth(endDate.getMonth() + 1);
-                    endDate.setDate(0);
-                } else if (isOneYear) {
-                    // For 1 year: End date is last day of same month next year
-                    endDate.setFullYear(endDate.getFullYear() + 1);
-                    endDate.setDate(0);
-                }
-            } else {
-                // Regular calculation: Add duration and go to end of month
-                // Add years and months
-                endDate.setFullYear(endDate.getFullYear() + years);
-                endDate.setMonth(endDate.getMonth() + months);
-                
-                // Go to the end of the month
-                endDate.setMonth(endDate.getMonth() + 1);
-                endDate.setDate(0);
-            }
-            
-            console.log('Calculated End Date:', endDate);
-            
-            // Format end date
-            const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
-                                   (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
-                                   endDate.getFullYear();
-            
-            document.getElementById('planEndDate').value = formattedEndDate;
-            
-            // Recalculate price with new dates
-            calculatePlanPrice();
-        }
+// Calculate end date based on duration AND start date (end of month calculation)
+function calculateEndDate() {
+    const startDateInput = document.getElementById('planStartDate').value;
+    
+    // If start date is not selected, clear end date
+    if (!startDateInput) {
+        document.getElementById('planEndDate').value = '';
+        updateContinueButton();
+        return;
+    }
+    
+    const years = parseInt(document.getElementById('durationYears').value) || 0;
+    const months = parseInt(document.getElementById('durationMonths').value) || 0;
+    
+    // If duration is 0, clear end date
+    if (years === 0 && months === 0) {
+        document.getElementById('planEndDate').value = '';
+        updateContinueButton();
+        return;
+    }
+    
+    // Parse start date
+    const [day, month, year] = startDateInput.split('-').map(Number);
+    const startDate = new Date(year, month - 1, day);
+    
+    console.log('Start Date:', startDate.toDateString());
+    console.log('Start Day:', day);
+    console.log('Duration:', years, 'years,', months, 'months');
+    
+    // Calculate end date
+    let endDate = new Date(startDate);
+    
+    // Add years and months
+    endDate.setFullYear(endDate.getFullYear() + years);
+    endDate.setMonth(endDate.getMonth() + months);
+    
+    // IMPORTANT FIX: If start date is 1st of month, end date should be last day of (duration-1) month
+    // Example: Start Jan 1, 2 months duration = End Feb 28/29 (not Mar 31)
+    
+    if (day === 1) {
+        // For start date on 1st: Subtract 1 day from the calculated date
+        // This gives us the last day of the previous month
+        endDate.setDate(0); // 0 means last day of previous month
+    } else {
+        // For start date NOT on 1st: End date should be last day of the month
+        // after adding the full duration
+        endDate.setMonth(endDate.getMonth() + 1);
+        endDate.setDate(0);
+    }
+    
+    console.log('Calculated End Date:', endDate.toDateString());
+    
+    // Format end date
+    const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
+                           (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                           endDate.getFullYear();
+    
+    document.getElementById('planEndDate').value = formattedEndDate;
+    
+    // Recalculate price with new dates
+    calculatePlanPrice();
+}
         
         // Show error message
         function showError(fieldId, message) {
