@@ -9,10 +9,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-    
     <style>
         * {
             margin: 0;
@@ -25,41 +21,47 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         .container {
+            width: 100%;
             max-width: 1200px;
-            margin: 0 auto;
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
+            margin: auto;
         }
         
         .form-header {
             background: linear-gradient(135deg, #4361ee, #3a0ca3);
             color: white;
-            padding: 30px;
+            padding: 25px 20px;
             text-align: center;
             position: relative;
         }
         
         .back-btn {
             position: absolute;
-            left: 30px;
+            left: 20px;
             top: 50%;
             transform: translateY(-50%);
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: 2px solid rgba(255, 255, 255, 0.3);
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 50px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
         }
         
         .back-btn:hover {
@@ -69,28 +71,40 @@
         }
         
         .form-header h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             margin-bottom: 10px;
             font-weight: 700;
+            padding: 0 20px;
+        }
+        
+        .form-header p {
+            font-size: 1rem;
+            opacity: 0.9;
         }
         
         .form-content {
-            padding: 40px;
+            padding: 30px 20px;
         }
         
         .section-title {
             color: #3a0ca3;
-            font-size: 1.5rem;
-            margin: 30px 0 20px;
+            font-size: 1.4rem;
+            margin: 20px 0 15px;
             padding-bottom: 10px;
             border-bottom: 3px solid #4361ee;
         }
         
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
+            grid-template-columns: 1fr;
+            gap: 20px;
             margin-bottom: 30px;
+        }
+        
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
         @media (min-width: 1200px) {
@@ -117,6 +131,7 @@
             border-radius: 10px;
             font-size: 1rem;
             transition: all 0.3s;
+            width: 100%;
         }
         
         .form-group input:focus, .form-group select:focus {
@@ -138,17 +153,17 @@
         
         .form-footer {
             text-align: center;
-            padding: 30px 40px; /* Increased padding */
+            padding: 25px 20px;
             border-top: 2px solid #eee;
-            margin-top: 20px; /* Added margin to bring it up */
+            margin-top: 20px;
         }
         
         .continue-btn {
             background: linear-gradient(135deg, #4361ee, #3a0ca3);
             color: white;
             border: none;
-            padding: 18px 60px;
-            font-size: 1.2rem;
+            padding: 16px 40px;
+            font-size: 1.1rem;
             font-weight: 600;
             border-radius: 50px;
             cursor: pointer;
@@ -156,6 +171,7 @@
             box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
             width: 100%;
             max-width: 400px;
+            margin: 0 auto;
         }
         
         .continue-btn:hover:not(:disabled) {
@@ -213,15 +229,9 @@
         
         .error-message {
             color: #f44336;
-            font-size: 0.9rem;
-            margin-top: 5px;
-            display: none;
-        }
-        
-        .format-hint {
-            color: #666;
             font-size: 0.85rem;
             margin-top: 5px;
+            display: none;
         }
         
         /* Price breakdown */
@@ -261,17 +271,23 @@
             color: #3a0ca3;
         }
         
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
+        @media (max-width: 480px) {
+            .form-header {
+                padding: 20px 15px;
+            }
+            
+            .form-header h1 {
+                font-size: 1.7rem;
+                margin-top: 10px;
+                padding: 0;
             }
             
             .form-content {
-                padding: 20px;
+                padding: 20px 15px;
             }
             
-            .form-header {
-                padding: 30px 20px;
+            .section-title {
+                font-size: 1.3rem;
             }
             
             .back-btn {
@@ -281,10 +297,7 @@
                 transform: none;
                 margin-bottom: 15px;
                 display: inline-block;
-            }
-            
-            .form-header h1 {
-                margin-top: 10px;
+                padding: 8px 20px;
             }
             
             .duration-inputs {
@@ -292,12 +305,26 @@
             }
             
             .form-footer {
-                padding: 20px;
+                padding: 20px 15px;
             }
             
             .continue-btn {
-                padding: 16px 40px;
-                font-size: 1.1rem;
+                padding: 14px 30px;
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 320px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 15px;
+            }
+            
+            .form-header h1 {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -359,29 +386,14 @@
                 </div>
             </div>
             
-            <!-- Continue Button moved here -->
+            <!-- Continue Button -->
             <div class="form-footer">
-                <button class="continue-btn" onclick="savePlanDetailsToFirebase()" id="continueBtn" disabled>Continue to User Details</button>
+                <button class="continue-btn" onclick="savePlanDetails()" id="continueBtn" disabled>Continue to User Details</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
-    authDomain: "odelya-user-data.firebaseapp.com",
-    projectId: "odelya-user-data",
-    storageBucket: "odelya-user-data.firebasestorage.app",
-    messagingSenderId: "590231118790",
-    appId: "1:590231118790:web:572c355c8826ad9c9148c7",
-    measurementId: "G-9SWTR9V32R"
-        };
-        
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        
         // Global variables
         let planType = '';
         let baseMonthlyPrice = 0;
@@ -487,12 +499,6 @@
             const months = parseInt(document.getElementById('durationMonths').value) || 0;
             const startDateInput = document.getElementById('planStartDate').value;
             
-            console.log('Calculating price for:', years, 'years,', months, 'months');
-            console.log('Plan Type:', planType);
-            console.log('Base Monthly Price:', baseMonthlyPrice);
-            console.log('Base Yearly Price:', baseYearlyPrice);
-            console.log('Start Date:', startDateInput);
-            
             let totalPrice = 0;
             let breakdownHTML = '';
             
@@ -513,9 +519,6 @@
             const nextMonth = new Date(year, month, 1);
             const daysInStartingMonth = Math.round((nextMonth - startingMonth) / (1000 * 60 * 60 * 24));
             const daysLeftInMonth = daysInStartingMonth - day + 1;
-            
-            console.log('Days in starting month:', daysInStartingMonth);
-            console.log('Days left in month:', daysLeftInMonth);
             
             // Check if start date is 1st of the month
             const isFirstDayOfMonth = (day === 1);
@@ -687,18 +690,13 @@
                 const priceBreakdown = document.getElementById('priceBreakdown');
                 priceBreakdown.innerHTML = breakdownHTML;
                 priceBreakdown.style.display = 'block';
-                
-                console.log('Price breakdown shown:', totalPrice);
             } else {
                 document.getElementById('planValue').value = 'INR 0';
                 document.getElementById('priceBreakdown').style.display = 'none';
-                console.log('No price to show');
             }
             
             // Update continue button
             updateContinueButton();
-            
-            console.log('Total Price Calculated:', totalPrice);
             
             return totalPrice;
         }
@@ -728,10 +726,6 @@
             const [day, month, year] = startDateInput.split('-').map(Number);
             const startDate = new Date(year, month - 1, day);
             
-            console.log('Start Date:', startDate.toDateString());
-            console.log('Start Day:', day);
-            console.log('Duration:', years, 'years,', months, 'months');
-            
             // Calculate end date
             let endDate = new Date(startDate);
             
@@ -752,8 +746,6 @@
                 endDate.setMonth(endDate.getMonth() + 1);
                 endDate.setDate(0);
             }
-            
-            console.log('Calculated End Date:', endDate.toDateString());
             
             // Format end date
             const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
@@ -869,66 +861,40 @@
             return isValid;
         }
         
-        // Save plan details to Firebase
-        async function savePlanDetailsToFirebase() {
+        // Save plan details and proceed to user-details.html
+        function savePlanDetails() {
             if (!validateForm()) {
                 return;
             }
             
-            try {
-                // Show loading state
-                const continueBtn = document.getElementById('continueBtn');
-                continueBtn.disabled = true;
-                continueBtn.textContent = 'Saving...';
-                
-                // Collect plan data
-                const planDetailsData = {
-                    planName: document.getElementById('planName').value,
-                    originalPlanName: originalPlanName,
-                    planSize: document.getElementById('planSize').value,
-                    originalPlanSize: originalPlanSize,
-                    planType: planType,
-                    planDuration: {
-                        years: parseInt(document.getElementById('durationYears').value) || 0,
-                        months: parseInt(document.getElementById('durationMonths').value) || 0,
-                        totalMonths: (parseInt(document.getElementById('durationYears').value) || 0) * 12 + 
-                                    (parseInt(document.getElementById('durationMonths').value) || 0)
-                    },
-                    planStartDate: document.getElementById('planStartDate').value,
-                    planEndDate: document.getElementById('planEndDate').value,
-                    planValue: document.getElementById('planValue').value,
-                    originalPlanValue: 'INR ' + originalPlanValue,
-                    basePrice: planType === 'monthly' ? baseMonthlyPrice : baseYearlyPrice,
-                    basePriceType: planType === 'monthly' ? 'monthly' : 'yearly',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                
-                // Save to Firebase
-                const docRef = await db.collection('planDetails').add(planDetailsData);
-                console.log('Plan details saved to Firebase with ID:', docRef.id);
-                
-                // Save to session storage for immediate access in next page
-                sessionStorage.setItem('odelya_planDetails', JSON.stringify({
-                    ...planDetailsData,
-                    firebaseId: docRef.id
-                }));
-                
-                // Show success message
-                alert('Plan details saved successfully!');
-                
-                // Redirect to user-details.html
-                window.location.href = 'user-details.html';
-                
-            } catch (error) {
-                console.error('Error saving to Firebase:', error);
-                alert('Error saving plan details. Please try again.');
-                
-                // Reset button
-                const continueBtn = document.getElementById('continueBtn');
-                continueBtn.disabled = false;
-                continueBtn.textContent = 'Continue to User Details';
-            }
+            // Collect plan data
+            const planDetailsData = {
+                planName: document.getElementById('planName').value,
+                originalPlanName: originalPlanName,
+                planSize: document.getElementById('planSize').value,
+                originalPlanSize: originalPlanSize,
+                planType: planType,
+                planDuration: {
+                    years: parseInt(document.getElementById('durationYears').value) || 0,
+                    months: parseInt(document.getElementById('durationMonths').value) || 0,
+                    totalMonths: (parseInt(document.getElementById('durationYears').value) || 0) * 12 + 
+                                (parseInt(document.getElementById('durationMonths').value) || 0)
+                },
+                planStartDate: document.getElementById('planStartDate').value,
+                planEndDate: document.getElementById('planEndDate').value,
+                planValue: document.getElementById('planValue').value,
+                originalPlanValue: 'INR ' + originalPlanValue,
+                basePrice: planType === 'monthly' ? baseMonthlyPrice : baseYearlyPrice,
+                basePriceType: planType === 'monthly' ? 'monthly' : 'yearly'
+            };
+            
+            // Save to session storage
+            sessionStorage.setItem('odelya_planDetails', JSON.stringify(planDetailsData));
+            
+            console.log('Plan details saved:', planDetailsData);
+            
+            // Redirect to user-details.html
+            window.location.href = 'user-details.html';
         }
         
         // Setup event listeners
@@ -997,7 +963,7 @@
         });
         
         // Make functions globally available
-        window.savePlanDetailsToFirebase = savePlanDetailsToFirebase;
+        window.savePlanDetails = savePlanDetails;
         window.calculatePlanPrice = calculatePlanPrice;
         window.calculateEndDate = calculateEndDate;
     </script>
