@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -134,8 +138,9 @@
         
         .form-footer {
             text-align: center;
-            padding: 30px 0;
+            padding: 30px 40px; /* Increased padding */
             border-top: 2px solid #eee;
+            margin-top: 20px; /* Added margin to bring it up */
         }
         
         .continue-btn {
@@ -149,6 +154,8 @@
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+            width: 100%;
+            max-width: 400px;
         }
         
         .continue-btn:hover:not(:disabled) {
@@ -283,6 +290,15 @@
             .duration-inputs {
                 flex-direction: column;
             }
+            
+            .form-footer {
+                padding: 20px;
+            }
+            
+            .continue-btn {
+                padding: 16px 40px;
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
@@ -329,13 +345,11 @@
                     <label for="planStartDate" class="required">Plan Start Date</label>
                     <input type="text" id="planStartDate" class="datepicker" placeholder="DD-MM-YYYY (Select Date)">
                     <div class="error-message" id="startDateError"></div>
-                    
                 </div>
                 
                 <div class="form-group">
                     <label for="planEndDate" class="required">Plan End Date</label>
                     <input type="text" id="planEndDate" readonly class="disabled-input" placeholder="Auto-calculated">
-                    
                 </div>
                 
                 <div class="form-group payment-important">
@@ -343,26 +357,31 @@
                     <input type="text" id="planValue" readonly class="disabled-input" placeholder="Calculated price will appear here">
                     <div class="price-breakdown" id="priceBreakdown" style="display: none;"></div>
                 </div>
-                
-                <div class="form-group payment-important">
-                    <label for="paymentMode" class="required">Payment Mode</label>
-                    <select id="paymentMode" required>
-                        <option value="">Select payment mode</option>
-                        <option value="UPI">UPI</option>
-                        <option value="Bank Transfer">Bank Transfer</option>
-                        <option value="Cash">Cash</option>
-                    </select>
-                    <div class="error-message" id="paymentModeError"></div>
-                </div>
             </div>
-        </div>
-        
-        <div class="form-footer">
-            <button class="continue-btn" onclick="savePlanDetails()" id="continueBtn" disabled>Continue</button>
+            
+            <!-- Continue Button moved here -->
+            <div class="form-footer">
+                <button class="continue-btn" onclick="savePlanDetailsToFirebase()" id="continueBtn" disabled>Continue to User Details</button>
+            </div>
         </div>
     </div>
 
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+    authDomain: "odelya-user-data.firebaseapp.com",
+    projectId: "odelya-user-data",
+    storageBucket: "odelya-user-data.firebasestorage.app",
+    messagingSenderId: "590231118790",
+    appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+    measurementId: "G-9SWTR9V32R"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
         // Global variables
         let planType = '';
         let baseMonthlyPrice = 0;
@@ -515,7 +534,7 @@
                             <span>INR ${baseMonthlyPrice}</span>
                         </div>`;
                     } else {
-                        // Start date is not 1st: Pro-rata + full month
+                        // Start date is not 1st: Current month + full month
                         const dailyRate = baseMonthlyPrice / 30;
                         const proRataCurrentMonth = Math.round(dailyRate * daysLeftInMonth);
                         const fullMonth = baseMonthlyPrice;
@@ -523,9 +542,9 @@
                         totalPrice = proRataCurrentMonth + fullMonth;
                         
                         breakdownHTML += `<div class="price-item">
-    <span>Current month value</span>
-    <span>INR ${proRataCurrentMonth}</span>
-</div>`;
+                            <span>Current month value</span>
+                            <span>INR ${proRataCurrentMonth}</span>
+                        </div>`;
                         breakdownHTML += `<div class="price-item">
                             <span>1 full month</span>
                             <span>INR ${fullMonth}</span>
@@ -544,7 +563,7 @@
                             <span>INR ${fullMonthsPrice}</span>
                         </div>`;
                     } else {
-                        // Start date is not 1st: Pro-rata + full months
+                        // Start date is not 1st: Current month + full months
                         const dailyRate = baseMonthlyPrice / 30;
                         const proRataCurrentMonth = Math.round(dailyRate * daysLeftInMonth);
                         const fullMonths = totalMonths - 1; // Excluding the partial first month
@@ -553,9 +572,9 @@
                         totalPrice = proRataCurrentMonth + fullMonthsPrice;
                         
                         breakdownHTML += `<div class="price-item">
-    <span>Current month value</span>
-    <span>INR ${proRataCurrentMonth}</span>
-</div>`;
+                            <span>Current month value</span>
+                            <span>INR ${proRataCurrentMonth}</span>
+                        </div>`;
                         breakdownHTML += `<div class="price-item">
                             <span>${fullMonths} full month(s)</span>
                             <span>INR ${fullMonthsPrice}</span>
@@ -577,7 +596,7 @@
                             <span>INR ${baseYearlyPrice}</span>
                         </div>`;
                     } else {
-                        // Start date is not 1st: Pro-rata + full year
+                        // Start date is not 1st: Current month + full year
                         const dailyRate = baseYearlyPrice / 365;
                         const proRataCurrentMonth = Math.round(dailyRate * daysLeftInMonth);
                         const fullYear = baseYearlyPrice;
@@ -585,7 +604,7 @@
                         totalPrice = proRataCurrentMonth + fullYear;
                         
                         breakdownHTML += `<div class="price-item">
-                            <span>Pro-rata for ${daysLeftInMonth} days in starting month (${dailyRate.toFixed(2)}/day)</span>
+                            <span>Current month value</span>
                             <span>INR ${proRataCurrentMonth}</span>
                         </div>`;
                         breakdownHTML += `<div class="price-item">
@@ -622,13 +641,13 @@
                         totalPrice = fullPrice;
                         
                     } else {
-                        // Start date is not 1st: Pro-rata + full calculation
+                        // Start date is not 1st: Current month + full calculation
                         const dailyRate = baseYearlyPrice / 365;
                         const proRataCurrentMonth = Math.round(dailyRate * daysLeftInMonth);
                         
                         totalPrice = proRataCurrentMonth;
                         breakdownHTML += `<div class="price-item">
-                            <span>Pro-rata for ${daysLeftInMonth} days in starting month (${dailyRate.toFixed(2)}/day)</span>
+                            <span>Current month value</span>
                             <span>INR ${proRataCurrentMonth}</span>
                         </div>`;
                         
@@ -684,68 +703,68 @@
             return totalPrice;
         }
         
-// Calculate end date based on duration AND start date (end of month calculation)
-function calculateEndDate() {
-    const startDateInput = document.getElementById('planStartDate').value;
-    
-    // If start date is not selected, clear end date
-    if (!startDateInput) {
-        document.getElementById('planEndDate').value = '';
-        updateContinueButton();
-        return;
-    }
-    
-    const years = parseInt(document.getElementById('durationYears').value) || 0;
-    const months = parseInt(document.getElementById('durationMonths').value) || 0;
-    
-    // If duration is 0, clear end date
-    if (years === 0 && months === 0) {
-        document.getElementById('planEndDate').value = '';
-        updateContinueButton();
-        return;
-    }
-    
-    // Parse start date
-    const [day, month, year] = startDateInput.split('-').map(Number);
-    const startDate = new Date(year, month - 1, day);
-    
-    console.log('Start Date:', startDate.toDateString());
-    console.log('Start Day:', day);
-    console.log('Duration:', years, 'years,', months, 'months');
-    
-    // Calculate end date
-    let endDate = new Date(startDate);
-    
-    // Add years and months
-    endDate.setFullYear(endDate.getFullYear() + years);
-    endDate.setMonth(endDate.getMonth() + months);
-    
-    // IMPORTANT FIX: If start date is 1st of month, end date should be last day of (duration-1) month
-    // Example: Start Jan 1, 2 months duration = End Feb 28/29 (not Mar 31)
-    
-    if (day === 1) {
-        // For start date on 1st: Subtract 1 day from the calculated date
-        // This gives us the last day of the previous month
-        endDate.setDate(0); // 0 means last day of previous month
-    } else {
-        // For start date NOT on 1st: End date should be last day of the month
-        // after adding the full duration
-        endDate.setMonth(endDate.getMonth() + 1);
-        endDate.setDate(0);
-    }
-    
-    console.log('Calculated End Date:', endDate.toDateString());
-    
-    // Format end date
-    const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
-                           (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
-                           endDate.getFullYear();
-    
-    document.getElementById('planEndDate').value = formattedEndDate;
-    
-    // Recalculate price with new dates
-    calculatePlanPrice();
-}
+        // Calculate end date based on duration AND start date (end of month calculation)
+        function calculateEndDate() {
+            const startDateInput = document.getElementById('planStartDate').value;
+            
+            // If start date is not selected, clear end date
+            if (!startDateInput) {
+                document.getElementById('planEndDate').value = '';
+                updateContinueButton();
+                return;
+            }
+            
+            const years = parseInt(document.getElementById('durationYears').value) || 0;
+            const months = parseInt(document.getElementById('durationMonths').value) || 0;
+            
+            // If duration is 0, clear end date
+            if (years === 0 && months === 0) {
+                document.getElementById('planEndDate').value = '';
+                updateContinueButton();
+                return;
+            }
+            
+            // Parse start date
+            const [day, month, year] = startDateInput.split('-').map(Number);
+            const startDate = new Date(year, month - 1, day);
+            
+            console.log('Start Date:', startDate.toDateString());
+            console.log('Start Day:', day);
+            console.log('Duration:', years, 'years,', months, 'months');
+            
+            // Calculate end date
+            let endDate = new Date(startDate);
+            
+            // Add years and months
+            endDate.setFullYear(endDate.getFullYear() + years);
+            endDate.setMonth(endDate.getMonth() + months);
+            
+            // IMPORTANT FIX: If start date is 1st of month, end date should be last day of (duration-1) month
+            // Example: Start Jan 1, 2 months duration = End Feb 28/29 (not Mar 31)
+            
+            if (day === 1) {
+                // For start date on 1st: Subtract 1 day from the calculated date
+                // This gives us the last day of the previous month
+                endDate.setDate(0); // 0 means last day of previous month
+            } else {
+                // For start date NOT on 1st: End date should be last day of the month
+                // after adding the full duration
+                endDate.setMonth(endDate.getMonth() + 1);
+                endDate.setDate(0);
+            }
+            
+            console.log('Calculated End Date:', endDate.toDateString());
+            
+            // Format end date
+            const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
+                                   (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                                   endDate.getFullYear();
+            
+            document.getElementById('planEndDate').value = formattedEndDate;
+            
+            // Recalculate price with new dates
+            calculatePlanPrice();
+        }
         
         // Show error message
         function showError(fieldId, message) {
@@ -776,7 +795,7 @@ function calculateEndDate() {
         // Check form validity
         function checkFormValidity() {
             // Check required fields
-            const requiredFields = ['planStartDate', 'paymentMode'];
+            const requiredFields = ['planStartDate'];
             
             for (const fieldId of requiredFields) {
                 const field = document.getElementById(fieldId);
@@ -819,7 +838,7 @@ function calculateEndDate() {
             let isValid = true;
             
             // Clear all errors
-            const fieldIds = ['planStartDate', 'paymentMode', 'duration'];
+            const fieldIds = ['planStartDate', 'duration'];
             
             fieldIds.forEach(fieldId => {
                 hideError(fieldId);
@@ -827,8 +846,7 @@ function calculateEndDate() {
             
             // Check required fields
             const requiredFields = [
-                {id: 'planStartDate', name: 'Plan Start Date'},
-                {id: 'paymentMode', name: 'Payment Mode'}
+                {id: 'planStartDate', name: 'Plan Start Date'}
             ];
             
             requiredFields.forEach(field => {
@@ -851,41 +869,66 @@ function calculateEndDate() {
             return isValid;
         }
         
-        // Save plan details and proceed to user-details.html
-        function savePlanDetails() {
+        // Save plan details to Firebase
+        async function savePlanDetailsToFirebase() {
             if (!validateForm()) {
                 return;
             }
             
-            // Collect plan data
-            const planDetailsData = {
-                planName: document.getElementById('planName').value,
-                originalPlanName: originalPlanName,
-                planSize: document.getElementById('planSize').value,
-                originalPlanSize: originalPlanSize,
-                planType: planType,
-                planDuration: {
-                    years: parseInt(document.getElementById('durationYears').value) || 0,
-                    months: parseInt(document.getElementById('durationMonths').value) || 0,
-                    totalMonths: (parseInt(document.getElementById('durationYears').value) || 0) * 12 + 
-                                (parseInt(document.getElementById('durationMonths').value) || 0)
-                },
-                planStartDate: document.getElementById('planStartDate').value,
-                planEndDate: document.getElementById('planEndDate').value,
-                planValue: document.getElementById('planValue').value,
-                originalPlanValue: 'INR ' + originalPlanValue,
-                paymentMode: document.getElementById('paymentMode').value,
-                basePrice: planType === 'monthly' ? baseMonthlyPrice : baseYearlyPrice,
-                basePriceType: planType === 'monthly' ? 'monthly' : 'yearly'
-            };
-            
-            // Save to session storage
-            sessionStorage.setItem('odelya_planDetails', JSON.stringify(planDetailsData));
-            
-            console.log('Plan details saved:', planDetailsData);
-            
-            // Redirect to user-details.html
-            window.location.href = 'user-details.html';
+            try {
+                // Show loading state
+                const continueBtn = document.getElementById('continueBtn');
+                continueBtn.disabled = true;
+                continueBtn.textContent = 'Saving...';
+                
+                // Collect plan data
+                const planDetailsData = {
+                    planName: document.getElementById('planName').value,
+                    originalPlanName: originalPlanName,
+                    planSize: document.getElementById('planSize').value,
+                    originalPlanSize: originalPlanSize,
+                    planType: planType,
+                    planDuration: {
+                        years: parseInt(document.getElementById('durationYears').value) || 0,
+                        months: parseInt(document.getElementById('durationMonths').value) || 0,
+                        totalMonths: (parseInt(document.getElementById('durationYears').value) || 0) * 12 + 
+                                    (parseInt(document.getElementById('durationMonths').value) || 0)
+                    },
+                    planStartDate: document.getElementById('planStartDate').value,
+                    planEndDate: document.getElementById('planEndDate').value,
+                    planValue: document.getElementById('planValue').value,
+                    originalPlanValue: 'INR ' + originalPlanValue,
+                    basePrice: planType === 'monthly' ? baseMonthlyPrice : baseYearlyPrice,
+                    basePriceType: planType === 'monthly' ? 'monthly' : 'yearly',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                // Save to Firebase
+                const docRef = await db.collection('planDetails').add(planDetailsData);
+                console.log('Plan details saved to Firebase with ID:', docRef.id);
+                
+                // Save to session storage for immediate access in next page
+                sessionStorage.setItem('odelya_planDetails', JSON.stringify({
+                    ...planDetailsData,
+                    firebaseId: docRef.id
+                }));
+                
+                // Show success message
+                alert('Plan details saved successfully!');
+                
+                // Redirect to user-details.html
+                window.location.href = 'user-details.html';
+                
+            } catch (error) {
+                console.error('Error saving to Firebase:', error);
+                alert('Error saving plan details. Please try again.');
+                
+                // Reset button
+                const continueBtn = document.getElementById('continueBtn');
+                continueBtn.disabled = false;
+                continueBtn.textContent = 'Continue to User Details';
+            }
         }
         
         // Setup event listeners
@@ -894,7 +937,7 @@ function calculateEndDate() {
             document.getElementById('durationMonths').addEventListener('input', function() {
                 if (this.value < 0) this.value = 0;
                 if (this.value > 11) this.value = 11;
-                calculateEndDate(); // FIX: Added this line
+                calculateEndDate();
                 calculatePlanPrice();
                 hideError('durationError');
             });
@@ -902,19 +945,19 @@ function calculateEndDate() {
             document.getElementById('durationYears').addEventListener('input', function() {
                 if (this.value < 0) this.value = 0;
                 if (this.value > 10) this.value = 10;
-                calculateEndDate(); // FIX: Added this line
+                calculateEndDate();
                 calculatePlanPrice();
                 hideError('durationError');
             });
             
             document.getElementById('durationMonths').addEventListener('change', function() {
-                calculateEndDate(); // FIX: Added this line
+                calculateEndDate();
                 calculatePlanPrice();
                 hideError('durationError');
             });
             
             document.getElementById('durationYears').addEventListener('change', function() {
-                calculateEndDate(); // FIX: Added this line
+                calculateEndDate();
                 calculatePlanPrice();
                 hideError('durationError');
             });
@@ -923,12 +966,6 @@ function calculateEndDate() {
             document.getElementById('planStartDate').addEventListener('input', () => {
                 calculateEndDate();
                 hideError('planStartDate');
-                updateContinueButton();
-            });
-            
-            // Payment mode validation
-            document.getElementById('paymentMode').addEventListener('change', () => {
-                hideError('paymentMode');
                 updateContinueButton();
             });
         }
@@ -960,7 +997,7 @@ function calculateEndDate() {
         });
         
         // Make functions globally available
-        window.savePlanDetails = savePlanDetails;
+        window.savePlanDetailsToFirebase = savePlanDetailsToFirebase;
         window.calculatePlanPrice = calculatePlanPrice;
         window.calculateEndDate = calculateEndDate;
     </script>
