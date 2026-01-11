@@ -241,47 +241,6 @@
             color: #0d47a1;
         }
         
-        /* Payment tags */
-        .payment-tags {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 30px 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 15px;
-            border: 2px solid #4361ee;
-        }
-        
-        .payment-tag {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: all 0.3s;
-        }
-        
-        .payment-tag:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-        }
-        
-        .payment-tag-label {
-            font-size: 0.85rem;
-            color: #666;
-            margin-bottom: 5px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .payment-tag-value {
-            font-size: 1.1rem;
-            color: #3a0ca3;
-            font-weight: 700;
-        }
-        
         /* Payment important rows */
         .payment-important {
             font-size: 1.2rem !important;
@@ -318,11 +277,6 @@
             
             .form-header h1 {
                 margin-top: 10px;
-            }
-            
-            .payment-tags {
-                grid-template-columns: 1fr;
-                padding: 15px;
             }
             
             .duration-inputs {
@@ -401,29 +355,10 @@
                     <div class="error-message" id="paymentModeError"></div>
                 </div>
             </div>
-            
-            <!-- Payment Processing Summary -->
-            <div class="payment-tags" id="paymentTags" style="display: none;">
-                <div class="payment-tag">
-                    <div class="payment-tag-label">Plan Start Date</div>
-                    <div class="payment-tag-value" id="tagStartDate">--</div>
-                </div>
-                <div class="payment-tag">
-                    <div class="payment-tag-label">Plan End Date</div>
-                    <div class="payment-tag-value" id="tagEndDate">--</div>
-                </div>
-                <div class="payment-tag">
-                    <div class="payment-tag-label">Total Plan Value</div>
-                    <div class="payment-tag-value" id="tagPlanValue" style="font-size: 1.3rem;">INR 0</div>
-                </div>
-            </div>
         </div>
         
         <div class="form-footer">
             <button class="continue-btn" onclick="savePlanDetails()" id="continueBtn" disabled>Continue</button>
-            <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
-                Next: User Details
-            </p>
         </div>
     </div>
 
@@ -514,69 +449,155 @@
             // Calculate initial price
             calculatePlanPrice();
             
-            // Initialize payment tags
-            updatePaymentTags();
-            
             // Enable continue button if all required data is present
             updateContinueButton();
         }
         
-        // Calculate plan price based on duration
+        // Calculate plan price based on duration with pro-rata calculation
         function calculatePlanPrice() {
             const years = parseInt(document.getElementById('durationYears').value) || 0;
             const months = parseInt(document.getElementById('durationMonths').value) || 0;
+            const startDateInput = document.getElementById('planStartDate').value;
             
             console.log('Calculating price for:', years, 'years,', months, 'months');
             console.log('Plan Type:', planType);
             console.log('Base Monthly Price:', baseMonthlyPrice);
             console.log('Base Yearly Price:', baseYearlyPrice);
+            console.log('Start Date:', startDateInput);
             
             let totalPrice = 0;
             let breakdownHTML = '';
             
+            // If no start date or duration is 0, return 0
+            if (!startDateInput || (years === 0 && months === 0)) {
+                document.getElementById('planValue').value = 'INR 0';
+                document.getElementById('priceBreakdown').style.display = 'none';
+                updateContinueButton();
+                return 0;
+            }
+            
+            // Parse start date
+            const [day, month, year] = startDateInput.split('-').map(Number);
+            const startDate = new Date(year, month - 1, day);
+            
+            // Get days in the starting month
+            const startingMonth = new Date(year, month - 1, 1);
+            const nextMonth = new Date(year, month, 1);
+            const daysInStartingMonth = Math.round((nextMonth - startingMonth) / (1000 * 60 * 60 * 24));
+            const daysLeftInMonth = daysInStartingMonth - day + 1;
+            
+            console.log('Days in starting month:', daysInStartingMonth);
+            console.log('Days left in month:', daysLeftInMonth);
+            
             if (planType === 'monthly') {
-                // MONTHLY PLAN CALCULATION
+                // MONTHLY PLAN CALCULATION with pro-rata
                 const totalMonths = (years * 12) + months;
-                const monthsPrice = totalMonths * baseMonthlyPrice;
                 
-                if (totalMonths > 0) {
+                if (totalMonths === 1) {
+                    // Special case: Only 1 month
+                    // Pro-rata for remaining days in current month + full month
+                    const dailyRate = baseMonthlyPrice / 30;
+                    const proRataCurrentMonth = Math.round(dailyRate * daysLeftInMonth);
+                    const fullMonth = baseMonthlyPrice;
+                    
+                    totalPrice = proRataCurrentMonth + fullMonth;
+                    
                     breakdownHTML += `<div class="price-item">
-                        <span>${totalMonths} month(s) × INR ${baseMonthlyPrice}</span>
-                        <span>INR ${monthsPrice}</span>
+                        <span>Pro-rata for ${daysLeftInMonth} days in starting month (${dailyRate.toFixed(2)}/day)</span>
+                        <span>INR ${proRataCurrentMonth}</span>
                     </div>`;
-                    totalPrice = monthsPrice;
+                    breakdownHTML += `<div class="price-item">
+                        <span>1 full month</span>
+                        <span>INR ${fullMonth}</span>
+                    </div>`;
+                    
+                } else if (totalMonths > 1) {
+                    // Multiple months: Pro-rata + full months
+                    const dailyRate = baseMonthlyPrice / 30;
+                    const proRataCurrentMonth = Math.round(dailyRate * daysLeftInMonth);
+                    const fullMonths = totalMonths - 1; // Excluding the partial first month
+                    const fullMonthsPrice = baseMonthlyPrice * fullMonths;
+                    
+                    totalPrice = proRataCurrentMonth + fullMonthsPrice;
+                    
+                    breakdownHTML += `<div class="price-item">
+                        <span>Pro-rata for ${daysLeftInMonth} days in starting month (${dailyRate.toFixed(2)}/day)</span>
+                        <span>INR ${proRataCurrentMonth}</span>
+                    </div>`;
+                    breakdownHTML += `<div class="price-item">
+                        <span>${fullMonths} full month(s)</span>
+                        <span>INR ${fullMonthsPrice}</span>
+                    </div>`;
                 }
                 
             } else if (planType === 'yearly') {
-                // YEARLY PLAN CALCULATION
-                let yearsPrice = 0;
-                let monthsPrice = 0;
+                // YEARLY PLAN CALCULATION with pro-rata
+                let totalPrice = 0;
                 
-                if (years > 0) {
-                    yearsPrice = years * baseYearlyPrice;
+                if (years === 1 && months === 0) {
+                    // Special case: Only 1 year
+                    // Pro-rata for remaining days in current month + full year
+                    const dailyRate = baseYearlyPrice / 365;
+                    const proRataCurrentMonth = Math.round(dailyRate * daysLeftInMonth);
+                    const fullYear = baseYearlyPrice;
+                    
+                    totalPrice = proRataCurrentMonth + fullYear;
+                    
                     breakdownHTML += `<div class="price-item">
-                        <span>${years} year(s) × INR ${baseYearlyPrice}</span>
-                        <span>INR ${yearsPrice}</span>
+                        <span>Pro-rata for ${daysLeftInMonth} days in starting month (${dailyRate.toFixed(2)}/day)</span>
+                        <span>INR ${proRataCurrentMonth}</span>
                     </div>`;
-                }
-                
-                if (months > 0) {
-                    const monthlyRate = Math.round(baseYearlyPrice / 12);
-                    monthsPrice = months * monthlyRate;
                     breakdownHTML += `<div class="price-item">
-                        <span>${months} month(s) × INR ${monthlyRate}</span>
-                        <span>INR ${monthsPrice}</span>
+                        <span>1 full year</span>
+                        <span>INR ${fullYear}</span>
                     </div>`;
+                    
+                } else {
+                    // Multiple years/months: Complex calculation
+                    let fullYears = years;
+                    let additionalMonths = months;
+                    
+                    // If we have any months, they become additional to years
+                    if (additionalMonths > 0) {
+                        fullYears += Math.floor(additionalMonths / 12);
+                        additionalMonths = additionalMonths % 12;
+                    }
+                    
+                    const dailyRate = baseYearlyPrice / 365;
+                    const proRataCurrentMonth = Math.round(dailyRate * daysLeftInMonth);
+                    
+                    totalPrice = proRataCurrentMonth;
+                    
+                    if (fullYears > 0) {
+                        const fullYearsPrice = baseYearlyPrice * fullYears;
+                        totalPrice += fullYearsPrice;
+                        breakdownHTML += `<div class="price-item">
+                            <span>Pro-rata for ${daysLeftInMonth} days in starting month (${dailyRate.toFixed(2)}/day)</span>
+                            <span>INR ${proRataCurrentMonth}</span>
+                        </div>`;
+                        breakdownHTML += `<div class="price-item">
+                            <span>${fullYears} full year(s)</span>
+                            <span>INR ${fullYearsPrice}</span>
+                        </div>`;
+                    }
+                    
+                    if (additionalMonths > 0) {
+                        const monthlyRate = Math.round(baseYearlyPrice / 12);
+                        const additionalMonthsPrice = monthlyRate * additionalMonths;
+                        totalPrice += additionalMonthsPrice;
+                        breakdownHTML += `<div class="price-item">
+                            <span>${additionalMonths} additional month(s)</span>
+                            <span>INR ${additionalMonthsPrice}</span>
+                        </div>`;
+                    }
                 }
-                
-                totalPrice = yearsPrice + monthsPrice;
             }
             
             // Show total
             if (totalPrice > 0) {
                 breakdownHTML += `<div class="price-item">
                     <span>Total Payable</span>
-                    <span>INR ${totalPrice}</span>
+                    <span>INR ${totalPrice.toLocaleString('en-IN')}</span>
                 </div>`;
                 
                 // Update plan value display
@@ -594,9 +615,6 @@
             // Recalculate end date when duration changes
             calculateEndDate();
             
-            // Update payment tags
-            updatePaymentTags();
-            
             // Update continue button
             updateContinueButton();
             
@@ -612,7 +630,6 @@
             // If start date is not selected, clear end date
             if (!startDateInput) {
                 document.getElementById('planEndDate').value = '';
-                updatePaymentTags();
                 updateContinueButton();
                 return;
             }
@@ -623,7 +640,6 @@
             // If duration is 0, clear end date
             if (years === 0 && months === 0) {
                 document.getElementById('planEndDate').value = '';
-                updatePaymentTags();
                 updateContinueButton();
                 return;
             }
@@ -655,31 +671,8 @@
             
             document.getElementById('planEndDate').value = formattedEndDate;
             
-            // Update payment tags
-            updatePaymentTags();
-            updateContinueButton();
-        }
-        
-        // Update payment tags display
-        function updatePaymentTags() {
-            const startDate = document.getElementById('planStartDate').value;
-            const endDate = document.getElementById('planEndDate').value;
-            const planValue = document.getElementById('planValue').value;
-            
-            const paymentTags = document.getElementById('paymentTags');
-            
-            if (startDate && endDate && planValue !== 'INR 0') {
-                // Update tag values
-                document.getElementById('tagStartDate').textContent = startDate || '--';
-                document.getElementById('tagEndDate').textContent = endDate || '--';
-                document.getElementById('tagPlanValue').textContent = planValue || 'INR 0';
-                
-                // Show payment tags
-                paymentTags.style.display = 'grid';
-            } else {
-                // Hide payment tags if not all data is available
-                paymentTags.style.display = 'none';
-            }
+            // Recalculate price with new dates
+            calculatePlanPrice();
         }
         
         // Show error message
@@ -877,7 +870,6 @@
                     calculateEndDate();
                     hideError('planStartDate');
                     updateContinueButton();
-                    updatePaymentTags();
                 }
             });
             
