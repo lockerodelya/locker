@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odelya - Account Creation</title>
+    
+    <!-- Firebase SDK Version 9 (Modular) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword,
+            setPersistence,
+            browserLocalPersistence
+        } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+        import { 
+            getFirestore, 
+            setDoc, 
+            doc, 
+            serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+        
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+            authDomain: "odelya-user-data.firebaseapp.com",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.firebasestorage.app",
+            messagingSenderId: "590231118790",
+            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+            measurementId: "G-9SWTR9V32R"
+        };
+
+        try {
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+            
+            // Set persistence
+            setPersistence(auth, browserLocalPersistence).catch((error) => {
+                console.warn("Persistence warning:", error);
+            });
+            
+            // Make available globally
+            window.firebaseAuth = auth;
+            window.firebaseDb = db;
+            window.firebaseCreateUser = createUserWithEmailAndPassword;
+            window.firebaseSetDoc = setDoc;
+            window.firebaseDoc = doc;
+            window.firebaseTimestamp = serverTimestamp;
+            
+            console.log("✅ Firebase initialized successfully");
+        } catch (error) {
+            console.error("❌ Firebase initialization failed:", error);
+            alert("Firebase initialization error. Please check console.");
+        }
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .form-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .form-content {
+            padding: 40px;
+        }
+        
+        .section-title {
+            color: #3a0ca3;
+            font-size: 1.5rem;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4361ee;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        @media (min-width: 1200px) {
+            .form-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input, .form-group select {
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .disabled-input {
+            background-color: #f5f5f5;
+            color: #666;
+            cursor: not-allowed;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #f44336;
+        }
+        
+        .form-footer {
+            text-align: center;
+            padding: 30px 0;
+            border-top: 2px solid #eee;
+        }
+        
+        .continue-btn {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .continue-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
+        }
+        
+        .continue-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+        
+        .continue-btn.enabled {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            opacity: 1;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .continue-btn.enabled:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
+        }
+        
+        .error-message {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .format-hint {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        /* Terms & Conditions Styles */
+        .terms-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .terms-checkbox {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #4361ee;
+        }
+        
+        .terms-label {
+            font-size: 1rem;
+            color: #333;
+            cursor: pointer;
+        }
+        
+        .terms-link {
+            color: #4361ee;
+            text-decoration: underline;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .terms-link:hover {
+            color: #3a0ca3;
+            text-decoration: underline;
+        }
+        
+        /* Password requirements */
+        .password-requirements {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }
+        
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin: 3px 0;
+        }
+        
+        .requirement.valid {
+            color: #4CAF50;
+        }
+        
+        .requirement.invalid {
+            color: #f44336;
+        }
+        
+        .checkmark {
+            margin-right: 5px;
+        }
+        
+        /* Loading indicator */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #4361ee;
+            font-weight: 600;
+        }
+        
+        /* User summary */
+        .user-summary {
+            background: #f8f9fa;
+            border: 2px solid #4361ee;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-title {
+            color: #3a0ca3;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .summary-item {
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .summary-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .summary-value {
+            font-size: 1rem;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-content {
+                padding: 20px;
+            }
+            
+            .form-header {
+                padding: 30px 20px;
+            }
+            
+            .back-btn {
+                position: relative;
+                left: 0;
+                top: 0;
+                transform: none;
+                margin-bottom: 15px;
+                display: inline-block;
+            }
+            
+            .form-header h1 {
+                margin-top: 10px;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <a href="javascript:void(0)" class="back-btn" onclick="goBack()">
+                ← Back to Plan Details
+            </a>
+            <h1>Account Creation</h1>
+            <p>Create your account credentials and complete registration</p>
+        </div>
+        
+        <div class="form-content">
+            <!-- User Summary -->
+            <div class="user-summary" id="userSummary">
+                <div class="summary-title">Registration Summary</div>
+                <div class="summary-grid" id="summaryGrid">
+                    <!-- Summary items will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Authentication Section -->
+            <h2 class="section-title">Account Security</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="username" class="required">Account Username</label>
+                    <input type="text" id="username" required placeholder="Choose username (8-12 characters)" maxlength="12">
+                    <div class="error-message" id="usernameError"></div>
+                    <div class="format-hint">8-12 characters, letters and numbers only</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="required">Account Password</label>
+                    <input type="password" id="password" required placeholder="Create a strong password" maxlength="12">
+                    <div class="error-message" id="passwordError"></div>
+                    <div class="password-requirements">
+                        <div class="requirement invalid" id="reqLength">
+                            <span class="checkmark">❌</span> At least 8 characters
+                        </div>
+                        <div class="requirement invalid" id="reqUpper">
+                            <span class="checkmark">❌</span> At least 1 uppercase letter
+                        </div>
+                        <div class="requirement invalid" id="reqLower">
+                            <span class="checkmark">❌</span> At least 1 lowercase letter
+                        </div>
+                        <div class="requirement invalid" id="reqNumber">
+                            <span class="checkmark">❌</span> At least 1 number
+                        </div>
+                        <div class="requirement invalid" id="reqSpecial">
+                            <span class="checkmark">❌</span> At least 1 special character (@$!%*?&)
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword" class="required">Confirm Password</label>
+                    <input type="password" id="confirmPassword" required placeholder="Re-enter your password" maxlength="12">
+                    <div class="error-message" id="confirmPasswordError"></div>
+                    <div class="format-hint">Must match the password above</div>
+                </div>
+            </div>
+            
+            <!-- Terms & Conditions Section -->
+            <div class="terms-container">
+                <input type="checkbox" id="termsCheckbox" class="terms-checkbox">
+                <label for="termsCheckbox" class="terms-label">
+                    I agree to the 
+                    <span class="terms-link" onclick="openTerms()">terms & conditions</span>
+                    of Odelya Management Pvt Ltd
+                </label>
+            </div>
+            
+            <!-- Loading indicator -->
+            <div class="loading" id="loading">
+                <p>Creating your account... Please wait.</p>
+            </div>
+        </div>
+        
+        <div class="form-footer">
+            <button class="continue-btn" onclick="createAccount()" id="submitBtn" disabled>Complete Registration & Proceed to Payment</button>
+            <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
+                You will be redirected to payment page after successful registration
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let combinedData = {};
+        let userDetailsData = {};
+        let planDetailsData = {};
+        
+        // Load data from session storage
+        function loadData() {
+            const userData = sessionStorage.getItem('odelya_userDetails');
+            const planData = sessionStorage.getItem('odelya_planDetails');
+            const combined = sessionStorage.getItem('odelya_combinedData');
+            
+            if (userData && planData && combined) {
+                userDetailsData = JSON.parse(userData);
+                planDetailsData = JSON.parse(planData);
+                combinedData = JSON.parse(combined);
+                
+                console.log('Data loaded successfully');
+                updateUserSummary();
+            } else {
+                alert('No registration data found. Please start from the beginning.');
+                window.location.href = 'user-details.html';
+            }
+        }
+        
+        // Go back to plan details
+        function goBack() {
+            window.location.href = 'plan-details.html';
+        }
+        
+        // Update user summary display
+        function updateUserSummary() {
+            const summaryGrid = document.getElementById('summaryGrid');
+            let summaryHTML = '';
+            
+            // Add user details based on user type
+            if (userDetailsData.userType === 'individual') {
+                summaryHTML += `
+                    <div class="summary-item">
+                        <div class="summary-label">User Type</div>
+                        <div class="summary-value">Individual</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Full Name</div>
+                        <div class="summary-value">${userDetailsData.fullName || 'N/A'}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Email</div>
+                        <div class="summary-value">${userDetailsData.email || 'N/A'}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Phone</div>
+                        <div class="summary-value">${userDetailsData.phone || 'N/A'}</div>
+                    </div>
+                `;
+            } else if (userDetailsData.userType === 'business') {
+                summaryHTML += `
+                    <div class="summary-item">
+                        <div class="summary-label">User Type</div>
+                        <div class="summary-value">Business</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Business Name</div>
+                        <div class="summary-value">${userDetailsData.businessName || 'N/A'}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Email</div>
+                        <div class="summary-value">${userDetailsData.email || 'N/A'}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Phone</div>
+                        <div class="summary-value">${userDetailsData.phone || 'N/A'}</div>
+                    </div>
+                `;
+            }
+            
+            // Add plan details
+            summaryHTML += `
+                <div class="summary-item">
+                    <div class="summary-label">Plan Name</div>
+                    <div class="summary-value">${planDetailsData.planName || 'N/A'}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Plan Size</div>
+                    <div class="summary-value">${planDetailsData.planSize || 'N/A'}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Plan Duration</div>
+                    <div class="summary-value">${planDetailsData.planDuration.years || 0}Y ${planDetailsData.planDuration.months || 0}M ${planDetailsData.planDuration.days || 0}D</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Plan Value</div>
+                    <div class="summary-value" style="color: #3a0ca3; font-weight: 700;">${planDetailsData.planValue || 'INR 0'}</div>
+                </div>
+            `;
+            
+            summaryGrid.innerHTML = summaryHTML;
+        }
+        
+        // Validate username (8-12 characters, alphanumeric only)
+        function validateUsername(username) {
+            const usernameRegex = /^[a-zA-Z0-9]{8,12}$/;
+            return usernameRegex.test(username);
+        }
+        
+        // Validate password format with max 12 characters
+        function validatePassword(password) {
+            const minLength = password.length >= 8;
+            const maxLength = password.length <= 12;
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[@$!%*?&]/.test(password);
+            
+            // Update requirement indicators
+            updateRequirement('reqLength', minLength && maxLength);
+            updateRequirement('reqUpper', hasUpper);
+            updateRequirement('reqLower', hasLower);
+            updateRequirement('reqNumber', hasNumber);
+            updateRequirement('reqSpecial', hasSpecial);
+            
+            return minLength && maxLength && hasUpper && hasLower && hasNumber && hasSpecial;
+        }
+        
+        // Validate confirm password matches password
+        function validateConfirmPassword() {
+            const passwordCheck = document.getElementById('password').value;
+            const confirmPasswordCheck = document.getElementById('confirmPassword').value;
+            
+            if (confirmPasswordCheck === '') {
+                showError('confirmPassword', 'Please confirm your password');
+                return false;
+            }
+            
+            if (passwordCheck !== confirmPasswordCheck) {
+                showError('confirmPassword', 'Passwords do not match');
+                return false;
+            }
+            
+            hideError('confirmPassword');
+            return true;
+        }
+        
+        function updateRequirement(elementId, isValid) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.classList.toggle('valid', isValid);
+                element.classList.toggle('invalid', !isValid);
+                const checkmark = element.querySelector('.checkmark');
+                if (checkmark) {
+                    checkmark.textContent = isValid ? '✅' : '❌';
+                }
+            }
+        }
+        
+        // Open terms & conditions
+        function openTerms() {
+            const termsUrl = 'https://www.odelya.online/terms.html';
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                const newWindow = window.open(termsUrl, '_blank');
+                if (newWindow) {
+                    newWindow.registrationPage = window.location.href;
+                }
+            } else {
+                window.open(termsUrl, '_blank', 'noopener,noreferrer');
+            }
+        }
+        
+        // Show error message
+        function showError(fieldId, message) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            const fieldElement = document.getElementById(fieldId);
+            
+            if (errorDiv && fieldElement) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                fieldElement.style.borderColor = '#f44336';
+            }
+        }
+        
+        // Hide error message
+        function hideError(fieldId) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            const fieldElement = document.getElementById(fieldId);
+            
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+            
+            if (fieldElement) {
+                fieldElement.style.borderColor = '#e0e0e0';
+            }
+        }
+        
+        // Check form validity
+        function checkFormValidity() {
+            // Check username
+            const username = document.getElementById('username').value;
+            if (!username || !validateUsername(username)) {
+                return false;
+            }
+            
+            // Check password
+            const passwordVal = document.getElementById('password').value;
+            if (!passwordVal || !validatePassword(passwordVal)) {
+                return false;
+            }
+            
+            // Check confirm password
+            const confirmPasswordVal = document.getElementById('confirmPassword').value;
+            if (!confirmPasswordVal || !validateConfirmPassword()) {
+                return false;
+            }
+            
+            // Check terms & conditions
+            const termsChecked = document.getElementById('termsCheckbox').checked;
+            if (!termsChecked) {
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Update submit button
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            const isValid = checkFormValidity();
+            
+            if (isValid) {
+                submitBtn.disabled = false;
+                submitBtn.classList.add('enabled');
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('enabled');
+            }
+        }
+        
+        // Validate form
+        function validateForm() {
+            let isValid = true;
+            
+            // Clear all errors
+            const fieldIds = ['username', 'password', 'confirmPassword'];
+            fieldIds.forEach(fieldId => {
+                hideError(fieldId);
+            });
+            
+            // Username validation
+            const username = document.getElementById('username').value;
+            if (!username) {
+                showError('username', 'Username is required');
+                isValid = false;
+            } else if (!validateUsername(username)) {
+                showError('username', 'Username must be 8-12 characters (letters and numbers only)');
+                isValid = false;
+            }
+            
+            // Password validation
+            const passwordVal = document.getElementById('password').value;
+            if (!passwordVal) {
+                showError('password', 'Password is required');
+                isValid = false;
+            } else if (!validatePassword(passwordVal)) {
+                showError('password', 'Password does not meet requirements');
+                isValid = false;
+            }
+            
+            // Confirm password validation
+            const confirmPasswordVal = document.getElementById('confirmPassword').value;
+            if (!confirmPasswordVal) {
+                showError('confirmPassword', 'Please confirm your password');
+                isValid = false;
+            } else if (passwordVal !== confirmPasswordVal) {
+                showError('confirmPassword', 'Passwords do not match');
+                isValid = false;
+            }
+            
+            // Check terms & conditions
+            const termsChecked = document.getElementById('termsCheckbox').checked;
+            if (!termsChecked) {
+                alert('Please agree to the terms & conditions before continuing.');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        // Create account in Firebase
+        async function createAccount() {
+            console.log('Create account button clicked');
+            
+            if (!validateForm()) {
+                console.log('Form validation failed');
+                return;
+            }
+            
+            console.log('Form validation passed');
+            
+            // Disable button and show loading
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingDiv = document.getElementById('loading');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+            loadingDiv.style.display = 'block';
+            
+            try {
+                // Check if Firebase is initialized
+                if (!window.firebaseAuth || !window.firebaseCreateUser) {
+                    throw new Error('Firebase not properly initialized. Please refresh the page.');
+                }
+                
+                // Get account credentials
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const email = userDetailsData.email;
+                const userId = userDetailsData.userId;
+                
+                // Prepare complete user data
+                const completeUserData = {
+                    ...combinedData,
+                    username: username,
+                    password: password, // Store plain text password as requested
+                    status: 'pending',
+                    createdAt: window.firebaseTimestamp(),
+                    updatedAt: window.firebaseTimestamp()
+                };
+                
+                console.log('Creating user with email:', email);
+                console.log('Complete user data:', completeUserData);
+                
+                // Create user authentication
+                const userCredential = await window.firebaseCreateUser(
+                    window.firebaseAuth, 
+                    email, 
+                    password
+                );
+                
+                const user = userCredential.user;
+                console.log('User created with ID:', user.uid);
+                
+                // Add Firebase UID to user data
+                completeUserData.firebaseUid = user.uid;
+                
+                // Save to Firestore - Use userId as document ID for admin dashboard
+                console.log('Saving to Firestore...');
+                
+                // Save in both locations:
+                // 1. Under users collection with Firebase UID (for authentication)
+                // 2. Under admin-dashboard collection with userId (for admin panel)
+                
+                await window.firebaseSetDoc(
+                    window.firebaseDoc(window.firebaseDb, "users", user.uid), 
+                    completeUserData
+                );
+                
+                // Also save to admin-dashboard collection for easy admin access
+                await window.firebaseSetDoc(
+                    window.firebaseDoc(window.firebaseDb, "admin-dashboard", userId), 
+                    completeUserData
+                );
+                
+                console.log('Data saved successfully to both collections!');
+                
+                // Calculate final price for payment
+                const finalPrice = parseFloat(planDetailsData.planValue.replace('INR ', ''));
+                
+                // Prepare payment redirect URL
+                const paymentUrl = `https://www.odelya.online/payment.html?userId=${userId}&amount=${finalPrice}&startDate=${encodeURIComponent(planDetailsData.planStartDate)}&endDate=${encodeURIComponent(planDetailsData.planEndDate)}&planType=${planDetailsData.planType}&paymentMethod=${encodeURIComponent(planDetailsData.paymentMode)}&userType=${userDetailsData.userType}`;
+                
+                // Save to session storage as backup
+                sessionStorage.setItem('odelya_registration', JSON.stringify({
+                    userId: userId,
+                    userType: userDetailsData.userType,
+                    amount: finalPrice,
+                    email: email,
+                    startDate: planDetailsData.planStartDate,
+                    endDate: planDetailsData.planEndDate,
+                    planType: planDetailsData.planType,
+                    paymentMethod: planDetailsData.paymentMode,
+                    timestamp: new Date().getTime(),
+                    userData: completeUserData
+                }));
+                
+                alert('✅ Account created successfully! Redirecting to payment...');
+                
+                // Redirect to payment page
+                setTimeout(() => {
+                    window.location.href = paymentUrl;
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                
+                // Re-enable button and hide loading
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Complete Registration & Proceed to Payment';
+                loadingDiv.style.display = 'none';
+                updateSubmitButton();
+                
+                // Show user-friendly error messages
+                let errorMessage = 'Account creation failed. ';
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage += 'This email is already registered.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage += 'Please enter a valid email address.';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage += 'Password is too weak. Use at least 8 characters with uppercase, lowercase, number and special character.';
+                } else if (error.code === 'auth/network-request-failed') {
+                    errorMessage += 'Network error. Check your internet connection.';
+                } else if (error.code === 'permission-denied') {
+                    errorMessage += 'Firebase permission denied. Please check Firebase rules.';
+                } else {
+                    errorMessage += error.message || 'Please try again.';
+                }
+                
+                alert('❌ ' + errorMessage);
+            }
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Username input listener
+            document.getElementById('username').addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
+                hideError('username');
+                updateSubmitButton();
+            });
+            
+            // Password input listener
+            document.getElementById('password').addEventListener('input', function(e) {
+                if (this.value.length > 12) {
+                    this.value = this.value.slice(0, 12);
+                }
+                validatePassword(this.value);
+                hideError('password');
+                updateSubmitButton();
+            });
+            
+            // Confirm password input listener
+            document.getElementById('confirmPassword').addEventListener('input', function(e) {
+                if (this.value.length > 12) {
+                    this.value = this.value.slice(0, 12);
+                }
+                validateConfirmPassword();
+                updateSubmitButton();
+            });
+            
+            // Terms checkbox listener
+            document.getElementById('termsCheckbox').addEventListener('change', () => {
+                updateSubmitButton();
+            });
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Account Creation Page Loaded');
+            
+            // Load data
+            loadData();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Initial button state
+            updateSubmitButton();
+        });
+        
+        // Make functions globally available
+        window.goBack = goBack;
+        window.openTerms = openTerms;
+        window.createAccount = createAccount;
+    </script>
+</body>
+</html>
