@@ -1862,7 +1862,14 @@
                     isValid = false;
                 }
             }
-            
+            // Business Aadhaar validation (optional)
+const businessAadhaar = document.getElementById('businessAadhaar').value;
+if (businessAadhaar && businessAadhaar.trim() !== '') {
+    if (!validateAadhaar(businessAadhaar)) {
+        showError('businessAadhaar', 'Please enter a valid 12-digit Aadhaar number');
+        isValid = false;
+    }
+}
             // GSTIN validation (optional)
             if (selectedUserType === 'individual') {
                 const gstin = document.getElementById('gstin').value;
