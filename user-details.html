@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odelya - User Details</title>
+    
+    <!-- Firebase SDK Version 9 (Modular) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { 
+            getAuth, 
+            setPersistence,
+            browserLocalPersistence
+        } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+        import { 
+            getFirestore
+        } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+        
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+            authDomain: "odelya-user-data.firebaseapp.com",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.firebasestorage.app",
+            messagingSenderId: "590231118790",
+            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+            measurementId: "G-9SWTR9V32R"
+        };
+
+        try {
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+            
+            // Set persistence
+            setPersistence(auth, browserLocalPersistence).catch((error) => {
+                console.warn("Persistence warning:", error);
+            });
+            
+            // Make available globally
+            window.firebaseAuth = auth;
+            window.firebaseDb = db;
+            
+            console.log("✅ Firebase initialized successfully");
+        } catch (error) {
+            console.error("❌ Firebase initialization failed:", error);
+            alert("Firebase initialization error. Please check console.");
+        }
+    </script>
+    
+    <!-- Flatpickr for calendar -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .form-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .form-content {
+            padding: 40px;
+        }
+        
+        /* User Type Toggle */
+        .user-type-toggle {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0 40px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .toggle-container {
+            display: flex;
+            background: #f0f0f0;
+            border-radius: 50px;
+            padding: 5px;
+            width: 400px;
+            max-width: 100%;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .toggle-option {
+            flex: 1;
+            padding: 15px 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            color: #666;
+            border: 2px solid transparent;
+        }
+        
+        .toggle-option:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+        
+        .toggle-option.selected {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .toggle-warning {
+            text-align: center;
+            margin-top: 15px;
+            color: #f44336;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: none;
+        }
+        
+        /* Form disabled state */
+        .form-disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            user-select: none;
+        }
+        
+        .section-title {
+            color: #3a0ca3;
+            font-size: 1.5rem;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4361ee;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        @media (min-width: 1200px) {
+            .form-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input, .form-group select {
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .disabled-input {
+            background-color: #f5f5f5;
+            color: #666;
+            cursor: not-allowed;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #f44336;
+        }
+        
+        .form-footer {
+            text-align: center;
+            padding: 30px 0;
+            border-top: 2px solid #eee;
+        }
+        
+        .continue-btn {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .continue-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
+        }
+        
+        .continue-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+        
+        .continue-btn.enabled {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            opacity: 1;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .continue-btn.enabled:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
+        }
+        
+        .error-message {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .format-hint {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        .gstin-hint {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        .doi-hint {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-content {
+                padding: 20px;
+            }
+            
+            .form-header {
+                padding: 30px 20px;
+            }
+            
+            .back-btn {
+                position: relative;
+                left: 0;
+                top: 0;
+                transform: none;
+                margin-bottom: 15px;
+                display: inline-block;
+            }
+            
+            .form-header h1 {
+                margin-top: 10px;
+            }
+            
+            .toggle-container {
+                width: 100%;
+                flex-direction: column;
+                border-radius: 15px;
+            }
+            
+            .toggle-option {
+                border-radius: 10px;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <a href="https://www.odelya.online/cloud-storage.html" class="back-btn">
+                ← Back to Plans
+            </a>
+            <h1>User Details</h1>
+            <p>Select user type and fill details for Odelya Cloud Storage</p>
+        </div>
+        
+        <div class="form-content">
+            <!-- User Type Toggle Button -->
+            <div class="user-type-toggle">
+                <div class="toggle-container">
+                    <div class="toggle-option" id="individualToggle" onclick="selectUserType('individual')">
+                        Individual
+                    </div>
+                    <div class="toggle-option" id="businessToggle" onclick="selectUserType('business')">
+                        Business
+                    </div>
+                </div>
+            </div>
+            <div class="toggle-warning" id="toggleWarning">
+                Please select Individual or Business to activate the form
+            </div>
+            
+            <!-- Form Sections -->
+            <div id="formSections">
+                <h2 class="section-title" id="personalInfoTitle">Personal Information</h2>
+                <div class="form-grid" id="personalInfoGrid">
+                    <!-- Individual Form Fields -->
+                    <div class="form-group individual-field">
+                        <label for="userId" class="required">User ID</label>
+                        <input type="text" id="userId" readonly class="disabled-input" placeholder="Auto-generated">
+                    </div>
+                    
+                    <div class="form-group individual-field">
+                        <label for="fullName" class="required">Full Name</label>
+                        <input type="text" id="fullName" required placeholder="Enter your full name">
+                        <div class="error-message" id="fullNameError"></div>
+                    </div>
+                    
+                    <div class="form-group individual-field">
+                        <label for="email" class="required">Email ID</label>
+                        <input type="email" id="email" required placeholder="example@domain.com">
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+                    
+                    <div class="form-group individual-field">
+                        <label for="phone" class="required">Phone Number</label>
+                        <input type="tel" id="phone" required placeholder="10-digit mobile number" maxlength="10">
+                        <div class="error-message" id="phoneError"></div>
+                        <div class="format-hint">10 digits only</div>
+                    </div>
+                    
+                    <div class="form-group individual-field">
+                        <label for="dob" class="required">Date of Birth</label>
+                        <input type="text" id="dob" class="datepicker" placeholder="DD-MM-YYYY" required>
+                        <div class="error-message" id="dobError"></div>
+                    </div>
+                    
+                    <div class="form-group individual-field">
+                        <label for="aadhaar" class="required">Aadhaar Number</label>
+                        <input type="text" id="aadhaar" placeholder="12-digit Aadhaar" maxlength="12" required>
+                        <div class="error-message" id="aadhaarError"></div>
+                    </div>
+                    
+                    <div class="form-group individual-field">
+                        <label for="pan" class="required">PAN Number</label>
+                        <input type="text" id="pan" placeholder="ABCDE1234F" maxlength="10" required>
+                        <div class="error-message" id="panError"></div>
+                        <div class="format-hint">Format: 5 letters + 4 numbers + 1 letter</div>
+                    </div>
+                    
+                    <div class="form-group individual-field">
+                        <label for="gstin">GSTIN</label>
+                        <input type="text" id="gstin" placeholder="22ABCDE1234F1Z5" maxlength="15">
+                        <div class="error-message" id="gstinError"></div>
+                        <div class="gstin-hint">15 characters: 2 state code + 10 PAN + 3 entity + 1 checksum</div>
+                    </div>
+                    
+                    <!-- Business Form Fields -->
+                    <div class="form-group business-field" style="display: none;">
+                        <label for="businessUserId" class="required">User ID</label>
+                        <input type="text" id="businessUserId" readonly class="disabled-input" placeholder="Auto-generated">
+                    </div>
+                    
+                    <div class="form-group business-field" style="display: none;">
+                        <label for="businessName" class="required">Business Name</label>
+                        <input type="text" id="businessName" placeholder="Enter business name">
+                        <div class="error-message" id="businessNameError"></div>
+                    </div>
+                    
+                    <div class="form-group business-field" style="display: none;">
+                        <label for="businessEmail" class="required">Email ID</label>
+                        <input type="email" id="businessEmail" placeholder="business@domain.com">
+                        <div class="error-message" id="businessEmailError"></div>
+                    </div>
+                    
+                    <div class="form-group business-field" style="display: none;">
+                        <label for="businessPhone" class="required">Phone Number</label>
+                        <input type="tel" id="businessPhone" placeholder="10-digit mobile number" maxlength="10">
+                        <div class="error-message" id="businessPhoneError"></div>
+                        <div class="format-hint">10 digits only</div>
+                    </div>
+                    
+                    <div class="form-group business-field" style="display: none;">
+                        <label for="dateOfIncorporation" class="required">Date of Incorporation</label>
+                        <input type="text" id="dateOfIncorporation" class="datepicker" placeholder="DD-MM-YYYY">
+                        <div class="error-message" id="dateOfIncorporationError"></div>
+                        <div class="doi-hint">Date when business was incorporated</div>
+                    </div>
+
+                    <div class="form-group business-field" style="display: none;">
+                        <label for="businessAadhaar">Aadhaar Number</label>
+                        <input type="text" id="businessAadhaar" placeholder="12-digit Aadhaar (Proprietor)" maxlength="12">
+                        <div class="error-message" id="businessAadhaarError"></div>
+                        <div class="format-hint">12-digit Aadhaar of business proprietor/owner</div>
+                    </div>
+                    
+                    <div class="form-group business-field" style="display: none;">
+                        <label for="businessPan" class="required">PAN Number</label>
+                        <input type="text" id="businessPan" placeholder="ABCDE1234F" maxlength="10">
+                        <div class="error-message" id="businessPanError"></div>
+                        <div class="format-hint">Format: 5 letters + 4 numbers + 1 letter</div>
+                    </div>
+                    
+                    <div class="form-group business-field" style="display: none;">
+                        <label for="businessGstin">GSTIN</label>
+                        <input type="text" id="businessGstin" placeholder="22ABCDE1234F1Z5" maxlength="15">
+                        <div class="error-message" id="businessGstinError"></div>
+                        <div class="gstin-hint">15 characters: 2 state code + 10 PAN + 3 entity + 1 checksum</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-footer">
+            <button class="continue-btn" onclick="saveUserDetails()" id="continueBtn" disabled>Continue to Plan Details</button>
+            <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
+                Next: Plan Details
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let selectedUserType = null;
+        let userDetailsData = {};
+        let dobPicker, doiPicker;
+        
+        // User Type Selection Function
+        function selectUserType(type) {
+            selectedUserType = type;
+            
+            // Update toggle UI
+            const individualToggle = document.getElementById('individualToggle');
+            const businessToggle = document.getElementById('businessToggle');
+            const toggleWarning = document.getElementById('toggleWarning');
+            const formSections = document.getElementById('formSections');
+            const personalInfoTitle = document.getElementById('personalInfoTitle');
+            
+            if (type === 'individual') {
+                individualToggle.classList.add('selected');
+                businessToggle.classList.remove('selected');
+                
+                showIndividualFields();
+                personalInfoTitle.textContent = 'Personal Information';
+                formSections.classList.remove('form-disabled');
+                enableFormInputs(true);
+                toggleWarning.style.display = 'none';
+                
+                console.log('Individual selected');
+            } else if (type === 'business') {
+                individualToggle.classList.remove('selected');
+                businessToggle.classList.add('selected');
+                
+                showBusinessFields();
+                personalInfoTitle.textContent = 'Business Information';
+                formSections.classList.remove('form-disabled');
+                enableFormInputs(true);
+                toggleWarning.style.display = 'none';
+                
+                console.log('Business selected');
+            }
+            
+            updateContinueButton();
+        }
+        
+        // Show Individual Fields
+        function showIndividualFields() {
+            const individualFields = document.querySelectorAll('.individual-field');
+            individualFields.forEach(field => {
+                field.style.display = 'flex';
+            });
+            
+            const businessFields = document.querySelectorAll('.business-field');
+            businessFields.forEach(field => {
+                field.style.display = 'none';
+            });
+            
+            // Copy auto-generated values
+            const userId = document.getElementById('userId').value;
+            document.getElementById('businessUserId').value = userId;
+        }
+        
+        // Show Business Fields
+        function showBusinessFields() {
+            const businessFields = document.querySelectorAll('.business-field');
+            businessFields.forEach(field => {
+                field.style.display = 'flex';
+            });
+            
+            const individualFields = document.querySelectorAll('.individual-field');
+            individualFields.forEach(field => {
+                field.style.display = 'none';
+            });
+            
+            // Copy auto-generated values
+            const userId = document.getElementById('userId').value;
+            document.getElementById('businessUserId').value = userId;
+            
+            // Initialize Date of Incorporation date picker
+            if (!doiPicker) {
+                doiPicker = flatpickr("#dateOfIncorporation", {
+                    dateFormat: "d-m-Y",
+                    allowInput: true,
+                    maxDate: "today",
+                    onChange: function(selectedDates, dateStr, instance) {
+                        hideError('dateOfIncorporation');
+                        updateContinueButton();
+                    }
+                });
+            }
+        }
+        
+        // Enable/Disable Form Inputs
+        function enableFormInputs(enable) {
+            if (selectedUserType === 'individual') {
+                const individualInputs = document.querySelectorAll('.individual-field input, .individual-field select');
+                individualInputs.forEach(input => {
+                    if (input.classList.contains('disabled-input') && input.hasAttribute('readonly')) {
+                        return;
+                    }
+                    
+                    if (enable) {
+                        input.disabled = false;
+                        input.style.backgroundColor = '';
+                        input.style.cursor = 'text';
+                        
+                        if (input.id === 'dob') {
+                            input.disabled = false;
+                            input.style.backgroundColor = '';
+                        }
+                    } else {
+                        input.disabled = true;
+                        input.style.backgroundColor = '#f5f5f5';
+                        input.style.cursor = 'not-allowed';
+                        
+                        if (input.id === 'dob') {
+                            input.disabled = true;
+                            input.style.backgroundColor = '#f5f5f5';
+                        }
+                    }
+                });
+            } else if (selectedUserType === 'business') {
+                const businessInputs = document.querySelectorAll('.business-field input, .business-field select');
+                businessInputs.forEach(input => {
+                    if (input.classList.contains('disabled-input') && input.hasAttribute('readonly')) {
+                        return;
+                    }
+                    
+                    if (enable) {
+                        input.disabled = false;
+                        input.style.backgroundColor = '';
+                        input.style.cursor = 'text';
+                        
+                        if (input.id === 'dateOfIncorporation') {
+                            input.disabled = false;
+                            input.style.backgroundColor = '';
+                        }
+                    } else {
+                        input.disabled = true;
+                        input.style.backgroundColor = '#f5f5f5';
+                        input.style.cursor = 'not-allowed';
+                        
+                        if (input.id === 'dateOfIncorporation') {
+                            input.disabled = true;
+                            input.style.backgroundColor = '#f5f5f5';
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Generate User ID
+        function generateUserId() {
+            let userId = '';
+            const digits = '23456789';
+            
+            for (let i = 0; i < 6; i++) {
+                const randomIndex = Math.floor(Math.random() * digits.length);
+                userId += digits[randomIndex];
+            }
+            return userId;
+        }
+        
+        // Validate PAN format
+        function validatePAN(pan) {
+            const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+            return panRegex.test(pan);
+        }
+        
+        // Validate Aadhaar format
+        function validateAadhaar(aadhaar) {
+            return /^\d{12}$/.test(aadhaar);
+        }
+        
+        // Validate GSTIN format
+        function validateGSTIN(gstin) {
+            if (!gstin || gstin.trim() === '') return true;
+            
+            const gstinRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+            return gstinRegex.test(gstin.toUpperCase());
+        }
+        
+        // Show error message
+        function showError(fieldId, message) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            const fieldElement = document.getElementById(fieldId);
+            
+            if (errorDiv && fieldElement) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                fieldElement.style.borderColor = '#f44336';
+            }
+        }
+        
+        // Hide error message
+        function hideError(fieldId) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            const fieldElement = document.getElementById(fieldId);
+            
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+            
+            if (fieldElement) {
+                fieldElement.style.borderColor = '#e0e0e0';
+            }
+        }
+        
+        // Check form validity
+        function checkFormValidity() {
+            if (!selectedUserType) {
+                return false;
+            }
+            
+            if (selectedUserType === 'individual') {
+                const individualRequiredFields = [
+                    'fullName', 'email', 'phone', 'dob', 'aadhaar', 'pan'
+                ];
+                
+                for (const fieldId of individualRequiredFields) {
+                    const field = document.getElementById(fieldId);
+                    if (!field || !field.value.trim()) {
+                        return false;
+                    }
+                }
+                
+                // Validate formats
+                const email = document.getElementById('email').value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) return false;
+                
+                const phone = document.getElementById('phone').value;
+                if (!/^\d{10}$/.test(phone)) return false;
+                
+                const aadhaar = document.getElementById('aadhaar').value;
+                if (!validateAadhaar(aadhaar)) return false;
+                
+                const pan = document.getElementById('pan').value;
+                if (!validatePAN(pan.toUpperCase())) return false;
+                
+                const gstin = document.getElementById('gstin').value;
+                if (gstin && gstin.trim() !== '' && !validateGSTIN(gstin.toUpperCase())) {
+                    return false;
+                }
+                
+            } else if (selectedUserType === 'business') {
+                const businessRequiredFields = [
+                    'businessName', 'businessEmail', 'businessPhone', 'dateOfIncorporation', 'businessPan'
+                ];
+                
+                for (const fieldId of businessRequiredFields) {
+                    const field = document.getElementById(fieldId);
+                    if (!field || !field.value.trim()) {
+                        return false;
+                    }
+                }
+                
+                // Validate formats
+                const businessEmail = document.getElementById('businessEmail').value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(businessEmail)) return false;
+                
+                const businessPhone = document.getElementById('businessPhone').value;
+                if (!/^\d{10}$/.test(businessPhone)) return false;
+                
+                const businessPan = document.getElementById('businessPan').value;
+                if (!validatePAN(businessPan.toUpperCase())) return false;
+                
+                const businessGstin = document.getElementById('businessGstin').value;
+                if (businessGstin && businessGstin.trim() !== '' && !validateGSTIN(businessGstin.toUpperCase())) {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        // Update continue button
+        function updateContinueButton() {
+            const continueBtn = document.getElementById('continueBtn');
+            const isValid = checkFormValidity();
+            
+            if (isValid) {
+                continueBtn.disabled = false;
+                continueBtn.classList.add('enabled');
+            } else {
+                continueBtn.disabled = true;
+                continueBtn.classList.remove('enabled');
+            }
+        }
+        
+        // Save user details and proceed
+        function saveUserDetails() {
+            if (!validateForm()) {
+                return;
+            }
+            
+            // Collect user data
+            userDetailsData = {
+                userType: selectedUserType,
+                userId: document.getElementById('userId').value
+            };
+            
+            if (selectedUserType === 'individual') {
+                userDetailsData.fullName = document.getElementById('fullName').value;
+                userDetailsData.email = document.getElementById('email').value;
+                userDetailsData.phone = document.getElementById('phone').value;
+                userDetailsData.dob = document.getElementById('dob').value;
+                userDetailsData.aadhaar = document.getElementById('aadhaar').value;
+                userDetailsData.pan = document.getElementById('pan').value.toUpperCase();
+                userDetailsData.gstin = document.getElementById('gstin').value.toUpperCase() || null;
+            } else if (selectedUserType === 'business') {
+                userDetailsData.businessName = document.getElementById('businessName').value;
+                userDetailsData.email = document.getElementById('businessEmail').value;
+                userDetailsData.phone = document.getElementById('businessPhone').value;
+                userDetailsData.dateOfIncorporation = document.getElementById('dateOfIncorporation').value;
+                userDetailsData.aadhaar = document.getElementById('businessAadhaar').value || null;
+                userDetailsData.pan = document.getElementById('businessPan').value.toUpperCase();
+                userDetailsData.gstin = document.getElementById('businessGstin').value.toUpperCase() || null;
+            }
+            
+            // Save to session storage
+            sessionStorage.setItem('odelya_userDetails', JSON.stringify(userDetailsData));
+            
+            // Proceed to plan details page
+            window.location.href = 'plan-details.html';
+        }
+        
+        // Validate form
+        function validateForm() {
+            let isValid = true;
+            
+            if (!selectedUserType) {
+                const toggleWarning = document.getElementById('toggleWarning');
+                toggleWarning.style.display = 'block';
+                toggleWarning.textContent = 'Please select Individual or Business to continue';
+                return false;
+            }
+            
+            // Clear all errors
+            const fieldIds = [
+                'fullName', 'email', 'phone', 'dob', 'aadhaar', 'pan', 'gstin',
+                'businessName', 'businessEmail', 'businessPhone', 'dateOfIncorporation', 
+                'businessPan', 'businessGstin', 'businessAadhaar'
+            ];
+            
+            fieldIds.forEach(fieldId => {
+                hideError(fieldId);
+            });
+            
+            // Validate based on user type
+            if (selectedUserType === 'individual') {
+                const individualRequiredFields = [
+                    {id: 'fullName', name: 'Full Name'},
+                    {id: 'email', name: 'Email ID'},
+                    {id: 'phone', name: 'Phone Number'},
+                    {id: 'dob', name: 'Date of Birth'},
+                    {id: 'aadhaar', name: 'Aadhaar Number'},
+                    {id: 'pan', name: 'PAN Number'}
+                ];
+                
+                individualRequiredFields.forEach(field => {
+                    const value = document.getElementById(field.id).value.trim();
+                    if (!value) {
+                        showError(field.id, `${field.name} is required`);
+                        isValid = false;
+                    }
+                });
+                
+                // Email validation
+                const email = document.getElementById('email').value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (email && !emailRegex.test(email)) {
+                    showError('email', 'Please enter a valid email address');
+                    isValid = false;
+                }
+                
+                // Phone validation
+                const phone = document.getElementById('phone').value;
+                if (phone && !/^\d{10}$/.test(phone)) {
+                    showError('phone', 'Please enter a valid 10-digit phone number');
+                    isValid = false;
+                }
+                
+                // Aadhaar validation
+                const aadhaar = document.getElementById('aadhaar').value;
+                if (aadhaar && !validateAadhaar(aadhaar)) {
+                    showError('aadhaar', 'Please enter a valid 12-digit Aadhaar number');
+                    isValid = false;
+                }
+                
+                // PAN validation
+                const pan = document.getElementById('pan').value;
+                if (pan && !validatePAN(pan.toUpperCase())) {
+                    showError('pan', 'Invalid PAN format. Use: ABCDE1234F');
+                    isValid = false;
+                }
+                
+                // GSTIN validation (optional)
+                const gstin = document.getElementById('gstin').value;
+                if (gstin && gstin.trim() !== '' && !validateGSTIN(gstin.toUpperCase())) {
+                    showError('gstin', 'Invalid GSTIN format. Use: 22ABCDE1234F1Z5');
+                    isValid = false;
+                }
+                
+            } else if (selectedUserType === 'business') {
+                const businessRequiredFields = [
+                    {id: 'businessName', name: 'Business Name'},
+                    {id: 'businessEmail', name: 'Email ID'},
+                    {id: 'businessPhone', name: 'Phone Number'},
+                    {id: 'dateOfIncorporation', name: 'Date of Incorporation'},
+                    {id: 'businessPan', name: 'PAN Number'}
+                ];
+                
+                businessRequiredFields.forEach(field => {
+                    const value = document.getElementById(field.id).value.trim();
+                    if (!value) {
+                        showError(field.id, `${field.name} is required`);
+                        isValid = false;
+                    }
+                });
+                
+                // Email validation
+                const businessEmail = document.getElementById('businessEmail').value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (businessEmail && !emailRegex.test(businessEmail)) {
+                    showError('businessEmail', 'Please enter a valid email address');
+                    isValid = false;
+                }
+                
+                // Phone validation
+                const businessPhone = document.getElementById('businessPhone').value;
+                if (businessPhone && !/^\d{10}$/.test(businessPhone)) {
+                    showError('businessPhone', 'Please enter a valid 10-digit phone number');
+                    isValid = false;
+                }
+                
+                // PAN validation
+                const businessPan = document.getElementById('businessPan').value;
+                if (businessPan && !validatePAN(businessPan.toUpperCase())) {
+                    showError('businessPan', 'Invalid PAN format. Use: ABCDE1234F');
+                    isValid = false;
+                }
+                
+                // Business Aadhaar validation (optional)
+                const businessAadhaar = document.getElementById('businessAadhaar').value;
+                if (businessAadhaar && businessAadhaar.trim() !== '') {
+                    if (!validateAadhaar(businessAadhaar)) {
+                        showError('businessAadhaar', 'Please enter a valid 12-digit Aadhaar number');
+                        isValid = false;
+                    }
+                }
+                
+                // GSTIN validation (optional)
+                const businessGstin = document.getElementById('businessGstin').value;
+                if (businessGstin && businessGstin.trim() !== '' && !validateGSTIN(businessGstin.toUpperCase())) {
+                    showError('businessGstin', 'Invalid GSTIN format. Use: 22ABCDE1234F1Z5');
+                    isValid = false;
+                }
+            }
+            
+            return isValid;
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Individual field listeners
+            document.getElementById('phone').addEventListener('input', function(e) {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+                hideError('phone');
+                updateContinueButton();
+            });
+            
+            document.getElementById('aadhaar').addEventListener('input', function(e) {
+                this.value = this.value.replace(/\D/g, '').slice(0, 12);
+                hideError('aadhaar');
+                updateContinueButton();
+            });
+            
+            document.getElementById('pan').addEventListener('input', function(e) {
+                let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                value = value.slice(0, 10);
+                
+                let formatted = '';
+                for (let i = 0; i < value.length; i++) {
+                    if (i < 5) {
+                        formatted += /[A-Z]/.test(value[i]) ? value[i] : '';
+                    } else if (i < 9) {
+                        formatted += /[0-9]/.test(value[i]) ? value[i] : '';
+                    } else {
+                        formatted += /[A-Z]/.test(value[i]) ? value[i] : '';
+                    }
+                }
+                
+                this.value = formatted;
+                hideError('pan');
+                updateContinueButton();
+            });
+            
+            document.getElementById('gstin').addEventListener('input', function(e) {
+                let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                value = value.slice(0, 15);
+                this.value = value;
+                hideError('gstin');
+                updateContinueButton();
+            });
+            
+            // Business field listeners
+            document.getElementById('businessPhone').addEventListener('input', function(e) {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+                hideError('businessPhone');
+                updateContinueButton();
+            });
+
+            document.getElementById('businessAadhaar').addEventListener('input', function(e) {
+                this.value = this.value.replace(/\D/g, '').slice(0, 12);
+                hideError('businessAadhaar');
+                updateContinueButton();
+            });
+            
+            document.getElementById('businessPan').addEventListener('input', function(e) {
+                let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                value = value.slice(0, 10);
+                
+                let formatted = '';
+                for (let i = 0; i < value.length; i++) {
+                    if (i < 5) {
+                        formatted += /[A-Z]/.test(value[i]) ? value[i] : '';
+                    } else if (i < 9) {
+                        formatted += /[0-9]/.test(value[i]) ? value[i] : '';
+                    } else {
+                        formatted += /[A-Z]/.test(value[i]) ? value[i] : '';
+                    }
+                }
+                
+                this.value = formatted;
+                hideError('businessPan');
+                updateContinueButton();
+            });
+            
+            document.getElementById('businessGstin').addEventListener('input', function(e) {
+                let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                value = value.slice(0, 15);
+                this.value = value;
+                hideError('businessGstin');
+                updateContinueButton();
+            });
+            
+            // Individual field input listeners
+            document.getElementById('fullName').addEventListener('input', () => {
+                hideError('fullName');
+                updateContinueButton();
+            });
+            
+            document.getElementById('email').addEventListener('input', () => {
+                hideError('email');
+                updateContinueButton();
+            });
+            
+            document.getElementById('dob').addEventListener('input', function(e) {
+                hideError('dob');
+                updateContinueButton();
+            });
+            
+            // Business field input listeners
+            document.getElementById('businessName').addEventListener('input', () => {
+                hideError('businessName');
+                updateContinueButton();
+            });
+            
+            document.getElementById('businessEmail').addEventListener('input', () => {
+                hideError('businessEmail');
+                updateContinueButton();
+            });
+            
+            document.getElementById('dateOfIncorporation').addEventListener('input', function(e) {
+                hideError('dateOfIncorporation');
+                updateContinueButton();
+            });
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('User Details Page Loaded');
+            
+            // Initially disable form sections
+            const formSections = document.getElementById('formSections');
+            formSections.classList.add('form-disabled');
+            enableFormInputs(false);
+            
+            // Show warning message
+            const toggleWarning = document.getElementById('toggleWarning');
+            toggleWarning.style.display = 'block';
+            
+            // Initialize date pickers
+            dobPicker = flatpickr("#dob", {
+                dateFormat: "d-m-Y",
+                allowInput: true,
+                minDate: "01-01-1900",
+                maxDate: "today",
+                onChange: function(selectedDates, dateStr, instance) {
+                    hideError('dob');
+                    updateContinueButton();
+                }
+            });
+            
+            // Generate user ID
+            const userId = generateUserId();
+            document.getElementById('userId').value = userId;
+            document.getElementById('businessUserId').value = userId;
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Initial button state
+            updateContinueButton();
+        });
+        
+        // Make functions globally available
+        window.selectUserType = selectUserType;
+        window.saveUserDetails = saveUserDetails;
+    </script>
+</body>
+</html>
