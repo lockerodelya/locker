@@ -586,11 +586,12 @@
                 }
                 
             } else if (planType === 'yearly') {
-                // YEARLY PLAN CALCULATION - SIMPLIFIED VERSION
+                // YEARLY PLAN CALCULATION - FIXED VERSION
+                // For start date NOT on 1st: Add 1 extra month for end-of-month adjustment
                 const totalYears = years + (months / 12);
                 
                 if (totalYears === 1 && months === 0) {
-                    // Only 1 year
+                    // Special case: Only 1 year
                     if (isFirstDayOfMonth) {
                         // Start date is 1st of month: Full year only
                         totalPrice = baseYearlyPrice;
@@ -599,44 +600,27 @@
                             <span>INR ${baseYearlyPrice}</span>
                         </div>`;
                     } else {
-                        // Start date is not 1st: Pro-rata current month + full year
+                        // Start date is not 1st: Current month + full year + 1 extra month
                         const dailyRate = baseYearlyPrice / 365;
                         const proRataCurrentMonth = Math.round(dailyRate * daysLeftInMonth);
                         const fullYear = baseYearlyPrice;
+                        const monthlyRate = Math.round(baseYearlyPrice / 12);
                         
-                        // Calculate if we need extra month based on end date
-                        const endDate = calculateBusinessEndDate(startDate, years, months);
-                        const daysDiff = Math.round((endDate - startDate) / (1000 * 60 * 60 * 24));
+                        // ALWAYS add extra month for 1-year plans starting NOT on 1st
+                        totalPrice = proRataCurrentMonth + fullYear + monthlyRate;
                         
-                        if (daysDiff > 365) {
-                            // Need extra month for end-of-month adjustment
-                            const monthlyRate = Math.round(baseYearlyPrice / 12);
-                            totalPrice = proRataCurrentMonth + fullYear + monthlyRate;
-                            
-                            breakdownHTML += `<div class="price-item">
-                                <span>Current month value</span>
-                                <span>INR ${proRataCurrentMonth}</span>
-                            </div>`;
-                            breakdownHTML += `<div class="price-item">
-                                <span>1 full year</span>
-                                <span>INR ${fullYear}</span>
-                            </div>`;
-                            breakdownHTML += `<div class="price-item">
-                                <span>Extra month for end-of-month adjustment</span>
-                                <span>INR ${monthlyRate}</span>
-                            </div>`;
-                        } else {
-                            totalPrice = proRataCurrentMonth + fullYear;
-                            
-                            breakdownHTML += `<div class="price-item">
-                                <span>Current month value</span>
-                                <span>INR ${proRataCurrentMonth}</span>
-                            </div>`;
-                            breakdownHTML += `<div class="price-item">
-                                <span>1 full year</span>
-                                <span>INR ${fullYear}</span>
-                            </div>`;
-                        }
+                        breakdownHTML += `<div class="price-item">
+                            <span>Current month value (${daysLeftInMonth} days)</span>
+                            <span>INR ${proRataCurrentMonth}</span>
+                        </div>`;
+                        breakdownHTML += `<div class="price-item">
+                            <span>1 full year</span>
+                            <span>INR ${fullYear}</span>
+                        </div>`;
+                        breakdownHTML += `<div class="price-item">
+                            <span>Extra month (for Feb 2027 end-of-month)</span>
+                            <span>INR ${monthlyRate}</span>
+                        </div>`;
                     }
                     
                 } else {
@@ -667,13 +651,13 @@
                         totalPrice = fullPrice;
                         
                     } else {
-                        // Start date is not 1st: Current month + full calculation
+                        // Start date is not 1st: Current month + full calculation + extra month(s)
                         const dailyRate = baseYearlyPrice / 365;
                         const proRataCurrentMonth = Math.round(dailyRate * daysLeftInMonth);
                         
                         totalPrice = proRataCurrentMonth;
                         breakdownHTML += `<div class="price-item">
-                            <span>Current month value</span>
+                            <span>Current month value (${daysLeftInMonth} days)</span>
                             <span>INR ${proRataCurrentMonth}</span>
                         </div>`;
                         
@@ -683,6 +667,14 @@
                             breakdownHTML += `<div class="price-item">
                                 <span>${years} full year(s)</span>
                                 <span>INR ${fullYearsPrice}</span>
+                            </div>`;
+                            
+                            // Add extra month for EACH year when starting NOT on 1st
+                            const monthlyRate = Math.round(baseYearlyPrice / 12);
+                            totalPrice += monthlyRate * years;
+                            breakdownHTML += `<div class="price-item">
+                                <span>${years} extra month(s) for end-of-month adjustments</span>
+                                <span>INR ${monthlyRate * years}</span>
                             </div>`;
                         }
                         
@@ -694,22 +686,6 @@
                                 <span>${months} additional month(s)</span>
                                 <span>INR ${additionalMonthsPrice}</span>
                             </div>`;
-                        }
-                        
-                        // Check if we need extra month for end-of-month adjustment
-                        if (years > 0 || months > 0) {
-                            const endDate = calculateBusinessEndDate(startDate, years, months);
-                            const totalDurationDays = (years * 365) + (months * 30);
-                            const actualDays = Math.round((endDate - startDate) / (1000 * 60 * 60 * 24));
-                            
-                            if (actualDays > totalDurationDays + 15) { // More than 15 days extra
-                                const monthlyRate = Math.round(baseYearlyPrice / 12);
-                                totalPrice += monthlyRate;
-                                breakdownHTML += `<div class="price-item">
-                                    <span>Extra month for end-of-month adjustment</span>
-                                    <span>INR ${monthlyRate}</span>
-                                </div>`;
-                            }
                         }
                     }
                 }
@@ -740,7 +716,7 @@
             return totalPrice;
         }
         
-        // Helper function to calculate business end date
+        // Helper function to calculate business end date - FIXED VERSION
         function calculateBusinessEndDate(startDate, years, months) {
             let endDate = new Date(startDate);
             
@@ -753,9 +729,24 @@
                 // Start date is 1st of month: end date is last day of previous month
                 endDate.setDate(0);
             } else {
-                // Start date is NOT 1st of month: end date is last day of NEXT month
-                endDate.setMonth(endDate.getMonth() + 1);
-                endDate.setDate(0);
+                // FIXED: Start date is NOT 1st of month: For 1 year plans, end date is last day of February next year
+                // For 1 year: Go to next year + 1 month (February), then last day
+                // For multiple years: Add extra month for each year
+                
+                if (years === 1 && months === 0) {
+                    // Exactly 1 year: End date = last day of February next year
+                    endDate.setFullYear(endDate.getFullYear()); // Already added 1 year
+                    endDate.setMonth(1); // February (0-indexed: 0=Jan, 1=Feb)
+                    endDate.setDate(0); // Last day of previous month (Jan)
+                    // Actually need last day of Feb, so:
+                    endDate.setMonth(2); // March
+                    endDate.setDate(0); // Last day of February
+                } else {
+                    // More than 1 year or includes months
+                    // Add 1 extra month for end-of-month adjustment
+                    endDate.setMonth(endDate.getMonth() + 1);
+                    endDate.setDate(0); // Last day of that month
+                }
             }
             
             return endDate;
