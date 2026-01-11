@@ -239,6 +239,7 @@
             border-bottom: none;
             font-weight: bold;
             color: #0d47a1;
+            font-size: 1.1rem;
         }
         
         /* Payment important rows */
@@ -532,9 +533,9 @@
                 
             } else if (planType === 'yearly') {
                 // YEARLY PLAN CALCULATION with pro-rata
-                let totalPrice = 0;
+                const totalYears = years + (months / 12);
                 
-                if (years === 1 && months === 0) {
+                if (totalYears === 1 && months === 0) {
                     // Special case: Only 1 year
                     // Pro-rata for remaining days in current month + full year
                     const dailyRate = baseYearlyPrice / 365;
@@ -554,39 +555,34 @@
                     
                 } else {
                     // Multiple years/months: Complex calculation
+                    let remainingMonths = months;
                     let fullYears = years;
-                    let additionalMonths = months;
                     
-                    // If we have any months, they become additional to years
-                    if (additionalMonths > 0) {
-                        fullYears += Math.floor(additionalMonths / 12);
-                        additionalMonths = additionalMonths % 12;
-                    }
-                    
+                    // If we have any months beyond years, handle them
                     const dailyRate = baseYearlyPrice / 365;
                     const proRataCurrentMonth = Math.round(dailyRate * daysLeftInMonth);
                     
                     totalPrice = proRataCurrentMonth;
+                    breakdownHTML += `<div class="price-item">
+                        <span>Pro-rata for ${daysLeftInMonth} days in starting month (${dailyRate.toFixed(2)}/day)</span>
+                        <span>INR ${proRataCurrentMonth}</span>
+                    </div>`;
                     
                     if (fullYears > 0) {
                         const fullYearsPrice = baseYearlyPrice * fullYears;
                         totalPrice += fullYearsPrice;
-                        breakdownHTML += `<div class="price-item">
-                            <span>Pro-rata for ${daysLeftInMonth} days in starting month (${dailyRate.toFixed(2)}/day)</span>
-                            <span>INR ${proRataCurrentMonth}</span>
-                        </div>`;
                         breakdownHTML += `<div class="price-item">
                             <span>${fullYears} full year(s)</span>
                             <span>INR ${fullYearsPrice}</span>
                         </div>`;
                     }
                     
-                    if (additionalMonths > 0) {
+                    if (remainingMonths > 0) {
                         const monthlyRate = Math.round(baseYearlyPrice / 12);
-                        const additionalMonthsPrice = monthlyRate * additionalMonths;
+                        const additionalMonthsPrice = monthlyRate * remainingMonths;
                         totalPrice += additionalMonthsPrice;
                         breakdownHTML += `<div class="price-item">
-                            <span>${additionalMonths} additional month(s)</span>
+                            <span>${remainingMonths} additional month(s)</span>
                             <span>INR ${additionalMonthsPrice}</span>
                         </div>`;
                     }
@@ -607,13 +603,13 @@
                 const priceBreakdown = document.getElementById('priceBreakdown');
                 priceBreakdown.innerHTML = breakdownHTML;
                 priceBreakdown.style.display = 'block';
+                
+                console.log('Price breakdown shown:', totalPrice);
             } else {
                 document.getElementById('planValue').value = 'INR 0';
                 document.getElementById('priceBreakdown').style.display = 'none';
+                console.log('No price to show');
             }
-            
-            // Recalculate end date when duration changes
-            calculateEndDate();
             
             // Update continue button
             updateContinueButton();
@@ -649,18 +645,27 @@
             const startDate = new Date(year, month - 1, day);
             
             console.log('Start Date:', startDate);
+            console.log('Start Day:', day);
             console.log('Years:', years, 'Months:', months);
             
-            // Calculate end date: Start date + duration - 1 day, then go to end of month
+            // Calculate end date
             let endDate = new Date(startDate);
             
             // Add years and months
             endDate.setFullYear(endDate.getFullYear() + years);
             endDate.setMonth(endDate.getMonth() + months);
             
-            // Go to the end of the month
-            endDate.setMonth(endDate.getMonth() + 1); // Move to next month
-            endDate.setDate(0); // Set to last day of previous month (end of current month)
+            // Fix for 1st of the month: End date should be last day of the same month
+            if (day === 1 && months === 0 && years === 0) {
+                // If start date is 1st and duration is 0 years, 0 months (but actually 1 month from default)
+                // Just go to end of current month
+                endDate.setMonth(endDate.getMonth() + 1);
+                endDate.setDate(0);
+            } else {
+                // For other cases: Go to end of the final month
+                endDate.setMonth(endDate.getMonth() + 1);
+                endDate.setDate(0);
+            }
             
             console.log('Calculated End Date:', endDate);
             
