@@ -1093,14 +1093,15 @@
                 html += createField('PAN Number', 'pan', user.pan, 'text');
                 html += createField('GSTIN', 'gstin', user.gstin, 'text');
             } else if (userType === 'business') {
-                html += createField('Business Name', 'businessName', user.businessName);
-                html += createField('Email', 'email', user.email, 'email');
-                html += createField('Phone', 'phone', user.phone, 'tel');
-                html += createField('Date of Incorporation', 'dateOfIncorporation', user.dateOfIncorporation, 'text', true);
-                // STABLE FIELDS - PAN, GSTIN (no clear option)
-                html += createField('PAN Number', 'pan', user.pan, 'text');
-                html += createField('GSTIN', 'gstin', user.gstin, 'text');
-            }
+    html += createField('Business Name', 'businessName', user.businessName);
+    html += createField('Email', 'email', user.email, 'email');
+    html += createField('Phone', 'phone', user.phone, 'tel');
+    html += createField('Date of Incorporation', 'dateOfIncorporation', user.dateOfIncorporation, 'text', true);
+    // STABLE FIELDS - Aadhaar (only for view), PAN, GSTIN (no clear option)
+    html += createField('Aadhaar Number', 'aadhaar', user.aadhaar, 'text');
+    html += createField('PAN Number', 'pan', user.pan, 'text');
+    html += createField('GSTIN', 'gstin', user.gstin, 'text');
+}
             
             html += createField('Username', 'username', user.username);
             html += createField('Password', 'password', user.password);
@@ -1241,13 +1242,14 @@
                 updates.pan = document.getElementById('edit_pan')?.value || null;
                 updates.gstin = document.getElementById('edit_gstin')?.value || null;
             } else if (userType === 'business') {
-                updates.businessName = document.getElementById('edit_businessName')?.value || '';
-                updates.email = document.getElementById('edit_email')?.value || '';
-                updates.phone = document.getElementById('edit_phone')?.value || '';
-                updates.dateOfIncorporation = document.getElementById('edit_dateOfIncorporation')?.value || null;
-                updates.pan = document.getElementById('edit_pan')?.value || null;
-                updates.gstin = document.getElementById('edit_gstin')?.value || null;
-            }
+    updates.businessName = document.getElementById('edit_businessName')?.value || '';
+    updates.email = document.getElementById('edit_email')?.value || '';
+    updates.phone = document.getElementById('edit_phone')?.value || '';
+    updates.dateOfIncorporation = document.getElementById('edit_dateOfIncorporation')?.value || null;
+    updates.aadhaar = document.getElementById('edit_aadhaar')?.value || null;
+    updates.pan = document.getElementById('edit_pan')?.value || null;
+    updates.gstin = document.getElementById('edit_gstin')?.value || null;
+}
             
             Object.keys(updates).forEach(key => {
                 if (updates[key] === '' || updates[key] === null) {
@@ -1505,6 +1507,7 @@
                         {label: 'Email', value: currentUserData.email || 'N/A'},
                         {label: 'Phone', value: currentUserData.phone || 'N/A'},
                         {label: 'Date of Incorp.', value: currentUserData.dateOfIncorporation || 'N/A'},
+                        {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
                         {label: 'PAN', value: currentUserData.pan || 'N/A'},
                         {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
                         {label: 'Username', value: currentUserData.username || 'N/A'},
