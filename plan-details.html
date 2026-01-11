@@ -334,8 +334,8 @@
 <body>
     <div class="container">
         <div class="form-header">
-            <a href="javascript:void(0)" class="back-btn" onclick="goBack()">
-                ← Back to User Details
+            <a href="cloud-storage.html" class="back-btn">
+                ← Back to Change Plan
             </a>
             <h1>Plan Details</h1>
             <p>Configure your storage plan and payment details</p>
@@ -347,13 +347,7 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label for="planName" class="required">Plan Name</label>
-                    <select id="planName" required>
-                        <option value="">Select Plan Type</option>
-                        <option value="Secure Cloud Storage">Secure Cloud Storage</option>
-                        <option value="Event Storage">Event Storage</option>
-                        <option value="Special Purpose Storage">Special Purpose Storage</option>
-                    </select>
-                    <div class="error-message" id="planNameError"></div>
+                    <input type="text" id="planName" readonly class="disabled-input" value="Secure Cloud Storage">
                 </div>
                 
                 <div class="form-group">
@@ -365,15 +359,16 @@
                     <label class="required">Plan Duration</label>
                     <div class="duration-inputs">
                         <div class="duration-box">
-                            <input type="number" id="durationYears" min="0" max="10" placeholder="Years">
+                            <input type="number" id="durationYears" min="0" max="10" value="0" placeholder="Years">
                             <span>Years</span>
                         </div>
                         <div class="duration-box">
-                            <input type="number" id="durationMonths" min="0" max="11" placeholder="Months">
+                            <input type="number" id="durationMonths" min="0" max="11" value="0" placeholder="Months">
                             <span>Months</span>
                         </div>
                     </div>
                     <div class="error-message" id="durationError"></div>
+                    <div class="format-hint">Enter duration in years and months (e.g., 1 year 2 months)</div>
                 </div>
                 
                 <div class="form-group">
@@ -386,7 +381,7 @@
                 <div class="form-group">
                     <label for="planEndDate" class="required">Plan End Date</label>
                     <input type="text" id="planEndDate" readonly class="disabled-input" placeholder="Auto-calculated">
-                    <div class="format-hint">Based on start date and duration</div>
+                    <div class="format-hint">Based on start date and duration (end of month)</div>
                 </div>
                 
                 <div class="form-group payment-important">
@@ -425,9 +420,9 @@
         </div>
         
         <div class="form-footer">
-            <button class="continue-btn" onclick="savePlanDetails()" id="continueBtn" disabled>Continue to Account Creation</button>
+            <button class="continue-btn" onclick="savePlanDetails()" id="continueBtn" disabled>Continue</button>
             <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
-                Next: Account Creation
+                Next: User Details
             </p>
         </div>
     </div>
@@ -438,25 +433,9 @@
         let baseMonthlyPrice = 0;
         let baseYearlyPrice = 0;
         let originalPlanValue = '';
-        let userDetailsData = {};
+        let originalPlanName = '';
+        let originalPlanSize = '';
         let startDatePicker;
-        
-        // Load user details from session storage
-        function loadUserDetails() {
-            const userData = sessionStorage.getItem('odelya_userDetails');
-            if (userData) {
-                userDetailsData = JSON.parse(userData);
-                console.log('User details loaded:', userDetailsData);
-            } else {
-                alert('No user details found. Please go back and fill user details first.');
-                window.location.href = 'user-details.html';
-            }
-        }
-        
-        // Go back to user details
-        function goBack() {
-            window.location.href = 'user-details.html';
-        }
         
         // Auto-fill plan details from URL
         function autoFillPlanDetails() {
@@ -476,59 +455,16 @@
                 period: planPeriod
             });
             
-            // Store original plan value
+            // Store original values
             originalPlanValue = planPrice;
+            originalPlanName = planNameFromUrl;
+            originalPlanSize = planSize;
             
-            // Determine if monthly or yearly plan - using the period parameter
-            if (planPeriod === 'monthly') {
-                planType = 'monthly';
-                baseMonthlyPrice = parseFloat(planPrice) || 0;
-                baseYearlyPrice = 0;
-                
-                console.log('Monthly plan detected. Price:', baseMonthlyPrice);
-                
-                // Monthly plan: Disable yearly input
-                const yearsInput = document.getElementById('durationYears');
-                yearsInput.disabled = true;
-                yearsInput.style.backgroundColor = '#f5f5f5';
-                yearsInput.placeholder = 'N/A for monthly';
-                
-                // Set default: 1 month
-                document.getElementById('durationMonths').value = 1;
-                
-            } else if (planPeriod === 'yearly') {
-                planType = 'yearly';
-                baseYearlyPrice = parseFloat(planPrice) || 0;
-                baseMonthlyPrice = Math.round(baseYearlyPrice / 12);
-                
-                console.log('Yearly plan detected. Price:', baseYearlyPrice);
-                
-                // Yearly plan: All inputs enabled
-                const yearsInput = document.getElementById('durationYears');
-                yearsInput.disabled = false;
-                yearsInput.style.backgroundColor = '';
-                yearsInput.placeholder = 'Years';
-                
-                // Set default: 1 year
-                document.getElementById('durationYears').value = 1;
-            } else {
-                // Fallback: Try to determine from plan name
-                const planNameLower = planNameFromUrl.toLowerCase();
-                if (planNameLower.includes('monthly') || planNameLower.includes('per month')) {
-                    planType = 'monthly';
-                    baseMonthlyPrice = parseFloat(planPrice) || 0;
-                    baseYearlyPrice = 0;
-                } else {
-                    planType = 'yearly';
-                    baseYearlyPrice = parseFloat(planPrice) || 0;
-                    baseMonthlyPrice = Math.round(baseYearlyPrice / 12);
-                }
-                console.log('Plan type determined from name:', planType);
-            }
+            // Fill plan name - ALWAYS "Secure Cloud Storage" but show original in hint
+            document.getElementById('planName').value = 'Secure Cloud Storage';
+            document.getElementById('planName').title = `Selected from: ${planNameFromUrl}`;
             
-            console.log('Final plan type:', planType);
-            
-            // Fill plan details - AUTO-FILL PLAN SIZE
+            // Fill plan size
             if (planSize) {
                 document.getElementById('planSize').value = planSize + ' GB';
             } else {
@@ -539,61 +475,50 @@
                 }
             }
             
-            // Fill plan price
-            if (planPrice) {
-                document.getElementById('planValue').value = 'INR ' + planPrice;
+            // Determine plan type and set initial duration
+            if (planPeriod === 'monthly') {
+                planType = 'monthly';
+                baseMonthlyPrice = parseFloat(planPrice) || 0;
+                baseYearlyPrice = 0;
+                // Set default: 1 month for monthly plans
+                document.getElementById('durationMonths').value = 1;
+                document.getElementById('durationYears').value = 0;
+                
+            } else if (planPeriod === 'yearly') {
+                planType = 'yearly';
+                baseYearlyPrice = parseFloat(planPrice) || 0;
+                baseMonthlyPrice = Math.round(baseYearlyPrice / 12);
+                // Set default: 1 year for yearly plans
+                document.getElementById('durationYears').value = 1;
+                document.getElementById('durationMonths').value = 0;
             } else {
-                document.getElementById('planValue').value = 'INR 0';
-            }
-            
-            // AUTO-SELECT PLAN NAME based on URL parameter
-            const planSelect = document.getElementById('planName');
-            
-            // Check if coming from cloud-storage.html page
-            const referrer = document.referrer;
-            if (referrer.includes('cloud-storage.html')) {
-                // Force "Secure Cloud Storage" if coming from cloud-storage.html
-                planSelect.value = 'Secure Cloud Storage';
-                planSelect.disabled = true;
-                planSelect.style.backgroundColor = '#f5f5f5';
-                console.log('Coming from cloud-storage.html, plan name locked to Secure Cloud Storage');
-            } else {
-                // Extract plan name from URL parameter
-                if (planNameFromUrl) {
-                    // Remove size and period from plan name
-                    let cleanPlanName = planNameFromUrl
-                        .replace(/\d+\s*GB/i, '')  // Remove size
-                        .replace(/Monthly/i, '')   // Remove "Monthly"
-                        .replace(/Yearly/i, '')    // Remove "Yearly"
-                        .replace(/Per\s+Month/i, '') // Remove "Per Month"
-                        .replace(/Per\s+Year/i, '')  // Remove "Per Year"
-                        .trim();
-                    
-                    console.log('Cleaned plan name:', cleanPlanName);
-                    
-                    // Set the plan name
-                    if (cleanPlanName.includes('Secure') || cleanPlanName.includes('Cloud')) {
-                        planSelect.value = 'Secure Cloud Storage';
-                    } else if (cleanPlanName.includes('Event')) {
-                        planSelect.value = 'Event Storage';
-                    } else if (cleanPlanName.includes('Special')) {
-                        planSelect.value = 'Special Purpose Storage';
-                    } else {
-                        planSelect.value = 'Secure Cloud Storage';
-                    }
+                // Determine from plan name
+                if (planNameFromUrl.toLowerCase().includes('monthly')) {
+                    planType = 'monthly';
+                    baseMonthlyPrice = parseFloat(planPrice) || 0;
+                    document.getElementById('durationMonths').value = 1;
+                    document.getElementById('durationYears').value = 0;
+                } else {
+                    planType = 'yearly';
+                    baseYearlyPrice = parseFloat(planPrice) || 0;
+                    baseMonthlyPrice = Math.round(baseYearlyPrice / 12);
+                    document.getElementById('durationYears').value = 1;
+                    document.getElementById('durationMonths').value = 0;
                 }
             }
             
-            // Leave plan start date blank for manual selection
-            document.getElementById('planStartDate').value = '';
-            document.getElementById('planStartDate').placeholder = 'DD-MM-YYYY (Select Date)';
+            console.log('Plan Type:', planType);
+            console.log('Base Monthly Price:', baseMonthlyPrice);
+            console.log('Base Yearly Price:', baseYearlyPrice);
             
-            // Calculate initial price and end date
+            // Calculate initial price
             calculatePlanPrice();
-            calculateEndDate();
             
-            // Update payment tags
+            // Initialize payment tags
             updatePaymentTags();
+            
+            // Enable continue button if all required data is present
+            updateContinueButton();
         }
         
         // Calculate plan price based on duration
@@ -601,58 +526,69 @@
             const years = parseInt(document.getElementById('durationYears').value) || 0;
             const months = parseInt(document.getElementById('durationMonths').value) || 0;
             
+            console.log('Calculating price for:', years, 'years,', months, 'months');
+            console.log('Plan Type:', planType);
+            console.log('Base Monthly Price:', baseMonthlyPrice);
+            console.log('Base Yearly Price:', baseYearlyPrice);
+            
             let totalPrice = 0;
             let breakdownHTML = '';
             
             if (planType === 'monthly') {
-                // MONTHLY PLAN CALCULATION - Only months now
-                const monthsPrice = months * baseMonthlyPrice;
-                if (months > 0) {
+                // MONTHLY PLAN CALCULATION
+                const totalMonths = (years * 12) + months;
+                const monthsPrice = totalMonths * baseMonthlyPrice;
+                
+                if (totalMonths > 0) {
                     breakdownHTML += `<div class="price-item">
-                        <span>${months} month(s) × INR ${baseMonthlyPrice}</span>
+                        <span>${totalMonths} month(s) × INR ${baseMonthlyPrice}</span>
                         <span>INR ${monthsPrice}</span>
                     </div>`;
-                    totalPrice += monthsPrice;
+                    totalPrice = monthsPrice;
                 }
                 
             } else if (planType === 'yearly') {
                 // YEARLY PLAN CALCULATION
-                const yearsPrice = years * baseYearlyPrice;
+                let yearsPrice = 0;
+                let monthsPrice = 0;
+                
                 if (years > 0) {
+                    yearsPrice = years * baseYearlyPrice;
                     breakdownHTML += `<div class="price-item">
                         <span>${years} year(s) × INR ${baseYearlyPrice}</span>
                         <span>INR ${yearsPrice}</span>
                     </div>`;
-                    totalPrice += yearsPrice;
                 }
                 
-                const monthlyRate = baseYearlyPrice / 12;
-                const monthsPrice = Math.round(months * monthlyRate);
                 if (months > 0) {
+                    const monthlyRate = Math.round(baseYearlyPrice / 12);
+                    monthsPrice = months * monthlyRate;
                     breakdownHTML += `<div class="price-item">
-                        <span>${months} month(s) × INR ${monthlyRate.toFixed(2)}/month</span>
+                        <span>${months} month(s) × INR ${monthlyRate}</span>
                         <span>INR ${monthsPrice}</span>
                     </div>`;
-                    totalPrice += monthsPrice;
                 }
+                
+                totalPrice = yearsPrice + monthsPrice;
             }
             
             // Show total
-            breakdownHTML += `<div class="price-item">
-                <span>Total Payable</span>
-                <span>INR ${totalPrice}</span>
-            </div>`;
-            
-            // Update plan value display
-            document.getElementById('planValue').value = 'INR ' + totalPrice;
-            
-            // Show/hide price breakdown
-            const priceBreakdown = document.getElementById('priceBreakdown');
-            if (years > 0 || months > 0) {
+            if (totalPrice > 0) {
+                breakdownHTML += `<div class="price-item">
+                    <span>Total Payable</span>
+                    <span>INR ${totalPrice}</span>
+                </div>`;
+                
+                // Update plan value display
+                document.getElementById('planValue').value = 'INR ' + totalPrice.toLocaleString('en-IN');
+                
+                // Show price breakdown
+                const priceBreakdown = document.getElementById('priceBreakdown');
                 priceBreakdown.innerHTML = breakdownHTML;
                 priceBreakdown.style.display = 'block';
             } else {
-                priceBreakdown.style.display = 'none';
+                document.getElementById('planValue').value = 'INR 0';
+                document.getElementById('priceBreakdown').style.display = 'none';
             }
             
             // Recalculate end date when duration changes
@@ -664,10 +600,12 @@
             // Update continue button
             updateContinueButton();
             
+            console.log('Total Price Calculated:', totalPrice);
+            
             return totalPrice;
         }
         
-        // Calculate end date based on duration AND start date
+        // Calculate end date based on duration AND start date (end of month calculation)
         function calculateEndDate() {
             const startDateInput = document.getElementById('planStartDate').value;
             
@@ -694,44 +632,27 @@
             const [day, month, year] = startDateInput.split('-').map(Number);
             const startDate = new Date(year, month - 1, day);
             
-            // NEW LOGIC: Calculate end date based on months to month end
+            console.log('Start Date:', startDate);
+            console.log('Years:', years, 'Months:', months);
+            
+            // Calculate end date: Start date + duration - 1 day, then go to end of month
             let endDate = new Date(startDate);
             
-            if (planType === 'monthly') {
-                // For monthly plans: Start to end of current month + additional months
-                
-                // First, move to the end of the current month
-                endDate.setMonth(endDate.getMonth() + 1); // Move to next month
-                endDate.setDate(0); // Set to last day of previous month (end of current month)
-                
-                // Then add the specified number of months
-                if (months > 1) {
-                    endDate.setMonth(endDate.getMonth() + (months - 1));
-                    // Ensure it's the last day of the month
-                    endDate.setMonth(endDate.getMonth() + 1);
-                    endDate.setDate(0);
-                }
-                
-            } else if (planType === 'yearly') {
-                // For yearly plans: Start to end of current month + years + months
-                
-                // First, move to the end of the current month
-                endDate.setMonth(endDate.getMonth() + 1); // Move to next month
-                endDate.setDate(0); // Set to last day of previous month (end of current month)
-                
-                // Then add years and months
-                endDate.setFullYear(endDate.getFullYear() + years);
-                endDate.setMonth(endDate.getMonth() + months);
-                
-                // Ensure it's the last day of the month
-                endDate.setMonth(endDate.getMonth() + 1);
-                endDate.setDate(0);
-            }
+            // Add years and months
+            endDate.setFullYear(endDate.getFullYear() + years);
+            endDate.setMonth(endDate.getMonth() + months);
+            
+            // Go to the end of the month
+            endDate.setMonth(endDate.getMonth() + 1); // Move to next month
+            endDate.setDate(0); // Set to last day of previous month (end of current month)
+            
+            console.log('Calculated End Date:', endDate);
             
             // Format end date
             const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
                                    (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
                                    endDate.getFullYear();
+            
             document.getElementById('planEndDate').value = formattedEndDate;
             
             // Update payment tags
@@ -790,9 +711,7 @@
         // Check form validity
         function checkFormValidity() {
             // Check required fields
-            const requiredFields = [
-                'planName', 'planStartDate', 'paymentMode'
-            ];
+            const requiredFields = ['planStartDate', 'paymentMode'];
             
             for (const fieldId of requiredFields) {
                 const field = document.getElementById(fieldId);
@@ -805,11 +724,8 @@
             const years = parseInt(document.getElementById('durationYears').value) || 0;
             const months = parseInt(document.getElementById('durationMonths').value) || 0;
             
-            if (planType === 'monthly') {
-                if (months === 0) return false;
-                if (years > 0) return false;
-            } else if (planType === 'yearly') {
-                if (years === 0 && months === 0) return false;
+            if (years === 0 && months === 0) {
+                return false;
             }
             
             // Check if plan value is calculated
@@ -838,9 +754,7 @@
             let isValid = true;
             
             // Clear all errors
-            const fieldIds = [
-                'planName', 'planStartDate', 'paymentMode', 'duration'
-            ];
+            const fieldIds = ['planStartDate', 'paymentMode', 'duration'];
             
             fieldIds.forEach(fieldId => {
                 hideError(fieldId);
@@ -848,7 +762,6 @@
             
             // Check required fields
             const requiredFields = [
-                {id: 'planName', name: 'Plan Name'},
                 {id: 'planStartDate', name: 'Plan Start Date'},
                 {id: 'paymentMode', name: 'Payment Mode'}
             ];
@@ -865,26 +778,15 @@
             const years = parseInt(document.getElementById('durationYears').value) || 0;
             const months = parseInt(document.getElementById('durationMonths').value) || 0;
             
-            if (planType === 'monthly') {
-                if (months === 0) {
-                    showError('durationError', 'Please enter months for monthly plan');
-                    isValid = false;
-                }
-                if (years > 0) {
-                    showError('durationError', 'Years cannot be entered for monthly plan');
-                    isValid = false;
-                }
-            } else if (planType === 'yearly') {
-                if (years === 0 && months === 0) {
-                    showError('durationError', 'Please enter years or months for yearly plan');
-                    isValid = false;
-                }
+            if (years === 0 && months === 0) {
+                showError('durationError', 'Please enter plan duration (years and/or months)');
+                isValid = false;
             }
             
             return isValid;
         }
         
-        // Save plan details and proceed
+        // Save plan details and proceed to user-details.html
         function savePlanDetails() {
             if (!validateForm()) {
                 return;
@@ -893,37 +795,32 @@
             // Collect plan data
             const planDetailsData = {
                 planName: document.getElementById('planName').value,
+                originalPlanName: originalPlanName,
                 planSize: document.getElementById('planSize').value,
+                originalPlanSize: originalPlanSize,
                 planType: planType,
                 planDuration: {
                     years: parseInt(document.getElementById('durationYears').value) || 0,
                     months: parseInt(document.getElementById('durationMonths').value) || 0,
-                    totalDays: 0
+                    totalMonths: (parseInt(document.getElementById('durationYears').value) || 0) * 12 + 
+                                (parseInt(document.getElementById('durationMonths').value) || 0)
                 },
                 planStartDate: document.getElementById('planStartDate').value,
                 planEndDate: document.getElementById('planEndDate').value,
                 planValue: document.getElementById('planValue').value,
                 originalPlanValue: 'INR ' + originalPlanValue,
-                paymentMode: document.getElementById('paymentMode').value
-            };
-            
-            // Calculate total days (approximate)
-            planDetailsData.planDuration.totalDays = 
-                (planDetailsData.planDuration.months * 30) + 
-                (planDetailsData.planDuration.years * 365);
-            
-            // Combine with user details
-            const combinedData = {
-                ...userDetailsData,
-                ...planDetailsData
+                paymentMode: document.getElementById('paymentMode').value,
+                basePrice: planType === 'monthly' ? baseMonthlyPrice : baseYearlyPrice,
+                basePriceType: planType === 'monthly' ? 'monthly' : 'yearly'
             };
             
             // Save to session storage
             sessionStorage.setItem('odelya_planDetails', JSON.stringify(planDetailsData));
-            sessionStorage.setItem('odelya_combinedData', JSON.stringify(combinedData));
             
-            // Proceed to account creation page
-            window.location.href = 'user-account.html';
+            console.log('Plan details saved:', planDetailsData);
+            
+            // Redirect to user-details.html
+            window.location.href = 'user-details.html';
         }
         
         // Setup event listeners
@@ -953,20 +850,16 @@
                 hideError('durationError');
             });
             
-            // Other field validations
-            document.getElementById('paymentMode').addEventListener('change', () => {
-                hideError('paymentMode');
-                updateContinueButton();
-            });
-            
-            document.getElementById('planName').addEventListener('change', () => {
-                hideError('planName');
-                updateContinueButton();
-            });
-            
+            // Date field validation
             document.getElementById('planStartDate').addEventListener('input', () => {
                 calculateEndDate();
                 hideError('planStartDate');
+                updateContinueButton();
+            });
+            
+            // Payment mode validation
+            document.getElementById('paymentMode').addEventListener('change', () => {
+                hideError('paymentMode');
                 updateContinueButton();
             });
         }
@@ -974,9 +867,6 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Plan Details Page Loaded');
-            
-            // Load user details
-            loadUserDetails();
             
             // Initialize date picker
             startDatePicker = flatpickr("#planStartDate", {
@@ -991,7 +881,7 @@
                 }
             });
             
-            // Auto-fill plan details
+            // Auto-fill plan details from URL
             autoFillPlanDetails();
             
             // Setup event listeners
@@ -1002,7 +892,6 @@
         });
         
         // Make functions globally available
-        window.goBack = goBack;
         window.savePlanDetails = savePlanDetails;
         window.calculatePlanPrice = calculatePlanPrice;
         window.calculateEndDate = calculateEndDate;
