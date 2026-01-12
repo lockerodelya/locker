@@ -5,51 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Odelya - User Details</title>
     
-    <!-- Firebase SDK Version 9 (Modular) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-        import { 
-            getAuth, 
-            setPersistence,
-            browserLocalPersistence
-        } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-        import { 
-            getFirestore
-        } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-        
-        // Your Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
-            authDomain: "odelya-user-data.firebaseapp.com",
-            projectId: "odelya-user-data",
-            storageBucket: "odelya-user-data.firebasestorage.app",
-            messagingSenderId: "590231118790",
-            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
-            measurementId: "G-9SWTR9V32R"
-        };
-
-        try {
-            // Initialize Firebase
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-            const db = getFirestore(app);
-            
-            // Set persistence
-            setPersistence(auth, browserLocalPersistence).catch((error) => {
-                console.warn("Persistence warning:", error);
-            });
-            
-            // Make available globally
-            window.firebaseAuth = auth;
-            window.firebaseDb = db;
-            
-            console.log("✅ Firebase initialized successfully");
-        } catch (error) {
-            console.error("❌ Firebase initialization failed:", error);
-            alert("Firebase initialization error. Please check console.");
-        }
-    </script>
-    
     <!-- Flatpickr for calendar -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -127,13 +82,13 @@
         }
         
         .form-content {
-            padding: 15px 30px 5px 30px; /* Reduced top padding by 50% (from 30px to 15px) */
+            padding: 15px 30px 5px 30px;
         }
         
         /* Warning message - reduced space above */
         .toggle-warning {
             text-align: center;
-            margin: 6px 0 8px; /* Reduced top margin by 60% (from 15px to 6px) */
+            margin: 6px 0 8px;
             color: #f44336;
             font-weight: 600;
             font-size: 0.95rem;
@@ -144,7 +99,7 @@
         .user-type-toggle {
             display: flex;
             justify-content: center;
-            margin: 8px 0 15px; /* Reduced top margin (from 10px to 8px) */
+            margin: 8px 0 15px;
             background: #f8f9fa;
             padding: 15px;
             border-radius: 15px;
@@ -195,8 +150,8 @@
         .section-title {
             color: #3a0ca3;
             font-size: 1.5rem;
-            margin: 15px 0 10px; /* Reduced margins */
-            padding-bottom: 6px; /* Reduced padding */
+            margin: 15px 0 10px;
+            padding-bottom: 6px;
             border-bottom: 2px solid #4361ee;
         }
         
@@ -204,18 +159,18 @@
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 18px; /* Slightly reduced gap */
-            margin-bottom: 12px; /* Reduced margin */
+            gap: 18px;
+            margin-bottom: 12px;
         }
         
         @media (min-width: 1200px) {
             .form-grid {
                 grid-template-columns: repeat(3, 1fr);
-                gap: 22px; /* Slightly reduced gap */
+                gap: 22px;
             }
             
             .form-group {
-                margin: 4px; /* Reduced margin */
+                margin: 4px;
             }
         }
         
@@ -240,13 +195,13 @@
         
         .form-group label {
             font-weight: 600;
-            margin-bottom: 6px; /* Reduced margin */
+            margin-bottom: 6px;
             color: #333;
             font-size: 0.95rem;
         }
         
         .form-group input, .form-group select {
-            padding: 12px; /* Reduced padding */
+            padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 1rem;
@@ -273,8 +228,8 @@
         
         .form-footer {
             text-align: center;
-            padding: 8px 30px 15px 30px; /* Reduced top padding by 60% (from 15px to 8px) */
-            margin-top: 6px; /* Reduced margin by 60% (from 10px to 6px) */
+            padding: 8px 30px 15px 30px;
+            margin-top: 6px;
         }
         
         .continue-btn {
@@ -323,7 +278,7 @@
         .error-message {
             color: #f44336;
             font-size: 0.9rem;
-            margin-top: 4px; /* Reduced margin */
+            margin-top: 4px;
             display: none;
         }
         
@@ -354,7 +309,7 @@
             }
             
             .form-content {
-                padding: 10px 15px 3px 15px; /* Reduced padding for mobile */
+                padding: 10px 15px 3px 15px;
             }
             
             .back-btn {
@@ -369,7 +324,7 @@
             }
             
             .toggle-warning {
-                margin: 5px 0 6px; /* Reduced for mobile */
+                margin: 5px 0 6px;
                 font-size: 0.9rem;
             }
             
@@ -379,8 +334,8 @@
             }
             
             .form-footer {
-                padding: 6px 15px 12px 15px; /* Reduced for mobile */
-                margin-top: 4px; /* Reduced for mobile */
+                padding: 6px 15px 12px 15px;
+                margin-top: 4px;
             }
             
             .continue-btn {
@@ -477,30 +432,30 @@
                     </div>
                     
                     <div class="form-group personal-field">
-                        <label for="name" class="required">Name</label> <!-- Changed from Full Name -->
+                        <label for="name" class="required">Name</label>
                         <input type="text" id="name" required placeholder="Enter your name">
                         <div class="error-message" id="nameError"></div>
                     </div>
                     
                     <div class="form-group personal-field">
-                        <label for="email" class="required">Email</label> <!-- Changed from Email ID -->
+                        <label for="email" class="required">Email</label>
                         <input type="email" id="email" required placeholder="example@domain.com">
                         <div class="error-message" id="emailError"></div>
                     </div>
                     
                     <div class="form-group personal-field">
-                        <label for="phone" class="required">Phone</label> <!-- Changed from Phone Number -->
+                        <label for="phone" class="required">Phone</label>
                         <input type="tel" id="phone" required placeholder="10-digit mobile number" maxlength="10">
                         <div class="error-message" id="phoneError"></div>
                     </div>
                     
                     <div class="form-group personal-field">
-                        <label for="dob" class="required">DOB</label> <!-- Changed from Date of Birth -->
+                        <label for="dob" class="required">DOB</label>
                         <input type="text" id="dob" class="datepicker" placeholder="DD-MM-YYYY" required>
                         <div class="error-message" id="dobError"></div>
                     </div>
                     
-                    <!-- New Gender Field -->
+                    <!-- Gender Field -->
                     <div class="form-group personal-field">
                         <label for="gender" class="required">Gender</label>
                         <select id="gender" required>
@@ -508,19 +463,19 @@
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                             <option value="other">Other</option>
-                            <option value="prefer-not-to-say">Prefer not to say</option>
+                            <!-- Removed "Prefer not to say" option -->
                         </select>
                         <div class="error-message" id="genderError"></div>
                     </div>
                     
                     <div class="form-group personal-field">
-                        <label for="aadhaar" class="required">Aadhaar</label> <!-- Changed from Aadhaar Number -->
+                        <label for="aadhaar" class="required">Aadhaar</label>
                         <input type="text" id="aadhaar" placeholder="12-digit Aadhaar" maxlength="12" required>
                         <div class="error-message" id="aadhaarError"></div>
                     </div>
                     
                     <div class="form-group personal-field">
-                        <label for="pan" class="required">PAN</label> <!-- Changed from PAN Number -->
+                        <label for="pan" class="required">PAN</label>
                         <input type="text" id="pan" placeholder="ABCDE1234F" maxlength="10" required>
                         <div class="error-message" id="panError"></div>
                     </div>
@@ -538,37 +493,44 @@
                     </div>
                     
                     <div class="form-group business-field" style="display: none;">
-                        <label for="businessName" class="required">Business Name</label>
+                        <label for="businessName" class="required">Name</label> <!-- Changed from Business Name -->
                         <input type="text" id="businessName" placeholder="Enter business name">
                         <div class="error-message" id="businessNameError"></div>
                     </div>
                     
                     <div class="form-group business-field" style="display: none;">
-                        <label for="businessEmail" class="required">Email</label> <!-- Changed from Email ID -->
+                        <label for="businessEmail" class="required">Email</label>
                         <input type="email" id="businessEmail" placeholder="business@domain.com">
                         <div class="error-message" id="businessEmailError"></div>
                     </div>
                     
                     <div class="form-group business-field" style="display: none;">
-                        <label for="businessPhone" class="required">Phone</label> <!-- Changed from Phone Number -->
+                        <label for="businessPhone" class="required">Phone</label>
                         <input type="tel" id="businessPhone" placeholder="10-digit mobile number" maxlength="10">
                         <div class="error-message" id="businessPhoneError"></div>
                     </div>
                     
                     <div class="form-group business-field" style="display: none;">
-                        <label for="dateOfIncorporation" class="required">Date of Incorporation</label>
+                        <label for="dateOfIncorporation" class="required">DOI</label> <!-- Changed from Date of Incorporation -->
                         <input type="text" id="dateOfIncorporation" class="datepicker" placeholder="DD-MM-YYYY">
                         <div class="error-message" id="dateOfIncorporationError"></div>
                     </div>
+                    
+                    <!-- New Pincode Field for Business -->
+                    <div class="form-group business-field" style="display: none;">
+                        <label for="businessPincode" class="required">Pincode</label>
+                        <input type="text" id="businessPincode" placeholder="6-digit pincode" maxlength="6">
+                        <div class="error-message" id="businessPincodeError"></div>
+                    </div>
 
                     <div class="form-group business-field" style="display: none;">
-                        <label for="businessAadhaar">Aadhaar</label> <!-- Changed from Aadhaar Number -->
+                        <label for="businessAadhaar">Aadhaar</label>
                         <input type="text" id="businessAadhaar" placeholder="12-digit Aadhaar (Proprietor)" maxlength="12">
                         <div class="error-message" id="businessAadhaarError"></div>
                     </div>
                     
                     <div class="form-group business-field" style="display: none;">
-                        <label for="businessPan" class="required">PAN</label> <!-- Changed from PAN Number -->
+                        <label for="businessPan" class="required">PAN</label>
                         <input type="text" id="businessPan" placeholder="ABCDE1234F" maxlength="10">
                         <div class="error-message" id="businessPanError"></div>
                     </div>
@@ -774,6 +736,11 @@
             return gstinRegex.test(gstin.toUpperCase());
         }
         
+        // Validate Pincode format (6 digits)
+        function validatePincode(pincode) {
+            return /^\d{6}$/.test(pincode);
+        }
+        
         // Show error message
         function showError(fieldId, message) {
             const errorDiv = document.getElementById(fieldId + 'Error');
@@ -808,7 +775,7 @@
             
             if (selectedUserType === 'personal') {
                 const personalRequiredFields = [
-                    'name', 'email', 'phone', 'dob', 'gender', 'aadhaar', 'pan' // Added gender
+                    'name', 'email', 'phone', 'dob', 'gender', 'aadhaar', 'pan'
                 ];
                 
                 for (const fieldId of personalRequiredFields) {
@@ -839,7 +806,7 @@
                 
             } else if (selectedUserType === 'business') {
                 const businessRequiredFields = [
-                    'businessName', 'businessEmail', 'businessPhone', 'dateOfIncorporation', 'businessPan'
+                    'businessName', 'businessEmail', 'businessPhone', 'dateOfIncorporation', 'businessPincode', 'businessPan'
                 ];
                 
                 for (const fieldId of businessRequiredFields) {
@@ -856,6 +823,9 @@
                 
                 const businessPhone = document.getElementById('businessPhone').value;
                 if (!/^\d{10}$/.test(businessPhone)) return false;
+                
+                const businessPincode = document.getElementById('businessPincode').value;
+                if (!validatePincode(businessPincode)) return false;
                 
                 const businessPan = document.getElementById('businessPan').value;
                 if (!validatePAN(businessPan.toUpperCase())) return false;
@@ -896,19 +866,20 @@
             };
             
             if (selectedUserType === 'personal') {
-                userDetailsData.name = document.getElementById('name').value; // Changed from fullName
+                userDetailsData.name = document.getElementById('name').value;
                 userDetailsData.email = document.getElementById('email').value;
                 userDetailsData.phone = document.getElementById('phone').value;
                 userDetailsData.dob = document.getElementById('dob').value;
-                userDetailsData.gender = document.getElementById('gender').value; // Added gender
+                userDetailsData.gender = document.getElementById('gender').value;
                 userDetailsData.aadhaar = document.getElementById('aadhaar').value;
                 userDetailsData.pan = document.getElementById('pan').value.toUpperCase();
                 userDetailsData.gstin = document.getElementById('gstin').value.toUpperCase() || null;
             } else if (selectedUserType === 'business') {
-                userDetailsData.businessName = document.getElementById('businessName').value;
+                userDetailsData.name = document.getElementById('businessName').value; // Changed from businessName
                 userDetailsData.email = document.getElementById('businessEmail').value;
                 userDetailsData.phone = document.getElementById('businessPhone').value;
-                userDetailsData.dateOfIncorporation = document.getElementById('dateOfIncorporation').value;
+                userDetailsData.doi = document.getElementById('dateOfIncorporation').value; // Changed from dateOfIncorporation
+                userDetailsData.pincode = document.getElementById('businessPincode').value; // Added pincode
                 userDetailsData.aadhaar = document.getElementById('businessAadhaar').value || null;
                 userDetailsData.pan = document.getElementById('businessPan').value.toUpperCase();
                 userDetailsData.gstin = document.getElementById('businessGstin').value.toUpperCase() || null;
@@ -934,9 +905,9 @@
             
             // Clear all errors
             const fieldIds = [
-                'name', 'email', 'phone', 'dob', 'gender', 'aadhaar', 'pan', 'gstin', // Added gender
+                'name', 'email', 'phone', 'dob', 'gender', 'aadhaar', 'pan', 'gstin',
                 'businessName', 'businessEmail', 'businessPhone', 'dateOfIncorporation', 
-                'businessPan', 'businessGstin', 'businessAadhaar'
+                'businessPincode', 'businessPan', 'businessGstin', 'businessAadhaar'
             ];
             
             fieldIds.forEach(fieldId => {
@@ -946,13 +917,13 @@
             // Validate based on user type
             if (selectedUserType === 'personal') {
                 const personalRequiredFields = [
-                    {id: 'name', name: 'Name'}, // Changed from Full Name
-                    {id: 'email', name: 'Email'}, // Changed from Email ID
-                    {id: 'phone', name: 'Phone'}, // Changed from Phone Number
-                    {id: 'dob', name: 'DOB'}, // Changed from Date of Birth
-                    {id: 'gender', name: 'Gender'}, // Added
-                    {id: 'aadhaar', name: 'Aadhaar'}, // Changed from Aadhaar Number
-                    {id: 'pan', name: 'PAN'} // Changed from PAN Number
+                    {id: 'name', name: 'Name'},
+                    {id: 'email', name: 'Email'},
+                    {id: 'phone', name: 'Phone'},
+                    {id: 'dob', name: 'DOB'},
+                    {id: 'gender', name: 'Gender'},
+                    {id: 'aadhaar', name: 'Aadhaar'},
+                    {id: 'pan', name: 'PAN'}
                 ];
                 
                 personalRequiredFields.forEach(field => {
@@ -1001,11 +972,12 @@
                 
             } else if (selectedUserType === 'business') {
                 const businessRequiredFields = [
-                    {id: 'businessName', name: 'Business Name'},
-                    {id: 'businessEmail', name: 'Email'}, // Changed from Email ID
-                    {id: 'businessPhone', name: 'Phone'}, // Changed from Phone Number
-                    {id: 'dateOfIncorporation', name: 'Date of Incorporation'},
-                    {id: 'businessPan', name: 'PAN'} // Changed from PAN Number
+                    {id: 'businessName', name: 'Name'}, // Changed from Business Name
+                    {id: 'businessEmail', name: 'Email'},
+                    {id: 'businessPhone', name: 'Phone'},
+                    {id: 'dateOfIncorporation', name: 'DOI'}, // Changed from Date of Incorporation
+                    {id: 'businessPincode', name: 'Pincode'}, // Added
+                    {id: 'businessPan', name: 'PAN'}
                 ];
                 
                 businessRequiredFields.forEach(field => {
@@ -1028,6 +1000,13 @@
                 const businessPhone = document.getElementById('businessPhone').value;
                 if (businessPhone && !/^\d{10}$/.test(businessPhone)) {
                     showError('businessPhone', 'Please enter a valid 10-digit phone number');
+                    isValid = false;
+                }
+                
+                // Pincode validation
+                const businessPincode = document.getElementById('businessPincode').value;
+                if (businessPincode && !validatePincode(businessPincode)) {
+                    showError('businessPincode', 'Please enter a valid 6-digit pincode');
                     isValid = false;
                 }
                 
@@ -1113,6 +1092,12 @@
                 hideError('businessPhone');
                 updateContinueButton();
             });
+            
+            document.getElementById('businessPincode').addEventListener('input', function(e) {
+                this.value = this.value.replace(/\D/g, '').slice(0, 6);
+                hideError('businessPincode');
+                updateContinueButton();
+            });
 
             document.getElementById('businessAadhaar').addEventListener('input', function(e) {
                 this.value = this.value.replace(/\D/g, '').slice(0, 12);
@@ -1149,7 +1134,7 @@
             });
             
             // Personal field input listeners
-            document.getElementById('name').addEventListener('input', () => { // Changed from fullName
+            document.getElementById('name').addEventListener('input', () => {
                 hideError('name');
                 updateContinueButton();
             });
