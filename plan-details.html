@@ -540,7 +540,7 @@
             if (planType === 'monthly') {
                 calculateMonthlyEndDate(startDate, day);
             } else if (planType === 'yearly') {
-                calculateYearlyEndDate(startDate, day);
+                calculateYearlyEndDate(startDate, day, year);
             }
         }
         
@@ -563,18 +563,25 @@
         }
         
         // Calculate end date for yearly plan
-        function calculateYearlyEndDate(startDate, startDay) {
+        function calculateYearlyEndDate(startDate, startDay, startYear) {
             let endDate = new Date(startDate);
             
             // For yearly plans
             if (startDay === 1) {
-                // Start date is 1st of month: end date is last day of same month next year
-                endDate.setFullYear(endDate.getFullYear() + 1);
+                // Start date is 1st of month: current month is included in 12 full months
+                // End date = last day of same month next year
+                endDate.setFullYear(startYear + 1);
                 endDate.setDate(0);
             } else {
-                // Start date is NOT 1st of month: end date is last day of NEXT month next year
-                endDate.setFullYear(endDate.getFullYear() + 1);
+                // Start date is NOT 1st of month: start from NEXT full month for 12 months
+                // End date = last day of same month next year (but starting from next month)
+                
+                // First, move to next month
                 endDate.setMonth(endDate.getMonth() + 1);
+                // Then add 12 months (total 13 months from start date)
+                endDate.setFullYear(startYear + 1);
+                endDate.setMonth(endDate.getMonth() + 1);
+                // Go to last day of that month
                 endDate.setDate(0);
             }
             
@@ -633,7 +640,7 @@
                     // Start date is 1st: Pay exact yearly price
                     payableAmount = baseYearlyPrice;
                 } else {
-                    // Start date is NOT 1st: Calculate prorated amount
+                    // Start date is NOT 1st: Calculate prorated amount for remaining days
                     const daysInMonth = getDaysInMonth(startDate.getMonth() + 1, startDate.getFullYear());
                     const daysLeftInMonth = daysInMonth - day + 1;
                     
