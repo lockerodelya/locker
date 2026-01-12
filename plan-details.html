@@ -424,31 +424,28 @@ function calculateEndDate() {
     
     let endDate;
     
+
     if (planType === 'monthly') {
-        // MONTHLY PLAN LOGIC
-        // End date = Xth full month's last date
-        // Example: Start 12.01.2026, 10 months → End 31.10.2026 (10th full month's last day)
-        // Example: Start 01.02.2026, 1 month → End 28.02.2026 (same month's last day)
-        
-        endDate = new Date(startDate);
-        
-        if (startDay === 1) {
-            // Start date is 1st of month
-            // Add the number of months
-            endDate.setMonth(endDate.getMonth() + months);
-            // End date is last day of that month
-            endDate.setDate(0); // This gives last day of previous month
-            endDate.setMonth(endDate.getMonth() + 1); // Move back to target month
-            endDate.setDate(0); // Last day of target month
-        } else {
-            // Start date is NOT 1st of month
-            // Add the number of months
-            endDate.setMonth(endDate.getMonth() + months);
-            // For monthly plans starting NOT on 1st, end date is last day of the target month
-            endDate.setMonth(endDate.getMonth() + 1); // Move to next month
-            endDate.setDate(0); // Last day of previous month (which is our target month)
-        }
-        
+    // MONTHLY PLAN LOGIC - FINAL CORRECTION
+    
+    if (startDay === 1) {
+        // Start date is 1st of month
+        // Add total months
+        endDate.setMonth(endDate.getMonth() + totalMonths);
+        // Get last day of this month
+        // Create a new date at the end of this month
+        const targetYear = endDate.getFullYear();
+        const targetMonth = endDate.getMonth();
+        endDate = new Date(targetYear, targetMonth + 1, 0);
+    } else {
+        // Start date is NOT 1st of month
+        // Add total months
+        endDate.setMonth(endDate.getMonth() + totalMonths);
+        // Move to next month and get last day of current month
+        endDate.setMonth(endDate.getMonth() + 1);
+        endDate.setDate(0);
+    }
+}        
     } else if (planType === 'yearly') {
         // YEARLY PLAN LOGIC
         const totalMonths = (years * 12) + months;
