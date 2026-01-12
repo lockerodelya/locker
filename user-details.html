@@ -269,6 +269,86 @@
             margin-top: 6px;
         }
         
+        /* Horizontal thick line styling */
+        .thick-line {
+            height: 3px;
+            background-color: #4361ee;
+            margin: 20px 0;
+            border-radius: 2px;
+        }
+        
+        /* Plan information display */
+        .plan-info-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        
+        .plan-info-header {
+            font-weight: 700;
+            color: #333;
+            font-size: 1.4rem;
+            padding: 20px 15px;
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+            text-align: center;
+            margin: 0;
+        }
+        
+        .plan-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        @media (min-width: 1200px) {
+            .plan-info-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .plan-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .plan-info-item {
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .plan-info-label {
+            font-weight: 700;
+            color: #333;
+            font-size: 1.2rem;
+            padding: 15px 10px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        
+        .plan-info-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-align: center;
+            color: #4361ee; /* Same blue color */
+            padding: 20px 10px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+        }
+        
         .continue-btn {
             background: #4361ee; /* Same blue color */
             color: white;
@@ -424,6 +504,23 @@
             .error-message {
                 font-size: 1rem;
             }
+            
+            /* Plan info mobile adjustments */
+            .plan-info-grid {
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            .plan-info-label {
+                font-size: 1.1rem;
+                padding: 12px 10px;
+            }
+            
+            .plan-info-value {
+                font-size: 1.2rem;
+                padding: 15px 10px;
+                min-height: 55px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -460,6 +557,17 @@
                 font-size: 1.2rem;
                 padding: 18px 10px;
                 min-height: 65px;
+            }
+            
+            .plan-info-label {
+                font-size: 1rem;
+                padding: 10px 8px;
+            }
+            
+            .plan-info-value {
+                font-size: 1.1rem;
+                padding: 12px 8px;
+                min-height: 50px;
             }
         }
     </style>
@@ -498,37 +606,37 @@
                     <!-- Personal Form Fields -->
                     <div class="form-group personal-field">
                         <label for="userId" class="required">User ID</label>
-                        <input type="text" id="userId" readonly class="disabled-input" placeholder="Auto-generated">
+                        <input type="text" id="userId" readonly class="disabled-input" placeholder="Auto-generated" style="color: #4361ee;">
                     </div>
                     
                     <div class="form-group personal-field">
                         <label for="name" class="required">Name</label>
-                        <input type="text" id="name" required placeholder="Enter your name">
+                        <input type="text" id="name" required placeholder="Enter your name" style="color: #4361ee;">
                         <div class="error-message" id="nameError"></div>
                     </div>
                     
                     <div class="form-group personal-field">
                         <label for="email" class="required">Email</label>
-                        <input type="email" id="email" required placeholder="example@domain.com">
+                        <input type="email" id="email" required placeholder="example@domain.com" style="color: #4361ee;">
                         <div class="error-message" id="emailError"></div>
                     </div>
                     
                     <div class="form-group personal-field">
                         <label for="phone" class="required">Phone</label>
-                        <input type="tel" id="phone" required placeholder="10-digit mobile number" maxlength="10">
+                        <input type="tel" id="phone" required placeholder="10-digit mobile number" maxlength="10" style="color: #4361ee;">
                         <div class="error-message" id="phoneError"></div>
                     </div>
                     
                     <div class="form-group personal-field">
                         <label for="dob" class="required">DOB</label>
-                        <input type="text" id="dob" class="datepicker" placeholder="DD-MM-YYYY" required>
+                        <input type="text" id="dob" class="datepicker" placeholder="DD-MM-YYYY" required style="color: #4361ee;">
                         <div class="error-message" id="dobError"></div>
                     </div>
                     
                     <!-- Gender Field -->
                     <div class="form-group personal-field">
                         <label for="gender" class="required">Gender</label>
-                        <select id="gender" required>
+                        <select id="gender" required style="color: #4361ee;">
                             <option value="">Select Gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
@@ -539,79 +647,93 @@
                     
                     <div class="form-group personal-field">
                         <label for="aadhaar" class="required">Aadhaar</label>
-                        <input type="text" id="aadhaar" placeholder="12-digit Aadhaar" maxlength="12" required>
+                        <input type="text" id="aadhaar" placeholder="12-digit Aadhaar" maxlength="12" required style="color: #4361ee;">
                         <div class="error-message" id="aadhaarError"></div>
                     </div>
                     
                     <div class="form-group personal-field">
                         <label for="pan" class="required">PAN</label>
-                        <input type="text" id="pan" placeholder="ABCDE1234F" maxlength="10" required>
+                        <input type="text" id="pan" placeholder="ABCDE1234F" maxlength="10" required style="color: #4361ee;">
                         <div class="error-message" id="panError"></div>
                     </div>
                     
                     <div class="form-group personal-field">
                         <label for="gstin">GSTIN</label>
-                        <input type="text" id="gstin" placeholder="22ABCDE1234F1Z5" maxlength="15">
+                        <input type="text" id="gstin" placeholder="22ABCDE1234F1Z5" maxlength="15" style="color: #4361ee;">
                         <div class="error-message" id="gstinError"></div>
                     </div>
                     
                     <!-- Business Form Fields -->
                     <div class="form-group business-field" style="display: none;">
                         <label for="businessUserId" class="required">User ID</label>
-                        <input type="text" id="businessUserId" readonly class="disabled-input" placeholder="Auto-generated">
+                        <input type="text" id="businessUserId" readonly class="disabled-input" placeholder="Auto-generated" style="color: #4361ee;">
                     </div>
                     
                     <div class="form-group business-field" style="display: none;">
                         <label for="businessName" class="required">Name</label>
-                        <input type="text" id="businessName" placeholder="Enter business name">
+                        <input type="text" id="businessName" placeholder="Enter business name" style="color: #4361ee;">
                         <div class="error-message" id="businessNameError"></div>
                     </div>
                     
                     <div class="form-group business-field" style="display: none;">
                         <label for="businessEmail" class="required">Email</label>
-                        <input type="email" id="businessEmail" placeholder="business@domain.com">
+                        <input type="email" id="businessEmail" placeholder="business@domain.com" style="color: #4361ee;">
                         <div class="error-message" id="businessEmailError"></div>
                     </div>
                     
                     <div class="form-group business-field" style="display: none;">
                         <label for="businessPhone" class="required">Phone</label>
-                        <input type="tel" id="businessPhone" placeholder="10-digit mobile number" maxlength="10">
+                        <input type="tel" id="businessPhone" placeholder="10-digit mobile number" maxlength="10" style="color: #4361ee;">
                         <div class="error-message" id="businessPhoneError"></div>
                     </div>
                     
                     <div class="form-group business-field" style="display: none;">
                         <label for="dateOfIncorporation" class="required">DOI</label>
-                        <input type="text" id="dateOfIncorporation" class="datepicker" placeholder="DD-MM-YYYY">
+                        <input type="text" id="dateOfIncorporation" class="datepicker" placeholder="DD-MM-YYYY" style="color: #4361ee;">
                         <div class="error-message" id="dateOfIncorporationError"></div>
                     </div>
                     
                     <!-- New Pincode Field for Business -->
                     <div class="form-group business-field" style="display: none;">
                         <label for="businessPincode" class="required">Pincode</label>
-                        <input type="text" id="businessPincode" placeholder="6-digit pincode" maxlength="6">
+                        <input type="text" id="businessPincode" placeholder="6-digit pincode" maxlength="6" style="color: #4361ee;">
                         <div class="error-message" id="businessPincodeError"></div>
                     </div>
 
                     <div class="form-group business-field" style="display: none;">
                         <label for="businessAadhaar">Aadhaar</label>
-                        <input type="text" id="businessAadhaar" placeholder="12-digit Aadhaar (Proprietor)" maxlength="12">
+                        <input type="text" id="businessAadhaar" placeholder="12-digit Aadhaar (Proprietor)" maxlength="12" style="color: #4361ee;">
                         <div class="error-message" id="businessAadhaarError"></div>
                     </div>
                     
                     <div class="form-group business-field" style="display: none;">
                         <label for="businessPan" class="required">PAN</label>
-                        <input type="text" id="businessPan" placeholder="ABCDE1234F" maxlength="10">
+                        <input type="text" id="businessPan" placeholder="ABCDE1234F" maxlength="10" style="color: #4361ee;">
                         <div class="error-message" id="businessPanError"></div>
                     </div>
                     
                     <div class="form-group business-field" style="display: none;">
                         <label for="businessGstin">GSTIN</label>
-                        <input type="text" id="businessGstin" placeholder="22ABCDE1234F1Z5" maxlength="15">
+                        <input type="text" id="businessGstin" placeholder="22ABCDE1234F1Z5" maxlength="15" style="color: #4361ee;">
                         <div class="error-message" id="businessGstinError"></div>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <!-- Horizontal thick line above continue button -->
+        <div class="thick-line"></div>
+        
+        <!-- Plan Information from previous page -->
+        <div class="plan-info-container" id="planInfoContainer">
+            <div class="plan-info-header">Selected Plan Information</div>
+            <div class="plan-info-grid" id="planInfoGrid">
+                <!-- Plan information will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Another horizontal thick line below plan information -->
+        <div class="thick-line"></div>
         
         <div class="form-footer">
             <button class="continue-btn" onclick="saveUserDetails()" id="continueBtn" disabled>Continue</button>
@@ -628,6 +750,58 @@
         function goBackToUserPlan() {
             // Navigate back to user-plan.html (previous file)
             window.location.href = 'user-plan.html';
+        }
+        
+        // Load plan information from previous page
+        function loadPlanInformation() {
+            const planInfoGrid = document.getElementById('planInfoGrid');
+            const planInfoContainer = document.getElementById('planInfoContainer');
+            
+            // Try to get plan data from sessionStorage (from user-plan.html)
+            const planData = sessionStorage.getItem('odelya_planDetails');
+            
+            if (planData) {
+                try {
+                    const plan = JSON.parse(planData);
+                    
+                    // Clear existing content
+                    planInfoGrid.innerHTML = '';
+                    
+                    // Create plan information items
+                    const planFields = [
+                        { label: 'Plan Name', value: plan.planName || 'N/A', key: 'planName' },
+                        { label: 'Validity', value: plan.validity || 'N/A', key: 'validity' },
+                        { label: 'Investment', value: plan.investment ? `₹${plan.investment}` : 'N/A', key: 'investment' },
+                        { label: 'GST', value: plan.gst ? `₹${plan.gst}` : 'N/A', key: 'gst' },
+                        { label: 'Total Amount', value: plan.totalAmount ? `₹${plan.totalAmount}` : 'N/A', key: 'totalAmount' },
+                        { label: 'Plan Type', value: plan.planType || 'N/A', key: 'planType' }
+                    ];
+                    
+                    planFields.forEach(field => {
+                        if (plan[field.key]) {
+                            const item = document.createElement('div');
+                            item.className = 'plan-info-item';
+                            
+                            item.innerHTML = `
+                                <div class="plan-info-label">${field.label}</div>
+                                <div class="plan-info-value">${field.value}</div>
+                            `;
+                            
+                            planInfoGrid.appendChild(item);
+                        }
+                    });
+                    
+                    // Show the container
+                    planInfoContainer.style.display = 'block';
+                    
+                } catch (error) {
+                    console.error('Error parsing plan data:', error);
+                    planInfoContainer.style.display = 'none';
+                }
+            } else {
+                // Hide container if no plan data
+                planInfoContainer.style.display = 'none';
+            }
         }
         
         // User Type Selection Function
@@ -1264,6 +1438,9 @@
             const userId = generateUserId();
             document.getElementById('userId').value = userId;
             document.getElementById('businessUserId').value = userId;
+            
+            // Load plan information from previous page
+            loadPlanInformation();
             
             // Setup event listeners
             setupEventListeners();
