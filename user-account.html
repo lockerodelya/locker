@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Odelya - User Account</title>
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -344,6 +349,13 @@
             border-radius: 0 0 10px 10px;
         }
         
+        .password-policy {
+            color: #666;
+            font-size: 1rem;
+            text-align: center;
+            margin-top: 5px;
+            padding: 0 15px;
+        }
         
         @media (max-width: 768px) {
             .form-header {
@@ -506,7 +518,7 @@
                 <div class="form-group">
                     <label for="password" class="required">Password</label>
                     <input type="password" id="password" placeholder="Enter password" style="color: #4361ee;">
-                    
+                    <div class="password-policy">Minimum 8 chars: 1 uppercase, 1 lowercase, 1 number, 1 special</div>
                     <div class="error-message" id="passwordError"></div>
                 </div>
                 
@@ -547,6 +559,29 @@
     </div>
 
     <script>
+        // ==================== FIREBASE CONFIGURATION ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+            authDomain: "odelya-user-data.firebaseapp.com",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.firebasestorage.app",
+            messagingSenderId: "590231118790",
+            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+            measurementId: "G-9SWTR9V32R"
+        };
+
+        // Initialize Firebase
+        let auth, db;
+        try {
+            const app = firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+            db = firebase.firestore();
+            console.log("Firebase initialized successfully");
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+        }
+        // ==================== END FIREBASE CONFIGURATION ====================
+
         // Global variables
         let userDetailsData = {};
         let planDetailsData = {};
@@ -567,6 +602,7 @@
             if (userData) {
                 try {
                     const user = JSON.parse(userData);
+                    userDetailsData = user; // Store for Firebase
                     
                     // Clear existing content
                     userDetailsGrid.innerHTML = '';
@@ -643,6 +679,7 @@
             if (planData) {
                 try {
                     const plan = JSON.parse(planData);
+                    planDetailsData = plan; // Store for Firebase
                     
                     // Clear existing content
                     planInfoGrid.innerHTML = '';
@@ -799,26 +836,141 @@
             }
         }
         
-        // Save account details and proceed to payment.html
-        function saveAccountDetails() {
+        // ==================== FIREBASE FUNCTIONS ====================
+        async function saveUserDataToFirebase(accountData) {
+            try {
+                if (!auth || !db) {
+                    throw new Error("Firebase not initialized");
+                }
+
+                // Create user with email and password
+                const userCredential = await auth.createUserWithEmailAndPassword(
+                    userDetailsData.email, 
+                    accountData.password
+                );
+                
+                const user = userCredential.user;
+                console.log("Firebase user created:", user.uid);
+
+                // Prepare user data for Firestore
+                const userData = {
+                    uid: user.uid,
+                    accountName: accountData.accountName,
+                    email: userDetailsData.email,
+                    userType: userDetailsData.userType,
+                    personalInfo: {
+                        name: userDetailsData.name,
+                        phone: userDetailsData.phone,
+                        dob: userDetailsData.dob || null,
+                        gender: userDetailsData.gender || null,
+                        aadhaar: userDetailsData.aadhaar || null,
+                        pan: userDetailsData.pan || null,
+                        gstin: userDetailsData.gstin || null
+                    },
+                    businessInfo: userDetailsData.userType === 'business' ? {
+                        businessName: userDetailsData.name,
+                        doi: userDetailsData.doi || null,
+                        pincode: userDetailsData.pincode || null
+                    } : null,
+                    planDetails: {
+                        planName: planDetailsData.planName || 'Secure Cloud Storage',
+                        planSize: planDetailsData.planSize,
+                        planType: planDetailsData.planDuration || planDetailsData.planType,
+                        planStartDate: planDetailsData.planStartDate || 'Auto-selected',
+                        planEndDate: planDetailsData.planEndDate || 'Auto-calculated',
+                        planValue: planDetailsData.planValue
+                    },
+                    accountCreated: new Date().toISOString(),
+                    status: 'active'
+                };
+
+                // Save to Firestore
+                await db.collection('users').doc(user.uid).set(userData);
+                console.log("User data saved to Firestore");
+
+                // Update session storage with Firebase UID
+                const existingAccountData = JSON.parse(sessionStorage.getItem('odelya_accountDetails') || '{}');
+                existingAccountData.firebaseUID = user.uid;
+                sessionStorage.setItem('odelya_accountDetails', JSON.stringify(existingAccountData));
+
+                return { success: true, userId: user.uid };
+                
+            } catch (error) {
+                console.error("Firebase error:", error);
+                return { 
+                    success: false, 
+                    error: error.message,
+                    errorCode: error.code
+                };
+            }
+        }
+
+        async function saveAccountDetailsWithFirebase() {
             if (!validateForm()) {
                 return;
             }
-            
-            // Collect account data
-            const accountData = {
-                accountName: document.getElementById('accountName').value.trim(),
-                password: document.getElementById('password').value
-            };
-            
-            // Save to session storage
-            sessionStorage.setItem('odelya_accountDetails', JSON.stringify(accountData));
-            
-            console.log('Account details saved:', accountData);
-            
-            // Redirect to payment.html
-            window.location.href = 'payment.html';
+
+            // Disable button and show loading state
+            const continueBtn = document.getElementById('continueBtn');
+            const originalText = continueBtn.textContent;
+            continueBtn.textContent = 'Creating Account...';
+            continueBtn.disabled = true;
+
+            try {
+                // Collect account data
+                const accountData = {
+                    accountName: document.getElementById('accountName').value.trim(),
+                    password: document.getElementById('password').value
+                };
+
+                // Save to session storage
+                sessionStorage.setItem('odelya_accountDetails', JSON.stringify(accountData));
+                console.log('Account details saved locally:', accountData);
+
+                // Check if we have user and plan data
+                if (!userDetailsData.email) {
+                    const userData = sessionStorage.getItem('odelya_userDetails');
+                    if (userData) {
+                        userDetailsData = JSON.parse(userData);
+                    }
+                }
+
+                if (!planDetailsData.planName) {
+                    const planData = sessionStorage.getItem('odelya_planDetails');
+                    if (planData) {
+                        planDetailsData = JSON.parse(planData);
+                    }
+                }
+
+                // Save to Firebase
+                if (userDetailsData.email && auth && db) {
+                    const firebaseResult = await saveUserDataToFirebase(accountData);
+                    
+                    if (!firebaseResult.success) {
+                        // Show Firebase error
+                        showError('accountName', `Firebase error: ${firebaseResult.errorCode || firebaseResult.error}`);
+                        continueBtn.textContent = originalText;
+                        continueBtn.disabled = false;
+                        updateContinueButton();
+                        return;
+                    }
+                    
+                    console.log("Firebase save successful, userId:", firebaseResult.userId);
+                } else {
+                    console.log("Skipping Firebase save (missing data or Firebase not available)");
+                }
+
+                // Redirect to payment.html
+                window.location.href = 'payment.html';
+                
+            } catch (error) {
+                console.error("Error in saveAccountDetailsWithFirebase:", error);
+                continueBtn.textContent = originalText;
+                continueBtn.disabled = false;
+                updateContinueButton();
+            }
         }
+        // ==================== END FIREBASE FUNCTIONS ====================
         
         // Setup event listeners
         function setupEventListeners() {
@@ -861,7 +1013,7 @@
         
         // Make functions globally available
         window.goBackToUserDetails = goBackToUserDetails;
-        window.saveAccountDetails = saveAccountDetails;
+        window.saveAccountDetails = saveAccountDetailsWithFirebase; // Updated to use Firebase version
     </script>
 </body>
 </html>
