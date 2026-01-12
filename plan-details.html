@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Odelya - Plan Details</title>
     
-    <!-- Flatpickr (for fallback only) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    
     <style>
         * {
             margin: 0;
@@ -254,6 +250,7 @@
         .date-display-container input {
             cursor: pointer;
             background-color: white;
+            width: 100%;
         }
         
         .calendar-icon {
@@ -269,7 +266,7 @@
             position: absolute;
             top: 100%;
             left: 0;
-            width: 300px;
+            width: 320px;
             background: white;
             border-radius: 10px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
@@ -277,6 +274,7 @@
             margin-top: 5px;
             display: none;
             overflow: hidden;
+            border: 2px solid #e0e0e0;
         }
         
         .datepicker-header {
@@ -312,6 +310,11 @@
             background: rgba(255, 255, 255, 0.3);
         }
         
+        .nav-btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
         .current-month-year {
             font-weight: 600;
             font-size: 1rem;
@@ -345,6 +348,10 @@
             cursor: pointer;
             transition: all 0.2s;
             font-size: 0.9rem;
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .date-cell:hover:not(.disabled-date):not(.selected-date) {
@@ -363,17 +370,19 @@
         .today-date {
             background-color: #e3f2fd;
             color: #1976d2;
+            font-weight: 600;
         }
         
         .selected-date {
             background-color: #4361ee;
             color: white;
+            font-weight: 600;
         }
         
         .month-selector-view {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
         
         .month-option {
@@ -578,46 +587,55 @@
         let currentView = 'dates'; // 'dates' or 'months'
         let currentDate = new Date();
         let selectedDate = null;
-        let maxAllowedMonths = 10; // Maximum 10 full months for monthly plans
+        let isDatePickerOpen = false;
         
+        // Month names
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"];
+        
+        const monthAbbr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
         // Custom Date Picker Functions
         function initCustomDatePicker() {
             const dateInput = document.getElementById('planStartDate');
             const datePicker = document.getElementById('customDatePicker');
             
-            // Toggle date picker visibility
+            // Toggle date picker visibility on input click
             dateInput.addEventListener('click', function(e) {
                 e.stopPropagation();
-                if (datePicker.style.display === 'block') {
-                    hideDatePicker();
-                } else {
+                if (!isDatePickerOpen) {
                     showDatePicker();
+                } else {
+                    hideDatePicker();
                 }
             });
             
             // Close date picker when clicking outside
             document.addEventListener('click', function(e) {
-                if (!datePicker.contains(e.target) && e.target !== dateInput) {
+                if (isDatePickerOpen && !datePicker.contains(e.target) && e.target !== dateInput) {
                     hideDatePicker();
                 }
             });
             
-            // Generate initial date picker view
-            generateDateView();
+            // Initialize with current month view
+            showCurrentMonthView();
         }
         
         function showDatePicker() {
-            const datePicker = document.getElementById('customDatePicker');
-            datePicker.style.display = 'block';
+            isDatePickerOpen = true;
+            document.getElementById('customDatePicker').style.display = 'block';
         }
         
         function hideDatePicker() {
-            const datePicker = document.getElementById('customDatePicker');
-            datePicker.style.display = 'none';
+            isDatePickerOpen = false;
+            document.getElementById('customDatePicker').style.display = 'none';
         }
         
-        function generateDateView() {
-            const datePicker = document.getElementById('customDatePicker');
+        function showCurrentMonthView() {
+            currentView = 'dates';
+            currentDate = new Date(); // Reset to current date
+            
             const today = new Date();
             const currentMonth = currentDate.getMonth();
             const currentYear = currentDate.getFullYear();
@@ -632,16 +650,12 @@
             // Get starting day (0 = Sunday, 1 = Monday, etc.)
             const startDay = firstDay.getDay();
             
-            // Month names
-            const monthNames = ["January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"];
-            
             let html = `
                 <div class="datepicker-header">
                     <div class="current-month-year">${monthNames[currentMonth]} ${currentYear}</div>
                     <div class="datepicker-nav">
-                        <button class="nav-btn" onclick="navigateDatePicker(-1)">←</button>
-                        <button class="nav-btn" onclick="switchToMonthView()">></button>
+                        <button class="nav-btn" onclick="previousMonth()" disabled>←</button>
+                        <button class="nav-btn" onclick="showMonthSelector()">></button>
                     </div>
                 </div>
                 <div class="datepicker-body">
@@ -666,7 +680,7 @@
                 const isToday = day === today.getDate() && 
                                currentMonth === today.getMonth() && 
                                currentYear === today.getFullYear();
-                const isPast = cellDate < today;
+                const isPast = cellDate < today.setHours(0, 0, 0, 0);
                 const isSelected = selectedDate && 
                                   day === selectedDate.getDate() && 
                                   currentMonth === selectedDate.getMonth() && 
@@ -683,97 +697,88 @@
                     cellClass += ' available-date';
                 }
                 
-                html += `<div class="${cellClass}" onclick="selectDate(${day})">${day}</div>`;
+                const onclick = isPast ? '' : `onclick="selectDate(${day}, ${currentMonth}, ${currentYear})"`;
+                html += `<div class="${cellClass}" ${onclick}>${day}</div>`;
             }
             
             html += '</div></div>';
-            datePicker.innerHTML = html;
-            currentView = 'dates';
+            document.getElementById('customDatePicker').innerHTML = html;
         }
         
-        function generateMonthView() {
-            const datePicker = document.getElementById('customDatePicker');
+        function showMonthSelector() {
+            currentView = 'months';
             const today = new Date();
-            const currentYear = currentDate.getFullYear();
-            
-            // Month abbreviations
-            const monthAbbr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
             
             let html = `
                 <div class="datepicker-header">
-                    <div class="current-month-year">${currentYear}</div>
+                    <div class="current-month-year">Select Month</div>
                     <div class="datepicker-nav">
-                        <button class="nav-btn" onclick="navigateDatePicker(-12)">←</button>
-                        <button class="nav-btn" onclick="navigateDatePicker(12)">→</button>
+                        <button class="nav-btn" onclick="showCurrentMonthView()">←</button>
+                        <button class="nav-btn" onclick="nextYear()">→</button>
                     </div>
                 </div>
                 <div class="datepicker-body">
                     <div class="month-selector-view">
             `;
             
-            // Calculate maximum allowed month based on plan type
-            let maxMonthIndex = 11; // Default to December
+            // Calculate max allowed month based on plan type
+            let maxAllowedMonthIndex = 11; // Default to December
+            
             if (planType === 'monthly') {
-                // For monthly plans: current month + 9 months ahead (total 10 months)
-                const currentMonthIndex = today.getMonth();
-                maxMonthIndex = Math.min(11, currentMonthIndex + maxAllowedMonths - 1);
+                // For monthly plans: current month + 9 months ahead (total 10 months including current)
+                maxAllowedMonthIndex = Math.min(11, currentMonth + 9);
             }
             
-            for (let i = 0; i < 12; i++) {
-                const monthDate = new Date(currentYear, i, 1);
-                const isPast = monthDate < today;
-                const isDisabled = planType === 'monthly' && i > maxMonthIndex;
-                const isSelected = selectedDate && 
-                                  i === selectedDate.getMonth() && 
-                                  currentYear === selectedDate.getFullYear();
+            for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
+                const monthDate = new Date(currentYear, monthIndex, 1);
+                const isPastMonth = monthIndex < currentMonth && currentYear === today.getFullYear();
+                const isDisabled = planType === 'monthly' ? (monthIndex > maxAllowedMonthIndex) : false;
+                const isAvailable = !isPastMonth && !isDisabled;
                 
                 let cellClass = 'month-option';
-                if (isPast || isDisabled) {
+                
+                if (!isAvailable) {
                     cellClass += ' disabled-month';
-                } else if (isSelected) {
-                    cellClass += ' selected-month';
                 } else {
                     cellClass += ' available-month';
                 }
                 
-                html += `<div class="${cellClass}" onclick="selectMonth(${i})">${monthAbbr[i]}</div>`;
+                if (selectedDate && 
+                    monthIndex === selectedDate.getMonth() && 
+                    currentYear === selectedDate.getFullYear()) {
+                    cellClass += ' selected-month';
+                }
+                
+                const onclick = isAvailable ? `onclick="selectMonthAndShowDates(${monthIndex}, ${currentYear})"` : '';
+                html += `<div class="${cellClass}" ${onclick}>${monthAbbr[monthIndex]}</div>`;
             }
             
             html += '</div></div>';
-            datePicker.innerHTML = html;
-            currentView = 'months';
+            document.getElementById('customDatePicker').innerHTML = html;
         }
         
-        function navigateDatePicker(direction) {
-            if (currentView === 'dates') {
-                currentDate.setMonth(currentDate.getMonth() + direction);
-                generateDateView();
-            } else {
-                currentDate.setFullYear(currentDate.getFullYear() + direction);
-                generateMonthView();
+        function nextYear() {
+            // For yearly plans, show next year's months
+            if (planType === 'yearly') {
+                currentDate.setFullYear(currentDate.getFullYear() + 1);
+                showMonthSelector();
             }
         }
         
-        function switchToMonthView() {
-            generateMonthView();
+        function previousMonth() {
+            // Disabled for current month view - can't go to past months
         }
         
-        function selectDate(day) {
-            const selected = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-            
-            // Don't allow selection of past dates
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (selected < today) return;
-            
-            selectedDate = selected;
+        function selectDate(day, month, year) {
+            selectedDate = new Date(year, month, day);
             
             // Format date as DD-MM-YYYY
             const formattedDate = 
-                selectedDate.getDate().toString().padStart(2, '0') + '-' +
-                (selectedDate.getMonth() + 1).toString().padStart(2, '0') + '-' +
-                selectedDate.getFullYear();
+                day.toString().padStart(2, '0') + '-' +
+                (month + 1).toString().padStart(2, '0') + '-' +
+                year;
             
             // Update input field
             document.getElementById('planStartDate').value = formattedDate;
@@ -787,22 +792,78 @@
             updateContinueButton();
         }
         
-        function selectMonth(monthIndex) {
-            // Don't allow selection of disabled months
-            const today = new Date();
-            const selectedMonthDate = new Date(currentDate.getFullYear(), monthIndex, 1);
-            if (selectedMonthDate < today) return;
+        function selectMonthAndShowDates(monthIndex, year) {
+            // Switch to date view for the selected month
+            currentDate = new Date(year, monthIndex, 1);
+            currentView = 'dates';
             
-            if (planType === 'monthly') {
-                // For monthly plans, check if month is within allowed range
-                const currentMonthIndex = today.getMonth();
-                const maxMonthIndex = Math.min(11, currentMonthIndex + maxAllowedMonths - 1);
-                if (monthIndex > maxMonthIndex) return;
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            const today = new Date();
+            
+            // Get first day of month
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            // Get last day of month
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            
+            // Calculate days in month
+            const daysInMonth = lastDay.getDate();
+            // Get starting day (0 = Sunday, 1 = Monday, etc.)
+            const startDay = firstDay.getDay();
+            
+            let html = `
+                <div class="datepicker-header">
+                    <div class="current-month-year">${monthNames[currentMonth]} ${currentYear}</div>
+                    <div class="datepicker-nav">
+                        <button class="nav-btn" onclick="previousMonth()">←</button>
+                        <button class="nav-btn" onclick="showMonthSelector()">></button>
+                    </div>
+                </div>
+                <div class="datepicker-body">
+                    <div class="month-view">
+                        <div class="day-header">Sun</div>
+                        <div class="day-header">Mon</div>
+                        <div class="day-header">Tue</div>
+                        <div class="day-header">Wed</div>
+                        <div class="day-header">Thu</div>
+                        <div class="day-header">Fri</div>
+                        <div class="day-header">Sat</div>
+            `;
+            
+            // Add empty cells for days before the first day of month
+            for (let i = 0; i < startDay; i++) {
+                html += '<div class="date-cell"></div>';
             }
             
-            // Switch back to date view for the selected month
-            currentDate = new Date(currentDate.getFullYear(), monthIndex, 1);
-            generateDateView();
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cellDate = new Date(currentYear, currentMonth, day);
+                const isToday = day === today.getDate() && 
+                               currentMonth === today.getMonth() && 
+                               currentYear === today.getFullYear();
+                const isPast = cellDate < today.setHours(0, 0, 0, 0);
+                const isSelected = selectedDate && 
+                                  day === selectedDate.getDate() && 
+                                  currentMonth === selectedDate.getMonth() && 
+                                  currentYear === selectedDate.getFullYear();
+                
+                let cellClass = 'date-cell';
+                if (isPast) {
+                    cellClass += ' disabled-date';
+                } else if (isSelected) {
+                    cellClass += ' selected-date';
+                } else if (isToday) {
+                    cellClass += ' today-date';
+                } else {
+                    cellClass += ' available-date';
+                }
+                
+                const onclick = isPast ? '' : `onclick="selectDate(${day}, ${currentMonth}, ${currentYear})"`;
+                html += `<div class="${cellClass}" ${onclick}>${day}</div>`;
+            }
+            
+            html += '</div></div>';
+            document.getElementById('customDatePicker').innerHTML = html;
         }
         
         // Auto-fill plan details from URL
@@ -1161,10 +1222,12 @@
         // Make functions globally available
         window.savePlanDetails = savePlanDetails;
         window.calculateEndDate = calculateEndDate;
-        window.navigateDatePicker = navigateDatePicker;
-        window.switchToMonthView = switchToMonthView;
+        window.showCurrentMonthView = showCurrentMonthView;
+        window.showMonthSelector = showMonthSelector;
+        window.nextYear = nextYear;
+        window.previousMonth = previousMonth;
         window.selectDate = selectDate;
-        window.selectMonth = selectMonth;
+        window.selectMonthAndShowDates = selectMonthAndShowDates;
     </script>
 </body>
 </html>
