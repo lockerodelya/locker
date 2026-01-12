@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Odelya - Plan Details</title>
     
-    <!-- Flatpickr -->
+    <!-- Flatpickr (for fallback only) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     
@@ -54,7 +54,7 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
             padding: 10px 20px;
             border-radius: 50px;
-            font-size: 1rem; /* Increased font size */
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -162,8 +162,8 @@
             background: linear-gradient(135deg, #4361ee, #3a0ca3);
             color: white;
             border: none;
-            padding: 16px 50px; /* Increased padding */
-            font-size: 1.2rem; /* Increased font size */
+            padding: 16px 50px;
+            font-size: 1.2rem;
             font-weight: 600;
             border-radius: 50px;
             cursor: pointer;
@@ -240,6 +240,169 @@
             display: none;
         }
         
+        /* Custom Date Picker Styles */
+        .custom-datepicker-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        .date-display-container {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .date-display-container input {
+            cursor: pointer;
+            background-color: white;
+        }
+        
+        .calendar-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4361ee;
+            pointer-events: none;
+        }
+        
+        .custom-datepicker {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            z-index: 1000;
+            margin-top: 5px;
+            display: none;
+            overflow: hidden;
+        }
+        
+        .datepicker-header {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .datepicker-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .current-month-year {
+            font-weight: 600;
+            font-size: 1rem;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .datepicker-body {
+            padding: 15px;
+        }
+        
+        .month-view {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        
+        .day-header, .date-cell {
+            text-align: center;
+            padding: 10px 5px;
+            border-radius: 5px;
+        }
+        
+        .day-header {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.85rem;
+        }
+        
+        .date-cell {
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .date-cell:hover:not(.disabled-date):not(.selected-date) {
+            background-color: #f0f0f0;
+        }
+        
+        .available-date {
+            color: #333;
+        }
+        
+        .disabled-date {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .today-date {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .selected-date {
+            background-color: #4361ee;
+            color: white;
+        }
+        
+        .month-selector-view {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .month-option {
+            padding: 12px 5px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .month-option:hover:not(.disabled-month) {
+            background-color: #f0f0f0;
+        }
+        
+        .available-month {
+            color: #333;
+        }
+        
+        .disabled-month {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .selected-month {
+            background-color: #4361ee;
+            color: white;
+        }
+        
         /* Payment important rows */
         .payment-important {
             font-size: 1.2rem !important;
@@ -294,6 +457,12 @@
                 padding: 14px 40px;
                 font-size: 1.1rem;
             }
+            
+            .custom-datepicker {
+                width: 280px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
         }
         
         @media (max-width: 320px) {
@@ -317,6 +486,10 @@
             .continue-btn {
                 padding: 12px 30px;
                 font-size: 1rem;
+            }
+            
+            .custom-datepicker {
+                width: 260px;
             }
         }
     </style>
@@ -362,7 +535,15 @@
                 
                 <div class="form-group">
                     <label for="planStartDate" class="required">Plan Start Date</label>
-                    <input type="text" id="planStartDate" class="datepicker" placeholder="DD-MM-YYYY (Select Date)">
+                    <div class="custom-datepicker-container">
+                        <div class="date-display-container">
+                            <input type="text" id="planStartDate" class="datepicker" placeholder="DD-MM-YYYY (Select Date)" readonly>
+                            <span class="calendar-icon">📅</span>
+                        </div>
+                        <div class="custom-datepicker" id="customDatePicker">
+                            <!-- Date picker content will be generated by JavaScript -->
+                        </div>
+                    </div>
                     <div class="error-message" id="startDateError"></div>
                 </div>
                 
@@ -392,7 +573,237 @@
         let originalPlanValue = '';
         let originalPlanName = '';
         let originalPlanSize = '';
-        let startDatePicker;
+        
+        // Custom Date Picker Variables
+        let currentView = 'dates'; // 'dates' or 'months'
+        let currentDate = new Date();
+        let selectedDate = null;
+        let maxAllowedMonths = 10; // Maximum 10 full months for monthly plans
+        
+        // Custom Date Picker Functions
+        function initCustomDatePicker() {
+            const dateInput = document.getElementById('planStartDate');
+            const datePicker = document.getElementById('customDatePicker');
+            
+            // Toggle date picker visibility
+            dateInput.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (datePicker.style.display === 'block') {
+                    hideDatePicker();
+                } else {
+                    showDatePicker();
+                }
+            });
+            
+            // Close date picker when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!datePicker.contains(e.target) && e.target !== dateInput) {
+                    hideDatePicker();
+                }
+            });
+            
+            // Generate initial date picker view
+            generateDateView();
+        }
+        
+        function showDatePicker() {
+            const datePicker = document.getElementById('customDatePicker');
+            datePicker.style.display = 'block';
+        }
+        
+        function hideDatePicker() {
+            const datePicker = document.getElementById('customDatePicker');
+            datePicker.style.display = 'none';
+        }
+        
+        function generateDateView() {
+            const datePicker = document.getElementById('customDatePicker');
+            const today = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            
+            // Get first day of month
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            // Get last day of month
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            
+            // Calculate days in month
+            const daysInMonth = lastDay.getDate();
+            // Get starting day (0 = Sunday, 1 = Monday, etc.)
+            const startDay = firstDay.getDay();
+            
+            // Month names
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+            
+            let html = `
+                <div class="datepicker-header">
+                    <div class="current-month-year">${monthNames[currentMonth]} ${currentYear}</div>
+                    <div class="datepicker-nav">
+                        <button class="nav-btn" onclick="navigateDatePicker(-1)">←</button>
+                        <button class="nav-btn" onclick="switchToMonthView()">></button>
+                    </div>
+                </div>
+                <div class="datepicker-body">
+                    <div class="month-view">
+                        <div class="day-header">Sun</div>
+                        <div class="day-header">Mon</div>
+                        <div class="day-header">Tue</div>
+                        <div class="day-header">Wed</div>
+                        <div class="day-header">Thu</div>
+                        <div class="day-header">Fri</div>
+                        <div class="day-header">Sat</div>
+            `;
+            
+            // Add empty cells for days before the first day of month
+            for (let i = 0; i < startDay; i++) {
+                html += '<div class="date-cell"></div>';
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cellDate = new Date(currentYear, currentMonth, day);
+                const isToday = day === today.getDate() && 
+                               currentMonth === today.getMonth() && 
+                               currentYear === today.getFullYear();
+                const isPast = cellDate < today;
+                const isSelected = selectedDate && 
+                                  day === selectedDate.getDate() && 
+                                  currentMonth === selectedDate.getMonth() && 
+                                  currentYear === selectedDate.getFullYear();
+                
+                let cellClass = 'date-cell';
+                if (isPast) {
+                    cellClass += ' disabled-date';
+                } else if (isSelected) {
+                    cellClass += ' selected-date';
+                } else if (isToday) {
+                    cellClass += ' today-date';
+                } else {
+                    cellClass += ' available-date';
+                }
+                
+                html += `<div class="${cellClass}" onclick="selectDate(${day})">${day}</div>`;
+            }
+            
+            html += '</div></div>';
+            datePicker.innerHTML = html;
+            currentView = 'dates';
+        }
+        
+        function generateMonthView() {
+            const datePicker = document.getElementById('customDatePicker');
+            const today = new Date();
+            const currentYear = currentDate.getFullYear();
+            
+            // Month abbreviations
+            const monthAbbr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            
+            let html = `
+                <div class="datepicker-header">
+                    <div class="current-month-year">${currentYear}</div>
+                    <div class="datepicker-nav">
+                        <button class="nav-btn" onclick="navigateDatePicker(-12)">←</button>
+                        <button class="nav-btn" onclick="navigateDatePicker(12)">→</button>
+                    </div>
+                </div>
+                <div class="datepicker-body">
+                    <div class="month-selector-view">
+            `;
+            
+            // Calculate maximum allowed month based on plan type
+            let maxMonthIndex = 11; // Default to December
+            if (planType === 'monthly') {
+                // For monthly plans: current month + 9 months ahead (total 10 months)
+                const currentMonthIndex = today.getMonth();
+                maxMonthIndex = Math.min(11, currentMonthIndex + maxAllowedMonths - 1);
+            }
+            
+            for (let i = 0; i < 12; i++) {
+                const monthDate = new Date(currentYear, i, 1);
+                const isPast = monthDate < today;
+                const isDisabled = planType === 'monthly' && i > maxMonthIndex;
+                const isSelected = selectedDate && 
+                                  i === selectedDate.getMonth() && 
+                                  currentYear === selectedDate.getFullYear();
+                
+                let cellClass = 'month-option';
+                if (isPast || isDisabled) {
+                    cellClass += ' disabled-month';
+                } else if (isSelected) {
+                    cellClass += ' selected-month';
+                } else {
+                    cellClass += ' available-month';
+                }
+                
+                html += `<div class="${cellClass}" onclick="selectMonth(${i})">${monthAbbr[i]}</div>`;
+            }
+            
+            html += '</div></div>';
+            datePicker.innerHTML = html;
+            currentView = 'months';
+        }
+        
+        function navigateDatePicker(direction) {
+            if (currentView === 'dates') {
+                currentDate.setMonth(currentDate.getMonth() + direction);
+                generateDateView();
+            } else {
+                currentDate.setFullYear(currentDate.getFullYear() + direction);
+                generateMonthView();
+            }
+        }
+        
+        function switchToMonthView() {
+            generateMonthView();
+        }
+        
+        function selectDate(day) {
+            const selected = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+            
+            // Don't allow selection of past dates
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (selected < today) return;
+            
+            selectedDate = selected;
+            
+            // Format date as DD-MM-YYYY
+            const formattedDate = 
+                selectedDate.getDate().toString().padStart(2, '0') + '-' +
+                (selectedDate.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                selectedDate.getFullYear();
+            
+            // Update input field
+            document.getElementById('planStartDate').value = formattedDate;
+            
+            // Hide date picker
+            hideDatePicker();
+            
+            // Trigger end date calculation
+            calculateEndDate();
+            hideError('planStartDate');
+            updateContinueButton();
+        }
+        
+        function selectMonth(monthIndex) {
+            // Don't allow selection of disabled months
+            const today = new Date();
+            const selectedMonthDate = new Date(currentDate.getFullYear(), monthIndex, 1);
+            if (selectedMonthDate < today) return;
+            
+            if (planType === 'monthly') {
+                // For monthly plans, check if month is within allowed range
+                const currentMonthIndex = today.getMonth();
+                const maxMonthIndex = Math.min(11, currentMonthIndex + maxAllowedMonths - 1);
+                if (monthIndex > maxMonthIndex) return;
+            }
+            
+            // Switch back to date view for the selected month
+            currentDate = new Date(currentDate.getFullYear(), monthIndex, 1);
+            generateDateView();
+        }
         
         // Auto-fill plan details from URL
         function autoFillPlanDetails() {
@@ -510,7 +921,7 @@
                 return;
             }
             
-            // Parse start date
+            // Parse start date (DD-MM-YYYY)
             const [day, month, year] = startDateInput.split('-').map(Number);
             const startDate = new Date(year, month - 1, day);
             
@@ -531,10 +942,11 @@
                 endDate.setDate(0);
             }
             
-            // Format end date
-            const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
-                                   (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
-                                   endDate.getFullYear();
+            // Format end date (DD-MM-YYYY)
+            const formattedEndDate = 
+                endDate.getDate().toString().padStart(2, '0') + '-' +
+                (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                endDate.getFullYear();
             
             document.getElementById('planEndDate').value = formattedEndDate;
             
@@ -727,30 +1139,14 @@
                     updateContinueButton();
                 }
             });
-            
-            // Date field validation
-            document.getElementById('planStartDate').addEventListener('input', () => {
-                calculateEndDate();
-                hideError('planStartDate');
-                updateContinueButton();
-            });
         }
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Plan Details Page Loaded');
             
-            // Initialize date picker
-            startDatePicker = flatpickr("#planStartDate", {
-                dateFormat: "d-m-Y",
-                allowInput: true,
-                minDate: "today",
-                onChange: function(selectedDates, dateStr, instance) {
-                    calculateEndDate();
-                    hideError('planStartDate');
-                    updateContinueButton();
-                }
-            });
+            // Initialize custom date picker
+            initCustomDatePicker();
             
             // Auto-fill plan details from URL
             autoFillPlanDetails();
@@ -765,6 +1161,10 @@
         // Make functions globally available
         window.savePlanDetails = savePlanDetails;
         window.calculateEndDate = calculateEndDate;
+        window.navigateDatePicker = navigateDatePicker;
+        window.switchToMonthView = switchToMonthView;
+        window.selectDate = selectDate;
+        window.selectMonth = selectMonth;
     </script>
 </body>
 </html>
