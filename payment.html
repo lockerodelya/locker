@@ -780,6 +780,26 @@
             paymentState.planType = urlParams.planType;
             paymentState.planValue = 'INR ' + paymentState.totalAmount.toLocaleString();
             paymentState.paymentMethodFromRegistration = urlParams.paymentMethod || '';
+
+// Get plan value from sessionStorage and update the elements directly
+    try {
+        const planData = sessionStorage.getItem('odelya_planDetails');
+        if (planData) {
+            const plan = JSON.parse(planData);
+            const planValue = plan.planValue || 'INR 0';
+            
+            // Update all 4 places directly
+            elements.transferAmount.textContent = planValue;
+            elements.instructionAmount.textContent = planValue;
+            elements.upiInstructionAmount.textContent = planValue;
+            elements.upiTitleAmount.textContent = planValue;
+            
+            console.log('Plan value set:', planValue);
+        }
+    } catch (error) {
+        console.error('Error setting plan value:', error);
+    }
+
             
             // Debug log
             console.log('Payment State:', paymentState);
