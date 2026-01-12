@@ -575,17 +575,38 @@
             window.location.href = 'user-details.html';
         }
         
+        // Debug function to check sessionStorage
+        function debugSessionStorage() {
+            console.log("=== Checking Session Storage ===");
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                console.log(`Key: ${key}`);
+                try {
+                    const value = JSON.parse(sessionStorage.getItem(key));
+                    console.log(`Value:`, value);
+                } catch (e) {
+                    console.log(`Value: ${sessionStorage.getItem(key)}`);
+                }
+            }
+            console.log("=== End Session Storage Check ===");
+        }
+        
         // Load user details information from previous page
         function loadUserDetailsInformation() {
             const userDetailsGrid = document.getElementById('userDetailsInfoGrid');
             const userDetailsContainer = document.getElementById('userDetailsInfoContainer');
             
-            // Try to get user data from sessionStorage (from user-details.html)
-            const userData = sessionStorage.getItem('odelya_userDetails');
+            // Debug: Check what's in sessionStorage
+            debugSessionStorage();
             
-            if (userData) {
+            // Try to get user data from sessionStorage (from user-details.html)
+            const userDataStr = sessionStorage.getItem('odelya_userDetails');
+            console.log("Raw user data from sessionStorage:", userDataStr);
+            
+            if (userDataStr) {
                 try {
-                    const user = JSON.parse(userData);
+                    const user = JSON.parse(userDataStr);
+                    console.log("Parsed user data:", user);
                     
                     // Clear existing content
                     userDetailsGrid.innerHTML = '';
@@ -640,12 +661,15 @@
                     
                     // Show the container
                     userDetailsContainer.style.display = 'block';
+                    console.log("User details loaded successfully");
                     
                 } catch (error) {
                     console.error('Error parsing user data:', error);
+                    console.error('Raw data that caused error:', userDataStr);
                     userDetailsContainer.style.display = 'none';
                 }
             } else {
+                console.error('No user data found in sessionStorage with key: odelya_userDetails');
                 // Hide container if no user data
                 userDetailsContainer.style.display = 'none';
             }
@@ -657,11 +681,13 @@
             const planInfoContainer = document.getElementById('planInfoContainer');
             
             // Try to get plan data from sessionStorage (from user-plan.html)
-            const planData = sessionStorage.getItem('odelya_planDetails');
+            const planDataStr = sessionStorage.getItem('odelya_planDetails');
+            console.log("Raw plan data from sessionStorage:", planDataStr);
             
-            if (planData) {
+            if (planDataStr) {
                 try {
-                    const plan = JSON.parse(planData);
+                    const plan = JSON.parse(planDataStr);
+                    console.log("Parsed plan data:", plan);
                     
                     // Clear existing content
                     planInfoGrid.innerHTML = '';
@@ -692,12 +718,15 @@
                     
                     // Show the container
                     planInfoContainer.style.display = 'block';
+                    console.log("Plan details loaded successfully");
                     
                 } catch (error) {
                     console.error('Error parsing plan data:', error);
+                    console.error('Raw data that caused error:', planDataStr);
                     planInfoContainer.style.display = 'none';
                 }
             } else {
+                console.error('No plan data found in sessionStorage with key: odelya_planDetails');
                 // Hide container if no plan data
                 planInfoContainer.style.display = 'none';
             }
@@ -853,37 +882,51 @@
             }
             
             // Collect all data from sessionStorage
-            const userData = JSON.parse(sessionStorage.getItem('odelya_userDetails') || '{}');
-            const planData = JSON.parse(sessionStorage.getItem('odelya_planDetails') || '{}');
-            const accountData = {
-                accountName: document.getElementById('accountName').value.trim(),
-                password: document.getElementById('password').value,
-                timestamp: new Date().toISOString()
-            };
+            const userDataStr = sessionStorage.getItem('odelya_userDetails');
+            const planDataStr = sessionStorage.getItem('odelya_planDetails');
             
-            // Get userId from userData
-            const userId = userData.userId;
-            if (!userId) {
-                alert('Error: User ID not found. Please go back and complete user details.');
+            if (!userDataStr) {
+                alert('Error: User details not found. Please go back and complete user details.');
                 return;
             }
             
-            // Combine all data
-            const combinedData = {
-                userId: userId,
-                userDetails: userData,
-                planDetails: planData,
-                accountDetails: accountData,
-                registrationDate: new Date().toISOString(),
-                status: 'pending_payment'
-            };
-            
-            // Disable button and show loading
-            const continueBtn = document.getElementById('continueBtn');
-            continueBtn.disabled = true;
-            continueBtn.innerHTML = 'Saving...';
+            if (!planDataStr) {
+                alert('Error: Plan details not found. Please go back and complete plan details.');
+                return;
+            }
             
             try {
+                const userData = JSON.parse(userDataStr);
+                const planData = JSON.parse(planDataStr);
+                
+                const accountData = {
+                    accountName: document.getElementById('accountName').value.trim(),
+                    password: document.getElementById('password').value,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Get userId from userData
+                const userId = userData.userId;
+                if (!userId) {
+                    alert('Error: User ID not found. Please go back and complete user details.');
+                    return;
+                }
+                
+                // Combine all data
+                const combinedData = {
+                    userId: userId,
+                    userDetails: userData,
+                    planDetails: planData,
+                    accountDetails: accountData,
+                    registrationDate: new Date().toISOString(),
+                    status: 'pending_payment'
+                };
+                
+                // Disable button and show loading
+                const continueBtn = document.getElementById('continueBtn');
+                continueBtn.disabled = true;
+                continueBtn.innerHTML = 'Saving...';
+                
                 // Save to session storage
                 sessionStorage.setItem('odelya_accountDetails', JSON.stringify(accountData));
                 sessionStorage.setItem('odelya_combinedData', JSON.stringify(combinedData));
@@ -908,6 +951,7 @@
             } catch (error) {
                 console.error('Error in saveAccountDetails:', error);
                 alert('An error occurred. Please try again.');
+                const continueBtn = document.getElementById('continueBtn');
                 continueBtn.disabled = false;
                 continueBtn.innerHTML = 'Continue to Payment';
             }
