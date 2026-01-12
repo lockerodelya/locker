@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Odelya - User Account</title>
     
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -344,14 +349,6 @@
             border-radius: 0 0 10px 10px;
         }
         
-        .password-policy {
-            color: #666;
-            font-size: 1rem;
-            text-align: center;
-            margin-top: 5px;
-            padding: 0 15px;
-        }
-        
         @media (max-width: 768px) {
             .form-header {
                 padding: 20px 15px;
@@ -500,7 +497,7 @@
         
         <div class="form-content">
             <!-- Account Creation Section -->
-            <h2 class="section-title">Create Your Account</h2>
+            <h2 class="section-title">Create Account</h2>
             <div class="form-grid">
                 <!-- Account Name (8-12 characters) -->
                 <div class="form-group">
@@ -513,7 +510,6 @@
                 <div class="form-group">
                     <label for="password" class="required">Password</label>
                     <input type="password" id="password" placeholder="Enter password" style="color: #4361ee;">
-                    <div class="password-policy">Minimum 8 chars: 1 uppercase, 1 lowercase, 1 number, 1 special</div>
                     <div class="error-message" id="passwordError"></div>
                 </div>
                 
@@ -531,7 +527,7 @@
         
         <!-- User Details Information from previous page -->
         <div class="info-container" id="userDetailsInfoContainer">
-            <div class="info-header">User Details</div>
+            <div class="info-header">Your Details</div>
             <div class="info-grid" id="userDetailsInfoGrid">
                 <!-- User details will be populated by JavaScript from user-details.html -->
             </div>
@@ -539,7 +535,7 @@
         
         <!-- Plan Details Information from user-plan.html -->
         <div class="info-container" id="planInfoContainer">
-            <div class="info-header">User Plan Details</div>
+            <div class="info-header">Your Plan Details</div>
             <div class="info-grid" id="planInfoGrid">
                 <!-- Plan details will be populated by JavaScript from user-plan.html -->
             </div>
@@ -554,6 +550,22 @@
     </div>
 
     <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+            authDomain: "odelya-user-data.firebaseapp.com",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.firebasestorage.app",
+            messagingSenderId: "590231118790",
+            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+            measurementId: "G-9SWTR9V32R"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        
         // Global variables
         let userDetailsData = {};
         let planDetailsData = {};
@@ -806,25 +818,99 @@
             }
         }
         
+        // Save all data to Firebase
+        async function saveAllDataToFirebase(userId, combinedData) {
+            try {
+                // Save to Firestore
+                await db.collection('users').doc(userId).set(combinedData);
+                
+                // Create a JSON string of the data
+                const jsonData = JSON.stringify(combinedData, null, 2);
+                
+                // Create a Blob from the JSON
+                const blob = new Blob([jsonData], { type: 'application/json' });
+                
+                // Create a reference to Firebase Storage with user ID as filename
+                const storageRef = storage.ref();
+                const userDataRef = storageRef.child(`user_data/${userId}.json`);
+                
+                // Upload the file to Firebase Storage
+                await userDataRef.put(blob);
+                
+                console.log('Data saved successfully to Firebase:', combinedData);
+                return true;
+                
+            } catch (error) {
+                console.error('Error saving data to Firebase:', error);
+                return false;
+            }
+        }
+        
         // Save account details and proceed to payment.html
-        function saveAccountDetails() {
+        async function saveAccountDetails() {
             if (!validateForm()) {
                 return;
             }
             
-            // Collect account data
+            // Collect all data from sessionStorage
+            const userData = JSON.parse(sessionStorage.getItem('odelya_userDetails') || '{}');
+            const planData = JSON.parse(sessionStorage.getItem('odelya_planDetails') || '{}');
             const accountData = {
                 accountName: document.getElementById('accountName').value.trim(),
-                password: document.getElementById('password').value
+                password: document.getElementById('password').value,
+                timestamp: new Date().toISOString()
             };
             
-            // Save to session storage
-            sessionStorage.setItem('odelya_accountDetails', JSON.stringify(accountData));
+            // Get userId from userData
+            const userId = userData.userId;
+            if (!userId) {
+                alert('Error: User ID not found. Please go back and complete user details.');
+                return;
+            }
             
-            console.log('Account details saved:', accountData);
+            // Combine all data
+            const combinedData = {
+                userId: userId,
+                userDetails: userData,
+                planDetails: planData,
+                accountDetails: accountData,
+                registrationDate: new Date().toISOString(),
+                status: 'pending_payment'
+            };
             
-            // Redirect to payment.html
-            window.location.href = 'payment.html';
+            // Disable button and show loading
+            const continueBtn = document.getElementById('continueBtn');
+            continueBtn.disabled = true;
+            continueBtn.innerHTML = 'Saving...';
+            
+            try {
+                // Save to session storage
+                sessionStorage.setItem('odelya_accountDetails', JSON.stringify(accountData));
+                sessionStorage.setItem('odelya_combinedData', JSON.stringify(combinedData));
+                
+                // Save to Firebase
+                const savedToFirebase = await saveAllDataToFirebase(userId, combinedData);
+                
+                if (savedToFirebase) {
+                    console.log('All data saved successfully. Redirecting to payment...');
+                    
+                    // Redirect to payment.html after successful save
+                    setTimeout(() => {
+                        window.location.href = 'payment.html';
+                    }, 500);
+                    
+                } else {
+                    alert('Error saving data to server. Please try again.');
+                    continueBtn.disabled = false;
+                    continueBtn.innerHTML = 'Continue to Payment';
+                }
+                
+            } catch (error) {
+                console.error('Error in saveAccountDetails:', error);
+                alert('An error occurred. Please try again.');
+                continueBtn.disabled = false;
+                continueBtn.innerHTML = 'Continue to Payment';
+            }
         }
         
         // Setup event listeners
