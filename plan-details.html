@@ -404,116 +404,126 @@
             return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
         }
         
-        // Calculate end date based on business rules
-        function calculateEndDate() {
-            const startDateInput = document.getElementById('planStartDate').value;
-            const years = parseInt(document.getElementById('durationYears').value) || 0;
-            const months = parseInt(document.getElementById('durationMonths').value) || 0;
-            
-            // If no start date or duration is 0, clear end date
-            if (!startDateInput || (years === 0 && months === 0)) {
-                document.getElementById('planEndDate').value = '';
-                updateContinueButton();
-                return;
-            }
-            
-            // Parse start date
-            const [day, month, year] = startDateInput.split('-').map(Number);
-            const startDate = new Date(year, month - 1, day);
-            const startDay = startDate.getDate();
-            
-            let endDate;
-            
-            if (planType === 'monthly') {
-                // MONTHLY PLAN LOGIC
-                // End date = next Xth full month's last date
-                // Example: Start 12.01.2026, 10 months → End 31.10.2026 (10th full month's last day)
-                
-                endDate = new Date(startDate);
-                
-                // Add the number of months
-                endDate.setMonth(endDate.getMonth() + months);
-                
-                // For monthly plans starting on any date, end date is last day of the target month
-                // Move to next month and then set to last day of previous month
-                endDate.setMonth(endDate.getMonth() + 1);
-                endDate.setDate(0); // Last day of previous month
-                
-            } else if (planType === 'yearly') {
-                // YEARLY PLAN LOGIC
-                const totalMonths = (years * 12) + months;
-                endDate = new Date(startDate);
-                
-                if (startDay === 1) {
-                    // Start date is 1st of month
-                    // Add total months
-                    endDate.setMonth(endDate.getMonth() + totalMonths);
-                    // End date is last day of previous month
-                    endDate.setDate(0);
-                } else {
-                    // Start date is NOT 1st of month
-                    if (years === 1 && months === 0) {
-                        // Special case: Exactly 1 year
-                        // End date = Last day of February next year
-                        endDate.setFullYear(endDate.getFullYear() + 1);
-                        // Set to February of next year
-                        endDate.setMonth(1); // February (0-indexed: 0=Jan, 1=Feb)
-                        endDate.setDate(0); // Last day of January
-                        // Actually need last day of February
-                        endDate.setMonth(2); // March
-                        endDate.setDate(0); // Last day of February
-                    } else if (years > 0 && months === 0) {
-                        // Only years, no extra months
-                        // For each year: End date = Last day of February of that year
-                        endDate.setFullYear(endDate.getFullYear() + years);
-                        endDate.setMonth(1); // February
-                        endDate.setDate(0); // Last day of January
-                        endDate.setMonth(2); // March
-                        endDate.setDate(0); // Last day of February
-                    } else {
-                        // Mixed years and months
-                        // Add all months
-                        endDate.setMonth(endDate.getMonth() + totalMonths);
-                        
-                        // Determine which month we land in
-                        const targetMonth = endDate.getMonth();
-                        
-                        if (targetMonth === 0) { // January
-                            endDate.setMonth(1); // February
-                            endDate.setDate(0); // Last day of January
-                            endDate.setMonth(2); // March
-                            endDate.setDate(0); // Last day of February
-                        } else {
-                            // For other months, end date is last day of that month
-                            endDate.setMonth(endDate.getMonth() + 1);
-                            endDate.setDate(0);
-                        }
-                    }
-                }
-            }
-            
-            // Handle leap years for February
-            const endYear = endDate.getFullYear();
-            const endMonth = endDate.getMonth();
-            
-            if (endMonth === 1) { // February
-                if (isLeapYear(endYear)) {
-                    endDate.setDate(29); // Leap year
-                } else {
-                    endDate.setDate(28); // Non-leap year
-                }
-            }
-            
-            // Format end date
-            const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
-                                   (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
-                                   endDate.getFullYear();
-            
-            document.getElementById('planEndDate').value = formattedEndDate;
-            
-            // Update continue button
-            updateContinueButton();
+// Calculate end date based on business rules
+function calculateEndDate() {
+    const startDateInput = document.getElementById('planStartDate').value;
+    const years = parseInt(document.getElementById('durationYears').value) || 0;
+    const months = parseInt(document.getElementById('durationMonths').value) || 0;
+    
+    // If no start date or duration is 0, clear end date
+    if (!startDateInput || (years === 0 && months === 0)) {
+        document.getElementById('planEndDate').value = '';
+        updateContinueButton();
+        return;
+    }
+    
+    // Parse start date
+    const [day, month, year] = startDateInput.split('-').map(Number);
+    const startDate = new Date(year, month - 1, day);
+    const startDay = startDate.getDate();
+    
+    let endDate;
+    
+    if (planType === 'monthly') {
+        // MONTHLY PLAN LOGIC
+        // End date = Xth full month's last date
+        // Example: Start 12.01.2026, 10 months → End 31.10.2026 (10th full month's last day)
+        // Example: Start 01.02.2026, 1 month → End 28.02.2026 (same month's last day)
+        
+        endDate = new Date(startDate);
+        
+        if (startDay === 1) {
+            // Start date is 1st of month
+            // Add the number of months
+            endDate.setMonth(endDate.getMonth() + months);
+            // End date is last day of that month
+            endDate.setDate(0); // This gives last day of previous month
+            endDate.setMonth(endDate.getMonth() + 1); // Move back to target month
+            endDate.setDate(0); // Last day of target month
+        } else {
+            // Start date is NOT 1st of month
+            // Add the number of months
+            endDate.setMonth(endDate.getMonth() + months);
+            // For monthly plans starting NOT on 1st, end date is last day of the target month
+            endDate.setMonth(endDate.getMonth() + 1); // Move to next month
+            endDate.setDate(0); // Last day of previous month (which is our target month)
         }
+        
+    } else if (planType === 'yearly') {
+        // YEARLY PLAN LOGIC
+        const totalMonths = (years * 12) + months;
+        endDate = new Date(startDate);
+        
+        if (startDay === 1) {
+            // Start date is 1st of month
+            // Add total months
+            endDate.setMonth(endDate.getMonth() + totalMonths);
+            // End date is last day of previous month
+            endDate.setDate(0);
+        } else {
+            // Start date is NOT 1st of month
+            if (years === 1 && months === 0) {
+                // Special case: Exactly 1 year
+                // End date = Last day of February next year
+                endDate.setFullYear(endDate.getFullYear() + 1);
+                // Set to February of next year
+                endDate.setMonth(1); // February (0-indexed: 0=Jan, 1=Feb)
+                endDate.setDate(0); // Last day of January
+                // Actually need last day of February
+                endDate.setMonth(2); // March
+                endDate.setDate(0); // Last day of February
+            } else if (years > 0 && months === 0) {
+                // Only years, no extra months
+                // For each year: End date = Last day of February of that year
+                endDate.setFullYear(endDate.getFullYear() + years);
+                endDate.setMonth(1); // February
+                endDate.setDate(0); // Last day of January
+                endDate.setMonth(2); // March
+                endDate.setDate(0); // Last day of February
+            } else {
+                // Mixed years and months
+                // Add all months
+                endDate.setMonth(endDate.getMonth() + totalMonths);
+                
+                // Determine which month we land in
+                const targetMonth = endDate.getMonth();
+                
+                if (targetMonth === 0) { // January
+                    endDate.setMonth(1); // February
+                    endDate.setDate(0); // Last day of January
+                    endDate.setMonth(2); // March
+                    endDate.setDate(0); // Last day of February
+                } else {
+                    // For other months, end date is last day of that month
+                    endDate.setMonth(endDate.getMonth() + 1);
+                    endDate.setDate(0);
+                }
+            }
+        }
+    }
+    
+    // Handle leap years for February
+    const endYear = endDate.getFullYear();
+    const endMonth = endDate.getMonth();
+    
+    if (endMonth === 1) { // February
+        if (isLeapYear(endYear)) {
+            endDate.setDate(29); // Leap year
+        } else {
+            endDate.setDate(28); // Non-leap year
+        }
+    }
+    
+    // Format end date
+    const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
+                           (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                           endDate.getFullYear();
+    
+    document.getElementById('planEndDate').value = formattedEndDate;
+    
+    // Update continue button
+    updateContinueButton();
+}
         
         // Auto-fill plan details from URL
         function autoFillPlanDetails() {
