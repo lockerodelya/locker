@@ -319,6 +319,11 @@
                 font-size: 1rem;
             }
         }
+        
+        /* Hide duration boxes when not needed */
+        .duration-box.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -348,12 +353,12 @@
                 <div class="form-group">
                     <label class="required">Plan Duration</label>
                     <div class="duration-inputs">
-                        <div class="duration-box">
-                            <input type="number" id="durationYears" min="0" max="10" value="0" placeholder="Years">
+                        <div class="duration-box" id="yearsBox">
+                            <input type="number" id="durationYears" min="0" max="10" value="0" placeholder="Years" readonly>
                             <span>Years</span>
                         </div>
-                        <div class="duration-box">
-                            <input type="number" id="durationMonths" min="0" max="11" value="0" placeholder="Months">
+                        <div class="duration-box" id="monthsBox">
+                            <input type="number" id="durationMonths" min="0" max="11" value="0" placeholder="Months" readonly>
                             <span>Months</span>
                         </div>
                     </div>
@@ -362,8 +367,7 @@
                 
                 <div class="form-group">
                     <label for="planStartDate" class="required">Plan Start Date</label>
-                    <input type="text" id="planStartDate" class="datepicker" placeholder="DD-MM-YYYY (Select Date)">
-                    <div class="error-message" id="startDateError"></div>
+                    <input type="text" id="planStartDate" readonly class="disabled-input" placeholder="Auto-selected">
                 </div>
                 
                 <div class="form-group">
@@ -392,7 +396,6 @@
         let originalPlanValue = '';
         let originalPlanName = '';
         let originalPlanSize = '';
-        let startDatePicker;
         
         // Auto-fill plan details from URL
         function autoFillPlanDetails() {
@@ -437,22 +440,28 @@
                 planType = 'monthly';
                 baseMonthlyPrice = parseFloat(planPrice) || 0;
                 baseYearlyPrice = 0;
+                
                 // Set default: 1 month for monthly plans
                 document.getElementById('durationMonths').value = 1;
                 document.getElementById('durationYears').value = 0;
-                // DISABLE years input for monthly plans
-                document.getElementById('durationYears').disabled = true;
+                
+                // Show only months, hide years
+                document.getElementById('yearsBox').classList.add('hidden');
+                document.getElementById('monthsBox').classList.remove('hidden');
                 
             } else if (planPeriod === 'yearly') {
                 planType = 'yearly';
                 baseYearlyPrice = parseFloat(planPrice) || 0;
                 baseMonthlyPrice = Math.round(baseYearlyPrice / 12);
+                
                 // Set default: 1 year for yearly plans
                 document.getElementById('durationYears').value = 1;
                 document.getElementById('durationMonths').value = 0;
-                // ENABLE both inputs for yearly plans
-                document.getElementById('durationYears').disabled = false;
-                document.getElementById('durationMonths').disabled = false;
+                
+                // Show only years, hide months
+                document.getElementById('yearsBox').classList.remove('hidden');
+                document.getElementById('monthsBox').classList.add('hidden');
+                
             } else {
                 // Determine from plan name
                 if (planNameFromUrl.toLowerCase().includes('monthly')) {
@@ -460,17 +469,20 @@
                     baseMonthlyPrice = parseFloat(planPrice) || 0;
                     document.getElementById('durationMonths').value = 1;
                     document.getElementById('durationYears').value = 0;
-                    // DISABLE years input for monthly plans
-                    document.getElementById('durationYears').disabled = true;
+                    
+                    // Show only months, hide years
+                    document.getElementById('yearsBox').classList.add('hidden');
+                    document.getElementById('monthsBox').classList.remove('hidden');
                 } else {
                     planType = 'yearly';
                     baseYearlyPrice = parseFloat(planPrice) || 0;
                     baseMonthlyPrice = Math.round(baseYearlyPrice / 12);
                     document.getElementById('durationYears').value = 1;
                     document.getElementById('durationMonths').value = 0;
-                    // ENABLE both inputs for yearly plans
-                    document.getElementById('durationYears').disabled = false;
-                    document.getElementById('durationMonths').disabled = false;
+                    
+                    // Show only years, hide months
+                    document.getElementById('yearsBox').classList.remove('hidden');
+                    document.getElementById('monthsBox').classList.add('hidden');
                 }
             }
             
@@ -485,61 +497,96 @@
                 document.getElementById('planValue').value = 'INR ' + baseYearlyPrice.toLocaleString('en-IN');
             }
             
-            // Enable continue button if all required data is present
+            // Auto-set start date to current date
+            setCurrentDateAsStartDate();
+            
+            // Calculate end date based on plan type
+            calculateEndDate();
+            
+            // Enable continue button
             updateContinueButton();
         }
         
-        // Calculate end date based on duration AND start date (end of month calculation)
+        // Set current date as start date
+        function setCurrentDateAsStartDate() {
+            const today = new Date();
+            const day = today.getDate().toString().padStart(2, '0');
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const year = today.getFullYear();
+            
+            const formattedDate = `${day}-${month}-${year}`;
+            document.getElementById('planStartDate').value = formattedDate;
+        }
+        
+        // Calculate end date based on plan type and start date
         function calculateEndDate() {
             const startDateInput = document.getElementById('planStartDate').value;
             
-            // If start date is not selected, clear end date
             if (!startDateInput) {
                 document.getElementById('planEndDate').value = '';
-                updateContinueButton();
-                return;
-            }
-            
-            const years = parseInt(document.getElementById('durationYears').value) || 0;
-            const months = parseInt(document.getElementById('durationMonths').value) || 0;
-            
-            // If duration is 0, clear end date
-            if (years === 0 && months === 0) {
-                document.getElementById('planEndDate').value = '';
-                updateContinueButton();
                 return;
             }
             
             // Parse start date
-            const [day, month, year] = startDateInput.split('-').map(Number);
+            const [dayStr, monthStr, yearStr] = startDateInput.split('-');
+            const day = parseInt(dayStr);
+            const month = parseInt(monthStr);
+            const year = parseInt(yearStr);
+            
             const startDate = new Date(year, month - 1, day);
             
-            // Calculate end date
+            if (planType === 'monthly') {
+                calculateMonthlyEndDate(startDate, day);
+            } else if (planType === 'yearly') {
+                calculateYearlyEndDate(startDate, day);
+            }
+        }
+        
+        // Calculate end date for monthly plan
+        function calculateMonthlyEndDate(startDate, startDay) {
             let endDate = new Date(startDate);
             
-            // Add years and months
-            endDate.setFullYear(endDate.getFullYear() + years);
-            endDate.setMonth(endDate.getMonth() + months);
-            
-            // Business logic for end date
-            if (day === 1) {
-                // Start date is 1st of month: end date is last day of previous month
+            // For monthly plans
+            if (startDay === 1) {
+                // Start date is 1st of month: end date is last day of same month
+                endDate.setMonth(endDate.getMonth() + 1);
                 endDate.setDate(0);
             } else {
                 // Start date is NOT 1st of month: end date is last day of NEXT month
+                endDate.setMonth(endDate.getMonth() + 2);
+                endDate.setDate(0);
+            }
+            
+            formatAndSetEndDate(endDate);
+        }
+        
+        // Calculate end date for yearly plan
+        function calculateYearlyEndDate(startDate, startDay) {
+            let endDate = new Date(startDate);
+            
+            // For yearly plans
+            if (startDay === 1) {
+                // Start date is 1st of month: end date is last day of 12th month
+                endDate.setFullYear(endDate.getFullYear() + 1);
+                endDate.setDate(0);
+            } else {
+                // Start date is NOT 1st of month: end date is last day of NEXT 12th month
+                endDate.setFullYear(endDate.getFullYear() + 1);
                 endDate.setMonth(endDate.getMonth() + 1);
                 endDate.setDate(0);
             }
             
-            // Format end date
-            const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
-                                   (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
-                                   endDate.getFullYear();
+            formatAndSetEndDate(endDate);
+        }
+        
+        // Format and set end date in DD-MM-YYYY format
+        function formatAndSetEndDate(date) {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
             
-            document.getElementById('planEndDate').value = formattedEndDate;
-            
-            // Update continue button
-            updateContinueButton();
+            const formattedDate = `${day}-${month}-${year}`;
+            document.getElementById('planEndDate').value = formattedDate;
         }
         
         // Show error message
@@ -570,8 +617,8 @@
         
         // Check form validity
         function checkFormValidity() {
-            // Check required fields
-            const requiredFields = ['planStartDate'];
+            // Check if all required fields have values
+            const requiredFields = ['planStartDate', 'planEndDate'];
             
             for (const fieldId of requiredFields) {
                 const field = document.getElementById(fieldId);
@@ -580,17 +627,9 @@
                 }
             }
             
-            // Check plan duration
-            const years = parseInt(document.getElementById('durationYears').value) || 0;
-            const months = parseInt(document.getElementById('durationMonths').value) || 0;
-            
-            if (years === 0 && months === 0) {
-                return false;
-            }
-            
             // Check if plan value is present
             const planValue = document.getElementById('planValue').value;
-            if (!planValue || planValue === 'INR 0' || planValue === 'Calculated price will appear here') {
+            if (!planValue || planValue === 'INR 0' || planValue === 'Plan price will appear here') {
                 return false;
             }
             
@@ -616,7 +655,7 @@
             let isValid = true;
             
             // Clear all errors
-            const fieldIds = ['planStartDate', 'duration'];
+            const fieldIds = ['planStartDate', 'planEndDate', 'duration'];
             
             fieldIds.forEach(fieldId => {
                 hideError(fieldId);
@@ -624,7 +663,8 @@
             
             // Check required fields
             const requiredFields = [
-                {id: 'planStartDate', name: 'Plan Start Date'}
+                {id: 'planStartDate', name: 'Plan Start Date'},
+                {id: 'planEndDate', name: 'Plan End Date'}
             ];
             
             requiredFields.forEach(field => {
@@ -634,15 +674,6 @@
                     isValid = false;
                 }
             });
-            
-            // Check plan duration
-            const years = parseInt(document.getElementById('durationYears').value) || 0;
-            const months = parseInt(document.getElementById('durationMonths').value) || 0;
-            
-            if (years === 0 && months === 0) {
-                showError('durationError', 'Please enter plan duration (years and/or months)');
-                isValid = false;
-            }
             
             return isValid;
         }
@@ -685,72 +716,13 @@
         
         // Setup event listeners
         function setupEventListeners() {
-            // Duration calculation events
-            document.getElementById('durationMonths').addEventListener('input', function() {
-                // For monthly plans: max 11 months
-                if (planType === 'monthly') {
-                    if (this.value < 0) this.value = 0;
-                    if (this.value > 11) this.value = 11;
-                    // Keep years at 0 for monthly plans
-                    document.getElementById('durationYears').value = 0;
-                } else {
-                    // For yearly plans: normal validation
-                    if (this.value < 0) this.value = 0;
-                    if (this.value > 11) this.value = 11;
-                }
-                calculateEndDate();
-                hideError('durationError');
-                updateContinueButton();
-            });
-            
-            document.getElementById('durationYears').addEventListener('input', function() {
-                // Only enabled for yearly plans
-                if (!this.disabled) {
-                    if (this.value < 0) this.value = 0;
-                    if (this.value > 10) this.value = 10;
-                    calculateEndDate();
-                    hideError('durationError');
-                    updateContinueButton();
-                }
-            });
-            
-            document.getElementById('durationMonths').addEventListener('change', function() {
-                calculateEndDate();
-                hideError('durationError');
-                updateContinueButton();
-            });
-            
-            document.getElementById('durationYears').addEventListener('change', function() {
-                if (!this.disabled) {
-                    calculateEndDate();
-                    hideError('durationError');
-                    updateContinueButton();
-                }
-            });
-            
-            // Date field validation
-            document.getElementById('planStartDate').addEventListener('input', () => {
-                calculateEndDate();
-                hideError('planStartDate');
-                updateContinueButton();
-            });
+            // No event listeners needed for duration inputs as they are read-only
+            // No event listeners for date inputs as they are auto-set and non-editable
         }
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Plan Details Page Loaded');
-            
-            // Initialize date picker
-            startDatePicker = flatpickr("#planStartDate", {
-                dateFormat: "d-m-Y",
-                allowInput: true,
-                minDate: "today",
-                onChange: function(selectedDates, dateStr, instance) {
-                    calculateEndDate();
-                    hideError('planStartDate');
-                    updateContinueButton();
-                }
-            });
             
             // Auto-fill plan details from URL
             autoFillPlanDetails();
@@ -764,7 +736,6 @@
         
         // Make functions globally available
         window.savePlanDetails = savePlanDetails;
-        window.calculateEndDate = calculateEndDate;
     </script>
 </body>
 </html>
