@@ -28,7 +28,7 @@
         
         .container {
             width: 100%;
-            max-width: 1400px; /* Increased max-width for widescreen */
+            max-width: 1400px;
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
@@ -84,7 +84,7 @@
         }
         
         .form-content {
-            padding: 30px 30px 15px 30px; /* Increased side padding for widescreen */
+            padding: 30px 30px 15px 30px;
         }
         
         .section-title {
@@ -94,23 +94,21 @@
         .form-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 25px; /* Increased gap for better spacing */
+            gap: 25px;
             margin-bottom: 20px;
         }
         
-        /* Widescreen layout - more columns and spacing */
         @media (min-width: 992px) {
             .form-grid {
                 grid-template-columns: repeat(3, 1fr);
-                gap: 30px; /* More gap for widescreen */
+                gap: 30px;
             }
             
             .form-group {
-                margin: 10px; /* Additional margin for each section */
+                margin: 10px;
             }
         }
         
-        /* Tablet layout */
         @media (min-width: 768px) and (max-width: 991px) {
             .form-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -122,7 +120,6 @@
             }
         }
         
-        /* Mobile layout */
         @media (max-width: 767px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -134,7 +131,6 @@
             }
         }
         
-        /* Two-section container styling */
         .form-group {
             display: flex;
             flex-direction: column;
@@ -151,32 +147,30 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
         
-        /* Grey top section */
         .form-group label {
             font-weight: 700;
             color: #333;
             font-size: 1.4rem;
-            padding: 20px 15px; /* Increased padding for better spacing */
-            background-color: #f8f9fa; /* Lighter grey for better contrast */
+            padding: 20px 15px;
+            background-color: #f8f9fa;
             border-bottom: 2px solid #e0e0e0;
             text-align: center;
             margin: 0;
-            flex-shrink: 0; /* Prevent shrinking */
+            flex-shrink: 0;
         }
         
-        /* White bottom section with blue text */
         .form-group input, .form-group select {
-            padding: 25px 15px; /* Increased padding for better spacing */
+            padding: 25px 15px;
             border: none;
             border-radius: 0;
-            font-size: 1.5rem; /* Slightly larger for better visibility */
+            font-size: 1.5rem;
             font-weight: 700;
             transition: all 0.3s;
             width: 100%;
             text-align: center;
             color: #4361ee;
             background-color: white;
-            min-height: 80px; /* Fixed minimum height */
+            min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -208,7 +202,6 @@
             font-size: 1.4rem;
         }
         
-        /* Special container for Plan Type */
         .plan-type-container {
             background: white;
             border-radius: 15px;
@@ -307,7 +300,6 @@
             border-radius: 0 0 10px 10px;
         }
         
-        /* Payment important rows styling */
         .payment-important {
             font-size: 1.5rem !important;
             font-weight: 700 !important;
@@ -315,17 +307,16 @@
         
         .payment-important label {
             font-size: 1.5rem !important;
-            background-color: #e8f4ff; /* Light blue background for emphasis */
+            background-color: #e8f4ff;
         }
         
         .payment-important input {
-            font-size: 1.6rem; /* Slightly larger for emphasis */
+            font-size: 1.6rem;
             font-weight: 700;
-            color: #3a0ca3; /* Darker blue for emphasis */
+            color: #3a0ca3;
             text-align: center;
         }
         
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .form-header {
                 padding: 20px 15px;
@@ -363,7 +354,6 @@
                 max-width: 350px;
             }
             
-            /* Mobile adjustments for two-section containers */
             .form-group label {
                 font-size: 1.2rem;
                 padding: 15px 12px;
@@ -429,7 +419,6 @@
             }
         }
         
-        /* Hide duration boxes when not needed */
         .duration-box.hidden {
             display: none;
         }
@@ -446,46 +435,38 @@
         
         <div class="form-content">
             <div class="form-grid">
-                <!-- Plan Name Container -->
                 <div class="form-group">
                     <label for="planName" class="required">Plan Name</label>
                     <input type="text" id="planName" readonly class="disabled-input" value="Secure Cloud Storage">
                 </div>
                 
-                <!-- Plan Size Container -->
                 <div class="form-group">
                     <label for="planSize" class="required">Plan (GB)</label>
                     <input type="text" id="planSize" readonly class="disabled-input" placeholder="Will auto-fill from pricing table">
                 </div>
                 
-                <!-- Plan Type Container (special styling) -->
                 <div class="form-group">
                     <label class="required">Plan Type</label>
                     <div id="planDurationDisplay" class="plan-duration-display">
-                        <!-- Will show "Monthly" or "Yearly" here -->
                     </div>
                 </div>
                 
-                <!-- Plan Start Date Container -->
                 <div class="form-group">
                     <label for="planStartDate" class="required">Plan Start Date</label>
                     <input type="text" id="planStartDate" readonly class="disabled-input" placeholder="Auto-selected">
                 </div>
                 
-                <!-- Plan End Date Container -->
                 <div class="form-group">
                     <label for="planEndDate" class="required">Plan End Date</label>
                     <input type="text" id="planEndDate" readonly class="disabled-input" placeholder="Auto-calculated">
                 </div>
                 
-                <!-- Plan Value Container (special emphasis) -->
                 <div class="form-group payment-important">
                     <label for="planValue" class="required">Plan Value</label>
                     <input type="text" id="planValue" readonly class="disabled-input" placeholder="Plan price will appear here">
                 </div>
             </div>
             
-            <!-- Continue Button -->
             <div class="form-footer">
                 <button class="continue-btn" onclick="savePlanDetails()" id="continueBtn" disabled>Continue</button>
             </div>
@@ -737,11 +718,13 @@
                 }
             }
             
-            // Round to 2 decimal places and format as INR
-            payableAmount = Math.round(payableAmount * 100) / 100;
+            // ROUND OFF to nearest whole number (no decimal places)
+            payableAmount = Math.round(payableAmount);
+            
+            // Format as INR with no decimal places
             document.getElementById('planValue').value = 'INR ' + payableAmount.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
             });
         }
         
