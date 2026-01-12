@@ -28,7 +28,7 @@
         
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px; /* Increased max-width for widescreen */
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
@@ -39,7 +39,7 @@
         .form-header {
             background: linear-gradient(135deg, #4361ee, #3a0ca3);
             color: white;
-            padding: 30px 20px; /* Increased padding */
+            padding: 30px 20px;
             text-align: center;
             position: relative;
         }
@@ -49,13 +49,13 @@
             left: 20px;
             top: 50%;
             transform: translateY(-50%);
-            background: white; /* White container */
-            color: #4361ee; /* Blue font */
-            border: 2px solid #4361ee; /* Blue border */
-            padding: 12px 25px; /* Increased padding */
+            background: white;
+            color: #4361ee;
+            border: 2px solid #4361ee;
+            padding: 12px 25px;
             border-radius: 50px;
-            font-size: 1.3rem; /* Increased font size */
-            font-weight: 700; /* Bold font */
+            font-size: 1.3rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
@@ -65,30 +65,28 @@
         }
         
         .back-btn:hover {
-            background: #4361ee; /* Blue on hover */
-            color: white; /* White font on hover */
+            background: #4361ee;
+            color: white;
             border-color: #4361ee;
             transform: translateY(-50%) scale(1.05);
         }
         
         .form-header h1 {
-            font-size: 2.8rem; /* Much bigger font size */
-            margin-bottom: 0; /* Removed margin since paragraph is deleted */
-            font-weight: 800; /* Extra bold */
+            font-size: 2.8rem;
+            margin-bottom: 0;
+            font-weight: 800;
             padding: 0 20px;
-            letter-spacing: 1px; /* Better letter spacing */
+            letter-spacing: 1px;
         }
         
-        /* Remove the paragraph completely */
         .form-header p {
             display: none;
         }
         
         .form-content {
-            padding: 30px 20px;
+            padding: 30px 30px 15px 30px; /* Increased side padding for widescreen */
         }
         
-        /* Remove the section title and blue line */
         .section-title {
             display: none;
         }
@@ -96,73 +94,164 @@
         .form-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 25px; /* Increased gap */
-            margin-bottom: 30px;
+            gap: 25px; /* Increased gap for better spacing */
+            margin-bottom: 20px;
         }
         
-        @media (min-width: 768px) {
-            .form-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        @media (min-width: 1200px) {
+        /* Widescreen layout - more columns and spacing */
+        @media (min-width: 992px) {
             .form-grid {
                 grid-template-columns: repeat(3, 1fr);
+                gap: 30px; /* More gap for widescreen */
+            }
+            
+            .form-group {
+                margin: 10px; /* Additional margin for each section */
             }
         }
         
+        /* Tablet layout */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+            }
+            
+            .form-group {
+                margin: 8px;
+            }
+        }
+        
+        /* Mobile layout */
+        @media (max-width: 767px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .form-group {
+                margin: 5px;
+            }
+        }
+        
+        /* Two-section container styling */
         .form-group {
             display: flex;
             flex-direction: column;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #e0e0e0;
         }
         
+        .form-group:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Grey top section */
         .form-group label {
-            font-weight: 700; /* Bold */
-            margin-bottom: 12px; /* Increased margin */
+            font-weight: 700;
             color: #333;
-            font-size: 1.6rem; /* Double the font size */
-            padding: 12px 15px; /* Padding for grey container */
-            background-color: #f5f5f5; /* Grey container */
-            border-radius: 10px;
-            border: 2px solid #e0e0e0;
+            font-size: 1.4rem;
+            padding: 20px 15px; /* Increased padding for better spacing */
+            background-color: #f8f9fa; /* Lighter grey for better contrast */
+            border-bottom: 2px solid #e0e0e0;
+            text-align: center;
+            margin: 0;
+            flex-shrink: 0; /* Prevent shrinking */
         }
         
+        /* White bottom section with blue text */
         .form-group input, .form-group select {
-            padding: 18px; /* Increased padding */
-            border: 3px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1.8rem; /* Much bigger font size */
-            font-weight: 700; /* Bold */
+            padding: 25px 15px; /* Increased padding for better spacing */
+            border: none;
+            border-radius: 0;
+            font-size: 1.5rem; /* Slightly larger for better visibility */
+            font-weight: 700;
             transition: all 0.3s;
             width: 100%;
+            text-align: center;
+            color: #4361ee;
+            background-color: white;
+            min-height: 80px; /* Fixed minimum height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .form-group input:focus, .form-group select:focus {
             outline: none;
-            border-color: #4361ee;
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            background-color: #f8f9fa;
         }
         
         .disabled-input {
-            background-color: white; /* White container */
-            color: #4361ee; /* Blue bold font */
+            background-color: white;
+            color: #4361ee;
             cursor: not-allowed;
-            font-size: 1.8rem; /* Much bigger font size */
-            font-weight: 700; /* Bold */
-            border: 3px solid #e0e0e0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            border: none;
+            padding: 25px 15px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .required::after {
             content: " *";
             color: #f44336;
-            font-size: 1.8rem; /* Match the bigger font size */
+            font-size: 1.4rem;
+        }
+        
+        /* Special container for Plan Type */
+        .plan-type-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .plan-type-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .plan-type-label {
+            font-weight: 700;
+            color: #333;
+            font-size: 1.4rem;
+            padding: 20px 15px;
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+            text-align: center;
+            margin: 0;
+        }
+        
+        .plan-duration-display {
+            padding: 25px 15px;
+            background-color: white;
+            color: #4361ee;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            cursor: not-allowed;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
         }
         
         .form-footer {
             text-align: center;
-            padding: 35px 20px; /* Increased padding */
-            border-top: 3px solid #eee;
+            padding: 20px 30px 30px 30px;
             margin-top: 20px;
         }
         
@@ -170,15 +259,15 @@
             background: linear-gradient(135deg, #4361ee, #3a0ca3);
             color: white;
             border: none;
-            padding: 20px 60px; /* Increased padding */
-            font-size: 1.8rem; /* Much bigger font size */
-            font-weight: 700; /* Bold */
+            padding: 18px 55px;
+            font-size: 1.4rem;
+            font-weight: 700;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
             width: 100%;
-            max-width: 450px; /* Increased max width */
+            max-width: 400px;
             margin: 0 auto;
         }
         
@@ -207,84 +296,49 @@
             box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
         }
         
-        /* Plan duration box - bigger and centered */
-        .plan-duration-display {
-            padding: 18px; /* Increased padding */
-            border: 3px solid #e0e0e0;
-            border-radius: 10px;
-            background-color: white; /* White container */
-            color: #4361ee; /* Blue bold font */
-            font-size: 1.8rem; /* Much bigger font size */
-            font-weight: 700; /* Bold */
-            text-align: center;
-            cursor: not-allowed;
-            margin-top: 5px;
-            min-height: 70px; /* Increased height */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .duration-box {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .duration-box input {
-            width: 100%;
-            padding: 16px; /* Increased padding */
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 1.1rem; /* Increased font size */
-        }
-        
-        .duration-box input:disabled {
-            background-color: #f5f5f5;
-            color: #999;
-            cursor: not-allowed;
-        }
-        
-        .duration-box span {
-            text-align: center;
-            margin-top: 5px;
-            font-size: 1rem; /* Increased font size */
-            color: #666;
-        }
-        
         .error-message {
             color: #f44336;
-            font-size: 1.4rem; /* Much bigger font size */
-            margin-top: 8px; /* Increased margin */
+            font-size: 1.2rem;
+            margin-top: 5px;
             display: none;
+            text-align: center;
+            padding: 10px;
+            background-color: #fff5f5;
+            border-radius: 0 0 10px 10px;
         }
         
-        /* Payment important rows */
+        /* Payment important rows styling */
         .payment-important {
-            font-size: 2rem !important; /* Much bigger font size */
-            font-weight: 800 !important; /* Extra bold */
+            font-size: 1.5rem !important;
+            font-weight: 700 !important;
+        }
+        
+        .payment-important label {
+            font-size: 1.5rem !important;
+            background-color: #e8f4ff; /* Light blue background for emphasis */
         }
         
         .payment-important input {
-            font-size: 2rem; /* Much bigger font size */
-            font-weight: 800; /* Extra bold */
-            color: #3a0ca3; /* Dark blue */
+            font-size: 1.6rem; /* Slightly larger for emphasis */
+            font-weight: 700;
+            color: #3a0ca3; /* Darker blue for emphasis */
+            text-align: center;
         }
         
+        /* Responsive adjustments */
         @media (max-width: 768px) {
             .form-header {
-                padding: 25px 15px;
+                padding: 20px 15px;
             }
             
             .form-header h1 {
-                font-size: 2.2rem; /* Adjusted for mobile */
+                font-size: 2.2rem;
                 margin-top: 10px;
                 padding: 0;
             }
             
             .form-content {
-                padding: 20px 15px;
+                padding: 20px 15px 10px 15px;
             }
             
             .back-btn {
@@ -298,42 +352,36 @@
                 font-size: 1.1rem;
             }
             
-            .duration-inputs {
-                flex-direction: column;
-            }
-            
             .form-footer {
-                padding: 25px 15px;
+                padding: 15px 15px 20px 15px;
+                margin-top: 10px;
             }
             
             .continue-btn {
                 padding: 16px 40px;
-                font-size: 1.4rem; /* Adjusted for mobile */
+                font-size: 1.2rem;
                 max-width: 350px;
             }
             
+            /* Mobile adjustments for two-section containers */
             .form-group label {
-                font-size: 1.3rem; /* Adjusted for mobile */
-                padding: 10px 12px;
+                font-size: 1.2rem;
+                padding: 15px 12px;
             }
             
-            .disabled-input, .form-group input, .form-group select {
-                font-size: 1.4rem; /* Adjusted for mobile */
-                padding: 15px;
+            .form-group input, .form-group select,
+            .disabled-input, .plan-duration-display {
+                font-size: 1.3rem;
+                padding: 20px 12px;
+                min-height: 70px;
             }
             
-            .plan-duration-display {
-                font-size: 1.4rem; /* Adjusted for mobile */
-                padding: 15px;
-                min-height: 60px;
-            }
-            
-            .payment-important {
-                font-size: 1.6rem !important;
+            .payment-important label {
+                font-size: 1.3rem !important;
             }
             
             .payment-important input {
-                font-size: 1.6rem;
+                font-size: 1.4rem;
             }
         }
         
@@ -357,41 +405,33 @@
             
             .continue-btn {
                 padding: 14px 30px;
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
             
             .form-group label {
                 font-size: 1.1rem;
+                padding: 12px 10px;
             }
             
-            .disabled-input, .form-group input, .form-group select {
+            .form-group input, .form-group select,
+            .disabled-input, .plan-duration-display {
                 font-size: 1.2rem;
-                padding: 12px;
+                padding: 18px 10px;
+                min-height: 65px;
             }
             
-            .plan-duration-display {
-                font-size: 1.2rem;
-                padding: 12px;
-                min-height: 55px;
-            }
-            
-            .payment-important {
-                font-size: 1.4rem !important;
+            .payment-important label {
+                font-size: 1.2rem !important;
             }
             
             .payment-important input {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
             }
         }
         
         /* Hide duration boxes when not needed */
         .duration-box.hidden {
             display: none;
-        }
-        
-        /* Make all form content fonts bigger */
-        .form-content * {
-            font-size: 1.1em; /* Base size increase for all content */
         }
     </style>
 </head>
@@ -402,40 +442,43 @@
                 ← Change Plan
             </a>
             <h1>Plan Details</h1>
-            <!-- Paragraph removed as requested -->
         </div>
         
         <div class="form-content">
-            <!-- Section title removed as requested -->
             <div class="form-grid">
+                <!-- Plan Name Container -->
                 <div class="form-group">
                     <label for="planName" class="required">Plan Name</label>
                     <input type="text" id="planName" readonly class="disabled-input" value="Secure Cloud Storage">
                 </div>
                 
+                <!-- Plan Size Container -->
                 <div class="form-group">
                     <label for="planSize" class="required">Plan (GB)</label>
                     <input type="text" id="planSize" readonly class="disabled-input" placeholder="Will auto-fill from pricing table">
                 </div>
                 
+                <!-- Plan Type Container (special styling) -->
                 <div class="form-group">
-                    <!-- Changed from "Plan Duration" to "Plan Type" -->
                     <label class="required">Plan Type</label>
                     <div id="planDurationDisplay" class="plan-duration-display">
                         <!-- Will show "Monthly" or "Yearly" here -->
                     </div>
                 </div>
                 
+                <!-- Plan Start Date Container -->
                 <div class="form-group">
                     <label for="planStartDate" class="required">Plan Start Date</label>
                     <input type="text" id="planStartDate" readonly class="disabled-input" placeholder="Auto-selected">
                 </div>
                 
+                <!-- Plan End Date Container -->
                 <div class="form-group">
                     <label for="planEndDate" class="required">Plan End Date</label>
                     <input type="text" id="planEndDate" readonly class="disabled-input" placeholder="Auto-calculated">
                 </div>
                 
+                <!-- Plan Value Container (special emphasis) -->
                 <div class="form-group payment-important">
                     <label for="planValue" class="required">Plan Value</label>
                     <input type="text" id="planValue" readonly class="disabled-input" placeholder="Plan price will appear here">
