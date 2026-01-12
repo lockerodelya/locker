@@ -66,66 +66,77 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 1400px; /* Increased max-width for widescreen */
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
+            margin: auto;
         }
         
         .form-header {
             background: linear-gradient(135deg, #4361ee, #3a0ca3);
             color: white;
-            padding: 30px;
+            padding: 30px 20px;
             text-align: center;
             position: relative;
         }
         
         .back-btn {
             position: absolute;
-            left: 30px;
+            left: 20px;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            padding: 10px 20px;
+            background: white; /* White container */
+            color: #4361ee; /* Blue font */
+            border: 2px solid #4361ee; /* Blue border */
+            padding: 12px 25px;
             border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            font-size: 1.1rem; /* Slightly larger font */
+            font-weight: 700; /* Bold font */
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
         }
         
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
+            background: #4361ee; /* Blue on hover */
+            color: white; /* White font on hover */
+            border-color: #4361ee;
             transform: translateY(-50%) scale(1.05);
         }
         
         .form-header h1 {
             font-size: 2.5rem;
-            margin-bottom: 10px;
+            margin-bottom: 0; /* Removed margin since paragraph is deleted */
             font-weight: 700;
         }
         
-        .form-content {
-            padding: 40px;
+        .form-header p {
+            display: none; /* Delete this line */
         }
         
-        /* User Type Toggle */
+        .form-content {
+            padding: 30px 30px 10px 30px; /* Reduced bottom padding */
+        }
+        
+        /* User Type Toggle - Reduce space below */
         .user-type-toggle {
             display: flex;
             justify-content: center;
-            margin: 30px 0 40px;
+            margin: 20px 0 15px; /* Reduced margin: top 20px, bottom 15px */
             background: #f8f9fa;
-            padding: 20px;
+            padding: 15px; /* Reduced padding */
             border-radius: 15px;
             border: 2px solid #e0e0e0;
         }
@@ -166,7 +177,7 @@
         
         .toggle-warning {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 8px; /* Reduced from 15px to 8px */
             color: #f44336;
             font-weight: 600;
             font-size: 0.95rem;
@@ -183,21 +194,44 @@
         .section-title {
             color: #3a0ca3;
             font-size: 1.5rem;
-            margin: 30px 0 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #4361ee;
+            margin: 20px 0 15px; /* Reduced margin */
+            padding-bottom: 8px; /* Reduced padding */
+            border-bottom: 2px solid #4361ee; /* Slightly thinner border */
         }
         
+        /* Form Grid - Improved for widescreen */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-            margin-bottom: 30px;
+            gap: 20px; /* Reduced gap for better spacing */
+            margin-bottom: 20px; /* Reduced margin */
         }
         
+        /* Widescreen layout - more columns and better spacing */
         @media (min-width: 1200px) {
             .form-grid {
                 grid-template-columns: repeat(3, 1fr);
+                gap: 25px; /* Slightly more gap for widescreen */
+            }
+            
+            .form-group {
+                margin: 5px; /* Add some margin around each group */
+            }
+        }
+        
+        /* Tablet layout */
+        @media (min-width: 768px) and (max-width: 1199px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+        
+        /* Mobile layout */
+        @media (max-width: 767px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
             }
         }
         
@@ -219,6 +253,7 @@
             border-radius: 10px;
             font-size: 1rem;
             transition: all 0.3s;
+            width: 100%;
         }
         
         .form-group input:focus, .form-group select:focus {
@@ -240,26 +275,31 @@
         
         .form-footer {
             text-align: center;
-            padding: 30px 0;
-            border-top: 2px solid #eee;
+            padding: 15px 30px 20px 30px; /* Reduced top padding, increased bottom slightly */
+            /* Removed border-top: 2px solid #eee; */
+            margin-top: 10px; /* Reduced margin */
         }
         
         .continue-btn {
-            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            background: #4361ee; /* Solid blue background */
             color: white;
             border: none;
-            padding: 18px 60px;
+            padding: 16px 50px; /* Adjusted padding */
             font-size: 1.2rem;
             font-weight: 600;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+            width: 100%;
+            max-width: 350px; /* Slightly smaller max-width */
+            margin: 0 auto;
         }
         
         .continue-btn:hover:not(:disabled) {
             transform: translateY(-3px);
             box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
+            background: #3a0ca3; /* Darker blue on hover */
         }
         
         .continue-btn:disabled {
@@ -271,7 +311,7 @@
         }
         
         .continue-btn.enabled {
-            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            background: #4361ee;
             opacity: 1;
             cursor: pointer;
             box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
@@ -280,6 +320,7 @@
         .continue-btn.enabled:hover {
             transform: translateY(-3px);
             box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
+            background: #3a0ca3;
         }
         
         .error-message {
@@ -308,16 +349,18 @@
         }
         
         @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
+            .form-header {
+                padding: 20px 15px;
+            }
+            
+            .form-header h1 {
+                font-size: 2rem;
+                margin-top: 10px;
+                padding: 0;
             }
             
             .form-content {
-                padding: 20px;
-            }
-            
-            .form-header {
-                padding: 30px 20px;
+                padding: 20px 15px 5px 15px; /* Reduced bottom padding */
             }
             
             .back-btn {
@@ -327,10 +370,28 @@
                 transform: none;
                 margin-bottom: 15px;
                 display: inline-block;
+                padding: 10px 20px;
+                font-size: 1rem;
             }
             
-            .form-header h1 {
-                margin-top: 10px;
+            .user-type-toggle {
+                margin: 15px 0 10px; /* Reduced margin for mobile */
+                padding: 12px; /* Reduced padding for mobile */
+            }
+            
+            .toggle-warning {
+                margin-top: 5px; /* Reduced for mobile */
+            }
+            
+            .form-footer {
+                padding: 10px 15px 15px 15px; /* Reduced padding for mobile */
+                margin-top: 5px; /* Reduced margin for mobile */
+            }
+            
+            .continue-btn {
+                padding: 14px 40px;
+                font-size: 1.1rem;
+                max-width: 300px;
             }
             
             .toggle-container {
@@ -342,6 +403,33 @@
             .toggle-option {
                 border-radius: 10px;
                 margin-bottom: 5px;
+                padding: 12px 20px; /* Reduced padding for mobile */
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 15px;
+            }
+            
+            .form-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .back-btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+            
+            .continue-btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+                max-width: 280px;
             }
         }
     </style>
@@ -349,11 +437,11 @@
 <body>
     <div class="container">
         <div class="form-header">
-            <a href="https://www.odelya.online/cloud-storage.html" class="back-btn">
-                ← Back to Plans
-            </a>
+            <button onclick="goBackToPlanDetails()" class="back-btn">
+                ← Back to Plan Details
+            </button>
             <h1>User Details</h1>
-            <p>Select user type and fill details for Odelya Cloud Storage</p>
+            <!-- Paragraph removed as requested -->
         </div>
         
         <div class="form-content">
@@ -484,10 +572,8 @@
         </div>
         
         <div class="form-footer">
-            <button class="continue-btn" onclick="saveUserDetails()" id="continueBtn" disabled>Continue to Plan Details</button>
-            <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
-                Next: Plan Details
-            </p>
+            <button class="continue-btn" onclick="saveUserDetails()" id="continueBtn" disabled>Continue</button>
+            <!-- Removed "Next: Plan Details" line -->
         </div>
     </div>
 
@@ -496,6 +582,12 @@
         let selectedUserType = null;
         let userDetailsData = {};
         let dobPicker, doiPicker;
+        
+        // Go back to plan details page with preserved data
+        function goBackToPlanDetails() {
+            // Navigate back to plan-details.html
+            window.location.href = 'plan-details.html';
+        }
         
         // User Type Selection Function
         function selectUserType(type) {
@@ -1111,6 +1203,7 @@
         // Make functions globally available
         window.selectUserType = selectUserType;
         window.saveUserDetails = saveUserDetails;
+        window.goBackToPlanDetails = goBackToPlanDetails;
     </script>
 </body>
 </html>
