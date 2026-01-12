@@ -492,18 +492,14 @@
             console.log('Base Monthly Price:', baseMonthlyPrice);
             console.log('Base Yearly Price:', baseYearlyPrice);
             
-            // Show plan value from URL (just the number as INR XX)
-            if (planType === 'monthly') {
-                document.getElementById('planValue').value = 'INR ' + baseMonthlyPrice.toLocaleString('en-IN');
-            } else if (planType === 'yearly') {
-                document.getElementById('planValue').value = 'INR ' + baseYearlyPrice.toLocaleString('en-IN');
-            }
-            
             // Auto-set start date to current date
             setCurrentDateAsStartDate();
             
             // Calculate end date based on plan type
             calculateEndDate();
+            
+            // Calculate and display plan value
+            calculatePlanValue();
             
             // Enable continue button
             updateContinueButton();
@@ -572,11 +568,11 @@
             
             // For yearly plans
             if (startDay === 1) {
-                // Start date is 1st of month: end date is last day of 12th month
+                // Start date is 1st of month: end date is last day of same month next year
                 endDate.setFullYear(endDate.getFullYear() + 1);
                 endDate.setDate(0);
             } else {
-                // Start date is NOT 1st of month: end date is last day of NEXT 12th month
+                // Start date is NOT 1st of month: end date is last day of NEXT month next year
                 endDate.setFullYear(endDate.getFullYear() + 1);
                 endDate.setMonth(endDate.getMonth() + 1);
                 endDate.setDate(0);
@@ -593,6 +589,72 @@
             
             const formattedDate = `${day}-${month}-${year}`;
             document.getElementById('planEndDate').value = formattedDate;
+        }
+        
+        // Calculate plan value based on business logic
+        function calculatePlanValue() {
+            const startDateInput = document.getElementById('planStartDate').value;
+            
+            if (!startDateInput) {
+                document.getElementById('planValue').value = '';
+                return;
+            }
+            
+            // Parse start date from format: 12-Jan-2026
+            const parts = startDateInput.split('-');
+            if (parts.length !== 3) return;
+            
+            const day = parseInt(parts[0]);
+            const month = monthNames.indexOf(parts[1]);
+            const year = parseInt(parts[2]);
+            
+            if (month === -1) return;
+            
+            const startDate = new Date(year, month, day);
+            
+            let payableAmount = 0;
+            
+            if (planType === 'monthly') {
+                if (day === 1) {
+                    // Start date is 1st: Pay exact monthly price
+                    payableAmount = baseMonthlyPrice;
+                } else {
+                    // Start date is NOT 1st: Calculate prorated amount
+                    const daysInMonth = getDaysInMonth(startDate.getMonth() + 1, startDate.getFullYear());
+                    const daysLeftInMonth = daysInMonth - day + 1;
+                    
+                    // Calculate: (monthly price / 30) * days left + monthly price
+                    const dailyRate = baseMonthlyPrice / 30;
+                    const proratedAmount = dailyRate * daysLeftInMonth;
+                    payableAmount = proratedAmount + baseMonthlyPrice;
+                }
+            } else if (planType === 'yearly') {
+                if (day === 1) {
+                    // Start date is 1st: Pay exact yearly price
+                    payableAmount = baseYearlyPrice;
+                } else {
+                    // Start date is NOT 1st: Calculate prorated amount
+                    const daysInMonth = getDaysInMonth(startDate.getMonth() + 1, startDate.getFullYear());
+                    const daysLeftInMonth = daysInMonth - day + 1;
+                    
+                    // Calculate: (yearly price / 365) * days left + yearly price
+                    const dailyRate = baseYearlyPrice / 365;
+                    const proratedAmount = dailyRate * daysLeftInMonth;
+                    payableAmount = proratedAmount + baseYearlyPrice;
+                }
+            }
+            
+            // Round to 2 decimal places and format as INR
+            payableAmount = Math.round(payableAmount * 100) / 100;
+            document.getElementById('planValue').value = 'INR ' + payableAmount.toLocaleString('en-IN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+        
+        // Helper function to get days in a month
+        function getDaysInMonth(month, year) {
+            return new Date(year, month, 0).getDate();
         }
         
         // Show error message
