@@ -54,7 +54,7 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
             padding: 10px 20px;
             border-radius: 50px;
-            font-size: 1rem; /* Increased font size */
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -162,8 +162,8 @@
             background: linear-gradient(135deg, #4361ee, #3a0ca3);
             color: white;
             border: none;
-            padding: 16px 50px; /* Increased padding */
-            font-size: 1.2rem; /* Increased font size */
+            padding: 16px 50px;
+            font-size: 1.2rem;
             font-weight: 600;
             border-radius: 50px;
             cursor: pointer;
@@ -368,7 +368,7 @@
                 
                 <div class="form-group">
                     <label for="planEndDate" class="required">Plan End Date</label>
-                    <input type="text" id="planEndDate" readonly class="disabled-input" placeholder="Auto-calculated">
+                    <input type="text" id="planEndDate" readonly class="disabled-input" placeholder="Will be calculated">
                 </div>
                 
                 <div class="form-group payment-important">
@@ -489,59 +489,6 @@
             updateContinueButton();
         }
         
-        // Calculate end date based on duration AND start date (end of month calculation)
-        function calculateEndDate() {
-            const startDateInput = document.getElementById('planStartDate').value;
-            
-            // If start date is not selected, clear end date
-            if (!startDateInput) {
-                document.getElementById('planEndDate').value = '';
-                updateContinueButton();
-                return;
-            }
-            
-            const years = parseInt(document.getElementById('durationYears').value) || 0;
-            const months = parseInt(document.getElementById('durationMonths').value) || 0;
-            
-            // If duration is 0, clear end date
-            if (years === 0 && months === 0) {
-                document.getElementById('planEndDate').value = '';
-                updateContinueButton();
-                return;
-            }
-            
-            // Parse start date
-            const [day, month, year] = startDateInput.split('-').map(Number);
-            const startDate = new Date(year, month - 1, day);
-            
-            // Calculate end date
-            let endDate = new Date(startDate);
-            
-            // Add years and months
-            endDate.setFullYear(endDate.getFullYear() + years);
-            endDate.setMonth(endDate.getMonth() + months);
-            
-            // Business logic for end date
-            if (day === 1) {
-                // Start date is 1st of month: end date is last day of previous month
-                endDate.setDate(0);
-            } else {
-                // Start date is NOT 1st of month: end date is last day of NEXT month
-                endDate.setMonth(endDate.getMonth() + 1);
-                endDate.setDate(0);
-            }
-            
-            // Format end date
-            const formattedEndDate = endDate.getDate().toString().padStart(2, '0') + '-' + 
-                                   (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' + 
-                                   endDate.getFullYear();
-            
-            document.getElementById('planEndDate').value = formattedEndDate;
-            
-            // Update continue button
-            updateContinueButton();
-        }
-        
         // Show error message
         function showError(fieldId, message) {
             const errorDiv = document.getElementById(fieldId + 'Error');
@@ -590,7 +537,7 @@
             
             // Check if plan value is present
             const planValue = document.getElementById('planValue').value;
-            if (!planValue || planValue === 'INR 0' || planValue === 'Calculated price will appear here') {
+            if (!planValue || planValue === 'INR 0' || planValue === 'Plan price will appear here') {
                 return false;
             }
             
@@ -685,7 +632,7 @@
         
         // Setup event listeners
         function setupEventListeners() {
-            // Duration calculation events
+            // Duration input events
             document.getElementById('durationMonths').addEventListener('input', function() {
                 // For monthly plans: max 11 months
                 if (planType === 'monthly') {
@@ -698,7 +645,6 @@
                     if (this.value < 0) this.value = 0;
                     if (this.value > 11) this.value = 11;
                 }
-                calculateEndDate();
                 hideError('durationError');
                 updateContinueButton();
             });
@@ -708,21 +654,18 @@
                 if (!this.disabled) {
                     if (this.value < 0) this.value = 0;
                     if (this.value > 10) this.value = 10;
-                    calculateEndDate();
                     hideError('durationError');
                     updateContinueButton();
                 }
             });
             
             document.getElementById('durationMonths').addEventListener('change', function() {
-                calculateEndDate();
                 hideError('durationError');
                 updateContinueButton();
             });
             
             document.getElementById('durationYears').addEventListener('change', function() {
                 if (!this.disabled) {
-                    calculateEndDate();
                     hideError('durationError');
                     updateContinueButton();
                 }
@@ -730,7 +673,6 @@
             
             // Date field validation
             document.getElementById('planStartDate').addEventListener('input', () => {
-                calculateEndDate();
                 hideError('planStartDate');
                 updateContinueButton();
             });
@@ -746,7 +688,6 @@
                 allowInput: true,
                 minDate: "today",
                 onChange: function(selectedDates, dateStr, instance) {
-                    calculateEndDate();
                     hideError('planStartDate');
                     updateContinueButton();
                 }
@@ -764,7 +705,6 @@
         
         // Make functions globally available
         window.savePlanDetails = savePlanDetails;
-        window.calculateEndDate = calculateEndDate;
     </script>
 </body>
 </html>
