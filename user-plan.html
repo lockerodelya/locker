@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odelya - Plan Details</title>
+    
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: auto;
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            color: #4361ee;
+            border: 2px solid #4361ee;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+        
+        .back-btn:hover {
+            background: #4361ee;
+            color: white;
+            border-color: #4361ee;
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .form-header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0;
+            font-weight: 800;
+            padding: 0 20px;
+            letter-spacing: 1px;
+        }
+        
+        .form-header p {
+            display: none;
+        }
+        
+        .form-content {
+            padding: 30px 30px 15px 30px;
+        }
+        
+        .section-title {
+            display: none;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+        
+        @media (min-width: 992px) {
+            .form-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+            }
+            
+            .form-group {
+                margin: 10px;
+            }
+        }
+        
+        @media (min-width: 768px) and (max-width: 991px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+            }
+            
+            .form-group {
+                margin: 8px;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .form-group {
+                margin: 5px;
+            }
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .form-group:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group label {
+            font-weight: 700;
+            color: #333;
+            font-size: 1.4rem;
+            padding: 20px 15px;
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+            text-align: center;
+            margin: 0;
+            flex-shrink: 0;
+        }
+        
+        .form-group input, .form-group select {
+            padding: 25px 15px;
+            border: none;
+            border-radius: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: all 0.3s;
+            width: 100%;
+            text-align: center;
+            color: #4361ee;
+            background-color: white;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            background-color: #f8f9fa;
+        }
+        
+        .disabled-input {
+            background-color: white;
+            color: #4361ee;
+            cursor: not-allowed;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            border: none;
+            padding: 25px 15px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #f44336;
+            font-size: 1.4rem;
+        }
+        
+        .plan-type-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .plan-type-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .plan-type-label {
+            font-weight: 700;
+            color: #333;
+            font-size: 1.4rem;
+            padding: 20px 15px;
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+            text-align: center;
+            margin: 0;
+        }
+        
+        .plan-duration-display {
+            padding: 25px 15px;
+            background-color: white;
+            color: #4361ee;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            cursor: not-allowed;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+        }
+        
+        .form-footer {
+            text-align: center;
+            padding: 20px 30px 30px 30px;
+            margin-top: 20px;
+        }
+        
+        .continue-btn {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            border: none;
+            padding: 18px 55px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .continue-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
+        }
+        
+        .continue-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+        
+        .continue-btn.enabled {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            opacity: 1;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .continue-btn.enabled:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
+        }
+        
+        .error-message {
+            color: #f44336;
+            font-size: 1.2rem;
+            margin-top: 5px;
+            display: none;
+            text-align: center;
+            padding: 10px;
+            background-color: #fff5f5;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .payment-important {
+            font-size: 1.5rem !important;
+            font-weight: 700 !important;
+        }
+        
+        .payment-important label {
+            font-size: 1.5rem !important;
+            background-color: #e8f4ff;
+        }
+        
+        .payment-important input {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #3a0ca3;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .form-header {
+                padding: 20px 15px;
+            }
+            
+            .form-header h1 {
+                font-size: 2.2rem;
+                margin-top: 10px;
+                padding: 0;
+            }
+            
+            .form-content {
+                padding: 20px 15px 10px 15px;
+            }
+            
+            .back-btn {
+                position: relative;
+                left: 0;
+                top: 0;
+                transform: none;
+                margin-bottom: 20px;
+                display: inline-block;
+                padding: 10px 20px;
+                font-size: 1.1rem;
+            }
+            
+            .form-footer {
+                padding: 15px 15px 20px 15px;
+                margin-top: 10px;
+            }
+            
+            .continue-btn {
+                padding: 16px 40px;
+                font-size: 1.2rem;
+                max-width: 350px;
+            }
+            
+            .form-group label {
+                font-size: 1.2rem;
+                padding: 15px 12px;
+            }
+            
+            .form-group input, .form-group select,
+            .disabled-input, .plan-duration-display {
+                font-size: 1.3rem;
+                padding: 20px 12px;
+                min-height: 70px;
+            }
+            
+            .payment-important label {
+                font-size: 1.3rem !important;
+            }
+            
+            .payment-important input {
+                font-size: 1.4rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 15px;
+            }
+            
+            .form-header h1 {
+                font-size: 1.9rem;
+            }
+            
+            .back-btn {
+                padding: 8px 16px;
+                font-size: 1rem;
+            }
+            
+            .continue-btn {
+                padding: 14px 30px;
+                font-size: 1.1rem;
+            }
+            
+            .form-group label {
+                font-size: 1.1rem;
+                padding: 12px 10px;
+            }
+            
+            .form-group input, .form-group select,
+            .disabled-input, .plan-duration-display {
+                font-size: 1.2rem;
+                padding: 18px 10px;
+                min-height: 65px;
+            }
+            
+            .payment-important label {
+                font-size: 1.2rem !important;
+            }
+            
+            .payment-important input {
+                font-size: 1.3rem;
+            }
+        }
+        
+        .duration-box.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <a href="cloud-storage.html" class="back-btn">
+                ← Change Plan
+            </a>
+            <h1>Plan Details</h1>
+        </div>
+        
+        <div class="form-content">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="planName" class="required">Plan Name</label>
+                    <input type="text" id="planName" readonly class="disabled-input" value="Secure Cloud Storage">
+                </div>
+                
+                <div class="form-group">
+                    <label for="planSize" class="required">Plan (GB)</label>
+                    <input type="text" id="planSize" readonly class="disabled-input" placeholder="Will auto-fill from pricing table">
+                </div>
+                
+                <div class="form-group">
+                    <label class="required">Plan Type</label>
+                    <div id="planDurationDisplay" class="plan-duration-display">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="planStartDate" class="required">Plan Start Date</label>
+                    <input type="text" id="planStartDate" readonly class="disabled-input" placeholder="Auto-selected">
+                </div>
+                
+                <div class="form-group">
+                    <label for="planEndDate" class="required">Plan End Date</label>
+                    <input type="text" id="planEndDate" readonly class="disabled-input" placeholder="Auto-calculated">
+                </div>
+                
+                <div class="form-group payment-important">
+                    <label for="planValue" class="required">Plan Value</label>
+                    <input type="text" id="planValue" readonly class="disabled-input" placeholder="Plan price will appear here">
+                </div>
+            </div>
+            
+            <div class="form-footer">
+                <button class="continue-btn" onclick="savePlanDetails()" id="continueBtn" disabled>Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let planType = '';
+        let baseMonthlyPrice = 0;
+        let baseYearlyPrice = 0;
+        let originalPlanValue = '';
+        let originalPlanName = '';
+        let originalPlanSize = '';
+        
+        // Month names for date formatting
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        
+        // Auto-fill plan details from URL
+        function autoFillPlanDetails() {
+            console.log('Auto-filling plan details from URL...');
+            
+            // Get parameters from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const planNameFromUrl = urlParams.get('plan') || '';
+            const planSize = urlParams.get('size') || '';
+            const planPrice = urlParams.get('price') || '';
+            const planPeriod = urlParams.get('period') || '';
+            
+            console.log('URL Parameters:', {
+                plan: planNameFromUrl,
+                size: planSize,
+                price: planPrice,
+                period: planPeriod
+            });
+            
+            // Store original values
+            originalPlanValue = planPrice;
+            originalPlanName = planNameFromUrl;
+            originalPlanSize = planSize;
+            
+            // Fill plan name - ALWAYS "Secure Cloud Storage" but show original in hint
+            document.getElementById('planName').value = 'Secure Cloud Storage';
+            document.getElementById('planName').title = `Selected from: ${planNameFromUrl}`;
+            
+            // Fill plan size
+            if (planSize) {
+                document.getElementById('planSize').value = planSize + ' GB';
+            } else {
+                // Try to extract size from plan name
+                const sizeMatch = planNameFromUrl.match(/(\d+)\s*GB/);
+                if (sizeMatch) {
+                    document.getElementById('planSize').value = sizeMatch[1] + ' GB';
+                }
+            }
+            
+            // Determine plan type and set duration display
+            if (planPeriod === 'monthly') {
+                planType = 'monthly';
+                baseMonthlyPrice = parseFloat(planPrice) || 0;
+                baseYearlyPrice = 0;
+                
+                // Show "Monthly" in plan duration display
+                document.getElementById('planDurationDisplay').textContent = 'Monthly';
+                
+            } else if (planPeriod === 'yearly') {
+                planType = 'yearly';
+                baseYearlyPrice = parseFloat(planPrice) || 0;
+                baseMonthlyPrice = Math.round(baseYearlyPrice / 12);
+                
+                // Show "Yearly" in plan duration display
+                document.getElementById('planDurationDisplay').textContent = 'Yearly';
+                
+            } else {
+                // Determine from plan name
+                if (planNameFromUrl.toLowerCase().includes('monthly')) {
+                    planType = 'monthly';
+                    baseMonthlyPrice = parseFloat(planPrice) || 0;
+                    document.getElementById('planDurationDisplay').textContent = 'Monthly';
+                } else {
+                    planType = 'yearly';
+                    baseYearlyPrice = parseFloat(planPrice) || 0;
+                    baseMonthlyPrice = Math.round(baseYearlyPrice / 12);
+                    document.getElementById('planDurationDisplay').textContent = 'Yearly';
+                }
+            }
+            
+            console.log('Plan Type:', planType);
+            console.log('Base Monthly Price:', baseMonthlyPrice);
+            console.log('Base Yearly Price:', baseYearlyPrice);
+            
+            // Auto-set start date to current date
+            setCurrentDateAsStartDate();
+            
+            // Calculate end date based on plan type
+            calculateEndDate();
+            
+            // Calculate and display plan value
+            calculatePlanValue();
+            
+            // Enable continue button
+            updateContinueButton();
+        }
+        
+        // Set current date as start date in format: 12-Jan-2026
+        function setCurrentDateAsStartDate() {
+            const today = new Date();
+            const day = today.getDate();
+            const month = monthNames[today.getMonth()];
+            const year = today.getFullYear();
+            
+            const formattedDate = `${day}-${month}-${year}`;
+            document.getElementById('planStartDate').value = formattedDate;
+        }
+        
+        // Calculate end date based on plan type and start date
+        function calculateEndDate() {
+            const startDateInput = document.getElementById('planStartDate').value;
+            
+            if (!startDateInput) {
+                document.getElementById('planEndDate').value = '';
+                return;
+            }
+            
+            // Parse start date from format: 12-Jan-2026
+            const parts = startDateInput.split('-');
+            if (parts.length !== 3) return;
+            
+            const day = parseInt(parts[0]);
+            const month = monthNames.indexOf(parts[1]);
+            const year = parseInt(parts[2]);
+            
+            if (month === -1) return;
+            
+            const startDate = new Date(year, month, day);
+            
+            if (planType === 'monthly') {
+                calculateMonthlyEndDate(startDate, day);
+            } else if (planType === 'yearly') {
+                calculateYearlyEndDate(startDate, day, year);
+            }
+        }
+        
+        // Calculate end date for monthly plan
+        function calculateMonthlyEndDate(startDate, startDay) {
+            let endDate = new Date(startDate);
+            
+            // For monthly plans
+            if (startDay === 1) {
+                // Start date is 1st of month: end date is last day of same month
+                endDate.setMonth(endDate.getMonth() + 1);
+                endDate.setDate(0);
+            } else {
+                // Start date is NOT 1st of month: end date is last day of NEXT month
+                endDate.setMonth(endDate.getMonth() + 2);
+                endDate.setDate(0);
+            }
+            
+            formatAndSetEndDate(endDate);
+        }
+        
+        // Calculate end date for yearly plan
+        function calculateYearlyEndDate(startDate, startDay, startYear) {
+            let endDate = new Date(startDate);
+            
+            // For yearly plans
+            if (startDay === 1) {
+                // Start date is 1st of month: current month is included in 12 full months
+                // End date = last day of same month next year
+                endDate.setFullYear(startYear + 1);
+                endDate.setDate(0);
+            } else {
+                // Start date is NOT 1st of month: start from NEXT full month for 12 months
+                // End date = last day of same month next year (but starting from next month)
+                
+                // First, move to next month
+                endDate.setMonth(endDate.getMonth() + 1);
+                // Then add 12 months (total 13 months from start date)
+                endDate.setFullYear(startYear + 1);
+                endDate.setMonth(endDate.getMonth() + 1);
+                // Go to last day of that month
+                endDate.setDate(0);
+            }
+            
+            formatAndSetEndDate(endDate);
+        }
+        
+        // Format and set end date in format: 12-Jan-2026
+        function formatAndSetEndDate(date) {
+            const day = date.getDate();
+            const month = monthNames[date.getMonth()];
+            const year = date.getFullYear();
+            
+            const formattedDate = `${day}-${month}-${year}`;
+            document.getElementById('planEndDate').value = formattedDate;
+        }
+        
+        // Calculate plan value based on business logic
+        function calculatePlanValue() {
+            const startDateInput = document.getElementById('planStartDate').value;
+            
+            if (!startDateInput) {
+                document.getElementById('planValue').value = '';
+                return;
+            }
+            
+            // Parse start date from format: 12-Jan-2026
+            const parts = startDateInput.split('-');
+            if (parts.length !== 3) return;
+            
+            const day = parseInt(parts[0]);
+            const month = monthNames.indexOf(parts[1]);
+            const year = parseInt(parts[2]);
+            
+            if (month === -1) return;
+            
+            const startDate = new Date(year, month, day);
+            
+            let payableAmount = 0;
+            
+            if (planType === 'monthly') {
+                if (day === 1) {
+                    // Start date is 1st: Pay exact monthly price
+                    payableAmount = baseMonthlyPrice;
+                } else {
+                    // Start date is NOT 1st: Calculate prorated amount
+                    const daysInMonth = getDaysInMonth(startDate.getMonth() + 1, startDate.getFullYear());
+                    const daysLeftInMonth = daysInMonth - day + 1;
+                    
+                    // Calculate: (monthly price / 30) * days left + monthly price
+                    const dailyRate = baseMonthlyPrice / 30;
+                    const proratedAmount = dailyRate * daysLeftInMonth;
+                    payableAmount = proratedAmount + baseMonthlyPrice;
+                }
+            } else if (planType === 'yearly') {
+                if (day === 1) {
+                    // Start date is 1st: Pay exact yearly price
+                    payableAmount = baseYearlyPrice;
+                } else {
+                    // Start date is NOT 1st: Calculate prorated amount for remaining days
+                    const daysInMonth = getDaysInMonth(startDate.getMonth() + 1, startDate.getFullYear());
+                    const daysLeftInMonth = daysInMonth - day + 1;
+                    
+                    // Calculate: (yearly price / 365) * days left + yearly price
+                    const dailyRate = baseYearlyPrice / 365;
+                    const proratedAmount = dailyRate * daysLeftInMonth;
+                    payableAmount = proratedAmount + baseYearlyPrice;
+                }
+            }
+            
+            // ROUND OFF to nearest whole number (no decimal places)
+            payableAmount = Math.round(payableAmount);
+            
+            // Format as INR with no decimal places
+            document.getElementById('planValue').value = 'INR ' + payableAmount.toLocaleString('en-IN', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            });
+        }
+        
+        // Helper function to get days in a month
+        function getDaysInMonth(month, year) {
+            return new Date(year, month, 0).getDate();
+        }
+        
+        // Show error message
+        function showError(fieldId, message) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            const fieldElement = document.getElementById(fieldId);
+            
+            if (errorDiv && fieldElement) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                fieldElement.style.borderColor = '#f44336';
+            }
+        }
+        
+        // Hide error message
+        function hideError(fieldId) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            const fieldElement = document.getElementById(fieldId);
+            
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+            
+            if (fieldElement) {
+                fieldElement.style.borderColor = '#e0e0e0';
+            }
+        }
+        
+        // Check form validity
+        function checkFormValidity() {
+            // Check if all required fields have values
+            const requiredFields = ['planStartDate', 'planEndDate'];
+            
+            for (const fieldId of requiredFields) {
+                const field = document.getElementById(fieldId);
+                if (!field || !field.value.trim()) {
+                    return false;
+                }
+            }
+            
+            // Check if plan value is present
+            const planValue = document.getElementById('planValue').value;
+            if (!planValue || planValue === 'INR 0' || planValue === 'Plan price will appear here') {
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Update continue button
+        function updateContinueButton() {
+            const continueBtn = document.getElementById('continueBtn');
+            const isValid = checkFormValidity();
+            
+            if (isValid) {
+                continueBtn.disabled = false;
+                continueBtn.classList.add('enabled');
+            } else {
+                continueBtn.disabled = true;
+                continueBtn.classList.remove('enabled');
+            }
+        }
+        
+        // Validate form
+        function validateForm() {
+            let isValid = true;
+            
+            // Clear all errors
+            const fieldIds = ['planStartDate', 'planEndDate', 'duration'];
+            
+            fieldIds.forEach(fieldId => {
+                hideError(fieldId);
+            });
+            
+            // Check required fields
+            const requiredFields = [
+                {id: 'planStartDate', name: 'Plan Start Date'},
+                {id: 'planEndDate', name: 'Plan End Date'}
+            ];
+            
+            requiredFields.forEach(field => {
+                const value = document.getElementById(field.id).value.trim();
+                if (!value) {
+                    showError(field.id, `${field.name} is required`);
+                    isValid = false;
+                }
+            });
+            
+            return isValid;
+        }
+        
+        // Save plan details and proceed to user-details.html
+        function savePlanDetails() {
+            if (!validateForm()) {
+                return;
+            }
+            
+            // Collect plan data
+            const planDetailsData = {
+                planName: document.getElementById('planName').value,
+                originalPlanName: originalPlanName,
+                planSize: document.getElementById('planSize').value,
+                originalPlanSize: originalPlanSize,
+                planType: planType,
+                planDuration: document.getElementById('planDurationDisplay').textContent,
+                planStartDate: document.getElementById('planStartDate').value,
+                planEndDate: document.getElementById('planEndDate').value,
+                planValue: document.getElementById('planValue').value,
+                originalPlanValue: 'INR ' + originalPlanValue,
+                basePrice: planType === 'monthly' ? baseMonthlyPrice : baseYearlyPrice,
+                basePriceType: planType === 'monthly' ? 'monthly' : 'yearly'
+            };
+            
+            // Save to session storage
+            sessionStorage.setItem('odelya_planDetails', JSON.stringify(planDetailsData));
+            
+            console.log('Plan details saved:', planDetailsData);
+            
+            // Redirect to user-details.html
+            window.location.href = 'user-details.html';
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Plan Details Page Loaded');
+            
+            // Auto-fill plan details from URL
+            autoFillPlanDetails();
+            
+            // Initial button state
+            updateContinueButton();
+        });
+        
+        // Make functions globally available
+        window.savePlanDetails = savePlanDetails;
+    </script>
+</body>
+</html>
