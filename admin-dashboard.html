@@ -3,9 +3,9 @@
 <head>
     <title>Admin Dashboard - Odelya</title>
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <!-- jsPDF for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -652,21 +652,28 @@
     </div>
 
     <script>
-        // Your Firebase configuration
+        // ==================== FIREBASE CONFIGURATION ====================
         const firebaseConfig = {
             apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
-            authDomain: "odelya-user-data.firebasestorage.app",
+            authDomain: "odelya-user-data.firebaseapp.com",  // CORRECTED
             projectId: "odelya-user-data",
-            storageBucket: "odelya-user-data.appspot.com",
+            storageBucket: "odelya-user-data.firebasestorage.app",  // CORRECTED
             messagingSenderId: "590231118790",
             appId: "1:590231118790:web:572c355c8826ad9c9148c7",
             measurementId: "G-9SWTR9V32R"
         };
 
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        let auth, db;
+        try {
+            const app = firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+            db = firebase.firestore();
+            console.log("Firebase initialized successfully");
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+        }
+        // ==================== END FIREBASE CONFIGURATION ====================
 
         // Global variables
         let currentUserId = null;
@@ -675,6 +682,47 @@
         let currentPasswordVisible = false;
         let allUsers = [];
         let currentFilter = 'all';
+
+        // Fix the user data structure to match what admin-dashboard expects
+        function fixUserDataStructure(user) {
+            const fixedUser = { ...user };
+            
+            // Map the data from user-account.html structure
+            if (user.personalInfo) {
+                fixedUser.name = user.personalInfo.name || 'N/A';
+                fixedUser.email = user.personalInfo.email || user.email || 'N/A';
+                fixedUser.phone = user.personalInfo.phone || 'N/A';
+                fixedUser.dob = user.personalInfo.dob || null;
+                fixedUser.gender = user.personalInfo.gender || null;
+                fixedUser.aadhaar = user.personalInfo.aadhaar || null;
+                fixedUser.pan = user.personalInfo.pan || null;
+                fixedUser.gstin = user.personalInfo.gstin || null;
+            }
+            
+            if (user.businessInfo) {
+                fixedUser.doi = user.businessInfo.doi || null;
+                fixedUser.pincode = user.businessInfo.pincode || null;
+            }
+            
+            if (user.planDetails) {
+                fixedUser.planName = user.planDetails.planName || 'N/A';
+                fixedUser.planSize = user.planDetails.planSize || 'N/A';
+                fixedUser.planType = user.planDetails.planType || 'N/A';
+                fixedUser.planStartDate = user.planDetails.planStartDate || 'N/A';
+                fixedUser.planEndDate = user.planDetails.planEndDate || 'N/A';
+                fixedUser.planValue = user.planDetails.planValue || 'N/A';
+            }
+            
+            // Map account fields
+            fixedUser.userId = user.accountName || user.uid;
+            fixedUser.username = user.accountName;
+            fixedUser.password = "********"; // Placeholder - password isn't stored in Firestore
+            
+            // Ensure status
+            fixedUser.status = user.status || 'inactive';
+            
+            return fixedUser;
+        }
 
         // Format date to dd-mm-yyyy HH:MM:SS AM/PM
         function formatDateTime(dateValue) {
@@ -841,7 +889,7 @@
                     filteredUsers = allUsers;
                     break;
                 case 'individual':
-                    filteredUsers = allUsers.filter(user => user.userType === 'individual');
+                    filteredUsers = allUsers.filter(user => user.userType === 'personal');
                     break;
                 case 'business':
                     filteredUsers = allUsers.filter(user => user.userType === 'business');
@@ -876,15 +924,15 @@
             
             let html = '';
             filteredUsers.forEach(user => {
-                const userType = user.userType || 'individual';
-                const userName = userType === 'individual' ? (user.fullName || 'N/A') : (user.businessName || 'N/A');
+                const userType = user.userType || 'personal';
+                const userName = user.name || 'N/A';
                 
                 html += `
                     <tr>
                         <td>${user.userId || 'N/A'}</td>
                         <td>
                             <span class="user-type-badge user-type-${userType}">
-                                ${userType.toUpperCase()}
+                                ${userType === 'personal' ? 'INDIVIDUAL' : 'BUSINESS'}
                             </span>
                         </td>
                         <td>${userName}</td>
@@ -912,7 +960,7 @@
         // Update counts in filter tabs
         function updateTabCounts() {
             const totalCount = allUsers.length;
-            const individualCount = allUsers.filter(u => u.userType === 'individual').length;
+            const individualCount = allUsers.filter(u => u.userType === 'personal').length;
             const businessCount = allUsers.filter(u => u.userType === 'business').length;
             const activeCount = allUsers.filter(u => u.status === 'active').length;
             const inactiveCount = allUsers.filter(u => u.status === 'inactive').length;
@@ -943,15 +991,18 @@
                     if (doc.exists) {
                         const user = doc.data();
                         user.id = userId;
-                        currentUserData = user;
                         
-                        document.getElementById('modalUserIdDisplay').textContent = `User ID: ${user.userId || 'N/A'}`;
+                        // Fix the data structure
+                        const fixedUser = fixUserDataStructure(user);
+                        currentUserData = fixedUser;
+                        
+                        document.getElementById('modalUserIdDisplay').textContent = `User ID: ${fixedUser.userId || 'N/A'}`;
                         
                         const statusDisplay = document.getElementById('modalStatusDisplay');
-                        statusDisplay.textContent = user.status || 'inactive';
-                        statusDisplay.className = 'modal-status ' + (user.status || 'inactive');
+                        statusDisplay.textContent = fixedUser.status || 'inactive';
+                        statusDisplay.className = 'modal-status ' + (fixedUser.status || 'inactive');
                         
-                        showUserModal(user, false);
+                        showUserModal(fixedUser, false);
                     } else {
                         alert("User not found!");
                         closeModal();
@@ -973,7 +1024,7 @@
             currentUserId = user.id;
             
             let html = '';
-            const userType = user.userType || 'individual';
+            const userType = user.userType || 'personal';
             
             // Helper function to create field
             function createField(label, fieldName, value, type = 'text', canClear = false) {
@@ -1009,7 +1060,7 @@
                     } else if (fieldName === 'userType') {
                         fieldHtml = `
                             <select id="edit_${fieldName}">
-                                <option value="individual" ${value === 'individual' ? 'selected' : ''}>Individual</option>
+                                <option value="personal" ${value === 'personal' ? 'selected' : ''}>Personal</option>
                                 <option value="business" ${value === 'business' ? 'selected' : ''}>Business</option>
                             </select>
                         `;
@@ -1082,27 +1133,20 @@
             html += `<div class="left-column">`;
             
             html += createField('User Type', 'userType', userType, 'select');
+            html += createField('Name', 'name', user.name);
+            html += createField('Email', 'email', user.email, 'email');
+            html += createField('Phone', 'phone', user.phone, 'tel');
             
-            if (userType === 'individual') {
-                html += createField('Full Name', 'fullName', user.fullName);
-                html += createField('Email', 'email', user.email, 'email');
-                html += createField('Phone', 'phone', user.phone, 'tel');
+            if (userType === 'personal') {
                 html += createField('Date of Birth', 'dob', user.dob, 'text', true);
-                // STABLE FIELDS - Aadhaar, PAN, GSTIN (no clear option)
-                html += createField('Aadhaar Number', 'aadhaar', user.aadhaar, 'text');
-                html += createField('PAN Number', 'pan', user.pan, 'text');
-                html += createField('GSTIN', 'gstin', user.gstin, 'text');
             } else if (userType === 'business') {
-    html += createField('Business Name', 'businessName', user.businessName);
-    html += createField('Email', 'email', user.email, 'email');
-    html += createField('Phone', 'phone', user.phone, 'tel');
-    html += createField('Date of Incorporation', 'dateOfIncorporation', user.dateOfIncorporation, 'text', true);
-    // STABLE FIELDS - Aadhaar (only for view), PAN, GSTIN (no clear option)
-    html += createField('Aadhaar Number', 'aadhaar', user.aadhaar, 'text');
-    html += createField('PAN Number', 'pan', user.pan, 'text');
-    html += createField('GSTIN', 'gstin', user.gstin, 'text');
-}
+                html += createField('DOI', 'doi', user.doi, 'text', true);
+                html += createField('Pincode', 'pincode', user.pincode, 'text');
+            }
             
+            html += createField('Aadhaar Number', 'aadhaar', user.aadhaar, 'text');
+            html += createField('PAN Number', 'pan', user.pan, 'text');
+            html += createField('GSTIN', 'gstin', user.gstin, 'text');
             html += createField('Username', 'username', user.username);
             html += createField('Password', 'password', user.password);
             html += `</div>`;
@@ -1118,11 +1162,11 @@
             html += createField('Plan Value', 'planValue', user.planValue);
             html += createField('Payment Mode', 'paymentMode', user.paymentMode);
             
-            if (user.createdAt) {
+            if (user.accountCreated) {
                 html += `
                     <div class="detail-group">
                         <label>Registered On</label>
-                        <div class="value">${formatDateTime(user.createdAt)}</div>
+                        <div class="value">${formatDateTime(user.accountCreated)}</div>
                     </div>
                 `;
             }
@@ -1216,44 +1260,63 @@
             if (!currentUserId) return;
             logAdminAction('UPDATE_USER', `Updated user: ${currentUserData.email}`);
             
-            const userType = document.getElementById('edit_userType')?.value || 'individual';
+            const userType = document.getElementById('edit_userType')?.value || 'personal';
             
             const updates = {
-                userId: document.getElementById('edit_userId')?.value || '',
                 userType: userType,
-                username: document.getElementById('edit_username')?.value || '',
-                password: document.getElementById('edit_password')?.value || '',
+                accountName: document.getElementById('edit_username')?.value || '',
                 status: document.getElementById('edit_status')?.value || 'inactive',
-                planName: document.getElementById('edit_planName')?.value || '',
-                planSize: document.getElementById('edit_planSize')?.value || '',
-                planValue: document.getElementById('edit_planValue')?.value || '',
-                planStartDate: document.getElementById('edit_planStartDate')?.value || '',
-                planEndDate: document.getElementById('edit_planEndDate')?.value || '',
-                paymentMode: document.getElementById('edit_paymentMode')?.value || '',
                 updatedAt: new Date().toISOString()
             };
             
-            if (userType === 'individual') {
-                updates.fullName = document.getElementById('edit_fullName')?.value || '';
-                updates.email = document.getElementById('edit_email')?.value || '';
-                updates.phone = document.getElementById('edit_phone')?.value || '';
-                updates.dob = document.getElementById('edit_dob')?.value || null;
-                updates.aadhaar = document.getElementById('edit_aadhaar')?.value || null;
-                updates.pan = document.getElementById('edit_pan')?.value || null;
-                updates.gstin = document.getElementById('edit_gstin')?.value || null;
-            } else if (userType === 'business') {
-    updates.businessName = document.getElementById('edit_businessName')?.value || '';
-    updates.email = document.getElementById('edit_email')?.value || '';
-    updates.phone = document.getElementById('edit_phone')?.value || '';
-    updates.dateOfIncorporation = document.getElementById('edit_dateOfIncorporation')?.value || null;
-    updates.aadhaar = document.getElementById('edit_aadhaar')?.value || null;
-    updates.pan = document.getElementById('edit_pan')?.value || null;
-    updates.gstin = document.getElementById('edit_gstin')?.value || null;
-}
+            // Update personalInfo
+            updates.personalInfo = {
+                name: document.getElementById('edit_name')?.value || '',
+                email: document.getElementById('edit_email')?.value || '',
+                phone: document.getElementById('edit_phone')?.value || '',
+                aadhaar: document.getElementById('edit_aadhaar')?.value || null,
+                pan: document.getElementById('edit_pan')?.value || null,
+                gstin: document.getElementById('edit_gstin')?.value || null
+            };
             
-            Object.keys(updates).forEach(key => {
-                if (updates[key] === '' || updates[key] === null) {
-                    delete updates[key];
+            if (userType === 'personal') {
+                updates.personalInfo.dob = document.getElementById('edit_dob')?.value || null;
+                updates.personalInfo.gender = currentUserData.gender;
+            } else if (userType === 'business') {
+                updates.businessInfo = {
+                    doi: document.getElementById('edit_doi')?.value || null,
+                    pincode: document.getElementById('edit_pincode')?.value || null
+                };
+            }
+            
+            // Update planDetails
+            updates.planDetails = {
+                planName: document.getElementById('edit_planName')?.value || '',
+                planSize: document.getElementById('edit_planSize')?.value || '',
+                planType: document.getElementById('edit_planType')?.value || '',
+                planStartDate: document.getElementById('edit_planStartDate')?.value || '',
+                planEndDate: document.getElementById('edit_planEndDate')?.value || '',
+                planValue: document.getElementById('edit_planValue')?.value || ''
+            };
+            
+            // Remove null/empty values
+            Object.keys(updates.personalInfo).forEach(key => {
+                if (!updates.personalInfo[key]) {
+                    delete updates.personalInfo[key];
+                }
+            });
+            
+            if (updates.businessInfo) {
+                Object.keys(updates.businessInfo).forEach(key => {
+                    if (!updates.businessInfo[key]) {
+                        delete updates.businessInfo[key];
+                    }
+                });
+            }
+            
+            Object.keys(updates.planDetails).forEach(key => {
+                if (!updates.planDetails[key]) {
+                    delete updates.planDetails[key];
                 }
             });
             
@@ -1267,7 +1330,11 @@
                     console.log("User updated successfully!");
                     alert("✅ User updated successfully!");
                     
-                    currentUserData = { ...currentUserData, ...updates };
+                    // Update currentUserData with new values
+                    currentUserData = fixUserDataStructure({
+                        ...currentUserData,
+                        ...updates
+                    });
                     
                     const statusDisplay = document.getElementById('modalStatusDisplay');
                     statusDisplay.textContent = updates.status || currentUserData.status;
@@ -1307,14 +1374,15 @@
                 event.target.disabled = true;
                 
                 db.collection("users").doc(currentUserId).update({
-                    password: newPassword,
+                    accountName: newPassword, // Update the accountName field which stores password
                     updatedAt: new Date().toISOString()
                 })
                 .then(() => {
                     console.log("Password updated successfully!");
-                    alert("✅ Password updated successfully!\n\nUser can now login with this password on user-panel.html");
+                    alert("✅ Password updated successfully!\n\nUser can now login with this password on user-login.html");
                     
                     currentUserData.password = newPassword;
+                    currentUserData.username = newPassword;
                     showUserModal(currentUserData, false);
                 })
                 .catch((error) => {
@@ -1484,13 +1552,13 @@
                 doc.setFont('helvetica', 'normal');
                 doc.setTextColor(0, 0, 0);
                 
-                const userType = currentUserData.userType || 'individual';
+                const userType = currentUserData.userType || 'personal';
                 let personalData = [];
 
-                if (userType === 'individual') {
+                if (userType === 'personal') {
                     personalData = [
                         {label: 'User Type', value: 'Individual'},
-                        {label: 'Full Name', value: currentUserData.fullName || 'N/A'},
+                        {label: 'Name', value: currentUserData.name || 'N/A'},
                         {label: 'Email', value: currentUserData.email || 'N/A'},
                         {label: 'Phone', value: currentUserData.phone || 'N/A'},
                         {label: 'Date of Birth', value: currentUserData.dob || 'N/A'},
@@ -1503,10 +1571,11 @@
                 } else if (userType === 'business') {
                     personalData = [
                         {label: 'User Type', value: 'Business'},
-                        {label: 'Business Name', value: currentUserData.businessName || 'N/A'},
+                        {label: 'Business Name', value: currentUserData.name || 'N/A'},
                         {label: 'Email', value: currentUserData.email || 'N/A'},
                         {label: 'Phone', value: currentUserData.phone || 'N/A'},
-                        {label: 'Date of Incorp.', value: currentUserData.dateOfIncorporation || 'N/A'},
+                        {label: 'Date of Incorp.', value: currentUserData.doi || 'N/A'},
+                        {label: 'Pincode', value: currentUserData.pincode || 'N/A'},
                         {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
                         {label: 'PAN', value: currentUserData.pan || 'N/A'},
                         {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
@@ -1565,7 +1634,7 @@
                     {label: 'Plan End Date', value: currentUserData.planEndDate || 'N/A'},
                     {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
                     {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'},
-                    {label: 'Registered On', value: currentUserData.createdAt ? formatDateTime(currentUserData.createdAt) : 'N/A'}
+                    {label: 'Registered On', value: currentUserData.accountCreated ? formatDateTime(currentUserData.accountCreated) : 'N/A'}
                 ];
                 
                 doc.setFont('helvetica', 'bold');
@@ -1635,12 +1704,8 @@
                 
                 // Save PDF
                 const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
-                let nameForFile = '';
-                if (userType === 'individual') {
-                    nameForFile = (currentUserData.fullName || 'individual_user').replace(/\s+/g, '_');
-                } else {
-                    nameForFile = (currentUserData.businessName || 'business_user').replace(/\s+/g, '_');
-                }
+                let nameForFile = currentUserData.name || 'user';
+                nameForFile = nameForFile.replace(/\s+/g, '_');
                 const fileName = `${phoneNumber}_${nameForFile}.pdf`;
                 doc.save(fileName);
                 
@@ -1712,7 +1777,10 @@
                     querySnapshot.forEach((doc) => {
                         const user = doc.data();
                         user.id = doc.id;
-                        allUsers.push(user);
+                        
+                        // Fix the data structure
+                        const fixedUser = fixUserDataStructure(user);
+                        allUsers.push(fixedUser);
                         
                         // Ensure new users have inactive status by default
                         if (!user.status) {
