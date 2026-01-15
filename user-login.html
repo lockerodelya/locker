@@ -1858,28 +1858,47 @@ footer {
         }
         
 // Fix the user data structure to match what user-login expects
+// Replace the ENTIRE fixUserDataForLogin() function with this:
 function fixUserDataForLogin(user) {
-    const fixedUser = { ...user };
+    console.log("Raw user data from Firestore:", user);
     
-    // Map the data from user-account.html structure
-    if (user.personalInfo) {
-        fixedUser.name = user.personalInfo.name || 'N/A';
-        fixedUser.fullName = user.personalInfo.name || 'N/A';
-        fixedUser.email = user.personalInfo.email || user.email || 'N/A';
-        fixedUser.phone = user.personalInfo.phone || 'N/A';
-        fixedUser.dob = user.personalInfo.dob || null;
-        fixedUser.gender = user.personalInfo.gender || null;
-        fixedUser.aadhaar = user.personalInfo.aadhaar || null;
-        fixedUser.pan = user.personalInfo.pan || null;
-        fixedUser.gstin = user.personalInfo.gstin || null;
-    }
+    const fixedUser = {
+        // Basic user info
+        uid: user.uid || 'N/A',
+        
+        // Account info - IMPORTANT: Check both fields
+        username: user.username || user.accountName || 'N/A',
+        accountName: user.accountName || user.username || 'N/A',
+        password: user.password || '********',
+        email: user.email || 'N/A',
+        userType: user.userType || (user.personalInfo ? 'personal' : 'business'),
+        status: user.status || 'inactive',
+        
+        // Personal info (check both direct fields and nested structure)
+        name: user.name || user.personalInfo?.name || user.businessInfo?.businessName || 'N/A',
+        fullName: user.name || user.personalInfo?.name || user.businessInfo?.businessName || 'N/A',
+        phone: user.phone || user.personalInfo?.phone || 'N/A',
+        
+        // Dates
+        dob: user.dob || user.personalInfo?.dob || user.dateOfBirth || null,
+        doi: user.doi || user.businessInfo?.doi || user.dateOfIncorporation || null,
+        
+        // IDs
+        aadhaar: user.aadhaar || user.personalInfo?.aadhaar || user.aadhaarNo || user.aadhaarNumber || null,
+        pan: user.pan || user.personalInfo?.pan || user.panNo || user.panNumber || null,
+        gstin: user.gstin || user.personalInfo?.gstin || user.gstinNo || user.gstNumber || null,
+        
+        // Business info
+        businessName: user.businessName || user.businessInfo?.businessName || user.companyName || null,
+        pincode: user.pincode || user.businessInfo?.pincode || null,
+        
+        // Store the original data structures
+        personalInfo: user.personalInfo || {},
+        businessInfo: user.businessInfo || {},
+        planDetails: user.planDetails || {}
+    };
     
-    if (user.businessInfo) {
-        fixedUser.businessName = user.businessInfo.businessName || user.personalInfo?.name || 'N/A';
-        fixedUser.doi = user.businessInfo.doi || null;
-        fixedUser.pincode = user.businessInfo.pincode || null;
-    }
-    
+    // If planDetails exists, add its fields to root
     if (user.planDetails) {
         fixedUser.planName = user.planDetails.planName;
         fixedUser.planSize = user.planDetails.planSize;
@@ -1889,14 +1908,7 @@ function fixUserDataForLogin(user) {
         fixedUser.planValue = user.planDetails.planValue;
     }
     
-    // Map account fields
-    fixedUser.userId = user.accountName || user.uid;
-    fixedUser.username = user.accountName; // This is what users will use to login
-    fixedUser.password = "********"; // Placeholder
-    
-    // Ensure status
-    fixedUser.status = user.status || 'inactive';
-    
+    console.log("Fixed user data:", fixedUser);
     return fixedUser;
 }
 
@@ -1995,7 +2007,10 @@ function loginAsBusiness(username, password) {
 }
 
 // Handle user login (for all types) - CORRECTED VERSION
+// Update handleUserLogin() to add logging
 function handleUserLogin(userDoc, userData, userType) {
+    console.log("handleUserLogin called:", { userDoc, userData, userType });
+    
     // Check if user is active
     if (userData.status !== 'active') {
         showMessage('loginMessage', `Your ${userType} account is not active. Please contact administrator.`, 'error');
@@ -2009,11 +2024,16 @@ function handleUserLogin(userDoc, userData, userType) {
     currentUserData.userType = userType;
     currentUserType = userType;
     
+    console.log("Login successful. User data:", currentUserData);
+    
     // Save to localStorage
     localStorage.setItem('user_logged_in', 'true');
     localStorage.setItem('user_id', userDoc.id);
     localStorage.setItem('user_email', userData.email || '');
     localStorage.setItem('user_type', userType);
+    
+    // Save the actual username used for login
+    localStorage.setItem('user_username', document.getElementById('username').value);
     
     // Start checking user status periodically
     startStatusCheck();
