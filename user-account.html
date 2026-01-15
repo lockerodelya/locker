@@ -550,19 +550,13 @@
         </div>
     </div>
 
-    <script>
-        // Global variables
-        let currentUser = null;
-        let currentUserData = null;
-        let loginCheckInterval = null;
-        let currentUserType = 'individual'; // 'individual' or 'business'
-
+       <script>
         // ==================== FIREBASE CONFIGURATION ====================
         const firebaseConfig = {
             apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
-            authDomain: "odelya-user-data.firebaseapp.com",  // CORRECTED
+            authDomain: "odelya-user-data.firebaseapp.com",
             projectId: "odelya-user-data",
-            storageBucket: "odelya-user-data.firebasestorage.app",  // CORRECTED
+            storageBucket: "odelya-user-data.firebasestorage.app",
             messagingSenderId: "590231118790",
             appId: "1:590231118790:web:572c355c8826ad9c9148c7",
             measurementId: "G-9SWTR9V32R"
@@ -580,955 +574,439 @@
         }
         // ==================== END FIREBASE CONFIGURATION ====================
 
-        // On page load
-        window.onload = function() {
-            showLogin();
-            setupUserTypeToggle();
-            
-            // Check if user was already logged in
-            const userLoggedIn = localStorage.getItem('user_logged_in');
-            const userId = localStorage.getItem('user_id');
-            const userType = localStorage.getItem('user_type');
-            
-            if (userLoggedIn && userId && userType) {
-                currentUserType = userType;
-                checkUserStatus(userId);
-            }
-        };
+        // Global variables
+        let userDetailsData = {};
+        let planDetailsData = {};
         
-        // Setup user type toggle
-        function setupUserTypeToggle() {
-            const toggleButtons = document.querySelectorAll('.user-type-btn');
-            const usernameInput = document.getElementById('username');
-            const passwordInput = document.getElementById('password');
-            const loginBtnText = document.getElementById('loginBtnText');
-            
-            toggleButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Update active state
-                    toggleButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Update current user type
-                    currentUserType = this.dataset.type;
-                    
-                    // Update button text
-                    let buttonText = '';
-                    switch(currentUserType) {
-                        case 'individual':
-                            buttonText = 'Individual';
-                            usernameInput.placeholder = 'Enter your username';
-                            break;
-                        case 'business':
-                            buttonText = 'Business';
-                            usernameInput.placeholder = 'Enter your username';
-                            break;
-                    }
-                    loginBtnText.textContent = `Login as ${buttonText}`;
-                    
-                    // Clear form fields
-                    usernameInput.value = '';
-                    passwordInput.value = '';
-                    
-                    // Update placeholder
-                    passwordInput.placeholder = 'Enter your password';
-                });
-            });
+        // Go back to user-details.html
+        function goBackToUserDetails() {
+            window.location.href = 'user-details.html';
         }
         
-        // Show login screen
-        function showLogin() {
-            document.getElementById('loginBox').style.display = 'block';
-            document.getElementById('dashboard').style.display = 'none';
-        }
-        
-        // Show dashboard
-        function showDashboard() {
-            document.getElementById('loginBox').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-        }
-        
-        // Show message
-        function showMessage(elementId, message, type = 'info') {
-            const element = document.getElementById(elementId);
-            element.textContent = message;
-            element.className = `message ${type}`;
-            element.style.display = 'block';
+        // Load user details information from previous page
+        function loadUserDetailsInformation() {
+            const userDetailsGrid = document.getElementById('userDetailsInfoGrid');
+            const userDetailsContainer = document.getElementById('userDetailsInfoContainer');
             
-            if (type === 'error' || type === 'success') {
-                setTimeout(() => {
-                    element.style.display = 'none';
-                }, 5000);
-            }
-        }
-        
-        // Login form submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            login();
-        });
-        
-        // Login function
-        function login() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
+            // Try to get user data from sessionStorage (from user-details.html)
+            const userData = sessionStorage.getItem('odelya_userDetails');
             
-            if (!username || !password) {
-                showMessage('loginMessage', 'Please enter both username and password', 'error');
-                return;
-            }
-            
-            // Show loading
-            const loginBtnText = document.getElementById('loginBtnText');
-            const loginLoading = document.getElementById('loginLoading');
-            loginBtnText.textContent = 'Logging in...';
-            loginLoading.style.display = 'inline-block';
-            
-            // Login based on user type
-            loginUser(username, password);
-        }
-        
-        // Main login function
-        function loginUser(username, password) {
-            // Map userType for database query
-            const dbUserType = currentUserType === 'individual' ? 'personal' : 'business';
-            
-            db.collection("users")
-                .where("username", "==", username)
-                .where("password", "==", password)
-                .where("userType", "==", dbUserType)
-                .get()
-                .then((querySnapshot) => {
-                    if (querySnapshot.empty) {
-                        showMessage('loginMessage', `Invalid ${currentUserType} username or password`, 'error');
-                        resetLoginButton();
-                        return;
-                    }
-                    
-                    // User found
-                    const userDoc = querySnapshot.docs[0];
-                    const user = userDoc.data();
-                    
-                    // Check if user is active
-                    if (user.status !== 'active') {
-                        showMessage('loginMessage', `Your account is not active. Please contact administrator.`, 'error');
-                        resetLoginButton();
-                        return;
-                    }
-                    
-                    // Login successful
-                    currentUser = userDoc.id;
-                    currentUserData = user;
-                    currentUserData.userType = currentUserType;
-                    
-                    // Save to localStorage
-                    localStorage.setItem('user_logged_in', 'true');
-                    localStorage.setItem('user_id', userDoc.id);
-                    localStorage.setItem('user_email', user.email || '');
-                    localStorage.setItem('user_type', currentUserType);
-                    
-                    // Start checking user status periodically
-                    startStatusCheck();
-                    
-                    // Load appropriate dashboard
-                    loadDashboard(currentUserType);
-                    
-                    showDashboard();
-                    
-                    resetLoginButton();
-                    document.getElementById('loginForm').reset();
-                })
-                .catch((error) => {
-                    console.error("Login error:", error);
-                    showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
-                    resetLoginButton();
-                });
-        }
-        
-        // Reset login button state
-        function resetLoginButton() {
-            const loginBtnText = document.getElementById('loginBtnText');
-            const loginLoading = document.getElementById('loginLoading');
-            let buttonText = '';
-            switch(currentUserType) {
-                case 'individual':
-                    buttonText = 'Individual';
-                    break;
-                case 'business':
-                    buttonText = 'Business';
-                    break;
-            }
-            loginBtnText.textContent = `Login as ${buttonText}`;
-            loginLoading.style.display = 'none';
-        }
-        
-        // Start checking user status
-        function startStatusCheck() {
-            if (loginCheckInterval) {
-                clearInterval(loginCheckInterval);
-            }
-            
-            loginCheckInterval = setInterval(() => {
-                if (currentUser) {
-                    checkUserStatus(currentUser);
-                }
-            }, 30000); // Check every 30 seconds
-        }
-        
-        // Check user status
-        function checkUserStatus(userId) {
-            const userType = localStorage.getItem('user_type') || currentUserType;
-            
-            db.collection("users").doc(userId).get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        const user = doc.data();
-                        
-                        // If user is no longer active, log them out
-                        if (user.status !== 'active') {
-                            showMessage('dashboardMessage', 'Your account is no longer active. Please contact administrator.', 'error');
-                            setTimeout(() => {
-                                logout();
-                            }, 3000);
-                        } else {
-                            // Update local data if user is still active
-                            currentUserData = user;
-                            currentUserData.userType = userType;
-                            
-                            // Load appropriate dashboard
-                            loadDashboard(userType);
-                        }
-                    } else {
-                        // User document doesn't exist anymore
-                        logout();
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error checking user status:", error);
-                });
-        }
-        
-        // Load dashboard based on user type
-        function loadDashboard(userType) {
-            if (!currentUserData) return;
-            
-            // Update dashboard title
-            let dashboardTitle = '';
-            switch(userType) {
-                case 'individual':
-                    dashboardTitle = 'Odelya Cloud Storage - Individual Dashboard';
-                    break;
-                case 'business':
-                    dashboardTitle = 'Odelya Cloud Storage - Business Dashboard';
-                    break;
-            }
-            document.getElementById('dashboardTitle').textContent = dashboardTitle;
-            
-            // Change section title based on user type
-            let sectionTitle = '';
-            switch(userType) {
-                case 'individual':
-                    sectionTitle = 'Personal Information';
-                    break;
-                case 'business':
-                    sectionTitle = 'Business Information';
-                    break;
-            }
-            document.getElementById('personalSectionTitle').textContent = sectionTitle;
-            
-            // Format date
-            function formatDate(dateValue) {
-                if (!dateValue) return 'N/A';
-                
+            if (userData) {
                 try {
-                    let date;
-                    if (typeof dateValue === 'string') {
-                        // Try to parse date string
-                        const parts = dateValue.split('-');
-                        if (parts.length === 3) {
-                            date = new Date(parts[2], parts[1] - 1, parts[0]);
-                        } else {
-                            date = new Date(dateValue);
+                    const user = JSON.parse(userData);
+                    userDetailsData = user; // Store for Firebase
+                    
+                    // Clear existing content
+                    userDetailsGrid.innerHTML = '';
+                    
+                    // Create user information items based on user type
+                    let userFields = [];
+                    
+                    if (user.userType === 'personal') {
+                        userFields = [
+                            { label: 'User Type', value: 'Personal', key: 'userType' },
+                            { label: 'User ID', value: user.userId || 'N/A', key: 'userId' },
+                            { label: 'Name', value: user.name || 'N/A', key: 'name' },
+                            { label: 'Email', value: user.email || 'N/A', key: 'email' },
+                            { label: 'Phone', value: user.phone || 'N/A', key: 'phone' },
+                            { label: 'DOB', value: user.dob || 'N/A', key: 'dob' },
+                            { label: 'Gender', value: user.gender ? user.gender.charAt(0).toUpperCase() + user.gender.slice(1) : 'N/A', key: 'gender' },
+                            { label: 'Aadhaar', value: user.aadhaar || 'N/A', key: 'aadhaar' },
+                            { label: 'PAN', value: user.pan || 'N/A', key: 'pan' },
+                            { label: 'GSTIN', value: user.gstin || 'Not Provided', key: 'gstin' }
+                        ];
+                    } else if (user.userType === 'business') {
+                        userFields = [
+                            { label: 'User Type', value: 'Business', key: 'userType' },
+                            { label: 'User ID', value: user.userId || 'N/A', key: 'userId' },
+                            { label: 'Business Name', value: user.name || 'N/A', key: 'name' },
+                            { label: 'Email', value: user.email || 'N/A', key: 'email' },
+                            { label: 'Phone', value: user.phone || 'N/A', key: 'phone' },
+                            { label: 'DOI', value: user.doi || 'N/A', key: 'doi' },
+                            { label: 'Pincode', value: user.pincode || 'N/A', key: 'pincode' },
+                            { label: 'PAN', value: user.pan || 'N/A', key: 'pan' },
+                            { label: 'GSTIN', value: user.gstin || 'Not Provided', key: 'gstin' }
+                        ];
+                        
+                        if (user.aadhaar) {
+                            userFields.splice(8, 0, { label: 'Aadhaar', value: user.aadhaar, key: 'aadhaar' });
                         }
-                    } else if (dateValue.toDate) {
-                        date = dateValue.toDate();
-                    } else {
-                        date = dateValue;
                     }
                     
-                    if (isNaN(date.getTime())) return 'Invalid Date';
+                    userFields.forEach(field => {
+                        const item = document.createElement('div');
+                        item.className = 'info-item';
+                        
+                        const displayValue = field.value || 'N/A';
+                        
+                        item.innerHTML = `
+                            <div class="info-label">${field.label}</div>
+                            <div class="info-value">${displayValue}</div>
+                        `;
+                        
+                        userDetailsGrid.appendChild(item);
+                    });
                     
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const year = date.getFullYear();
+                    // Show the container
+                    userDetailsContainer.style.display = 'block';
                     
-                    return `${day}-${month}-${year}`;
-                } catch (e) {
-                    return 'Invalid Date';
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                    userDetailsContainer.style.display = 'none';
                 }
-            }
-            
-            // LEFT COLUMN - Personal/Business Information
-            let personalHtml = '';
-            
-            if (userType === 'individual') {
-                // Get data from proper structure
-                const name = currentUserData.personalInfo?.name || currentUserData.name || 'N/A';
-                const email = currentUserData.email || currentUserData.personalInfo?.email || 'N/A';
-                const phone = currentUserData.personalInfo?.phone || currentUserData.phone || 'N/A';
-                const dob = currentUserData.personalInfo?.dob || currentUserData.dob || 'N/A';
-                const aadhaar = currentUserData.personalInfo?.aadhaar || currentUserData.aadhaar || 'N/A';
-                const pan = currentUserData.personalInfo?.pan || currentUserData.pan || 'N/A';
-                const gstin = currentUserData.personalInfo?.gstin || currentUserData.gstin || 'N/A';
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Name</label>
-                    <div class="value">${name}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Email</label>
-                    <div class="value">${email}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Phone</label>
-                    <div class="value">${phone}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>DOB</label>
-                    <div class="value">${formatDate(dob)}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Aadhaar No</label>
-                    <div class="value" style="cursor: default; user-select: none;">${aadhaar}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>PAN No</label>
-                    <div class="value" style="cursor: default; user-select: none;">${pan}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>GSTIN No</label>
-                    <div class="value" style="cursor: default; user-select: none;">${gstin}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Username</label>
-                    <div class="value">${currentUserData.username || 'N/A'}</div>
-                </div>`;
-            } 
-            else if (userType === 'business') {
-                // Business fields
-                const businessName = currentUserData.businessInfo?.businessName || currentUserData.personalInfo?.name || 'N/A';
-                const email = currentUserData.email || currentUserData.personalInfo?.email || 'N/A';
-                const phone = currentUserData.personalInfo?.phone || currentUserData.phone || 'N/A';
-                const doi = currentUserData.businessInfo?.doi || currentUserData.doi || 'N/A';
-                const pincode = currentUserData.businessInfo?.pincode || currentUserData.pincode || 'N/A';
-                const aadhaar = currentUserData.personalInfo?.aadhaar || currentUserData.aadhaar || 'N/A';
-                const pan = currentUserData.personalInfo?.pan || currentUserData.pan || 'N/A';
-                const gstin = currentUserData.personalInfo?.gstin || currentUserData.gstin || 'N/A';
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Business Name</label>
-                    <div class="value">${businessName}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Email</label>
-                    <div class="value">${email}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Phone</label>
-                    <div class="value">${phone}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>DOI</label>
-                    <div class="value">${formatDate(doi)}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Pincode</label>
-                    <div class="value">${pincode}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Aadhaar No</label>
-                    <div class="value" style="cursor: default; user-select: none;">${aadhaar}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>PAN No</label>
-                    <div class="value" style="cursor: default; user-select: none;">${pan}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>GSTIN No</label>
-                    <div class="value" style="cursor: default; user-select: none;">${gstin}</div>
-                </div>`;
-                
-                personalHtml += `<div class="detail-group">
-                    <label>Username</label>
-                    <div class="value">${currentUserData.username || 'N/A'}</div>
-                </div>`;
-            }
-            
-            personalHtml += `<div class="detail-group">
-                <label>Status</label>
-                <div class="value">
-                    <span class="status ${currentUserData.status || 'pending'}">
-                        ${currentUserData.status || 'pending'}
-                    </span>
-                </div>
-            </div>`;
-            
-            document.getElementById('personalInfo').innerHTML = personalHtml;
-            
-            // RIGHT COLUMN - Plan Information
-            let planHtml = '';
-            
-            // Check if user has a plan
-            if (currentUserData.planDetails?.planName) {
-                const plan = currentUserData.planDetails;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Plan Name</label>
-                    <div class="value">${plan.planName || 'N/A'}</div>
-                </div>`;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Plan Size</label>
-                    <div class="value">${plan.planSize || 'N/A'}</div>
-                </div>`;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Plan Type</label>
-                    <div class="value">${plan.planType || 'N/A'}</div>
-                </div>`;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Plan Start Date</label>
-                    <div class="value">${formatDate(plan.planStartDate)}</div>
-                </div>`;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Plan End Date</label>
-                    <div class="value">${formatDate(plan.planEndDate)}</div>
-                </div>`;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Plan Value</label>
-                    <div class="value">${plan.planValue || 'N/A'}</div>
-                </div>`;
-                
-                planHtml += `<div class="detail-group">
-                    <label>Payment Mode</label>
-                    <div class="value">${plan.paymentMode || 'N/A'}</div>
-                </div>`;
             } else {
-                planHtml += `<div class="detail-group">
-                    <label>Plan Status</label>
-                    <div class="value">No active plan</div>
-                </div>`;
+                // Hide container if no user data
+                userDetailsContainer.style.display = 'none';
             }
+        }
+        
+        // Load plan information from user-plan.html
+        function loadPlanInformation() {
+            const planInfoGrid = document.getElementById('planInfoGrid');
+            const planInfoContainer = document.getElementById('planInfoContainer');
             
-            // Registration date
-            planHtml += `<div class="detail-group">
-                <label>Reg Date</label>
-                <div class="value">`;
+            // Try to get plan data from sessionStorage (from user-plan.html)
+            const planData = sessionStorage.getItem('odelya_planDetails');
             
-            if (currentUserData.accountCreated || currentUserData.registrationDate) {
-                let regDate = currentUserData.accountCreated || currentUserData.registrationDate;
-                if (regDate && regDate.toDate) {
-                    regDate = regDate.toDate();
-                } else if (typeof regDate === 'string') {
-                    regDate = new Date(regDate);
-                }
-                
-                if (regDate && !isNaN(regDate.getTime())) {
-                    const day = String(regDate.getDate()).padStart(2, '0');
-                    const month = String(regDate.getMonth() + 1).padStart(2, '0');
-                    const year = regDate.getFullYear();
-                    const hours = String(regDate.getHours()).padStart(2, '0');
-                    const minutes = String(regDate.getMinutes()).padStart(2, '0');
+            if (planData) {
+                try {
+                    const plan = JSON.parse(planData);
+                    planDetailsData = plan; // Store for Firebase
                     
-                    planHtml += `${day}-${month}-${year} ${hours}:${minutes}`;
-                } else {
-                    planHtml += 'N/A';
+                    // Clear existing content
+                    planInfoGrid.innerHTML = '';
+                    
+                    // Create plan information items
+                    const planFields = [
+                        { label: 'Plan Name', value: plan.planName || 'Secure Cloud Storage', key: 'planName' },
+                        { label: 'Plan (GB)', value: plan.planSize || 'N/A', key: 'planSize' },
+                        { label: 'Plan Type', value: plan.planDuration || plan.planType || 'N/A', key: 'planType' },
+                        { label: 'Plan Start Date', value: plan.planStartDate || 'Auto-selected', key: 'planStartDate' },
+                        { label: 'Plan End Date', value: plan.planEndDate || 'Auto-calculated', key: 'planEndDate' },
+                        { label: 'Plan Value', value: plan.planValue || 'N/A', key: 'planValue' }
+                    ];
+                    
+                    planFields.forEach(field => {
+                        const item = document.createElement('div');
+                        item.className = 'info-item';
+                        
+                        const displayValue = field.value || 'N/A';
+                        
+                        item.innerHTML = `
+                            <div class="info-label">${field.label}</div>
+                            <div class="info-value">${displayValue}</div>
+                        `;
+                        
+                        planInfoGrid.appendChild(item);
+                    });
+                    
+                    // Show the container
+                    planInfoContainer.style.display = 'block';
+                    
+                } catch (error) {
+                    console.error('Error parsing plan data:', error);
+                    planInfoContainer.style.display = 'none';
                 }
             } else {
-                planHtml += 'N/A';
-            }
-            
-            planHtml += `</div></div>`;
-            
-            document.getElementById('planInfo').innerHTML = planHtml;
-        }
-        
-        // Logout function
-        function logout() {
-            if (loginCheckInterval) {
-                clearInterval(loginCheckInterval);
-                loginCheckInterval = null;
-            }
-            
-            // Clear localStorage
-            localStorage.removeItem('user_logged_in');
-            localStorage.removeItem('user_id');
-            localStorage.removeItem('user_email');
-            localStorage.removeItem('user_type');
-            
-            // Reset variables
-            currentUser = null;
-            currentUserData = null;
-            currentUserType = 'individual';
-            
-            // Reset dashboard title and section title
-            document.getElementById('dashboardTitle').textContent = 'Odelya Cloud Storage - User Dashboard';
-            document.getElementById('personalSectionTitle').textContent = 'Personal Information';
-            
-            // Reset login button
-            const loginBtnText = document.getElementById('loginBtnText');
-            loginBtnText.textContent = 'Login as Individual';
-            
-            // Reset user type toggle
-            const toggleButtons = document.querySelectorAll('.user-type-btn');
-            toggleButtons.forEach(btn => {
-                if (btn.dataset.type === 'individual') {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-            
-            // Show login screen
-            showLogin();
-            showMessage('loginMessage', 'You have been logged out successfully.', 'success');
-        }
-        
-        // Show change password modal
-        function showChangePasswordModal() {
-            document.getElementById('changePasswordModal').style.display = 'flex';
-            document.getElementById('changePasswordForm').reset();
-            document.getElementById('passwordStrength').className = 'strength-meter';
-            document.getElementById('passwordStrength').parentElement.style.display = 'none';
-        }
-        
-        // Close change password modal
-        function closeChangePasswordModal() {
-            document.getElementById('changePasswordModal').style.display = 'none';
-        }
-        
-        // Check password strength
-        function checkPasswordStrength() {
-            const password = document.getElementById('newPassword').value;
-            const strengthMeter = document.getElementById('passwordStrength');
-            const strengthContainer = strengthMeter.parentElement;
-            
-            if (password.length === 0) {
-                strengthContainer.style.display = 'none';
-                return;
-            } else {
-                strengthContainer.style.display = 'block';
-            }
-            
-            let strength = 0;
-            
-            if (password.length >= 8) strength++;
-            if (/[A-Z]/.test(password)) strength++;
-            if (/[a-z]/.test(password)) strength++;
-            if (/[0-9]/.test(password)) strength++;
-            if (/[@$!%*?&]/.test(password)) strength++;
-            
-            strengthMeter.className = 'strength-meter';
-            if (strength <= 2) {
-                strengthMeter.classList.add('strength-weak');
-            } else if (strength <= 4) {
-                strengthMeter.classList.add('strength-medium');
-            } else {
-                strengthMeter.classList.add('strength-strong');
+                // Hide container if no plan data
+                planInfoContainer.style.display = 'none';
             }
         }
         
-        // Check forgot password strength
-        function checkForgotPasswordStrength() {
-            const password = document.getElementById('forgotNewPassword').value;
-            const strengthMeter = document.getElementById('forgotPasswordStrength');
-            const strengthContainer = strengthMeter.parentElement;
+        // Validate password policy
+        function validatePassword(password) {
+            // Minimum 8 characters, at least 1 uppercase, 1 lowercase, 1 number and 1 special character
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            return passwordRegex.test(password);
+        }
+        
+        // Show error message
+        function showError(fieldId, message) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            const fieldElement = document.getElementById(fieldId);
             
-            if (password.length === 0) {
-                strengthContainer.style.display = 'none';
-                return;
-            } else {
-                strengthContainer.style.display = 'block';
-            }
-            
-            let strength = 0;
-            
-            if (password.length >= 8) strength++;
-            if (/[A-Z]/.test(password)) strength++;
-            if (/[a-z]/.test(password)) strength++;
-            if (/[0-9]/.test(password)) strength++;
-            if (/[@$!%*?&]/.test(password)) strength++;
-            
-            strengthMeter.className = 'strength-meter';
-            if (strength <= 2) {
-                strengthMeter.classList.add('strength-weak');
-            } else if (strength <= 4) {
-                strengthMeter.classList.add('strength-medium');
-            } else {
-                strengthMeter.classList.add('strength-strong');
+            if (errorDiv && fieldElement) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                fieldElement.style.borderColor = '#f44336';
             }
         }
         
-        // Change password form submission
-        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            changePassword();
-        });
+        // Hide error message
+        function hideError(fieldId) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            const fieldElement = document.getElementById(fieldId);
+            
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+            
+            if (fieldElement) {
+                fieldElement.style.borderColor = '#e0e0e0';
+            }
+        }
         
-        // Change password function - CORRECTED VERSION
-        function changePassword() {
-            const newPassword = document.getElementById('newPassword').value;
+        // Check form validity
+        function checkFormValidity() {
+            const accountName = document.getElementById('accountName').value.trim();
+            const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             
-            // Validation
-            if (newPassword !== confirmPassword) {
-                showMessage('dashboardMessage', 'Passwords do not match', 'error');
-                return;
+            // Check account name length (8-12 characters)
+            if (accountName.length < 8 || accountName.length > 12) {
+                return false;
             }
             
-            if (newPassword.length < 8) {
-                showMessage('dashboardMessage', 'Password must be at least 8 characters', 'error');
-                return;
+            // Check password validity
+            if (!validatePassword(password)) {
+                return false;
             }
             
-            // Password policy validation
-            const hasUpper = /[A-Z]/.test(newPassword);
-            const hasLower = /[a-z]/.test(newPassword);
-            const hasNumber = /[0-9]/.test(newPassword);
-            const hasSpecial = /[@$!%*?&]/.test(newPassword);
-            
-            if (!hasUpper || !hasLower || !hasNumber || !hasSpecial) {
-                showMessage('dashboardMessage', 'Password must contain uppercase, lowercase, number and special character', 'error');
-                return;
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                return false;
             }
             
-            // Show loading
-            const changeBtn = document.getElementById('changePasswordBtn');
-            changeBtn.textContent = 'Changing...';
-            changeBtn.disabled = true;
+            return true;
+        }
+        
+        // Validate form
+        function validateForm() {
+            let isValid = true;
             
-            // Update password in Firestore - CORRECTED
-            db.collection("users").doc(currentUser).update({
-                password: newPassword, // Update password field
-                updatedAt: new Date().toISOString()
-            })
-            .then(() => {
-                // Update local data
-                currentUserData.password = newPassword;
-                
-                showMessage('dashboardMessage', 'Password changed successfully!', 'success');
-                closeChangePasswordModal();
-                
-                changeBtn.textContent = 'Change Password';
-                changeBtn.disabled = false;
-                
-                // Auto logout after password change
-                setTimeout(() => {
-                    logout();
-                }, 3000);
-            })
-            .catch((error) => {
-                console.error("Error changing password:", error);
-                showMessage('dashboardMessage', 'Error changing password. Please try again.', 'error');
-                changeBtn.textContent = 'Change Password';
-                changeBtn.disabled = false;
+            // Clear all errors
+            const fieldIds = ['accountName', 'password', 'confirmPassword'];
+            fieldIds.forEach(fieldId => {
+                hideError(fieldId);
             });
-        }
-        
-        // Show forgot password modal
-        function showForgotPassword() {
-            document.getElementById('forgotPasswordModal').style.display = 'flex';
-            document.getElementById('forgotPasswordForm').reset();
-            document.getElementById('forgotMessage').style.display = 'none';
-            document.getElementById('forgotPasswordStrength').className = 'strength-meter';
-            document.getElementById('forgotPasswordStrength').parentElement.style.display = 'none';
-        }
-        
-        // Close forgot password modal
-        function closeForgotPasswordModal() {
-            document.getElementById('forgotPasswordModal').style.display = 'none';
-        }
-        
-        // Forgot password form submission
-        document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            resetPassword();
-        });
-        
-        // Reset password function
-        function resetPassword() {
-            const email = document.getElementById('forgotEmail').value.trim();
-            const phone = document.getElementById('forgotPhone').value.trim();
-            const dob = document.getElementById('forgotDOB').value.trim();
-            const newPassword = document.getElementById('forgotNewPassword').value;
-            const confirmPassword = document.getElementById('forgotConfirmPassword').value;
             
-            // Validation
-            if (newPassword !== confirmPassword) {
-                showMessage('forgotMessage', 'Passwords do not match', 'error');
-                return;
+            const accountName = document.getElementById('accountName').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validate account name
+            if (!accountName) {
+                showError('accountName', 'Account name is required');
+                isValid = false;
+            } else if (accountName.length < 8 || accountName.length > 12) {
+                showError('accountName', 'Account name must be 8-12 characters');
+                isValid = false;
             }
             
-            if (newPassword.length < 8) {
-                showMessage('forgotMessage', 'Password must be at least 8 characters', 'error');
-                return;
+            // Validate password
+            if (!password) {
+                showError('password', 'Password is required');
+                isValid = false;
+            } else if (!validatePassword(password)) {
+                showError('password', 'Password must have: 8+ chars, 1 uppercase, 1 lowercase, 1 number, 1 special character');
+                isValid = false;
             }
             
-            // Password policy validation
-            const hasUpper = /[A-Z]/.test(newPassword);
-            const hasLower = /[a-z]/.test(newPassword);
-            const hasNumber = /[0-9]/.test(newPassword);
-            const hasSpecial = /[@$!%*?&]/.test(newPassword);
-            
-            if (!hasUpper || !hasLower || !hasNumber || !hasSpecial) {
-                showMessage('forgotMessage', 'Password must contain uppercase, lowercase, number and special character', 'error');
-                return;
+            // Validate confirm password
+            if (!confirmPassword) {
+                showError('confirmPassword', 'Please confirm your password');
+                isValid = false;
+            } else if (password !== confirmPassword) {
+                showError('confirmPassword', 'Passwords do not match');
+                isValid = false;
             }
             
-            // Validate DOB format (DD-MM-YYYY)
-            const dobRegex = /^(\d{2})-(\d{2})-(\d{4})$/;
-            if (!dobRegex.test(dob)) {
-                showMessage('forgotMessage', 'Please enter Date of Birth in DD-MM-YYYY format', 'error');
-                return;
-            }
-            
-            // Show loading
-            const resetBtn = document.getElementById('forgotPasswordBtn');
-            resetBtn.textContent = 'Resetting...';
-            resetBtn.disabled = true;
-            
-            // Find user by email, phone and DOB
-            const dbUserType = currentUserType === 'individual' ? 'personal' : 'business';
-            const dobField = currentUserType === 'individual' ? 'personalInfo.dob' : 'businessInfo.doi';
-            
-            db.collection("users")
-                .where("email", "==", email)
-                .where("personalInfo.phone", "==", phone)
-                .where("userType", "==", dbUserType)
-                .get()
-                .then((querySnapshot) => {
-                    if (querySnapshot.empty) {
-                        showMessage('forgotMessage', `No ${currentUserType} found with provided details`, 'error');
-                        resetBtn.textContent = 'Reset Password';
-                        resetBtn.disabled = false;
-                        return;
-                    }
-                    
-                    const userDoc = querySnapshot.docs[0];
-                    const user = userDoc.data();
-                    
-                    // Check DOB/DOI
-                    let userDob = '';
-                    if (currentUserType === 'individual') {
-                        userDob = user.personalInfo?.dob || '';
-                    } else {
-                        userDob = user.businessInfo?.doi || '';
-                    }
-                    
-                    if (userDob !== dob) {
-                        showMessage('forgotMessage', `${currentUserType === 'business' ? 'DOI (Date of Incorporation)' : 'DOB (Date of Birth)'} does not match our records`, 'error');
-                        resetBtn.textContent = 'Reset Password';
-                        resetBtn.disabled = false;
-                        return;
-                    }
-                    
-                    // Update password
-                    db.collection("users").doc(userDoc.id).update({
-                        password: newPassword,
-                        updatedAt: new Date().toISOString()
-                    })
-                    .then(() => {
-                        showMessage('forgotMessage', 'Password reset successfully! You can now login with new password.', 'success');
-                        
-                        resetBtn.textContent = 'Reset Password';
-                        resetBtn.disabled = false;
-                        
-                        // Close modal after 3 seconds
-                        setTimeout(() => {
-                            closeForgotPasswordModal();
-                        }, 3000);
-                    })
-                    .catch((error) => {
-                        console.error("Error resetting password:", error);
-                        showMessage('forgotMessage', 'Error resetting password. Please try again.', 'error');
-                        resetBtn.textContent = 'Reset Password';
-                        resetBtn.disabled = false;
-                    });
-                })
-                .catch((error) => {
-                    console.error("Error finding user:", error);
-                    showMessage('forgotMessage', 'Error finding user. Please try again.', 'error');
-                    resetBtn.textContent = 'Reset Password';
-                    resetBtn.disabled = false;
-                });
+            return isValid;
         }
         
-        // Recharge Now function
-        function rechargeNow() {
-            if (!currentUserData) {
-                showMessage('dashboardMessage', 'Please login first', 'error');
-                return;
-            }
+        // Update continue button
+        function updateContinueButton() {
+            const continueBtn = document.getElementById('continueBtn');
+            const isValid = checkFormValidity();
             
-            // Always redirect to existing-user-payment.html
-            window.location.href = 'existing-user-payment.html';
+            if (isValid) {
+                continueBtn.disabled = false;
+                continueBtn.classList.add('enabled');
+            } else {
+                continueBtn.disabled = true;
+                continueBtn.classList.remove('enabled');
+            }
         }
         
-        // Generate PDF
-        function generatePDF() {
-            if (!currentUserData) return;
-            
-            // Show loading
-            const originalText = event.target.textContent;
-            event.target.textContent = "Creating PDF...";
-            event.target.disabled = true;
-            
+        // ==================== FIREBASE FUNCTIONS ====================
+        async function saveUserDataToFirebase(accountData) {
             try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                
-                // Add logo/title
-                doc.setFontSize(24);
-                doc.setTextColor(58, 12, 163);
-                doc.text('Odelya Cloud Storage', 105, 25, { align: 'center' });
-                
-                doc.setFontSize(18);
-                doc.setTextColor(0, 0, 0);
-                const userType = localStorage.getItem('user_type') || currentUserType;
-                let dashboardTitle = '';
-                switch(userType) {
-                    case 'individual':
-                        dashboardTitle = 'Personal Account Details';
-                        break;
-                    case 'business':
-                        dashboardTitle = 'Commercial Account Details';
-                        break;
+                if (!auth || !db) {
+                    throw new Error("Firebase not initialized");
                 }
-                doc.text(dashboardTitle, 105, 35, { align: 'center' });
+
+                // Create user with email and password
+                const userCredential = await auth.createUserWithEmailAndPassword(
+                    userDetailsData.email, 
+                    accountData.password
+                );
                 
-                doc.setFontSize(10);
-                doc.setTextColor(100, 100, 100);
-                doc.text(`Generated: ${new Date().toLocaleString()}`, 105, 45, { align: 'center' });
-                
-                // Draw two columns
-                const column1X = 15;
-                const column2X = 105;
-                let column1Y = 65;
-                let column2Y = 65;
-                
-                // Personal Information Column
-                doc.setFontSize(14);
-                doc.setTextColor(58, 12, 163);
-                let personalTitle = '';
-                switch(userType) {
-                    case 'individual':
-                        personalTitle = 'Personal Information';
-                        break;
-                    case 'business':
-                        personalTitle = 'Business Information';
-                        break;
-                }
-                doc.text(personalTitle, column1X, column1Y);
-                column1Y += 8;
-                
-                doc.setFontSize(11);
-                doc.setTextColor(0, 0, 0);
-                
-                // Add personal info
-                const name = userType === 'individual' 
-                    ? (currentUserData.personalInfo?.name || currentUserData.name || 'N/A')
-                    : (currentUserData.businessInfo?.businessName || currentUserData.personalInfo?.name || 'N/A');
-                
-                doc.setFont('helvetica', 'bold');
-                doc.text('Name:', column1X, column1Y);
-                doc.setFont('helvetica', 'normal');
-                doc.text(name, column1X + 25, column1Y);
-                column1Y += 8;
-                
-                // Continue with other fields...
-                // (Keep the rest of your PDF generation code, just ensure it uses the correct data structure)
-                
-                // Save PDF
-                const fileName = `Odelya_${userType}_${currentUserData.username}_${new Date().getTime()}.pdf`;
-                doc.save(fileName);
-                
-                showMessage('dashboardMessage', 'PDF downloaded successfully!', 'success');
+                const user = userCredential.user;
+                console.log("Firebase user created:", user.uid);
+
+                // Prepare user data for Firestore - UPDATED
+                const userData = {
+                    uid: user.uid,
+                    username: accountData.accountName,  // Store as username
+                    password: accountData.password,     // Store password for user-login.html
+                    email: userDetailsData.email,
+                    userType: userDetailsData.userType,
+                    personalInfo: {
+                        name: userDetailsData.name,
+                        phone: userDetailsData.phone,
+                        dob: userDetailsData.dob || null,
+                        gender: userDetailsData.gender || null,
+                        aadhaar: userDetailsData.aadhaar || null,
+                        pan: userDetailsData.pan || null,
+                        gstin: userDetailsData.gstin || null
+                    },
+                    businessInfo: userDetailsData.userType === 'business' ? {
+                        businessName: userDetailsData.name,
+                        doi: userDetailsData.doi || null,
+                        pincode: userDetailsData.pincode || null
+                    } : null,
+                    planDetails: {
+                        planName: planDetailsData.planName || 'Secure Cloud Storage',
+                        planSize: planDetailsData.planSize,
+                        planType: planDetailsData.planDuration || planDetailsData.planType,
+                        planStartDate: planDetailsData.planStartDate || 'Auto-selected',
+                        planEndDate: planDetailsData.planEndDate || 'Auto-calculated',
+                        planValue: planDetailsData.planValue
+                    },
+                    accountCreated: new Date().toISOString(),
+                    status: 'inactive'  // IMPORTANT: Users are inactive by default
+                };
+
+                // Save to Firestore
+                await db.collection('users').doc(user.uid).set(userData);
+                console.log("User data saved to Firestore");
+
+                // Update session storage with Firebase UID
+                const existingAccountData = JSON.parse(sessionStorage.getItem('odelya_accountDetails') || '{}');
+                existingAccountData.firebaseUID = user.uid;
+                sessionStorage.setItem('odelya_accountDetails', JSON.stringify(existingAccountData));
+
+                return { success: true, userId: user.uid };
                 
             } catch (error) {
-                console.error("Error generating PDF:", error);
-                showMessage('dashboardMessage', 'Error generating PDF', 'error');
-            } finally {
-                // Restore button
-                event.target.textContent = originalText;
-                event.target.disabled = false;
+                console.error("Firebase error:", error);
+                return { 
+                    success: false, 
+                    error: error.message,
+                    errorCode: error.code
+                };
             }
         }
 
-        // Dropdown JavaScript
-        document.addEventListener('DOMContentLoaded', function() {
-            const hamburger = document.getElementById('hamburger');
-            const dropdown = document.getElementById('dropdown');
-            
-            if (hamburger && dropdown) {
-                hamburger.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    dropdown.classList.toggle('show');
-                    
-                    const icon = hamburger.querySelector('i');
-                    if (dropdown.classList.contains('show')) {
-                        icon.classList.remove('fa-bars');
-                        icon.classList.add('fa-times');
-                    } else {
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                document.addEventListener('click', function(e) {
-                    if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
-                        dropdown.classList.remove('show');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                dropdown.addEventListener('click', function(e) {
-                    if (e.target.tagName === 'A' || e.target.parentElement.tagName === 'A') {
-                        dropdown.classList.remove('show');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && dropdown.classList.contains('show')) {
-                        dropdown.classList.remove('show');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
+        async function saveAccountDetails() {
+            if (!validateForm()) {
+                return;
             }
+
+            // Disable button and show loading state
+            const continueBtn = document.getElementById('continueBtn');
+            const originalText = continueBtn.textContent;
+            continueBtn.textContent = 'Creating Account...';
+            continueBtn.disabled = true;
+
+            try {
+                // Collect account data
+                const accountData = {
+                    accountName: document.getElementById('accountName').value.trim(),
+                    password: document.getElementById('password').value
+                };
+
+                // Save to session storage
+                sessionStorage.setItem('odelya_accountDetails', JSON.stringify(accountData));
+                console.log('Account details saved locally:', accountData);
+
+                // Check if we have user and plan data
+                if (!userDetailsData.email) {
+                    const userData = sessionStorage.getItem('odelya_userDetails');
+                    if (userData) {
+                        userDetailsData = JSON.parse(userData);
+                    }
+                }
+
+                if (!planDetailsData.planName) {
+                    const planData = sessionStorage.getItem('odelya_planDetails');
+                    if (planData) {
+                        planDetailsData = JSON.parse(planData);
+                    }
+                }
+
+                // Save to Firebase
+                if (userDetailsData.email && auth && db) {
+                    const firebaseResult = await saveUserDataToFirebase(accountData);
+                    
+                    if (!firebaseResult.success) {
+                        // Show Firebase error
+                        showError('accountName', `Firebase error: ${firebaseResult.errorCode || firebaseResult.error}`);
+                        continueBtn.textContent = originalText;
+                        continueBtn.disabled = false;
+                        updateContinueButton();
+                        return;
+                    }
+                    
+                    console.log("Firebase save successful, userId:", firebaseResult.userId);
+                } else {
+                    console.log("Skipping Firebase save (missing data or Firebase not available)");
+                }
+
+                // Redirect to payment.html
+                window.location.href = 'payment.html';
+                
+            } catch (error) {
+                console.error("Error in saveAccountDetails:", error);
+                continueBtn.textContent = originalText;
+                continueBtn.disabled = false;
+                updateContinueButton();
+            }
+        }
+        // ==================== END FIREBASE FUNCTIONS ====================
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Account name listener
+            document.getElementById('accountName').addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^a-zA-Z0-9]/g, ''); // Allow only alphanumeric
+                hideError('accountName');
+                updateContinueButton();
+            });
+            
+            // Password listener
+            document.getElementById('password').addEventListener('input', function() {
+                hideError('password');
+                updateContinueButton();
+            });
+            
+            // Confirm password listener
+            document.getElementById('confirmPassword').addEventListener('input', function() {
+                hideError('confirmPassword');
+                updateContinueButton();
+            });
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('User Account Page Loaded');
+            
+            // Load user details information
+            loadUserDetailsInformation();
+            
+            // Load plan information
+            loadPlanInformation();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Initial button state
+            updateContinueButton();
         });
+        
+        // Make functions globally available
+        window.goBackToUserDetails = goBackToUserDetails;
+        window.saveAccountDetails = saveAccountDetails;
     </script>
 </body>
 </html>
