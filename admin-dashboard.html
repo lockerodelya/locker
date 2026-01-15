@@ -516,7 +516,7 @@
             text-align: center;
         }
         
-        .user-type-individual {
+        .user-type-personal {
             background: #17a2b8;
             color: white;
         }
@@ -583,8 +583,8 @@
             <button class="filter-tab active" onclick="filterUsers('all')" id="tab-all">
                 👥 All Users <span class="count" id="count-all">0</span>
             </button>
-            <button class="filter-tab" onclick="filterUsers('individual')" id="tab-individual">
-                👤 Individual <span class="count" id="count-individual">0</span>
+            <button class="filter-tab" onclick="filterUsers('personal')" id="tab-personal">
+                👤 Personal <span class="count" id="count-personal">0</span>
             </button>
             <button class="filter-tab" onclick="filterUsers('business')" id="tab-business">
                 🏢 Business <span class="count" id="count-business">0</span>
@@ -907,7 +907,7 @@
                 case 'all':
                     filteredUsers = allUsers;
                     break;
-                case 'individual':
+                case 'personal':
                     filteredUsers = allUsers.filter(user => user.userType === 'personal');
                     break;
                 case 'business':
@@ -951,7 +951,7 @@
                         <td>${user.userId || 'N/A'}</td>
                         <td>
                             <span class="user-type-badge user-type-${userType}">
-                                ${userType === 'personal' ? 'INDIVIDUAL' : 'BUSINESS'}
+                                ${userType === 'personal' ? 'PERSONAL' : 'BUSINESS'}
                             </span>
                         </td>
                         <td>${userName}</td>
@@ -979,14 +979,14 @@
         // Update counts in filter tabs
         function updateTabCounts() {
             const totalCount = allUsers.length;
-            const individualCount = allUsers.filter(u => u.userType === 'personal').length;
+            const personalCount = allUsers.filter(u => u.userType === 'personal').length;
             const businessCount = allUsers.filter(u => u.userType === 'business').length;
             const activeCount = allUsers.filter(u => u.status === 'active').length;
             const inactiveCount = allUsers.filter(u => u.status === 'inactive').length;
             const suspendedCount = allUsers.filter(u => u.status === 'suspended').length;
             
             document.getElementById('count-all').textContent = totalCount;
-            document.getElementById('count-individual').textContent = individualCount;
+            document.getElementById('count-personal').textContent = personalCount;
             document.getElementById('count-business').textContent = businessCount;
             document.getElementById('count-active').textContent = activeCount;
             document.getElementById('count-inactive').textContent = inactiveCount;
@@ -1477,7 +1477,7 @@
             }
         };
 
-        // Clear individual field - prevent clearing Aadhaar, PAN, GSTIN
+        // Clear personal field - prevent clearing Aadhaar, PAN, GSTIN
         window.clearField = function(fieldName) {
             if (!currentUserId) return;
             
@@ -1595,7 +1595,7 @@
 
                 if (userType === 'personal') {
                     personalData = [
-                        {label: 'User Type', value: 'Individual'},
+                        {label: 'User Type', value: 'Personal'},
                         {label: 'Name', value: currentUserData.name || 'N/A'},
                         {label: 'Email', value: currentUserData.email || 'N/A'},
                         {label: 'Phone', value: currentUserData.phone || 'N/A'},
