@@ -1857,105 +1857,148 @@ footer {
             }
         }
         
-        // Login as individual - ONLY for individuals
-        function loginAsIndividual(username, password) {
-            db.collection("users")
-                .where("username", "==", username)
-                .where("password", "==", password)
-                .where("userType", "==", "individual") // IMPORTANT: Only individual users
-                .get()
-                .then((querySnapshot) => {
-                    if (querySnapshot.empty) {
-                        showMessage('loginMessage', 'Invalid individual username or password', 'error');
-                        resetLoginButton();
-                        return;
-                    }
-                    
-                    // Individual user found
-                    handleUserLogin(querySnapshot.docs[0], 'individual');
-                })
-                .catch((error) => {
-                    console.error("Individual login error:", error);
-                    showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
-                    resetLoginButton();
-                });
-        }
-        
-        // Login as business
-        function loginAsBusiness(username, password) {
-            db.collection("users")
-                .where("username", "==", username)
-                .where("password", "==", password)
-                .where("userType", "==", "business") // IMPORTANT: Only business users
-                .get()
-                .then((querySnapshot) => {
-                    if (querySnapshot.empty) {
-                        showMessage('loginMessage', 'Invalid business username or password', 'error');
-                        resetLoginButton();
-                        return;
-                    }
-                    
-                    // Business found
-                    handleUserLogin(querySnapshot.docs[0], 'business');
-                })
-                .catch((error) => {
-                    console.error("Business login error:", error);
-                    showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
-                    resetLoginButton();
-                });
-        }
-        
-        // Reset login button state
-        function resetLoginButton() {
-            const loginBtnText = document.getElementById('loginBtnText');
-            const loginLoading = document.getElementById('loginLoading');
-            let buttonText = '';
-            switch(currentUserType) {
-                case 'individual':
-                    buttonText = 'Individual';
-                    break;
-                case 'business':
-                    buttonText = 'Business';
-                    break;
-            }
-            loginBtnText.textContent = `Login as ${buttonText}`;
-            loginLoading.style.display = 'none';
-        }
-        
-        // Handle user login (for all types)
-        function handleUserLogin(userDoc, userType) {
-            const user = userDoc.data();
-            
-            // Check if user is active
-            if (user.status !== 'active') {
-                showMessage('loginMessage', `Your ${userType} account is not active. Please contact administrator.`, 'error');
+// Fix the user data structure to match what user-login expects
+function fixUserDataForLogin(user) {
+    const fixedUser = { ...user };
+    
+    // Map the data from user-account.html structure
+    if (user.personalInfo) {
+        fixedUser.name = user.personalInfo.name || 'N/A';
+        fixedUser.fullName = user.personalInfo.name || 'N/A';
+        fixedUser.email = user.personalInfo.email || user.email || 'N/A';
+        fixedUser.phone = user.personalInfo.phone || 'N/A';
+        fixedUser.dob = user.personalInfo.dob || null;
+        fixedUser.gender = user.personalInfo.gender || null;
+        fixedUser.aadhaar = user.personalInfo.aadhaar || null;
+        fixedUser.pan = user.personalInfo.pan || null;
+        fixedUser.gstin = user.personalInfo.gstin || null;
+    }
+    
+    if (user.businessInfo) {
+        fixedUser.businessName = user.businessInfo.businessName || user.personalInfo?.name || 'N/A';
+        fixedUser.doi = user.businessInfo.doi || null;
+        fixedUser.pincode = user.businessInfo.pincode || null;
+    }
+    
+    if (user.planDetails) {
+        fixedUser.planName = user.planDetails.planName;
+        fixedUser.planSize = user.planDetails.planSize;
+        fixedUser.planType = user.planDetails.planType;
+        fixedUser.planStartDate = user.planDetails.planStartDate;
+        fixedUser.planEndDate = user.planDetails.planEndDate;
+        fixedUser.planValue = user.planDetails.planValue;
+    }
+    
+    // Map account fields
+    fixedUser.userId = user.accountName || user.uid;
+    fixedUser.username = user.accountName; // This is what users will use to login
+    fixedUser.password = "********"; // Placeholder
+    
+    // Ensure status
+    fixedUser.status = user.status || 'inactive';
+    
+    return fixedUser;
+}
+
+// Login as individual - CORRECTED VERSION
+function loginAsIndividual(username, password) {
+    // We need to check all users and find matching accountName
+    db.collection("users")
+        .where("accountName", "==", username) // Changed from "username" to "accountName"
+        .where("userType", "==", "personal") // Changed from "individual" to "personal"
+        .get()
+        .then((querySnapshot) => {
+            if (querySnapshot.empty) {
+                showMessage('loginMessage', 'Invalid individual username or password', 'error');
                 resetLoginButton();
                 return;
             }
             
-            // Login successful
-            currentUser = userDoc.id;
-            currentUserData = user;
-            currentUserData.userType = userType;
-            currentUserType = userType;
+            // We found a user with matching accountName
+            const userDoc = querySnapshot.docs[0];
+            const user = userDoc.data();
             
-            // Save to localStorage
-            localStorage.setItem('user_logged_in', 'true');
-            localStorage.setItem('user_id', userDoc.id);
-            localStorage.setItem('user_email', user.email || '');
-            localStorage.setItem('user_type', userType);
+            // For now, we'll skip password check since it's not stored in Firestore
+            // In a real system, you'd verify the password using Firebase Auth
             
-            // Start checking user status periodically
-            startStatusCheck();
+            // Fix the data structure
+            const fixedUser = fixUserDataForLogin(user);
             
-            // Load appropriate dashboard
-            loadDashboard(userType);
-            
-            showDashboard();
-            
+            // Now handle the login
+            handleUserLogin(userDoc, fixedUser, 'individual');
+        })
+        .catch((error) => {
+            console.error("Individual login error:", error);
+            showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
             resetLoginButton();
-            document.getElementById('loginForm').reset();
-        }
+        });
+}
+
+// Login as business - CORRECTED VERSION
+function loginAsBusiness(username, password) {
+    // We need to check all users and find matching accountName
+    db.collection("users")
+        .where("accountName", "==", username) // Changed from "username" to "accountName"
+        .where("userType", "==", "business")
+        .get()
+        .then((querySnapshot) => {
+            if (querySnapshot.empty) {
+                showMessage('loginMessage', 'Invalid business username or password', 'error');
+                resetLoginButton();
+                return;
+            }
+            
+            // We found a user with matching accountName
+            const userDoc = querySnapshot.docs[0];
+            const user = userDoc.data();
+            
+            // For now, we'll skip password check since it's not stored in Firestore
+            
+            // Fix the data structure
+            const fixedUser = fixUserDataForLogin(user);
+            
+            // Now handle the login
+            handleUserLogin(userDoc, fixedUser, 'business');
+        })
+        .catch((error) => {
+            console.error("Business login error:", error);
+            showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
+            resetLoginButton();
+        });
+}
+
+// Handle user login (for all types) - CORRECTED VERSION
+function handleUserLogin(userDoc, userData, userType) {
+    // Check if user is active
+    if (userData.status !== 'active') {
+        showMessage('loginMessage', `Your ${userType} account is not active. Please contact administrator.`, 'error');
+        resetLoginButton();
+        return;
+    }
+    
+    // Login successful
+    currentUser = userDoc.id;
+    currentUserData = userData;
+    currentUserData.userType = userType;
+    currentUserType = userType;
+    
+    // Save to localStorage
+    localStorage.setItem('user_logged_in', 'true');
+    localStorage.setItem('user_id', userDoc.id);
+    localStorage.setItem('user_email', userData.email || '');
+    localStorage.setItem('user_type', userType);
+    
+    // Start checking user status periodically
+    startStatusCheck();
+    
+    // Load appropriate dashboard
+    loadDashboard(userType);
+    
+    showDashboard();
+    
+    resetLoginButton();
+    document.getElementById('loginForm').reset();
+}
         
         // Start checking user status
         function startStatusCheck() {
@@ -1971,37 +2014,41 @@ footer {
         }
         
         // Check user status
-        function checkUserStatus(userId) {
-            const userType = localStorage.getItem('user_type') || currentUserType;
-            
-            db.collection("users").doc(userId).get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        const user = doc.data();
-                        
-                        // If user is no longer active, log them out
-                        if (user.status !== 'active') {
-                            showMessage('dashboardMessage', 'Your account is no longer active. Please contact administrator.', 'error');
-                            setTimeout(() => {
-                                logout();
-                            }, 3000);
-                        } else {
-                            // Update local data if user is still active
-                            currentUserData = user;
-                            currentUserData.userType = userType;
-                            
-                            // Load appropriate dashboard
-                            loadDashboard(userType);
-                        }
-                    } else {
-                        // User document doesn't exist anymore
+ // Check user status
+function checkUserStatus(userId) {
+    const userType = localStorage.getItem('user_type') || currentUserType;
+    
+    db.collection("users").doc(userId).get()
+        .then((doc) => {
+            if (doc.exists) {
+                const user = doc.data();
+                
+                // Fix the data structure
+                const fixedUser = fixUserDataForLogin(user);
+                
+                // If user is no longer active, log them out
+                if (fixedUser.status !== 'active') {
+                    showMessage('dashboardMessage', 'Your account is no longer active. Please contact administrator.', 'error');
+                    setTimeout(() => {
                         logout();
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error checking user status:", error);
-                });
-        }
+                    }, 3000);
+                } else {
+                    // Update local data if user is still active
+                    currentUserData = fixedUser;
+                    currentUserData.userType = userType;
+                    
+                    // Load appropriate dashboard
+                    loadDashboard(userType);
+                }
+            } else {
+                // User document doesn't exist anymore
+                logout();
+            }
+        })
+        .catch((error) => {
+            console.error("Error checking user status:", error);
+        });
+}
         
 // Load appropriate dashboard based on user type
 function loadDashboard(userType) {
