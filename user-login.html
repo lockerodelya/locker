@@ -1900,68 +1900,95 @@ function fixUserDataForLogin(user) {
     return fixedUser;
 }
 
-// Login as individual - CORRECTED VERSION
+// Replace BOTH loginAsIndividual() and loginAsBusiness() functions with this:
+
 function loginAsIndividual(username, password) {
-    // We need to check all users and find matching accountName
+    const dbUserType = 'personal'; // This is what user-account.html uses
+    
+    // Try to find user by username OR accountName
     db.collection("users")
-        .where("accountName", "==", username) // Changed from "username" to "accountName"
-        .where("userType", "==", "personal") // Changed from "individual" to "personal"
+        .where("userType", "==", dbUserType)
         .get()
         .then((querySnapshot) => {
-            if (querySnapshot.empty) {
-                showMessage('loginMessage', 'Invalid individual username or password', 'error');
+            let foundUser = null;
+            let foundDoc = null;
+            
+            // Check all users of this type
+            querySnapshot.forEach((doc) => {
+                const user = doc.data();
+                
+                // Check if username matches either username OR accountName field
+                const hasMatchingUsername = (user.username === username) || (user.accountName === username);
+                
+                if (hasMatchingUsername) {
+                    foundUser = user;
+                    foundDoc = doc;
+                }
+            });
+            
+            if (!foundUser) {
+                showMessage('loginMessage', 'Invalid username', 'error');
                 resetLoginButton();
                 return;
             }
             
-            // We found a user with matching accountName
-            const userDoc = querySnapshot.docs[0];
-            const user = userDoc.data();
+            // Check password
+            if (foundUser.password !== password) {
+                showMessage('loginMessage', 'Invalid password', 'error');
+                resetLoginButton();
+                return;
+            }
             
-            // For now, we'll skip password check since it's not stored in Firestore
-            // In a real system, you'd verify the password using Firebase Auth
-            
-            // Fix the data structure
-            const fixedUser = fixUserDataForLogin(user);
-            
-            // Now handle the login
-            handleUserLogin(userDoc, fixedUser, 'individual');
+            // Fix data structure and login
+            const fixedUser = fixUserDataForLogin(foundUser);
+            handleUserLogin(foundDoc, fixedUser, 'individual');
         })
         .catch((error) => {
-            console.error("Individual login error:", error);
+            console.error("Login error:", error);
             showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
             resetLoginButton();
         });
 }
 
-// Login as business - CORRECTED VERSION
+// Do the SAME for loginAsBusiness() but change dbUserType to 'business'
 function loginAsBusiness(username, password) {
-    // We need to check all users and find matching accountName
+    const dbUserType = 'business'; // This is what user-account.html uses
+    
+    // Same code as above, just change the dbUserType
     db.collection("users")
-        .where("accountName", "==", username) // Changed from "username" to "accountName"
-        .where("userType", "==", "business")
+        .where("userType", "==", dbUserType)
         .get()
         .then((querySnapshot) => {
-            if (querySnapshot.empty) {
-                showMessage('loginMessage', 'Invalid business username or password', 'error');
+            let foundUser = null;
+            let foundDoc = null;
+            
+            querySnapshot.forEach((doc) => {
+                const user = doc.data();
+                const hasMatchingUsername = (user.username === username) || (user.accountName === username);
+                
+                if (hasMatchingUsername) {
+                    foundUser = user;
+                    foundDoc = doc;
+                }
+            });
+            
+            if (!foundUser) {
+                showMessage('loginMessage', 'Invalid business username', 'error');
                 resetLoginButton();
                 return;
             }
             
-            // We found a user with matching accountName
-            const userDoc = querySnapshot.docs[0];
-            const user = userDoc.data();
+            if (foundUser.password !== password) {
+                showMessage('loginMessage', 'Invalid password', 'error');
+                resetLoginButton();
+                return;
+            }
             
-            // For now, we'll skip password check since it's not stored in Firestore
-            
-            // Fix the data structure
-            const fixedUser = fixUserDataForLogin(user);
-            
-            // Now handle the login
-            handleUserLogin(userDoc, fixedUser, 'business');
+            const fixedUser = fixUserDataForLogin(foundUser);
+            handleUserLogin(foundDoc, fixedUser, 'business');
         })
         .catch((error) => {
-            console.error("Business login error:", error);
+            console.error("Login error:", error);
             showMessage('loginMessage', 'Error logging in. Please try again.', 'error');
             resetLoginButton();
         });
