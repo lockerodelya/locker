@@ -1353,46 +1353,45 @@
                 });
         };
         
-        // Change password function
-        window.changePassword = function() {
-            if (!currentUserId) return;
+// Change password function in admin-dashboard.html
+window.changePassword = function() {
+    if (!currentUserId) return;
+    
+    const newPassword = prompt("Enter new password for this user:\n\nPassword will be stored in plain text in Firestore.\nThe user will need to use this password to login to user-login.html", currentUserData.password || "");
+    
+    if (newPassword === null) return;
+    
+    if (newPassword.length < 6) {
+        alert("Password must be at least 6 characters!");
+        return;
+    }
+    
+    if (confirm(`Change password for ${currentUserData.email}?\n\nNew password: ${newPassword}\n\nThis will update the password in Firestore.`)) {
+        logAdminAction('CHANGE_PASSWORD', `Changed password for user: ${currentUserData.email}`);
+        
+        const originalText = event.target.textContent;
+        event.target.textContent = "Updating...";
+        event.target.disabled = true;
+        
+        db.collection("users").doc(currentUserId).update({
+            password: newPassword, // CORRECTED: Update password field
+            updatedAt: new Date().toISOString()
+        })
+        .then(() => {
+            console.log("Password updated successfully!");
+            alert("✅ Password updated successfully!\n\nUser can now login with this password on user-login.html");
             
-            const newPassword = prompt("Enter new password for this user:\n\nPassword will be stored in plain text in Firestore.\nThe user will need to use this password to login to user-panel.html", currentUserData.password || "");
-            
-            if (newPassword === null) return;
-            
-            if (newPassword.length < 6) {
-                alert("Password must be at least 6 characters!");
-                return;
-            }
-            
-            if (confirm(`Change password for ${currentUserData.email}?\n\nNew password: ${newPassword}\n\nThis will update the password in Firestore.`)) {
-                logAdminAction('CHANGE_PASSWORD', `Changed password for user: ${currentUserData.email}`);
-                
-                const originalText = event.target.textContent;
-                event.target.textContent = "Updating...";
-                event.target.disabled = true;
-                
-                db.collection("users").doc(currentUserId).update({
-                    accountName: newPassword, // Update the accountName field which stores password
-                    updatedAt: new Date().toISOString()
-                })
-                .then(() => {
-                    console.log("Password updated successfully!");
-                    alert("✅ Password updated successfully!\n\nUser can now login with this password on user-login.html");
-                    
-                    currentUserData.password = newPassword;
-                    currentUserData.username = newPassword;
-                    showUserModal(currentUserData, false);
-                })
-                .catch((error) => {
-                    console.error("Error updating password:", error);
-                    alert("❌ Error updating password: " + error.message);
-                    event.target.textContent = originalText;
-                    event.target.disabled = false;
-                });
-            }
-        };
+            currentUserData.password = newPassword;
+            showUserModal(currentUserData, false);
+        })
+        .catch((error) => {
+            console.error("Error updating password:", error);
+            alert("❌ Error updating password: " + error.message);
+            event.target.textContent = originalText;
+            event.target.disabled = false;
+        });
+    }
+};
         
         // Close modal
         window.closeModal = function() {
