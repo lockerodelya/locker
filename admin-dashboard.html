@@ -655,9 +655,9 @@
         // ==================== FIREBASE CONFIGURATION ====================
         const firebaseConfig = {
             apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
-            authDomain: "odelya-user-data.firebaseapp.com",  // CORRECTED
+            authDomain: "odelya-user-data.firebaseapp.com",
             projectId: "odelya-user-data",
-            storageBucket: "odelya-user-data.firebasestorage.app",  // CORRECTED
+            storageBucket: "odelya-user-data.firebasestorage.app",
             messagingSenderId: "590231118790",
             appId: "1:590231118790:web:572c355c8826ad9c9148c7",
             measurementId: "G-9SWTR9V32R"
@@ -683,9 +683,26 @@
         let allUsers = [];
         let currentFilter = 'all';
 
+        // Generate random 6-digit user ID starting from 2-9
+        function generateUserId() {
+            let userId = '';
+            // First digit: 2-9
+            userId += Math.floor(Math.random() * 8) + 2;
+            // Next 5 digits: 0-9
+            for (let i = 0; i < 5; i++) {
+                userId += Math.floor(Math.random() * 10);
+            }
+            return userId;
+        }
+
         // Fix the user data structure to match what admin-dashboard expects
         function fixUserDataStructure(user) {
             const fixedUser = { ...user };
+            
+            // Generate or use existing user ID
+            if (!fixedUser.userId) {
+                fixedUser.userId = generateUserId();
+            }
             
             // Map the data from user-account.html structure
             if (user.personalInfo) {
@@ -713,10 +730,12 @@
                 fixedUser.planValue = user.planDetails.planValue || 'N/A';
             }
             
-            // Map account fields
-            fixedUser.userId = user.accountName || user.uid;
-            fixedUser.username = user.accountName;
-            fixedUser.password = "********"; // Placeholder - password isn't stored in Firestore
+            // Map account fields - FIXED username mapping
+            fixedUser.username = user.username || user.accountName || user.email?.split('@')[0] || 'N/A';
+            fixedUser.password = user.password || "********"; // Password from Firestore
+            
+            // Map payment mode
+            fixedUser.paymentMode = user.paymentMode || user.paymentDetails?.mode || 'N/A';
             
             // Ensure status
             fixedUser.status = user.status || 'inactive';
@@ -1069,6 +1088,15 @@
                             <input type="password" id="edit_${fieldName}" value="${value || ''}" style="font-family: monospace;">
                             <button type="button" class="show-password-btn" onclick="togglePasswordVisibility('edit_${fieldName}', this)">👁️ Show</button>
                         `;
+                    } else if (fieldName === 'gender') {
+                        fieldHtml = `
+                            <select id="edit_${fieldName}">
+                                <option value="">Select Gender</option>
+                                <option value="Male" ${value === 'Male' ? 'selected' : ''}>Male</option>
+                                <option value="Female" ${value === 'Female' ? 'selected' : ''}>Female</option>
+                                <option value="Other" ${value === 'Other' ? 'selected' : ''}>Other</option>
+                            </select>
+                        `;
                     } else {
                         fieldHtml = `<input type="${type}" id="edit_${fieldName}" value="${value || ''}">`;
                     }
@@ -1139,6 +1167,7 @@
             
             if (userType === 'personal') {
                 html += createField('Date of Birth', 'dob', user.dob, 'text', true);
+                html += createField('Gender', 'gender', user.gender, 'select');
             } else if (userType === 'business') {
                 html += createField('DOI', 'doi', user.doi, 'text', true);
                 html += createField('Pincode', 'pincode', user.pincode, 'text');
@@ -1218,18 +1247,27 @@
             }
         };
         
-        // Toggle password display in view mode
+        // Toggle password display in view mode - FIXED
         window.togglePasswordDisplay = function() {
             currentPasswordVisible = !currentPasswordVisible;
-            const passwordDisplay = document.getElementById('passwordDisplay');
+            const passwordDisplay = document.querySelector('.password-field');
             if (passwordDisplay) {
                 const password = currentUserData.password || '';
-                passwordDisplay.innerHTML = currentPasswordVisible ? 
-                    password + ' <button type="button" class="copy-btn" onclick="copyToClipboard(\'' + password + '\')">📋 Copy</button>' : 
-                    '•••••••• <button type="button" class="copy-btn" onclick="copyToClipboard(\'' + password + '\')">📋 Copy</button>';
+                if (currentPasswordVisible) {
+                    passwordDisplay.innerHTML = password + 
+                        ' <button type="button" class="copy-btn" onclick="copyToClipboard(\'' + password + '\')">📋 Copy</button>';
+                } else {
+                    passwordDisplay.innerHTML = '••••••••' + 
+                        ' <button type="button" class="copy-btn" onclick="copyToClipboard(\'' + password + '\')">📋 Copy</button>';
+                }
                 
-                const button = event.target;
-                button.textContent = currentPasswordVisible ? '🙈 Hide Password' : '👁️ Show Password';
+                // Find the show/hide button and update its text
+                const buttons = document.querySelectorAll('.show-password-btn');
+                buttons.forEach(button => {
+                    if (button.textContent.includes('Password')) {
+                        button.textContent = currentPasswordVisible ? '🙈 Hide Password' : '👁️ Show Password';
+                    }
+                });
             }
         };
         
@@ -1238,7 +1276,7 @@
             if (!text || text === 'N/A') return;
             
             navigator.clipboard.writeText(text).then(() => {
-                alert('Password copied to clipboard!');
+                alert('Copied to clipboard!');
             }).catch(err => {
                 console.error('Failed to copy: ', err);
             });
@@ -1264,8 +1302,9 @@
             
             const updates = {
                 userType: userType,
-                accountName: document.getElementById('edit_username')?.value || '',
+                username: document.getElementById('edit_username')?.value || '',
                 status: document.getElementById('edit_status')?.value || 'inactive',
+                paymentMode: document.getElementById('edit_paymentMode')?.value || '',
                 updatedAt: new Date().toISOString()
             };
             
@@ -1274,6 +1313,7 @@
                 name: document.getElementById('edit_name')?.value || '',
                 email: document.getElementById('edit_email')?.value || '',
                 phone: document.getElementById('edit_phone')?.value || '',
+                gender: document.getElementById('edit_gender')?.value || null,
                 aadhaar: document.getElementById('edit_aadhaar')?.value || null,
                 pan: document.getElementById('edit_pan')?.value || null,
                 gstin: document.getElementById('edit_gstin')?.value || null
@@ -1281,7 +1321,6 @@
             
             if (userType === 'personal') {
                 updates.personalInfo.dob = document.getElementById('edit_dob')?.value || null;
-                updates.personalInfo.gender = currentUserData.gender;
             } else if (userType === 'business') {
                 updates.businessInfo = {
                     doi: document.getElementById('edit_doi')?.value || null,
@@ -1353,45 +1392,45 @@
                 });
         };
         
-// Change password function in admin-dashboard.html
-window.changePassword = function() {
-    if (!currentUserId) return;
-    
-    const newPassword = prompt("Enter new password for this user:\n\nPassword will be stored in plain text in Firestore.\nThe user will need to use this password to login to user-login.html", currentUserData.password || "");
-    
-    if (newPassword === null) return;
-    
-    if (newPassword.length < 6) {
-        alert("Password must be at least 6 characters!");
-        return;
-    }
-    
-    if (confirm(`Change password for ${currentUserData.email}?\n\nNew password: ${newPassword}\n\nThis will update the password in Firestore.`)) {
-        logAdminAction('CHANGE_PASSWORD', `Changed password for user: ${currentUserData.email}`);
-        
-        const originalText = event.target.textContent;
-        event.target.textContent = "Updating...";
-        event.target.disabled = true;
-        
-        db.collection("users").doc(currentUserId).update({
-            password: newPassword, // CORRECTED: Update password field
-            updatedAt: new Date().toISOString()
-        })
-        .then(() => {
-            console.log("Password updated successfully!");
-            alert("✅ Password updated successfully!\n\nUser can now login with this password on user-login.html");
+        // Change password function
+        window.changePassword = function() {
+            if (!currentUserId) return;
             
-            currentUserData.password = newPassword;
-            showUserModal(currentUserData, false);
-        })
-        .catch((error) => {
-            console.error("Error updating password:", error);
-            alert("❌ Error updating password: " + error.message);
-            event.target.textContent = originalText;
-            event.target.disabled = false;
-        });
-    }
-};
+            const newPassword = prompt("Enter new password for this user:\n\nPassword will be stored in plain text in Firestore.\nThe user will need to use this password to login to user-login.html", currentUserData.password || "");
+            
+            if (newPassword === null) return;
+            
+            if (newPassword.length < 6) {
+                alert("Password must be at least 6 characters!");
+                return;
+            }
+            
+            if (confirm(`Change password for ${currentUserData.email}?\n\nNew password: ${newPassword}\n\nThis will update the password in Firestore.`)) {
+                logAdminAction('CHANGE_PASSWORD', `Changed password for user: ${currentUserData.email}`);
+                
+                const originalText = event.target.textContent;
+                event.target.textContent = "Updating...";
+                event.target.disabled = true;
+                
+                db.collection("users").doc(currentUserId).update({
+                    password: newPassword,
+                    updatedAt: new Date().toISOString()
+                })
+                .then(() => {
+                    console.log("Password updated successfully!");
+                    alert("✅ Password updated successfully!\n\nUser can now login with this password on user-login.html");
+                    
+                    currentUserData.password = newPassword;
+                    showUserModal(currentUserData, false);
+                })
+                .catch((error) => {
+                    console.error("Error updating password:", error);
+                    alert("❌ Error updating password: " + error.message);
+                    event.target.textContent = originalText;
+                    event.target.disabled = false;
+                });
+            }
+        };
         
         // Close modal
         window.closeModal = function() {
@@ -1498,7 +1537,7 @@ window.changePassword = function() {
             }
         };
         
-        // Generate PDF for current user
+        // Generate PDF for current user - FIXED
         window.generatePDF = function() {
             if (!currentUserData) return;
             logAdminAction('GENERATE_PDF', `Generated PDF for user: ${currentUserData.email}`);
@@ -1561,6 +1600,7 @@ window.changePassword = function() {
                         {label: 'Email', value: currentUserData.email || 'N/A'},
                         {label: 'Phone', value: currentUserData.phone || 'N/A'},
                         {label: 'Date of Birth', value: currentUserData.dob || 'N/A'},
+                        {label: 'Gender', value: currentUserData.gender || 'N/A'},
                         {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
                         {label: 'PAN', value: currentUserData.pan || 'N/A'},
                         {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
