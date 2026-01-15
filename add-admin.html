@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Admin to Firestore</title>
+</head>
+<body>
+    <h2>Add Admin Account to Firestore</h2>
+    
+    <div>
+        <label>Admin UID (from Firebase Auth):</label>
+        <input type="text" id="adminUID" placeholder="Paste UID here" style="width: 300px; padding: 10px;">
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <label>Admin Email:</label>
+        <input type="email" id="adminEmail" value="care.ompl@gmail.com" style="width: 300px; padding: 10px;">
+    </div>
+    
+    <button onclick="addAdmin()" style="margin-top: 20px; padding: 10px 20px; background: #4361ee; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Add Admin to Firestore
+    </button>
+    
+    <div id="result" style="margin-top: 20px;"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script>
+        // Your Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+            authDomain: "odelya-user-data.firebaseapp.com",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.firebasestorage.app",
+            messagingSenderId: "590231118790",
+            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+            measurementId: "G-9SWTR9V32R"
+        };
+        
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        async function addAdmin() {
+            const uid = document.getElementById('adminUID').value.trim();
+            const email = document.getElementById('adminEmail').value.trim();
+            const resultDiv = document.getElementById('result');
+            
+            if (!uid) {
+                resultDiv.innerHTML = '<p style="color: red;">Please enter the Admin UID</p>';
+                return;
+            }
+            
+            const adminData = {
+                email: email,
+                name: "Administrator",
+                role: "superadmin",
+                createdAt: new Date().toISOString(),
+                permissions: ["view_users", "edit_users", "activate_users"]
+            };
+            
+            try {
+                // Add to Firestore
+                await db.collection('admins').doc(uid).set(adminData);
+                
+                resultDiv.innerHTML = `
+                    <p style="color: green; font-weight: bold;">
+                        ✅ Admin added successfully!
+                    </p>
+                    <p>Email: ${email}</p>
+                    <p>UID: ${uid}</p>
+                    <p>You can now login with ${email}</p>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p style="color: red;">Error: ${error.message}</p>
+                    <p>Make sure you're logged into Firebase Console in another tab.</p>
+                `;
+            }
+        }
+        
+        // Optional: Auto-fill if you have the UID
+        document.addEventListener('DOMContentLoaded', function() {
+            // You can hardcode the UID here if you know it
+            // document.getElementById('adminUID').value = "PASTE_UID_HERE";
+        });
+    </script>
+</body>
+</html>
