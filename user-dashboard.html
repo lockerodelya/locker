@@ -1387,6 +1387,7 @@
         }
         
         // Change password - FIXED to update both Firebase Auth AND Firestore
+// Change password - FIXED VERSION
 window.changePassword = function() {
     if (!validatePassword()) {
         return;
@@ -1406,122 +1407,83 @@ window.changePassword = function() {
     btn.textContent = "CHANGING PASSWORD...";
     btn.disabled = true;
     
-    console.log("Starting password change process...");
+    console.log("Starting password change for:", userEmail);
     
-    // Step 1: Get user IP address
-    fetch('https://api.ipify.org?format=json')
-        .then(response => response.json())
-        .then(data => {
-            const userIP = data.ip || 'Unknown';
-            console.log("Got IP address:", userIP);
+    // Step 1: Authenticate with current password
+    auth.signInWithEmailAndPassword(userEmail, currentPassword)
+        .then((userCredential) => {
+            console.log("✅ Authentication successful");
+            const user = userCredential.user;
             
-            // Step 2: Re-authenticate user with current password
-            console.log("Authenticating with current password...");
-            return auth.signInWithEmailAndPassword(userEmail, currentPassword)
-                .then((userCredential) => {
-                    console.log("✅ Authentication successful");
-                    const user = userCredential.user;
+            // Step 2: Update password in Firebase Authentication
+            return user.updatePassword(newPassword)
+                .then(() => {
+                    console.log("✅ Password updated in Firebase Auth");
                     
-                    // Step 3: Update password in Firebase Authentication
-                    console.log("Updating password in Firebase Auth...");
-                    return user.updatePassword(newPassword)
+                    // Step 3: Update password in Firestore - SIMPLE UPDATE
+                    const updates = {
+                        password: newPassword,
+                        updatedAt: new Date().toISOString(),
+                        lastPasswordChange: new Date().toISOString()
+                    };
+                    
+                    // Try simple update first
+                    return db.collection("users").doc(user.uid).update(updates)
                         .then(() => {
-                            console.log("✅ Password updated in Firebase Auth");
+                            console.log("✅ Password updated in Firestore (root level)");
                             
-                            // Step 4: Update password in Firestore database
-                            console.log("Updating password in Firestore...");
-                            return db.collection('users').doc(currentUserId).update({
-                                password: newPassword, // This is what admin dashboard reads
-                                updatedAt: new Date().toISOString(),
-                                lastPasswordChange: new Date().toISOString()
-                            })
-                            .then(() => {
-                                console.log("✅ Password updated in Firestore");
-                                
-                                // Step 5: Log password change in passwordHistory collection
-                                console.log("Logging password change...");
-                                const logRecord = {
-                                    userId: currentUserId,
-                                    userEmail: userEmail,
-                                    changeTime: new Date().toISOString(),
-                                    changeTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                                    ipAddress: userIP,
-                                    userAgent: navigator.userAgent,
-                                    action: 'password_change'
-                                };
-                                
-                                return db.collection('users').doc(currentUserId).collection('passwordHistory').add(logRecord)
-                                    .then(() => {
-                                        console.log("✅ Password change logged");
-                                        return true;
-                                    });
-                            });
+                            // Step 4: Also update in personalInfo if structure requires it
+                            // Try updating personalInfo.password as well
+                            const personalInfoUpdate = {
+                                "personalInfo.password": newPassword
+                            };
+                            
+                            return db.collection("users").doc(user.uid).update(personalInfoUpdate)
+                                .catch(error => {
+                                    console.log("ℹ️ personalInfo.password not updated (might not exist in structure)");
+                                    // It's okay if this fails
+                                });
+                        })
+                        .then(() => {
+                            // Step 5: Log the password change
+                            const logData = {
+                                userId: user.uid,
+                                userEmail: userEmail,
+                                timestamp: new Date().toISOString(),
+                                action: "password_change",
+                                note: "Password changed by user"
+                            };
+                            
+                            return db.collection("users").doc(user.uid).collection("passwordHistory").add(logData);
+                        })
+                        .then(() => {
+                            console.log("✅ Password change logged");
+                            
+                            // SUCCESS
+                            alert("✅ PASSWORD CHANGED SUCCESSFULLY!\n\nYou can now login with your new password.\n\nLogging out in 3 seconds...");
+                            
+                            closePasswordModal();
+                            
+                            // Logout after delay
+                            setTimeout(() => {
+                                logout();
+                            }, 3000);
                         });
                 });
         })
-        .then((success) => {
-            if (success) {
-                console.log("🎉 Password change process completed successfully!");
-                
-                // Show success message
-                alert("✅ PASSWORD CHANGED SUCCESSFULLY!\n\n• Password updated in login system\n• Password updated in database\n• Admin dashboard will show new password\n\nYou will be logged out for security.");
-                
-                // Force refresh user data to update any cached data
-                if (currentUserData) {
-                    currentUserData.password = newPassword;
-                }
-                
-                // Close modal
-                closePasswordModal();
-                
-                // Logout after 1.5 seconds
-                setTimeout(() => {
-                    console.log("Logging out after password change...");
-                    logout();
-                }, 1500);
-            }
-        })
         .catch((error) => {
-            console.error("❌ Error changing password:", error);
-            console.error("Error code:", error.code);
-            console.error("Error message:", error.message);
+            console.error("Password change error:", error);
             
-            let errorMsg = "Error changing password: ";
+            let errorMsg = "";
             
-            // Handle specific Firebase errors
-            switch (error.code) {
-                case 'auth/wrong-password':
-                case 'auth/invalid-login-credentials':
-                    errorMsg = "❌ CURRENT PASSWORD IS INCORRECT\n\nPlease enter your correct current password.";
-                    break;
-                    
-                case 'auth/weak-password':
-                    errorMsg = "❌ PASSWORD IS TOO WEAK\n\nPassword must be at least 6 characters long.";
-                    break;
-                    
-                case 'auth/requires-recent-login':
-                    errorMsg = "❌ SESSION EXPIRED\n\nPlease login again and try changing your password.";
-                    break;
-                    
-                case 'auth/user-not-found':
-                    errorMsg = "❌ USER NOT FOUND\n\nPlease login again.";
-                    break;
-                    
-                case 'auth/too-many-requests':
-                    errorMsg = "❌ TOO MANY ATTEMPTS\n\nPlease try again later.";
-                    break;
-                    
-                case 'permission-denied':
-                    errorMsg = "❌ PERMISSION DENIED\n\nYou don't have permission to update your password.\nPlease contact administrator.";
-                    break;
-                    
-                default:
-                    // Check if it's a Firestore permission error
-                    if (error.message.includes('permission') || error.message.includes('Permission')) {
-                        errorMsg = "❌ DATABASE PERMISSION ERROR\n\nCannot update password in database.\nPlease contact administrator.";
-                    } else {
-                        errorMsg = "❌ ERROR: " + (error.message || "Failed to change password");
-                    }
+            if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-login-credentials') {
+                errorMsg = "❌ CURRENT PASSWORD IS INCORRECT\n\nPlease enter your correct current password.";
+            } else if (error.code === 'permission-denied') {
+                errorMsg = "❌ PERMISSION DENIED\n\nFirestore security rules are blocking the update.\nPlease contact administrator.";
+            } else if (error.code === 'auth/weak-password') {
+                errorMsg = "❌ PASSWORD TOO WEAK\n\nPassword must be at least 6 characters.";
+            } else {
+                errorMsg = "❌ ERROR: " + (error.message || "Failed to change password");
             }
             
             alert(errorMsg);
