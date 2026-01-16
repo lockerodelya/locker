@@ -4,20 +4,24 @@
     <title>User Login - Odelya</title>
     <style>
         body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
-            overflow: auto; /* Allow scrolling if needed */
-        }
+    font-family: 'Roboto', Arial, sans-serif;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    min-height: 100vh; /* Changed from height to min-height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0; /* Changed from overflow: auto */
+}
         .login-container {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-        }
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    display: flex; /* ADD THIS */
+    justify-content: center; /* ADD THIS */
+    align-items: center; /* ADD THIS */
+    min-height: 100vh; /* ADD THIS - Makes it take full height */
+}
         .login-box {
             background: white;
             padding: 40px;
@@ -583,30 +587,30 @@ window.location.href = "user-dashboard.html";
             displayUserData(userData);
         }
 
-        // Logout function
-        async function logout() {
-            try {
-                await auth.signOut();
-                localStorage.removeItem('user_logged_in');
-                localStorage.removeItem('user_email');
-                localStorage.removeItem('user_uid');
-                localStorage.removeItem('user_name');
-                
-                // Clear form
-                emailInput.value = '';
-                passwordInput.value = '';
-                
-                // Switch to login view
-                dashboardPage.style.display = 'none';
-                loginPage.style.display = 'flex';
-                
-                loginBtn.disabled = false;
-                loginBtn.textContent = "Login";
-                
-            } catch (error) {
-                console.error("Logout error:", error);
-            }
-        }
+  // Logout function
+async function logout() {
+    try {
+        await auth.signOut();
+        localStorage.removeItem('user_logged_in');
+        localStorage.removeItem('user_email');
+        localStorage.removeItem('user_uid');
+        localStorage.removeItem('user_name');
+        
+        // Clear form
+        emailInput.value = '';
+        passwordInput.value = '';
+        
+        // Switch to login view
+        dashboardPage.style.display = 'none';
+        loginPage.style.display = 'block'; // Just use 'block'
+        
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Login";
+        
+    } catch (error) {
+        console.error("Logout error:", error);
+    }
+}
 
         // Forgot password handler
         function handleForgotPassword(e) {
