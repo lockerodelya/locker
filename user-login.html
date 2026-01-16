@@ -11,11 +11,17 @@
             justify-content: center;
             align-items: center;
             margin: 0;
+            padding: 20px; /* Added for mobile spacing */
+            min-height: 100vh; /* Ensure full height on mobile */
+            height: auto; /* Allow content to determine height */
         }
         .login-container {
             width: 100%;
             max-width: 400px;
             padding: 20px;
+            display: flex;
+            align-items: center;
+            min-height: 100vh; /* Full height on mobile */
         }
         .login-box {
             background: white;
@@ -23,6 +29,7 @@
             border-radius: 15px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             text-align: center;
+            width: 100%;
         }
         h2 {
             color: #333;
@@ -96,6 +103,21 @@
             font-size: 14px;
             color: #666;
             border-left: 4px solid #00d4ff;
+        }
+        
+        /* Forgot Password Link */
+        .forgot-password {
+            display: block;
+            margin: 15px 0;
+            color: #ff6b6b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .forgot-password:hover {
+            color: #ff4757;
+            text-decoration: underline;
         }
         
         /* Dashboard Styles */
@@ -237,6 +259,29 @@
             display: flex;
             align-items: center;
         }
+
+        /* Responsive adjustments for mobile */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                align-items: flex-start; /* Changed for better mobile display */
+                min-height: 100vh;
+            }
+            .login-container {
+                padding: 10px;
+                min-height: auto;
+            }
+            .login-box {
+                padding: 25px;
+            }
+            .dashboard-container {
+                width: 95%;
+                padding: 10px;
+            }
+            .dashboard-box {
+                padding: 25px;
+            }
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -244,7 +289,7 @@
     <div id="loginPage" class="login-container">
         <div class="login-box">
             <div class="logo">👤</div>
-            <h2>User Portal</h2>
+            <h2>Odelya User Login</h2> <!-- Changed from "User Portal" -->
             
             <div class="input-group">
                 <label for="email">Email Address</label>
@@ -256,13 +301,15 @@
                 <input type="password" id="password" placeholder="Enter your password">
             </div>
             
+            <!-- Added Forgot Password link -->
+            <a href="#" class="forgot-password" id="forgotPassword">Forgot password?</a>
+            
             <div class="error-message" id="errorMessage"></div>
             
             <button id="loginBtn">Login</button>
             
             <div class="secure-note">
-                <strong>User Access</strong><br>
-                Access your personal information and data.
+                <!-- Removed the two lines "User Access" and "Access your personal information and data." -->
             </div>
         </div>
     </div>
@@ -353,6 +400,7 @@
         const personalInfo = document.getElementById('personalInfo');
         const accountInfo = document.getElementById('accountInfo');
         const additionalInfo = document.getElementById('additionalInfo');
+        const forgotPasswordLink = document.getElementById('forgotPassword'); // Added
 
         // Show error message
         function showError(message) {
@@ -598,6 +646,30 @@ window.location.href = "user-dashboard.html";
             }
         }
 
+        // Forgot password handler
+        function handleForgotPassword() {
+            const email = emailInput.value.trim();
+            
+            if (!email) {
+                showError("Please enter your email address to reset password");
+                return;
+            }
+            
+            // You can add the forgot password logic here
+            // For now, just show a message and you can link it later
+            showError("Forgot password feature will be available soon. Please contact support.");
+            
+            // When you're ready to implement, you can use:
+            // auth.sendPasswordResetEmail(email)
+            //   .then(() => {
+            //       showError("Password reset email sent! Check your inbox.");
+            //   })
+            //   .catch((error) => {
+            //       console.error("Password reset error:", error);
+            //       showError("Error sending reset email. Please try again.");
+            //   });
+        }
+
         // Setup function
         async function setup() {
             // Check if already logged in
@@ -621,6 +693,7 @@ window.location.href = "user-dashboard.html";
             loginBtn.addEventListener('click', login);
             logoutBtn.addEventListener('click', logout);
             backBtn.addEventListener('click', logout);
+            forgotPasswordLink.addEventListener('click', handleForgotPassword); // Added
             
             // Allow pressing Enter to login
             document.addEventListener('keypress', function(e) {
