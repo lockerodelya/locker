@@ -2,224 +2,527 @@
 <html>
 <head>
     <title>User Dashboard - Odelya</title>
-    <style>
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-        .dashboard-container {
-            width: 90%;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .user-avatar {
-            width: 60px;
-            height: 60px;
-            background: #00d4ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-            font-weight: bold;
-        }
-        .user-details h1 {
-            margin: 0;
-            color: #333;
-            font-size: 24px;
-        }
-        .user-details p {
-            margin: 5px 0 0;
-            color: #666;
-        }
-        .logout-btn {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .logout-btn:hover {
-            background: #ff4757;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
-        }
-        .dashboard-content {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-        .data-section {
-            margin-bottom: 40px;
-        }
-        .data-section h2 {
-            color: #333;
-            margin-bottom: 25px;
-            font-size: 22px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        .data-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .data-card {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 10px;
-            border-left: 4px solid #00d4ff;
-            transition: transform 0.3s;
-        }
-        .data-card:hover {
-            transform: translateY(-3px);
-        }
-        .data-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .data-row:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-        .data-label {
-            font-weight: 600;
-            color: #555;
-            min-width: 120px;
-        }
-        .data-value {
-            color: #333;
-            text-align: right;
-            max-width: 250px;
-            word-break: break-word;
-        }
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-            font-size: 18px;
-        }
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-            font-style: italic;
-            grid-column: 1 / -1;
-        }
-        .back-home {
-            display: inline-block;
-            background: #6c757d;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-        }
-        .back-home:hover {
-            background: #5a6268;
-        }
-        .secure-note {
-            margin-top: 40px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            font-size: 14px;
-            color: #666;
-            border-left: 4px solid #00d4ff;
-        }
-        .timestamp {
-            color: #888;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="dashboard-container">
-        <a href="user-login.html" class="back-home">← Back to Login</a>
-        
-        <div class="header">
-            <div class="user-info">
-                <div class="user-avatar" id="userAvatar">U</div>
-                <div class="user-details">
-                    <h1 id="userName">Loading...</h1>
-                    <p id="userEmail">user@example.com</p>
-                    <div class="timestamp" id="loginTime"></div>
-                </div>
-            </div>
-            <button class="logout-btn" id="logoutBtn">Logout</button>
-        </div>
-        
-        <div class="dashboard-content">
-            <div class="data-section">
-                <h2>Personal Information</h2>
-                <div id="personalInfo" class="data-grid">
-                    <div class="loading">Loading personal information...</div>
-                </div>
-            </div>
-            
-            <div class="data-section">
-                <h2>Account Details</h2>
-                <div id="accountInfo" class="data-grid">
-                    <div class="loading">Loading account details...</div>
-                </div>
-            </div>
-            
-            <div class="data-section">
-                <h2>Additional Information</h2>
-                <div id="additionalInfo" class="data-grid">
-                    <div class="loading">Loading additional information...</div>
-                </div>
-            </div>
-            
-            <div class="secure-note">
-                <strong>📝 Note:</strong> All information displayed here is read-only. For security reasons, passwords are never displayed. Contact support if you need to update any information.
-            </div>
-        </div>
-    </div>
-
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .header h1 {
+            color: #00d4ff;
+            text-align: center;
+        }
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            position: absolute;
+            right: 30px;
+        }
+        .container {
+            max-width: none;
+            margin: 30px auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+        
+        /* Updated Table Styles */
+        .table-container {
+            width: 95%;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            min-width: 1200px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            white-space: nowrap;
+        }
+        
+        th {
+            background: #00d4ff;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            font-size: 14px;
+        }
+        
+        tr:hover {
+            background: #f9f9f9;
+        }
+        
+        /* Make specific columns wider */
+        th:nth-child(1), td:nth-child(1) {
+            min-width: 120px;
+        }
+        
+        th:nth-child(2), td:nth-child(2) {
+            min-width: 100px;
+        }
+        
+        th:nth-child(3), td:nth-child(3) {
+            min-width: 180px;
+            max-width: 250px;
+            white-space: normal;
+            word-break: break-word;
+        }
+        
+        th:nth-child(4), td:nth-child(4) {
+            min-width: 200px;
+            max-width: 300px;
+            white-space: normal;
+            word-break: break-all;
+        }
+        
+        th:nth-child(5), td:nth-child(5) {
+            min-width: 130px;
+        }
+        
+        th:nth-child(6), td:nth-child(6) {
+            min-width: 150px;
+            max-width: 200px;
+            white-space: normal;
+        }
+        
+        th:nth-child(7), td:nth-child(7) {
+            min-width: 100px;
+        }
+        
+        th:nth-child(8), td:nth-child(8) {
+            min-width: 150px;
+            text-align: center;
+        }
+        
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
+        }
+        .status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status.suspended {
+            background: #6c757d;
+            color: white;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .table-container {
+                width: 98%;
+            }
+            
+            th, td {
+                padding: 12px 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .table-container {
+                width: 100%;
+                margin: 0;
+            }
+            
+            table {
+                min-width: 1000px;
+            }
+            
+            th, td {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
+            .logout-btn {
+                right: 15px;
+                padding: 6px 15px;
+                font-size: 14px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #00d4ff;
+            padding-bottom: 10px;
+        }
+        
+        .modal-header h2 {
+            color: #0099cc;
+            flex: 1;
+        }
+        
+        .user-id-header {
+            font-size: 16px;
+            color: #0099cc;
+            background: #f8f9fa;
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 2px solid #00d4ff;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        
+        .modal-status {
+            font-size: 14px;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+            min-width: 100px;
+            text-align: center;
+        }
+        
+        .modal-status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .modal-status.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .modal-status.suspended {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .user-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .detail-group {
+            margin-bottom: 15px;
+        }
+        
+        .detail-group label {
+            display: block;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .detail-group .value {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            min-height: 40px;
+            word-break: break-word;
+        }
+        
+        .detail-group input,
+        .detail-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .modal-actions {
+            margin-top: 30px;
+            text-align: right;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        
+        .action-btn {
+            padding: 8px 20px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn-close {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .section-title {
+            grid-column: 1 / -1;
+            font-size: 18px;
+            color: #0099cc;
+            margin: 10px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .password-field {
+            background: #fff3cd !important;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+        
+        .show-password-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        
+        .agreement-row {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .tick-mark {
+            color: #28a745;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+        
+        .left-column, .right-column {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* User Type Badge Styles */
+        .user-type-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        .user-type-personal {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .user-type-business {
+            background: #6f42c1;
+            color: white;
+        }
+        
+        /* Action buttons in table */
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        
+        .view-btn {
+            background: #00d4ff;
+            color: white;
+        }
+        
+        /* Section heading centered */
+        .section-heading {
+            text-align: center;
+            margin: 30px 0 15px 0;
+            width: 95%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* No users message */
+        .no-users {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .welcome-message {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Odelya User Dashboard</h1>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="container">
+        <div class="welcome-message">
+            Welcome back, <span id="userWelcomeName">User</span>! Here are your account details.
+        </div>
+        
+        <h2 class="section-heading">My Account Information</h2>
+        <div class="table-container">
+            <table id="usersTable">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>User Type</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Plan</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersList">
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px;">
+                            Loading your information...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>My Account Details</h2>
+                <div class="user-id-header" id="modalUserIdDisplay">User ID: Loading...</div>
+                <div class="modal-status" id="modalStatusDisplay">Status</div>
+            </div>
+            
+            <div class="user-details" id="userDetails">
+                <!-- User details will be loaded here -->
+            </div>
+            
+            <div class="modal-actions">
+                <button class="action-btn btn-pdf" onclick="generatePDF()" style="background: #6f42c1;">📄 Generate PDF</button>
+                <button class="action-btn btn-close" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         // ==================== FIREBASE CONFIGURATION ====================
         const firebaseConfig = {
             apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
-            authDomain: "odelya-user-data.firebaseapp.com",
+            authDomain: "odelya-user-data.firebasestorage.app",
             projectId: "odelya-user-data",
             storageBucket: "odelya-user-data.firebasestorage.app",
             messagingSenderId: "590231118790",
@@ -236,250 +539,637 @@
             console.log("Firebase initialized successfully");
         } catch (error) {
             console.error("Firebase initialization error:", error);
-            showError("System initialization failed. Please refresh.");
+        }
+        // ==================== END FIREBASE CONFIGURATION ====================
+
+        // Global variables
+        let currentUserId = null;
+        let currentUserData = null;
+
+        // Generate random 6-digit user ID starting from 2-9
+        function generateUserId() {
+            let userId = '';
+            // First digit: 2-9
+            userId += Math.floor(Math.random() * 8) + 2;
+            // Next 5 digits: 0-9
+            for (let i = 0; i < 5; i++) {
+                userId += Math.floor(Math.random() * 10);
+            }
+            return userId;
         }
 
-        // DOM elements
-        const userAvatar = document.getElementById('userAvatar');
-        const userName = document.getElementById('userName');
-        const userEmail = document.getElementById('userEmail');
-        const loginTime = document.getElementById('loginTime');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const personalInfo = document.getElementById('personalInfo');
-        const accountInfo = document.getElementById('accountInfo');
-        const additionalInfo = document.getElementById('additionalInfo');
-
-        // Show error
-        function showError(message) {
-            personalInfo.innerHTML = `<div class="no-data" style="color: #f44336;">${message}</div>`;
-            accountInfo.innerHTML = '';
-            additionalInfo.innerHTML = '';
+        // Fix the user data structure to match what admin-dashboard expects
+        function fixUserDataStructure(user) {
+            const fixedUser = { ...user };
+            
+            // Generate or use existing user ID
+            if (!fixedUser.userId) {
+                fixedUser.userId = generateUserId();
+            }
+            
+            // Map the data from user-account.html structure
+            if (user.personalInfo) {
+                fixedUser.name = user.personalInfo.name || 'N/A';
+                fixedUser.email = user.personalInfo.email || user.email || 'N/A';
+                fixedUser.phone = user.personalInfo.phone || 'N/A';
+                fixedUser.dob = user.personalInfo.dob || null;
+                fixedUser.gender = user.personalInfo.gender || null;
+                fixedUser.aadhaar = user.personalInfo.aadhaar || null;
+                fixedUser.pan = user.personalInfo.pan || null;
+                fixedUser.gstin = user.personalInfo.gstin || null;
+            }
+            
+            if (user.businessInfo) {
+                fixedUser.doi = user.businessInfo.doi || null;
+                fixedUser.pincode = user.businessInfo.pincode || null;
+            }
+            
+            if (user.planDetails) {
+                fixedUser.planName = user.planDetails.planName || 'N/A';
+                fixedUser.planSize = user.planDetails.planSize || 'N/A';
+                fixedUser.planType = user.planDetails.planType || 'N/A';
+                fixedUser.planStartDate = user.planDetails.planStartDate || 'N/A';
+                fixedUser.planEndDate = user.planDetails.planEndDate || 'N/A';
+                fixedUser.planValue = user.planDetails.planValue || 'N/A';
+            }
+            
+            // Map account fields - FIXED username mapping
+            fixedUser.username = user.username || user.accountName || user.email?.split('@')[0] || 'N/A';
+            
+            // Map payment mode
+            fixedUser.paymentMode = user.paymentMode || user.paymentDetails?.mode || 'N/A';
+            
+            // Ensure status
+            fixedUser.status = user.status || 'inactive';
+            
+            return fixedUser;
         }
 
-        // Get user data from Firestore
-        async function getUserData(userId, email) {
+        // Format date to dd-mm-yyyy HH:MM:SS AM/PM
+        function formatDateTime(dateValue) {
+            if (!dateValue) return 'N/A';
+            
             try {
-                // First try to get user by UID
-                let userDoc = await db.collection('users').doc(userId).get();
-                
-                if (userDoc.exists) {
-                    return userDoc.data();
+                let date;
+                if (dateValue.toDate) {
+                    date = dateValue.toDate();
+                } else if (typeof dateValue === 'string') {
+                    date = new Date(dateValue);
+                } else {
+                    date = dateValue;
                 }
                 
-                // If not found by UID, try by email
-                const userQuery = await db.collection('users')
-                    .where('email', '==', email)
-                    .limit(1)
-                    .get();
+                if (isNaN(date.getTime())) return 'Invalid Date';
                 
-                if (!userQuery.empty) {
-                    return userQuery.docs[0].data();
-                }
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
                 
-                // If no user document found, create a basic one from auth data
-                return {
-                    name: email.split('@')[0],
-                    email: email,
-                    uid: userId,
-                    accountCreated: new Date().toISOString(),
-                    lastLogin: new Date().toISOString(),
-                    status: 'Active'
-                };
+                let hours = date.getHours();
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                const seconds = String(date.getSeconds()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
                 
-            } catch (error) {
-                console.error("Error getting user data:", error);
-                return null;
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                hours = String(hours).padStart(2, '0');
+                
+                return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+            } catch (e) {
+                return 'Invalid Date';
             }
         }
 
-        // Display user data
-        function displayUserData(userData) {
-            if (!userData) {
-                showError("Unable to load user data. Please try logging in again.");
-                return;
-            }
-
-            // Set user info
-            const name = userData.name || userData.email.split('@')[0];
-            userName.textContent = name;
-            userEmail.textContent = userData.email || 'No email provided';
-            userAvatar.textContent = name.charAt(0).toUpperCase();
-            loginTime.textContent = `Last login: ${new Date().toLocaleString()}`;
-
-            // Personal Information
-            const personalFields = {
-                'Full Name': userData.name || 'Not provided',
-                'Email': userData.email || 'Not provided',
-                'Phone': userData.phone || 'Not provided',
-                'Address': userData.address || 'Not provided',
-                'Date of Birth': userData.dob || userData.birthdate || 'Not provided',
-                'Gender': userData.gender || 'Not provided',
-                'Country': userData.country || 'Not provided',
-                'City': userData.city || 'Not provided'
-            };
+        // Format date for PDF header
+        function formatDateTimeForPDFHeader(dateValue) {
+            if (!dateValue) return 'N/A';
             
-            personalInfo.innerHTML = '';
-            for (const [label, value] of Object.entries(personalFields)) {
-                if (value !== 'Not provided') {
-                    const card = document.createElement('div');
-                    card.className = 'data-card';
-                    card.innerHTML = `
-                        <div class="data-row">
-                            <span class="data-label">${label}:</span>
-                            <span class="data-value">${value}</span>
-                        </div>
-                    `;
-                    personalInfo.appendChild(card);
+            try {
+                let date;
+                if (dateValue.toDate) {
+                    date = dateValue.toDate();
+                } else if (typeof dateValue === 'string') {
+                    date = new Date(dateValue);
+                } else {
+                    date = new Date();
                 }
-            }
-            
-            if (personalInfo.children.length === 0) {
-                personalInfo.innerHTML = '<div class="no-data">No personal information available</div>';
-            }
-
-            // Account Details
-            const accountFields = {
-                'User ID': userData.uid || 'Not available',
-                'Account Created': userData.accountCreated ? new Date(userData.accountCreated).toLocaleDateString() : 'Not available',
-                'Account Status': userData.status || 'Active',
-                'User Type': userData.userType || 'Regular User',
-                'Email Verified': userData.emailVerified ? 'Yes' : 'No',
-                'Member Since': userData.memberSince || userData.accountCreated ? new Date(userData.accountCreated).toLocaleDateString() : 'Not available'
-            };
-            
-            accountInfo.innerHTML = '';
-            for (const [label, value] of Object.entries(accountFields)) {
-                const card = document.createElement('div');
-                card.className = 'data-card';
-                card.innerHTML = `
-                    <div class="data-row">
-                        <span class="data-label">${label}:</span>
-                        <span class="data-value">${value}</span>
-                    </div>
-                `;
-                accountInfo.appendChild(card);
-            }
-
-            // Additional Information
-            additionalInfo.innerHTML = '';
-            
-            const excludedFields = ['name', 'email', 'phone', 'address', 'dob', 'birthdate', 'gender', 
-                                   'country', 'city', 'uid', 'accountCreated', 'lastLogin', 'status', 
-                                   'userType', 'emailVerified', 'memberSince', 'password'];
-            
-            let hasAdditionalData = false;
-            
-            for (const [key, value] of Object.entries(userData)) {
-                if (!excludedFields.includes(key) && 
-                    value !== undefined && 
-                    value !== null && 
-                    value !== '' &&
-                    key.toLowerCase().indexOf('password') === -1) {
-                    
-                    hasAdditionalData = true;
-                    const card = document.createElement('div');
-                    card.className = 'data-card';
-                    
-                    // Format the key for display
-                    const displayKey = key
-                        .replace(/([A-Z])/g, ' $1')
-                        .replace(/^./, str => str.toUpperCase())
-                        .replace(/_/g, ' ');
-                    
-                    // Format the value
-                    let displayValue = value;
-                    if (typeof value === 'object') {
-                        displayValue = JSON.stringify(value, null, 2);
-                    } else if (typeof value === 'boolean') {
-                        displayValue = value ? 'Yes' : 'No';
-                    } else if (key.toLowerCase().includes('date') || key.toLowerCase().includes('time')) {
-                        try {
-                            displayValue = new Date(value).toLocaleString();
-                        } catch (e) {
-                            displayValue = value;
-                        }
-                    }
-                    
-                    card.innerHTML = `
-                        <div class="data-row">
-                            <span class="data-label">${displayKey}:</span>
-                            <span class="data-value">${displayValue}</span>
-                        </div>
-                    `;
-                    additionalInfo.appendChild(card);
-                }
-            }
-            
-            if (!hasAdditionalData) {
-                additionalInfo.innerHTML = '<div class="no-data">No additional information available</div>';
+                
+                if (isNaN(date.getTime())) return 'Invalid Date';
+                
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = String(date.getFullYear()).slice(-2);
+                
+                let hours = date.getHours();
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                const seconds = String(date.getSeconds()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'pm' : 'am';
+                
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                hours = String(hours).padStart(2, '0');
+                
+                return `${day}-${month}-${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+            } catch (e) {
+                return 'Invalid Date';
             }
         }
 
+        // Auto-logout after 30 minutes of inactivity
+        function setupAutoLogout() {
+            let timeout;
+            
+            function resetTimer() {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    alert('Session expired due to inactivity. Please login again.');
+                    logout();
+                }, 30 * 60 * 1000);
+            }
+            
+            ['click', 'mousemove', 'keypress', 'scroll'].forEach(event => {
+                document.addEventListener(event, resetTimer);
+            });
+            
+            resetTimer();
+        }
+
+        // Check if user is logged in
+        window.onload = function() {
+            const isLoggedIn = localStorage.getItem('user_logged_in');
+            const userEmail = localStorage.getItem('user_email');
+            
+            if (!isLoggedIn || !userEmail) {
+                window.location.href = "user-login.html";
+            } else {
+                // Show welcome message
+                document.getElementById('userWelcomeName').textContent = localStorage.getItem('user_name') || userEmail.split('@')[0];
+                setupAutoLogout();
+                loadUserData();
+            }
+        };
+        
         // Logout function
-        async function logout() {
-            try {
-                await auth.signOut();
+        function logout() {
+            auth.signOut().then(() => {
                 localStorage.removeItem('user_logged_in');
                 localStorage.removeItem('user_email');
                 localStorage.removeItem('user_uid');
                 localStorage.removeItem('user_name');
-                
-                // Redirect to login page
                 window.location.href = "user-login.html";
-                
-            } catch (error) {
-                console.error("Logout error:", error);
-                alert("Logout failed. Please try again.");
-            }
+            });
         }
 
-        // Check authentication and load data
-        async function initializeDashboard() {
-            try {
-                // Check if user is logged in
-                const currentUser = auth.currentUser;
-                if (!currentUser) {
-                    // Check localStorage as fallback
-                    const isLoggedIn = localStorage.getItem('user_logged_in');
-                    if (isLoggedIn !== 'true') {
-                        // Not logged in, redirect to login
-                        window.location.href = "user-login.html";
-                        return;
-                    }
-                    
-                    // Try to get user from localStorage
-                    const userEmail = localStorage.getItem('user_email');
-                    const userUid = localStorage.getItem('user_uid');
-                    
-                    if (!userEmail || !userUid) {
-                        window.location.href = "user-login.html";
+        // Load user data from Firebase
+        function loadUserData() {
+            console.log("Loading user data from Firebase...");
+            
+            const userEmail = localStorage.getItem('user_email');
+            const userUid = localStorage.getItem('user_uid');
+            
+            if (!userEmail && !userUid) {
+                window.location.href = "user-login.html";
+                return;
+            }
+            
+            // Try to find user by UID first
+            let userQuery;
+            if (userUid) {
+                userQuery = db.collection("users").doc(userUid).get();
+            } else {
+                // Fallback: find by email
+                userQuery = db.collection("users")
+                    .where("personalInfo.email", "==", userEmail)
+                    .limit(1)
+                    .get()
+                    .then(querySnapshot => {
+                        if (!querySnapshot.empty) {
+                            return querySnapshot.docs[0];
+                        }
+                        return null;
+                    });
+            }
+            
+            Promise.resolve(userQuery)
+                .then((doc) => {
+                    if (!doc || (doc.exists === false)) {
+                        document.getElementById('usersList').innerHTML = `
+                            <tr>
+                                <td colspan="8" class="no-users">
+                                    📭 User account not found in database
+                                </td>
+                            </tr>
+                        `;
                         return;
                     }
                     
                     // Get user data
-                    const userData = await getUserData(userUid, userEmail);
-                    displayUserData(userData);
-                    return;
+                    const userData = doc.data ? doc.data() : doc;
+                    userData.id = doc.id || userUid;
+                    
+                    // Fix the data structure
+                    const fixedUser = fixUserDataStructure(userData);
+                    currentUserData = fixedUser;
+                    currentUserId = userData.id;
+                    
+                    // Store user name if available
+                    if (fixedUser.name && fixedUser.name !== 'N/A') {
+                        localStorage.setItem('user_name', fixedUser.name);
+                        document.getElementById('userWelcomeName').textContent = fixedUser.name;
+                    }
+                    
+                    // Render user data in table (single row)
+                    renderUserTable(fixedUser);
+                    
+                    console.log("User data loaded successfully!");
+                })
+                .catch((error) => {
+                    console.error("Error loading user data:", error);
+                    document.getElementById('usersList').innerHTML = `
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 40px; color: #dc3545;">
+                                ❌ Error loading user data: ${error.message}
+                            </td>
+                        </tr>
+                    `;
+                });
+        }
+        
+        // Render user data in table (single row)
+        function renderUserTable(user) {
+            const userType = user.userType || 'personal';
+            const userName = user.name || 'N/A';
+            
+            const html = `
+                <tr>
+                    <td>${user.userId || 'N/A'}</td>
+                    <td>
+                        <span class="user-type-badge user-type-${userType}">
+                            ${userType === 'personal' ? 'PERSONAL' : 'BUSINESS'}
+                        </span>
+                    </td>
+                    <td>${userName}</td>
+                    <td>${user.email || 'N/A'}</td>
+                    <td>${user.phone || 'N/A'}</td>
+                    <td>${user.planName || 'N/A'}</td>
+                    <td>
+                        <span class="status ${user.status || 'inactive'}">
+                            ${user.status || 'inactive'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="view-btn" onclick="viewUserDetails()">View Details</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            
+            document.getElementById('usersList').innerHTML = html;
+        }
+        
+        // View user details
+        window.viewUserDetails = function() {
+            if (!currentUserData) {
+                alert("No user data available");
+                return;
+            }
+            
+            document.getElementById('userDetails').innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                    🔄 Loading your details...
+                </div>
+            `;
+            
+            document.getElementById('userModal').style.display = 'flex';
+            
+            // Show user details in modal (READ-ONLY MODE)
+            showUserModal(currentUserData);
+        };
+        
+        // Show user details in modal (READ-ONLY ONLY)
+        function showUserModal(user) {
+            console.log("Showing user modal. User type:", user.userType);
+            currentUserId = user.id;
+            
+            let html = '';
+            const userType = user.userType || 'personal';
+            
+            // Helper function to create READ-ONLY field
+            function createField(label, fieldName, value) {
+                let displayValue = value || 'N/A';
+                let style = '';
+                
+                if (fieldName === 'status') {
+                    let bgColor = '#f8f9fa';
+                    let textColor = '#333';
+                    if (value === 'active') { bgColor = '#d4edda'; textColor = '#155724'; }
+                    else if (value === 'inactive') { bgColor = '#f8d7da'; textColor = '#721c24'; }
+                    else if (value === 'suspended') { bgColor = '#6c757d'; textColor = 'white'; }
+                    style = `background: ${bgColor}; color: ${textColor}; font-weight: bold; padding: 5px 10px; border-radius: 20px; display: inline-block;`;
                 }
                 
-                // User is authenticated, get data
-                const userData = await getUserData(currentUser.uid, currentUser.email);
-                displayUserData(userData);
+                return `
+                    <div class="detail-group">
+                        <label>${label}</label>
+                        <div class="value" style="${style}">${displayValue}</div>
+                    </div>
+                `;
+            }
+            
+            // LEFT COLUMN
+            html += `<div class="left-column">`;
+            
+            html += createField('User Type', 'userType', userType === 'personal' ? 'Personal' : 'Business');
+            html += createField('Name', 'name', user.name);
+            html += createField('Email', 'email', user.email);
+            html += createField('Phone', 'phone', user.phone);
+            
+            if (userType === 'personal') {
+                html += createField('Date of Birth', 'dob', user.dob);
+                html += createField('Gender', 'gender', user.gender);
+            } else if (userType === 'business') {
+                html += createField('DOI', 'doi', user.doi);
+                html += createField('Pincode', 'pincode', user.pincode);
+            }
+            
+            html += createField('Aadhaar Number', 'aadhaar', user.aadhaar);
+            html += createField('PAN Number', 'pan', user.pan);
+            html += createField('GSTIN', 'gstin', user.gstin);
+            html += createField('Username', 'username', user.username);
+            
+            html += `</div>`;
+            
+            // RIGHT COLUMN
+            html += `<div class="right-column">`;
+            html += createField('Status', 'status', user.status || 'inactive');
+            html += createField('Plan Name', 'planName', user.planName);
+            html += createField('Plan Size', 'planSize', user.planSize);
+            html += createField('Plan Type', 'planType', user.planType);
+            html += createField('Plan Start Date', 'planStartDate', user.planStartDate);
+            html += createField('Plan End Date', 'planEndDate', user.planEndDate);
+            html += createField('Plan Value', 'planValue', user.planValue);
+            html += createField('Payment Mode', 'paymentMode', user.paymentMode);
+            
+            if (user.accountCreated) {
+                html += `
+                    <div class="detail-group">
+                        <label>Registered On</label>
+                        <div class="value">${formatDateTime(user.accountCreated)}</div>
+                    </div>
+                `;
+            }
+            
+            if (user.updatedAt) {
+                html += `
+                    <div class="detail-group">
+                        <label>Last Updated</label>
+                        <div class="value">${formatDateTime(user.updatedAt)}</div>
+                    </div>
+                `;
+            }
+            
+            html += `</div>`;
+            
+            // Agreement row
+            html += `<div class="agreement-row">`;
+            html += `<span class="tick-mark">✓</span>`;
+            html += `<span>I agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.</span>`;
+            html += `</div>`;
+            
+            document.getElementById('userDetails').innerHTML = html;
+            
+            // Update modal header
+            document.getElementById('modalUserIdDisplay').textContent = `User ID: ${user.userId || 'N/A'}`;
+            
+            const statusDisplay = document.getElementById('modalStatusDisplay');
+            statusDisplay.textContent = user.status || 'inactive';
+            statusDisplay.className = 'modal-status ' + (user.status || 'inactive');
+        }
+        
+        // Close modal
+        window.closeModal = function() {
+            document.getElementById('userModal').style.display = 'none';
+        };
+        
+        // Generate PDF for current user
+        window.generatePDF = function() {
+            if (!currentUserData) return;
+            
+            const originalText = event.target.textContent;
+            event.target.textContent = "Creating PDF...";
+            event.target.disabled = true;
+            
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                const leftMargin = 20;
+                const rightMargin = 20;
+                const topMargin = 20;
+                const pageWidth = doc.internal.pageSize.width;
+                const pageHeight = doc.internal.pageSize.height;
+                const centerX = pageWidth / 2;
+                
+                // HEADER
+                doc.setFontSize(16);
+                doc.setTextColor(0, 212, 255);
+                doc.text('ODELYA CLOUD STORAGE', centerX, topMargin, { align: 'center' });
+                
+                doc.setFontSize(14);
+                doc.setTextColor(0, 0, 0);
+                doc.text('MY ACCOUNT DETAILS', centerX, topMargin + 8, { align: 'center' });
+                
+                doc.setFontSize(9);
+                doc.setTextColor(100, 100, 100);
+                const generatedDateTime = formatDateTimeForPDFHeader(new Date());
+                doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 16, { align: 'center' });
+                
+                doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 24, { align: 'center' });
+                
+                let y = topMargin + 40;
+                
+                doc.setDrawColor(200, 200, 200);
+                doc.line(leftMargin, y, pageWidth - rightMargin, y);
+                y += 10;
+                
+                // SECTION 1: PERSONAL INFORMATION
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(0, 212, 255);
+                doc.text('PERSONAL INFORMATION', leftMargin, y);
+                y += 8;
+                
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(0, 0, 0);
+                
+                const userType = currentUserData.userType || 'personal';
+                let personalData = [];
+
+                if (userType === 'personal') {
+                    personalData = [
+                        {label: 'User Type', value: 'Personal'},
+                        {label: 'Name', value: currentUserData.name || 'N/A'},
+                        {label: 'Email', value: currentUserData.email || 'N/A'},
+                        {label: 'Phone', value: currentUserData.phone || 'N/A'},
+                        {label: 'Date of Birth', value: currentUserData.dob || 'N/A'},
+                        {label: 'Gender', value: currentUserData.gender || 'N/A'},
+                        {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
+                        {label: 'PAN', value: currentUserData.pan || 'N/A'},
+                        {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
+                        {label: 'Username', value: currentUserData.username || 'N/A'}
+                    ];
+                } else if (userType === 'business') {
+                    personalData = [
+                        {label: 'User Type', value: 'Business'},
+                        {label: 'Business Name', value: currentUserData.name || 'N/A'},
+                        {label: 'Email', value: currentUserData.email || 'N/A'},
+                        {label: 'Phone', value: currentUserData.phone || 'N/A'},
+                        {label: 'Date of Incorp.', value: currentUserData.doi || 'N/A'},
+                        {label: 'Pincode', value: currentUserData.pincode || 'N/A'},
+                        {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
+                        {label: 'PAN', value: currentUserData.pan || 'N/A'},
+                        {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
+                        {label: 'Username', value: currentUserData.username || 'N/A'}
+                    ];
+                }
+                
+                doc.setFont('helvetica', 'bold');
+                let maxLabelWidth = 0;
+                personalData.forEach(item => {
+                    const width = doc.getTextWidth(item.label + ': ');
+                    if (width > maxLabelWidth) maxLabelWidth = width;
+                });
+                
+                const valueStartX = leftMargin + maxLabelWidth + 2;
+                
+                personalData.forEach(item => {
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(item.label + ':', leftMargin, y);
+                    
+                    doc.setFont('helvetica', 'normal');
+                    let displayValue = item.value;
+                    
+                    if (displayValue.length > 30 && item.label !== 'Email') {
+                        displayValue = displayValue.substring(0, 30) + '...';
+                    }
+                    
+                    doc.text(displayValue, valueStartX, y);
+                    y += 6;
+                });
+                
+                y += 4;
+                
+                doc.setDrawColor(200, 200, 200);
+                doc.line(leftMargin, y, pageWidth - rightMargin, y);
+                y += 10;
+                
+                // SECTION 2: ACCOUNT & PLAN DETAILS
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(0, 212, 255);
+                doc.text('ACCOUNT & PLAN DETAILS', leftMargin, y);
+                y += 8;
+                
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(0, 0, 0);
+                
+                const accountData = [
+                    {label: 'Status', value: (currentUserData.status || 'inactive').toUpperCase()},
+                    {label: 'Plan Name', value: currentUserData.planName || 'N/A'},
+                    {label: 'Plan Size', value: currentUserData.planSize || 'N/A'},
+                    {label: 'Plan Type', value: currentUserData.planType || 'N/A'},
+                    {label: 'Plan Start Date', value: currentUserData.planStartDate || 'N/A'},
+                    {label: 'Plan End Date', value: currentUserData.planEndDate || 'N/A'},
+                    {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
+                    {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'},
+                    {label: 'Registered On', value: currentUserData.accountCreated ? formatDateTime(currentUserData.accountCreated) : 'N/A'}
+                ];
+                
+                doc.setFont('helvetica', 'bold');
+                maxLabelWidth = 0;
+                accountData.forEach(item => {
+                    const width = doc.getTextWidth(item.label + ': ');
+                    if (width > maxLabelWidth) maxLabelWidth = width;
+                });
+                
+                const accValueStartX = leftMargin + maxLabelWidth + 2;
+                
+                accountData.forEach(item => {
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(item.label + ':', leftMargin, y);
+                    
+                    doc.setFont('helvetica', 'normal');
+                    let displayValue = item.value;
+                    
+                    if (displayValue.length > 30) {
+                        displayValue = displayValue.substring(0, 30) + '...';
+                    }
+                    
+                    doc.text(displayValue, accValueStartX, y);
+                    y += 6;
+                });
+                
+                y += 4;
+                
+                doc.setDrawColor(200, 200, 200);
+                doc.line(leftMargin, y, pageWidth - rightMargin, y);
+                y += 10;
+                
+                // AGREEMENT SECTION
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text('AGREEMENT', leftMargin, y);
+                y += 6;
+                
+                doc.setFont('helvetica', 'normal');
+                
+                const line1 = 'I agree to the Terms & Conditions, Privacy Policy,';
+                const line2 = 'Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
+                
+                doc.setDrawColor(0, 128, 0);
+                doc.setLineWidth(0.5);
+                const tickX = leftMargin;
+                const tickY = y - 1;
+                
+                doc.line(tickX, tickY + 2, tickX + 1, tickY + 3);
+                doc.line(tickX + 1, tickY + 3, tickX + 3, tickY);
+                
+                doc.setTextColor(0, 0, 0);
+                doc.text(line1, leftMargin + 5, y);
+                y += 5;
+                doc.text(line2, leftMargin, y);
+                y += 8;
+                
+                // FOOTER
+                const footerY = pageHeight - 15;
+                
+                doc.setFontSize(8);
+                doc.setTextColor(100, 100, 100);
+                const userName = currentUserData.name || currentUserData.email || 'User';
+                
+                doc.text(`Generated by: ${userName}`, leftMargin, footerY);
+                doc.text(`Page 1 of 1`, centerX, footerY, { align: 'center' });
+                
+                // Save PDF
+                const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
+                let nameForFile = currentUserData.name || 'user';
+                nameForFile = nameForFile.replace(/\s+/g, '_');
+                const fileName = `${phoneNumber}_${nameForFile}_MyAccount.pdf`;
+                doc.save(fileName);
+                
+                console.log("PDF generated successfully!");
                 
             } catch (error) {
-                console.error("Dashboard initialization error:", error);
-                showError("Error loading dashboard. Please try logging in again.");
+                console.error("Error generating PDF:", error);
+                alert("❌ Error generating PDF: " + error.message);
+            } finally {
+                event.target.textContent = originalText;
+                event.target.disabled = false;
             }
-        }
-
-        // Setup event listeners
-        logoutBtn.addEventListener('click', logout);
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("User dashboard loaded");
-            initializeDashboard();
-        });
+        };
     </script>
 </body>
 </html>
