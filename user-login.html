@@ -11,6 +11,7 @@
             justify-content: center;
             align-items: center;
             margin: 0;
+            overflow: auto; /* Allow scrolling if needed */
         }
         .login-container {
             width: 100%;
@@ -88,7 +89,8 @@
             margin-bottom: 20px;
             color: #00d4ff;
         }
-        /* ADDED: Forgot password styles */
+        
+        /* Forgot Password Link Styles */
         .forgot-password {
             display: block;
             margin: 15px 0;
@@ -96,6 +98,7 @@
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
+            transition: color 0.3s;
         }
         .forgot-password:hover {
             color: #ff4757;
@@ -248,7 +251,7 @@
     <div id="loginPage" class="login-container">
         <div class="login-box">
             <div class="logo">👤</div>
-            <!-- CHANGE 1: Changed "User Portal" to "Odelya User Login" -->
+            <!-- Changed from "User Portal" to "Odelya User Login" -->
             <h2>Odelya User Login</h2>
             
             <div class="input-group">
@@ -261,18 +264,15 @@
                 <input type="password" id="password" placeholder="Enter your password">
             </div>
             
-            <!-- CHANGE 4: Added forgot password link -->
+            <!-- Added Forgot Password link -->
             <a href="#" class="forgot-password" id="forgotPassword">Forgot password?</a>
             
             <div class="error-message" id="errorMessage"></div>
             
             <button id="loginBtn">Login</button>
             
-            <!-- CHANGE 2: Removed these lines "User Access Access your personal information and data." -->
-            <!-- Original lines removed, container kept for spacing -->
-            <div class="secure-note" style="margin-top: 25px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 14px; color: #666; border-left: 4px solid #00d4ff;">
-                <!-- Text removed as requested -->
-            </div>
+            <!-- Removed the two lines from secure-note -->
+            <!-- Original lines removed: "User Access" and "Access your personal information and data." -->
         </div>
     </div>
 
@@ -362,8 +362,7 @@
         const personalInfo = document.getElementById('personalInfo');
         const accountInfo = document.getElementById('accountInfo');
         const additionalInfo = document.getElementById('additionalInfo');
-        // ADDED: Forgot password element
-        const forgotPasswordLink = document.getElementById('forgotPassword');
+        const forgotPasswordLink = document.getElementById('forgotPassword'); // Added
 
         // Show error message
         function showError(message) {
@@ -609,11 +608,18 @@ window.location.href = "user-dashboard.html";
             }
         }
 
-        // ADDED: Forgot password handler
+        // Forgot password handler
         function handleForgotPassword(e) {
             e.preventDefault();
-            // You can link this later
-            alert("Forgot password feature will be linked soon.");
+            const email = emailInput.value.trim();
+            
+            if (!email) {
+                showError("Please enter your email address to reset password");
+                return;
+            }
+            
+            // You can implement password reset logic here
+            alert("Password reset functionality will be added soon. You can link it later.");
         }
 
         // Setup function
@@ -639,7 +645,6 @@ window.location.href = "user-dashboard.html";
             loginBtn.addEventListener('click', login);
             logoutBtn.addEventListener('click', logout);
             backBtn.addEventListener('click', logout);
-            // ADDED: Forgot password event listener
             forgotPasswordLink.addEventListener('click', handleForgotPassword);
             
             // Allow pressing Enter to login
