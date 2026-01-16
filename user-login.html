@@ -542,10 +542,9 @@ window.location.href = "user-dashboard.html";
                 let errorMsg = "Login failed. ";
                 switch (error.code) {
                     case 'auth/wrong-password':
-                        errorMsg = "Incorrect password.";
-                        break;
                     case 'auth/user-not-found':
-                        errorMsg = "No account found with this email.";
+                    case 'auth/invalid-login-credentials':
+                        errorMsg = "Wrong Email ID / Password";
                         break;
                     case 'auth/invalid-email':
                         errorMsg = "Invalid email format.";
@@ -557,14 +556,13 @@ window.location.href = "user-dashboard.html";
                         errorMsg = "Too many failed attempts. Try again later.";
                         break;
                     default:
-                        errorMsg = error.message || "Login failed. Please try again.";
+                        errorMsg = "Login failed. Please try again.";
                 }
                 
                 showError(errorMsg);
                 loginBtn.disabled = false;
                 loginBtn.textContent = "Login";
             }
-        }
 
         // Show dashboard
         function showDashboard(userData) {
