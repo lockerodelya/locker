@@ -50,6 +50,42 @@
             width: 100%;
         }
         
+        /* Section header with password button */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px auto 15px auto;
+            width: 95%;
+        }
+        
+        .section-heading {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .password-header-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .password-header-btn:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+        }
+        
         /* Updated Table Styles */
         .table-container {
             width: 95%;
@@ -59,7 +95,7 @@
         
         table {
             width: 100%;
-            min-width: 1200px;
+            min-width: 1000px;
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -89,44 +125,34 @@
             background: #f9f9f9;
         }
         
-        /* Make specific columns wider */
+        /* Adjust columns for removed fields */
         th:nth-child(1), td:nth-child(1) {
             min-width: 120px;
         }
         
         th:nth-child(2), td:nth-child(2) {
-            min-width: 100px;
-        }
-        
-        th:nth-child(3), td:nth-child(3) {
             min-width: 180px;
             max-width: 250px;
             white-space: normal;
             word-break: break-word;
         }
         
-        th:nth-child(4), td:nth-child(4) {
+        th:nth-child(3), td:nth-child(3) {
             min-width: 200px;
             max-width: 300px;
             white-space: normal;
             word-break: break-all;
         }
         
-        th:nth-child(5), td:nth-child(5) {
+        th:nth-child(4), td:nth-child(4) {
             min-width: 130px;
         }
         
-        th:nth-child(6), td:nth-child(6) {
-            min-width: 150px;
-            max-width: 200px;
-            white-space: normal;
-        }
-        
-        th:nth-child(7), td:nth-child(7) {
+        th:nth-child(5), td:nth-child(5) {
             min-width: 100px;
         }
         
-        th:nth-child(8), td:nth-child(8) {
+        th:nth-child(6), td:nth-child(6) {
             min-width: 150px;
             text-align: center;
         }
@@ -175,7 +201,7 @@
             }
             
             table {
-                min-width: 1000px;
+                min-width: 800px;
             }
             
             th, td {
@@ -195,6 +221,16 @@
             
             .header h1 {
                 font-size: 20px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .password-header-btn {
+                align-self: flex-end;
             }
         }
         
@@ -414,32 +450,12 @@
             color: white;
         }
         
-        /* Section heading centered */
-        .section-heading {
-            text-align: center;
-            margin: 30px 0 15px 0;
-            width: 95%;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
         /* No users message */
         .no-users {
             text-align: center;
             padding: 40px;
             color: #666;
             font-style: italic;
-        }
-        
-        .welcome-message {
-            text-align: center;
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
         /* Password Change Modal Styles */
@@ -573,28 +589,28 @@
     </div>
     
     <div class="container">
-        <div class="welcome-message">
-            Welcome back, <span id="userWelcomeName">User</span>! Here are your account details.
+        <div class="section-header">
+            <h2 class="section-heading">My Account Information</h2>
+            <button class="password-header-btn" onclick="showPasswordModal()">
+                🔑 Change Password
+            </button>
         </div>
         
-        <h2 class="section-heading">My Account Information</h2>
         <div class="table-container">
             <table id="usersTable">
                 <thead>
                     <tr>
                         <th>User ID</th>
-                        <th>User Type</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
-                        <th>Plan</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="usersList">
                     <tr>
-                        <td colspan="8" style="text-align: center; padding: 40px;">
+                        <td colspan="6" style="text-align: center; padding: 40px;">
                             Loading your information...
                         </td>
                     </tr>
@@ -623,27 +639,27 @@
         </div>
     </div>
 
-    <!-- Login History Modal -->
+    <!-- Password History Modal -->
     <div id="historyModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>📊 Login History (Last 12 Months)</h2>
+                <h2>🔑 Password Change History (Last 12 Months)</h2>
                 <button class="action-btn btn-close" onclick="closeHistoryModal()" style="margin: 0;">Close</button>
             </div>
             
             <div class="history-controls">
                 <div class="month-selector">
                     <span>View History for:</span>
-                    <select id="historyMonthSelect" onchange="loadLoginHistory()">
+                    <select id="historyMonthSelect" onchange="loadPasswordHistory()">
                         <option value="all">All 12 Months</option>
                         <!-- Months will be populated dynamically -->
                     </select>
-                    <select id="historyYearSelect" onchange="loadLoginHistory()">
+                    <select id="historyYearSelect" onchange="loadPasswordHistory()">
                         <!-- Years will be populated dynamically -->
                     </select>
                 </div>
                 <div class="history-stats">
-                    Total Logins: <span id="totalLogins">0</span>
+                    Total Changes: <span id="totalChanges">0</span>
                 </div>
             </div>
             
@@ -654,19 +670,19 @@
                             <th>Date & Time</th>
                             <th>IP Address</th>
                             <th>Device/Browser</th>
-                            <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="historyList">
                         <tr>
-                            <td colspan="4" class="no-history">Loading login history...</td>
+                            <td colspan="4" class="no-history">Loading password history...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             
             <div class="history-note">
-                <strong>Note:</strong> Login history is maintained for 12 months. Only successful logins are recorded.
+                <strong>Note:</strong> Password change history is maintained for 12 months. Passwords are never displayed for security reasons.
             </div>
         </div>
     </div>
@@ -797,7 +813,7 @@
                 fixedUser.planValue = user.planDetails.planValue || 'N/A';
             }
             
-            // Map account fields - FIXED username mapping
+            // Map account fields
             fixedUser.username = user.username || user.accountName || user.email?.split('@')[0] || 'N/A';
             
             // Map payment mode
@@ -941,8 +957,6 @@
             if (!isLoggedIn || !userEmail || !userUid) {
                 window.location.href = "user-login.html";
             } else {
-                // Show welcome message
-                document.getElementById('userWelcomeName').textContent = localStorage.getItem('user_name') || userEmail.split('@')[0];
                 currentUserEmail = userEmail;
                 setupAutoLogout();
                 loadUserData();
@@ -976,7 +990,7 @@
                     if (!doc.exists) {
                         document.getElementById('usersList').innerHTML = `
                             <tr>
-                                <td colspan="8" class="no-users">
+                                <td colspan="6" class="no-users">
                                     📭 User account not found in database
                                 </td>
                             </tr>
@@ -996,7 +1010,6 @@
                     // Store user name if available
                     if (fixedUser.name && fixedUser.name !== 'N/A') {
                         localStorage.setItem('user_name', fixedUser.name);
-                        document.getElementById('userWelcomeName').textContent = fixedUser.name;
                     }
                     
                     // Render user data in table (single row)
@@ -1008,7 +1021,7 @@
                     console.error("Error loading user data:", error);
                     document.getElementById('usersList').innerHTML = `
                         <tr>
-                            <td colspan="8" style="text-align: center; padding: 40px; color: #dc3545;">
+                            <td colspan="6" style="text-align: center; padding: 40px; color: #dc3545;">
                                 ❌ Error loading user data: ${error.message}
                             </td>
                         </tr>
@@ -1016,23 +1029,16 @@
                 });
         }
         
-        // Render user data in table (single row)
+        // Render user data in table (single row) - REMOVED User Type and Plan Name
         function renderUserTable(user) {
-            const userType = user.userType || 'personal';
             const userName = user.name || 'N/A';
             
             const html = `
                 <tr>
                     <td>${user.userId || 'N/A'}</td>
-                    <td>
-                        <span class="user-type-badge user-type-${userType}">
-                            ${userType === 'personal' ? 'PERSONAL' : 'BUSINESS'}
-                        </span>
-                    </td>
                     <td>${userName}</td>
                     <td>${user.email || 'N/A'}</td>
                     <td>${user.phone || 'N/A'}</td>
-                    <td>${user.planName || 'N/A'}</td>
                     <td>
                         <span class="status ${user.status || 'inactive'}">
                             ${user.status || 'inactive'}
@@ -1041,8 +1047,7 @@
                     <td>
                         <div class="action-buttons">
                             <button class="view-btn" onclick="viewUserDetails()">View Details</button>
-                            <button class="history-btn" onclick="viewLoginHistory()">📊 History</button>
-                            <button class="action-btn" onclick="showPasswordModal()" style="background: #17a2b8;">🔑 Password</button>
+                            <button class="history-btn" onclick="viewPasswordHistory()">🔑 History</button>
                         </div>
                     </td>
                 </tr>
@@ -1070,7 +1075,7 @@
             showUserModal(currentUserData);
         };
         
-        // Show user details in modal (READ-ONLY ONLY)
+        // Show user details in modal (READ-ONLY ONLY) - KEPT User Type and Plan Name here
         function showUserModal(user) {
             console.log("Showing user modal. User type:", user.userType);
             currentUserId = user.id;
@@ -1175,8 +1180,8 @@
             document.getElementById('userModal').style.display = 'none';
         };
         
-        // View login history
-        window.viewLoginHistory = function() {
+        // View password change history
+        window.viewPasswordHistory = function() {
             if (!currentUserId) {
                 alert("No user data available");
                 return;
@@ -1188,14 +1193,14 @@
             // Show loading
             document.getElementById('historyList').innerHTML = `
                 <tr>
-                    <td colspan="4" class="no-history">Loading login history...</td>
+                    <td colspan="4" class="no-history">Loading password history...</td>
                 </tr>
             `;
             
             document.getElementById('historyModal').style.display = 'flex';
             
             // Load initial history (all 12 months)
-            loadLoginHistory();
+            loadPasswordHistory();
         };
         
         // Populate month and year selectors
@@ -1237,8 +1242,8 @@
             }
         }
         
-        // Load login history based on selected month/year
-        window.loadLoginHistory = function() {
+        // Load password change history based on selected month/year
+        window.loadPasswordHistory = function() {
             if (!currentUserId) return;
             
             const monthSelect = document.getElementById('historyMonthSelect');
@@ -1247,8 +1252,8 @@
             const selectedYear = yearSelect.value;
             
             // Build query
-            let query = db.collection('users').doc(currentUserId).collection('loginHistory')
-                .orderBy('loginTimestamp', 'desc');
+            let query = db.collection('users').doc(currentUserId).collection('passwordHistory')
+                .orderBy('changeTimestamp', 'desc');
             
             // If not "all", filter by month/year
             if (selectedMonth !== 'all') {
@@ -1256,25 +1261,25 @@
                 const endDate = new Date(selectedYear, selectedMonth, 0, 23, 59, 59);
                 
                 query = query
-                    .where('loginTimestamp', '>=', startDate)
-                    .where('loginTimestamp', '<=', endDate);
+                    .where('changeTimestamp', '>=', startDate)
+                    .where('changeTimestamp', '<=', endDate);
             } else {
                 // Last 12 months for "all" option
                 const oneYearAgo = new Date();
                 oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-                query = query.where('loginTimestamp', '>=', oneYearAgo);
+                query = query.where('changeTimestamp', '>=', oneYearAgo);
             }
             
             query.get()
                 .then((querySnapshot) => {
-                    const totalLogins = querySnapshot.size;
-                    document.getElementById('totalLogins').textContent = totalLogins;
+                    const totalChanges = querySnapshot.size;
+                    document.getElementById('totalChanges').textContent = totalChanges;
                     
-                    if (totalLogins === 0) {
+                    if (totalChanges === 0) {
                         document.getElementById('historyList').innerHTML = `
                             <tr>
                                 <td colspan="4" class="no-history">
-                                    📭 No login history found for the selected period
+                                    📭 No password change history found for the selected period
                                 </td>
                             </tr>
                         `;
@@ -1286,7 +1291,7 @@
                         const history = doc.data();
                         
                         // Format date
-                        const loginDate = formatDateDisplay(history.loginTime || history.loginTimestamp);
+                        const changeDate = formatDateDisplay(history.changeTime || history.changeTimestamp);
                         
                         // Extract browser info from user agent
                         let browserInfo = 'Unknown';
@@ -1302,11 +1307,11 @@
                         
                         html += `
                             <tr>
-                                <td>${loginDate}</td>
-                                <td>${history.ipAddress || 'Unknown'}</td>
+                                <td>${changeDate}</td>
+                                <td>${history.ipAddress || 'Recorded'}</td>
                                 <td>${browserInfo}</td>
                                 <td>
-                                    <span style="color: #28a745; font-weight: bold;">✓ Success</span>
+                                    <span style="color: #17a2b8; font-weight: bold;">🔑 Password Changed</span>
                                 </td>
                             </tr>
                         `;
@@ -1315,11 +1320,11 @@
                     document.getElementById('historyList').innerHTML = html;
                 })
                 .catch((error) => {
-                    console.error("Error loading login history:", error);
+                    console.error("Error loading password history:", error);
                     document.getElementById('historyList').innerHTML = `
                         <tr>
                             <td colspan="4" class="no-history" style="color: #dc3545;">
-                                ❌ Error loading login history: ${error.message}
+                                ❌ Error loading password history: ${error.message}
                             </td>
                         </tr>
                     `;
@@ -1455,7 +1460,7 @@
             return isValid;
         }
         
-        // Change password
+        // Change password - FIXED to update Firebase Authentication too
         window.changePassword = function() {
             if (!validatePassword()) {
                 return;
@@ -1478,7 +1483,14 @@
             // First, re-authenticate with current password
             auth.signInWithEmailAndPassword(userEmail, currentPassword)
                 .then((userCredential) => {
-                    // Successfully authenticated, now update password in Firestore
+                    // Successfully authenticated, now update password in Firebase Authentication
+                    const user = userCredential.user;
+                    return user.updatePassword(newPassword);
+                })
+                .then(() => {
+                    console.log("Password updated successfully in Firebase Authentication!");
+                    
+                    // Now update password in Firestore
                     return db.collection('users').doc(currentUserId).update({
                         password: newPassword,
                         updatedAt: new Date().toISOString(),
@@ -1488,41 +1500,39 @@
                 .then(() => {
                     console.log("Password updated successfully in Firestore!");
                     
-                    // Log password change
+                    // Get user IP address
+                    return fetch('https://api.ipify.org?format=json')
+                        .then(response => response.json())
+                        .then(data => data.ip)
+                        .catch(() => 'Unknown');
+                })
+                .then((userIP) => {
+                    // Log password change in passwordHistory
                     const logRecord = {
                         userId: currentUserId,
                         userEmail: userEmail,
                         changeTime: new Date().toISOString(),
                         changeTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                        ipAddress: 'Recorded',
+                        ipAddress: userIP,
                         userAgent: navigator.userAgent,
                         action: 'password_change'
                     };
                     
-                    db.collection('users').doc(currentUserId).collection('passwordHistory').add(logRecord)
-                        .then(() => {
-                            console.log("Password change logged");
-                            
-                            // Show success message and logout
-                            alert("✅ Password changed successfully! You will be logged out for security.");
-                            
-                            // Close modal
-                            closePasswordModal();
-                            
-                            // Logout after 2 seconds
-                            setTimeout(() => {
-                                logout();
-                            }, 2000);
-                        })
-                        .catch(error => {
-                            console.error("Error logging password change:", error);
-                            // Still continue with logout even if logging fails
-                            alert("✅ Password changed successfully! You will be logged out for security.");
-                            closePasswordModal();
-                            setTimeout(() => {
-                                logout();
-                            }, 2000);
-                        });
+                    return db.collection('users').doc(currentUserId).collection('passwordHistory').add(logRecord);
+                })
+                .then(() => {
+                    console.log("Password change logged successfully!");
+                    
+                    // Show success message and logout
+                    alert("✅ Password changed successfully! You will be logged out for security.");
+                    
+                    // Close modal
+                    closePasswordModal();
+                    
+                    // Logout after 1 second
+                    setTimeout(() => {
+                        logout();
+                    }, 1000);
                 })
                 .catch((error) => {
                     console.error("Error changing password:", error);
@@ -1531,6 +1541,12 @@
                     switch (error.code) {
                         case 'auth/wrong-password':
                             errorMsg = "Current password is incorrect";
+                            break;
+                        case 'auth/weak-password':
+                            errorMsg = "Password is too weak. Please use a stronger password.";
+                            break;
+                        case 'auth/requires-recent-login':
+                            errorMsg = "Please login again and try changing your password.";
                             break;
                         case 'auth/user-not-found':
                             errorMsg = "User not found. Please login again.";
