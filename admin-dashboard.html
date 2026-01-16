@@ -1293,104 +1293,129 @@
             showUserModal(currentUserData, false);
         };
         
-        // Save changes
-        window.saveChanges = function() {
-            if (!currentUserId) return;
-            logAdminAction('UPDATE_USER', `Updated user: ${currentUserData.email}`);
-            
-            const userType = document.getElementById('edit_userType')?.value || 'personal';
-            
-            const updates = {
-                userType: userType,
-                username: document.getElementById('edit_username')?.value || '',
-                status: document.getElementById('edit_status')?.value || 'inactive',
-                paymentMode: document.getElementById('edit_paymentMode')?.value || '',
-                updatedAt: new Date().toISOString()
-            };
-            
-            // Update personalInfo
-            updates.personalInfo = {
-                name: document.getElementById('edit_name')?.value || '',
-                email: document.getElementById('edit_email')?.value || '',
-                phone: document.getElementById('edit_phone')?.value || '',
-                gender: document.getElementById('edit_gender')?.value || null,
-                aadhaar: document.getElementById('edit_aadhaar')?.value || null,
-                pan: document.getElementById('edit_pan')?.value || null,
-                gstin: document.getElementById('edit_gstin')?.value || null
-            };
-            
-            if (userType === 'personal') {
-                updates.personalInfo.dob = document.getElementById('edit_dob')?.value || null;
-            } else if (userType === 'business') {
-                updates.businessInfo = {
-                    doi: document.getElementById('edit_doi')?.value || null,
-                    pincode: document.getElementById('edit_pincode')?.value || null
-                };
+// Save changes - FIXED VERSION
+window.saveChanges = function() {
+    if (!currentUserId) return;
+    
+    // Create a copy of the original event target for button restoration
+    const saveButton = event.target;
+    const originalText = saveButton.textContent;
+    
+    logAdminAction('UPDATE_USER', `Updated user: ${currentUserData.email}`);
+    
+    const userType = document.getElementById('edit_userType')?.value || 'personal';
+    
+    const updates = {
+        userType: userType,
+        username: document.getElementById('edit_username')?.value || '',
+        status: document.getElementById('edit_status')?.value || 'inactive',
+        paymentMode: document.getElementById('edit_paymentMode')?.value || '',
+        updatedAt: new Date().toISOString()
+    };
+    
+    // Update personalInfo
+    updates.personalInfo = {
+        name: document.getElementById('edit_name')?.value || '',
+        email: document.getElementById('edit_email')?.value || '',
+        phone: document.getElementById('edit_phone')?.value || '',
+        gender: document.getElementById('edit_gender')?.value || null,
+        aadhaar: document.getElementById('edit_aadhaar')?.value || null,
+        pan: document.getElementById('edit_pan')?.value || null,
+        gstin: document.getElementById('edit_gstin')?.value || null
+    };
+    
+    if (userType === 'personal') {
+        updates.personalInfo.dob = document.getElementById('edit_dob')?.value || null;
+    } else if (userType === 'business') {
+        updates.businessInfo = {
+            doi: document.getElementById('edit_doi')?.value || null,
+            pincode: document.getElementById('edit_pincode')?.value || null
+        };
+    }
+    
+    // Update planDetails
+    updates.planDetails = {
+        planName: document.getElementById('edit_planName')?.value || '',
+        planSize: document.getElementById('edit_planSize')?.value || '',
+        planType: document.getElementById('edit_planType')?.value || '',
+        planStartDate: document.getElementById('edit_planStartDate')?.value || '',
+        planEndDate: document.getElementById('edit_planEndDate')?.value || '',
+        planValue: document.getElementById('edit_planValue')?.value || ''
+    };
+    
+    // Remove null/empty values
+    Object.keys(updates.personalInfo).forEach(key => {
+        if (!updates.personalInfo[key]) {
+            delete updates.personalInfo[key];
+        }
+    });
+    
+    if (updates.businessInfo) {
+        Object.keys(updates.businessInfo).forEach(key => {
+            if (!updates.businessInfo[key]) {
+                delete updates.businessInfo[key];
             }
+        });
+    }
+    
+    Object.keys(updates.planDetails).forEach(key => {
+        if (!updates.planDetails[key]) {
+            delete updates.planDetails[key];
+        }
+    });
+    
+    console.log("Saving updates:", updates);
+    
+    saveButton.textContent = "Saving...";
+    saveButton.disabled = true;
+    
+    db.collection("users").doc(currentUserId).update(updates)
+        .then(() => {
+            console.log("User updated successfully!");
             
-            // Update planDetails
-            updates.planDetails = {
-                planName: document.getElementById('edit_planName')?.value || '',
-                planSize: document.getElementById('edit_planSize')?.value || '',
-                planType: document.getElementById('edit_planType')?.value || '',
-                planStartDate: document.getElementById('edit_planStartDate')?.value || '',
-                planEndDate: document.getElementById('edit_planEndDate')?.value || '',
-                planValue: document.getElementById('edit_planValue')?.value || ''
-            };
-            
-            // Remove null/empty values
-            Object.keys(updates.personalInfo).forEach(key => {
-                if (!updates.personalInfo[key]) {
-                    delete updates.personalInfo[key];
-                }
-            });
-            
-            if (updates.businessInfo) {
-                Object.keys(updates.businessInfo).forEach(key => {
-                    if (!updates.businessInfo[key]) {
-                        delete updates.businessInfo[key];
+            // FIX: Instead of trying to show old data, refresh the user data from Firestore
+            db.collection("users").doc(currentUserId).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const updatedUser = doc.data();
+                        updatedUser.id = currentUserId;
+                        
+                        // Fix the data structure
+                        const fixedUser = fixUserDataStructure(updatedUser);
+                        currentUserData = fixedUser;
+                        
+                        // Update status display
+                        const statusDisplay = document.getElementById('modalStatusDisplay');
+                        statusDisplay.textContent = fixedUser.status || 'inactive';
+                        statusDisplay.className = 'modal-status ' + (fixedUser.status || 'inactive');
+                        
+                        // Show updated data
+                        showUserModal(fixedUser, false);
+                        
+                        // Success message
+                        alert("✅ User updated successfully!");
+                        
+                        // Refresh the main user list
+                        loadUsers();
+                    } else {
+                        alert("❌ User not found after update!");
+                        closeModal();
                     }
-                });
-            }
-            
-            Object.keys(updates.planDetails).forEach(key => {
-                if (!updates.planDetails[key]) {
-                    delete updates.planDetails[key];
-                }
-            });
-            
-            console.log("Saving updates:", updates);
-            
-            document.querySelector('.btn-save').textContent = "Saving...";
-            document.querySelector('.btn-save').disabled = true;
-            
-            db.collection("users").doc(currentUserId).update(updates)
-                .then(() => {
-                    console.log("User updated successfully!");
-                    alert("✅ User updated successfully!");
-                    
-                    // Update currentUserData with new values
-                    currentUserData = fixUserDataStructure({
-                        ...currentUserData,
-                        ...updates
-                    });
-                    
-                    const statusDisplay = document.getElementById('modalStatusDisplay');
-                    statusDisplay.textContent = updates.status || currentUserData.status;
-                    statusDisplay.className = 'modal-status ' + (updates.status || currentUserData.status);
-                    
-                    currentPasswordVisible = false;
-                    showUserModal(currentUserData, false);
-                    
-                    loadUsers();
                 })
                 .catch((error) => {
-                    console.error("Error updating user:", error);
-                    alert("❌ Error updating user: " + error.message);
-                    document.querySelector('.btn-save').textContent = "💾 Save";
-                    document.querySelector('.btn-save').disabled = false;
+                    console.error("Error fetching updated user:", error);
+                    alert("✅ User updated! But there was an error refreshing the view.");
+                    closeModal();
+                    loadUsers();
                 });
-        };
+        })
+        .catch((error) => {
+            console.error("Error updating user:", error);
+            alert("❌ Error updating user: " + error.message);
+            saveButton.textContent = originalText;
+            saveButton.disabled = false;
+        });
+};
         
         // Change password function
         window.changePassword = function() {
@@ -1759,26 +1784,46 @@
             }
         };
       
-        // Quick delete from table
-        window.quickDelete = function(userId, userName) {
-            if (confirm(`Delete user: ${userName}?\n\nThis will permanently remove them from the database.`)) {
-                event.target.textContent = "Deleting...";
-                event.target.disabled = true;
+// Quick delete from table - FIXED VERSION
+window.quickDelete = function(userId, userName) {
+    if (confirm(`Delete user: ${userName}?\n\nThis will permanently remove them from the database.`)) {
+        const deleteButton = event.target;
+        const originalText = deleteButton.textContent;
+        
+        deleteButton.textContent = "Deleting...";
+        deleteButton.disabled = true;
+        
+        logAdminAction('DELETE_USER', `Deleted user: ${userName} (ID: ${userId})`);
+        
+        db.collection("users").doc(userId).delete()
+            .then(() => {
+                console.log("User deleted!");
                 
-                db.collection("users").doc(userId).delete()
-                    .then(() => {
-                        console.log("User deleted!");
-                        alert("✅ User deleted!");
-                        loadUsers();
-                    })
-                    .catch((error) => {
-                        console.error("Error deleting user:", error);
-                        alert("❌ Error: " + error.message);
-                        event.target.textContent = "Delete";
-                        event.target.disabled = false;
-                    });
-            }
-        };
+                // Show success and reload
+                alert("✅ User deleted!");
+                
+                // Remove from allUsers array
+                allUsers = allUsers.filter(user => user.id !== userId);
+                
+                // Refresh UI
+                renderFilteredUsers();
+                updateTabCounts();
+            })
+            .catch((error) => {
+                console.error("Error deleting user:", error);
+                
+                // Check if it's a permission error
+                if (error.code === 'permission-denied') {
+                    alert("❌ Permission denied! Please check Firestore rules.\n\nCurrent admin UID: " + (auth.currentUser?.uid || 'Not logged in'));
+                } else {
+                    alert("❌ Error: " + error.message);
+                }
+                
+                deleteButton.textContent = originalText;
+                deleteButton.disabled = false;
+            });
+    }
+};
 
         // Load users from Firebase
         function loadUsers() {
