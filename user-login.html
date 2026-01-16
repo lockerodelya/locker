@@ -6,48 +6,24 @@
         body {
             font-family: 'Roboto', Arial, sans-serif;
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             margin: 0;
-            overflow: auto; /* Allow scrolling if needed */
         }
-        /* Update the container to allow full height */
-.login-container {
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    display: flex;         /* Added */
-    flex-direction: column; /* Added */
-    min-height: 100vh;      /* Added: Forces container to be at least screen height */
-    box-sizing: border-box;
-}
-
-/* Update the box to grow and fill the container */
-.login-box {
-    background: white;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-    text-align: center;
-    flex-grow: 1;          /* Added: This makes the white box expand vertically */
-    display: flex;         /* Added: To keep content centered inside the expanded box */
-    flex-direction: column;
-   
-    justify-content: center;
-}
-        /* Mobile Specific Tweaks */
-@media (max-width: 480px) {
-    .login-container {
-        max-width: 100%;    /* Takes full width on mobile */
-        padding: 0;         /* Removes outer spacing */
-    }
-    .login-box {
-        border-radius: 0;   /* Optional: Removes rounded corners for a "full screen" app look */
-        padding: 20px;
-    }
-}
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
         h2 {
             color: #333;
             margin-bottom: 30px;
@@ -112,8 +88,7 @@
             margin-bottom: 20px;
             color: #00d4ff;
         }
-        
-        /* Forgot Password Link Styles */
+        /* ADDED: Forgot password styles */
         .forgot-password {
             display: block;
             margin: 15px 0;
@@ -121,7 +96,6 @@
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
-            transition: color 0.3s;
         }
         .forgot-password:hover {
             color: #ff4757;
@@ -274,7 +248,7 @@
     <div id="loginPage" class="login-container">
         <div class="login-box">
             <div class="logo">👤</div>
-            <!-- Changed from "User Portal" to "Odelya User Login" -->
+            <!-- CHANGE 1: Changed "User Portal" to "Odelya User Login" -->
             <h2>Odelya User Login</h2>
             
             <div class="input-group">
@@ -287,15 +261,18 @@
                 <input type="password" id="password" placeholder="Enter your password">
             </div>
             
-            <!-- Added Forgot Password link -->
+            <!-- CHANGE 4: Added forgot password link -->
             <a href="#" class="forgot-password" id="forgotPassword">Forgot password?</a>
             
             <div class="error-message" id="errorMessage"></div>
             
             <button id="loginBtn">Login</button>
             
-            <!-- Removed the two lines from secure-note -->
-            <!-- Original lines removed: "User Access" and "Access your personal information and data." -->
+            <!-- CHANGE 2: Removed these lines "User Access Access your personal information and data." -->
+            <!-- Original lines removed, container kept for spacing -->
+            <div class="secure-note" style="margin-top: 25px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 14px; color: #666; border-left: 4px solid #00d4ff;">
+                <!-- Text removed as requested -->
+            </div>
         </div>
     </div>
 
@@ -385,7 +362,8 @@
         const personalInfo = document.getElementById('personalInfo');
         const accountInfo = document.getElementById('accountInfo');
         const additionalInfo = document.getElementById('additionalInfo');
-        const forgotPasswordLink = document.getElementById('forgotPassword'); // Added
+        // ADDED: Forgot password element
+        const forgotPasswordLink = document.getElementById('forgotPassword');
 
         // Show error message
         function showError(message) {
@@ -631,18 +609,11 @@ window.location.href = "user-dashboard.html";
             }
         }
 
-        // Forgot password handler
+        // ADDED: Forgot password handler
         function handleForgotPassword(e) {
             e.preventDefault();
-            const email = emailInput.value.trim();
-            
-            if (!email) {
-                showError("Please enter your email address to reset password");
-                return;
-            }
-            
-            // You can implement password reset logic here
-            alert("Password reset functionality will be added soon. You can link it later.");
+            // You can link this later
+            alert("Forgot password feature will be linked soon.");
         }
 
         // Setup function
@@ -668,6 +639,7 @@ window.location.href = "user-dashboard.html";
             loginBtn.addEventListener('click', login);
             logoutBtn.addEventListener('click', logout);
             backBtn.addEventListener('click', logout);
+            // ADDED: Forgot password event listener
             forgotPasswordLink.addEventListener('click', handleForgotPassword);
             
             // Allow pressing Enter to login
