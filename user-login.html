@@ -2,318 +2,316 @@
 <html>
 <head>
     <title>User Login - Odelya</title>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #3a0ca3 0%, #4361ee 100%);
-            min-height: 100vh;
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            margin: 0;
         }
-        
         .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+        .login-box {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 450px;
             padding: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .login-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, #3a0ca3, #4361ee);
-        }
-        
-        .logo-section {
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             text-align: center;
-            margin-bottom: 30px;
         }
-        
-        .logo-section h1 {
-            color: #3a0ca3;
-            font-size: 28px;
-            margin-bottom: 5px;
-        }
-        
-        .logo-section p {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        .form-group label {
+        h2 {
             color: #333;
-            font-weight: bold;
-            font-size: 14px;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 600;
         }
-        
-        .form-group input {
-            padding: 14px 16px;
-            border: 2px solid #ddd;
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s;
+            box-sizing: border-box;
         }
-        
-        .form-group input:focus {
+        input:focus {
             outline: none;
-            border-color: #4361ee;
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+            border-color: #00d4ff;
         }
-        
-        .password-input {
-            position: relative;
-        }
-        
-        .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #666;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        
-        .login-btn {
-            background: linear-gradient(90deg, #3a0ca3, #4361ee);
+        button {
+            background: #00d4ff;
             color: white;
             border: none;
-            padding: 16px;
+            padding: 14px 30px;
             border-radius: 8px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
             margin-top: 10px;
+            width: 100%;
+            transition: all 0.3s;
         }
-        
-        .login-btn:hover {
+        button:hover {
+            background: #0099cc;
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
         }
-        
-        .login-btn:disabled {
-            background: #ccc;
+        button:disabled {
+            background: #cccccc;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
-        
-        .message {
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
-            text-align: center;
+        .error-message {
+            color: #f44336;
             font-size: 14px;
+            margin-top: 5px;
             display: none;
         }
-        
-        .message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            display: block;
-        }
-        
-        .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            display: block;
-        }
-        
-        .message.info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-            display: block;
-        }
-        
-        .footer-links {
-            text-align: center;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-        
-        .footer-links a {
-            color: #4361ee;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
-        
-        .user-type-info {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
+        .logo {
+            font-size: 32px;
             margin-bottom: 20px;
-            text-align: center;
-            border-left: 4px solid #3a0ca3;
+            color: #00d4ff;
         }
-        
-        .user-type-info h3 {
-            color: #3a0ca3;
-            margin-bottom: 5px;
-        }
-        
-        .user-type-info p {
-            color: #666;
+        .secure-note {
+            margin-top: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
             font-size: 14px;
+            color: #666;
+            border-left: 4px solid #00d4ff;
         }
         
-        .status-indicator {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-left: 10px;
+        /* Dashboard Styles */
+        .dashboard-container {
+            width: 90%;
+            max-width: 900px;
+            padding: 20px;
         }
-        
-        .status-active {
-            background: #d4edda;
-            color: #155724;
+        .dashboard-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
-        
-        .status-inactive {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .status-suspended {
-            background: #6c757d;
-            color: white;
-        }
-        
-        .login-options {
+        .user-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
         }
-        
-        .remember-me {
+        .user-info {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 15px;
+        }
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background: #00d4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+        }
+        .user-details h3 {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+        }
+        .user-details p {
+            margin: 5px 0 0;
+            color: #666;
+        }
+        .logout-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
             font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
         }
-        
-        .remember-me input {
-            width: 16px;
-            height: 16px;
+        .logout-btn:hover {
+            background: #ff4757;
         }
-        
-        .forgot-password {
-            color: #4361ee;
-            text-decoration: none;
+        .data-section {
+            margin-top: 30px;
+        }
+        .data-section h4 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .data-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #00d4ff;
+        }
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .data-row:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        .data-label {
+            font-weight: 600;
+            color: #555;
+        }
+        .data-value {
+            color: #333;
+            text-align: right;
+            max-width: 200px;
+            word-break: break-word;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-style: italic;
+        }
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
             font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
         }
-        
-        .forgot-password:hover {
-            text-decoration: underline;
+        .back-btn:hover {
+            background: #5a6268;
         }
-        
-        @media (max-width: 480px) {
-            .login-container {
-                margin: 20px;
-                padding: 30px 20px;
-            }
-            
-            .logo-section h1 {
-                font-size: 24px;
-            }
-            
-            .login-options {
-                flex-direction: column;
-                gap: 10px;
-                align-items: flex-start;
-            }
+        .readonly-field {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            color: #333;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo-section">
-            <h1>Odelya Cloud Storage</h1>
-            <p>Personal User Login</p>
-        </div>
-        
-        <div class="user-type-info">
-            <h3>Personal Users Only</h3>
-            <p>Login with your registered email and password</p>
-            <p><small>Note: Status (active/inactive) does not affect login</small></p>
-        </div>
-        
-        <div class="login-form">
-            <div class="form-group">
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="logo">👤</div>
+            <h2>User Portal</h2>
+            
+            <div class="input-group">
                 <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="Enter your registered email" required>
+                <input type="email" id="email" placeholder="user@example.com">
             </div>
             
-            <div class="form-group">
+            <div class="input-group">
                 <label for="password">Password</label>
-                <div class="password-input">
-                    <input type="password" id="password" placeholder="Enter your password" required>
-                    <button type="button" class="toggle-password" onclick="togglePassword()">👁️</button>
+                <input type="password" id="password" placeholder="Enter your password">
+            </div>
+            
+            <div class="error-message" id="errorMessage"></div>
+            
+            <button id="loginBtn">Login</button>
+            
+            <div class="secure-note">
+                <strong>User Access</strong><br>
+                Access your personal information and data.
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboardPage" class="dashboard-container" style="display: none;">
+        <button class="back-btn" id="backBtn">← Back to Login</button>
+        <div class="dashboard-box">
+            <div class="user-header">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-details">
+                        <h3 id="userName">Loading...</h3>
+                        <p id="userEmail">user@example.com</p>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+            </div>
+            
+            <div class="data-section">
+                <h4>Personal Information</h4>
+                <div id="personalInfo" class="data-grid">
+                    <div class="loading">Loading personal information...</div>
                 </div>
             </div>
             
-            <div class="login-options">
-                <label class="remember-me">
-                    <input type="checkbox" id="rememberMe">
-                    Remember me
-                </label>
-                <a href="#" class="forgot-password" onclick="forgotPassword()">Forgot Password?</a>
+            <div class="data-section">
+                <h4>Account Details</h4>
+                <div id="accountInfo" class="data-grid">
+                    <div class="loading">Loading account details...</div>
+                </div>
             </div>
             
-            <button class="login-btn" onclick="login()" id="loginButton">Login</button>
+            <div class="data-section">
+                <h4>Additional Information</h4>
+                <div id="additionalInfo" class="data-grid">
+                    <div class="loading">Loading additional information...</div>
+                </div>
+            </div>
             
-            <div id="message" class="message"></div>
-        </div>
-        
-        <div class="footer-links">
-            <p>Don't have an account? <a href="#" onclick="showSignupInfo()">Contact Administrator</a></p>
+            <div class="secure-note" style="margin-top: 40px;">
+                <strong>Note:</strong> All information displayed here is read-only. For security reasons, password field is not displayed. Contact support if you need to update any information.
+            </div>
         </div>
     </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
         // ==================== FIREBASE CONFIGURATION ====================
@@ -336,247 +334,309 @@
             console.log("Firebase initialized successfully");
         } catch (error) {
             console.error("Firebase initialization error:", error);
-            showMessage("Firebase initialization failed. Please refresh the page.", "error");
+            showError("Firebase initialization failed. Please refresh.");
         }
         // ==================== END FIREBASE CONFIGURATION ====================
 
-        // Toggle password visibility
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleButton = document.querySelector('.toggle-password');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleButton.textContent = '🙈';
-            } else {
-                passwordInput.type = 'password';
-                toggleButton.textContent = '👁️';
+        // DOM elements
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const loginPage = document.getElementById('loginPage');
+        const dashboardPage = document.getElementById('dashboardPage');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const backBtn = document.getElementById('backBtn');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        const personalInfo = document.getElementById('personalInfo');
+        const accountInfo = document.getElementById('accountInfo');
+        const additionalInfo = document.getElementById('additionalInfo');
+
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        // Hide error message
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        // Get user data from Firestore
+        async function getUserData(userId, email) {
+            try {
+                // First try to get user by UID
+                let userDoc = await db.collection('users').doc(userId).get();
+                
+                if (userDoc.exists) {
+                    return userDoc.data();
+                }
+                
+                // If not found by UID, try by email
+                const userQuery = await db.collection('users')
+                    .where('email', '==', email)
+                    .limit(1)
+                    .get();
+                
+                if (!userQuery.empty) {
+                    return userQuery.docs[0].data();
+                }
+                
+                // If no user document found, create a basic one from auth data
+                return {
+                    name: email.split('@')[0],
+                    email: email,
+                    uid: userId,
+                    accountCreated: new Date().toISOString(),
+                    lastLogin: new Date().toISOString()
+                };
+                
+            } catch (error) {
+                console.error("Error getting user data:", error);
+                return null;
             }
         }
 
-        // Show message function
-        function showMessage(message, type = 'info') {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = message;
-            messageDiv.className = 'message ' + type;
-            messageDiv.style.display = 'block';
-            
-            // Auto-hide success messages after 5 seconds
-            if (type === 'success') {
-                setTimeout(() => {
-                    messageDiv.style.display = 'none';
-                }, 5000);
-            }
-        }
-
-        // Forgot password handler
-        function forgotPassword() {
-            const email = document.getElementById('email').value.trim();
-            if (!email) {
-                showMessage("Please enter your email address first", "error");
-                document.getElementById('email').focus();
+        // Display user data in readonly format
+        function displayUserData(userData) {
+            if (!userData) {
+                personalInfo.innerHTML = '<div class="no-data">No personal information available</div>';
+                accountInfo.innerHTML = '<div class="no-data">No account details available</div>';
+                additionalInfo.innerHTML = '<div class="no-data">No additional information available</div>';
                 return;
             }
+
+            // Set user avatar and name
+            const name = userData.name || userData.email.split('@')[0];
+            userName.textContent = name;
+            userEmail.textContent = userData.email || 'No email provided';
+            userAvatar.textContent = name.charAt(0).toUpperCase();
+
+            // Personal Information Section
+            const personalFields = {
+                'Full Name': userData.name || 'Not provided',
+                'Email': userData.email || 'Not provided',
+                'Phone': userData.phone || 'Not provided',
+                'Address': userData.address || 'Not provided',
+                'Date of Birth': userData.dob || userData.birthdate || 'Not provided',
+                'Gender': userData.gender || 'Not provided'
+            };
             
-            auth.sendPasswordResetEmail(email)
-                .then(() => {
-                    showMessage(`Password reset email sent to ${email}. Please check your inbox.`, "success");
-                })
-                .catch(error => {
-                    console.error("Password reset error:", error);
-                    if (error.code === 'auth/user-not-found') {
-                        showMessage("No user found with this email address", "error");
-                    } else {
-                        showMessage("Error sending reset email: " + error.message, "error");
-                    }
-                });
+            personalInfo.innerHTML = '';
+            for (const [label, value] of Object.entries(personalFields)) {
+                if (value !== 'Not provided') {
+                    const card = document.createElement('div');
+                    card.className = 'data-card';
+                    card.innerHTML = `
+                        <div class="data-row">
+                            <span class="data-label">${label}:</span>
+                            <span class="data-value">${value}</span>
+                        </div>
+                    `;
+                    personalInfo.appendChild(card);
+                }
+            }
+            
+            if (personalInfo.children.length === 0) {
+                personalInfo.innerHTML = '<div class="no-data">No personal information available</div>';
+            }
+
+            // Account Details Section
+            const accountFields = {
+                'User ID': userData.uid || 'Not available',
+                'Account Created': userData.accountCreated ? new Date(userData.accountCreated).toLocaleDateString() : 'Not available',
+                'Last Login': userData.lastLogin ? new Date(userData.lastLogin).toLocaleString() : 'Just now',
+                'Account Status': userData.status || 'Active',
+                'User Type': userData.userType || 'Regular User',
+                'Email Verified': userData.emailVerified ? 'Yes' : 'No'
+            };
+            
+            accountInfo.innerHTML = '';
+            for (const [label, value] of Object.entries(accountFields)) {
+                const card = document.createElement('div');
+                card.className = 'data-card';
+                card.innerHTML = `
+                    <div class="data-row">
+                        <span class="data-label">${label}:</span>
+                        <span class="data-value">${value}</span>
+                    </div>
+                `;
+                accountInfo.appendChild(card);
+            }
+
+            // Additional Information Section
+            additionalInfo.innerHTML = '';
+            
+            // Get all other fields that aren't in personal or account sections
+            const excludedFields = ['name', 'email', 'phone', 'address', 'dob', 'birthdate', 'gender', 
+                                   'uid', 'accountCreated', 'lastLogin', 'status', 'userType', 'emailVerified'];
+            
+            let hasAdditionalData = false;
+            
+            for (const [key, value] of Object.entries(userData)) {
+                if (!excludedFields.includes(key) && value !== undefined && value !== null && value !== '') {
+                    hasAdditionalData = true;
+                    const card = document.createElement('div');
+                    card.className = 'data-card';
+                    
+                    // Format the key for display
+                    const displayKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                    
+                    card.innerHTML = `
+                        <div class="data-row">
+                            <span class="data-label">${displayKey}:</span>
+                            <span class="data-value">${typeof value === 'object' ? JSON.stringify(value) : value}</span>
+                        </div>
+                    `;
+                    additionalInfo.appendChild(card);
+                }
+            }
+            
+            if (!hasAdditionalData) {
+                additionalInfo.innerHTML = '<div class="no-data">No additional information available</div>';
+            }
         }
 
-        // Show signup info
-        function showSignupInfo() {
-            showMessage("For new account registration, please contact your administrator or visit the registration page.", "info");
-        }
-
-        // Main login function using Firebase Authentication
+        // Login function
         async function login() {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const loginButton = document.getElementById('loginButton');
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
             
-            // Validation
-            if (!email) {
-                showMessage("Please enter your email address", "error");
-                document.getElementById('email').focus();
+            // Basic validation
+            if (!email || !password) {
+                showError("Please enter both email and password");
                 return;
             }
             
-            if (!password) {
-                showMessage("Please enter your password", "error");
-                document.getElementById('password').focus();
-                return;
-            }
-            
-            // Show loading state
-            loginButton.textContent = "Logging in...";
-            loginButton.disabled = true;
+            // Show loading
+            loginBtn.disabled = true;
+            loginBtn.textContent = "Authenticating...";
+            hideError();
             
             try {
-                // Sign in with Firebase Authentication
+                // Authenticate with Firebase
                 const userCredential = await auth.signInWithEmailAndPassword(email, password);
                 const user = userCredential.user;
+                console.log("User authenticated:", user.email);
                 
-                console.log("Firebase Auth login successful:", user.uid);
+                // Get user data from Firestore
+                const userData = await getUserData(user.uid, user.email);
                 
-                // Now fetch user data from Firestore using the authenticated user
-                const userDoc = await db.collection("users").doc(user.uid).get();
-                
-                if (!userDoc.exists) {
-                    // User authenticated but no Firestore record - sign out
-                    await auth.signOut();
-                    throw new Error("User record not found. Please contact administrator.");
-                }
-                
-                const userData = userDoc.data();
-                
-                // Check if user is personal type
-                if (userData.userType !== 'personal') {
-                    await auth.signOut();
-                    throw new Error("Business users must use a different login portal.");
-                }
-                
-                // Store user data in localStorage
+                // Save session data
                 localStorage.setItem('user_logged_in', 'true');
-                localStorage.setItem('user_id', user.uid);
                 localStorage.setItem('user_email', user.email);
-                localStorage.setItem('user_name', userData.name || userData.personalInfo?.name || 'User');
-                localStorage.setItem('user_status', userData.status || 'inactive');
-                localStorage.setItem('user_type', userData.userType || 'personal');
-                
-                // Remember me option
-                if (document.getElementById('rememberMe').checked) {
-                    localStorage.setItem('remember_email', email);
-                } else {
-                    localStorage.removeItem('remember_email');
+                localStorage.setItem('user_uid', user.uid);
+                if (userData && userData.name) {
+                    localStorage.setItem('user_name', userData.name);
                 }
                 
-                // Show success message
-                const status = userData.status || 'inactive';
-                const statusText = status === 'active' ? 'Active' : 
-                                  status === 'inactive' ? 'Inactive' : 
-                                  status === 'suspended' ? 'Suspended' : status;
-                
-                showMessage(`✅ Login successful! Welcome ${userData.name || 'User'}. Status: ${statusText}`, "success");
-                
-                // Reset button
-                loginButton.textContent = "Login Successful!";
-                
-                // Redirect to user dashboard after 2 seconds
-                setTimeout(() => {
-                    window.location.href = "user-dashboard.html";
-                }, 2000);
+                // Switch to dashboard view
+                showDashboard(userData);
                 
             } catch (error) {
                 console.error("Login error:", error);
                 
-                let errorMessage = "Login failed. Please try again.";
-                
-                switch(error.code) {
-                    case 'auth/user-not-found':
-                        errorMessage = "No user found with this email address.";
-                        break;
+                let errorMsg = "Login failed. ";
+                switch (error.code) {
                     case 'auth/wrong-password':
-                        errorMessage = "Incorrect password. Please try again.";
+                        errorMsg = "Incorrect password.";
+                        break;
+                    case 'auth/user-not-found':
+                        errorMsg = "No account found with this email.";
                         break;
                     case 'auth/invalid-email':
-                        errorMessage = "Invalid email address format.";
+                        errorMsg = "Invalid email format.";
                         break;
                     case 'auth/user-disabled':
-                        errorMessage = "This account has been disabled. Please contact administrator.";
+                        errorMsg = "This account has been disabled.";
                         break;
                     case 'auth/too-many-requests':
-                        errorMessage = "Too many failed login attempts. Please try again later.";
+                        errorMsg = "Too many failed attempts. Try again later.";
                         break;
-                    case 'permission-denied':
-                        errorMessage = "Access denied. Please contact administrator.";
-                        break;
+                    default:
+                        errorMsg = error.message || "Login failed. Please try again.";
                 }
                 
-                showMessage(errorMessage, "error");
-                loginButton.textContent = "Login";
-                loginButton.disabled = false;
+                showError(errorMsg);
+                loginBtn.disabled = false;
+                loginBtn.textContent = "Login";
             }
         }
 
-        // Auto-logout after 30 minutes of inactivity
-        function setupAutoLogout() {
-            let timeout;
+        // Show dashboard
+        function showDashboard(userData) {
+            loginPage.style.display = 'none';
+            dashboardPage.style.display = 'block';
             
-            function resetTimer() {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => {
-                    if (localStorage.getItem('user_logged_in')) {
-                        alert('Session expired due to inactivity. Please login again.');
-                        logout();
-                    }
-                }, 30 * 60 * 1000); // 30 minutes
-            }
-            
-            ['click', 'mousemove', 'keypress', 'scroll'].forEach(event => {
-                document.addEventListener(event, resetTimer);
-            });
-            
-            resetTimer();
+            // Display user data
+            displayUserData(userData);
         }
 
         // Logout function
-        function logout() {
-            auth.signOut().then(() => {
+        async function logout() {
+            try {
+                await auth.signOut();
                 localStorage.removeItem('user_logged_in');
-                localStorage.removeItem('user_id');
                 localStorage.removeItem('user_email');
+                localStorage.removeItem('user_uid');
                 localStorage.removeItem('user_name');
-                localStorage.removeItem('user_status');
-                localStorage.removeItem('user_type');
-                window.location.href = "user-login.html";
-            });
+                
+                // Clear form
+                emailInput.value = '';
+                passwordInput.value = '';
+                
+                // Switch to login view
+                dashboardPage.style.display = 'none';
+                loginPage.style.display = 'flex';
+                
+                loginBtn.disabled = false;
+                loginBtn.textContent = "Login";
+                
+            } catch (error) {
+                console.error("Logout error:", error);
+            }
         }
 
-        // Check if user is already logged in
-        window.onload = function() {
+        // Setup function
+        async function setup() {
+            // Check if already logged in
             const isLoggedIn = localStorage.getItem('user_logged_in');
-            if (isLoggedIn) {
-                // Check if auth session is still valid
-                auth.onAuthStateChanged((user) => {
-                    if (user) {
-                        window.location.href = "user-dashboard.html";
-                    } else {
-                        // Auth session expired, clear localStorage
-                        localStorage.clear();
+            if (isLoggedIn === 'true') {
+                // Verify the session is still valid
+                try {
+                    const currentUser = auth.currentUser;
+                    if (currentUser) {
+                        // Get user data and show dashboard
+                        const userData = await getUserData(currentUser.uid, currentUser.email);
+                        showDashboard(userData);
                     }
-                });
+                } catch (error) {
+                    // Clear invalid session
+                    localStorage.removeItem('user_logged_in');
+                }
             }
             
-            // Setup auto-logout
-            setupAutoLogout();
+            // Setup event listeners
+            loginBtn.addEventListener('click', login);
+            logoutBtn.addEventListener('click', logout);
+            backBtn.addEventListener('click', logout);
             
-            // Focus on email field
-            document.getElementById('email').focus();
-            
-            // Fill remembered email if exists
-            const rememberedEmail = localStorage.getItem('remember_email');
-            if (rememberedEmail) {
-                document.getElementById('email').value = rememberedEmail;
-                document.getElementById('rememberMe').checked = true;
-                document.getElementById('password').focus();
-            }
-            
-            // Allow login on Enter key press
-            document.getElementById('password').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
+            // Allow pressing Enter to login
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && loginPage.style.display !== 'none') {
                     login();
                 }
             });
-        };
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("User login page loaded");
+            setup();
+        });
     </script>
 </body>
 </html>
