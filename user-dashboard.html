@@ -254,219 +254,143 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
     box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
 }
 
-/* ========== MOBILE RESPONSIVE - SIMPLER FIX ========== */
+/* ========== MOBILE RESPONSIVE ========== */
 @media (max-width: 768px) {
-    .container {
-        padding: 0 10px;
-    }
-    
     .table-container {
         width: 100%;
-        overflow-x: hidden;
+        overflow-x: hidden; /* No horizontal scroll */
     }
     
-    /* Transform table into cards */
     table {
         display: block;
-        width: 100%;
-        background: transparent;
-        box-shadow: none;
-        border: none;
+        min-width: auto;
     }
     
     thead {
-        display: none;
+        display: none; /* Hide table headers on mobile */
     }
     
-    tbody {
+    tbody, tr, td {
         display: block;
+        width: 100%;
     }
     
     tr {
-        display: block;
         margin-bottom: 30px;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15);
         border: 2px solid #00d4ff;
+        border-radius: 10px;
         overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     
-    /* Stack table cells vertically */
     td {
-        display: block;
-        width: 100% !important;
-        padding: 0 !important;
-        border: none !important;
+        padding: 25px 20px;
+        border: none;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    /* Remove right border on mobile */
+    td:nth-child(1) {
+        border-right: none;
         border-bottom: 2px solid #00d4ff;
     }
     
-    /* Remove right border from first cell */
-    td:nth-child(1) {
-        border-right: none;
-    }
-    
-    /* Last cell shouldn't have bottom border */
-    td:last-child {
+    td:nth-child(2) {
         border-bottom: none;
     }
     
-    /* Hide desktop content on mobile */
-    .user-data-display,
-    .data-item,
-    .data-label,
-    .data-value,
-    .action-buttons,
-    .view-btn,
-    .history-btn {
-        display: none !important;
+    /* Add mobile section headers */
+    td:nth-child(1)::before {
+        content: "MY ACCOUNT";
+        display: block;
+        font-size: 18px;
+        font-weight: 800;
+        color: #00d4ff;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e0e0e0;
+        text-align: center;
     }
     
-    /* Show mobile content */
-    .mobile-section-header,
-    .mobile-content,
-    .mobile-data-item,
-    .mobile-data-label,
-    .mobile-data-value,
-    .mobile-action-buttons,
-    .mobile-view-btn,
-    .mobile-history-btn {
-        display: block !important;
+    td:nth-child(2)::before {
+        content: "ACCOUNT STATUS";
+        display: block;
+        font-size: 18px;
+        font-weight: 800;
+        color: #00d4ff;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e0e0e0;
+        text-align: center;
     }
     
-    /* Mobile section headers */
-    .mobile-section-header {
-        font-size: 20px !important;
-        font-weight: 800 !important;
-        text-align: center !important;
-        padding: 20px !important;
-        margin: 0 !important;
-        width: 100% !important;
+    .data-item {
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 20px;
     }
     
-    .mobile-section-header.my-account {
-        background: #00d4ff !important;
-        color: white !important;
+    .data-label {
+        min-width: auto;
+        margin-right: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 15px;
     }
     
-    .mobile-section-header.account-status {
-        background: #6f42c1 !important;
-        color: white !important;
+    .data-value {
+        width: 100%;
+        text-align: center;
+        font-size: 16px;
+        padding: 8px 0;
     }
     
-    /* Mobile content wrapper */
-    .mobile-content {
-        padding: 25px 20px !important;
+    .action-buttons {
+        flex-direction: column;
+        gap: 12px;
     }
     
-    /* Mobile data items */
-    .mobile-data-item {
-        margin-bottom: 25px !important;
+    .action-buttons button {
+        width: 100%;
+        padding: 15px;
+        font-size: 16px;
     }
     
-    .mobile-data-label {
-        font-weight: 800 !important;
-        color: #333 !important;
-        font-size: 16px !important;
-        background: rgba(0, 212, 255, 0.1) !important;
-        padding: 12px 15px !important;
-        border-radius: 8px !important;
-        border-left: 4px solid #00d4ff !important;
-        margin-bottom: 8px !important;
-        text-align: center !important;
-    }
-    
-    .mobile-data-value {
-        font-weight: 600 !important;
-        color: #555 !important;
-        font-size: 17px !important;
-        padding: 12px 15px !important;
-        background: #f8f9fa !important;
-        border-radius: 8px !important;
-        border: 1px solid #e0e0e0 !important;
-        text-align: center !important;
-        word-break: break-word !important;
-    }
-    
-    /* Status display */
     .status-display {
-        display: block !important;
-        width: 100% !important;
-        max-width: 200px !important;
-        margin: 0 auto !important;
-        padding: 12px 25px !important;
-        font-size: 16px !important;
-    }
-    
-    /* Mobile action buttons */
-    .mobile-action-buttons {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 15px !important;
-        margin-top: 20px !important;
-    }
-    
-    .mobile-action-buttons button {
-        width: 100% !important;
-        padding: 16px !important;
-        font-size: 16px !important;
-        border-radius: 10px !important;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 8px !important;
-        border: none !important;
-        cursor: pointer !important;
-        font-weight: 700 !important;
-    }
-    
-    .mobile-view-btn {
-        background: #00d4ff !important;
-        color: white !important;
-    }
-    
-    .mobile-history-btn {
-        background: #6f42c1 !important;
-        color: white !important;
+        display: block;
+        margin: 0 auto;
+        padding: 12px 25px;
+        font-size: 16px;
     }
 }
 
-/* For very small screens (phones) */
+/* For very small screens */
 @media (max-width: 480px) {
-    .mobile-content {
-        padding: 20px 15px !important;
+    td {
+        padding: 20px 15px;
     }
     
-    .mobile-section-header {
-        font-size: 18px !important;
-        padding: 15px !important;
+    .data-label {
+        font-size: 14px;
+        padding: 8px;
     }
     
-    .mobile-data-item {
-        margin-bottom: 20px !important;
+    .data-value {
+        font-size: 15px;
     }
     
-    .mobile-data-label {
-        font-size: 15px !important;
-        padding: 10px 12px !important;
+    .action-buttons button {
+        padding: 12px 15px;
+        font-size: 14px;
     }
     
-    .mobile-data-value {
-        font-size: 16px !important;
-        padding: 10px 12px !important;
-    }
-    
-    .status-display {
-        padding: 10px 20px !important;
-        font-size: 15px !important;
-    }
-    
-    .mobile-action-buttons button {
-        padding: 14px !important;
-        font-size: 15px !important;
+    td:nth-child(1)::before,
+    td:nth-child(2)::before {
+        font-size: 16px;
+        margin-bottom: 15px;
     }
 }
+
 /* Remove all the old column width styles (lines 81-106 in your code) */      
         
         /* Modal Styles - Bigger Fonts */
@@ -1262,7 +1186,7 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
                 });
         }
         
-// Render user data in table (two-column layout with mobile support)
+// Render user data in table (two-column layout)
 function renderUserTable(user) {
     const userName = user.name || 'N/A';
     const userEmail = user.email || 'N/A';
@@ -1274,7 +1198,6 @@ function renderUserTable(user) {
         <tr>
             <!-- LEFT COLUMN: MY ACCOUNT -->
             <td>
-                <!-- Desktop content (hidden on mobile) -->
                 <div class="user-data-display">
                     <div class="data-item">
                         <div class="data-label">User ID:</div>
@@ -1289,28 +1212,10 @@ function renderUserTable(user) {
                         <div class="data-value">${userEmail}</div>
                     </div>
                 </div>
-                
-                <!-- Mobile content (hidden on desktop) -->
-                <div class="mobile-section-header my-account">📋 MY ACCOUNT</div>
-                <div class="mobile-content">
-                    <div class="mobile-data-item">
-                        <div class="mobile-data-label">User ID:</div>
-                        <div class="mobile-data-value">${userId}</div>
-                    </div>
-                    <div class="mobile-data-item">
-                        <div class="mobile-data-label">Name:</div>
-                        <div class="mobile-data-value">${userName}</div>
-                    </div>
-                    <div class="mobile-data-item">
-                        <div class="mobile-data-label">Email:</div>
-                        <div class="mobile-data-value">${userEmail}</div>
-                    </div>
-                </div>
             </td>
             
             <!-- RIGHT COLUMN: ACCOUNT STATUS -->
             <td>
-                <!-- Desktop content (hidden on mobile) -->
                 <div class="user-data-display">
                     <div class="data-item">
                         <div class="data-label">Phone:</div>
@@ -1330,32 +1235,6 @@ function renderUserTable(user) {
                             <div class="action-buttons">
                                 <button class="view-btn" onclick="viewUserDetails()">📋 VIEW DETAILS</button>
                                 <button class="history-btn" onclick="viewPasswordHistory()">🔑 PASSWORD HISTORY</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Mobile content (hidden on desktop) -->
-                <div class="mobile-section-header account-status">🔐 ACCOUNT STATUS</div>
-                <div class="mobile-content">
-                    <div class="mobile-data-item">
-                        <div class="mobile-data-label">Phone:</div>
-                        <div class="mobile-data-value">${userPhone}</div>
-                    </div>
-                    <div class="mobile-data-item">
-                        <div class="mobile-data-label">Status:</div>
-                        <div class="mobile-data-value">
-                            <span class="status-display ${userStatus}">
-                                ${userStatus}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="mobile-data-item">
-                        <div class="mobile-data-label">Actions:</div>
-                        <div class="mobile-data-value">
-                            <div class="mobile-action-buttons">
-                                <button class="mobile-view-btn" onclick="viewUserDetails()">📋 VIEW DETAILS</button>
-                                <button class="mobile-history-btn" onclick="viewPasswordHistory()">🔑 PASSWORD HISTORY</button>
                             </div>
                         </div>
                     </div>
