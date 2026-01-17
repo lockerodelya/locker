@@ -254,259 +254,227 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
     box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
 }
 
-/* ========== MOBILE RESPONSIVE - FIXED ========== */
+/* ========== MOBILE RESPONSIVE - COMPLETE FIX ========== */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 10px;
+    }
+    
     .table-container {
         width: 100%;
-        overflow-x: hidden; /* No horizontal scroll */
-        padding: 0 10px; /* Add padding on sides */
+        overflow-x: hidden;
+        padding: 0;
     }
     
+    /* COMPLETE TABLE RESET FOR MOBILE */
     table {
-        display: block;
-        min-width: auto;
-        width: 100%;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    }
-    
-    thead {
-        display: none; /* Hide table headers on mobile */
-    }
-    
-    tbody, tr {
-        display: block;
-        width: 100%;
-    }
-    
-    tr {
-        margin-bottom: 30px;
-        border: 2px solid #00d4ff;
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        min-width: auto !important;
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15);
         background: white;
+        border: 2px solid #00d4ff;
     }
     
-    td {
-        display: block;
-        width: 100% !important; /* Force full width */
-        padding: 25px 20px;
-        border: none;
-        box-sizing: border-box;
+    thead {
+        display: none !important;
     }
     
-    /* Remove the right border and make sections stack properly */
+    tbody {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+    
+    tr {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* FIRST TD - MY ACCOUNT SECTION */
     td:nth-child(1) {
-        border-right: none;
-        border-bottom: 2px solid #00d4ff;
+        display: block !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        border-bottom: 2px solid #00d4ff !important;
         background: linear-gradient(to right, #f8fdff, #ffffff);
     }
     
+    /* SECOND TD - ACCOUNT STATUS SECTION */
     td:nth-child(2) {
-        border-bottom: none;
-        background: linear-gradient(to right, #f8fdff, #ffffff);
+        display: block !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        background: linear-gradient(to right, #ffffff, #f8fdff);
     }
     
-    /* Mobile section headers - BIGGER and BETTER */
-    td:nth-child(1)::before {
-        content: "📋 MY ACCOUNT";
-        display: block;
-        font-size: 20px;
-        font-weight: 800;
-        color: #00d4ff;
-        margin-bottom: 25px;
-        padding-bottom: 12px;
-        border-bottom: 2px solid rgba(0, 212, 255, 0.3);
-        text-align: center;
-        letter-spacing: 0.5px;
-        background: #00d4ff;
-        color: white;
-        margin: -25px -20px 25px -20px;
-        padding: 20px;
-        border-radius: 0;
+    /* MOBILE SECTION HEADERS */
+    .mobile-section-header {
+        display: block !important;
+        font-size: 20px !important;
+        font-weight: 800 !important;
+        text-align: center !important;
+        letter-spacing: 0.5px !important;
+        padding: 20px !important;
+        margin: 0 !important;
+        width: 100% !important;
     }
     
-    td:nth-child(2)::before {
-        content: "🔐 ACCOUNT STATUS";
-        display: block;
-        font-size: 20px;
-        font-weight: 800;
-        color: white;
-        margin-bottom: 25px;
-        padding-bottom: 12px;
-        text-align: center;
-        letter-spacing: 0.5px;
-        background: #6f42c1;
-        color: white;
-        margin: -25px -20px 25px -20px;
-        padding: 20px;
-        border-radius: 0;
+    .mobile-section-header.my-account {
+        background: #00d4ff !important;
+        color: white !important;
     }
     
-    /* Data items - FULL WIDTH */
-    .user-data-display {
-        width: 100%;
-        gap: 25px;
+    .mobile-section-header.account-status {
+        background: #6f42c1 !important;
+        color: white !important;
     }
     
-    .data-item {
-        flex-direction: column;
-        gap: 8px;
-        margin-bottom: 25px;
-        width: 100%;
-        padding: 0 10px;
+    /* MOBILE CONTENT WRAPPER */
+    .mobile-content {
+        display: block !important;
+        width: 100% !important;
+        padding: 25px 20px !important;
     }
     
-    .data-label {
-        min-width: 100%;
-        margin-right: 0;
-        text-align: center;
-        font-size: 16px;
-        background: rgba(0, 212, 255, 0.1);
-        padding: 12px 15px;
-        border-radius: 8px;
-        border-left: 4px solid #00d4ff;
-        margin-bottom: 8px;
+    /* MOBILE DATA ITEMS */
+    .mobile-data-item {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        margin-bottom: 25px !important;
+        padding: 0 !important;
     }
     
-    .data-value {
-        width: 100%;
-        text-align: center;
-        font-size: 17px;
-        padding: 12px 15px;
-        background: #f8f9fa;
-        border-radius: 8px;
-        border: 1px solid #e0e0e0;
+    .mobile-data-label {
+        font-weight: 800 !important;
+        color: #333 !important;
+        font-size: 16px !important;
+        background: rgba(0, 212, 255, 0.1) !important;
+        padding: 12px 15px !important;
+        border-radius: 8px !important;
+        border-left: 4px solid #00d4ff !important;
+        margin-bottom: 8px !important;
+        text-align: center !important;
+        width: 100% !important;
     }
     
-    /* Special styling for status */
-    .data-item:nth-child(2) .data-value {
-        background: transparent;
-        border: none;
-        padding: 0;
+    .mobile-data-value {
+        font-weight: 600 !important;
+        color: #555 !important;
+        font-size: 17px !important;
+        padding: 12px 15px !important;
+        background: #f8f9fa !important;
+        border-radius: 8px !important;
+        border: 1px solid #e0e0e0 !important;
+        text-align: center !important;
+        width: 100% !important;
+        word-break: break-word !important;
     }
     
+    /* STATUS DISPLAY IN MOBILE */
     .status-display {
-        display: block;
-        width: 100%;
-        max-width: 200px;
-        margin: 0 auto;
-        padding: 12px 25px;
-        font-size: 16px;
+        display: block !important;
+        width: 100% !important;
+        max-width: 200px !important;
+        margin: 0 auto !important;
+        padding: 12px 25px !important;
+        font-size: 16px !important;
+        background: transparent !important;
+        border: none !important;
+        text-align: center !important;
     }
     
-    /* Action buttons - FULL WIDTH */
+    /* ACTION BUTTONS IN MOBILE */
+    .mobile-action-buttons {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin-top: 20px !important;
+    }
+    
+    .mobile-action-buttons button {
+        width: 100% !important;
+        padding: 16px !important;
+        font-size: 16px !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        border: none !important;
+        cursor: pointer !important;
+        font-weight: 700 !important;
+    }
+    
+    .mobile-view-btn {
+        background: #00d4ff !important;
+        color: white !important;
+    }
+    
+    .mobile-history-btn {
+        background: #6f42c1 !important;
+        color: white !important;
+    }
+    
+    /* HIDE ALL DESKTOP ELEMENTS */
+    .user-data-display,
+    .data-item,
+    .data-label,
+    .data-value,
     .action-buttons {
-        flex-direction: column;
-        gap: 15px;
-        width: 100%;
-        padding: 0 10px;
-    }
-    
-    .action-buttons button {
-        width: 100%;
-        padding: 16px;
-        font-size: 16px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    
-    /* Ensure no horizontal scrolling */
-    * {
-        max-width: 100%;
+        display: none !important;
     }
 }
 
 /* For very small screens (phones) */
 @media (max-width: 480px) {
-    .table-container {
-        padding: 0 5px;
+    .mobile-content {
+        padding: 20px 15px !important;
     }
     
-    tr {
-        margin-bottom: 20px;
-        border-radius: 10px;
+    .mobile-section-header {
+        font-size: 18px !important;
+        padding: 15px !important;
     }
     
-    td {
-        padding: 20px 15px;
+    .mobile-data-item {
+        margin-bottom: 20px !important;
     }
     
-    td:nth-child(1)::before,
-    td:nth-child(2)::before {
-        font-size: 18px;
-        margin: -20px -15px 20px -15px;
-        padding: 15px;
+    .mobile-data-label {
+        font-size: 15px !important;
+        padding: 10px 12px !important;
     }
     
-    .data-item {
-        margin-bottom: 20px;
-        padding: 0 5px;
-    }
-    
-    .data-label {
-        font-size: 15px;
-        padding: 10px 12px;
-    }
-    
-    .data-value {
-        font-size: 16px;
-        padding: 10px 12px;
+    .mobile-data-value {
+        font-size: 16px !important;
+        padding: 10px 12px !important;
     }
     
     .status-display {
-        padding: 10px 20px;
-        font-size: 15px;
+        padding: 10px 20px !important;
+        font-size: 15px !important;
     }
     
-    .action-buttons {
-        gap: 12px;
-        padding: 0 5px;
-    }
-    
-    .action-buttons button {
-        padding: 14px;
-        font-size: 15px;
-    }
-}
-
-/* For extra small screens */
-@media (max-width: 360px) {
-    .table-container {
-        padding: 0;
-    }
-    
-    tr {
-        margin-bottom: 15px;
-        border-width: 1px;
-    }
-    
-    td {
-        padding: 15px 10px;
-    }
-    
-    td:nth-child(1)::before,
-    td:nth-child(2)::before {
-        font-size: 16px;
-        margin: -15px -10px 15px -10px;
-        padding: 12px;
-    }
-    
-    .data-label {
-        font-size: 14px;
-        padding: 8px 10px;
-    }
-    
-    .data-value {
-        font-size: 15px;
-        padding: 8px 10px;
-    }
-    
-    .action-buttons button {
-        padding: 12px;
-        font-size: 14px;
+    .mobile-action-buttons button {
+        padding: 14px !important;
+        font-size: 15px !important;
     }
 }
 
@@ -1305,7 +1273,7 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
                 });
         }
         
-// Render user data in table (two-column layout)
+// Render user data in table (two-column layout with mobile support)
 function renderUserTable(user) {
     const userName = user.name || 'N/A';
     const userEmail = user.email || 'N/A';
@@ -1317,6 +1285,7 @@ function renderUserTable(user) {
         <tr>
             <!-- LEFT COLUMN: MY ACCOUNT -->
             <td>
+                <!-- Desktop content (hidden on mobile) -->
                 <div class="user-data-display">
                     <div class="data-item">
                         <div class="data-label">User ID:</div>
@@ -1331,10 +1300,28 @@ function renderUserTable(user) {
                         <div class="data-value">${userEmail}</div>
                     </div>
                 </div>
+                
+                <!-- Mobile content (hidden on desktop) -->
+                <div class="mobile-section-header my-account">📋 MY ACCOUNT</div>
+                <div class="mobile-content">
+                    <div class="mobile-data-item">
+                        <div class="mobile-data-label">User ID:</div>
+                        <div class="mobile-data-value">${userId}</div>
+                    </div>
+                    <div class="mobile-data-item">
+                        <div class="mobile-data-label">Name:</div>
+                        <div class="mobile-data-value">${userName}</div>
+                    </div>
+                    <div class="mobile-data-item">
+                        <div class="mobile-data-label">Email:</div>
+                        <div class="mobile-data-value">${userEmail}</div>
+                    </div>
+                </div>
             </td>
             
             <!-- RIGHT COLUMN: ACCOUNT STATUS -->
             <td>
+                <!-- Desktop content (hidden on mobile) -->
                 <div class="user-data-display">
                     <div class="data-item">
                         <div class="data-label">Phone:</div>
@@ -1354,6 +1341,32 @@ function renderUserTable(user) {
                             <div class="action-buttons">
                                 <button class="view-btn" onclick="viewUserDetails()">📋 VIEW DETAILS</button>
                                 <button class="history-btn" onclick="viewPasswordHistory()">🔑 PASSWORD HISTORY</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile content (hidden on desktop) -->
+                <div class="mobile-section-header account-status">🔐 ACCOUNT STATUS</div>
+                <div class="mobile-content">
+                    <div class="mobile-data-item">
+                        <div class="mobile-data-label">Phone:</div>
+                        <div class="mobile-data-value">${userPhone}</div>
+                    </div>
+                    <div class="mobile-data-item">
+                        <div class="mobile-data-label">Status:</div>
+                        <div class="mobile-data-value">
+                            <span class="status-display ${userStatus}">
+                                ${userStatus}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mobile-data-item">
+                        <div class="mobile-data-label">Actions:</div>
+                        <div class="mobile-data-value">
+                            <div class="mobile-action-buttons">
+                                <button class="mobile-view-btn" onclick="viewUserDetails()">📋 VIEW DETAILS</button>
+                                <button class="mobile-history-btn" onclick="viewPasswordHistory()">🔑 PASSWORD HISTORY</button>
                             </div>
                         </div>
                     </div>
