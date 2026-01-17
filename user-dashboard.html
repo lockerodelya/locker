@@ -3,8 +3,8 @@
 <head>
     <title>User Dashboard - Odelya</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -104,413 +104,350 @@
             box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
         }
         
-/* Updated Table Layout for Two Vertical Columns */
-.table-container {
-    width: 95%;
-    margin: 0 auto;
-}
-
-table {
-    width: 100%;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 3px 15px rgba(0,0,0,0.15);
-    border-collapse: collapse;
-}
-
-/* TWO columns for desktop */
-th, td {
-    padding: 25px 30px; /* More padding for better spacing */
-    text-align: left;
-    border-bottom: 2px solid #e0e0e0;
-    vertical-align: top;
-}
-
-th {
-    background: #00d4ff;
-    color: white;
-    font-size: 20px; /* Slightly bigger */
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    text-align: center;
-}
-
-/* TWO COLUMNS ONLY - Desktop layout */
-th:nth-child(1), td:nth-child(1) { /* MY ACCOUNT */
-    width: 50%;
-    border-right: 3px solid #e0e0e0; /* Thicker divider */
-}
-
-th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
-    width: 50%;
-}
-
-/* Data display within each cell */
-.user-data-display {
-    display: flex;
-    flex-direction: column;
-    gap: 20px; /* More space between items */
-}
-
-.data-item {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 15px;
-}
-
-.data-label {
-    font-weight: 800;
-    color: #333;
-    min-width: 120px; /* Wider labels */
-    margin-right: 20px;
-    font-size: 16px;
-    background: #f8f9fa;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-.data-value {
-    flex: 1;
-    font-weight: 600;
-    color: #555;
-    font-size: 16px;
-    word-break: break-word;
-    padding: 5px 0;
-}
-
-/* Status display */
-.status-display {
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: 25px;
-    font-size: 15px;
-    font-weight: 800;
-    min-width: 120px;
-    text-align: center;
-    text-transform: uppercase;
-}
-
-.status-display.active {
-    background: #d4edda;
-    color: #155724;
-    box-shadow: 0 2px 8px rgba(21, 87, 36, 0.2);
-}
-
-.status-display.inactive {
-    background: #f8d7da;
-    color: #721c24;
-    box-shadow: 0 2px 8px rgba(114, 28, 36, 0.2);
-}
-
-.status-display.suspended {
-    background: #6c757d;
-    color: white;
-    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2);
-}
-
-/* Action buttons */
-.action-buttons {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-}
-
-.action-buttons button {
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 700;
-    transition: all 0.3s;
-    min-width: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.view-btn {
-    background: #00d4ff;
-    color: white;
-}
-
-.view-btn:hover {
-    background: #00b8e6;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
-}
-
-.history-btn {
-    background: #6f42c1;
-    color: white;
-}
-
-.history-btn:hover {
-    background: #5a32a3;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
-}
-
-/* ========== MOBILE RESPONSIVE - FIXED ========== */
-@media (max-width: 768px) {
-    .table-container {
-        width: 100%;
-        overflow-x: hidden; /* No horizontal scroll */
-        padding: 0 10px; /* Add padding on sides */
-    }
-    
-    table {
-        display: block;
-        min-width: auto;
-        width: 100%;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    }
-    
-    thead {
-        display: none; /* Hide table headers on mobile */
-    }
-    
-    tbody, tr {
-        display: block;
-        width: 100%;
-    }
-    
-    tr {
-        margin-bottom: 30px;
-        border: 2px solid #00d4ff;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15);
-        background: white;
-    }
-    
-    td {
-        display: block;
-        width: 100% !important; /* Force full width */
-        padding: 25px 20px;
-        border: none;
-        box-sizing: border-box;
-    }
-    
-    /* Remove the right border and make sections stack properly */
-    td:nth-child(1) {
-        border-right: none;
-        border-bottom: 2px solid #00d4ff;
-        background: linear-gradient(to right, #f8fdff, #ffffff);
-    }
-    
-    td:nth-child(2) {
-        border-bottom: none;
-        background: linear-gradient(to right, #f8fdff, #ffffff);
-    }
-    
-    /* Mobile section headers - BIGGER and BETTER */
-    td:nth-child(1)::before {
-        content: "📋 MY ACCOUNT";
-        display: block;
-        font-size: 20px;
-        font-weight: 800;
-        color: #00d4ff;
-        margin-bottom: 25px;
-        padding-bottom: 12px;
-        border-bottom: 2px solid rgba(0, 212, 255, 0.3);
-        text-align: center;
-        letter-spacing: 0.5px;
-        background: #00d4ff;
-        color: white;
-        margin: -25px -20px 25px -20px;
-        padding: 20px;
-        border-radius: 0;
-    }
-    
-    td:nth-child(2)::before {
-        content: "🔐 ACCOUNT STATUS";
-        display: block;
-        font-size: 20px;
-        font-weight: 800;
-        color: white;
-        margin-bottom: 25px;
-        padding-bottom: 12px;
-        text-align: center;
-        letter-spacing: 0.5px;
-        background: #6f42c1;
-        color: white;
-        margin: -25px -20px 25px -20px;
-        padding: 20px;
-        border-radius: 0;
-    }
-    
-    /* Data items - FULL WIDTH */
-    .user-data-display {
-        width: 100%;
-        gap: 25px;
-    }
-    
-    .data-item {
-        flex-direction: column;
-        gap: 8px;
-        margin-bottom: 25px;
-        width: 100%;
-        padding: 0 10px;
-    }
-    
-    .data-label {
-        min-width: 100%;
-        margin-right: 0;
-        text-align: center;
-        font-size: 16px;
-        background: rgba(0, 212, 255, 0.1);
-        padding: 12px 15px;
-        border-radius: 8px;
-        border-left: 4px solid #00d4ff;
-        margin-bottom: 8px;
-    }
-    
-    .data-value {
-        width: 100%;
-        text-align: center;
-        font-size: 17px;
-        padding: 12px 15px;
-        background: #f8f9fa;
-        border-radius: 8px;
-        border: 1px solid #e0e0e0;
-    }
-    
-    /* Special styling for status */
-    .data-item:nth-child(2) .data-value {
-        background: transparent;
-        border: none;
-        padding: 0;
-    }
-    
-    .status-display {
-        display: block;
-        width: 100%;
-        max-width: 200px;
-        margin: 0 auto;
-        padding: 12px 25px;
-        font-size: 16px;
-    }
-    
-    /* Action buttons - FULL WIDTH */
-    .action-buttons {
-        flex-direction: column;
-        gap: 15px;
-        width: 100%;
-        padding: 0 10px;
-    }
-    
-    .action-buttons button {
-        width: 100%;
-        padding: 16px;
-        font-size: 16px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    
-    /* Ensure no horizontal scrolling */
-    * {
-        max-width: 100%;
-    }
-}
-
-/* For very small screens (phones) */
-@media (max-width: 480px) {
-    .table-container {
-        padding: 0 5px;
-    }
-    
-    tr {
-        margin-bottom: 20px;
-        border-radius: 10px;
-    }
-    
-    td {
-        padding: 20px 15px;
-    }
-    
-    td:nth-child(1)::before,
-    td:nth-child(2)::before {
-        font-size: 18px;
-        margin: -20px -15px 20px -15px;
-        padding: 15px;
-    }
-    
-    .data-item {
-        margin-bottom: 20px;
-        padding: 0 5px;
-    }
-    
-    .data-label {
-        font-size: 15px;
-        padding: 10px 12px;
-    }
-    
-    .data-value {
-        font-size: 16px;
-        padding: 10px 12px;
-    }
-    
-    .status-display {
-        padding: 10px 20px;
-        font-size: 15px;
-    }
-    
-    .action-buttons {
-        gap: 12px;
-        padding: 0 5px;
-    }
-    
-    .action-buttons button {
-        padding: 14px;
-        font-size: 15px;
-    }
-}
-
-/* For extra small screens */
-@media (max-width: 360px) {
-    .table-container {
-        padding: 0;
-    }
-    
-    tr {
-        margin-bottom: 15px;
-        border-width: 1px;
-    }
-    
-    td {
-        padding: 15px 10px;
-    }
-    
-    td:nth-child(1)::before,
-    td:nth-child(2)::before {
-        font-size: 16px;
-        margin: -15px -10px 15px -10px;
-        padding: 12px;
-    }
-    
-    .data-label {
-        font-size: 14px;
-        padding: 8px 10px;
-    }
-    
-    .data-value {
-        font-size: 15px;
-        padding: 8px 10px;
-    }
-    
-    .action-buttons button {
-        padding: 12px;
-        font-size: 14px;
-    }
-}
-
-/* Remove all the old column width styles (lines 81-106 in your code) */      
+        /* NEW: Two Independent Containers */
+        .containers-wrapper {
+            width: 95%;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .info-container {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.15);
+            padding: 25px 30px;
+            margin-bottom: 20px;
+        }
+        
+        .container-header {
+            background: #00d4ff;
+            color: white;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-align: center;
+            padding: 15px;
+            margin: -25px -30px 25px -30px;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .status-container {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.15);
+            padding: 25px 30px;
+            margin-bottom: 20px;
+        }
+        
+        .status-header {
+            background: #6f42c1;
+            color: white;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-align: center;
+            padding: 15px;
+            margin: -25px -30px 25px -30px;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        /* Data display within each container */
+        .user-data-display {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* More space between items */
+        }
+        
+        .data-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .data-label {
+            font-weight: 800;
+            color: #333;
+            min-width: 120px; /* Wider labels */
+            margin-right: 20px;
+            font-size: 16px;
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        .data-value {
+            flex: 1;
+            font-weight: 600;
+            color: #555;
+            font-size: 16px;
+            word-break: break-word;
+            padding: 5px 0;
+        }
+        
+        /* Status display */
+        .status-display {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 800;
+            min-width: 120px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        
+        .status-display.active {
+            background: #d4edda;
+            color: #155724;
+            box-shadow: 0 2px 8px rgba(21, 87, 36, 0.2);
+        }
+        
+        .status-display.inactive {
+            background: #f8d7da;
+            color: #721c24;
+            box-shadow: 0 2px 8px rgba(114, 28, 36, 0.2);
+        }
+        
+        .status-display.suspended {
+            background: #6c757d;
+            color: white;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2);
+        }
+        
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            transition: all 0.3s;
+            min-width: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .view-btn {
+            background: #00d4ff;
+            color: white;
+        }
+        
+        .view-btn:hover {
+            background: #00b8e6;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+        
+        .history-btn {
+            background: #6f42c1;
+            color: white;
+        }
+        
+        .history-btn:hover {
+            background: #5a32a3;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
+        }
+        
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .containers-wrapper {
+                width: 100%;
+                flex-direction: column;
+                gap: 20px;
+                padding: 0 10px;
+            }
+            
+            .info-container, .status-container {
+                width: 100%;
+                min-width: 100%;
+                padding: 25px 20px;
+                margin-bottom: 0;
+                border-radius: 12px;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+                border: 2px solid #00d4ff;
+            }
+            
+            .status-container {
+                border: 2px solid #6f42c1;
+            }
+            
+            .container-header, .status-header {
+                margin: -25px -20px 25px -20px;
+                padding: 20px;
+                font-size: 20px;
+            }
+            
+            .data-item {
+                flex-direction: column;
+                gap: 8px;
+                margin-bottom: 25px;
+                width: 100%;
+                padding: 0 10px;
+            }
+            
+            .data-label {
+                min-width: 100%;
+                margin-right: 0;
+                text-align: center;
+                font-size: 16px;
+                background: rgba(0, 212, 255, 0.1);
+                padding: 12px 15px;
+                border-radius: 8px;
+                border-left: 4px solid #00d4ff;
+                margin-bottom: 8px;
+            }
+            
+            .status-container .data-label {
+                background: rgba(111, 66, 193, 0.1);
+                border-left: 4px solid #6f42c1;
+            }
+            
+            .data-value {
+                width: 100%;
+                text-align: center;
+                font-size: 17px;
+                padding: 12px 15px;
+                background: #f8f9fa;
+                border-radius: 8px;
+                border: 1px solid #e0e0e0;
+            }
+            
+            /* Special styling for status */
+            .data-item:nth-child(2) .data-value {
+                background: transparent;
+                border: none;
+                padding: 0;
+            }
+            
+            .status-display {
+                display: block;
+                width: 100%;
+                max-width: 200px;
+                margin: 0 auto;
+                padding: 12px 25px;
+                font-size: 16px;
+            }
+            
+            /* Action buttons - FULL WIDTH */
+            .action-buttons {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+                padding: 0 10px;
+            }
+            
+            .action-buttons button {
+                width: 100%;
+                padding: 16px;
+                font-size: 16px;
+                border-radius: 10px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            }
+            
+            /* Ensure no horizontal scrolling */
+            * {
+                max-width: 100%;
+            }
+        }
+        
+        /* For very small screens (phones) */
+        @media (max-width: 480px) {
+            .containers-wrapper {
+                padding: 0 5px;
+            }
+            
+            .info-container, .status-container {
+                padding: 20px 15px;
+            }
+            
+            .container-header, .status-header {
+                margin: -20px -15px 20px -15px;
+                padding: 15px;
+                font-size: 18px;
+            }
+            
+            .data-item {
+                margin-bottom: 20px;
+                padding: 0 5px;
+            }
+            
+            .data-label {
+                font-size: 15px;
+                padding: 10px 12px;
+            }
+            
+            .data-value {
+                font-size: 16px;
+                padding: 10px 12px;
+            }
+            
+            .status-display {
+                padding: 10px 20px;
+                font-size: 15px;
+            }
+            
+            .action-buttons {
+                gap: 12px;
+                padding: 0 5px;
+            }
+            
+            .action-buttons button {
+                padding: 14px;
+                font-size: 15px;
+            }
+        }
+        
+        /* For extra small screens */
+        @media (max-width: 360px) {
+            .containers-wrapper {
+                padding: 0;
+            }
+            
+            .info-container, .status-container {
+                padding: 15px 10px;
+                border-width: 1px;
+            }
+            
+            .container-header, .status-header {
+                margin: -15px -10px 15px -10px;
+                padding: 12px;
+                font-size: 16px;
+            }
+            
+            .data-label {
+                font-size: 14px;
+                padding: 8px 10px;
+            }
+            
+            .data-value {
+                font-size: 15px;
+                padding: 8px 10px;
+            }
+            
+            .action-buttons button {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
         
         /* Modal Styles - Bigger Fonts */
         .modal {
@@ -698,46 +635,46 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
             flex-direction: column;
         }
         
-/* Action buttons in table */
-.action-buttons {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.action-buttons button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 700;
-    white-space: nowrap;
-    transition: all 0.3s;
-}
-
-.view-btn {
-    background: #00d4ff;
-    color: white;
-}
-
-.view-btn:hover {
-    background: #00b8e6;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 212, 255, 0.3);
-}
-
-.history-btn {
-    background: #6f42c1;
-    color: white;
-}
-
-.history-btn:hover {
-    background: #5a32a3;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(111, 66, 193, 0.3);
-}
+        /* Action buttons in table */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .view-btn {
+            background: #00d4ff;
+            color: white;
+        }
+        
+        .view-btn:hover {
+            background: #00b8e6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 212, 255, 0.3);
+        }
+        
+        .history-btn {
+            background: #6f42c1;
+            color: white;
+        }
+        
+        .history-btn:hover {
+            background: #5a32a3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(111, 66, 193, 0.3);
+        }
         
         /* No users message */
         .no-users {
@@ -893,23 +830,57 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
             </button>
         </div>
         
-<div class="table-container">
-    <table id="usersTable">
-        <thead>
-            <tr>
-                <th>USER INFORMATION</th>
-                <th>ACCOUNT STATUS</th>
-            </tr>
-        </thead>
-        <tbody id="usersList">
-            <tr>
-                <td colspan="2" style="text-align: center; padding: 50px; font-size: 18px; font-weight: 600;">
-                    ⏳ Loading your information...
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+        <!-- NEW: Two Independent Containers -->
+        <div class="containers-wrapper">
+            <!-- USER INFORMATION Container -->
+            <div class="info-container">
+                <div class="container-header">
+                    📋 USER INFORMATION
+                </div>
+                <div class="user-data-display" id="userInfoContent">
+                    <div class="data-item">
+                        <div class="data-label">User ID:</div>
+                        <div class="data-value" id="userIdDisplay">Loading...</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Name:</div>
+                        <div class="data-value" id="userNameDisplay">Loading...</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Email:</div>
+                        <div class="data-value" id="userEmailDisplay">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ACCOUNT STATUS Container -->
+            <div class="status-container">
+                <div class="status-header">
+                    🔐 ACCOUNT STATUS
+                </div>
+                <div class="user-data-display" id="accountStatusContent">
+                    <div class="data-item">
+                        <div class="data-label">Phone:</div>
+                        <div class="data-value" id="userPhoneDisplay">Loading...</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Status:</div>
+                        <div class="data-value">
+                            <span class="status-display" id="userStatusDisplay">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Actions:</div>
+                        <div class="data-value">
+                            <div class="action-buttons">
+                                <button class="view-btn" onclick="viewUserDetails()">📋 VIEW DETAILS</button>
+                                <button class="history-btn" onclick="viewPasswordHistory()">🔑 PASSWORD HISTORY</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- User Details Modal -->
@@ -1264,13 +1235,13 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
             db.collection("users").doc(userUid).get()
                 .then((doc) => {
                     if (!doc.exists) {
-                        document.getElementById('usersList').innerHTML = `
-                            <tr>
-                                <td colspan="6" class="no-users">
-                                    📭 User account not found in database
-                                </td>
-                            </tr>
-                        `;
+                        // Show error in containers
+                        document.getElementById('userIdDisplay').textContent = 'Not found';
+                        document.getElementById('userNameDisplay').textContent = 'Not found';
+                        document.getElementById('userEmailDisplay').textContent = 'Not found';
+                        document.getElementById('userPhoneDisplay').textContent = 'Not found';
+                        document.getElementById('userStatusDisplay').textContent = 'Not found';
+                        document.getElementById('userStatusDisplay').className = 'status-display inactive';
                         return;
                     }
                     
@@ -1288,86 +1259,45 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
                         localStorage.setItem('user_name', fixedUser.name);
                     }
                     
-                    // Render user data in table (single row)
-                    renderUserTable(fixedUser);
+                    // Render user data in containers
+                    renderUserContainers(fixedUser);
                     
                     console.log("User data loaded successfully!");
                 })
                 .catch((error) => {
                     console.error("Error loading user data:", error);
-                    document.getElementById('usersList').innerHTML = `
-                        <tr>
-                            <td colspan="6" style="text-align: center; padding: 50px; color: #dc3545; font-size: 18px; font-weight: 600;">
-                                ❌ Error loading user data: ${error.message}
-                            </td>
-                        </tr>
-                    `;
+                    document.getElementById('userIdDisplay').textContent = 'Error';
+                    document.getElementById('userNameDisplay').textContent = 'Error';
+                    document.getElementById('userEmailDisplay').textContent = 'Error';
+                    document.getElementById('userPhoneDisplay').textContent = 'Error';
+                    document.getElementById('userStatusDisplay').textContent = 'Error';
+                    document.getElementById('userStatusDisplay').className = 'status-display inactive';
                 });
         }
         
-// Render user data in table (two-column layout)
-function renderUserTable(user) {
-    const userName = user.name || 'N/A';
-    const userEmail = user.email || 'N/A';
-    const userPhone = user.phone || 'N/A';
-    const userId = user.userId || 'N/A';
-    const userStatus = user.status || 'inactive';
-    
-    // Show phone as plain digits without formatting
-const formattedPhone = userPhone === 'N/A' ? 'N/A' : 
-    userPhone.toString().replace(/\D/g, '');
-    
-    const html = `
-        <tr>
-            <!-- LEFT COLUMN: MY ACCOUNT -->
-            <td>
-                <div class="user-data-display">
-                    <div class="data-item">
-                        <div class="data-label">User ID:</div>
-                        <div class="data-value">${userId}</div>
-                    </div>
-                    <div class="data-item">
-                        <div class="data-label">Name:</div>
-                        <div class="data-value">${userName}</div>
-                    </div>
-                    <div class="data-item">
-                        <div class="data-label">Email:</div>
-                        <div class="data-value">${userEmail}</div>
-                    </div>
-                </div>
-            </td>
+        // Render user data in two independent containers
+        function renderUserContainers(user) {
+            const userName = user.name || 'N/A';
+            const userEmail = user.email || 'N/A';
+            const userPhone = user.phone || 'N/A';
+            const userId = user.userId || 'N/A';
+            const userStatus = user.status || 'inactive';
             
-            <!-- RIGHT COLUMN: ACCOUNT STATUS -->
-            <td>
-                <div class="user-data-display">
-                    <div class="data-item">
-                        <div class="data-label">Phone:</div>
-                        <div class="data-value">${formattedPhone}</div>
-                    </div>
-                    <div class="data-item">
-                        <div class="data-label">Status:</div>
-                        <div class="data-value">
-                            <span class="status-display ${userStatus}">
-                                ${userStatus.toUpperCase()}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="data-item">
-                        <div class="data-label">Actions:</div>
-                        <div class="data-value">
-                            <div class="action-buttons">
-                                <button class="view-btn" onclick="viewUserDetails()">📋 VIEW DETAILS</button>
-                                <button class="history-btn" onclick="viewPasswordHistory()">🔑 PASSWORD HISTORY</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    `;
-    
-    document.getElementById('usersList').innerHTML = html;
-}
+            // Show phone as plain digits without formatting
+            const formattedPhone = userPhone === 'N/A' ? 'N/A' : 
+                userPhone.toString().replace(/\D/g, '');
+            
+            // Update USER INFORMATION container
+            document.getElementById('userIdDisplay').textContent = userId;
+            document.getElementById('userNameDisplay').textContent = userName;
+            document.getElementById('userEmailDisplay').textContent = userEmail;
+            
+            // Update ACCOUNT STATUS container
+            document.getElementById('userPhoneDisplay').textContent = formattedPhone;
+            const statusElement = document.getElementById('userStatusDisplay');
+            statusElement.textContent = userStatus.toUpperCase();
+            statusElement.className = 'status-display ' + userStatus;
+        }
         
         // View user details
         window.viewUserDetails = function() {
@@ -1676,321 +1606,320 @@ const formattedPhone = userPhone === 'N/A' ? 'N/A' :
             return isValid;
         }
         
-        // Change password - FIXED to update both Firebase Auth AND Firestore
-// Change password - FIXED VERSION
-window.changePassword = function() {
-    if (!validatePassword()) {
-        return;
-    }
-    
-    const currentPassword = document.getElementById('currentPassword').value;
-    const newPassword = document.getElementById('newPassword').value;
-    const userEmail = currentUserEmail;
-    
-    if (!userEmail) {
-        alert("User email not found. Please login again.");
-        return;
-    }
-    
-    const btn = document.getElementById('changePasswordBtn');
-    const originalText = btn.textContent;
-    btn.textContent = "CHANGING PASSWORD...";
-    btn.disabled = true;
-    
-    console.log("Starting password change for:", userEmail);
-    
-    // Step 1: Authenticate with current password
-    auth.signInWithEmailAndPassword(userEmail, currentPassword)
-        .then((userCredential) => {
-            console.log("✅ Authentication successful");
-            const user = userCredential.user;
+        // Change password - FIXED VERSION
+        window.changePassword = function() {
+            if (!validatePassword()) {
+                return;
+            }
             
-            // Step 2: Update password in Firebase Authentication
-            return user.updatePassword(newPassword)
-                .then(() => {
-                    console.log("✅ Password updated in Firebase Auth");
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const userEmail = currentUserEmail;
+            
+            if (!userEmail) {
+                alert("User email not found. Please login again.");
+                return;
+            }
+            
+            const btn = document.getElementById('changePasswordBtn');
+            const originalText = btn.textContent;
+            btn.textContent = "CHANGING PASSWORD...";
+            btn.disabled = true;
+            
+            console.log("Starting password change for:", userEmail);
+            
+            // Step 1: Authenticate with current password
+            auth.signInWithEmailAndPassword(userEmail, currentPassword)
+                .then((userCredential) => {
+                    console.log("✅ Authentication successful");
+                    const user = userCredential.user;
                     
-                    // Step 3: Update password in Firestore - SIMPLE UPDATE
-                    const updates = {
-                        password: newPassword,
-                        updatedAt: new Date().toISOString(),
-                        lastPasswordChange: new Date().toISOString()
-                    };
-                    
-                    // Try simple update first
-                    return db.collection("users").doc(user.uid).update(updates)
+                    // Step 2: Update password in Firebase Authentication
+                    return user.updatePassword(newPassword)
                         .then(() => {
-                            console.log("✅ Password updated in Firestore (root level)");
+                            console.log("✅ Password updated in Firebase Auth");
                             
-                            // Step 4: Also update in personalInfo if structure requires it
-                            // Try updating personalInfo.password as well
-                            const personalInfoUpdate = {
-                                "personalInfo.password": newPassword
+                            // Step 3: Update password in Firestore - SIMPLE UPDATE
+                            const updates = {
+                                password: newPassword,
+                                updatedAt: new Date().toISOString(),
+                                lastPasswordChange: new Date().toISOString()
                             };
                             
-                            return db.collection("users").doc(user.uid).update(personalInfoUpdate)
-                                .catch(error => {
-                                    console.log("ℹ️ personalInfo.password not updated (might not exist in structure)");
-                                    // It's okay if this fails
+                            // Try simple update first
+                            return db.collection("users").doc(user.uid).update(updates)
+                                .then(() => {
+                                    console.log("✅ Password updated in Firestore (root level)");
+                                    
+                                    // Step 4: Also update in personalInfo if structure requires it
+                                    // Try updating personalInfo.password as well
+                                    const personalInfoUpdate = {
+                                        "personalInfo.password": newPassword
+                                    };
+                                    
+                                    return db.collection("users").doc(user.uid).update(personalInfoUpdate)
+                                        .catch(error => {
+                                            console.log("ℹ️ personalInfo.password not updated (might not exist in structure)");
+                                            // It's okay if this fails
+                                        });
+                                })
+                                .then(() => {
+                                    // Step 5: Log the password change
+                                    const logData = {
+                                        userId: user.uid,
+                                        userEmail: userEmail,
+                                        timestamp: new Date().toISOString(),
+                                        action: "password_change",
+                                        note: "Password changed by user"
+                                    };
+                                    
+                                    return db.collection("users").doc(user.uid).collection("passwordHistory").add(logData);
+                                })
+                                .then(() => {
+                                    console.log("✅ Password change logged");
+                                    
+                                    // SUCCESS
+                                    alert("✅ PASSWORD CHANGED SUCCESSFULLY!\n\nYou can now login with your new password.\n\nLogging out in 3 seconds...");
+                                    
+                                    closePasswordModal();
+                                    
+                                    // Logout after delay
+                                    setTimeout(() => {
+                                        logout();
+                                    }, 3000);
                                 });
-                        })
-                        .then(() => {
-                            // Step 5: Log the password change
-                            const logData = {
-                                userId: user.uid,
-                                userEmail: userEmail,
-                                timestamp: new Date().toISOString(),
-                                action: "password_change",
-                                note: "Password changed by user"
-                            };
-                            
-                            return db.collection("users").doc(user.uid).collection("passwordHistory").add(logData);
-                        })
-                        .then(() => {
-                            console.log("✅ Password change logged");
-                            
-                            // SUCCESS
-                            alert("✅ PASSWORD CHANGED SUCCESSFULLY!\n\nYou can now login with your new password.\n\nLogging out in 3 seconds...");
-                            
-                            closePasswordModal();
-                            
-                            // Logout after delay
-                            setTimeout(() => {
-                                logout();
-                            }, 3000);
                         });
+                })
+                .catch((error) => {
+                    console.error("Password change error:", error);
+                    
+                    let errorMsg = "";
+                    
+                    if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-login-credentials') {
+                        errorMsg = "❌ CURRENT PASSWORD IS INCORRECT\n\nPlease enter your correct current password.";
+                    } else if (error.code === 'permission-denied') {
+                        errorMsg = "❌ PERMISSION DENIED\n\nFirestore security rules are blocking the update.\nPlease contact administrator.";
+                    } else if (error.code === 'auth/weak-password') {
+                        errorMsg = "❌ PASSWORD TOO WEAK\n\nPassword must be at least 6 characters.";
+                    } else {
+                        errorMsg = "❌ ERROR: " + (error.message || "Failed to change password");
+                    }
+                    
+                    alert(errorMsg);
+                    btn.textContent = originalText;
+                    btn.disabled = false;
                 });
-        })
-        .catch((error) => {
-            console.error("Password change error:", error);
+        };
+        
+        // Generate PDF for current user - WITHOUT FOOTER
+        window.generatePDF = function() {
+            if (!currentUserData) return;
             
-            let errorMsg = "";
+            const originalText = event.target.textContent;
+            event.target.textContent = "CREATING PDF...";
+            event.target.disabled = true;
             
-            if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-login-credentials') {
-                errorMsg = "❌ CURRENT PASSWORD IS INCORRECT\n\nPlease enter your correct current password.";
-            } else if (error.code === 'permission-denied') {
-                errorMsg = "❌ PERMISSION DENIED\n\nFirestore security rules are blocking the update.\nPlease contact administrator.";
-            } else if (error.code === 'auth/weak-password') {
-                errorMsg = "❌ PASSWORD TOO WEAK\n\nPassword must be at least 6 characters.";
-            } else {
-                errorMsg = "❌ ERROR: " + (error.message || "Failed to change password");
-            }
-            
-            alert(errorMsg);
-            btn.textContent = originalText;
-            btn.disabled = false;
-        });
-};
-        
-// Generate PDF for current user - WITHOUT FOOTER
-window.generatePDF = function() {
-    if (!currentUserData) return;
-    
-    const originalText = event.target.textContent;
-    event.target.textContent = "CREATING PDF...";
-    event.target.disabled = true;
-    
-    try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        const leftMargin = 20;
-        const rightMargin = 20;
-        const topMargin = 20;
-        const pageWidth = doc.internal.pageSize.width;
-        const pageHeight = doc.internal.pageSize.height;
-        const centerX = pageWidth / 2;
-        
-        // HEADER
-        doc.setFontSize(18);
-        doc.setTextColor(0, 212, 255);
-        doc.text('ODELYA CLOUD STORAGE', centerX, topMargin, { align: 'center' });
-        
-        doc.setFontSize(16);
-        doc.setTextColor(0, 0, 0);
-        doc.text('MY ACCOUNT DETAILS', centerX, topMargin + 10, { align: 'center' });
-        
-        doc.setFontSize(10);
-        doc.setTextColor(100, 100, 100);
-        const generatedDateTime = formatDateTimeForPDFHeader(new Date());
-        doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 18, { align: 'center' });
-        
-        doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 26, { align: 'center' });
-        
-        let y = topMargin + 45;
-        
-        doc.setDrawColor(200, 200, 200);
-        doc.line(leftMargin, y, pageWidth - rightMargin, y);
-        y += 12;
-        
-        // SECTION 1: PERSONAL INFORMATION
-        doc.setFontSize(14);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(0, 212, 255);
-        doc.text('PERSONAL INFORMATION', leftMargin, y);
-        y += 10;
-        
-        doc.setFontSize(11);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(0, 0, 0);
-        
-        const userType = currentUserData.userType || 'personal';
-        let personalData = [];
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                const leftMargin = 20;
+                const rightMargin = 20;
+                const topMargin = 20;
+                const pageWidth = doc.internal.pageSize.width;
+                const pageHeight = doc.internal.pageSize.height;
+                const centerX = pageWidth / 2;
+                
+                // HEADER
+                doc.setFontSize(18);
+                doc.setTextColor(0, 212, 255);
+                doc.text('ODELYA CLOUD STORAGE', centerX, topMargin, { align: 'center' });
+                
+                doc.setFontSize(16);
+                doc.setTextColor(0, 0, 0);
+                doc.text('MY ACCOUNT DETAILS', centerX, topMargin + 10, { align: 'center' });
+                
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                const generatedDateTime = formatDateTimeForPDFHeader(new Date());
+                doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 18, { align: 'center' });
+                
+                doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 26, { align: 'center' });
+                
+                let y = topMargin + 45;
+                
+                doc.setDrawColor(200, 200, 200);
+                doc.line(leftMargin, y, pageWidth - rightMargin, y);
+                y += 12;
+                
+                // SECTION 1: PERSONAL INFORMATION
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(0, 212, 255);
+                doc.text('PERSONAL INFORMATION', leftMargin, y);
+                y += 10;
+                
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(0, 0, 0);
+                
+                const userType = currentUserData.userType || 'personal';
+                let personalData = [];
 
-        if (userType === 'personal') {
-            personalData = [
-                {label: 'User Type', value: 'Personal'},
-                {label: 'Name', value: currentUserData.name || 'N/A'},
-                {label: 'Email', value: currentUserData.email || 'N/A'},
-                {label: 'Phone', value: currentUserData.phone || 'N/A'},
-                {label: 'Date of Birth', value: currentUserData.dob || 'N/A'},
-                {label: 'Gender', value: currentUserData.gender || 'N/A'},
-                {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
-                {label: 'PAN', value: currentUserData.pan || 'N/A'},
-                {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
-                {label: 'Username', value: currentUserData.username || 'N/A'}
-            ];
-        } else if (userType === 'business') {
-            personalData = [
-                {label: 'User Type', value: 'Business'},
-                {label: 'Business Name', value: currentUserData.name || 'N/A'},
-                {label: 'Email', value: currentUserData.email || 'N/A'},
-                {label: 'Phone', value: currentUserData.phone || 'N/A'},
-                {label: 'Date of Incorp.', value: currentUserData.doi || 'N/A'},
-                {label: 'Pincode', value: currentUserData.pincode || 'N/A'},
-                {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
-                {label: 'PAN', value: currentUserData.pan || 'N/A'},
-                {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
-                {label: 'Username', value: currentUserData.username || 'N/A'}
-            ];
-        }
-        
-        doc.setFont('helvetica', 'bold');
-        let maxLabelWidth = 0;
-        personalData.forEach(item => {
-            const width = doc.getTextWidth(item.label + ': ');
-            if (width > maxLabelWidth) maxLabelWidth = width;
-        });
-        
-        const valueStartX = leftMargin + maxLabelWidth + 2;
-        
-        personalData.forEach(item => {
-            doc.setFont('helvetica', 'bold');
-            doc.text(item.label + ':', leftMargin, y);
-            
-            doc.setFont('helvetica', 'normal');
-            let displayValue = item.value;
-            
-            if (displayValue.length > 30 && item.label !== 'Email') {
-                displayValue = displayValue.substring(0, 30) + '...';
+                if (userType === 'personal') {
+                    personalData = [
+                        {label: 'User Type', value: 'Personal'},
+                        {label: 'Name', value: currentUserData.name || 'N/A'},
+                        {label: 'Email', value: currentUserData.email || 'N/A'},
+                        {label: 'Phone', value: currentUserData.phone || 'N/A'},
+                        {label: 'Date of Birth', value: currentUserData.dob || 'N/A'},
+                        {label: 'Gender', value: currentUserData.gender || 'N/A'},
+                        {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
+                        {label: 'PAN', value: currentUserData.pan || 'N/A'},
+                        {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
+                        {label: 'Username', value: currentUserData.username || 'N/A'}
+                    ];
+                } else if (userType === 'business') {
+                    personalData = [
+                        {label: 'User Type', value: 'Business'},
+                        {label: 'Business Name', value: currentUserData.name || 'N/A'},
+                        {label: 'Email', value: currentUserData.email || 'N/A'},
+                        {label: 'Phone', value: currentUserData.phone || 'N/A'},
+                        {label: 'Date of Incorp.', value: currentUserData.doi || 'N/A'},
+                        {label: 'Pincode', value: currentUserData.pincode || 'N/A'},
+                        {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
+                        {label: 'PAN', value: currentUserData.pan || 'N/A'},
+                        {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
+                        {label: 'Username', value: currentUserData.username || 'N/A'}
+                    ];
+                }
+                
+                doc.setFont('helvetica', 'bold');
+                let maxLabelWidth = 0;
+                personalData.forEach(item => {
+                    const width = doc.getTextWidth(item.label + ': ');
+                    if (width > maxLabelWidth) maxLabelWidth = width;
+                });
+                
+                const valueStartX = leftMargin + maxLabelWidth + 2;
+                
+                personalData.forEach(item => {
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(item.label + ':', leftMargin, y);
+                    
+                    doc.setFont('helvetica', 'normal');
+                    let displayValue = item.value;
+                    
+                    if (displayValue.length > 30 && item.label !== 'Email') {
+                        displayValue = displayValue.substring(0, 30) + '...';
+                    }
+                    
+                    doc.text(displayValue, valueStartX, y);
+                    y += 7;
+                });
+                
+                y += 5;
+                
+                doc.setDrawColor(200, 200, 200);
+                doc.line(leftMargin, y, pageWidth - rightMargin, y);
+                y += 12;
+                
+                // SECTION 2: ACCOUNT & PLAN DETAILS
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(0, 212, 255);
+                doc.text('ACCOUNT & PLAN DETAILS', leftMargin, y);
+                y += 10;
+                
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(0, 0, 0);
+                
+                const accountData = [
+                    {label: 'Status', value: (currentUserData.status || 'inactive').toUpperCase()},
+                    {label: 'Plan Name', value: currentUserData.planName || 'N/A'},
+                    {label: 'Plan Size', value: currentUserData.planSize || 'N/A'},
+                    {label: 'Plan Type', value: currentUserData.planType || 'N/A'},
+                    {label: 'Plan Start Date', value: currentUserData.planStartDate || 'N/A'},
+                    {label: 'Plan End Date', value: currentUserData.planEndDate || 'N/A'},
+                    {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
+                    {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'},
+                    {label: 'Registered On', value: currentUserData.accountCreated ? formatDateTime(currentUserData.accountCreated) : 'N/A'},
+                    
+                ];
+                
+                doc.setFont('helvetica', 'bold');
+                maxLabelWidth = 0;
+                accountData.forEach(item => {
+                    const width = doc.getTextWidth(item.label + ': ');
+                    if (width > maxLabelWidth) maxLabelWidth = width;
+                });
+                
+                const accValueStartX = leftMargin + maxLabelWidth + 2;
+                
+                accountData.forEach(item => {
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(item.label + ':', leftMargin, y);
+                    
+                    doc.setFont('helvetica', 'normal');
+                    let displayValue = item.value;
+                    
+                    if (displayValue.length > 30) {
+                        displayValue = displayValue.substring(0, 30) + '...';
+                    }
+                    
+                    doc.text(displayValue, accValueStartX, y);
+                    y += 7;
+                });
+                
+                y += 5;
+                
+                doc.setDrawColor(200, 200, 200);
+                doc.line(leftMargin, y, pageWidth - rightMargin, y);
+                y += 12;
+                
+                // AGREEMENT SECTION - WITHOUT FOOTER
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text('AGREEMENT', leftMargin, y);
+                y += 6;
+                
+                doc.setFont('helvetica', 'normal');
+                
+                const line1 = 'I agree to the Terms & Conditions, Privacy Policy,';
+                const line2 = 'Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
+                
+                // Draw tick mark
+                doc.setDrawColor(0, 128, 0);
+                doc.setLineWidth(0.5);
+                const tickX = leftMargin;
+                const tickY = y - 1;
+                
+                doc.line(tickX, tickY + 2, tickX + 1, tickY + 3);
+                doc.line(tickX + 1, tickY + 3, tickX + 3, tickY);
+                
+                doc.setTextColor(0, 0, 0);
+                doc.text(line1, leftMargin + 5, y);
+                y += 5;
+                doc.text(line2, leftMargin, y);
+                
+                // Save PDF - NO FOOTER
+                const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
+                let nameForFile = currentUserData.name || 'user';
+                nameForFile = nameForFile.replace(/\s+/g, '_');
+                const fileName = `${phoneNumber}_${nameForFile}_MyAccount.pdf`;
+                doc.save(fileName);
+                
+                console.log("PDF generated successfully!");
+                
+            } catch (error) {
+                console.error("Error generating PDF:", error);
+                alert("❌ Error generating PDF: " + error.message);
+            } finally {
+                event.target.textContent = originalText;
+                event.target.disabled = false;
             }
-            
-            doc.text(displayValue, valueStartX, y);
-            y += 7;
-        });
-        
-        y += 5;
-        
-        doc.setDrawColor(200, 200, 200);
-        doc.line(leftMargin, y, pageWidth - rightMargin, y);
-        y += 12;
-        
-        // SECTION 2: ACCOUNT & PLAN DETAILS
-        doc.setFontSize(14);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(0, 212, 255);
-        doc.text('ACCOUNT & PLAN DETAILS', leftMargin, y);
-        y += 10;
-        
-        doc.setFontSize(11);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(0, 0, 0);
-        
-        const accountData = [
-            {label: 'Status', value: (currentUserData.status || 'inactive').toUpperCase()},
-            {label: 'Plan Name', value: currentUserData.planName || 'N/A'},
-            {label: 'Plan Size', value: currentUserData.planSize || 'N/A'},
-            {label: 'Plan Type', value: currentUserData.planType || 'N/A'},
-            {label: 'Plan Start Date', value: currentUserData.planStartDate || 'N/A'},
-            {label: 'Plan End Date', value: currentUserData.planEndDate || 'N/A'},
-            {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
-            {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'},
-            {label: 'Registered On', value: currentUserData.accountCreated ? formatDateTime(currentUserData.accountCreated) : 'N/A'},
-            
-        ];
-        
-        doc.setFont('helvetica', 'bold');
-        maxLabelWidth = 0;
-        accountData.forEach(item => {
-            const width = doc.getTextWidth(item.label + ': ');
-            if (width > maxLabelWidth) maxLabelWidth = width;
-        });
-        
-        const accValueStartX = leftMargin + maxLabelWidth + 2;
-        
-        accountData.forEach(item => {
-            doc.setFont('helvetica', 'bold');
-            doc.text(item.label + ':', leftMargin, y);
-            
-            doc.setFont('helvetica', 'normal');
-            let displayValue = item.value;
-            
-            if (displayValue.length > 30) {
-                displayValue = displayValue.substring(0, 30) + '...';
-            }
-            
-            doc.text(displayValue, accValueStartX, y);
-            y += 7;
-        });
-        
-        y += 5;
-        
-        doc.setDrawColor(200, 200, 200);
-        doc.line(leftMargin, y, pageWidth - rightMargin, y);
-        y += 12;
-        
-        // AGREEMENT SECTION - WITHOUT FOOTER
-        doc.setFontSize(10);
-        doc.setFont('helvetica', 'bold');
-        doc.text('AGREEMENT', leftMargin, y);
-        y += 6;
-        
-        doc.setFont('helvetica', 'normal');
-        
-        const line1 = 'I agree to the Terms & Conditions, Privacy Policy,';
-        const line2 = 'Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
-        
-        // Draw tick mark
-        doc.setDrawColor(0, 128, 0);
-        doc.setLineWidth(0.5);
-        const tickX = leftMargin;
-        const tickY = y - 1;
-        
-        doc.line(tickX, tickY + 2, tickX + 1, tickY + 3);
-        doc.line(tickX + 1, tickY + 3, tickX + 3, tickY);
-        
-        doc.setTextColor(0, 0, 0);
-        doc.text(line1, leftMargin + 5, y);
-        y += 5;
-        doc.text(line2, leftMargin, y);
-        
-        // Save PDF - NO FOOTER
-        const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
-        let nameForFile = currentUserData.name || 'user';
-        nameForFile = nameForFile.replace(/\s+/g, '_');
-        const fileName = `${phoneNumber}_${nameForFile}_MyAccount.pdf`;
-        doc.save(fileName);
-        
-        console.log("PDF generated successfully!");
-        
-    } catch (error) {
-        console.error("Error generating PDF:", error);
-        alert("❌ Error generating PDF: " + error.message);
-    } finally {
-        event.target.textContent = originalText;
-        event.target.disabled = false;
-    }
-};
+        };
     </script>
 </body>
 </html>
