@@ -254,7 +254,7 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
     box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
 }
 
-/* ========== MOBILE RESPONSIVE - COMPLETE FIX ========== */
+/* ========== MOBILE RESPONSIVE - SIMPLER FIX ========== */
 @media (max-width: 768px) {
     .container {
         padding: 0 10px;
@@ -263,70 +263,82 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
     .table-container {
         width: 100%;
         overflow-x: hidden;
-        padding: 0;
     }
     
-    /* COMPLETE TABLE RESET FOR MOBILE */
+    /* Transform table into cards */
     table {
-        display: flex !important;
-        flex-direction: column !important;
-        width: 100% !important;
-        min-width: auto !important;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15);
-        background: white;
-        border: 2px solid #00d4ff;
+        display: block;
+        width: 100%;
+        background: transparent;
+        box-shadow: none;
+        border: none;
     }
     
     thead {
-        display: none !important;
+        display: none;
     }
     
     tbody {
-        display: flex !important;
-        flex-direction: column !important;
-        width: 100% !important;
+        display: block;
     }
     
     tr {
-        display: flex !important;
-        flex-direction: column !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: none !important;
-        box-shadow: none !important;
+        display: block;
+        margin-bottom: 30px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.15);
+        border: 2px solid #00d4ff;
+        overflow: hidden;
     }
     
-    /* FIRST TD - MY ACCOUNT SECTION */
+    /* Stack table cells vertically */
+    td {
+        display: block;
+        width: 100% !important;
+        padding: 0 !important;
+        border: none !important;
+        border-bottom: 2px solid #00d4ff;
+    }
+    
+    /* Remove right border from first cell */
     td:nth-child(1) {
-        display: block !important;
-        width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        border: none !important;
-        border-bottom: 2px solid #00d4ff !important;
-        background: linear-gradient(to right, #f8fdff, #ffffff);
+        border-right: none;
     }
     
-    /* SECOND TD - ACCOUNT STATUS SECTION */
-    td:nth-child(2) {
-        display: block !important;
-        width: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        border: none !important;
-        background: linear-gradient(to right, #ffffff, #f8fdff);
+    /* Last cell shouldn't have bottom border */
+    td:last-child {
+        border-bottom: none;
     }
     
-    /* MOBILE SECTION HEADERS */
+    /* Hide desktop content on mobile */
+    .user-data-display,
+    .data-item,
+    .data-label,
+    .data-value,
+    .action-buttons,
+    .view-btn,
+    .history-btn {
+        display: none !important;
+    }
+    
+    /* Show mobile content */
+    .mobile-section-header,
+    .mobile-content,
+    .mobile-data-item,
+    .mobile-data-label,
+    .mobile-data-value,
+    .mobile-action-buttons,
+    .mobile-view-btn,
+    .mobile-history-btn {
+        display: block !important;
+    }
+    
+    /* Mobile section headers */
     .mobile-section-header {
-        display: block !important;
         font-size: 20px !important;
         font-weight: 800 !important;
         text-align: center !important;
-        letter-spacing: 0.5px !important;
         padding: 20px !important;
         margin: 0 !important;
         width: 100% !important;
@@ -342,20 +354,14 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
         color: white !important;
     }
     
-    /* MOBILE CONTENT WRAPPER */
+    /* Mobile content wrapper */
     .mobile-content {
-        display: block !important;
-        width: 100% !important;
         padding: 25px 20px !important;
     }
     
-    /* MOBILE DATA ITEMS */
+    /* Mobile data items */
     .mobile-data-item {
-        display: flex !important;
-        flex-direction: column !important;
-        width: 100% !important;
         margin-bottom: 25px !important;
-        padding: 0 !important;
     }
     
     .mobile-data-label {
@@ -368,7 +374,6 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
         border-left: 4px solid #00d4ff !important;
         margin-bottom: 8px !important;
         text-align: center !important;
-        width: 100% !important;
     }
     
     .mobile-data-value {
@@ -380,11 +385,10 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
         border-radius: 8px !important;
         border: 1px solid #e0e0e0 !important;
         text-align: center !important;
-        width: 100% !important;
         word-break: break-word !important;
     }
     
-    /* STATUS DISPLAY IN MOBILE */
+    /* Status display */
     .status-display {
         display: block !important;
         width: 100% !important;
@@ -392,18 +396,13 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
         margin: 0 auto !important;
         padding: 12px 25px !important;
         font-size: 16px !important;
-        background: transparent !important;
-        border: none !important;
-        text-align: center !important;
     }
     
-    /* ACTION BUTTONS IN MOBILE */
+    /* Mobile action buttons */
     .mobile-action-buttons {
         display: flex !important;
         flex-direction: column !important;
         gap: 15px !important;
-        width: 100% !important;
-        padding: 0 !important;
         margin-top: 20px !important;
     }
     
@@ -430,15 +429,6 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
     .mobile-history-btn {
         background: #6f42c1 !important;
         color: white !important;
-    }
-    
-    /* HIDE ALL DESKTOP ELEMENTS */
-    .user-data-display,
-    .data-item,
-    .data-label,
-    .data-value,
-    .action-buttons {
-        display: none !important;
     }
 }
 
@@ -477,7 +467,6 @@ th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
         font-size: 15px !important;
     }
 }
-
 /* Remove all the old column width styles (lines 81-106 in your code) */      
         
         /* Modal Styles - Bigger Fonts */
