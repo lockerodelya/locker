@@ -104,8 +104,7 @@
             box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
         }
         
-/* Replace the entire table layout section with this: */
-
+/* Updated Table Layout for Two Vertical Columns */
 .table-container {
     width: 95%;
     margin: 0 auto;
@@ -119,9 +118,9 @@ table {
     border-collapse: collapse;
 }
 
-/* Only TWO columns now: Left Section and Right Section */
+/* TWO columns for desktop */
 th, td {
-    padding: 20px;
+    padding: 25px 30px; /* More padding for better spacing */
     text-align: left;
     border-bottom: 2px solid #e0e0e0;
     vertical-align: top;
@@ -130,43 +129,45 @@ th, td {
 th {
     background: #00d4ff;
     color: white;
-    font-size: 18px;
+    font-size: 20px; /* Slightly bigger */
     font-weight: 800;
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    text-align: center;
 }
 
-/* TWO COLUMNS ONLY */
-th:nth-child(1), td:nth-child(1) { /* LEFT SECTION */
+/* TWO COLUMNS ONLY - Desktop layout */
+th:nth-child(1), td:nth-child(1) { /* MY ACCOUNT */
     width: 50%;
-    border-right: 2px solid #e0e0e0;
+    border-right: 3px solid #e0e0e0; /* Thicker divider */
 }
 
-th:nth-child(2), td:nth-child(2) { /* RIGHT SECTION */
+th:nth-child(2), td:nth-child(2) { /* ACCOUNT STATUS */
     width: 50%;
 }
-
-/* Remove all other column styles (th:nth-child(3) through th:nth-child(6)) */
 
 /* Data display within each cell */
 .user-data-display {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px; /* More space between items */
 }
 
 .data-item {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
 }
 
 .data-label {
     font-weight: 800;
     color: #333;
-    min-width: 100px;
-    margin-right: 15px;
+    min-width: 120px; /* Wider labels */
+    margin-right: 20px;
     font-size: 16px;
+    background: #f8f9fa;
+    padding: 5px 10px;
+    border-radius: 5px;
 }
 
 .data-value {
@@ -175,16 +176,17 @@ th:nth-child(2), td:nth-child(2) { /* RIGHT SECTION */
     color: #555;
     font-size: 16px;
     word-break: break-word;
+    padding: 5px 0;
 }
 
-/* Status display in right section */
+/* Status display */
 .status-display {
     display: inline-block;
-    padding: 8px 16px;
+    padding: 10px 20px;
     border-radius: 25px;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 800;
-    min-width: 100px;
+    min-width: 120px;
     text-align: center;
     text-transform: uppercase;
 }
@@ -192,38 +194,42 @@ th:nth-child(2), td:nth-child(2) { /* RIGHT SECTION */
 .status-display.active {
     background: #d4edda;
     color: #155724;
-    box-shadow: 0 2px 5px rgba(21, 87, 36, 0.2);
+    box-shadow: 0 2px 8px rgba(21, 87, 36, 0.2);
 }
 
 .status-display.inactive {
     background: #f8d7da;
     color: #721c24;
-    box-shadow: 0 2px 5px rgba(114, 28, 36, 0.2);
+    box-shadow: 0 2px 8px rgba(114, 28, 36, 0.2);
 }
 
 .status-display.suspended {
     background: #6c757d;
     color: white;
-    box-shadow: 0 2px 5px rgba(108, 117, 125, 0.2);
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2);
 }
 
-/* Action buttons in right section */
+/* Action buttons */
 .action-buttons {
     display: flex;
-    gap: 10px;
-    margin-top: 15px;
+    gap: 15px;
+    margin-top: 20px;
     flex-wrap: wrap;
 }
 
 .action-buttons button {
-    padding: 10px 20px;
+    padding: 12px 25px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
     transition: all 0.3s;
-    min-width: 140px;
+    min-width: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .view-btn {
@@ -233,8 +239,8 @@ th:nth-child(2), td:nth-child(2) { /* RIGHT SECTION */
 
 .view-btn:hover {
     background: #00b8e6;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 212, 255, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
 }
 
 .history-btn {
@@ -244,41 +250,144 @@ th:nth-child(2), td:nth-child(2) { /* RIGHT SECTION */
 
 .history-btn:hover {
     background: #5a32a3;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(111, 66, 193, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
 }
 
-/* Responsive for mobile */
+/* ========== MOBILE RESPONSIVE ========== */
 @media (max-width: 768px) {
     .table-container {
         width: 100%;
-        overflow-x: auto;
+        overflow-x: hidden; /* No horizontal scroll */
     }
     
     table {
-        min-width: 600px;
+        display: block;
+        min-width: auto;
     }
     
-    th, td {
-        padding: 15px;
+    thead {
+        display: none; /* Hide table headers on mobile */
+    }
+    
+    tbody, tr, td {
+        display: block;
+        width: 100%;
+    }
+    
+    tr {
+        margin-bottom: 30px;
+        border: 2px solid #00d4ff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    td {
+        padding: 25px 20px;
+        border: none;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    /* Remove right border on mobile */
+    td:nth-child(1) {
+        border-right: none;
+        border-bottom: 2px solid #00d4ff;
+    }
+    
+    td:nth-child(2) {
+        border-bottom: none;
+    }
+    
+    /* Add mobile section headers */
+    td:nth-child(1)::before {
+        content: "MY ACCOUNT";
+        display: block;
+        font-size: 18px;
+        font-weight: 800;
+        color: #00d4ff;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e0e0e0;
+        text-align: center;
+    }
+    
+    td:nth-child(2)::before {
+        content: "ACCOUNT STATUS";
+        display: block;
+        font-size: 18px;
+        font-weight: 800;
+        color: #00d4ff;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e0e0e0;
+        text-align: center;
     }
     
     .data-item {
         flex-direction: column;
-        gap: 5px;
+        gap: 8px;
+        margin-bottom: 20px;
     }
     
     .data-label {
         min-width: auto;
         margin-right: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 15px;
+    }
+    
+    .data-value {
+        width: 100%;
+        text-align: center;
+        font-size: 16px;
+        padding: 8px 0;
     }
     
     .action-buttons {
         flex-direction: column;
+        gap: 12px;
     }
     
     .action-buttons button {
         width: 100%;
+        padding: 15px;
+        font-size: 16px;
+    }
+    
+    .status-display {
+        display: block;
+        margin: 0 auto;
+        padding: 12px 25px;
+        font-size: 16px;
+    }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+    td {
+        padding: 20px 15px;
+    }
+    
+    .data-label {
+        font-size: 14px;
+        padding: 8px;
+    }
+    
+    .data-value {
+        font-size: 15px;
+    }
+    
+    .action-buttons button {
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+    
+    td:nth-child(1)::before,
+    td:nth-child(2)::before {
+        font-size: 16px;
+        margin-bottom: 15px;
     }
 }
 
@@ -669,8 +778,8 @@ th:nth-child(2), td:nth-child(2) { /* RIGHT SECTION */
     <table id="usersTable">
         <thead>
             <tr>
-                <th>ACCOUNT INFORMATION</th>
-                <th>ACCOUNT STATUS & ACTIONS</th>
+                <th>USER INFORMATION</th>
+                <th>ACCOUNT STATUS</th>
             </tr>
         </thead>
         <tbody id="usersList">
@@ -1087,7 +1196,7 @@ function renderUserTable(user) {
     
     const html = `
         <tr>
-            <!-- LEFT COLUMN -->
+            <!-- LEFT COLUMN: MY ACCOUNT -->
             <td>
                 <div class="user-data-display">
                     <div class="data-item">
@@ -1105,7 +1214,7 @@ function renderUserTable(user) {
                 </div>
             </td>
             
-            <!-- RIGHT COLUMN -->
+            <!-- RIGHT COLUMN: ACCOUNT STATUS -->
             <td>
                 <div class="user-data-display">
                     <div class="data-item">
@@ -1124,8 +1233,8 @@ function renderUserTable(user) {
                         <div class="data-label">Actions:</div>
                         <div class="data-value">
                             <div class="action-buttons">
-                                <button class="view-btn" onclick="viewUserDetails()">VIEW DETAILS</button>
-                                <button class="history-btn" onclick="viewPasswordHistory()">🔑 HISTORY</button>
+                                <button class="view-btn" onclick="viewUserDetails()">📋 VIEW DETAILS</button>
+                                <button class="history-btn" onclick="viewPasswordHistory()">🔑 PASSWORD HISTORY</button>
                             </div>
                         </div>
                     </div>
