@@ -1313,9 +1313,9 @@ function renderUserTable(user) {
     const userId = user.userId || 'N/A';
     const userStatus = user.status || 'inactive';
     
-    // Format phone for better display
-    const formattedPhone = userPhone === 'N/A' ? 'N/A' : 
-        userPhone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+    // Show phone as plain digits without formatting
+const formattedPhone = userPhone === 'N/A' ? 'N/A' : 
+    userPhone.toString().replace(/\D/g, '');
     
     const html = `
         <tr>
