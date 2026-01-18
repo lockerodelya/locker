@@ -657,82 +657,82 @@
             window.location.href = 'user-details.html';
         }
         
-        // Load user details information from previous page
-        function loadUserDetailsInformation() {
-            const userDetailsGrid = document.getElementById('userDetailsInfoGrid');
-            const userDetailsContainer = document.getElementById('userDetailsInfoContainer');
+// Load user details information from previous page
+function loadUserDetailsInformation() {
+    const userDetailsGrid = document.getElementById('userDetailsInfoGrid');
+    const userDetailsContainer = document.getElementById('userDetailsInfoContainer');
+    
+    // Try to get user data from sessionStorage (from user-details.html)
+    const userData = sessionStorage.getItem('odelya_userDetails');
+    
+    if (userData) {
+        try {
+            const user = JSON.parse(userData);
+            userDetailsData = user; // Store for Firebase
             
-            // Try to get user data from sessionStorage (from user-details.html)
-            const userData = sessionStorage.getItem('odelya_userDetails');
+            // Clear existing content
+            userDetailsGrid.innerHTML = '';
             
-            if (userData) {
-                try {
-                    const user = JSON.parse(userData);
-                    userDetailsData = user; // Store for Firebase
-                    
-                    // Clear existing content
-                    userDetailsGrid.innerHTML = '';
-                    
-                    // Create user information items based on user type
-                    let userFields = [];
-                    
-                    if (user.userType === 'personal') {
-                        userFields = [
-                            { label: 'User Type', value: 'Personal', key: 'userType' },
-                            { label: 'User ID', value: user.userId || 'N/A', key: 'userId' },
-                            { label: 'Name', value: user.name || 'N/A', key: 'name' },
-                            { label: 'Email', value: user.email || 'N/A', key: 'email' },
-                            { label: 'Phone', value: user.phone || 'N/A', key: 'phone' },
-                            { label: 'DOB', value: user.dob || 'N/A', key: 'dob' },
-                            { label: 'Gender', value: user.gender ? user.gender.charAt(0).toUpperCase() + user.gender.slice(1) : 'N/A', key: 'gender' },
-                            { label: 'Aadhaar', value: user.aadhaar || 'N/A', key: 'aadhaar' },
-                            { label: 'PAN', value: user.pan || 'N/A', key: 'pan' },
-                            { label: 'GSTIN', value: user.gstin || 'Not Provided', key: 'gstin' }
-                        ];
-                    } else if (user.userType === 'business') {
-                        userFields = [
-                            { label: 'User Type', value: 'Business', key: 'userType' },
-                            { label: 'User ID', value: user.userId || 'N/A', key: 'userId' },
-                            { label: 'Business Name', value: user.name || 'N/A', key: 'name' },
-                            { label: 'Email', value: user.email || 'N/A', key: 'email' },
-                            { label: 'Phone', value: user.phone || 'N/A', key: 'phone' },
-                            { label: 'DOI', value: user.doi || 'N/A', key: 'doi' },
-                            { label: 'Pincode', value: user.pincode || 'N/A', key: 'pincode' },
-                            { label: 'PAN', value: user.pan || 'N/A', key: 'pan' },
-                            { label: 'GSTIN', value: user.gstin || 'Not Provided', key: 'gstin' }
-                        ];
-                        
-                        if (user.aadhaar) {
-                            userFields.splice(8, 0, { label: 'Aadhaar', value: user.aadhaar, key: 'aadhaar' });
-                        }
-                    }
-                    
-                    userFields.forEach(field => {
-                        const item = document.createElement('div');
-                        item.className = 'info-item';
-                        
-                        const displayValue = field.value || 'N/A';
-                        
-                        item.innerHTML = `
-                            <div class="info-label">${field.label}</div>
-                            <div class="info-value">${displayValue}</div>
-                        `;
-                        
-                        userDetailsGrid.appendChild(item);
-                    });
-                    
-                    // Show the container
-                    userDetailsContainer.style.display = 'block';
-                    
-                } catch (error) {
-                    console.error('Error parsing user data:', error);
-                    userDetailsContainer.style.display = 'none';
+            // Create user information items based on user type
+            let userFields = [];
+            
+            if (user.userType === 'personal') {
+                userFields = [
+                    { label: 'User Type', value: 'Personal', key: 'userType' },
+                    { label: 'User ID', value: user.userId || 'N/A', key: 'userId' },
+                    { label: 'Name', value: user.name || 'N/A', key: 'name' },
+                    { label: 'Email', value: user.email || 'N/A', key: 'email' },
+                    { label: 'Phone', value: user.phone || 'N/A', key: 'phone' },
+                    { label: 'DOB', value: user.dob || 'N/A', key: 'dob' },
+                    { label: 'Gender', value: user.gender ? user.gender.charAt(0).toUpperCase() + user.gender.slice(1) : 'N/A', key: 'gender' },
+                    { label: 'Aadhaar', value: user.aadhaar || 'N/A', key: 'aadhaar' },
+                    { label: 'PAN', value: user.pan || 'N/A', key: 'pan' },
+                    { label: 'GSTIN', value: user.gstin || 'Not Provided', key: 'gstin' }
+                ];
+            } else if (user.userType === 'business') {
+                userFields = [
+                    { label: 'User Type', value: 'Business', key: 'userType' },
+                    { label: 'User ID', value: user.userId || 'N/A', key: 'userId' },
+                    { label: 'Business Name', value: user.name || 'N/A', key: 'name' },
+                    { label: 'Email', value: user.email || 'N/A', key: 'email' },
+                    { label: 'Phone', value: user.phone || 'N/A', key: 'phone' },
+                    { label: 'DOI', value: user.doi || 'N/A', key: 'doi' },
+                    { label: 'Pincode', value: user.pincode || 'N/A', key: 'pincode' },
+                    { label: 'PAN', value: user.pan || 'N/A', key: 'pan' },
+                    { label: 'GSTIN', value: user.gstin || 'Not Provided', key: 'gstin' }
+                ];
+                
+                if (user.aadhaar) {
+                    userFields.splice(8, 0, { label: 'Aadhaar', value: user.aadhaar, key: 'aadhaar' });
                 }
-            } else {
-                // Hide container if no user data
-                userDetailsContainer.style.display = 'none';
             }
+            
+            userFields.forEach(field => {
+                const item = document.createElement('div');
+                item.className = 'info-item';
+                
+                const displayValue = field.value || 'N/A';
+                
+                item.innerHTML = `
+                    <div class="info-label">${field.label}</div>
+                    <div class="info-value" style="color: #4361ee !important;">${displayValue}</div>
+                `;
+                
+                userDetailsGrid.appendChild(item);
+            });
+            
+            // Show the container
+            userDetailsContainer.style.display = 'block';
+            
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+            userDetailsContainer.style.display = 'none';
         }
+    } else {
+        // Hide container if no user data
+        userDetailsContainer.style.display = 'none';
+    }
+}
         
         // Load plan information from user-plan.html
         function loadPlanInformation() {
