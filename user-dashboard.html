@@ -1460,11 +1460,26 @@
             
             html += `</div>`;
             
-            // Agreement row
-            html += `<div class="agreement-row">`;
-            html += `<span class="tick-mark">✓</span>`;
-            html += `<span>I acknowledge and agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Management Private Limited.</span>`;
-            html += `</div>`;
+// Replace the existing agreement row code (those 5 lines) with this:
+
+// Terms & Conditions Section
+html += `<div style="grid-column: 1 / -1; margin-top: 25px;">`;
+html += `<div style="background: #1a237e; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px;">`;
+html += `<h3 style="color: white; margin: 0; font-size: 18px; font-weight: 700;">Terms & Conditions</h3>`;
+html += `</div>`;
+html += `<div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 2px solid #ddd;">`;
+html += `<ol style="padding-left: 20px; margin-bottom: 20px; font-size: 15px; color: #333; line-height: 1.5;">`;
+html += `<li style="margin-bottom: 10px;"><strong>I acknowledge and agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Management Private Limited</strong></li>`;
+html += `<li style="margin-bottom: 10px;"><strong>I acknowledge that account activation is contingent upon sharing my transaction details with Odelya Management Private Limited via the designated office WhatsApp number or official business email.</strong></li>`;
+html += `<li style="margin-bottom: 10px;"><strong>I agree that my service will be activated within 48 hours of successful payment verification.</strong></li>`;
+html += `<li style="margin-bottom: 15px;"><strong>I agree that all payments are final and non-refundable under any circumstances.</strong></li>`;
+html += `</ol>`;
+html += `<div style="display: flex; align-items: center; gap: 10px; padding-top: 10px; border-top: 1px solid #ddd;">`;
+html += `<span style="color: #28a745; font-size: 22px;">✓</span>`;
+html += `<span style="font-size: 16px; font-weight: 600; color: #1a237e;">I hereby agree to all the terms and conditions stated above.</span>`;
+html += `</div>`;
+html += `</div>`;
+html += `</div>`;
             
             document.getElementById('userDetails').innerHTML = html;
             
@@ -1954,16 +1969,49 @@ function validatePassword() {
                 doc.line(leftMargin, y, pageWidth - rightMargin, y);
                 y += 12;
                 
-                // AGREEMENT SECTION - WITHOUT FOOTER
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'bold');
-                doc.text('AGREEMENT', leftMargin, y);
-                y += 6;
-                
-                doc.setFont('helvetica', 'normal');
-                
-                const line1 = 'I acknowledge and agree to the Terms & Conditions, Privacy Policy, Data Retention Policy,';
-                const line2 = 'and all other applicable policies of Odelya Management Private Limited.';
+ // Replace the PDF agreement section with:
+
+// TERMS & CONDITIONS SECTION
+doc.setFontSize(12);
+doc.setFont('helvetica', 'bold');
+doc.setTextColor(26, 35, 126); // Deep blue color
+doc.text('TERMS & CONDITIONS', leftMargin, y);
+y += 8;
+
+doc.setFontSize(10);
+doc.setFont('helvetica', 'normal');
+doc.setTextColor(0, 0, 0);
+
+const terms = [
+    '1. I acknowledge and agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Management Private Limited',
+    '2. I acknowledge that account activation is contingent upon sharing my transaction details with Odelya Management Private Limited via the designated office WhatsApp number or official business email.',
+    '3. I agree that my service will be activated within 48 hours of successful payment verification.',
+    '4. I agree that all payments are final and non-refundable under any circumstances.'
+];
+
+// Draw tick mark for agreement
+doc.setDrawColor(0, 128, 0);
+doc.setLineWidth(0.5);
+const tickX = leftMargin;
+const tickY = y - 1;
+
+// Draw tick symbol (✓)
+doc.line(tickX, tickY + 2, tickX + 1, tickY + 3);
+doc.line(tickX + 1, tickY + 3, tickX + 3, tickY);
+
+doc.text('I hereby agree to all the terms and conditions stated above.', leftMargin + 5, y);
+y += 5;
+
+terms.forEach(term => {
+    if (y > pageHeight - 30) {
+        doc.addPage();
+        y = topMargin;
+    }
+    doc.text(term, leftMargin + 5, y);
+    y += 7;
+});
+
+y += 5;
                 
                 // Draw tick mark
                 doc.setDrawColor(0, 128, 0);
