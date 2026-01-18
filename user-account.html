@@ -349,6 +349,49 @@
             border-radius: 0 0 10px 10px;
         }
         
+        /* Password policy styling */
+        .password-policy {
+            background-color: #fff5f5;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 30px 10px 30px;
+            border-left: 4px solid #f44336;
+        }
+        
+        .password-policy h3 {
+            color: #3a0ca3;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .password-policy ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .password-policy li {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            padding-left: 25px;
+            position: relative;
+            color: #333;
+        }
+        
+        .password-policy li:before {
+            content: "•";
+            color: #f44336;
+            font-weight: bold;
+            font-size: 1.4rem;
+            position: absolute;
+            left: 0;
+        }
+        
+        .policy-text-red {
+            color: #ff0000 !important;
+            font-weight: bold !important;
+        }
+        
         @media (max-width: 768px) {
             .form-header {
                 padding: 20px 15px;
@@ -435,6 +478,19 @@
                 padding: 20px 12px;
                 min-height: 70px;
             }
+            
+            .password-policy {
+                margin: 15px 15px 10px 15px;
+                padding: 15px;
+            }
+            
+            .password-policy h3 {
+                font-size: 1.2rem;
+            }
+            
+            .password-policy li {
+                font-size: 1rem;
+            }
         }
         
         @media (max-width: 480px) {
@@ -483,6 +539,10 @@
                 padding: 18px 10px;
                 min-height: 65px;
             }
+            
+            .password-policy li {
+                font-size: 0.95rem;
+            }
         }
     </style>
 </head>
@@ -492,12 +552,26 @@
             <button onclick="goBackToUserDetails()" class="back-btn">
                 ← Back to User Details
             </button>
-            <h1>User Account Creation</h1>
+            <h1>Account Creation</h1>
         </div>
         
         <div class="form-content">
             <!-- Account Creation Section -->
-            <h2 class="section-title">Create Your Account</h2>
+            <h2 class="section-title">Create Your Secure Account</h2>
+            
+            <!-- Password Policy Section -->
+            <div class="password-policy">
+                <h3>Password Change Policies:</h3>
+                <ul>
+                    <li><span class="policy-text-red">Minimum 8 to maximum 12 characters</span></li>
+                    <li><span class="policy-text-red">At least one uppercase letter (A-Z)</span></li>
+                    <li><span class="policy-text-red">At least one lowercase letter (a-z)</span></li>
+                    <li><span class="policy-text-red">At least one number (0-9)</span></li>
+                    <li><span class="policy-text-red">At least one special character (!@#$%^&*)</span></li>
+                    <li><span class="policy-text-red">Cannot contain your first or last name</span></li>
+                </ul>
+            </div>
+            
             <div class="form-grid">
                 <!-- Account Name (8-12 characters) -->
                 <div class="form-group">
@@ -715,9 +789,53 @@
         
         // Validate password policy
         function validatePassword(password) {
-            // Minimum 8 characters, at least 1 uppercase, 1 lowercase, 1 number and 1 special character
-            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-            return passwordRegex.test(password);
+            // Minimum 8 characters, maximum 12 characters
+            if (password.length < 8 || password.length > 12) {
+                return false;
+            }
+            
+            // At least one uppercase letter
+            if (!/[A-Z]/.test(password)) {
+                return false;
+            }
+            
+            // At least one lowercase letter
+            if (!/[a-z]/.test(password)) {
+                return false;
+            }
+            
+            // At least one number
+            if (!/\d/.test(password)) {
+                return false;
+            }
+            
+            // At least one special character
+            if (!/[!@#$%^&*]/.test(password)) {
+                return false;
+            }
+            
+            // Get user name from stored data
+            const userData = sessionStorage.getItem('odelya_userDetails');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    const userName = user.name || '';
+                    
+                    // Split name into parts (first and last name)
+                    const nameParts = userName.toLowerCase().split(' ');
+                    
+                    // Check if password contains any part of the name
+                    for (const part of nameParts) {
+                        if (part.length > 1 && password.toLowerCase().includes(part)) {
+                            return false;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error parsing user data for name check:', error);
+                }
+            }
+            
+            return true;
         }
         
         // Show error message
@@ -797,9 +915,41 @@
             if (!password) {
                 showError('password', 'Password is required');
                 isValid = false;
-            } else if (!validatePassword(password)) {
-                showError('password', 'Password must have: 8+ chars, 1 uppercase, 1 lowercase, 1 number, 1 special character');
+            } else if (password.length < 8 || password.length > 12) {
+                showError('password', 'Password must be 8-12 characters');
                 isValid = false;
+            } else if (!/[A-Z]/.test(password)) {
+                showError('password', 'Password must contain at least one uppercase letter');
+                isValid = false;
+            } else if (!/[a-z]/.test(password)) {
+                showError('password', 'Password must contain at least one lowercase letter');
+                isValid = false;
+            } else if (!/\d/.test(password)) {
+                showError('password', 'Password must contain at least one number');
+                isValid = false;
+            } else if (!/[!@#$%^&*]/.test(password)) {
+                showError('password', 'Password must contain at least one special character (!@#$%^&*)');
+                isValid = false;
+            } else {
+                // Check if password contains first or last name
+                const userData = sessionStorage.getItem('odelya_userDetails');
+                if (userData) {
+                    try {
+                        const user = JSON.parse(userData);
+                        const userName = user.name || '';
+                        const nameParts = userName.toLowerCase().split(' ');
+                        
+                        for (const part of nameParts) {
+                            if (part.length > 1 && password.toLowerCase().includes(part)) {
+                                showError('password', 'Password cannot contain your first or last name');
+                                isValid = false;
+                                break;
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error parsing user data for name check:', error);
+                    }
+                }
             }
             
             // Validate confirm password
