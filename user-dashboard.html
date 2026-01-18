@@ -209,25 +209,35 @@
             text-transform: none;
         }
         
-        .view-btn {
-            background: #00d4ff;
-            color: white;
-        }
-        
-        .view-btn:hover {
-            background: #00b8e6;
-            transform: translateY(-3px);
-        }
-        
-        .change-password-btn {
-            background: #17a2b8;
-            color: white;
-        }
-        
-        .change-password-btn:hover {
-            background: #138496;
-            transform: translateY(-3px);
-        }
+.details-btn {
+    background: #90EE90; /* Light green */
+    color: white;
+}
+
+.details-btn:hover {
+    background: #7CFC00;
+    transform: translateY(-3px);
+}
+
+.password-btn {
+    background: #00008B; /* Deep blue */
+    color: white;
+}
+
+.password-btn:hover {
+    background: #0000CD;
+    transform: translateY(-3px);
+}
+
+.recharge-btn {
+    background: #dc3545; /* Red - same as logout */
+    color: white;
+}
+
+.recharge-btn:hover {
+    background: #c82333;
+    transform: translateY(-3px);
+}
         
 /* ========== MOBILE RESPONSIVE ========== */
 @media (max-width: 768px) {
@@ -920,8 +930,9 @@
             
             <!-- Action Buttons Row - ONLY 2 BUTTONS NOW -->
             <div class="action-buttons-row">
-                <button class="view-btn" onclick="viewUserDetails()">📋 View Details</button>
-                <button class="change-password-btn" onclick="showPasswordModal()">🔒 Change Password</button>
+                <button class="details-btn" onclick="viewUserDetails()">📋 Details</button>
+                <button class="password-btn" onclick="showPasswordModal()">🔒 Password</button>
+                <button class="recharge-btn" onclick="rechargeFunction()">💰 Recharge</button>
             </div>
         </div>
     </div>
@@ -1764,6 +1775,12 @@ function validatePassword() {
                     btn.textContent = originalText;
                     btn.disabled = false;
                 });
+        };
+// Recharge function for the new button
+        window.rechargeFunction = function() {
+            alert("💰 Recharge functionality coming soon!\n\nThis feature will allow you to add funds to your account.");
+            // You can add actual recharge logic here later
+            // Example: window.location.href = "recharge-page.html";
         };
         
         // Generate PDF for current user - UPDATED WITH PASSWORD CHANGE INFO (STAYS IN LEFT COLUMN FOR PDF)
