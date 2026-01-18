@@ -40,13 +40,76 @@
             margin-bottom: 5px;
         }
 
+        /* Agreements Section */
+        .agreements-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .agreements-list {
+            list-style-type: decimal;
+            padding-left: 25px;
+            margin: 20px 0;
+        }
+
+        .agreements-list li {
+            margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .agreements-list li strong {
+            color: #1a237e;
+        }
+
+        .agreement-checkbox {
+            margin: 25px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        /* Payment Details Section - Initially blurred */
         .payment-details-section {
             background: white;
             border-radius: 15px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
-            display: block;
+            filter: blur(5px);
+            pointer-events: none;
+            opacity: 0.7;
+            transition: all 0.5s ease;
+        }
+
+        .payment-details-section.active {
+            filter: blur(0);
+            pointer-events: auto;
+            opacity: 1;
         }
 
         .payment-content {
@@ -393,6 +456,32 @@
                 background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             }
             
+            .agreements-section {
+                border-radius: 0;
+                padding: 20px 15px;
+                margin: 0;
+                width: 100%;
+                box-shadow: none;
+            }
+            
+            .agreements-list {
+                padding-left: 20px;
+            }
+            
+            .agreements-list li {
+                font-size: 15px;
+                margin-bottom: 12px;
+            }
+            
+            .agreement-checkbox {
+                margin: 20px 0;
+                padding: 15px;
+            }
+            
+            .checkbox-label {
+                font-size: 16px;
+            }
+            
             .payment-details-section {
                 border-radius: 0;
                 padding: 15px;
@@ -513,6 +602,14 @@
                 font-size: 1.6rem;
             }
             
+            .agreements-list li {
+                font-size: 14px;
+            }
+            
+            .checkbox-label {
+                font-size: 15px;
+            }
+            
             .qr-title {
                 font-size: 1.3rem;
             }
@@ -599,7 +696,36 @@
             <h1>Payment Processing</h1>
         </div>
 
-        <!-- Payment Details Section -->
+        <!-- Agreements Section -->
+        <div class="agreements-section">
+            <h3 style="color: #1a237e; margin-bottom: 20px; font-size: 1.5rem;">
+                <i class="fas fa-file-contract"></i> Terms & Conditions
+            </h3>
+            
+            <ol class="agreements-list">
+                <li>
+                    <strong>I acknowledge and agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Management Private Limited</strong>
+                </li>
+                <li>
+                    <strong>I acknowledge that account activation is contingent upon sharing my transaction details with Odelya Management Private Limited via the designated office WhatsApp number or official business email.</strong>
+                </li>
+                <li>
+                    <strong>I agree that my service will be activated within 48 hours of successful payment verification.</strong>
+                </li>
+                <li>
+                    <strong>I agree that all payments are final and non-refundable under any circumstances.</strong>
+                </li>
+            </ol>
+            
+            <div class="agreement-checkbox">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="termsCheckbox">
+                    <span class="checkbox-label">I hereby agree to all the terms and conditions stated above.</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Payment Details Section (Initially blurred) -->
         <div class="payment-details-section" id="paymentDetailsSection">
             <div class="payment-content">
                 <!-- Payment Mode Selection -->
@@ -730,7 +856,9 @@
             transferAmount: document.getElementById('transferAmount'),
             instructionAmount: document.getElementById('instructionAmount'),
             upiInstructionAmount: document.getElementById('upiInstructionAmount'),
-            upiTitleAmount: document.getElementById('upiTitleAmount')
+            upiTitleAmount: document.getElementById('upiTitleAmount'),
+            termsCheckbox: document.getElementById('termsCheckbox'),
+            paymentDetailsSection: document.getElementById('paymentDetailsSection')
         };
 
         // ====== URL PARAMETER EXTRACTION ======
@@ -782,36 +910,44 @@
             
             paymentState.paymentMethodFromRegistration = urlParams.paymentMethod || '';
 
-// Get plan value from sessionStorage and update the elements directly
-    try {
-        const planData = sessionStorage.getItem('odelya_planDetails');
-        if (planData) {
-            const plan = JSON.parse(planData);
-            const planValue = plan.planValue || 'INR 0';
-            
-            // Update all 4 places directly
-            elements.transferAmount.textContent = planValue;
-            elements.instructionAmount.textContent = planValue;
-            elements.upiInstructionAmount.textContent = planValue;
-            elements.upiTitleAmount.textContent = planValue;
-            
-            console.log('Plan value set:', planValue);
-        }
-    } catch (error) {
-        console.error('Error setting plan value:', error);
-    }
-
+            // Get plan value from sessionStorage and update the elements directly
+            try {
+                const planData = sessionStorage.getItem('odelya_planDetails');
+                if (planData) {
+                    const plan = JSON.parse(planData);
+                    const planValue = plan.planValue || 'INR 0';
+                    
+                    // Update all 4 places directly
+                    elements.transferAmount.textContent = planValue;
+                    elements.instructionAmount.textContent = planValue;
+                    elements.upiInstructionAmount.textContent = planValue;
+                    elements.upiTitleAmount.textContent = planValue;
+                    
+                    console.log('Plan value set:', planValue);
+                }
+            } catch (error) {
+                console.error('Error setting plan value:', error);
+            }
             
             // Debug log
             console.log('Payment State:', paymentState);
             console.log('Payment Method from Registration:', paymentState.paymentMethodFromRegistration);
             
-            
             // Setup event listeners
             setupEventListeners();
             
-            // Automatically select payment mode based on registration
-            autoSelectPaymentMode();
+            // Add checkbox change listener
+            elements.termsCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    // Unblur the payment section when checkbox is checked
+                    elements.paymentDetailsSection.classList.add('active');
+                    // Automatically select payment mode based on registration
+                    autoSelectPaymentMode();
+                } else {
+                    // Re-blur the payment section when checkbox is unchecked
+                    elements.paymentDetailsSection.classList.remove('active');
+                }
+            });
         });
 
         // ====== AUTO SELECT PAYMENT MODE ======
@@ -853,8 +989,17 @@
 
         // ====== SETUP EVENT LISTENERS ======
         function setupEventListeners() {
-            elements.modeUPI.addEventListener('click', () => selectPaymentMode('upi'));
-            elements.modeBank.addEventListener('click', () => selectPaymentMode('bank'));
+            elements.modeUPI.addEventListener('click', () => {
+                if (elements.termsCheckbox.checked) {
+                    selectPaymentMode('upi');
+                }
+            });
+            
+            elements.modeBank.addEventListener('click', () => {
+                if (elements.termsCheckbox.checked) {
+                    selectPaymentMode('bank');
+                }
+            });
             
             elements.btnCompleted.addEventListener('click', handlePaymentCompletion);
         }
