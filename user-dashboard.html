@@ -980,17 +980,18 @@
             </div>
             
             <div class="password-form">
-                <div class="password-requirements">
-                    <strong>Password Requirements:</strong>
-                    <ul>
-                        <li>Minimum 8 characters</li>
-                        <li>At least one uppercase letter</li>
-                        <li>At least one lowercase letter</li>
-                        <li>At least one number</li>
-                        <li>At least one special character (!@#$%^&*)</li>
-                        <li>Cannot be same as current password</li>
-                    </ul>
-                </div>
+<div class="password-requirements">
+    <strong>Password Change Policies:</strong>  <!-- Changed text -->
+    <ul>
+        <li>Minimum 8 to maximum 12 characters</li>  <!-- Updated -->
+        <li>At least one uppercase letter (A-Z)</li>  <!-- More specific -->
+        <li>At least one lowercase letter (a-z)</li>  <!-- More specific -->
+        <li>At least one number (0-9)</li>  <!-- More specific -->
+        <li>At least one special character (!@#$%^&*)</li>  <!-- More specific -->
+        <li>Cannot contain your first or last name</li>  <!-- New rule -->
+
+    </ul>
+</div>
                 
                 <div class="detail-group">
                     <label for="currentPassword">Current Password</label>
@@ -1546,104 +1547,114 @@
             document.getElementById('passwordModal').style.display = 'none';
         };
         
-        // Check password strength
         window.checkPasswordStrength = function() {
-            const password = document.getElementById('newPassword').value;
-            const strengthBar = document.getElementById('passwordStrengthBar');
-            
-            if (!password) {
-                strengthBar.style.width = '0%';
-                strengthBar.className = 'strength-bar';
-                return;
-            }
-            
-            let strength = 0;
-            
-            // Length check
-            if (password.length >= 8) strength += 25;
-            if (password.length >= 12) strength += 10;
-            
-            // Character type checks
-            if (/[A-Z]/.test(password)) strength += 20;
-            if (/[a-z]/.test(password)) strength += 20;
-            if (/[0-9]/.test(password)) strength += 20;
-            if (/[!@#$%^&*]/.test(password)) strength += 25;
-            
-            // Update strength bar
-            strength = Math.min(strength, 100);
-            strengthBar.style.width = strength + '%';
-            
-            // Set color based on strength
-            if (strength < 40) {
-                strengthBar.className = 'strength-bar strength-weak';
-            } else if (strength < 70) {
-                strengthBar.className = 'strength-bar strength-medium';
-            } else {
-                strengthBar.className = 'strength-bar strength-strong';
-            }
-        };
+    const password = document.getElementById('newPassword').value;
+    const strengthBar = document.getElementById('passwordStrengthBar');
+    
+    if (!password) {
+        strengthBar.style.width = '0%';
+        strengthBar.className = 'strength-bar';
+        return;
+    }
+    
+    let strength = 0;
+    
+    // Length check (8-12 characters)
+    if (password.length >= 8 && password.length <= 12) strength += 25;
+    
+    // Character type checks
+    if (/[A-Z]/.test(password)) strength += 20;
+    if (/[a-z]/.test(password)) strength += 20;
+    if (/[0-9]/.test(password)) strength += 20;
+    if (/[!@#$%^&*]/.test(password)) strength += 25;
+    
+    // Update strength bar
+    strength = Math.min(strength, 100);
+    strengthBar.style.width = strength + '%';
+    
+    // Set color based on strength
+    if (strength < 40) {
+        strengthBar.className = 'strength-bar strength-weak';
+    } else if (strength < 70) {
+        strengthBar.className = 'strength-bar strength-medium';
+    } else {
+        strengthBar.className = 'strength-bar strength-strong';
+    }
+};
         
-        // Validate password
-        function validatePassword() {
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            let isValid = true;
-            
-            // Hide all errors
-            document.querySelectorAll('.password-error').forEach(el => {
-                el.style.display = 'none';
-            });
-            
-            // Check current password
-            if (!currentPassword) {
-                document.getElementById('currentPasswordError').textContent = 'Current password is required';
-                document.getElementById('currentPasswordError').style.display = 'block';
-                isValid = false;
-            }
-            
-            // Check new password requirements
-            const requirements = [
-                { regex: /.{8,}/, message: 'Minimum 8 characters' },
-                { regex: /[A-Z]/, message: 'At least one uppercase letter' },
-                { regex: /[a-z]/, message: 'At least one lowercase letter' },
-                { regex: /[0-9]/, message: 'At least one number' },
-                { regex: /[!@#$%^&*]/, message: 'At least one special character (!@#$%^&*)' }
-            ];
-            
-            let failedRequirements = [];
-            requirements.forEach(req => {
-                if (!req.regex.test(newPassword)) {
-                    failedRequirements.push(req.message);
-                }
-            });
-            
-            if (failedRequirements.length > 0) {
-                document.getElementById('newPasswordError').textContent = 
-                    'Password must contain: ' + failedRequirements.join(', ');
-                document.getElementById('newPasswordError').style.display = 'block';
-                isValid = false;
-            }
-            
-            // Check if new password matches current password
-            if (newPassword && currentPassword && newPassword === currentPassword) {
-                document.getElementById('newPasswordError').textContent = 
-                    'New password cannot be same as current password';
-                document.getElementById('newPasswordError').style.display = 'block';
-                isValid = false;
-            }
-            
-            // Check confirm password
-            if (newPassword !== confirmPassword) {
-                document.getElementById('confirmPasswordError').textContent = 
-                    'Passwords do not match';
-                document.getElementById('confirmPasswordError').style.display = 'block';
-                isValid = false;
-            }
-            
-            return isValid;
+function validatePassword() {
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    // Get user's name to check against
+    const userName = currentUserData?.name || '';
+    const firstName = userName.split(' ')[0] || '';
+    const lastName = userName.split(' ')[1] || '';
+    
+    let isValid = true;
+    
+    // Hide all errors
+    document.querySelectorAll('.password-error').forEach(el => {
+        el.style.display = 'none';
+    });
+    
+    // Check current password
+    if (!currentPassword) {
+        document.getElementById('currentPasswordError').textContent = 'Current password is required';
+        document.getElementById('currentPasswordError').style.display = 'block';
+        isValid = false;
+    }
+    
+    // Check new password requirements
+    const requirements = [
+        { regex: /^.{8,12}$/, message: 'Must be 8 to 12 characters' },
+        { regex: /[A-Z]/, message: 'At least one uppercase letter (A-Z)' },
+        { regex: /[a-z]/, message: 'At least one lowercase letter (a-z)' },
+        { regex: /[0-9]/, message: 'At least one number (0-9)' },
+        { regex: /[!@#$%^&*]/, message: 'At least one special character (!@#$%^&*)' }
+    ];
+    
+    let failedRequirements = [];
+    requirements.forEach(req => {
+        if (!req.regex.test(newPassword)) {
+            failedRequirements.push(req.message);
         }
+    });
+    
+    // Check if contains first or last name
+    if (firstName && newPassword.toLowerCase().includes(firstName.toLowerCase())) {
+        failedRequirements.push('Cannot contain your first name');
+    }
+    if (lastName && newPassword.toLowerCase().includes(lastName.toLowerCase())) {
+        failedRequirements.push('Cannot contain your last name');
+    }
+    
+    if (failedRequirements.length > 0) {
+        document.getElementById('newPasswordError').textContent = 
+            'Password must meet: ' + failedRequirements.join(', ');
+        document.getElementById('newPasswordError').style.display = 'block';
+        isValid = false;
+    }
+    
+    // Check if new password matches current password
+    if (newPassword && currentPassword && newPassword === currentPassword) {
+        document.getElementById('newPasswordError').textContent = 
+            'New password cannot be same as current password';
+        document.getElementById('newPasswordError').style.display = 'block';
+        isValid = false;
+    }
+    
+    // Check confirm password
+    if (newPassword !== confirmPassword) {
+        document.getElementById('confirmPasswordError').textContent = 
+            'Passwords do not match';
+        document.getElementById('confirmPasswordError').style.display = 'block';
+        isValid = false;
+    }
+    
+    return isValid;
+}
         
         // Change password - FIXED VERSION
         window.changePassword = function() {
