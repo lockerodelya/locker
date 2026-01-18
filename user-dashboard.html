@@ -142,8 +142,7 @@
             flex: 1;
             text-align: left;
             padding-left: 30px;
-            /* REDUCED RIGHT PADDING BY 50% - from 30px to 15px */
-            padding-right: 15px; /* This is the key change */
+            padding-right: 10px; /* Reduced from 15px to 10px */
         }
         
         .data-value {
@@ -154,8 +153,7 @@
             text-align: right;
             word-break: break-word;
             padding-right: 30px;
-            /* REDUCED LEFT PADDING BY 50% - from 30px to 15px */
-            padding-left: 15px; /* This is the key change */
+            padding-left: 10px; /* Reduced from 15px to 10px */
         }
         
         .status-display {
@@ -183,7 +181,7 @@
             color: white;
         }
         
-        /* Action buttons row - side by side with 3 buttons */
+        /* Action buttons row - REMOVED PASSWORD HISTORY BUTTON */
         .action-buttons-row {
             display: flex;
             gap: 20px;
@@ -215,16 +213,6 @@
         
         .view-btn:hover {
             background: #00b8e6;
-            transform: translateY(-3px);
-        }
-        
-        .history-btn {
-            background: #6f42c1;
-            color: white;
-        }
-        
-        .history-btn:hover {
-            background: #5a32a3;
             transform: translateY(-3px);
         }
         
@@ -273,8 +261,7 @@
                 text-align: left;
                 width: 100%;
                 padding-left: 5px; /* Minimal padding on mobile */
-                /* REDUCED RIGHT PADDING ON MOBILE BY 50% */
-                padding-right: 8px; /* Reduced from 15px to 8px */
+                padding-right: 5px; /* Reduced from 8px to 5px */
                 margin-bottom: 0; /* Removed margin */
             }
             
@@ -283,8 +270,7 @@
                 text-align: left;
                 width: 100%;
                 padding-right: 5px; /* Minimal padding on mobile */
-                /* REDUCED LEFT PADDING ON MOBILE BY 50% */
-                padding-left: 8px; /* Reduced from 15px to 8px */
+                padding-left: 5px; /* Reduced from 8px to 5px */
                 margin-top: 0; /* Removed margin */
             }
             
@@ -361,15 +347,13 @@
             .data-label {
                 font-size: 16px;
                 padding-left: 3px;
-                /* REDUCED RIGHT PADDING ON MOBILE BY 50% */
-                padding-right: 4px; /* Reduced from 8px to 4px */
+                padding-right: 3px; /* Reduced from 4px to 3px */
             }
             
             .data-value {
                 font-size: 16px;
                 padding-right: 3px;
-                /* REDUCED LEFT PADDING ON MOBILE BY 50% */
-                padding-left: 4px; /* Reduced from 8px to 4px */
+                padding-left: 3px; /* Reduced from 4px to 3px */
             }
             
             .status-display {
@@ -432,15 +416,13 @@
             .data-label {
                 font-size: 15px;
                 padding-left: 2px;
-                /* REDUCED RIGHT PADDING ON MOBILE BY 50% */
-                padding-right: 2px; /* Reduced from 4px to 2px */
+                padding-right: 2px; /* Reduced from 2px to 1px */
             }
             
             .data-value {
                 font-size: 15px;
                 padding-right: 2px;
-                /* REDUCED LEFT PADDING ON MOBILE BY 50% */
-                padding-left: 2px; /* Reduced from 4px to 2px */
+                padding-left: 2px; /* Reduced from 2px to 1px */
             }
             
             .status-display {
@@ -723,7 +705,7 @@
             font-weight: 600;
         }
         
-        /* Password History Modal Styles */
+        /* Password History Modal Styles - SIMPLIFIED */
         .history-controls {
             display: flex;
             justify-content: space-between;
@@ -855,10 +837,9 @@
                 </div>
             </div>
             
-            <!-- Action Buttons Row - Three buttons side by side -->
+            <!-- Action Buttons Row - ONLY 2 BUTTONS NOW -->
             <div class="action-buttons-row">
                 <button class="view-btn" onclick="viewUserDetails()">📋 View Details</button>
-                <button class="history-btn" onclick="viewPasswordHistory()">🔑 Password History</button>
                 <button class="change-password-btn" onclick="showPasswordModal()">🔒 Change Password</button>
             </div>
         </div>
@@ -884,18 +865,12 @@
         </div>
     </div>
 
-    <!-- Password History Modal - Simplified -->
+    <!-- Password History Modal - SIMPLIFIED -->
     <div id="historyModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>🔑 Password Change History</h2>
+                <h2>🔑 Password Information</h2>
                 <button class="action-btn btn-close" onclick="closeHistoryModal()" style="margin: 0;">Close</button>
-            </div>
-            
-            <div class="history-controls">
-                <div class="history-stats">
-                    Total Password Changes: <span id="totalChanges">0</span>
-                </div>
             </div>
             
             <div class="history-info">
@@ -993,6 +968,7 @@
         let currentUserId = null;
         let currentUserData = null;
         let currentUserEmail = null;
+        let lastPasswordChange = null; // NEW: Store last password change date
 
         // Generate random 6-digit user ID starting from 2-9
         function generateUserId() {
@@ -1049,6 +1025,11 @@
             
             // Ensure status
             fixedUser.status = user.status || 'inactive';
+            
+            // Store last password change if available
+            if (user.lastPasswordChange) {
+                lastPasswordChange = user.lastPasswordChange;
+            }
             
             return fixedUser;
         }
@@ -1349,6 +1330,10 @@
             html += createField('GSTIN', 'gstin', user.gstin);
             html += createField('Username', 'username', user.username);
             
+            // ADDED: Password Change Date
+            html += createField('Last Password Change', 'lastPasswordChange', 
+                lastPasswordChange ? formatDateTime(lastPasswordChange) : 'Never changed');
+            
             html += `</div>`;
             
             // RIGHT COLUMN
@@ -1403,7 +1388,7 @@
             document.getElementById('userModal').style.display = 'none';
         };
         
-        // View password change history
+        // View password change history - SIMPLIFIED VERSION
         window.viewPasswordHistory = function() {
             if (!currentUserId) {
                 alert("No user data available");
@@ -1413,8 +1398,6 @@
             // Show loading
             document.getElementById('lastPasswordChangeDate').innerHTML = 
                 'Last Password Change: <span style="color: #17a2b8;">Loading...</span>';
-            document.getElementById('passwordChangeCount').textContent = '0';
-            document.getElementById('totalChanges').textContent = '0';
             
             document.getElementById('historyModal').style.display = 'flex';
             
@@ -1422,24 +1405,19 @@
             loadPasswordHistory();
         };
         
-        // Load password change history
+        // Load password change history - SIMPLIFIED
         function loadPasswordHistory() {
             if (!currentUserId) return;
             
             // Get password history from Firestore
             db.collection('users').doc(currentUserId).collection('passwordHistory')
                 .orderBy('changeTimestamp', 'desc')
+                .limit(1)
                 .get()
                 .then((querySnapshot) => {
-                    const totalChanges = querySnapshot.size;
-                    
-                    // Update total changes
-                    document.getElementById('totalChanges').textContent = totalChanges;
-                    document.getElementById('passwordChangeCount').textContent = totalChanges;
-                    
-                    if (totalChanges === 0) {
+                    if (querySnapshot.empty) {
                         document.getElementById('lastPasswordChangeDate').innerHTML = 
-                            'Last Password Change: <span style="color: #999;">Never changed</span>';
+                            'Last Password Change: <span style="color: #17a2b8;">Never changed</span>';
                         return;
                     }
                     
@@ -1649,6 +1627,8 @@
                                         userId: user.uid,
                                         userEmail: userEmail,
                                         timestamp: new Date().toISOString(),
+                                        changeTime: new Date().toISOString(),
+                                        changeTimestamp: new Date(),
                                         action: "password_change",
                                         note: "Password changed by user"
                                     };
@@ -1657,6 +1637,9 @@
                                 })
                                 .then(() => {
                                     console.log("✅ Password change logged");
+                                    
+                                    // Update lastPasswordChange variable
+                                    lastPasswordChange = new Date().toISOString();
                                     
                                     // SUCCESS
                                     alert("✅ Password changed successfully!\n\nYou can now login with your new password.\n\nLogging out in 3 seconds...");
@@ -1691,7 +1674,7 @@
                 });
         };
         
-        // Generate PDF for current user - WITHOUT FOOTER
+        // Generate PDF for current user - UPDATED WITH PASSWORD CHANGE INFO
         window.generatePDF = function() {
             if (!currentUserData) return;
             
@@ -1757,7 +1740,9 @@
                         {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
                         {label: 'PAN', value: currentUserData.pan || 'N/A'},
                         {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
-                        {label: 'Username', value: currentUserData.username || 'N/A'}
+                        {label: 'Username', value: currentUserData.username || 'N/A'},
+                        // ADDED: Password Change Date
+                        {label: 'Last Password Change', value: lastPasswordChange ? formatDateTime(lastPasswordChange) : 'Never changed'}
                     ];
                 } else if (userType === 'business') {
                     personalData = [
@@ -1770,7 +1755,9 @@
                         {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
                         {label: 'PAN', value: currentUserData.pan || 'N/A'},
                         {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
-                        {label: 'Username', value: currentUserData.username || 'N/A'}
+                        {label: 'Username', value: currentUserData.username || 'N/A'},
+                        // ADDED: Password Change Date
+                        {label: 'Last Password Change', value: lastPasswordChange ? formatDateTime(lastPasswordChange) : 'Never changed'}
                     ];
                 }
                 
