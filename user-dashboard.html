@@ -2070,59 +2070,59 @@
             return userId;
         }
 
-        // Fix the user data structure to match what admin-dashboard expects
-        function fixUserDataStructure(user) {
-            const fixedUser = { ...user };
-            
-            // Generate or use existing user ID
-            if (!fixedUser.userId) {
-                fixedUser.userId = generateUserId();
-            }
-            
-            // Map the data from user-account.html structure
-            if (user.personalInfo) {
-                fixedUser.name = user.personalInfo.name || 'N/A';
-                fixedUser.email = user.personalInfo.email || user.email || 'N/A';
-                fixedUser.phone = user.personalInfo.phone || 'N/A';
-                fixedUser.dob = user.personalInfo.dob || null;
-                fixedUser.gender = user.personalInfo.gender || null;
-                fixedUser.aadhaar = user.personalInfo.aadhaar || null;
-                fixedUser.pan = user.personalInfo.pan || null;
-                fixedUser.gstin = user.personalInfo.gstin || null;
-            }
-            
-            if (user.businessInfo) {
-                fixedUser.doi = user.businessInfo.doi || null;
-                fixedUser.pincode = user.businessInfo.pincode || null;
-            }
-            
-            if (user.planDetails) {
-                fixedUser.planName = user.planDetails.planName || 'N/A';
-                fixedUser.planSize = user.planDetails.planSize || 'N/A';
-                fixedUser.planType = user.planDetails.planType || 'N/A';
-                fixedUser.planStartDate = user.planDetails.planStartDate || 'N/A';
-                fixedUser.planEndDate = user.planDetails.planEndDate || 'N/A';
-                fixedUser.planValue = user.planDetails.planValue || 'N/A';
-                // Store plan value for recharge
-                currentPlanValue = user.planDetails.planValue;
-            }
-            
-            // Map account fields
-            fixedUser.username = user.username || user.accountName || user.email?.split('@')[0] || 'N/A';
-            
-            // Map payment mode
-            fixedUser.paymentMode = user.paymentMode || user.paymentDetails?.mode || 'N/A';
-            
-            // Ensure status
-            fixedUser.status = user.status || 'inactive';
-            
-            // Store last password change if available
-            if (user.lastPasswordChange) {
-                lastPasswordChange = user.lastPasswordChange;
-            }
-            
-            return fixedUser;
-        }
+// Fix the user data structure to match what admin-dashboard expects
+function fixUserDataStructure(user) {
+    const fixedUser = { ...user };
+    
+    // ⚠️⚠️⚠️ REMOVE OR COMMENT OUT THE USER ID GENERATION ⚠️⚠️⚠️
+    // DO NOT generate new user ID on login
+    // if (!fixedUser.userId) {
+    //     fixedUser.userId = generateUserId();  // ← DELETE OR COMMENT THIS LINE
+    // }
+    
+    // Map the data from user-account.html structure
+    if (user.personalInfo) {
+        fixedUser.name = user.personalInfo.name || 'N/A';
+        fixedUser.email = user.personalInfo.email || user.email || 'N/A';
+        fixedUser.phone = user.personalInfo.phone || 'N/A';
+        fixedUser.dob = user.personalInfo.dob || null;
+        fixedUser.gender = user.personalInfo.gender || null;
+        fixedUser.aadhaar = user.personalInfo.aadhaar || null;
+        fixedUser.pan = user.personalInfo.pan || null;
+        fixedUser.gstin = user.personalInfo.gstin || null;
+    }
+    
+    if (user.businessInfo) {
+        fixedUser.doi = user.businessInfo.doi || null;
+        fixedUser.pincode = user.businessInfo.pincode || null;
+    }
+    
+    if (user.planDetails) {
+        fixedUser.planName = user.planDetails.planName || 'N/A';
+        fixedUser.planSize = user.planDetails.planSize || 'N/A';
+        fixedUser.planType = user.planDetails.planType || 'N/A';
+        fixedUser.planStartDate = user.planDetails.planStartDate || 'N/A';
+        fixedUser.planEndDate = user.planDetails.planEndDate || 'N/A';
+        fixedUser.planValue = user.planDetails.planValue || 'N/A';
+        currentPlanValue = user.planDetails.planValue;
+    }
+    
+    // Map account fields
+    fixedUser.username = user.username || user.accountName || user.email?.split('@')[0] || 'N/A';
+    
+    // Map payment mode
+    fixedUser.paymentMode = user.paymentMode || user.paymentDetails?.mode || 'N/A';
+    
+    // Ensure status
+    fixedUser.status = user.status || 'inactive';
+    
+    // Store last password change if available
+    if (user.lastPasswordChange) {
+        lastPasswordChange = user.lastPasswordChange;
+    }
+    
+    return fixedUser;
+}
 
         // Format date to dd-mm-yyyy HH:MM:SS AM/PM
         function formatDateTime(dateValue) {
