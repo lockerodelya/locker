@@ -1006,38 +1006,39 @@ function loadUserDetailsInformation() {
                 const user = userCredential.user;
                 console.log("Firebase user created:", user.uid);
 
-                // Prepare user data for Firestore - UPDATED
-                const userData = {
-                    uid: user.uid,
-                    username: accountData.accountName,  // Store as username
-                    password: accountData.password,     // Store password for user-login.html
-                    email: userDetailsData.email,
-                    userType: userDetailsData.userType,
-                    personalInfo: {
-                        name: userDetailsData.name,
-                        phone: userDetailsData.phone,
-                        dob: userDetailsData.dob || null,
-                        gender: userDetailsData.gender || null,
-                        aadhaar: userDetailsData.aadhaar || null,
-                        pan: userDetailsData.pan || null,
-                        gstin: userDetailsData.gstin || null
-                    },
-                    businessInfo: userDetailsData.userType === 'business' ? {
-                        businessName: userDetailsData.name,
-                        doi: userDetailsData.doi || null,
-                        pincode: userDetailsData.pincode || null
-                    } : null,
-                    planDetails: {
-                        planName: planDetailsData.planName || 'Secure Cloud Storage',
-                        planSize: planDetailsData.planSize,
-                        planType: planDetailsData.planDuration || planDetailsData.planType,
-                        planStartDate: planDetailsData.planStartDate || 'Auto-selected',
-                        planEndDate: planDetailsData.planEndDate || 'Auto-calculated',
-                        planValue: planDetailsData.planValue
-                    },
-                    accountCreated: new Date().toISOString(),
-                    status: 'inactive'  // IMPORTANT: Users are inactive by default
-                };
+// Prepare user data for Firestore - UPDATED
+const userData = {
+    uid: user.uid,
+    userId: userDetailsData.userId,  // ← ADD THIS LINE - Save the user ID!
+    username: accountData.accountName,
+    password: accountData.password,
+    email: userDetailsData.email,
+    userType: userDetailsData.userType,
+    personalInfo: {
+        name: userDetailsData.name,
+        phone: userDetailsData.phone,
+        dob: userDetailsData.dob || null,
+        gender: userDetailsData.gender || null,
+        aadhaar: userDetailsData.aadhaar || null,
+        pan: userDetailsData.pan || null,
+        gstin: userDetailsData.gstin || null
+    },
+    businessInfo: userDetailsData.userType === 'business' ? {
+        businessName: userDetailsData.name,
+        doi: userDetailsData.doi || null,
+        pincode: userDetailsData.pincode || null
+    } : null,
+    planDetails: {
+        planName: planDetailsData.planName || 'Secure Cloud Storage',
+        planSize: planDetailsData.planSize,
+        planType: planDetailsData.planDuration || planDetailsData.planType,
+        planStartDate: planDetailsData.planStartDate || 'Auto-selected',
+        planEndDate: planDetailsData.planEndDate || 'Auto-calculated',
+        planValue: planDetailsData.planValue
+    },
+    accountCreated: new Date().toISOString(),
+    status: 'inactive'
+};
 
                 // Save to Firestore
                 await db.collection('users').doc(user.uid).set(userData);
