@@ -2852,7 +2852,7 @@ window.generatePDF = function() {
         const pageHeight = doc.internal.pageSize.height;
         const centerX = pageWidth / 2;
         
-        // HEADER
+        // HEADER - Moved more upward (req 1)
         doc.setFontSize(18);
         doc.setTextColor(0, 212, 255);
         doc.text('ODELYA CLOUD STORAGE', centerX, topMargin, { align: 'center' });
@@ -2868,18 +2868,19 @@ window.generatePDF = function() {
         
         doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 26, { align: 'center' });
         
-        let y = topMargin + 45;
+        let y = topMargin + 35; // Reduced from +45 to bring everything up (req 1)
         
+        // First grey line - moved closer to User ID (req 2)
         doc.setDrawColor(200, 200, 200);
         doc.line(leftMargin, y, pageWidth - rightMargin, y);
-        y += 12;
+        y += 8; // Reduced from +12
         
         // SECTION 1: PERSONAL INFORMATION
         doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(0, 212, 255);
         doc.text('PERSONAL INFORMATION', leftMargin, y);
-        y += 10;
+        y += 8; // Reduced from +10
         
         doc.setFontSize(11);
         doc.setFont('helvetica', 'normal');
@@ -2941,21 +2942,21 @@ window.generatePDF = function() {
             }
             
             doc.text(displayValue, valueStartX, y);
-            y += 7;
+            y += 6; // Reduced from +7
         });
         
-        y += 5;
-        
+        // Second grey line - moved closer to Last Password Change (req 3)
+        y += 3; // Reduced from +5
         doc.setDrawColor(200, 200, 200);
         doc.line(leftMargin, y, pageWidth - rightMargin, y);
-        y += 12;
+        y += 8; // Reduced from +12
         
         // SECTION 2: ACCOUNT & PLAN DETAILS
         doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(0, 212, 255);
         doc.text('ACCOUNT & PLAN DETAILS', leftMargin, y);
-        y += 10;
+        y += 8; // Reduced from +10
         
         doc.setFontSize(11);
         doc.setFont('helvetica', 'normal');
@@ -2971,7 +2972,6 @@ window.generatePDF = function() {
             {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
             {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'},
             {label: 'Registered On', value: currentUserData.accountCreated ? formatDateTime(currentUserData.accountCreated) : 'N/A'},
-            
         ];
         
         doc.setFont('helvetica', 'bold');
@@ -2995,21 +2995,21 @@ window.generatePDF = function() {
             }
             
             doc.text(displayValue, accValueStartX, y);
-            y += 7;
+            y += 6; // Reduced from +7
         });
         
-        y += 5;
-        
+        // Third grey line - moved closer to Registered On (req 4)
+        y += 3; // Reduced from +5
         doc.setDrawColor(200, 200, 200);
         doc.line(leftMargin, y, pageWidth - rightMargin, y);
-        y += 12;
+        y += 8; // Reduced from +12
         
         // TERMS & CONDITIONS SECTION
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(26, 35, 126); // Deep blue color
         doc.text('TERMS & CONDITIONS', leftMargin, y);
-        y += 8;
+        y += 6; // Reduced from +8
         
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
@@ -3041,10 +3041,8 @@ window.generatePDF = function() {
                 y = topMargin;
             }
             doc.text(term, leftMargin + 5, y);
-            y += 7;
+            y += 6; // Reduced from +7
         });
-        
-        y += 5;
         
         // Save PDF - NO FOOTER
         const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
