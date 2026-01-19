@@ -3015,9 +3015,13 @@ window.generatePDF = function() {
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(0, 0, 0);
         
+        // Define terms with proper line breaks
         const terms = [
-            '1. I acknowledge and agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Management Private Limited',
-            '2. I acknowledge that account activation is contingent upon sharing my transaction details with Odelya Management Private Limited via the designated office WhatsApp number or official business email.',
+            '1. I acknowledge and agree to the Terms & Conditions, Privacy Policy, Data Retention Policy,',
+            '   and all other applicable policies of Odelya Management Private Limited.',
+            '2. I acknowledge that account activation is contingent upon sharing my transaction details',
+            '   with Odelya Management Private Limited via the designated office WhatsApp number',
+            '   or official business email.',
             '3. I agree that my service will be activated within 48 hours of successful payment verification.',
             '4. I agree that all payments are final and non-refundable under any circumstances.'
         ];
@@ -3041,7 +3045,7 @@ window.generatePDF = function() {
                 y = topMargin;
             }
             doc.text(term, leftMargin + 5, y);
-            y += 6; // Reduced from +7
+            y += 5; // Reduced from 6 to fit better
         });
         
         // Save PDF - NO FOOTER
