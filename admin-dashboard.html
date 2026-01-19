@@ -1562,218 +1562,248 @@ window.saveChanges = function() {
             }
         };
         
-        // Generate PDF for current user - FIXED
-        window.generatePDF = function() {
-            if (!currentUserData) return;
-            logAdminAction('GENERATE_PDF', `Generated PDF for user: ${currentUserData.email}`);
-            
-            const originalText = event.target.textContent;
-            event.target.textContent = "Creating PDF...";
-            event.target.disabled = true;
-            
-            try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                
-                const leftMargin = 20;
-                const rightMargin = 20;
-                const topMargin = 20;
-                const pageWidth = doc.internal.pageSize.width;
-                const pageHeight = doc.internal.pageSize.height;
-                const centerX = pageWidth / 2;
-                
-                // HEADER
-                doc.setFontSize(16);
-                doc.setTextColor(58, 12, 163);
-                doc.text('ODELYA CLOUD STORAGE', centerX, topMargin, { align: 'center' });
-                
-                doc.setFontSize(14);
-                doc.setTextColor(0, 0, 0);
-                doc.text('USER REGISTRATION DETAILS', centerX, topMargin + 8, { align: 'center' });
-                
-                doc.setFontSize(9);
-                doc.setTextColor(100, 100, 100);
-                const generatedDateTime = formatDateTimeForPDFHeader(new Date());
-                doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 16, { align: 'center' });
-                
-                doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 24, { align: 'center' });
-                
-                let y = topMargin + 40;
-                
-                doc.setDrawColor(200, 200, 200);
-                doc.line(leftMargin, y, pageWidth - rightMargin, y);
-                y += 10;
-                
-                // SECTION 1: PERSONAL INFORMATION
-                doc.setFontSize(12);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(58, 12, 163);
-                doc.text('PERSONAL INFORMATION', leftMargin, y);
-                y += 8;
-                
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'normal');
-                doc.setTextColor(0, 0, 0);
-                
-                const userType = currentUserData.userType || 'personal';
-                let personalData = [];
+// Generate PDF for current user - FIXED & UPDATED
+window.generatePDF = function() {
+    if (!currentUserData) return;
+    logAdminAction('GENERATE_PDF', `Generated PDF for user: ${currentUserData.email}`);
+    
+    const originalText = event.target.textContent;
+    event.target.textContent = "Creating PDF...";
+    event.target.disabled = true;
+    
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const leftMargin = 20;
+        const rightMargin = 20;
+        const topMargin = 20;
+        const pageWidth = doc.internal.pageSize.width;
+        const pageHeight = doc.internal.pageSize.height;
+        const centerX = pageWidth / 2;
+        
+        // HEADER - UPDATED: Single line instead of two
+        doc.setFontSize(16);
+        doc.setTextColor(58, 12, 163);
+        doc.text('ODELYA CLOUD USER REGISTRATION', centerX, topMargin, { align: 'center' });
+        
+        doc.setFontSize(9);
+        doc.setTextColor(100, 100, 100);
+        const generatedDateTime = formatDateTimeForPDFHeader(new Date());
+        doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 8, { align: 'center' });
+        
+        doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 16, { align: 'center' });
+        
+        // Grey line moved closer to User ID - UPDATED
+        let y = topMargin + 24;
+        doc.setDrawColor(200, 200, 200);
+        doc.line(leftMargin, y, pageWidth - rightMargin, y);
+        y += 10;
+        
+        // SECTION 1: PERSONAL INFORMATION - MOVED UPWARDS
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(58, 12, 163);
+        doc.text('PERSONAL INFORMATION', leftMargin, y);
+        y += 8;
+        
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        
+        const userType = currentUserData.userType || 'personal';
+        let personalData = [];
 
-                if (userType === 'personal') {
-                    personalData = [
-                        {label: 'User Type', value: 'Personal'},
-                        {label: 'Name', value: currentUserData.name || 'N/A'},
-                        {label: 'Email', value: currentUserData.email || 'N/A'},
-                        {label: 'Phone', value: currentUserData.phone || 'N/A'},
-                        {label: 'Date of Birth', value: currentUserData.dob || 'N/A'},
-                        {label: 'Gender', value: currentUserData.gender || 'N/A'},
-                        {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
-                        {label: 'PAN', value: currentUserData.pan || 'N/A'},
-                        {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
-                        {label: 'Username', value: currentUserData.username || 'N/A'},
-                        {label: 'Password', value: currentUserData.password || 'N/A'}
-                    ];
-                } else if (userType === 'business') {
-                    personalData = [
-                        {label: 'User Type', value: 'Business'},
-                        {label: 'Business Name', value: currentUserData.name || 'N/A'},
-                        {label: 'Email', value: currentUserData.email || 'N/A'},
-                        {label: 'Phone', value: currentUserData.phone || 'N/A'},
-                        {label: 'Date of Incorp.', value: currentUserData.doi || 'N/A'},
-                        {label: 'Pincode', value: currentUserData.pincode || 'N/A'},
-                        {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
-                        {label: 'PAN', value: currentUserData.pan || 'N/A'},
-                        {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
-                        {label: 'Username', value: currentUserData.username || 'N/A'},
-                        {label: 'Password', value: currentUserData.password || 'N/A'}
-                    ];
-                }
-                
-                doc.setFont('helvetica', 'bold');
-                let maxLabelWidth = 0;
-                personalData.forEach(item => {
-                    const width = doc.getTextWidth(item.label + ': ');
-                    if (width > maxLabelWidth) maxLabelWidth = width;
-                });
-                
-                const valueStartX = leftMargin + maxLabelWidth + 2;
-                
-                personalData.forEach(item => {
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(item.label + ':', leftMargin, y);
-                    
-                    doc.setFont('helvetica', 'normal');
-                    let displayValue = item.value;
-                    
-                    if (displayValue.length > 30 && item.label !== 'Email') {
-                        displayValue = displayValue.substring(0, 30) + '...';
-                    }
-                    
-                    doc.text(displayValue, valueStartX, y);
-                    y += 6;
-                });
-                
-                y += 4;
-                
-                doc.setDrawColor(200, 200, 200);
-                doc.line(leftMargin, y, pageWidth - rightMargin, y);
-                y += 10;
-                
-                // SECTION 2: ACCOUNT & PLAN DETAILS
-                doc.setFontSize(12);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(58, 12, 163);
-                doc.text('ACCOUNT & PLAN DETAILS', leftMargin, y);
-                y += 8;
-                
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'normal');
-                doc.setTextColor(0, 0, 0);
-                
-                const accountData = [
-                    {label: 'Status', value: (currentUserData.status || 'inactive').toUpperCase()},
-                    {label: 'Plan Name', value: currentUserData.planName || 'N/A'},
-                    {label: 'Plan Size', value: currentUserData.planSize || 'N/A'},
-                    {label: 'Plan Type', value: currentUserData.planType || 'N/A'},
-                    {label: 'Plan Start Date', value: currentUserData.planStartDate || 'N/A'},
-                    {label: 'Plan End Date', value: currentUserData.planEndDate || 'N/A'},
-                    {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
-                    {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'},
-                    {label: 'Registered On', value: currentUserData.accountCreated ? formatDateTime(currentUserData.accountCreated) : 'N/A'}
-                ];
-                
-                doc.setFont('helvetica', 'bold');
-                maxLabelWidth = 0;
-                accountData.forEach(item => {
-                    const width = doc.getTextWidth(item.label + ': ');
-                    if (width > maxLabelWidth) maxLabelWidth = width;
-                });
-                
-                const accValueStartX = leftMargin + maxLabelWidth + 2;
-                
-                accountData.forEach(item => {
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(item.label + ':', leftMargin, y);
-                    
-                    doc.setFont('helvetica', 'normal');
-                    let displayValue = item.value;
-                    
-                    if (displayValue.length > 30) {
-                        displayValue = displayValue.substring(0, 30) + '...';
-                    }
-                    
-                    doc.text(displayValue, accValueStartX, y);
-                    y += 6;
-                });
-                
-                y += 4;
-                
-                doc.setDrawColor(200, 200, 200);
-                doc.line(leftMargin, y, pageWidth - rightMargin, y);
-                y += 10;
-                
-                // AGREEMENT SECTION
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'bold');
-                doc.text('AGREEMENT', leftMargin, y);
-                y += 6;
-                
-                doc.setFont('helvetica', 'normal');
-                
-                const line1 = 'I agree to the Terms & Conditions, Privacy Policy,';
-                const line2 = 'Data Retention Policy, and all other applicable policies of Odelya Cloud Storage.';
-                
-                doc.setDrawColor(0, 128, 0);
-                doc.setLineWidth(0.5);
-                const tickX = leftMargin;
-                const tickY = y - 1;
-                
-                doc.line(tickX, tickY + 2, tickX + 1, tickY + 3);
-                doc.line(tickX + 1, tickY + 3, tickX + 3, tickY);
-                
-                doc.setTextColor(0, 0, 0);
-                doc.text(line1, leftMargin + 5, y);
-                y += 5;
-                doc.text(line2, leftMargin, y);
-                y += 8;
-                
-               
-                // Save PDF
-                const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
-                let nameForFile = currentUserData.name || 'user';
-                nameForFile = nameForFile.replace(/\s+/g, '_');
-                const fileName = `${phoneNumber}_${nameForFile}.pdf`;
-                doc.save(fileName);
-                
-                console.log("PDF generated successfully!");
-                
-            } catch (error) {
-                console.error("Error generating PDF:", error);
-                alert("❌ Error generating PDF: " + error.message);
-            } finally {
-                event.target.textContent = originalText;
-                event.target.disabled = false;
+        if (userType === 'personal') {
+            personalData = [
+                {label: 'User Type', value: 'Personal'},
+                {label: 'Name', value: currentUserData.name || 'N/A'},
+                {label: 'Email', value: currentUserData.email || 'N/A'},
+                {label: 'Phone', value: currentUserData.phone || 'N/A'},
+                {label: 'Date of Birth', value: currentUserData.dob || 'N/A'},
+                {label: 'Gender', value: currentUserData.gender || 'N/A'},
+                {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
+                {label: 'PAN', value: currentUserData.pan || 'N/A'},
+                {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
+                {label: 'Username', value: currentUserData.username || 'N/A'},
+                {label: 'Password', value: currentUserData.password || 'N/A'}
+            ];
+        } else if (userType === 'business') {
+            personalData = [
+                {label: 'User Type', value: 'Business'},
+                {label: 'Business Name', value: currentUserData.name || 'N/A'},
+                {label: 'Email', value: currentUserData.email || 'N/A'},
+                {label: 'Phone', value: currentUserData.phone || 'N/A'},
+                {label: 'Date of Incorp.', value: currentUserData.doi || 'N/A'},
+                {label: 'Pincode', value: currentUserData.pincode || 'N/A'},
+                {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
+                {label: 'PAN', value: currentUserData.pan || 'N/A'},
+                {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
+                {label: 'Username', value: currentUserData.username || 'N/A'},
+                {label: 'Password', value: currentUserData.password || 'N/A'}
+            ];
+        }
+        
+        doc.setFont('helvetica', 'bold');
+        let maxLabelWidth = 0;
+        personalData.forEach(item => {
+            const width = doc.getTextWidth(item.label + ': ');
+            if (width > maxLabelWidth) maxLabelWidth = width;
+        });
+        
+        const valueStartX = leftMargin + maxLabelWidth + 2;
+        
+        personalData.forEach(item => {
+            doc.setFont('helvetica', 'bold');
+            doc.text(item.label + ':', leftMargin, y);
+            
+            doc.setFont('helvetica', 'normal');
+            let displayValue = item.value;
+            
+            if (displayValue.length > 30 && item.label !== 'Email') {
+                displayValue = displayValue.substring(0, 30) + '...';
             }
-        };
+            
+            doc.text(displayValue, valueStartX, y);
+            y += 6;
+        });
+        
+        y += 4;
+        
+        // Grey line after personal info
+        doc.setDrawColor(200, 200, 200);
+        doc.line(leftMargin, y, pageWidth - rightMargin, y);
+        y += 10;
+        
+        // SECTION 2: ACCOUNT & PLAN DETAILS - MOVED UPWARDS
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(58, 12, 163);
+        doc.text('ACCOUNT & PLAN DETAILS', leftMargin, y);
+        y += 8;
+        
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        
+        const accountData = [
+            {label: 'Status', value: (currentUserData.status || 'inactive').toUpperCase()},
+            {label: 'Plan Name', value: currentUserData.planName || 'N/A'},
+            {label: 'Plan Size', value: currentUserData.planSize || 'N/A'},
+            {label: 'Plan Type', value: currentUserData.planType || 'N/A'},
+            {label: 'Plan Start Date', value: currentUserData.planStartDate || 'N/A'},
+            {label: 'Plan End Date', value: currentUserData.planEndDate || 'N/A'},
+            {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
+            {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'},
+            {label: 'Registered On', value: currentUserData.accountCreated ? formatDateTime(currentUserData.accountCreated) : 'N/A'}
+        ];
+        
+        doc.setFont('helvetica', 'bold');
+        maxLabelWidth = 0;
+        accountData.forEach(item => {
+            const width = doc.getTextWidth(item.label + ': ');
+            if (width > maxLabelWidth) maxLabelWidth = width;
+        });
+        
+        const accValueStartX = leftMargin + maxLabelWidth + 2;
+        
+        accountData.forEach(item => {
+            doc.setFont('helvetica', 'bold');
+            doc.text(item.label + ':', leftMargin, y);
+            
+            doc.setFont('helvetica', 'normal');
+            let displayValue = item.value;
+            
+            if (displayValue.length > 30) {
+                displayValue = displayValue.substring(0, 30) + '...';
+            }
+            
+            doc.text(displayValue, accValueStartX, y);
+            y += 6;
+        });
+        
+        y += 4;
+        
+        // Grey line moved closer to Registered On - UPDATED
+        doc.setDrawColor(200, 200, 200);
+        doc.line(leftMargin, y, pageWidth - rightMargin, y);
+        y += 10;
+        
+        // NEW: TERMS & CONDITIONS SECTION - REPLACED AGREEMENT SECTION
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(26, 35, 126); // #1a237e dark blue
+        doc.text('Terms & Conditions', leftMargin, y);
+        y += 8;
+        
+        // Terms & Conditions background
+        doc.setFillColor(248, 249, 250); // #f8f9fa light gray
+        doc.rect(leftMargin, y, pageWidth - leftMargin - rightMargin, 100, 'F');
+        
+        // Border around the section
+        doc.setDrawColor(221, 221, 221); // #ddd border
+        doc.setLineWidth(0.5);
+        doc.rect(leftMargin, y, pageWidth - leftMargin - rightMargin, 100);
+        
+        // Terms content
+        y += 8;
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        
+        const terms = [
+            "1. I acknowledge and agree to the Terms & Conditions, Privacy Policy,",
+            "   Data Retention Policy, and all other applicable policies of Odelya",
+            "   Management Private Limited",
+            "",
+            "2. I acknowledge that account activation is contingent upon sharing",
+            "   my transaction details with Odelya Management Private Limited via",
+            "   the designated office WhatsApp number or official business email.",
+            "",
+            "3. I agree that my service will be activated within 48 hours of",
+            "   successful payment verification.",
+            "",
+            "4. I agree that all payments are final and non-refundable under any",
+            "   circumstances."
+        ];
+        
+        terms.forEach((line, index) => {
+            if (line.trim() === "") {
+                y += 4; // Extra space between items
+            } else {
+                doc.setFont('helvetica', index % 4 === 0 ? 'bold' : 'normal');
+                doc.text(line, leftMargin + 5, y);
+                y += 5;
+            }
+        });
+        
+        // Agreement line
+        y += 8;
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(40, 167, 69); // #28a745 green
+        doc.text('✓', leftMargin + 5, y);
+        
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(26, 35, 126); // #1a237e dark blue
+        doc.text('I hereby agree to all the terms and conditions stated here.', leftMargin + 12, y);
+        
+        // Save PDF
+        const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
+        let nameForFile = currentUserData.name || 'user';
+        nameForFile = nameForFile.replace(/\s+/g, '_');
+        const fileName = `${phoneNumber}_${nameForFile}.pdf`;
+        doc.save(fileName);
+        
+        console.log("PDF generated successfully!");
+        
+    } catch (error) {
+        console.error("Error generating PDF:", error);
+        alert("❌ Error generating PDF: " + error.message);
+    } finally {
+        event.target.textContent = originalText;
+        event.target.disabled = false;
+    }
+};
       
 // Quick delete from table - FIXED VERSION
 window.quickDelete = function(userId, userName) {
