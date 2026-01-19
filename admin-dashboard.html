@@ -1744,11 +1744,12 @@ y += 8;
 // 1. Reduced font size for agreement statement
 doc.setFontSize(10); // Reduced from default
 
-// 2. Using a different tick symbol (✔ U+2714 HEAVY CHECK MARK)
-doc.setFontSize(12); // Slightly larger for tick
-doc.setFont('helvetica', 'bold');
-doc.setTextColor(40, 167, 69); // Green color for tick
-doc.text('✔', leftMargin, y);
+// 2. Draw a green tick mark manually
+doc.setDrawColor(40, 167, 69); // Green
+doc.setLineWidth(1);
+// Draw check mark: two lines forming a check
+doc.line(leftMargin, y - 1, leftMargin + 2, y + 1); // Diagonal part
+doc.line(leftMargin + 2, y + 1, leftMargin + 5, y - 2); // Longer diagonal part
 
 // Back to normal font size for agreement text
 doc.setFontSize(10);
