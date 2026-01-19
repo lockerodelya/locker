@@ -2852,35 +2852,35 @@ window.generatePDF = function() {
         const pageHeight = doc.internal.pageSize.height;
         const centerX = pageWidth / 2;
         
-        // HEADER - Moved more upward (req 1)
-        doc.setFontSize(18);
+        // HEADER - Changed as requested
+        doc.setFontSize(20); // Increased from 18
+        doc.setFont('helvetica', 'bold'); // Added bold
         doc.setTextColor(0, 212, 255);
-        doc.text('ODELYA CLOUD STORAGE', centerX, topMargin, { align: 'center' });
+        doc.text('ODELYA CLOUD ACCOUNT DETAILS', centerX, topMargin, { align: 'center' }); // Changed text
         
-        doc.setFontSize(16);
-        doc.setTextColor(0, 0, 0);
-        doc.text('MY ACCOUNT DETAILS', centerX, topMargin + 10, { align: 'center' });
-        
+        // Removed "MY ACCOUNT DETAILS" line completely
+        // Generated date and User ID moved closer
         doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal'); // Reset to normal for these lines
         doc.setTextColor(100, 100, 100);
         const generatedDateTime = formatDateTimeForPDFHeader(new Date());
-        doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 18, { align: 'center' });
+        doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 10, { align: 'center' }); // Moved from +18 to +10
         
-        doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 26, { align: 'center' });
+        doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 18, { align: 'center' }); // Moved from +26 to +18
         
-        let y = topMargin + 35; // Reduced from +45 to bring everything up (req 1)
+        let y = topMargin + 28; // Reduced further since we removed one line
         
         // First grey line - moved closer to User ID (req 2)
         doc.setDrawColor(200, 200, 200);
         doc.line(leftMargin, y, pageWidth - rightMargin, y);
-        y += 8; // Reduced from +12
+        y += 8;
         
         // SECTION 1: PERSONAL INFORMATION
         doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
-        doc.setTextColor(0, 212, 255);
+        doc.setTextColor(0, 212, 255); // This is the color - sky blue
         doc.text('PERSONAL INFORMATION', leftMargin, y);
-        y += 8; // Reduced from +10
+        y += 8;
         
         doc.setFontSize(11);
         doc.setFont('helvetica', 'normal');
@@ -2901,7 +2901,6 @@ window.generatePDF = function() {
                 {label: 'PAN', value: currentUserData.pan || 'N/A'},
                 {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
                 {label: 'Username', value: currentUserData.username || 'N/A'},
-                // ADDED: Password Change Date
                 {label: 'Last Password Change', value: lastPasswordChange ? formatDateTime(lastPasswordChange) : 'Never changed'}
             ];
         } else if (userType === 'business') {
@@ -2916,7 +2915,6 @@ window.generatePDF = function() {
                 {label: 'PAN', value: currentUserData.pan || 'N/A'},
                 {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
                 {label: 'Username', value: currentUserData.username || 'N/A'},
-                // ADDED: Password Change Date
                 {label: 'Last Password Change', value: lastPasswordChange ? formatDateTime(lastPasswordChange) : 'Never changed'}
             ];
         }
@@ -2942,21 +2940,21 @@ window.generatePDF = function() {
             }
             
             doc.text(displayValue, valueStartX, y);
-            y += 6; // Reduced from +7
+            y += 6;
         });
         
-        // Second grey line - moved closer to Last Password Change (req 3)
-        y += 3; // Reduced from +5
+        // Second grey line
+        y += 3;
         doc.setDrawColor(200, 200, 200);
         doc.line(leftMargin, y, pageWidth - rightMargin, y);
-        y += 8; // Reduced from +12
+        y += 8;
         
         // SECTION 2: ACCOUNT & PLAN DETAILS
         doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
-        doc.setTextColor(0, 212, 255);
+        doc.setTextColor(0, 212, 255); // Same color as PERSONAL INFORMATION
         doc.text('ACCOUNT & PLAN DETAILS', leftMargin, y);
-        y += 8; // Reduced from +10
+        y += 8;
         
         doc.setFontSize(11);
         doc.setFont('helvetica', 'normal');
@@ -2995,21 +2993,21 @@ window.generatePDF = function() {
             }
             
             doc.text(displayValue, accValueStartX, y);
-            y += 6; // Reduced from +7
+            y += 6;
         });
         
-        // Third grey line - moved closer to Registered On (req 4)
-        y += 3; // Reduced from +5
+        // Third grey line
+        y += 3;
         doc.setDrawColor(200, 200, 200);
         doc.line(leftMargin, y, pageWidth - rightMargin, y);
-        y += 8; // Reduced from +12
+        y += 8;
         
-        // TERMS & CONDITIONS SECTION
-        doc.setFontSize(12);
+        // TERMS & CONDITIONS SECTION - Using same color as PERSONAL INFORMATION
+        doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
-        doc.setTextColor(26, 35, 126); // Deep blue color
+        doc.setTextColor(0, 212, 255); // Same sky blue color
         doc.text('TERMS & CONDITIONS', leftMargin, y);
-        y += 6; // Reduced from +8
+        y += 6;
         
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
@@ -3045,17 +3043,24 @@ window.generatePDF = function() {
                 y = topMargin;
             }
             doc.text(term, leftMargin + 5, y);
-            y += 5; // Reduced from 6 to fit better
+            y += 5;
         });
         
-        // Save PDF - NO FOOTER
-        const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
-        let nameForFile = currentUserData.name || 'user';
-        nameForFile = nameForFile.replace(/\s+/g, '_');
-        const fileName = `${phoneNumber}_${nameForFile}_MyAccount.pdf`;
+        // Save PDF with new filename format: "Phone no_First name last name"
+        let phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
+        if (phoneNumber === 'N/A') {
+            phoneNumber = 'NoPhone';
+        }
+        
+        let userName = currentUserData.name || 'user';
+        // Remove extra spaces and format as "First name last name"
+        userName = userName.trim().replace(/\s+/g, ' ');
+        
+        // Create filename: Phone no_First name last name
+        const fileName = `${phoneNumber}_${userName}.pdf`;
         doc.save(fileName);
         
-        console.log("PDF generated successfully!");
+        console.log("PDF generated successfully with filename:", fileName);
         
     } catch (error) {
         console.error("Error generating PDF:", error);
