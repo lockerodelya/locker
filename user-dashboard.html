@@ -1222,13 +1222,14 @@
         }
         
         .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            border-bottom: 3px solid #00d4ff;
-            padding-bottom: 15px;
-        }
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 3px solid #00d4ff;
+    padding-bottom: 15px;
+    position: relative; /* Added for positioning */
+}
         
         .modal-header h2 {
             color: #0099cc;
@@ -1237,26 +1238,25 @@
             font-weight: 800;
         }
         
-        .user-id-header {
-            font-size: 18px;
-            color: #0099cc;
-            background: #f8f9fa;
-            padding: 10px 25px;
-            border-radius: 25px;
-            border: 3px solid #00d4ff;
-            font-weight: 800;
-            margin-right: 20px;
-        }
+.user-id-header {
+    font-size: 18px;
+    color: #0099cc;
+    background: #f8f9fa;
+    padding: 10px 25px;
+    border-radius: 25px;
+    border: 3px solid #00d4ff;
+    font-weight: 800;
+    /* Remove margin-right and position it absolutely */
+    margin-right: 0;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
         
-        .modal-status {
-            font-size: 16px;
-            font-weight: 800;
-            padding: 8px 20px;
-            border-radius: 25px;
-            min-width: 120px;
-            text-align: center;
-            text-transform: uppercase;
-        }
+ .modal-status {
+    display: none; /* This will hide the status completely */
+}
         
         .modal-status.active {
             background: #d4edda;
@@ -1272,7 +1272,18 @@
             background: #6c757d;
             color: white;
         }
-        
+ .action-btn.btn-pdf {
+    background: #ffffff !important; /* White background */
+    color: #6f42c1 !important; /* Purple text */
+    border: 2px solid #6f42c1 !important; /* Purple border */
+}
+
+.action-btn.btn-pdf:hover {
+    background: #f8f9fa !important; /* Light gray on hover */
+    color: #5a32a3 !important; /* Darker purple on hover */
+    border-color: #5a32a3 !important;
+    transform: translateY(-2px);
+}       
         .user-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1594,7 +1605,7 @@
             <div class="modal-header">
                 <h2>My Account Details</h2>
                 <div class="user-id-header" id="modalUserIdDisplay">User ID: Loading...</div>
-                <div class="modal-status" id="modalStatusDisplay">Status</div>
+                
             </div>
             
             <div class="user-details" id="userDetails">
@@ -2473,8 +2484,8 @@ html += `</div>`;
             document.getElementById('modalUserIdDisplay').textContent = `User ID: ${user.userId || 'N/A'}`;
             
             const statusDisplay = document.getElementById('modalStatusDisplay');
-            statusDisplay.textContent = user.status || 'inactive';
-            statusDisplay.className = 'modal-status ' + (user.status || 'inactive');
+            
+            
         }
         
         // Close modal
