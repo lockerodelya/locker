@@ -2269,6 +2269,377 @@ y += 5;
                 event.target.disabled = false;
             }
         };
-    </script>
+    
+    // ==================== RECHARGE SYSTEM FUNCTIONS ====================
+
+// Global variable to store selected plan
+let selectedPlan = null;
+
+// 1. OPEN RECHARGE MODAL
+function openRechargeModal() {
+    console.log("Opening recharge modal...");
+    
+    // Reset iframe to pricing page
+    document.getElementById('pricingIframe').src = 'https://www.odelya.online/cloud-storage.html';
+    
+    // Hide plan details section
+    document.getElementById('planDetailsSection').style.display = 'none';
+    
+    // Clear any previous selection
+    selectedPlan = null;
+    
+    // Show modal
+    document.getElementById('rechargeModal').style.display = 'flex';
+    
+    // Setup message listener
+    setupIframeMessageListener();
+}
+
+// 2. CLOSE RECHARGE MODAL
+function closeRechargeModal() {
+    document.getElementById('rechargeModal').style.display = 'none';
+}
+
+// 3. SETUP IFRAME MESSAGE LISTENER
+function setupIframeMessageListener() {
+    // Remove any existing listeners
+    window.removeEventListener('message', handleIframeMessage);
+    
+    // Add new listener
+    window.addEventListener('message', handleIframeMessage);
+}
+
+// 4. HANDLE MESSAGES FROM IFRAME
+function handleIframeMessage(event) {
+    // Security check - only accept messages from odelya.online
+    if (event.origin !== 'https://www.odelya.online') {
+        console.log('Message from unauthorized origin:', event.origin);
+        return;
+    }
+    
+    console.log('Received message from iframe:', event.data);
+    
+    if (event.data && event.data.type === 'PLAN_SELECTED') {
+        // User selected a plan from pricing page
+        handlePlanSelection(event.data.plan);
+    }
+    else if (event.data && event.data.type === 'PAYMENT_COMPLETED') {
+        // Payment completed on payment page
+        handlePaymentCompletion(event.data.payment);
+    }
+}
+
+// 5. HANDLE PLAN SELECTION
+function handlePlanSelection(planData) {
+    console.log('Plan selected:', planData);
+    
+    // Store plan globally
+    selectedPlan = planData;
+    
+    // Display plan details
+    displayPlanDetails(planData);
+    
+    // Show plan details section
+    document.getElementById('planDetailsSection').style.display = 'block';
+    
+    // Scroll to details
+    setTimeout(() => {
+        document.getElementById('planDetailsSection').scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+    }, 300);
+}
+
+// 6. DISPLAY PLAN DETAILS
+function displayPlanDetails(planData) {
+    const detailsDiv = document.getElementById('selectedPlanDetails');
+    
+    // Clear previous details
+    detailsDiv.innerHTML = '';
+    
+    // Create plan details cards
+    const details = [
+        { label: 'Plan Name', value: planData.name || 'Standard Plan', icon: '📋' },
+        { label: 'Storage Space', value: planData.storage || '100 GB', icon: '💾' },
+        { label: 'Price', value: planData.price || '$10', icon: '💰' },
+        { label: 'Duration', value: planData.duration || '1 Month', icon: '⏰' },
+        { label: 'Users Allowed', value: planData.users || '1 User', icon: '👥' },
+        { label: 'Support', value: planData.support || 'Email Support', icon: '🛟' }
+    ];
+    
+    details.forEach(detail => {
+        const card = document.createElement('div');
+        card.className = 'plan-detail-item';
+        card.innerHTML = `
+            <div style="font-size: 28px; margin-bottom: 10px;">${detail.icon}</div>
+            <div class="label">${detail.label}</div>
+            <div class="value">${detail.value}</div>
+        `;
+        detailsDiv.appendChild(card);
+    });
+}
+
+// 7. PROCEED TO PAYMENT
+function proceedToPayment() {
+    if (!selectedPlan) {
+        alert('Please select a plan first.');
+        return;
+    }
+    
+    console.log('Proceeding to payment for plan:', selectedPlan);
+    
+    // Store plan in localStorage temporarily
+    localStorage.setItem('selected_plan_temp', JSON.stringify(selectedPlan));
+    
+    // Change iframe to payment page
+    document.getElementById('pricingIframe').src = 'https://www.odelya.online/payment.html';
+    
+    // Hide plan details during payment
+    document.getElementById('planDetailsSection').style.display = 'none';
+    
+    // Setup payment completion listener
+    setupPaymentCompletionListener();
+}
+
+// 8. SETUP PAYMENT COMPLETION LISTENER
+function setupPaymentCompletionListener() {
+    // Listener is already set up in handleIframeMessage
+    console.log('Waiting for payment completion...');
+}
+
+// 9. HANDLE PAYMENT COMPLETION
+async function handlePaymentCompletion(paymentData) {
+    console.log('Payment completed:', paymentData);
+    
+    try {
+        const userUid = localStorage.getItem('user_uid');
+        if (!userUid) {
+            throw new Error('User not logged in');
+        }
+        
+        // Get selected plan
+        const plan = selectedPlan || JSON.parse(localStorage.getItem('selected_plan_temp') || '{}');
+        
+        if (!plan.name) {
+            throw new Error('No plan selected');
+        }
+        
+        // Create plan upgrade record
+        const planUpgradeData = {
+            userId: userUid,
+            userEmail: currentUserEmail,
+            userName: localStorage.getItem('user_name') || 'User',
+            planName: plan.name,
+            planStorage: plan.storage,
+            planPrice: plan.price,
+            planDuration: plan.duration,
+            paymentAmount: paymentData.amount || plan.price,
+            paymentMethod: paymentData.method || 'Online',
+            transactionId: paymentData.transactionId || `TXN${Date.now()}`,
+            paymentDate: new Date().toISOString(),
+            paymentTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            activationDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Tomorrow
+            status: 'payment_received',
+            currentPlan: currentUserData?.planName || 'No Plan',
+            notes: 'Payment completed, awaiting admin activation'
+        };
+        
+        // SAVE TO FIREBASE
+        await savePlanUpgradeToFirebase(userUid, planUpgradeData);
+        
+        // Close modal
+        closeRechargeModal();
+        
+        // Clear temporary data
+        localStorage.removeItem('selected_plan_temp');
+        selectedPlan = null;
+        
+        // Show success message
+        alert('✅ Payment successful!\n\nYour plan upgrade request has been received.\nAdmin will activate your plan within 24 hours.');
+        
+        // Refresh to show upcoming plan
+        setTimeout(() => {
+            loadUpcomingPlan();
+        }, 1000);
+        
+    } catch (error) {
+        console.error('Error processing payment:', error);
+        alert('❌ Error: ' + error.message);
+    }
+}
+
+// 10. SAVE TO FIREBASE FIRESTORE
+async function savePlanUpgradeToFirebase(userId, planData) {
+    try {
+        console.log('Saving to Firebase...');
+        
+        // Create document in planUpgrades subcollection
+        const planRef = await db.collection('users').doc(userId)
+            .collection('planUpgrades').add(planData);
+        
+        console.log('Plan upgrade saved with ID:', planRef.id);
+        
+        // Update user document with upcoming plan info
+        await db.collection('users').doc(userId).update({
+            upcomingPlan: {
+                planName: planData.planName,
+                storage: planData.planStorage,
+                price: planData.planPrice,
+                paymentDate: planData.paymentDate,
+                activationDate: planData.activationDate,
+                status: 'pending_activation',
+                planUpgradeId: planRef.id
+            },
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        console.log('User document updated with upcoming plan');
+        
+        return planRef.id;
+        
+    } catch (error) {
+        console.error('Firebase save error:', error);
+        throw error;
+    }
+}
+
+// 11. LOAD UPCOMING PLAN FROM FIREBASE
+async function loadUpcomingPlan() {
+    try {
+        const userUid = localStorage.getItem('user_uid');
+        if (!userUid) return;
+        
+        console.log('Loading upcoming plan...');
+        
+        // Get user document
+        const userDoc = await db.collection('users').doc(userUid).get();
+        
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            
+            // Check for upcoming plan
+            if (userData.upcomingPlan && userData.upcomingPlan.status !== 'activated') {
+                displayUpcomingPlan(userData.upcomingPlan);
+                return true;
+            }
+            
+            // Also check planUpgrades collection
+            const upgradesQuery = await db.collection('users').doc(userUid)
+                .collection('planUpgrades')
+                .where('status', 'in', ['payment_received', 'pending_activation'])
+                .orderBy('paymentTimestamp', 'desc')
+                .limit(1)
+                .get();
+            
+            if (!upgradesQuery.empty) {
+                const latestUpgrade = upgradesQuery.docs[0].data();
+                displayUpcomingPlan({
+                    planName: latestUpgrade.planName,
+                    storage: latestUpgrade.planStorage,
+                    price: latestUpgrade.planPrice,
+                    paymentDate: latestUpgrade.paymentDate,
+                    activationDate: latestUpgrade.activationDate,
+                    status: latestUpgrade.status,
+                    transactionId: latestUpgrade.transactionId
+                });
+                return true;
+            }
+        }
+        
+        // No upcoming plan found
+        document.getElementById('upcomingPlanSection').style.display = 'none';
+        return false;
+        
+    } catch (error) {
+        console.error('Error loading upcoming plan:', error);
+        return false;
+    }
+}
+
+// 12. DISPLAY UPCOMING PLAN
+function displayUpcomingPlan(planData) {
+    const detailsDiv = document.getElementById('upcomingPlanDetails');
+    
+    // Clear previous
+    detailsDiv.innerHTML = '';
+    
+    // Create status badge
+    let statusBadge = '';
+    let statusColor = '#ffc107'; // Yellow for pending
+    
+    if (planData.status === 'payment_received') {
+        statusBadge = 'Payment Received';
+        statusColor = '#17a2b8'; // Blue
+    } else if (planData.status === 'pending_activation') {
+        statusBadge = 'Pending Activation';
+        statusColor = '#ffc107'; // Yellow
+    } else if (planData.status === 'activated') {
+        statusBadge = 'Activated';
+        statusColor = '#28a745'; // Green
+    }
+    
+    // Create cards
+    const cards = [
+        { label: 'Plan Name', value: planData.planName || 'N/A', icon: '📋' },
+        { label: 'Storage', value: planData.storage || 'N/A', icon: '💾' },
+        { label: 'Amount Paid', value: planData.price || 'N/A', icon: '💰' },
+        { label: 'Payment Date', value: new Date(planData.paymentDate || Date.now()).toLocaleDateString(), icon: '📅' },
+        { label: 'Expected Activation', value: new Date(planData.activationDate || Date.now() + 86400000).toLocaleDateString(), icon: '🚀' },
+        { label: 'Status', value: statusBadge, icon: '⏳', color: statusColor }
+    ];
+    
+    cards.forEach(card => {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'upcoming-plan-card';
+        cardDiv.innerHTML = `
+            <div style="font-size: 32px; margin-bottom: 15px;">${card.icon}</div>
+            <div class="label">${card.label}</div>
+            <div class="value" style="${card.color ? `color: ${card.color};` : ''}">
+                ${card.value}
+            </div>
+        `;
+        detailsDiv.appendChild(cardDiv);
+    });
+    
+    // Show the section
+    document.getElementById('upcomingPlanSection').style.display = 'block';
+    
+    // Scroll to it
+    setTimeout(() => {
+        document.getElementById('upcomingPlanSection').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }, 500);
+}
+
+// 13. REFRESH PLAN STATUS
+async function refreshPlanStatus() {
+    const btn = event.target;
+    const originalText = btn.textContent;
+    
+    btn.textContent = '🔄 Refreshing...';
+    btn.disabled = true;
+    
+    await loadUpcomingPlan();
+    
+    setTimeout(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }, 1000);
+}
+
+// 14. UPDATE RECHARGE BUTTON FUNCTION
+window.rechargeFunction = function() {
+    openRechargeModal();
+};
+
+// 15. UPDATE PAGE LOAD FUNCTION
+// Find your existing window.onload function and add this line at the end:
+// loadUpcomingPlan();
+
+// ==================== END RECHARGE FUNCTIONS ====================
+            </script>
 </body>
 </html>
