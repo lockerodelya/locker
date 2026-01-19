@@ -2170,7 +2170,7 @@ function openPaymentPage() {
     paymentContainer.style.display = 'flex';
 }
 
-// Close payment container - SAVE RECHARGE REQUEST
+// Close payment container - SIMPLE MESSAGE ONLY
 window.closePayment = function() {
     const paymentContainer = document.getElementById('paymentContainer');
     const paymentFrame = document.getElementById('paymentFrame');
@@ -2178,59 +2178,9 @@ window.closePayment = function() {
     paymentContainer.style.display = 'none';
     paymentFrame.src = "";
     
-    // Save recharge request to Firebase - WITH PROPER ERROR HANDLING
-    saveRechargeRequest();
+    // Show simple message
+    alert("Please share your transaction details to activate your plan. Thanks");
 };
-
-// Save recharge request to Firebase Firestore - FIXED VERSION
-function saveRechargeRequest() {
-    if (!currentUserId) {
-        console.error("No user ID");
-        showRechargeMessage("Error: User not found. Please login again.", true);
-        return;
-    }
-    
-    const rechargeData = {
-        userId: currentUserId,
-        userEmail: currentUserEmail,
-        userName: currentUserData.name || 'N/A',
-        userPhone: currentUserData.phone || 'N/A',
-        planName: currentUserData.planName || 'N/A',
-        planSize: currentUserData.planSize || 'N/A',
-        planType: currentUserData.planType || 'N/A',
-        planValue: currentPlanValue || currentUserData.planValue || 'N/A',
-        duration: currentUserData.planType && currentUserData.planType.toLowerCase() === 'monthly' ? 
-            'Next consecutive month' : 
-            currentUserData.planType && currentUserData.planType.toLowerCase() === 'yearly' ? 
-            'Next consecutive year' : 'N/A',
-        requestDate: new Date().toISOString(),
-        status: 'pending', // Status for admin to see
-        verified: false, // Admin needs to verify
-        createdAt: new Date().toISOString(),
-        timestamp: new Date()
-    };
-    
-    // Save to Firestore in 'rechargeRequests' collection (for admin to see)
-    db.collection("rechargeRequests").add(rechargeData)
-        .then((docRef) => {
-            console.log("✅ Recharge request saved with ID:", docRef.id);
-            
-            // Also save to user's recharge history
-            return saveToUserRechargeHistory(docRef.id, rechargeData);
-        })
-        .then(() => {
-            // Update user's last recharge request date
-            return updateUserLastRechargeRequest();
-        })
-        .then(() => {
-            // SUCCESS - Show message to user
-            showRechargeMessage("✅ Your recharge request has been saved and is being verified. We'll notify you once it's confirmed.", false);
-        })
-        .catch((error) => {
-            console.error("❌ Error saving recharge request:", error);
-            showRechargeMessage("❌ Error saving recharge request. Please try again or contact support.", true);
-        });
-}
 
 // Show recharge message (single function for all messages)
 function showRechargeMessage(message, isError = false) {
