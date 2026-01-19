@@ -2106,148 +2106,185 @@ function validatePassword() {
                 });
         };
 
-        // ========== SIMPLE RECHARGE FUNCTIONALITY ==========
-        
-        // Show recharge modal
-        window.showRechargeModal = function() {
-            if (!currentUserData) {
-                alert("No user data available");
-                return;
-            }
+// ========== SIMPLE RECHARGE FUNCTIONALITY ==========
+
+// Show recharge modal
+window.showRechargeModal = function() {
+    if (!currentUserData) {
+        alert("No user data available");
+        return;
+    }
+    
+    // Populate current plan details
+    document.getElementById('currentPlanName').textContent = currentUserData.planName || 'No Plan';
+    document.getElementById('currentPlanSize').textContent = currentUserData.planSize || 'N/A';
+    document.getElementById('currentPlanType').textContent = currentUserData.planType || 'N/A';
+    
+    // Set duration based on plan type
+    let durationText = 'N/A';
+    if (currentUserData.planType && currentUserData.planType.toLowerCase() === 'monthly') {
+        durationText = 'Next consecutive month';
+    } else if (currentUserData.planType && currentUserData.planType.toLowerCase() === 'yearly') {
+        durationText = 'Next consecutive year';
+    } else {
+        durationText = currentUserData.planType || 'N/A';
+    }
+    document.getElementById('planDuration').textContent = durationText;
+    
+    // Show plan value
+    const planValue = currentPlanValue || currentUserData.planValue || 'N/A';
+    document.getElementById('planAmount').textContent = planValue;
+    
+    // Show modal
+    document.getElementById('rechargeModal').style.display = 'flex';
+};
+
+// Close recharge modal
+window.closeRechargeModal = function() {
+    document.getElementById('rechargeModal').style.display = 'none';
+};
+
+// Confirm recharge and open payment page
+window.confirmRecharge = function() {
+    if (!currentUserData || !currentUserData.planName || currentUserData.planName === 'N/A') {
+        alert("You don't have an active plan to recharge. Please contact support.");
+        return;
+    }
+    
+    // Close recharge modal
+    closeRechargeModal();
+    
+    // Open payment page in iframe
+    openPaymentPage();
+};
+
+// Open payment page in iframe
+function openPaymentPage() {
+    const paymentFrame = document.getElementById('paymentFrame');
+    const paymentContainer = document.getElementById('paymentContainer');
+    
+    // Set payment page URL
+    paymentFrame.src = "https://www.odelya.online/payment.html";
+    
+    // Show payment container
+    paymentContainer.style.display = 'flex';
+}
+
+// Close payment container - SAVE RECHARGE REQUEST
+window.closePayment = function() {
+    const paymentContainer = document.getElementById('paymentContainer');
+    const paymentFrame = document.getElementById('paymentFrame');
+    
+    paymentContainer.style.display = 'none';
+    paymentFrame.src = "";
+    
+    // Save recharge request to Firebase - WITH PROPER ERROR HANDLING
+    saveRechargeRequest();
+};
+
+// Save recharge request to Firebase Firestore - FIXED VERSION
+function saveRechargeRequest() {
+    if (!currentUserId) {
+        console.error("No user ID");
+        showRechargeMessage("Error: User not found. Please login again.", true);
+        return;
+    }
+    
+    const rechargeData = {
+        userId: currentUserId,
+        userEmail: currentUserEmail,
+        userName: currentUserData.name || 'N/A',
+        userPhone: currentUserData.phone || 'N/A',
+        planName: currentUserData.planName || 'N/A',
+        planSize: currentUserData.planSize || 'N/A',
+        planType: currentUserData.planType || 'N/A',
+        planValue: currentPlanValue || currentUserData.planValue || 'N/A',
+        duration: currentUserData.planType && currentUserData.planType.toLowerCase() === 'monthly' ? 
+            'Next consecutive month' : 
+            currentUserData.planType && currentUserData.planType.toLowerCase() === 'yearly' ? 
+            'Next consecutive year' : 'N/A',
+        requestDate: new Date().toISOString(),
+        status: 'pending', // Status for admin to see
+        verified: false, // Admin needs to verify
+        createdAt: new Date().toISOString(),
+        timestamp: new Date()
+    };
+    
+    // Save to Firestore in 'rechargeRequests' collection (for admin to see)
+    db.collection("rechargeRequests").add(rechargeData)
+        .then((docRef) => {
+            console.log("✅ Recharge request saved with ID:", docRef.id);
             
-            // Populate current plan details
-            document.getElementById('currentPlanName').textContent = currentUserData.planName || 'No Plan';
-            document.getElementById('currentPlanSize').textContent = currentUserData.planSize || 'N/A';
-            document.getElementById('currentPlanType').textContent = currentUserData.planType || 'N/A';
-            
-            // Set duration based on plan type
-            let durationText = 'N/A';
-            if (currentUserData.planType && currentUserData.planType.toLowerCase() === 'monthly') {
-                durationText = 'Next consecutive month';
-            } else if (currentUserData.planType && currentUserData.planType.toLowerCase() === 'yearly') {
-                durationText = 'Next consecutive year';
-            } else {
-                durationText = currentUserData.planType || 'N/A';
-            }
-            document.getElementById('planDuration').textContent = durationText;
-            
-            // Show plan value
-            const planValue = currentPlanValue || currentUserData.planValue || 'N/A';
-            document.getElementById('planAmount').textContent = planValue;
-            
-            // Show modal
-            document.getElementById('rechargeModal').style.display = 'flex';
-        };
-        
-        // Close recharge modal
-        window.closeRechargeModal = function() {
-            document.getElementById('rechargeModal').style.display = 'none';
-        };
-        
-        // Confirm recharge and open payment page
-        window.confirmRecharge = function() {
-            if (!currentUserData || !currentUserData.planName || currentUserData.planName === 'N/A') {
-                alert("You don't have an active plan to recharge. Please contact support.");
-                return;
-            }
-            
-            // Close recharge modal
-            closeRechargeModal();
-            
-            // Open payment page in iframe
-            openPaymentPage();
-        };
-        
-        // Open payment page in iframe
-        function openPaymentPage() {
-            const paymentFrame = document.getElementById('paymentFrame');
-            const paymentContainer = document.getElementById('paymentContainer');
-            
-            // Set payment page URL
-            paymentFrame.src = "https://www.odelya.online/payment.html";
-            
-            // Show payment container
-            paymentContainer.style.display = 'flex';
-        }
-        
-        // Close payment container - SAVE RECHARGE REQUEST
-        window.closePayment = function() {
-            const paymentContainer = document.getElementById('paymentContainer');
-            const paymentFrame = document.getElementById('paymentFrame');
-            
-            paymentContainer.style.display = 'none';
-            paymentFrame.src = "";
-            
-            // Save recharge request to Firebase
-            saveRechargeRequest();
-            
-            // Show message to user
-            alert("✅ Your recharge request is being verified. We'll notify you once it's confirmed.");
-        };
-        
-        // Save recharge request to Firebase Firestore
-        function saveRechargeRequest() {
-            if (!currentUserId) {
-                console.error("No user ID");
-                return;
-            }
-            
-            const rechargeData = {
-                userId: currentUserId,
-                userEmail: currentUserEmail,
-                userName: currentUserData.name || 'N/A',
-                userPhone: currentUserData.phone || 'N/A',
-                planName: currentUserData.planName || 'N/A',
-                planSize: currentUserData.planSize || 'N/A',
-                planType: currentUserData.planType || 'N/A',
-                planValue: currentPlanValue || currentUserData.planValue || 'N/A',
-                duration: currentUserData.planType && currentUserData.planType.toLowerCase() === 'monthly' ? 
-                    'Next consecutive month' : 
-                    currentUserData.planType && currentUserData.planType.toLowerCase() === 'yearly' ? 
-                    'Next consecutive year' : 'N/A',
-                requestDate: new Date().toISOString(),
-                status: 'pending', // Status for admin to see
-                verified: false, // Admin needs to verify
-                createdAt: new Date().toISOString(),
-                timestamp: new Date()
-            };
-            
-            // Save to Firestore in 'rechargeRequests' collection (for admin to see)
-            db.collection("rechargeRequests").add(rechargeData)
-                .then((docRef) => {
-                    console.log("✅ Recharge request saved with ID:", docRef.id);
-                    
-                    // Also save to user's recharge history
-                    saveToUserRechargeHistory(docRef.id, rechargeData);
-                })
-                .catch((error) => {
-                    console.error("❌ Error saving recharge request:", error);
-                    alert("Error saving recharge request. Please try again.");
-                });
-        }
-        
-        // Save to user's recharge history
-        function saveToUserRechargeHistory(requestId, rechargeData) {
-            if (!currentUserId) return;
-            
-            // Add request ID to data
-            const userRechargeData = {
-                ...rechargeData,
-                requestId: requestId
-            };
-            
-            // Save to user's recharge history collection
-            db.collection("users").doc(currentUserId).collection("rechargeHistory").add(userRechargeData)
-                .then(() => {
-                    console.log("✅ Recharge saved to user history");
-                    
-                    // Update user's last recharge request date
-                    updateUserLastRechargeRequest();
-                })
-                .catch((error) => {
-                    console.error("Error saving to user recharge history:", error);
-                });
-        }
+            // Also save to user's recharge history
+            return saveToUserRechargeHistory(docRef.id, rechargeData);
+        })
+        .then(() => {
+            // Update user's last recharge request date
+            return updateUserLastRechargeRequest();
+        })
+        .then(() => {
+            // SUCCESS - Show message to user
+            showRechargeMessage("✅ Your recharge request has been saved and is being verified. We'll notify you once it's confirmed.", false);
+        })
+        .catch((error) => {
+            console.error("❌ Error saving recharge request:", error);
+            showRechargeMessage("❌ Error saving recharge request. Please try again or contact support.", true);
+        });
+}
+
+// Show recharge message (single function for all messages)
+function showRechargeMessage(message, isError = false) {
+    if (isError) {
+        alert(message);
+    } else {
+        alert(message);
+        // Optional: You could show a nicer success modal instead of alert
+    }
+}
+
+// Save to user's recharge history
+function saveToUserRechargeHistory(requestId, rechargeData) {
+    if (!currentUserId) return Promise.reject("No user ID");
+    
+    // Add request ID to data
+    const userRechargeData = {
+        ...rechargeData,
+        requestId: requestId
+    };
+    
+    // Save to user's recharge history collection
+    return db.collection("users").doc(currentUserId).collection("rechargeHistory").add(userRechargeData)
+        .then(() => {
+            console.log("✅ Recharge saved to user history");
+            return Promise.resolve();
+        })
+        .catch((error) => {
+            console.error("Error saving to user recharge history:", error);
+            // Don't fail the whole process if this fails
+            return Promise.resolve();
+        });
+}
+
+// Update user's last recharge request date in Firestore
+function updateUserLastRechargeRequest() {
+    if (!currentUserId) return Promise.reject("No user ID");
+    
+    const updates = {
+        'planDetails.lastRechargeRequest': new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+    };
+    
+    return db.collection("users").doc(currentUserId).update(updates)
+        .then(() => {
+            console.log("✅ User last recharge request date updated");
+            return Promise.resolve();
+        })
+        .catch((error) => {
+            console.error("Error updating user last recharge request date:", error);
+            // Don't fail the whole process if this fails
+            return Promise.resolve();
+        });
+}
         
         // Update user's last recharge request date in Firestore
         function updateUserLastRechargeRequest() {
