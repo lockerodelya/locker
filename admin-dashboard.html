@@ -1735,23 +1735,26 @@ window.generatePDF = function() {
         y += 7;
         
         // TERMS & CONDITIONS SECTION - FINAL CORRECTIONS
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(26, 35, 126);
-        doc.text('TERMS & CONDITIONS', leftMargin, y);
-        y += 8;
-        
-        // 1. Reduced font size for agreement statement
-        doc.setFontSize(10); // Reduced from default
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(40, 167, 69); // Green
-        
-        // 2. Using text code for green tick mark (✓ character)
-        doc.text('✓', leftMargin, y);
-        
-        doc.setTextColor(0, 0, 0); // Black for text
-        doc.text('I hereby agree to all the terms and conditions stated above.', leftMargin + 6, y);
-        y += 10;
+doc.setFontSize(12);
+doc.setFont('helvetica', 'bold');
+doc.setTextColor(26, 35, 126);
+doc.text('TERMS & CONDITIONS', leftMargin, y);
+y += 8;
+
+// 1. Reduced font size for agreement statement
+doc.setFontSize(10); // Reduced from default
+
+// 2. Using a different tick symbol (✔ U+2714 HEAVY CHECK MARK)
+doc.setFontSize(12); // Slightly larger for tick
+doc.setFont('helvetica', 'bold');
+doc.setTextColor(40, 167, 69); // Green color for tick
+doc.text('✔', leftMargin, y);
+
+// Back to normal font size for agreement text
+doc.setFontSize(10);
+doc.setTextColor(0, 0, 0); // Black for text
+doc.text('I hereby agree to all the terms and conditions stated here.', leftMargin + 8, y);
+y += 10;
         
         // 3. All four points in normal font (not bold)
         // 4. & 5. Lines 3 and 4 in single lines
