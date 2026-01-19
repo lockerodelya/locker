@@ -882,7 +882,185 @@
             font-weight: 600;
         }
            
-    </style>
+/* ========== RECHARGE SYSTEM STYLES ========== */
+
+/* Recharge Modal */
+#rechargeModal .modal-content {
+    max-width: 1200px;
+    width: 95%;
+    height: 80vh;
+}
+
+.recharge-container {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 10px;
+}
+
+/* Plan Details Section */
+.plan-details-section {
+    margin-top: 30px;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 3px solid #1a237e;
+    display: none;
+}
+
+.selected-plan-info {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    border: 2px solid #00d4ff;
+}
+
+.selected-plan-info h3 {
+    color: #1a237e;
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-align: center;
+}
+
+.selected-plan-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.plan-detail-item {
+    background: #e8f4fc;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid #1a237e;
+}
+
+.plan-detail-item .label {
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.plan-detail-item .value {
+    font-weight: 800;
+    color: #1a237e;
+    font-size: 20px;
+}
+
+/* Continue Button */
+.continue-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 15px 50px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
+    transition: all 0.3s;
+    display: block;
+    margin: 20px auto 0;
+}
+
+.continue-btn:hover {
+    background: #218838;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Upcoming Plan Section */
+.upcoming-plan-section {
+    margin: 40px auto 0;
+    padding: 30px;
+    background: linear-gradient(135deg, #e8f4fc, #d4edda);
+    border-radius: 15px;
+    border: 5px solid #1a237e;
+    max-width: 1200px;
+    width: 95%;
+    display: none;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.upcoming-plan-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.upcoming-plan-header h2 {
+    color: #1a237e;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.upcoming-plan-header p {
+    color: #666;
+    font-size: 16px;
+}
+
+.upcoming-plan-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-top: 25px;
+}
+
+.upcoming-plan-card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    border: 3px solid #00d4ff;
+}
+
+.upcoming-plan-card .label {
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.upcoming-plan-card .value {
+    font-weight: 800;
+    color: #1a237e;
+    font-size: 22px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #rechargeModal .modal-content {
+        width: 98%;
+        height: 85vh;
+        padding: 20px;
+    }
+    
+    .selected-plan-details,
+    .upcoming-plan-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .continue-btn {
+        width: 100%;
+        padding: 18px;
+    }
+    
+    .upcoming-plan-section {
+        padding: 20px;
+        margin: 30px auto 0;
+    }
+}
+    
+            </style>
 </head>
 <body>
     <div class="header">
@@ -990,6 +1168,58 @@
         </div>
     </div>
 
+<!-- Recharge Modal -->
+<div id="rechargeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>💰 Upgrade Your Storage Plan</h2>
+            <button class="action-btn btn-close" onclick="closeRechargeModal()" style="margin: 0;">✖ Close</button>
+        </div>
+        
+        <div class="recharge-content">
+            <!-- Pricing Table Iframe -->
+            <iframe src="https://www.odelya.online/cloud-storage.html" 
+                    class="recharge-container"
+                    id="pricingIframe"
+                    title="Cloud Storage Pricing Plans"
+                    allow="payment *">
+            </iframe>
+            
+            <!-- Selected Plan Details (Hidden Initially) -->
+            <div class="plan-details-section" id="planDetailsSection">
+                <div class="selected-plan-info">
+                    <h3>📋 Selected Plan Details</h3>
+                    <div class="selected-plan-details" id="selectedPlanDetails">
+                        <!-- Plan details will appear here -->
+                    </div>
+                    <p style="color: #28a745; font-size: 15px; text-align: center; margin-top: 15px;">
+                        ✅ Your current plan will be upgraded after payment confirmation
+                    </p>
+                </div>
+                <button class="continue-btn" onclick="proceedToPayment()">
+                    🚀 Proceed to Payment
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upcoming Plan Section (Will appear under main container) -->
+<div class="upcoming-plan-section" id="upcomingPlanSection">
+    <div class="upcoming-plan-header">
+        <h2>📅 Your Upcoming Plan</h2>
+        <p>Plan activation pending payment verification</p>
+    </div>
+    <div class="upcoming-plan-details" id="upcomingPlanDetails">
+        <!-- Upcoming plan details will appear here -->
+    </div>
+    <div style="text-align: center; margin-top: 25px;">
+        <button onclick="refreshPlanStatus()" style="padding: 10px 20px; background: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            🔄 Refresh Status
+        </button>
+    </div>
+</div>
+    
     <!-- Change Password Modal -->
     <div id="passwordModal" class="modal">
         <div class="modal-content">
