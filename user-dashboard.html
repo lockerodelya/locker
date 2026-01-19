@@ -238,7 +238,225 @@
     background: #c82333;
     transform: translateY(-3px);
 }
-        
+
+/* ========== RECHARGE MODAL STYLES ========== */
+.recharge-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.recharge-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    border: 3px solid #1a237e;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.recharge-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 3px solid #00d4ff;
+    padding-bottom: 15px;
+}
+
+.recharge-modal-header h2 {
+    color: #1a237e;
+    flex: 1;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.recharge-close-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.recharge-close-btn:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+.recharge-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.recharge-detail-group {
+    margin-bottom: 15px;
+}
+
+.recharge-detail-group label {
+    display: block;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.recharge-detail-group .value {
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    min-height: 48px;
+    word-break: break-word;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a237e;
+}
+
+.current-plan-section {
+    margin-top: 20px;
+    padding: 20px;
+    background: #e8f4fc;
+    border-radius: 10px;
+    border: 2px solid #00d4ff;
+}
+
+.current-plan-section h3 {
+    color: #1a237e;
+    margin-bottom: 15px;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.plan-value {
+    margin-top: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    border: 2px solid #28a745;
+    text-align: center;
+}
+
+.plan-value .label {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.plan-value .amount {
+    font-size: 28px;
+    font-weight: 800;
+    color: #28a745;
+}
+
+.recharge-actions {
+    margin-top: 30px;
+    text-align: center;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.confirm-recharge-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 18px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.confirm-recharge-btn:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}
+
+/* ========== PAYMENT IFRAME STYLES ========== */
+.payment-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1001;
+    justify-content: center;
+    align-items: center;
+}
+
+.payment-content {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 900px;
+    width: 95%;
+    height: 80vh;
+    border: 3px solid #1a237e;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #00d4ff;
+}
+
+.payment-header h3 {
+    color: #1a237e;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.payment-close-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.payment-close-btn:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.payment-iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+}
+
 /* ========== MOBILE RESPONSIVE ========== */
 @media (max-width: 768px) {
     .container {
@@ -347,6 +565,34 @@
         font-size: 14px;
         right: 20px;
         font-weight: 600;
+    }
+    
+    /* Recharge Modal Mobile */
+    .recharge-details {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .recharge-modal-content {
+        padding: 20px;
+    }
+    
+    .recharge-modal-header h2 {
+        font-size: 22px;
+    }
+    
+    .payment-content {
+        width: 98%;
+        height: 85vh;
+        padding: 15px;
+    }
+    
+    .recharge-actions {
+        flex-direction: column;
+    }
+    
+    .confirm-recharge-btn {
+        width: 100%;
     }
 }
 
@@ -940,7 +1186,7 @@
             <div class="action-buttons-row">
                 <button class="details-btn" onclick="viewUserDetails()">📋 Details</button>
                 <button class="password-btn" onclick="showPasswordModal()">🔒 Password</button>
-                <button class="recharge-btn" onclick="rechargeFunction()">💰 Recharge</button>
+                <button class="recharge-btn" onclick="showRechargeModal()">💰 Recharge</button>
             </div>
         </div>
     </div>
@@ -1041,6 +1287,63 @@
         </div>
     </div>
 
+    <!-- Recharge Modal -->
+    <div id="rechargeModal" class="recharge-modal">
+        <div class="recharge-modal-content">
+            <div class="recharge-modal-header">
+                <h2>💰 Recharge Your Plan</h2>
+                <button class="recharge-close-btn" onclick="closeRechargeModal()">Close</button>
+            </div>
+            
+            <div class="recharge-details">
+                <div class="recharge-detail-group">
+                    <label>Current Plan Name:</label>
+                    <div class="value" id="currentPlanName">Loading...</div>
+                </div>
+                
+                <div class="recharge-detail-group">
+                    <label>Plan Size:</label>
+                    <div class="value" id="currentPlanSize">Loading...</div>
+                </div>
+                
+                <div class="recharge-detail-group">
+                    <label>Plan Type:</label>
+                    <div class="value" id="currentPlanType">Loading...</div>
+                </div>
+                
+                <div class="recharge-detail-group">
+                    <label>Duration:</label>
+                    <div class="value" id="planDuration">Loading...</div>
+                </div>
+            </div>
+            
+            <div class="current-plan-section">
+                <h3>Recharge Amount</h3>
+                <div class="plan-value">
+                    <div class="label">Payable Amount</div>
+                    <div class="amount" id="planAmount">Loading...</div>
+                </div>
+            </div>
+            
+            <div class="recharge-actions">
+                <button class="confirm-recharge-btn" onclick="confirmRecharge()">
+                    ✅ Confirm Recharge
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Container -->
+    <div id="paymentContainer" class="payment-container">
+        <div class="payment-content">
+            <div class="payment-header">
+                <h3>Complete Your Payment</h3>
+                <button class="payment-close-btn" onclick="closePayment()">✕ Close</button>
+            </div>
+            <iframe id="paymentFrame" class="payment-iframe" src="" frameborder="0"></iframe>
+        </div>
+    </div>
+
     <script>
         // ==================== FIREBASE CONFIGURATION ====================
         const firebaseConfig = {
@@ -1069,7 +1372,8 @@
         let currentUserId = null;
         let currentUserData = null;
         let currentUserEmail = null;
-        let lastPasswordChange = null; // NEW: Store last password change date
+        let lastPasswordChange = null;
+        let currentPlanValue = null;
 
         // Generate random 6-digit user ID starting from 2-9
         function generateUserId() {
@@ -1116,6 +1420,8 @@
                 fixedUser.planStartDate = user.planDetails.planStartDate || 'N/A';
                 fixedUser.planEndDate = user.planDetails.planEndDate || 'N/A';
                 fixedUser.planValue = user.planDetails.planValue || 'N/A';
+                // Store plan value for recharge
+                currentPlanValue = user.planDetails.planValue;
             }
             
             // Map account fields
@@ -1799,12 +2105,169 @@ function validatePassword() {
                     btn.disabled = false;
                 });
         };
-// Recharge function for the new button
-        window.rechargeFunction = function() {
-            alert("💰 Recharge functionality coming soon!\n\nThis feature will allow you to add funds to your account.");
-            // You can add actual recharge logic here later
-            // Example: window.location.href = "recharge-page.html";
+
+        // ========== RECHARGE FUNCTIONALITY ==========
+        
+        // Show recharge modal
+        window.showRechargeModal = function() {
+            if (!currentUserData) {
+                alert("No user data available");
+                return;
+            }
+            
+            // Populate current plan details
+            document.getElementById('currentPlanName').textContent = currentUserData.planName || 'No Plan';
+            document.getElementById('currentPlanSize').textContent = currentUserData.planSize || 'N/A';
+            document.getElementById('currentPlanType').textContent = currentUserData.planType || 'N/A';
+            
+            // Set duration based on plan type
+            let durationText = 'N/A';
+            if (currentUserData.planType && currentUserData.planType.toLowerCase() === 'monthly') {
+                durationText = 'Next consecutive month';
+            } else if (currentUserData.planType && currentUserData.planType.toLowerCase() === 'yearly') {
+                durationText = 'Next consecutive year';
+            } else {
+                durationText = currentUserData.planType || 'N/A';
+            }
+            document.getElementById('planDuration').textContent = durationText;
+            
+            // Show plan value
+            const planValue = currentPlanValue || currentUserData.planValue || 'N/A';
+            document.getElementById('planAmount').textContent = planValue;
+            
+            // Show modal
+            document.getElementById('rechargeModal').style.display = 'flex';
         };
+        
+        // Close recharge modal
+        window.closeRechargeModal = function() {
+            document.getElementById('rechargeModal').style.display = 'none';
+        };
+        
+        // Confirm recharge and open payment page
+        window.confirmRecharge = function() {
+            if (!currentUserData || !currentUserData.planName || currentUserData.planName === 'N/A') {
+                alert("You don't have an active plan to recharge. Please contact support.");
+                return;
+            }
+            
+            // Close recharge modal
+            closeRechargeModal();
+            
+            // Open payment page in iframe
+            openPaymentPage();
+        };
+        
+        // Open payment page in iframe
+        function openPaymentPage() {
+            const paymentFrame = document.getElementById('paymentFrame');
+            const paymentContainer = document.getElementById('paymentContainer');
+            
+            // Set payment page URL
+            paymentFrame.src = "https://www.odelya.online/payment.html";
+            
+            // Show payment container
+            paymentContainer.style.display = 'flex';
+            
+            // Add message listener for payment completion
+            window.addEventListener('message', handlePaymentMessage);
+        }
+        
+        // Close payment container
+        window.closePayment = function() {
+            const paymentContainer = document.getElementById('paymentContainer');
+            const paymentFrame = document.getElementById('paymentFrame');
+            
+            paymentContainer.style.display = 'none';
+            paymentFrame.src = "";
+            
+            // Remove message listener
+            window.removeEventListener('message', handlePaymentMessage);
+            
+            // Save recharge details to Firebase
+            saveRechargeDetails();
+            
+            // Reload user data to show updated information
+            loadUserData();
+        };
+        
+        // Handle payment completion message from payment page
+        function handlePaymentMessage(event) {
+            // Check if message is from payment page
+            if (event.origin !== "https://www.odelya.online") {
+                return;
+            }
+            
+            // Check if payment was successful
+            if (event.data && event.data.type === 'payment_completed') {
+                // Save recharge details to Firebase
+                saveRechargeDetails(event.data.paymentId || 'manual_payment');
+                
+                // Close payment container
+                closePayment();
+                
+                // Show success message
+                alert("✅ Payment successful! Your recharge has been recorded.");
+            }
+        }
+        
+        // Save recharge details to Firebase Firestore
+        function saveRechargeDetails(paymentId = 'manual_payment') {
+            if (!currentUserId) {
+                console.error("No user ID");
+                return;
+            }
+            
+            const rechargeData = {
+                userId: currentUserId,
+                userEmail: currentUserEmail,
+                userName: currentUserData.name || 'N/A',
+                planName: currentUserData.planName || 'N/A',
+                planSize: currentUserData.planSize || 'N/A',
+                planType: currentUserData.planType || 'N/A',
+                planValue: currentPlanValue || currentUserData.planValue || 'N/A',
+                duration: currentUserData.planType && currentUserData.planType.toLowerCase() === 'monthly' ? 
+                    'Next consecutive month' : 
+                    currentUserData.planType && currentUserData.planType.toLowerCase() === 'yearly' ? 
+                    'Next consecutive year' : 'N/A',
+                paymentId: paymentId,
+                paymentDate: new Date().toISOString(),
+                status: 'inactive', // Initial status is inactive as requested
+                createdAt: new Date().toISOString(),
+                timestamp: new Date()
+            };
+            
+            // Save to Firestore in 'recharges' collection
+            db.collection("recharges").add(rechargeData)
+                .then((docRef) => {
+                    console.log("✅ Recharge details saved with ID:", docRef.id);
+                    
+                    // Update user's last recharge date
+                    updateUserLastRecharge();
+                })
+                .catch((error) => {
+                    console.error("❌ Error saving recharge details:", error);
+                    alert("Error saving recharge details. Please contact support.");
+                });
+        }
+        
+        // Update user's last recharge date in Firestore
+        function updateUserLastRecharge() {
+            if (!currentUserId) return;
+            
+            const updates = {
+                'planDetails.lastRechargeDate': new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            db.collection("users").doc(currentUserId).update(updates)
+                .then(() => {
+                    console.log("✅ User last recharge date updated");
+                })
+                .catch((error) => {
+                    console.error("Error updating user last recharge date:", error);
+                });
+        }
         
         // Generate PDF for current user - UPDATED WITH PASSWORD CHANGE INFO (STAYS IN LEFT COLUMN FOR PDF)
         window.generatePDF = function() {
