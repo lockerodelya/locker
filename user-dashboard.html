@@ -2151,13 +2151,16 @@ window.confirmRecharge = function() {
         return;
     }
     
+    // Get the plan value/amount
+    const planValue = currentPlanValue || currentUserData.planValue || 'N/A';
+    
     // Close recharge modal
     closeRechargeModal();
     
-    // Open payment page in iframe
-    openPaymentPage();
+    // Open payment page in iframe WITH THE INR VALUE
+    openPaymentPage(planValue);
 };
-
+        
 // Open payment page in iframe
 function openPaymentPage() {
     const paymentFrame = document.getElementById('paymentFrame');
@@ -2169,7 +2172,17 @@ function openPaymentPage() {
     // Show payment container
     paymentContainer.style.display = 'flex';
 }
-
+// Open payment page in iframe WITH PARAMETER
+function openPaymentPage(amount) {
+    const paymentFrame = document.getElementById('paymentFrame');
+    const paymentContainer = document.getElementById('paymentContainer');
+    
+    // Set payment page URL WITH AMOUNT PARAMETER
+    paymentFrame.src = `https://www.odelya.online/payment.html?amount=${encodeURIComponent(amount)}`;
+    
+    // Show payment container
+    paymentContainer.style.display = 'flex';
+}
 // Close payment container - SIMPLE MESSAGE ONLY
 window.closePayment = function() {
     const paymentContainer = document.getElementById('paymentContainer');
