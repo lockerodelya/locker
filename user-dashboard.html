@@ -15,6 +15,9 @@
     <!-- jsPDF for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
     <style>
         * {
@@ -392,69 +395,429 @@
     transform: translateY(-2px);
 }
 
-/* ========== PAYMENT IFRAME STYLES ========== */
-.payment-container {
+/* ========== EMBEDDED PAYMENT SECTION ========== */
+.embedded-payment-container {
     display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 1001;
-    justify-content: center;
-    align-items: center;
-}
-
-.payment-content {
-    background: white;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    z-index: 2000;
+    overflow-y: auto;
     padding: 20px;
-    border-radius: 15px;
-    max-width: 900px;
-    width: 95%;
-    height: 80vh;
-    border: 3px solid #1a237e;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    display: flex;
-    flex-direction: column;
 }
 
-.payment-header {
+.embedded-payment-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.embedded-payment-header {
+    background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+    padding: 25px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #00d4ff;
+    color: white;
 }
 
-.payment-header h3 {
-    color: #1a237e;
-    font-size: 22px;
-    font-weight: 800;
+.embedded-payment-header h3 {
+    font-size: 28px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.payment-close-btn {
+.embedded-payment-header h3 i {
+    color: #4caf50;
+}
+
+.embedded-payment-close-btn {
     background: #dc3545;
     color: white;
     border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
+    padding: 12px 25px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: 700;
+    font-size: 16px;
     transition: all 0.3s;
 }
 
-.payment-close-btn:hover {
+.embedded-payment-close-btn:hover {
     background: #c82333;
     transform: translateY(-2px);
 }
 
-.payment-iframe {
-    flex: 1;
+.embedded-payment-body {
+    padding: 0;
+}
+
+/* Embedded Agreements Section */
+.embedded-agreements-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 20px;
+}
+
+.embedded-agreements-list {
+    list-style-type: decimal;
+    padding-left: 25px;
+    margin: 20px 0;
+}
+
+.embedded-agreements-list li {
+    margin-bottom: 15px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.embedded-agreements-list li strong {
+    color: #1a237e;
+}
+
+.embedded-agreement-checkbox {
+    margin: 25px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #4caf50;
+}
+
+.embedded-checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+}
+
+.embedded-checkbox-container input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+}
+
+.embedded-checkbox-label {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a237e;
+}
+
+/* Embedded Payment Details Section - Initially blurred */
+.embedded-payment-details-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 20px;
+    filter: blur(5px);
+    pointer-events: none;
+    opacity: 0.7;
+    transition: all 0.5s ease;
+}
+
+.embedded-payment-details-section.active {
+    filter: blur(0);
+    pointer-events: auto;
+    opacity: 1;
+}
+
+.embedded-payment-content-inner {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.embedded-payment-mode {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.embedded-mode-option {
+    background: #f5f5f5;
+    padding: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 3px solid transparent;
+    text-align: center;
+}
+
+.embedded-mode-option:hover {
+    background: #e8f5e9;
+}
+
+.embedded-mode-option.selected {
+    background: #e8f5e9;
+    border-color: #4caf50;
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+}
+
+.embedded-mode-option h4 {
+    color: #1b5e20;
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+}
+
+.embedded-mode-option p {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* UPI Container Layout */
+.embedded-upi-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
     width: 100%;
+}
+
+.embedded-qr-code-container {
+    text-align: center;
+    width: 100%;
+    max-width: 320px;
+}
+
+.embedded-qr-code-container img {
+    width: 100%;
+    max-width: 300px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 10px;
+    background: white;
+}
+
+.embedded-upi-instructions-container {
+    background: #e8f5e9;
+    border-radius: 12px;
+    padding: 25px;
+    border-left: 6px solid #4caf50;
+    width: 100%;
+}
+
+.embedded-upi-instructions-container h4 {
+    color: #1b5e20;
+    font-size: 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.embedded-upi-instructions-container ol {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+.embedded-upi-instructions-container li {
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #424242;
+    line-height: 1.5;
+}
+
+.embedded-upi-instructions-container strong {
+    color: #1b5e20;
+}
+
+.embedded-qr-title {
+    text-align: center;
+    color: #1a237e;
+    font-size: 1.6rem;
+    margin-bottom: 25px;
+    font-weight: 600;
+    width: 100%;
+}
+
+.embedded-bank-transfer-container {
+    background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin: 20px 0;
+    box-shadow: 0 15px 40px rgba(25, 35, 126, 0.2);
+    border: 4px solid #4caf50;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.embedded-bank-transfer-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 0 10px;
+}
+
+.embedded-bank-transfer-header h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    color: white;
+    line-height: 1.3;
+}
+
+.embedded-bank-transfer-header h3 i {
+    color: #4caf50;
+    font-size: 26px;
+}
+
+.embedded-bank-transfer-subtitle {
+    font-size: 15px;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+.embedded-bank-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+.embedded-bank-detail-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid #4caf50;
+    width: 100%;
+    min-width: 0;
+}
+
+.embedded-bank-detail-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 6px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    word-break: break-word;
+}
+
+.embedded-bank-detail-label i {
+    color: #1a237e;
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+.embedded-bank-detail-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a237e;
+    background: #f5f5f5;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    margin-top: 5px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.5px;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    min-width: 0;
+}
+
+.embedded-instructions-box {
+    background: #e8f5e9;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    border-left: 6px solid #4caf50;
+    width: 100%;
+}
+
+.embedded-instructions-box h4 {
+    color: #1b5e20;
+    font-size: 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.embedded-instructions-box ol {
+    padding-left: 18px;
+    margin-bottom: 15px;
+}
+
+.embedded-instructions-box li {
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #424242;
+    line-height: 1.5;
+}
+
+.embedded-instructions-box strong {
+    color: #1b5e20;
+}
+
+.embedded-action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 2px solid #e0e0e0;
+}
+
+.embedded-btn-completed {
+    background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+    color: white;
+    font-size: 1.1rem;
+    padding: 14px 40px;
     border: none;
     border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.embedded-btn-completed:hover {
+    background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+}
+
+/* Embedded UPI and Bank Details Sections */
+.embedded-upi-details, .embedded-bank-details {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.embedded-upi-details.active, .embedded-bank-details.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ========== MOBILE RESPONSIVE ========== */
@@ -581,17 +944,89 @@
         font-size: 22px;
     }
     
-    .payment-content {
-        width: 98%;
-        height: 85vh;
-        padding: 15px;
-    }
-    
     .recharge-actions {
         flex-direction: column;
     }
     
     .confirm-recharge-btn {
+        width: 100%;
+    }
+    
+    /* Embedded Payment Mobile */
+    .embedded-payment-container {
+        padding: 0;
+    }
+    
+    .embedded-payment-content {
+        border-radius: 0;
+        height: 100vh;
+        overflow-y: auto;
+    }
+    
+    .embedded-payment-header {
+        padding: 20px 15px;
+    }
+    
+    .embedded-payment-header h3 {
+        font-size: 22px;
+    }
+    
+    .embedded-payment-close-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    .embedded-agreements-section {
+        padding: 20px 15px;
+        border-radius: 0;
+    }
+    
+    .embedded-agreements-list li {
+        font-size: 15px;
+    }
+    
+    .embedded-payment-details-section {
+        padding: 15px;
+        border-radius: 0;
+    }
+    
+    .embedded-payment-mode {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .embedded-mode-option {
+        padding: 18px;
+    }
+    
+    .embedded-upi-content-wrapper {
+        flex-direction: column;
+        gap: 25px;
+    }
+    
+    .embedded-qr-code-container {
+        max-width: 280px;
+    }
+    
+    .embedded-bank-transfer-container {
+        padding: 20px 15px;
+        border-radius: 0;
+        border: none;
+        border-top: 4px solid #4caf50;
+        border-bottom: 4px solid #4caf50;
+    }
+    
+    .embedded-bank-details-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .embedded-action-buttons {
+        flex-direction: column;
+        gap: 15px;
+        padding: 0 15px 20px 15px;
+    }
+    
+    .embedded-btn-completed {
         width: 100%;
     }
 }
@@ -662,6 +1097,22 @@
  
 }
     
+    /* Embedded Payment Small Screens */
+    .embedded-payment-header h3 {
+        font-size: 20px;
+    }
+    
+    .embedded-agreements-list li {
+        font-size: 14px;
+    }
+    
+    .embedded-checkbox-label {
+        font-size: 16px;
+    }
+    
+    .embedded-qr-title {
+        font-size: 1.3rem;
+    }
 }
 
 /* For extra small screens */
@@ -731,71 +1182,17 @@
  
 }
 
-}
-
-/* For extra small screens */
-@media (max-width: 360px) {
-    .main-container {
-        width: 95%;
-        padding: 20px 15px;
-        border: 5px solid #1a237e;
-    }
-    
-    .container-header {
-        
-        padding: 14px;
+    /* Embedded Payment Extra Small */
+    .embedded-payment-header h3 {
         font-size: 18px;
     }
     
-    .vertical-rows {
-        gap: 20px;
-    }
-    
-    .data-row {
-        gap: 3px;
-        padding-bottom: 20px;
-    }
-    
-    .data-label {
-        font-size: 17px; /* Minimum readable size */
-    }
-    
-    .data-value {
-        font-size: 17px; /* Minimum readable size */
-    }
-    
-    .status-display {
-        max-width: 160px;
-        padding: 8px 16px;
+    .embedded-checkbox-label {
         font-size: 15px;
     }
     
-    .action-buttons-row {
-        gap: 10px;
-        margin-top: 25px;
-    }
-    
-    .action-buttons-row button {
-        padding: 14px 16px;
-        font-size: 15px;
-    }
-    
-    .container {
-        padding: 0 12px;
-    }
-    
-    .header {
-        padding: 14px 16px;
-    }
-    
-    .header h1 {
-        font-size: 22px;
-    }
-    
-    .logout-btn {
-        padding: 9px 14px;
-        font-size: 14px;
-        right: 16px;
+    .embedded-qr-title {
+        font-size: 1.2rem;
     }
 }
         
@@ -1333,14 +1730,150 @@
         </div>
     </div>
 
-    <!-- Payment Container -->
-    <div id="paymentContainer" class="payment-container">
-        <div class="payment-content">
-            <div class="payment-header">
-                <h3>Complete Your Payment</h3>
-                <button class="payment-close-btn" onclick="closePayment()">✕ Close</button>
+    <!-- Embedded Payment Container -->
+    <div id="embeddedPaymentContainer" class="embedded-payment-container">
+        <div class="embedded-payment-content">
+            <div class="embedded-payment-header">
+                <h3><i class="fas fa-credit-card"></i> Complete Your Payment</h3>
+                <button class="embedded-payment-close-btn" onclick="closeEmbeddedPayment()">✕ Close</button>
             </div>
-            <iframe id="paymentFrame" class="payment-iframe" src="" frameborder="0"></iframe>
+            
+            <div class="embedded-payment-body">
+                <!-- Agreements Section -->
+                <div class="embedded-agreements-section">
+                    <h3 style="color: #1a237e; margin-bottom: 20px; font-size: 1.5rem;">
+                        <i class="fas fa-file-contract"></i> Terms & Conditions
+                    </h3>
+                    
+                    <ol class="embedded-agreements-list">
+                        <li>
+                            <strong>I acknowledge and agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Management Private Limited</strong>
+                        </li>
+                        <li>
+                            <strong>I acknowledge that account activation is contingent upon sharing my transaction details with Odelya Management Private Limited via the designated office WhatsApp number or official business email.</strong>
+                        </li>
+                        <li>
+                            <strong>I agree that my service will be activated within 48 hours of successful payment verification.</strong>
+                        </li>
+                        <li>
+                            <strong>I agree that all payments are final and non-refundable under any circumstances.</strong>
+                        </li>
+                    </ol>
+                    
+                    <div class="embedded-agreement-checkbox">
+                        <label class="embedded-checkbox-container">
+                            <input type="checkbox" id="embeddedTermsCheckbox">
+                            <span class="embedded-checkbox-label">I hereby agree to all the terms and conditions stated above.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Payment Details Section (Initially blurred) -->
+                <div class="embedded-payment-details-section" id="embeddedPaymentDetailsSection">
+                    <div class="embedded-payment-content-inner">
+                        <!-- Payment Mode Selection -->
+                        <div class="embedded-payment-mode">
+                            <div class="embedded-mode-option" id="embeddedModeUPI">
+                                <h4><i class="fas fa-mobile-alt"></i> UPI Payment</h4>
+                                <p>Pay instantly using any UPI app</p>
+                            </div>
+                            <div class="embedded-mode-option" id="embeddedModeBank">
+                                <h4><i class="fas fa-university"></i> Bank Transfer</h4>
+                                <p>Transfer via Net Banking or NEFT/RTGS</p>
+                            </div>
+                        </div>
+
+                        <!-- UPI Payment Details -->
+                        <div class="embedded-upi-details" id="embeddedUpiDetails">
+                            <div class="embedded-qr-title">Please pay exact: <span id="embeddedUpiTitleAmount">INR 0</span></div>
+                            <div class="embedded-upi-content-wrapper">
+                                <div class="embedded-qr-code-container">
+                                    <img src="https://www.odelya.online/images/sbiqr.jpg" alt="SBI UPI QR Code">
+                                </div>
+                                <div class="embedded-upi-instructions-container">
+                                    <h4><i class="fas fa-list-ol"></i> Payment Instructions</h4>
+                                    <ol>
+                                        <li>Please pay the <strong>exact amount: <span id="embeddedUpiInstructionAmount">INR 0</span></strong></li>
+                                        <li>Please share transaction details via:<br>
+                                            <strong>WhatsApp: +91-9674130001</strong><br>
+                                            <strong>Email: care.ompl@gmail.com</strong>
+                                        </li>
+                                        <li>Service will be activated within 48 hours only after successful payment verification</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bank Transfer Details -->
+                        <div class="embedded-bank-details" id="embeddedBankDetails">
+                            <div class="embedded-bank-transfer-container">
+                                <div class="embedded-bank-transfer-header">
+                                    <h3><i class="fas fa-university"></i> Bank Transfer Details</h3>
+                                    <p class="embedded-bank-transfer-subtitle">Transfer the exact amount to the account below</p>
+                                </div>
+                                
+                                <div class="embedded-bank-details-grid">
+                                    <div class="embedded-bank-detail-card">
+                                        <div class="embedded-bank-detail-label">
+                                            <i class="fas fa-university"></i> Bank Name
+                                        </div>
+                                        <div class="embedded-bank-detail-value">State Bank of India (SBI)</div>
+                                    </div>
+                                    <div class="embedded-bank-detail-card">
+                                        <div class="embedded-bank-detail-label">
+                                            <i class="fas fa-user-tie"></i> Account Name
+                                        </div>
+                                        <div class="embedded-bank-detail-value">ODELYA MANAGEMENT PVT LTD</div>
+                                    </div>
+                                    <div class="embedded-bank-detail-card">
+                                        <div class="embedded-bank-detail-label">
+                                            <i class="fas fa-hashtag"></i> Account Number
+                                        </div>
+                                        <div class="embedded-bank-detail-value">39681284318</div>
+                                    </div>
+                                    <div class="embedded-bank-detail-card">
+                                        <div class="embedded-bank-detail-label">
+                                            <i class="fas fa-code-branch"></i> IFSC Code
+                                        </div>
+                                        <div class="embedded-bank-detail-value">SBIN0001140</div>
+                                    </div>
+                                    <div class="embedded-bank-detail-card">
+                                        <div class="embedded-bank-detail-label">
+                                            <i class="fas fa-map-marker-alt"></i> Branch
+                                        </div>
+                                        <div class="embedded-bank-detail-value">C.I.T. ROAD, KOLKATA</div>
+                                    </div>
+                                    <div class="embedded-bank-detail-card">
+                                        <div class="embedded-bank-detail-label">
+                                            <i class="fas fa-wallet"></i> Amount to Transfer
+                                        </div>
+                                        <div class="embedded-bank-detail-value" id="embeddedTransferAmount">INR 0</div>
+                                    </div>
+                                </div>
+
+                                <div class="embedded-instructions-box">
+                                    <h4><i class="fas fa-list-ol"></i> Payment Instructions</h4>
+                                    <ol>
+                                        <li>Please pay the <strong>exact amount: <span id="embeddedInstructionAmount">INR 0</span></strong></li>
+                                        <li>Please share transaction details via:<br>
+                                            <strong>WhatsApp: +91-9674130001</strong><br>
+                                            <strong>Email: care.ompl@gmail.com</strong>
+                                        </li>
+                                        <li>Service will be activated within 48 hours only after successful payment verification</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="embedded-action-buttons">
+                            <button class="embedded-btn-completed" id="embeddedBtnCompleted">
+                                <i class="fas fa-check-circle"></i> Payment Completed
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1374,6 +1907,145 @@
         let currentUserEmail = null;
         let lastPasswordChange = null;
         let currentPlanValue = null;
+        let embeddedPaymentAmount = null;
+
+        // ==================== EMBEDDED PAYMENT FUNCTIONS ====================
+        
+        // Initialize embedded payment
+        function initializeEmbeddedPayment() {
+            const termsCheckbox = document.getElementById('embeddedTermsCheckbox');
+            const paymentDetailsSection = document.getElementById('embeddedPaymentDetailsSection');
+            const upiOption = document.getElementById('embeddedModeUPI');
+            const bankOption = document.getElementById('embeddedModeBank');
+            const upiDetails = document.getElementById('embeddedUpiDetails');
+            const bankDetails = document.getElementById('embeddedBankDetails');
+            const completeBtn = document.getElementById('embeddedBtnCompleted');
+            
+            // Set amount displays with the actual plan value
+            if (embeddedPaymentAmount) {
+                updateEmbeddedAmountDisplay(embeddedPaymentAmount);
+            }
+            
+            // Terms checkbox listener
+            termsCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    paymentDetailsSection.classList.add('active');
+                    // Default to UPI selection
+                    selectEmbeddedPaymentMode('upi');
+                } else {
+                    paymentDetailsSection.classList.remove('active');
+                }
+            });
+            
+            // Payment mode selection
+            upiOption.addEventListener('click', () => {
+                if (termsCheckbox.checked) {
+                    selectEmbeddedPaymentMode('upi');
+                }
+            });
+            
+            bankOption.addEventListener('click', () => {
+                if (termsCheckbox.checked) {
+                    selectEmbeddedPaymentMode('bank');
+                }
+            });
+            
+            // Payment completed button
+            completeBtn.addEventListener('click', handleEmbeddedPaymentCompletion);
+        }
+        
+        // Update amount display in embedded payment
+        function updateEmbeddedAmountDisplay(amount) {
+            let displayAmount;
+            
+            if (typeof amount === 'string') {
+                // If it's already a formatted string like "₹2,999" or "INR 2,999"
+                displayAmount = amount;
+                
+                // Ensure it has INR/₹ prefix
+                if (!displayAmount.includes('INR') && !displayAmount.includes('₹')) {
+                    // Remove any existing currency symbols and add INR prefix
+                    displayAmount = displayAmount.replace(/[₹$€£]/g, '').trim();
+                    displayAmount = `INR ${displayAmount}`;
+                }
+            } else if (typeof amount === 'number') {
+                // Format number with commas
+                displayAmount = `INR ${amount.toLocaleString()}`;
+            } else {
+                // Default
+                displayAmount = 'INR 0';
+            }
+            
+            // Update all 4 places
+            document.getElementById('embeddedTransferAmount').textContent = displayAmount;
+            document.getElementById('embeddedInstructionAmount').textContent = displayAmount;
+            document.getElementById('embeddedUpiInstructionAmount').textContent = displayAmount;
+            document.getElementById('embeddedUpiTitleAmount').textContent = displayAmount.replace('INR ', '');
+            
+            console.log('Embedded amount displayed:', displayAmount);
+        }
+        
+        // Select payment mode in embedded payment
+        function selectEmbeddedPaymentMode(mode) {
+            const upiOption = document.getElementById('embeddedModeUPI');
+            const bankOption = document.getElementById('embeddedModeBank');
+            const upiDetails = document.getElementById('embeddedUpiDetails');
+            const bankDetails = document.getElementById('embeddedBankDetails');
+            
+            upiOption.classList.remove('selected');
+            bankOption.classList.remove('selected');
+            upiDetails.classList.remove('active');
+            bankDetails.classList.remove('active');
+            
+            if (mode === 'upi') {
+                upiOption.classList.add('selected');
+                upiDetails.classList.add('active');
+            } else {
+                bankOption.classList.add('selected');
+                bankDetails.classList.add('active');
+            }
+        }
+        
+        // Handle embedded payment completion
+        function handleEmbeddedPaymentCompletion() {
+            // Show message
+            alert("Please share your transaction details to activate your plan. Thanks");
+            
+            // Close embedded payment
+            closeEmbeddedPayment();
+        }
+        
+        // Show embedded payment
+        function showEmbeddedPayment(amount) {
+            embeddedPaymentAmount = amount;
+            
+            // Reset the embedded payment UI
+            document.getElementById('embeddedTermsCheckbox').checked = false;
+            document.getElementById('embeddedPaymentDetailsSection').classList.remove('active');
+            document.getElementById('embeddedModeUPI').classList.remove('selected');
+            document.getElementById('embeddedModeBank').classList.remove('selected');
+            document.getElementById('embeddedUpiDetails').classList.remove('active');
+            document.getElementById('embeddedBankDetails').classList.remove('active');
+            
+            // Update amount display
+            updateEmbeddedAmountDisplay(amount);
+            
+            // Show the payment container
+            document.getElementById('embeddedPaymentContainer').style.display = 'block';
+            
+            // Initialize if not already initialized
+            if (!window.embeddedPaymentInitialized) {
+                initializeEmbeddedPayment();
+                window.embeddedPaymentInitialized = true;
+            }
+        }
+        
+        // Close embedded payment
+        function closeEmbeddedPayment() {
+            document.getElementById('embeddedPaymentContainer').style.display = 'none';
+        }
+        
+        // ==================== END EMBEDDED PAYMENT FUNCTIONS ====================
 
         // Generate random 6-digit user ID starting from 2-9
         function generateUserId() {
@@ -2144,7 +2816,7 @@ window.closeRechargeModal = function() {
     document.getElementById('rechargeModal').style.display = 'none';
 };
 
-// Confirm recharge and open payment page
+// Confirm recharge and show embedded payment
 window.confirmRecharge = function() {
     if (!currentUserData || !currentUserData.planName || currentUserData.planName === 'N/A') {
         alert("You don't have an active plan to recharge. Please contact support.");
@@ -2157,349 +2829,240 @@ window.confirmRecharge = function() {
     // Close recharge modal
     closeRechargeModal();
     
-    // Open payment page in iframe WITH THE INR VALUE
-    openPaymentPage(planValue);
-};
-        
-// Open payment page in iframe
-function openPaymentPage() {
-    const paymentFrame = document.getElementById('paymentFrame');
-    const paymentContainer = document.getElementById('paymentContainer');
-    
-    // Set payment page URL
-    paymentFrame.src = "https://www.odelya.online/payment.html";
-    
-    // Show payment container
-    paymentContainer.style.display = 'flex';
-}
-// Open payment page in iframe WITH PARAMETER
-function openPaymentPage(amount) {
-    const paymentFrame = document.getElementById('paymentFrame');
-    const paymentContainer = document.getElementById('paymentContainer');
-    
-    // Set payment page URL WITH AMOUNT PARAMETER
-    paymentFrame.src = `https://www.odelya.online/payment.html?amount=${encodeURIComponent(amount)}`;
-    
-    // Show payment container
-    paymentContainer.style.display = 'flex';
-}
-// Close payment container - SIMPLE MESSAGE ONLY
-window.closePayment = function() {
-    const paymentContainer = document.getElementById('paymentContainer');
-    const paymentFrame = document.getElementById('paymentFrame');
-    
-    paymentContainer.style.display = 'none';
-    paymentFrame.src = "";
-    
-    // Show simple message
-    alert("Please share your transaction details to activate your plan. Thanks");
+    // Show embedded payment section with the exact INR value
+    showEmbeddedPayment(planValue);
 };
 
-// Show recharge message (single function for all messages)
-function showRechargeMessage(message, isError = false) {
-    if (isError) {
-        alert(message);
-    } else {
-        alert(message);
-        // Optional: You could show a nicer success modal instead of alert
-    }
-}
-
-// Save to user's recharge history
-function saveToUserRechargeHistory(requestId, rechargeData) {
-    if (!currentUserId) return Promise.reject("No user ID");
+// Generate PDF for current user
+window.generatePDF = function() {
+    if (!currentUserData) return;
     
-    // Add request ID to data
-    const userRechargeData = {
-        ...rechargeData,
-        requestId: requestId
-    };
+    const originalText = event.target.textContent;
+    event.target.textContent = "Creating PDF...";
+    event.target.disabled = true;
     
-    // Save to user's recharge history collection
-    return db.collection("users").doc(currentUserId).collection("rechargeHistory").add(userRechargeData)
-        .then(() => {
-            console.log("✅ Recharge saved to user history");
-            return Promise.resolve();
-        })
-        .catch((error) => {
-            console.error("Error saving to user recharge history:", error);
-            // Don't fail the whole process if this fails
-            return Promise.resolve();
-        });
-}
-
-// Update user's last recharge request date in Firestore
-function updateUserLastRechargeRequest() {
-    if (!currentUserId) return Promise.reject("No user ID");
-    
-    const updates = {
-        'planDetails.lastRechargeRequest': new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    };
-    
-    return db.collection("users").doc(currentUserId).update(updates)
-        .then(() => {
-            console.log("✅ User last recharge request date updated");
-            return Promise.resolve();
-        })
-        .catch((error) => {
-            console.error("Error updating user last recharge request date:", error);
-            // Don't fail the whole process if this fails
-            return Promise.resolve();
-        });
-}
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
         
-        // Update user's last recharge request date in Firestore
-        function updateUserLastRechargeRequest() {
-            if (!currentUserId) return;
-            
-            const updates = {
-                'planDetails.lastRechargeRequest': new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
-            
-            db.collection("users").doc(currentUserId).update(updates)
-                .then(() => {
-                    console.log("✅ User last recharge request date updated");
-                })
-                .catch((error) => {
-                    console.error("Error updating user last recharge request date:", error);
-                });
+        const leftMargin = 20;
+        const rightMargin = 20;
+        const topMargin = 20;
+        const pageWidth = doc.internal.pageSize.width;
+        const pageHeight = doc.internal.pageSize.height;
+        const centerX = pageWidth / 2;
+        
+        // HEADER
+        doc.setFontSize(18);
+        doc.setTextColor(0, 212, 255);
+        doc.text('ODELYA CLOUD STORAGE', centerX, topMargin, { align: 'center' });
+        
+        doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);
+        doc.text('MY ACCOUNT DETAILS', centerX, topMargin + 10, { align: 'center' });
+        
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        const generatedDateTime = formatDateTimeForPDFHeader(new Date());
+        doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 18, { align: 'center' });
+        
+        doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 26, { align: 'center' });
+        
+        let y = topMargin + 45;
+        
+        doc.setDrawColor(200, 200, 200);
+        doc.line(leftMargin, y, pageWidth - rightMargin, y);
+        y += 12;
+        
+        // SECTION 1: PERSONAL INFORMATION
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(0, 212, 255);
+        doc.text('PERSONAL INFORMATION', leftMargin, y);
+        y += 10;
+        
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        
+        const userType = currentUserData.userType || 'personal';
+        let personalData = [];
+
+        if (userType === 'personal') {
+            personalData = [
+                {label: 'User Type', value: 'Personal'},
+                {label: 'Name', value: currentUserData.name || 'N/A'},
+                {label: 'Email', value: currentUserData.email || 'N/A'},
+                {label: 'Phone', value: currentUserData.phone || 'N/A'},
+                {label: 'Date of Birth', value: currentUserData.dob || 'N/A'},
+                {label: 'Gender', value: currentUserData.gender || 'N/A'},
+                {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
+                {label: 'PAN', value: currentUserData.pan || 'N/A'},
+                {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
+                {label: 'Username', value: currentUserData.username || 'N/A'},
+                // ADDED: Password Change Date
+                {label: 'Last Password Change', value: lastPasswordChange ? formatDateTime(lastPasswordChange) : 'Never changed'}
+            ];
+        } else if (userType === 'business') {
+            personalData = [
+                {label: 'User Type', value: 'Business'},
+                {label: 'Business Name', value: currentUserData.name || 'N/A'},
+                {label: 'Email', value: currentUserData.email || 'N/A'},
+                {label: 'Phone', value: currentUserData.phone || 'N/A'},
+                {label: 'Date of Incorp.', value: currentUserData.doi || 'N/A'},
+                {label: 'Pincode', value: currentUserData.pincode || 'N/A'},
+                {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
+                {label: 'PAN', value: currentUserData.pan || 'N/A'},
+                {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
+                {label: 'Username', value: currentUserData.username || 'N/A'},
+                // ADDED: Password Change Date
+                {label: 'Last Password Change', value: lastPasswordChange ? formatDateTime(lastPasswordChange) : 'Never changed'}
+            ];
         }
         
-        // Generate PDF for current user - UPDATED WITH PASSWORD CHANGE INFO (STAYS IN LEFT COLUMN FOR PDF)
-        window.generatePDF = function() {
-            if (!currentUserData) return;
+        doc.setFont('helvetica', 'bold');
+        let maxLabelWidth = 0;
+        personalData.forEach(item => {
+            const width = doc.getTextWidth(item.label + ': ');
+            if (width > maxLabelWidth) maxLabelWidth = width;
+        });
+        
+        const valueStartX = leftMargin + maxLabelWidth + 2;
+        
+        personalData.forEach(item => {
+            doc.setFont('helvetica', 'bold');
+            doc.text(item.label + ':', leftMargin, y);
             
-            const originalText = event.target.textContent;
-            event.target.textContent = "Creating PDF...";
-            event.target.disabled = true;
+            doc.setFont('helvetica', 'normal');
+            let displayValue = item.value;
             
-            try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                
-                const leftMargin = 20;
-                const rightMargin = 20;
-                const topMargin = 20;
-                const pageWidth = doc.internal.pageSize.width;
-                const pageHeight = doc.internal.pageSize.height;
-                const centerX = pageWidth / 2;
-                
-                // HEADER
-                doc.setFontSize(18);
-                doc.setTextColor(0, 212, 255);
-                doc.text('ODELYA CLOUD STORAGE', centerX, topMargin, { align: 'center' });
-                
-                doc.setFontSize(16);
-                doc.setTextColor(0, 0, 0);
-                doc.text('MY ACCOUNT DETAILS', centerX, topMargin + 10, { align: 'center' });
-                
-                doc.setFontSize(10);
-                doc.setTextColor(100, 100, 100);
-                const generatedDateTime = formatDateTimeForPDFHeader(new Date());
-                doc.text(`Generated: ${generatedDateTime}`, centerX, topMargin + 18, { align: 'center' });
-                
-                doc.text(`User ID: ${currentUserData.userId || 'N/A'}`, centerX, topMargin + 26, { align: 'center' });
-                
-                let y = topMargin + 45;
-                
-                doc.setDrawColor(200, 200, 200);
-                doc.line(leftMargin, y, pageWidth - rightMargin, y);
-                y += 12;
-                
-                // SECTION 1: PERSONAL INFORMATION
-                doc.setFontSize(14);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(0, 212, 255);
-                doc.text('PERSONAL INFORMATION', leftMargin, y);
-                y += 10;
-                
-                doc.setFontSize(11);
-                doc.setFont('helvetica', 'normal');
-                doc.setTextColor(0, 0, 0);
-                
-                const userType = currentUserData.userType || 'personal';
-                let personalData = [];
-
-                if (userType === 'personal') {
-                    personalData = [
-                        {label: 'User Type', value: 'Personal'},
-                        {label: 'Name', value: currentUserData.name || 'N/A'},
-                        {label: 'Email', value: currentUserData.email || 'N/A'},
-                        {label: 'Phone', value: currentUserData.phone || 'N/A'},
-                        {label: 'Date of Birth', value: currentUserData.dob || 'N/A'},
-                        {label: 'Gender', value: currentUserData.gender || 'N/A'},
-                        {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
-                        {label: 'PAN', value: currentUserData.pan || 'N/A'},
-                        {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
-                        {label: 'Username', value: currentUserData.username || 'N/A'},
-                        // ADDED: Password Change Date - STAYS IN LEFT COLUMN FOR PDF
-                        {label: 'Last Password Change', value: lastPasswordChange ? formatDateTime(lastPasswordChange) : 'Never changed'}
-                    ];
-                } else if (userType === 'business') {
-                    personalData = [
-                        {label: 'User Type', value: 'Business'},
-                        {label: 'Business Name', value: currentUserData.name || 'N/A'},
-                        {label: 'Email', value: currentUserData.email || 'N/A'},
-                        {label: 'Phone', value: currentUserData.phone || 'N/A'},
-                        {label: 'Date of Incorp.', value: currentUserData.doi || 'N/A'},
-                        {label: 'Pincode', value: currentUserData.pincode || 'N/A'},
-                        {label: 'Aadhaar', value: currentUserData.aadhaar || 'N/A'},
-                        {label: 'PAN', value: currentUserData.pan || 'N/A'},
-                        {label: 'GSTIN', value: currentUserData.gstin || 'N/A'},
-                        {label: 'Username', value: currentUserData.username || 'N/A'},
-                        // ADDED: Password Change Date - STAYS IN LEFT COLUMN FOR PDF
-                        {label: 'Last Password Change', value: lastPasswordChange ? formatDateTime(lastPasswordChange) : 'Never changed'}
-                    ];
-                }
-                
-                doc.setFont('helvetica', 'bold');
-                let maxLabelWidth = 0;
-                personalData.forEach(item => {
-                    const width = doc.getTextWidth(item.label + ': ');
-                    if (width > maxLabelWidth) maxLabelWidth = width;
-                });
-                
-                const valueStartX = leftMargin + maxLabelWidth + 2;
-                
-                personalData.forEach(item => {
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(item.label + ':', leftMargin, y);
-                    
-                    doc.setFont('helvetica', 'normal');
-                    let displayValue = item.value;
-                    
-                    if (displayValue.length > 30 && item.label !== 'Email') {
-                        displayValue = displayValue.substring(0, 30) + '...';
-                    }
-                    
-                    doc.text(displayValue, valueStartX, y);
-                    y += 7;
-                });
-                
-                y += 5;
-                
-                doc.setDrawColor(200, 200, 200);
-                doc.line(leftMargin, y, pageWidth - rightMargin, y);
-                y += 12;
-                
-                // SECTION 2: ACCOUNT & PLAN DETAILS
-                doc.setFontSize(14);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(0, 212, 255);
-                doc.text('ACCOUNT & PLAN DETAILS', leftMargin, y);
-                y += 10;
-                
-                doc.setFontSize(11);
-                doc.setFont('helvetica', 'normal');
-                doc.setTextColor(0, 0, 0);
-                
-                const accountData = [
-                    {label: 'Status', value: (currentUserData.status || 'inactive').toUpperCase()},
-                    {label: 'Plan Name', value: currentUserData.planName || 'N/A'},
-                    {label: 'Plan Size', value: currentUserData.planSize || 'N/A'},
-                    {label: 'Plan Type', value: currentUserData.planType || 'N/A'},
-                    {label: 'Plan Start Date', value: currentUserData.planStartDate || 'N/A'},
-                    {label: 'Plan End Date', value: currentUserData.planEndDate || 'N/A'},
-                    {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
-                    {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'},
-                    {label: 'Registered On', value: currentUserData.accountCreated ? formatDateTime(currentUserData.accountCreated) : 'N/A'},
-                    
-                ];
-                
-                doc.setFont('helvetica', 'bold');
-                maxLabelWidth = 0;
-                accountData.forEach(item => {
-                    const width = doc.getTextWidth(item.label + ': ');
-                    if (width > maxLabelWidth) maxLabelWidth = width;
-                });
-                
-                const accValueStartX = leftMargin + maxLabelWidth + 2;
-                
-                accountData.forEach(item => {
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(item.label + ':', leftMargin, y);
-                    
-                    doc.setFont('helvetica', 'normal');
-                    let displayValue = item.value;
-                    
-                    if (displayValue.length > 30) {
-                        displayValue = displayValue.substring(0, 30) + '...';
-                    }
-                    
-                    doc.text(displayValue, accValueStartX, y);
-                    y += 7;
-                });
-                
-                y += 5;
-                
-                doc.setDrawColor(200, 200, 200);
-                doc.line(leftMargin, y, pageWidth - rightMargin, y);
-                y += 12;
-                
- // Replace the PDF agreement section with:
-
-// TERMS & CONDITIONS SECTION
-doc.setFontSize(12);
-doc.setFont('helvetica', 'bold');
-doc.setTextColor(26, 35, 126); // Deep blue color
-doc.text('TERMS & CONDITIONS', leftMargin, y);
-y += 8;
-
-doc.setFontSize(10);
-doc.setFont('helvetica', 'normal');
-doc.setTextColor(0, 0, 0);
-
-const terms = [
-    '1. I acknowledge and agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Management Private Limited',
-    '2. I acknowledge that account activation is contingent upon sharing my transaction details with Odelya Management Private Limited via the designated office WhatsApp number or official business email.',
-    '3. I agree that my service will be activated within 48 hours of successful payment verification.',
-    '4. I agree that all payments are final and non-refundable under any circumstances.'
-];
-
-// Draw tick mark for agreement
-doc.setDrawColor(0, 128, 0);
-doc.setLineWidth(0.5);
-const tickX = leftMargin;
-const tickY = y - 1;
-
-// Draw tick symbol (✓)
-doc.line(tickX, tickY + 2, tickX + 1, tickY + 3);
-doc.line(tickX + 1, tickY + 3, tickX + 3, tickY);
-
-doc.text('I hereby agree to all the terms and conditions stated above.', leftMargin + 5, y);
-y += 5;
-
-terms.forEach(term => {
-    if (y > pageHeight - 30) {
-        doc.addPage();
-        y = topMargin;
-    }
-    doc.text(term, leftMargin + 5, y);
-    y += 7;
-});
-
-y += 5;
-                
-                
-                // Save PDF - NO FOOTER
-                const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
-                let nameForFile = currentUserData.name || 'user';
-                nameForFile = nameForFile.replace(/\s+/g, '_');
-                const fileName = `${phoneNumber}_${nameForFile}_MyAccount.pdf`;
-                doc.save(fileName);
-                
-                console.log("PDF generated successfully!");
-                
-            } catch (error) {
-                console.error("Error generating PDF:", error);
-                alert("❌ Error generating PDF: " + error.message);
-            } finally {
-                event.target.textContent = originalText;
-                event.target.disabled = false;
+            if (displayValue.length > 30 && item.label !== 'Email') {
+                displayValue = displayValue.substring(0, 30) + '...';
             }
-        };
+            
+            doc.text(displayValue, valueStartX, y);
+            y += 7;
+        });
+        
+        y += 5;
+        
+        doc.setDrawColor(200, 200, 200);
+        doc.line(leftMargin, y, pageWidth - rightMargin, y);
+        y += 12;
+        
+        // SECTION 2: ACCOUNT & PLAN DETAILS
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(0, 212, 255);
+        doc.text('ACCOUNT & PLAN DETAILS', leftMargin, y);
+        y += 10;
+        
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        
+        const accountData = [
+            {label: 'Status', value: (currentUserData.status || 'inactive').toUpperCase()},
+            {label: 'Plan Name', value: currentUserData.planName || 'N/A'},
+            {label: 'Plan Size', value: currentUserData.planSize || 'N/A'},
+            {label: 'Plan Type', value: currentUserData.planType || 'N/A'},
+            {label: 'Plan Start Date', value: currentUserData.planStartDate || 'N/A'},
+            {label: 'Plan End Date', value: currentUserData.planEndDate || 'N/A'},
+            {label: 'Plan Value', value: currentUserData.planValue || 'N/A'},
+            {label: 'Payment Mode', value: currentUserData.paymentMode || 'N/A'},
+            {label: 'Registered On', value: currentUserData.accountCreated ? formatDateTime(currentUserData.accountCreated) : 'N/A'},
+            
+        ];
+        
+        doc.setFont('helvetica', 'bold');
+        maxLabelWidth = 0;
+        accountData.forEach(item => {
+            const width = doc.getTextWidth(item.label + ': ');
+            if (width > maxLabelWidth) maxLabelWidth = width;
+        });
+        
+        const accValueStartX = leftMargin + maxLabelWidth + 2;
+        
+        accountData.forEach(item => {
+            doc.setFont('helvetica', 'bold');
+            doc.text(item.label + ':', leftMargin, y);
+            
+            doc.setFont('helvetica', 'normal');
+            let displayValue = item.value;
+            
+            if (displayValue.length > 30) {
+                displayValue = displayValue.substring(0, 30) + '...';
+            }
+            
+            doc.text(displayValue, accValueStartX, y);
+            y += 7;
+        });
+        
+        y += 5;
+        
+        doc.setDrawColor(200, 200, 200);
+        doc.line(leftMargin, y, pageWidth - rightMargin, y);
+        y += 12;
+        
+        // TERMS & CONDITIONS SECTION
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(26, 35, 126); // Deep blue color
+        doc.text('TERMS & CONDITIONS', leftMargin, y);
+        y += 8;
+        
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        
+        const terms = [
+            '1. I acknowledge and agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Management Private Limited',
+            '2. I acknowledge that account activation is contingent upon sharing my transaction details with Odelya Management Private Limited via the designated office WhatsApp number or official business email.',
+            '3. I agree that my service will be activated within 48 hours of successful payment verification.',
+            '4. I agree that all payments are final and non-refundable under any circumstances.'
+        ];
+        
+        // Draw tick mark for agreement
+        doc.setDrawColor(0, 128, 0);
+        doc.setLineWidth(0.5);
+        const tickX = leftMargin;
+        const tickY = y - 1;
+        
+        // Draw tick symbol (✓)
+        doc.line(tickX, tickY + 2, tickX + 1, tickY + 3);
+        doc.line(tickX + 1, tickY + 3, tickX + 3, tickY);
+        
+        doc.text('I hereby agree to all the terms and conditions stated above.', leftMargin + 5, y);
+        y += 5;
+        
+        terms.forEach(term => {
+            if (y > pageHeight - 30) {
+                doc.addPage();
+                y = topMargin;
+            }
+            doc.text(term, leftMargin + 5, y);
+            y += 7;
+        });
+        
+        y += 5;
+        
+        // Save PDF - NO FOOTER
+        const phoneNumber = (currentUserData.phone || 'N/A').replace(/\s+/g, '');
+        let nameForFile = currentUserData.name || 'user';
+        nameForFile = nameForFile.replace(/\s+/g, '_');
+        const fileName = `${phoneNumber}_${nameForFile}_MyAccount.pdf`;
+        doc.save(fileName);
+        
+        console.log("PDF generated successfully!");
+        
+    } catch (error) {
+        console.error("Error generating PDF:", error);
+        alert("❌ Error generating PDF: " + error.message);
+    } finally {
+        event.target.textContent = originalText;
+        event.target.disabled = false;
+    }
+};
     </script>
 </body>
 </html>
