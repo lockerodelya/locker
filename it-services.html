@@ -67,18 +67,18 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* HERO SECTION - REDUCED GAP BY 50% MORE */
+        /* HERO SECTION */
         .it-hero {
             background: #4a90e2;
             color: white;
-            padding: 10px 20px; /* Reduced padding */
+            padding: 10px 20px;
             text-align: center;
-            margin-top: 10px; /* REDUCED BY 50% MORE (from 20px to 10px) */
+            margin-top: 10px;
         }
         
         .it-hero h1 {
             font-size: 3rem;
-            margin-bottom: 8px; /* Reduced */
+            margin-bottom: 8px;
             font-weight: 700;
             color: white;
         }
@@ -92,16 +92,16 @@
             opacity: 0.9;
         }
         
-        /* SERVICES GRID - MUCH WIDER TABS */
+        /* SERVICES GRID - FIXED FOR 3 TABS PER ROW */
         .services-container {
-            max-width: 95%; /* Changed from fixed width to percentage - uses more space */
+            width: 95%; /* Changed to width instead of max-width */
             margin: 0 auto;
-            padding: 15px 10px; /* Reduced padding */
+            padding: 15px 10px;
         }
         
         .services-title {
             text-align: center;
-            margin-bottom: 15px; /* Reduced */
+            margin-bottom: 15px;
         }
         
         .services-title h2 {
@@ -117,8 +117,8 @@
         
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); /* MUCH WIDER - 450px */
-            gap: 25px; /* Adjusted gap */
+            grid-template-columns: repeat(3, 1fr); /* EXACTLY 3 columns on desktop */
+            gap: 25px;
             margin-top: 10px;
         }
         
@@ -126,12 +126,12 @@
             background: white;
             border: 3px solid #4a90e2;
             border-radius: 15px;
-            padding: 25px 30px; /* Wider padding */
+            padding: 20px;
             text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
             box-shadow: none !important;
-            min-height: 180px; /* Ensure consistent height */
+            min-height: 180px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -142,13 +142,13 @@
         }
         
         .service-icon {
-            font-size: 2.8rem;
+            font-size: 2.5rem; /* Slightly smaller */
             margin-bottom: 15px;
             color: #4a90e2;
         }
         
         .service-tab h3 {
-            font-size: 1.5rem; /* Slightly larger */
+            font-size: 1.4rem;
             font-weight: 700;
             color: #333;
             margin-bottom: 12px;
@@ -157,7 +157,7 @@
         
         .service-tab p {
             color: #666;
-            font-size: 1.05rem; /* Slightly larger */
+            font-size: 1rem;
             line-height: 1.5;
             font-weight: 500;
             padding: 0 5px;
@@ -180,41 +180,32 @@
         .service-tab:nth-child(14) .service-icon { color: #34495e; }
         .service-tab:nth-child(15) .service-icon { color: #e67e22; }
         
-        /* Responsive Design */
-        @media (max-width: 1600px) {
-            .services-grid {
-                grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-            }
-        }
-        
-        @media (max-width: 1400px) {
-            .services-grid {
-                grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-            }
-        }
-        
-        @media (max-width: 1200px) {
-            .services-grid {
-                grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-                gap: 20px;
-            }
-        }
-        
-        @media (max-width: 992px) {
+        /* Responsive Design - TABLET: 2 tabs per row */
+        @media (max-width: 1024px) {
             .services-container {
-                max-width: 98%;
+                width: 98%;
             }
             
             .services-grid {
-                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-                gap: 18px;
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
+                gap: 20px;
             }
             
             .service-tab {
-                padding: 22px 25px;
+                padding: 18px;
+                min-height: 170px;
+            }
+            
+            .service-icon {
+                font-size: 2.3rem;
+            }
+            
+            .service-tab h3 {
+                font-size: 1.3rem;
             }
         }
         
+        /* Responsive Design - MOBILE: 1 tab per row */
         @media (max-width: 768px) {
             .it-hero {
                 margin-top: 8px;
@@ -230,7 +221,7 @@
             }
             
             .services-container {
-                max-width: 100%;
+                width: 100%;
                 padding: 12px;
             }
             
@@ -239,7 +230,7 @@
             }
             
             .services-grid {
-                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                grid-template-columns: 1fr; /* 1 column on mobile */
                 gap: 15px;
             }
             
@@ -265,10 +256,6 @@
         @media (max-width: 480px) {
             .it-hero h1 {
                 font-size: 1.8rem;
-            }
-            
-            .services-grid {
-                grid-template-columns: 1fr;
             }
             
             .service-tab {
