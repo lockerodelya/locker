@@ -462,7 +462,7 @@
             border: 3px solid #4a90e2 !important;
         }
         
-        /* AI CHATBOT STYLES */
+        /* AI CHATBOT STYLES - Updated for aichatbot.js */
         #ai-chat-container {
             position: fixed;
             bottom: 20px;
@@ -590,18 +590,64 @@
         }
         
         .user-message {
-            background: #0D47A1;
+            background: #ff4444 !important; /* Red for user messages */
             color: white;
             align-self: flex-end;
             border-bottom-right-radius: 5px;
+            box-shadow: 0 2px 5px rgba(255, 68, 68, 0.3);
         }
         
         .bot-message {
-            background: white;
-            color: #333;
+            background: white !important; /* White for bot messages */
+            color: #333 !important;
             align-self: flex-start;
             border-bottom-left-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e7ff;
+        }
+        
+        /* Typing Indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 15px;
+            align-self: flex-start;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #ccc;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        /* Question Items (Suggestions) */
+        .question-item {
+            background: white;
+            border: 1px solid #e0e7ff;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            margin: 5px 0;
+        }
+        
+        .question-item:hover {
+            background: #0D47A1;
+            color: white;
+            border-color: #0D47A1;
         }
         
         /* Chat Input Area */
@@ -648,31 +694,21 @@
             transform: scale(1.1);
         }
         
-        /* Suggested Questions */
+        /* Suggested Questions Area - Updated for dynamic suggestions */
         .suggested-questions {
             padding: 15px;
             background: #f8f9ff;
             border-top: 1px solid #e0e7ff;
-            display: flex;
+            display: none;
             flex-direction: column;
             gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
         }
         
-        .suggested-question {
-            background: white;
-            border: 1px solid #e0e7ff;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: left;
-        }
-        
-        .suggested-question:hover {
-            background: #0D47A1;
-            color: white;
-            border-color: #0D47A1;
+        .suggested-questions.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
         }
         
         /* Hero Section Styles */
@@ -746,6 +782,14 @@
             #ai-chat-container {
                 left: 10px;
                 bottom: 10px;
+            }
+            
+            .chat-toggle {
+                padding: 10px 15px;
+            }
+            
+            .chat-banner span {
+                font-size: 0.9rem;
             }
         }
         
@@ -887,10 +931,15 @@
             .chat-window {
                 width: 280px;
                 height: 400px;
+                bottom: 60px;
             }
             
             .chat-banner span {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
+            }
+            
+            .chat-toggle {
+                padding: 8px 12px;
             }
         }
     </style>
@@ -1092,10 +1141,7 @@
             </div>
             
             <div class="chat-messages" id="chat-messages">
-                <!-- Bot welcome message -->
-                <div class="message bot-message">
-                    Hello! I'm Vooo, your AI assistant. How can I help you with Odelya Cloud Digital Locker today?
-                </div>
+                <!-- Messages will be loaded by aichatbot.js -->
             </div>
             
             <!-- Chat Input Area -->
@@ -1113,10 +1159,7 @@
             
             <!-- Suggested Questions Area -->
             <div class="suggested-questions" id="suggested-questions">
-                <div class="suggested-question">What is Odelya Cloud Digital Locker?</div>
-                <div class="suggested-question">How does end-to-end encryption work?</div>
-                <div class="suggested-question">What are your pricing plans?</div>
-                <div class="suggested-question">How secure is my data?</div>
+                <!-- Questions will be dynamically loaded by aichatbot.js -->
             </div>
         </div>
     </div>
@@ -1124,112 +1167,5 @@
     <!-- AI Chatbot JavaScript -->
     <script src="aichatbot.js"></script>
     
-    <!-- Basic Chatbot Functionality (if aichatbot.js is not available) -->
-    <script>
-        // Basic chatbot functionality as fallback
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatToggleBtn = document.getElementById('chat-toggle-btn');
-            const chatWindow = document.getElementById('chat-window');
-            const closeChatBtn = document.getElementById('close-chat');
-            const chatInput = document.getElementById('chat-input');
-            const sendBtn = document.getElementById('send-btn');
-            const chatMessages = document.getElementById('chat-messages');
-            const suggestedQuestions = document.querySelectorAll('.suggested-question');
-            
-            // Toggle chat window
-            if (chatToggleBtn && chatWindow) {
-                chatToggleBtn.addEventListener('click', function() {
-                    chatWindow.classList.toggle('active');
-                });
-            }
-            
-            // Close chat window
-            if (closeChatBtn && chatWindow) {
-                closeChatBtn.addEventListener('click', function() {
-                    chatWindow.classList.remove('active');
-                });
-            }
-            
-            // Send message function
-            function sendMessage() {
-                const message = chatInput.value.trim();
-                if (message) {
-                    // Add user message
-                    addMessage(message, 'user');
-                    chatInput.value = '';
-                    
-                    // Simulate bot response
-                    setTimeout(() => {
-                        const botResponse = getBotResponse(message);
-                        addMessage(botResponse, 'bot');
-                    }, 1000);
-                }
-            }
-            
-            // Add message to chat
-            function addMessage(text, sender) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${sender}-message`;
-                messageDiv.textContent = text;
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-            
-            // Get bot response based on user input
-            function getBotResponse(userMessage) {
-                const lowerMessage = userMessage.toLowerCase();
-                
-                if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
-                    return "Hello! How can I assist you with Odelya Cloud Digital Locker today?";
-                } else if (lowerMessage.includes('encryption') || lowerMessage.includes('secure')) {
-                    return "Odelya uses military-grade end-to-end encryption to ensure your data is completely secure. Only you have access to your encrypted files.";
-                } else if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
-                    return "We offer flexible pricing plans for individuals and businesses. Please visit our Cloud Storage page for detailed pricing information.";
-                } else if (lowerMessage.includes('storage') || lowerMessage.includes('space')) {
-                    return "Odelya Cloud Digital Locker offers secure storage for your files with end-to-end encryption. Your data is protected at all times.";
-                } else if (lowerMessage.includes('kolkata') || lowerMessage.includes('location')) {
-                    return "We're based in Kolkata, West Bengal, serving customers across India with secure cloud storage solutions.";
-                } else {
-                    return "I'm here to help you with Odelya Cloud Digital Locker services. You can ask me about encryption, pricing, security, or how to get started.";
-                }
-            }
-            
-            // Send message on button click
-            if (sendBtn && chatInput) {
-                sendBtn.addEventListener('click', sendMessage);
-            }
-            
-            // Send message on Enter key
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
-            }
-            
-            // Handle suggested questions
-            suggestedQuestions.forEach(question => {
-                question.addEventListener('click', function() {
-                    const questionText = this.textContent;
-                    addMessage(questionText, 'user');
-                    
-                    setTimeout(() => {
-                        const botResponse = getBotResponse(questionText);
-                        addMessage(botResponse, 'bot');
-                    }, 1000);
-                });
-            });
-            
-            // Close chat when clicking outside
-            document.addEventListener('click', function(e) {
-                if (chatWindow.classList.contains('active') && 
-                    !chatWindow.contains(e.target) && 
-                    !chatToggleBtn.contains(e.target)) {
-                    chatWindow.classList.remove('active');
-                }
-            });
-        });
-    </script>
 </body>
 </html>
