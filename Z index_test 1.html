@@ -462,48 +462,217 @@
             border: 3px solid #4a90e2 !important;
         }
         
-        /* Responsive adjustments */
-        @media (min-width: 1024px) {
-            .service-card {
-                flex: 1 0 calc(33.333% - 30px);
-            }
+        /* AI CHATBOT STYLES */
+        #ai-chat-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9999;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        @media (max-width: 1023px) and (min-width: 768px) {
-            .service-card {
-                flex: 1 0 calc(50% - 30px);
-            }
+        /* Chat Toggle Button */
+        .chat-toggle {
+            background: linear-gradient(135deg, #0D47A1, #4361ee);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(13, 71, 161, 0.3);
+            transition: all 0.3s ease;
         }
         
-        @media (max-width: 767px) {
-            .service-card {
-                flex: 1 0 100%;
-                min-width: 100%;
-            }
+        .chat-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(13, 71, 161, 0.4);
         }
         
-        .service-icon {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
+        .chat-banner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .service-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
+        .chat-banner i {
+            font-size: 1.2rem;
+        }
+        
+        .chat-banner span {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        /* Chat Window */
+        .chat-window {
+            position: absolute;
+            bottom: 70px;
+            left: 0;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e0e7ff;
+        }
+        
+        .chat-window.active {
+            display: flex;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Chat Header */
+        .chat-header {
+            background: linear-gradient(135deg, #0D47A1, #4361ee);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .close-chat {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+        
+        .close-chat:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Chat Messages */
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9ff;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        
+        .user-message {
+            background: #0D47A1;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            background: white;
             color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         
-        .service-card p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 15px;
+        /* Chat Input Area */
+        .chat-input-area {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e0e7ff;
         }
         
-        .click-hint {
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #chat-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border 0.3s ease;
+        }
+        
+        #chat-input:focus {
+            border-color: #0D47A1;
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #0D47A1, #4361ee);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .send-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Suggested Questions */
+        .suggested-questions {
+            padding: 15px;
+            background: #f8f9ff;
+            border-top: 1px solid #e0e7ff;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .suggested-question {
+            background: white;
+            border: 1px solid #e0e7ff;
+            padding: 10px 15px;
+            border-radius: 20px;
             font-size: 0.9rem;
-            color: #4a90e2;
-            font-style: italic;
-            margin-top: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        
+        .suggested-question:hover {
+            background: #0D47A1;
+            color: white;
+            border-color: #0D47A1;
         }
         
         /* Hero Section Styles */
@@ -536,6 +705,72 @@
         .section-title h3 {
             color: #2c3e50;
             font-size: 2.5rem;
+        }
+        
+        /* Responsive adjustments for service cards */
+        @media (min-width: 1024px) {
+            .service-card {
+                flex: 1 0 calc(33.333% - 30px);
+            }
+        }
+        
+        @media (max-width: 1023px) and (min-width: 768px) {
+            .service-card {
+                flex: 1 0 calc(50% - 30px);
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .service-card {
+                flex: 1 0 100%;
+                min-width: 100%;
+            }
+            
+            .service-icon {
+                font-size: 3rem;
+            }
+            
+            .service-card h3 {
+                font-size: 1.6rem;
+            }
+            
+            /* Chatbot responsive styles */
+            .chat-window {
+                width: 300px;
+                height: 450px;
+                left: 0;
+                right: 0;
+                margin: 0 auto;
+            }
+            
+            #ai-chat-container {
+                left: 10px;
+                bottom: 10px;
+            }
+        }
+        
+        .service-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .service-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .service-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .click-hint {
+            font-size: 0.9rem;
+            color: #4a90e2;
+            font-style: italic;
+            margin-top: 15px;
         }
         
         /* Responsive Design */
@@ -647,6 +882,15 @@
             
             .hero p {
                 font-size: 1rem;
+            }
+            
+            .chat-window {
+                width: 280px;
+                height: 400px;
+            }
+            
+            .chat-banner span {
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -848,7 +1092,10 @@
             </div>
             
             <div class="chat-messages" id="chat-messages">
-                <!-- Messages will be inserted here by JavaScript -->
+                <!-- Bot welcome message -->
+                <div class="message bot-message">
+                    Hello! I'm Vooo, your AI assistant. How can I help you with Odelya Cloud Digital Locker today?
+                </div>
             </div>
             
             <!-- Chat Input Area -->
@@ -866,10 +1113,123 @@
             
             <!-- Suggested Questions Area -->
             <div class="suggested-questions" id="suggested-questions">
-                <!-- Questions will be inserted here by JavaScript -->
+                <div class="suggested-question">What is Odelya Cloud Digital Locker?</div>
+                <div class="suggested-question">How does end-to-end encryption work?</div>
+                <div class="suggested-question">What are your pricing plans?</div>
+                <div class="suggested-question">How secure is my data?</div>
             </div>
         </div>
     </div>
     
+    <!-- AI Chatbot JavaScript -->
+    <script src="aichatbot.js"></script>
+    
+    <!-- Basic Chatbot Functionality (if aichatbot.js is not available) -->
+    <script>
+        // Basic chatbot functionality as fallback
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            const chatWindow = document.getElementById('chat-window');
+            const closeChatBtn = document.getElementById('close-chat');
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            const chatMessages = document.getElementById('chat-messages');
+            const suggestedQuestions = document.querySelectorAll('.suggested-question');
+            
+            // Toggle chat window
+            if (chatToggleBtn && chatWindow) {
+                chatToggleBtn.addEventListener('click', function() {
+                    chatWindow.classList.toggle('active');
+                });
+            }
+            
+            // Close chat window
+            if (closeChatBtn && chatWindow) {
+                closeChatBtn.addEventListener('click', function() {
+                    chatWindow.classList.remove('active');
+                });
+            }
+            
+            // Send message function
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (message) {
+                    // Add user message
+                    addMessage(message, 'user');
+                    chatInput.value = '';
+                    
+                    // Simulate bot response
+                    setTimeout(() => {
+                        const botResponse = getBotResponse(message);
+                        addMessage(botResponse, 'bot');
+                    }, 1000);
+                }
+            }
+            
+            // Add message to chat
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Get bot response based on user input
+            function getBotResponse(userMessage) {
+                const lowerMessage = userMessage.toLowerCase();
+                
+                if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+                    return "Hello! How can I assist you with Odelya Cloud Digital Locker today?";
+                } else if (lowerMessage.includes('encryption') || lowerMessage.includes('secure')) {
+                    return "Odelya uses military-grade end-to-end encryption to ensure your data is completely secure. Only you have access to your encrypted files.";
+                } else if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
+                    return "We offer flexible pricing plans for individuals and businesses. Please visit our Cloud Storage page for detailed pricing information.";
+                } else if (lowerMessage.includes('storage') || lowerMessage.includes('space')) {
+                    return "Odelya Cloud Digital Locker offers secure storage for your files with end-to-end encryption. Your data is protected at all times.";
+                } else if (lowerMessage.includes('kolkata') || lowerMessage.includes('location')) {
+                    return "We're based in Kolkata, West Bengal, serving customers across India with secure cloud storage solutions.";
+                } else {
+                    return "I'm here to help you with Odelya Cloud Digital Locker services. You can ask me about encryption, pricing, security, or how to get started.";
+                }
+            }
+            
+            // Send message on button click
+            if (sendBtn && chatInput) {
+                sendBtn.addEventListener('click', sendMessage);
+            }
+            
+            // Send message on Enter key
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+            
+            // Handle suggested questions
+            suggestedQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const questionText = this.textContent;
+                    addMessage(questionText, 'user');
+                    
+                    setTimeout(() => {
+                        const botResponse = getBotResponse(questionText);
+                        addMessage(botResponse, 'bot');
+                    }, 1000);
+                });
+            });
+            
+            // Close chat when clicking outside
+            document.addEventListener('click', function(e) {
+                if (chatWindow.classList.contains('active') && 
+                    !chatWindow.contains(e.target) && 
+                    !chatToggleBtn.contains(e.target)) {
+                    chatWindow.classList.remove('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
