@@ -3,166 +3,852 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Page Title</title>
+    <title>Odelya Locker - Secure Document Storage</title>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Your Stylesheet -->
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- Header & Footer Styles -->
     <style>
-        /* EXACT DROPDOWN STYLES FROM YOUR CODE */
+        /* ====== ALL STYLES INTEGRATED ====== */
+        
+        /* ====== BASIC RESET & GLOBAL STYLES ====== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            padding-top: 80px;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ====== FIXED HEADER ====== */
+        header {
+            background: #191970;
+            color: white;
+            padding: 0.8rem 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .logo-image {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            background-color: white;
+            padding: 4px;
+            object-fit: contain;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            border: 2px solid #3498db;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .logo span {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* ====== NAVIGATION CONTAINER ====== */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Home Tab - Always Visible */
+        .home-nav {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .home-nav:hover {
+            background-color: rgba(255,255,255,0.15);
+            color: #3498db;
+        }
+
+        /* Hamburger Menu - Always Visible */
+        .hamburger {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hamburger:hover {
+            background-color: rgba(255,255,255,0.15);
+            color: #3498db;
+        }
+
+        /* ====== DROPDOWN MENU ====== */
         .dropdown {
             display: none;
             position: absolute;
             top: 100%;
             right: 20px;
             background: white;
-            min-width: 220px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            border-radius: 8px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border-radius: 15px;
             z-index: 1000;
-            padding: 10px 0;
-            border: 1px solid #e0e7ff;
+            min-width: 280px;
+            padding: 20px 0;
+            border: 2px solid #191970;
         }
-        
-        .dropdown.active {
+
+        .dropdown.show {
             display: block;
-            animation: fadeIn 0.3s ease;
         }
-        
+
         .dropdown a {
             display: flex;
             align-items: center;
-            padding: 12px 20px;
-            color: #37474f;
+            padding: 18px 25px;
+            color: #333;
             text-decoration: none;
-            font-weight: 500;
+            font-size: 1.3rem;
+            font-weight: 600;
             transition: all 0.3s ease;
-            border-left: 3px solid transparent;
+            margin: 0 15px;
+            border-radius: 10px;
+            gap: 15px;
         }
-        
-        .dropdown a:hover {
-            background: #f8f9ff;
-            color: #4361ee;
-            border-left: 3px solid #4361ee;
-            padding-left: 25px;
-        }
-        
+
         .dropdown a i {
-            width: 25px;
-            margin-right: 10px;
-            color: #4361ee;
-            font-size: 1.1rem;
+            font-size: 1.4rem;
+            color: #191970;
+            width: 30px;
+            text-align: center;
         }
-        
+
+        .dropdown a:hover {
+            background: linear-gradient(to right, #191970, #2a2a9e);
+            color: white;
+            transform: translateX(10px);
+        }
+
+        .dropdown a:hover i {
+            color: white;
+        }
+
+        /* ====== HERO SECTION ====== */
+        .hero {
+            background: linear-gradient(to right, #20B2AA, #3CB371);
+            color: white;
+            text-align: center;
+            padding: 2.4rem 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.8rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin: 0 auto 0.8rem;
+            color: black;
+            font-weight: bold;
+            opacity: 0.9;
+            white-space: nowrap;
+            padding: 0 30px;
+        }
+
+        /* ====== SERVICES SECTION ====== */
+        #services {
+            padding: 2rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .section-title h3 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            position: relative;
+            display: inline-block;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 320px;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 10px rgba(0,0,0,0.1);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            color: #3498db;
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .service-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 2.0rem;
+        }
+
+        .service-card p {
+            flex-grow: 1;
+            margin-bottom: 1rem;
+        }
+
+        .storage-card {
+            cursor: pointer;
+        }
+
+        .click-hint {
+            margin-top: 1rem;
+            color: #3498db;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .click-hint i {
+            margin-right: 5px;
+        }
+
+        /* ====== FIXED FOOTER ====== */
+        footer {
+            background-color: #191970;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 1.5rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .company-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .copyright {
+            opacity: 0.8;
+            font-size: 0.8rem;
+        }
+
+        .footer-links {
+            margin-top: 0.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a {
+            color: #ffffff;
+            font-size: 14px;
+            text-decoration: none;
+            opacity: 0.85;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .footer-links .separator {
+            color: #ffffff;
+            opacity: 0.6;
+        }
+
+        /* ====== AI CHAT BOX STYLES ====== */
+        #ai-chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        /* Chat Toggle Button */
+        .chat-toggle {
+            background: linear-gradient(135deg, #191970, #3498db);
+            color: white;
+            border-radius: 25px;
+            padding: 12px 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .chat-toggle:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(135deg, #3498db, #191970);
+        }
+
+        .chat-banner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .chat-banner i {
+            font-size: 1.2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Chat Window */
+        .chat-window {
+            position: absolute;
+            bottom: 60px;
+            right: 0;
+            width: 380px;
+            height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid #191970;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #191970, #2a2a9e);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .chat-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .close-chat {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-chat:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        /* Chat Messages Area */
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f8f9fa;
+            min-height: 0;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #191970;
+            border-radius: 3px;
+        }
+
+        /* Message Bubbles */
+        .message {
+            max-width: 85%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        @media (max-width: 768px) {
-            .dropdown {
-                right: 15px;
-                min-width: 200px;
+
+        .user-message {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+            font-weight: 600;
+        }
+
+        .bot-message {
+            background: white;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            border: 1px solid #eee;
+        }
+
+        /* Chat Input Area */
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background: white;
+            flex-shrink: 0;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #chat-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            outline: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #chat-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        #chat-input::placeholder {
+            color: #999;
+        }
+
+        .send-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .send-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Suggested Questions */
+        .suggested-questions {
+            padding: 10px 15px;
+            border-top: 1px solid #eee;
+            background: #f8f9fa;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                max-height: 0;
+                padding: 0 15px;
+            }
+            to { 
+                opacity: 1;
+                max-height: 150px;
+                padding: 10px 15px;
             }
         }
-        
-        @media (max-width: 480px) {
+
+        .suggested-questions.show {
+            display: flex;
+        }
+
+        .question-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+            color: #2c3e50;
+            text-align: left;
+        }
+
+        .question-item:hover {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+            transform: translateX(3px);
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 18px;
+            padding: 10px 15px;
+            align-self: flex-start;
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #3498db;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* ====== RESPONSIVE DESIGN ====== */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+            
+            /* Logo adjustments */
+            .logo-image {
+                height: 40px;
+                width: 40px;
+                margin-right: 10px;
+            }
+            
+            .logo span {
+                font-size: 1.5rem;
+            }
+            
+            /* Navigation adjustments */
+            .nav-right {
+                gap: 10px;
+            }
+            
+            .home-nav {
+                font-size: 1rem;
+                padding: 6px 12px;
+            }
+            
+            .hamburger {
+                font-size: 1.3rem;
+                padding: 6px 10px;
+            }
+            
+            /* Dropdown adjustments */
             .dropdown {
                 right: 10px;
-                min-width: 180px;
+                min-width: 250px;
+                padding: 15px 0;
             }
             
             .dropdown a {
-                padding: 10px 15px;
-                font-size: 0.95rem;
+                padding: 14px 20px;
+                font-size: 1.1rem;
+            }
+            
+            .dropdown a i {
+                font-size: 1.2rem;
+            }
+            
+            /* Hero section */
+            .hero {
+                padding: 1.8rem 1rem;
+                margin-bottom: 0.6rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+                margin-bottom: 0.6rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+                margin: 0 auto 0.6rem;
+                color: black;
+                font-weight: bold;
+                white-space: normal;
+                max-width: 90%;
+                padding: 0 15px;
+            }
+            
+            /* Services grid */
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .service-card {
+                min-height: 280px;
+            }
+            
+            /* Footer adjustments for mobile */
+            footer {
+                padding: 0.8rem 0;
+                margin-top: 1.5rem;
+            }
+            
+            .footer-text {
+                gap: 0.4rem;
+            }
+            
+            .company-name {
+                font-size: 1rem;
+            }
+            
+            .copyright {
+                font-size: 0.75rem;
+            }
+            
+            #services {
+                padding: 1.5rem 0;
+            }
+            
+            /* Chat Box Responsive */
+            .chat-window {
+                width: 320px;
+                height: 420px;
+                bottom: 50px;
+                right: 10px;
+                position: fixed;
+            }
+            
+            #ai-chat-container {
+                bottom: 10px;
+                right: 10px;
+            }
+            
+            .message {
+                max-width: 90%;
             }
         }
-        
-        /* Blank content area */
-        .main-content {
-            min-height: 70vh;
-            padding: 100px 20px 60px;
+
+        @media (max-width: 480px) {
+            .logo span {
+                font-size: 1.3rem;
+            }
+            
+            .home-nav {
+                font-size: 0.9rem;
+                padding: 5px 10px;
+            }
+            
+            .hamburger {
+                font-size: 1.2rem;
+                padding: 5px 8px;
+            }
+            
+            /* Additional footer adjustments for very small screens */
+            footer {
+                padding: 0.6rem 0;
+                margin-top: 1rem;
+            }
+            
+            .company-name {
+                font-size: 0.9rem;
+            }
+            
+            .copyright {
+                font-size: 0.7rem;
+            }
+            
+            /* Chat Box Responsive for Very Small Screens */
+            .chat-window {
+                width: calc(100vw - 20px);
+                right: 10px;
+                left: 10px;
+                height: 70vh;
+                bottom: 60px;
+                position: fixed;
+            }
+            
+            .chat-toggle {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
         }
-        
-        .blank-space {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 60px;
-            text-align: center;
-            border: 2px dashed #dee2e6;
-            color: #6c757d;
+
+        /* Fix for iOS Safari */
+        @supports (-webkit-overflow-scrolling: touch) {
+            .chat-window {
+                position: fixed;
+                transform: translateZ(0);
+                -webkit-transform: translateZ(0);
+                backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
+            }
+        }
+
+        /* ====== ADD BACKGROUND COLORS TO SERVICE CARDS ====== */
+        /* Secure Cloud Storage - Light Blue */
+        .storage-card {
+            cursor: pointer;
+            background: #b2ebf2 !important;
+        }
+
+        /* Guest Event Storage - Light Green */
+        .service-card:not(.storage-card) {
+            background: #c8e6c9 !important;
         }
     </style>
-    
-    <!-- EXACT HEADER JAVASCRIPT FROM YOUR CODE -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const hamburger = document.getElementById('hamburger');
-            const dropdown = document.getElementById('dropdown');
-            
-            if (hamburger && dropdown) {
-                hamburger.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    dropdown.classList.toggle('active');
-                    
-                    const icon = hamburger.querySelector('i');
-                    if (dropdown.classList.contains('active')) {
-                        icon.classList.remove('fa-bars');
-                        icon.classList.add('fa-times');
-                    } else {
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                document.addEventListener('click', function(e) {
-                    if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
-                        dropdown.classList.remove('active');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                dropdown.addEventListener('click', function(e) {
-                    if (e.target.tagName === 'A' || e.target.parentElement.tagName === 'A') {
-                        dropdown.classList.remove('active');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-                
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && dropdown.classList.contains('active')) {
-                        dropdown.classList.remove('active');
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    }
-                });
-            }
-        });
-    </script>
 </head>
     
 <body>
-    <!-- ====== EXACT FIXED HEADER FROM YOUR CODE ====== -->
+    <!-- ====== FIXED HEADER ====== -->
     <header>
         <div class="header-container">
             <div class="logo">
-                <img src="images/logo1.jpg" alt="Odelya Locker Logo" class="logo-image">
-                <span>Locker</span>
+                <!-- Note: Replace this with your actual logo or use a placeholder -->
+                <div class="logo-image" style="background: white; display: flex; align-items: center; justify-content: center;">
+                    <span style="color: #191970; font-weight: bold;">OL</span>
+                </div>
+                <span>Odelya Locker</span>
             </div>
             
             <!-- Navigation Container (Home + Hamburger) -->
             <div class="nav-right">
                 <!-- Home Tab -->
-                <a href="/index.html" class="home-nav">Home</a>
+                <a href="#" class="home-nav">Home</a>
                 
                 <!-- Hamburger Menu -->
                 <button class="hamburger" id="hamburger">
@@ -171,21 +857,19 @@
                 
                 <!-- Dropdown Menu -->
                 <div class="dropdown" id="dropdown">
-                    <a href="/user-login.html">
+                    <a href="#">
                         <i class="fas fa-cogs"></i> User
                     </a>
-			
-                    <a href="/security.html">
+                    <a href="#">
                         <i class="fas fa-shield-alt"></i> Data Security
                     </a>
-                    
-                    <a href="/privacy-policy.html">
+                    <a href="#">
                         <i class="fas fa-user-shield"></i> Privacy Policy
                     </a>
-                    <a href="/contact.html">
+                    <a href="#">
                         <i class="fas fa-envelope"></i> Contact
                     </a>
-                    <a href="/about.html">
+                    <a href="#">
                         <i class="fas fa-users"></i> About
                     </a>
                 </div>
@@ -193,15 +877,89 @@
         </div>
     </header>
 
-    <!-- ====== BLANK MAIN CONTENT AREA ====== -->
-    <main class="main-content">
-        <div class="blank-space">
-            <h2>Your Content Goes Here</h2>
-            <p>This is a blank space for your main content. Replace this with your page content.</p>
-        </div>
-    </main>
+    <!-- ====== HERO SECTION ====== -->
+    <section class="hero">
+        <h1>Secure Digital Document Storage</h1>
+        <p>Your documents are encrypted, secure, and accessible anytime, anywhere</p>
+    </section>
 
-    <!-- ====== EXACT FIXED FOOTER FROM YOUR CODE ====== -->
+    <!-- ====== SERVICES SECTION ====== -->
+    <section id="services">
+        <div class="container">
+            <div class="section-title">
+                <h3>Our Services</h3>
+            </div>
+            <div class="services-grid">
+                <!-- Secure Cloud Storage Card -->
+                <div class="service-card storage-card">
+                    <div class="service-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Secure Cloud Storage</h3>
+                    <p>Store your important documents securely in our encrypted cloud storage. Military-grade encryption ensures your data stays private and protected.</p>
+                    <div class="click-hint">
+                        <i class="fas fa-hand-point-up"></i> Click to access storage
+                    </div>
+                </div>
+                
+                <!-- Guest Event Storage Card -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3>Guest Event Storage</h3>
+                    <p>Specialized storage solution for event-related documents, guest lists, and event planning materials with easy sharing options.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== AI CHAT BOX ====== -->
+    <div id="ai-chat-container">
+        <button class="chat-toggle" id="chat-toggle">
+            <div class="chat-banner">
+                <i class="fas fa-robot"></i>
+                <span>AI Assistant</span>
+            </div>
+        </button>
+        
+        <div class="chat-window" id="chat-window">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <i class="fas fa-robot"></i>
+                    <span>Odelya Locker Assistant</span>
+                </div>
+                <button class="close-chat" id="close-chat">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be added here by JavaScript -->
+                <div class="message bot-message">
+                    Hello! I'm your Odelya Locker assistant. How can I help you today?
+                </div>
+            </div>
+            
+            <div class="suggested-questions" id="suggested-questions">
+                <div class="question-item">How secure is my data?</div>
+                <div class="question-item">What documents can I store?</div>
+                <div class="question-item">How to upload documents?</div>
+                <div class="question-item">Pricing information</div>
+            </div>
+            
+            <div class="chat-input-area">
+                <div class="input-container">
+                    <input type="text" id="chat-input" placeholder="Type your message...">
+                    <button class="send-btn" id="send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== FIXED FOOTER ====== -->
     <footer>
         <div class="container footer-content">
             <div class="footer-text">
@@ -210,16 +968,367 @@
 
                 <!-- Footer Links -->
                 <div class="footer-links">
-                    <a href="/security.html" style="font-size: 1.1em; font-weight: 600;">Security</a>
+                    <a href="#" style="font-size: 1.1em; font-weight: 600;">Security</a>
                     <span class="separator">|</span>
-                    <a href="/privacy-policy.html" style="font-size: 1.1em; font-weight: 600;">Privacy</a>
+                    <a href="#" style="font-size: 1.1em; font-weight: 600;">Privacy</a>
                     <span class="separator">|</span>
-                    <a href="/contact.html" style="font-size: 1.1em; font-weight: 600;">Contact</a>
+                    <a href="#" style="font-size: 1.1em; font-weight: 600;">Contact</a>
                     <span class="separator">|</span>
-                    <a href="/about.html" style="font-size: 1.1em; font-weight: 600;">About</a>
+                    <a href="#" style="font-size: 1.1em; font-weight: 600;">About</a>
                 </div>
             </div>
         </div>
     </footer>
+
+    <!-- ====== ALL JAVASCRIPT INTEGRATED ====== -->
+    <script>
+        // ====== MAIN JAVASCRIPT FOR ODELYA LOCKER SYSTEM ======
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // ====== VARIABLE DECLARATIONS ======
+            const hamburger = document.getElementById('hamburger');
+            const dropdown = document.getElementById('dropdown');
+            const storageCard = document.querySelector('.storage-card');
+            const chatToggle = document.getElementById('chat-toggle');
+            const closeChat = document.getElementById('close-chat');
+            const chatWindow = document.getElementById('chat-window');
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            const chatMessages = document.getElementById('chat-messages');
+            const suggestedQuestions = document.getElementById('suggested-questions');
+            const questionItems = document.querySelectorAll('.question-item');
+            
+            // ====== DROPDOWN MENU FUNCTIONALITY ======
+            
+            // Toggle dropdown when hamburger is clicked
+            if (hamburger && dropdown) {
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('show');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
+                        dropdown.classList.remove('show');
+                    }
+                });
+                
+                // Close dropdown when a menu item is clicked
+                dropdown.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        dropdown.classList.remove('show');
+                    });
+                });
+            }
+            
+            // ====== SMOOTH SCROLLING FOR ANCHOR LINKS ======
+            
+            // Smooth scrolling for all anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#') {
+                        e.preventDefault();
+                        const targetSection = document.querySelector(href);
+                        if (targetSection) {
+                            const headerHeight = document.querySelector('header').offsetHeight;
+                            window.scrollTo({
+                                top: targetSection.offsetTop - headerHeight,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // ====== STORAGE CARD CLICK HANDLER ======
+            
+            // Storage card click handler
+            if (storageCard) {
+                storageCard.addEventListener('click', function() {
+                    alert('Redirecting to Cloud Storage page...\n(In a real implementation, this would navigate to cloud-storage.html)');
+                    // window.location.href = 'cloud-storage.html'; // Uncomment for real implementation
+                });
+            }
+            
+            // ====== RESPONSIVE BEHAVIOR ======
+            
+            // Adjust hero text wrapping on mobile
+            function adjustHeroForMobile() {
+                const heroParagraph = document.querySelector('.hero p');
+                if (window.innerWidth <= 768) {
+                    // On mobile, ensure text wraps properly
+                    if (heroParagraph) {
+                        heroParagraph.style.whiteSpace = 'normal';
+                        heroParagraph.style.padding = '0 15px';
+                    }
+                } else {
+                    // On desktop, keep original
+                    if (heroParagraph) {
+                        heroParagraph.style.whiteSpace = 'nowrap';
+                        heroParagraph.style.padding = '0 30px';
+                    }
+                }
+            }
+            
+            // Initial adjustment
+            adjustHeroForMobile();
+            
+            // Adjust on resize
+            window.addEventListener('resize', adjustHeroForMobile);
+            
+            // ====== FORM VALIDATION FUNCTIONS ======
+            
+            // Function to validate name (only letters, spaces, dots)
+            function validateNameInput(input) {
+                if (input) {
+                    input.addEventListener('input', function(e) {
+                        e.target.value = e.target.value.replace(/[^A-Za-z\s\.]/g, '');
+                    });
+                }
+            }
+            
+            // Function to validate phone (only numbers)
+            function validatePhoneInput(input) {
+                if (input) {
+                    input.addEventListener('input', function(e) {
+                        e.target.value = e.target.value.replace(/\D/g, '');
+                    });
+                }
+            }
+            
+            // Function to validate Aadhaar (only numbers)
+            function validateAadhaarInput(input) {
+                if (input) {
+                    input.addEventListener('input', function(e) {
+                        e.target.value = e.target.value.replace(/\D/g, '');
+                    });
+                }
+            }
+            
+            // Function to validate PAN number format
+            function validatePANInput(input) {
+                if (input) {
+                    input.addEventListener('input', function(e) {
+                        // Convert to uppercase and remove non-alphanumeric characters
+                        let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                        
+                        // Limit to 10 characters
+                        if (value.length > 10) {
+                            value = value.substring(0, 10);
+                        }
+                        
+                        e.target.value = value;
+                    });
+                }
+            }
+            
+            // ====== ENHANCED SERVICE CARDS ======
+            
+            const serviceCards = document.querySelectorAll('.service-card');
+            serviceCards.forEach(card => {
+                // Add hover effect enhancement
+                card.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('storage-card')) {
+                        this.style.transform = 'translateY(-5px)';
+                    }
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('storage-card')) {
+                        this.style.transform = 'translateY(0)';
+                    }
+                });
+                
+                // Add keyboard accessibility
+                card.setAttribute('tabindex', '0');
+                card.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        if (this.classList.contains('storage-card')) {
+                            alert('Redirecting to Cloud Storage page...');
+                            // window.location.href = 'cloud-storage.html'; // Uncomment for real implementation
+                        }
+                    }
+                });
+            });
+            
+            // ====== FOOTER YEAR AUTO-UPDATE ======
+            
+            // Update copyright year automatically
+            const copyrightElement = document.querySelector('.copyright');
+            if (copyrightElement) {
+                const currentYear = new Date().getFullYear();
+                copyrightElement.textContent = copyrightElement.textContent.replace(/\d{4}/, currentYear);
+            }
+            
+            // ====== BASIC PAGE LOAD ANIMATIONS ======
+            
+            // Add fade-in animation for sections
+            const sections = document.querySelectorAll('section');
+            sections.forEach((section, index) => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+            
+            // ====== AI CHAT FUNCTIONALITY ======
+            
+            // Toggle chat window
+            if (chatToggle && chatWindow) {
+                chatToggle.addEventListener('click', function() {
+                    chatWindow.style.display = 'flex';
+                    chatInput.focus();
+                });
+                
+                closeChat.addEventListener('click', function() {
+                    chatWindow.style.display = 'none';
+                });
+                
+                // Close chat when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!chatWindow.contains(e.target) && !chatToggle.contains(e.target)) {
+                        chatWindow.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Send message function
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (message) {
+                    // Add user message
+                    addMessage(message, 'user');
+                    chatInput.value = '';
+                    
+                    // Show typing indicator
+                    showTypingIndicator();
+                    
+                    // Simulate bot response after delay
+                    setTimeout(() => {
+                        removeTypingIndicator();
+                        const response = getBotResponse(message);
+                        addMessage(response, 'bot');
+                    }, 1000);
+                }
+            }
+            
+            // Add message to chat
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Show suggested questions for first bot message
+                if (sender === 'bot' && chatMessages.children.length <= 2) {
+                    suggestedQuestions.classList.add('show');
+                }
+            }
+            
+            // Show typing indicator
+            function showTypingIndicator() {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'typing-indicator';
+                typingDiv.id = 'typing-indicator';
+                typingDiv.innerHTML = `
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                `;
+                chatMessages.appendChild(typingDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Remove typing indicator
+            function removeTypingIndicator() {
+                const typingIndicator = document.getElementById('typing-indicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+            }
+            
+            // Get bot response
+            function getBotResponse(userMessage) {
+                const responses = {
+                    'hello': 'Hello! How can I assist you with Odelya Locker today?',
+                    'hi': 'Hi there! I\'m here to help with your document storage needs.',
+                    'help': 'I can help you with: document storage, security features, account setup, and more!',
+                    'security': 'Odelya Locker uses military-grade AES-256 encryption to protect your documents. All data is encrypted both in transit and at rest.',
+                    'storage': 'You can store: PDFs, images, documents, certificates, IDs, and other important files up to 100MB each.',
+                    'upload': 'To upload documents: 1. Click on Cloud Storage 2. Select "Upload" 3. Choose your files 4. Click "Save"',
+                    'price': 'We offer flexible plans: Basic (free up to 1GB), Pro ($5/month for 10GB), Business ($15/month for 50GB)',
+                    'default': 'Thanks for your message! For specific questions about document storage, security, or account features, feel free to ask.'
+                };
+                
+                const lowerMessage = userMessage.toLowerCase();
+                
+                for (const [key, response] of Object.entries(responses)) {
+                    if (lowerMessage.includes(key)) {
+                        return response;
+                    }
+                }
+                
+                return responses.default;
+            }
+            
+            // Event listeners for chat
+            if (sendBtn && chatInput) {
+                sendBtn.addEventListener('click', sendMessage);
+                
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+            
+            // Suggested questions click handlers
+            questionItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const question = this.textContent;
+                    chatInput.value = question;
+                    sendMessage();
+                });
+            });
+            
+            // ====== TOUCH DEVICE SUPPORT ======
+            
+            // Improve touch experience for mobile
+            if ('ontouchstart' in window) {
+                document.body.classList.add('touch-device');
+                
+                // Add touch feedback to interactive elements
+                const interactiveElements = document.querySelectorAll('.service-card, .home-nav, .dropdown a');
+                interactiveElements.forEach(element => {
+                    element.addEventListener('touchstart', function() {
+                        this.style.opacity = '0.7';
+                    });
+                    
+                    element.addEventListener('touchend', function() {
+                        this.style.opacity = '1';
+                    });
+                });
+            }
+            
+            // ====== CONSOLE MESSAGE ======
+            
+            console.log('Odelya Locker System loaded successfully!');
+            console.log('Features available:');
+            console.log('- Responsive dropdown menu');
+            console.log('- Smooth scrolling');
+            console.log('- Mobile-friendly layout');
+            console.log('- Service card interactions');
+            console.log('- AI Chat Assistant');
+            console.log('- Form validations');
+        });
+    </script>
 </body>
 </html>
