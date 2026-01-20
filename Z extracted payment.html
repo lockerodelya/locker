@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Processing - Odelya Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap">
+    
+    <style>
+        /* CSS Start */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+            padding-top: 10px;
+        }
+
+        .header h1 {
+            color: #1a237e;
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+
+        /* Agreements Section */
+        .agreements-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .agreements-list {
+            list-style-type: decimal;
+            padding-left: 25px;
+            margin: 20px 0;
+        }
+
+        .agreements-list li {
+            margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .agreements-list li strong {
+            color: #1a237e;
+        }
+
+        .agreement-checkbox {
+            margin: 25px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        /* Payment Details Section - Initially blurred */
+        .payment-details-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            filter: blur(5px);
+            pointer-events: none;
+            opacity: 0.7;
+            transition: all 0.5s ease;
+        }
+
+        .payment-details-section.active {
+            filter: blur(0);
+            pointer-events: auto;
+            opacity: 1;
+        }
+
+        .payment-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .payment-mode {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .mode-option {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+            text-align: center;
+        }
+
+        .mode-option:hover {
+            background: #e8f5e9;
+        }
+
+        .mode-option.selected {
+            background: #e8f5e9;
+            border-color: #4caf50;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+        }
+
+        .mode-option h4 {
+            color: #1b5e20;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        .mode-option p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        /* UPI Container Layout */
+        .upi-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            width: 100%;
+        }
+
+        .qr-code-container {
+            text-align: center;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .qr-code-container img {
+            width: 100%;
+            max-width: 300px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 10px;
+            background: white;
+        }
+
+        .upi-instructions-container {
+            background: #e8f5e9;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 6px solid #4caf50;
+            width: 100%;
+        }
+
+        .upi-instructions-container h4 {
+            color: #1b5e20;
+            font-size: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upi-instructions-container ol {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .upi-instructions-container li {
+            margin-bottom: 10px;
+            font-size: 15px;
+            color: #424242;
+            line-height: 1.5;
+        }
+
+        .upi-instructions-container strong {
+            color: #1b5e20;
+        }
+
+        .qr-title {
+            text-align: center;
+            color: #1a237e;
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        .bank-transfer-container {
+            background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 15px 40px rgba(25, 35, 126, 0.2);
+            border: 4px solid #4caf50;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .bank-transfer-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 0 10px;
+        }
+
+        .bank-transfer-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            color: white;
+            line-height: 1.3;
+        }
+
+        .bank-transfer-header h3 i {
+            color: #4caf50;
+            font-size: 26px;
+        }
+
+        .bank-transfer-subtitle {
+            font-size: 15px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .bank-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .bank-detail-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 2px solid #4caf50;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .bank-detail-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 6px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            word-break: break-word;
+        }
+
+        .bank-detail-label i {
+            color: #1a237e;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .bank-detail-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a237e;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-top: 5px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+            word-break: break-all;
+            overflow-wrap: break-word;
+            min-width: 0;
+        }
+
+        .instructions-box {
+            background: #e8f5e9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 6px solid #4caf50;
+            width: 100%;
+        }
+
+        .instructions-box h4 {
+            color: #1b5e20;
+            font-size: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instructions-box ol {
+            padding-left: 18px;
+            margin-bottom: 15px;
+        }
+
+        .instructions-box li {
+            margin-bottom: 10px;
+            font-size: 15px;
+            color: #424242;
+            line-height: 1.5;
+        }
+
+        .instructions-box strong {
+            color: #1b5e20;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .btn-completed {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            font-size: 1.1rem;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-completed:hover {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        /* UPI and Bank Details Sections */
+        .upi-details, .bank-details {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .upi-details.active, .bank-details.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Desktop Layout for UPI */
+        @media (min-width: 992px) {
+            .upi-content-wrapper {
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: center;
+                gap: 40px;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+            
+            .qr-code-container {
+                flex: 0 0 auto;
+                max-width: 320px;
+            }
+            
+            .upi-instructions-container {
+                flex: 1;
+                max-width: 600px;
+                margin-top: 0;
+            }
+        }
+
+        /* Tablet Layout */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .upi-content-wrapper {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+            }
+            
+            .qr-code-container {
+                max-width: 400px;
+            }
+            
+            .upi-instructions-container {
+                max-width: 600px;
+            }
+        }
+
+        /* Mobile Responsive Fixes - NO GAPS FROM SCREEN EDGES */
+        @media (max-width: 767px) {
+            body {
+                padding: 0;
+                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            }
+            
+            .container {
+                padding: 0;
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            .header {
+                padding: 15px 15px 5px 15px;
+                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            }
+            
+            .agreements-section {
+                border-radius: 0;
+                padding: 20px 15px;
+                margin: 0;
+                width: 100%;
+                box-shadow: none;
+            }
+            
+            .agreements-list {
+                padding-left: 20px;
+            }
+            
+            .agreements-list li {
+                font-size: 15px;
+                margin-bottom: 12px;
+            }
+            
+            .agreement-checkbox {
+                margin: 20px 0;
+                padding: 15px;
+            }
+            
+            .checkbox-label {
+                font-size: 16px;
+            }
+            
+            .payment-details-section {
+                border-radius: 0;
+                padding: 15px;
+                margin: 0;
+                width: 100%;
+                box-shadow: none;
+            }
+            
+            .payment-content {
+                padding: 15px;
+                border-radius: 0;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+                color: #1a237e;
+            }
+            
+            .qr-title {
+                font-size: 1.4rem;
+                margin-bottom: 20px;
+                padding: 0 10px;
+            }
+            
+            .upi-content-wrapper {
+                gap: 25px;
+                padding: 0 5px;
+            }
+            
+            .qr-code-container {
+                max-width: 280px;
+                padding: 0 10px;
+            }
+            
+            .qr-code-container img {
+                max-width: 280px;
+                width: 100%;
+            }
+            
+            .upi-instructions-container {
+                padding: 20px;
+                margin: 0 5px;
+                border-radius: 10px;
+            }
+            
+            .payment-mode {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 0 5px;
+            }
+            
+            .mode-option {
+                padding: 18px;
+                margin: 0 5px;
+            }
+            
+            .mode-option h4 {
+                font-size: 1.2rem;
+            }
+            
+            .bank-transfer-container {
+                padding: 20px 15px;
+                margin: 20px 0 0 0;
+                border-radius: 0;
+                border: none;
+                border-top: 4px solid #4caf50;
+                border-bottom: 4px solid #4caf50;
+            }
+            
+            .bank-details-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .bank-detail-card {
+                padding: 15px;
+            }
+            
+            .bank-detail-value {
+                font-size: 16px;
+                padding: 10px;
+            }
+            
+            .instructions-box {
+                padding: 18px;
+                margin: 20px 5px 0 5px;
+                border-radius: 10px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 15px;
+                margin-top: 20px;
+                padding-top: 20px;
+                padding: 0 10px;
+            }
+            
+            .btn-completed {
+                width: 100%;
+                padding: 16px 20px;
+                margin: 0 5px;
+            }
+            
+            .bank-transfer-header h3 {
+                font-size: 20px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .bank-transfer-subtitle {
+                font-size: 14px;
+                padding: 0 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .agreements-list li {
+                font-size: 14px;
+            }
+            
+            .checkbox-label {
+                font-size: 15px;
+            }
+            
+            .qr-title {
+                font-size: 1.3rem;
+            }
+            
+            .qr-code-container {
+                max-width: 250px;
+            }
+            
+            .qr-code-container img {
+                max-width: 250px;
+            }
+            
+            .upi-instructions-container {
+                padding: 18px;
+            }
+            
+            .upi-instructions-container h4 {
+                font-size: 16px;
+            }
+            
+            .upi-instructions-container li {
+                font-size: 14px;
+            }
+            
+            .bank-transfer-container {
+                padding: 18px 12px;
+            }
+            
+            .bank-detail-card {
+                padding: 12px;
+            }
+            
+            .bank-detail-value {
+                font-size: 15px;
+                padding: 8px;
+            }
+            
+            .instructions-box h4 {
+                font-size: 16px;
+            }
+            
+            .instructions-box li {
+                font-size: 14px;
+            }
+            
+            .mode-option {
+                padding: 16px;
+            }
+            
+            .mode-option h4 {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .header h1 {
+                font-size: 1.4rem;
+            }
+            
+            .qr-title {
+                font-size: 1.2rem;
+            }
+            
+            .qr-code-container {
+                max-width: 220px;
+            }
+            
+            .qr-code-container img {
+                max-width: 220px;
+            }
+            
+            .upi-instructions-container {
+                padding: 15px;
+            }
+        }
+        /* CSS End */
+    </style>
+</head>
+<body>
+    <!-- HTML Start -->
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>Payment Processing</h1>
+        </div>
+
+        <!-- Agreements Section -->
+        <div class="agreements-section">
+            <h3 style="color: #1a237e; margin-bottom: 20px; font-size: 1.5rem;">
+                <i class="fas fa-file-contract"></i> Terms & Conditions
+            </h3>
+            
+            <ol class="agreements-list">
+                <li>
+                    <strong>I acknowledge and agree to the Terms & Conditions, Privacy Policy, Data Retention Policy, and all other applicable policies of Odelya Management Private Limited</strong>
+                </li>
+                <li>
+                    <strong>I acknowledge that account activation is contingent upon sharing my transaction details with Odelya Management Private Limited via the designated office WhatsApp number or official business email.</strong>
+                </li>
+                <li>
+                    <strong>I agree that my service will be activated within 48 hours of successful payment verification.</strong>
+                </li>
+                <li>
+                    <strong>I agree that all payments are final and non-refundable under any circumstances.</strong>
+                </li>
+            </ol>
+            
+            <div class="agreement-checkbox">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="termsCheckbox">
+                    <span class="checkbox-label">I hereby agree to all the terms and conditions stated above.</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Payment Details Section (Initially blurred) -->
+        <div class="payment-details-section" id="paymentDetailsSection">
+            <div class="payment-content">
+                <!-- Payment Mode Selection -->
+                <div class="payment-mode">
+                    <div class="mode-option" id="modeUPI">
+                        <h4><i class="fas fa-mobile-alt"></i> UPI Payment</h4>
+                        <p>Pay instantly using any UPI app</p>
+                    </div>
+                    <div class="mode-option" id="modeBank">
+                        <h4><i class="fas fa-university"></i> Bank Transfer</h4>
+                        <p>Transfer via Net Banking or NEFT/RTGS</p>
+                    </div>
+                </div>
+
+                <!-- UPI Payment Details -->
+                <div class="upi-details" id="upiDetails">
+                    <div class="qr-title">Please pay exact: <span id="upiTitleAmount">INR 0</span></div>
+                    <div class="upi-content-wrapper">
+                        <div class="qr-code-container">
+                            <img src="images/sbiqr.jpg" alt="SBI UPI QR Code">
+                        </div>
+                        <div class="upi-instructions-container">
+                            <h4><i class="fas fa-list-ol"></i> Payment Instructions</h4>
+                            <ol>
+                                <li>Please pay the <strong>exact amount: <span id="upiInstructionAmount">INR 0</span></strong></li>
+                                <li>Please share transaction details via:<br>
+                                    <strong>WhatsApp: +91-9674130001</strong><br>
+                                    <strong>Email: care.ompl@gmail.com</strong>
+                                </li>
+                                <li>Service will be activated within 48 hours only after successful payment verification</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bank Transfer Details -->
+                <div class="bank-details" id="bankDetails">
+                    <div class="bank-transfer-container">
+                        <div class="bank-transfer-header">
+                            <h3><i class="fas fa-university"></i> Bank Transfer Details</h3>
+                            <p class="bank-transfer-subtitle">Transfer the exact amount to the account below</p>
+                        </div>
+                        
+                        <div class="bank-details-grid">
+                            <div class="bank-detail-card">
+                                <div class="bank-detail-label">
+                                    <i class="fas fa-university"></i> Bank Name
+                                </div>
+                                <div class="bank-detail-value">State Bank of India (SBI)</div>
+                            </div>
+                            <div class="bank-detail-card">
+                                <div class="bank-detail-label">
+                                    <i class="fas fa-user-tie"></i> Account Name
+                                </div>
+                                <div class="bank-detail-value">ODELYA MANAGEMENT PVT LTD</div>
+                            </div>
+                            <div class="bank-detail-card">
+                                <div class="bank-detail-label">
+                                    <i class="fas fa-hashtag"></i> Account Number
+                                </div>
+                                <div class="bank-detail-value">39681284318</div>
+                            </div>
+                            <div class="bank-detail-card">
+                                <div class="bank-detail-label">
+                                    <i class="fas fa-code-branch"></i> IFSC Code
+                                </div>
+                                <div class="bank-detail-value">SBIN0001140</div>
+                            </div>
+                            <div class="bank-detail-card">
+                                <div class="bank-detail-label">
+                                    <i class="fas fa-map-marker-alt"></i> Branch
+                                </div>
+                                <div class="bank-detail-value">C.I.T. ROAD, KOLKATA</div>
+                            </div>
+                            <div class="bank-detail-card">
+                                <div class="bank-detail-label">
+                                    <i class="fas fa-wallet"></i> Amount to Transfer
+                                </div>
+                                <div class="bank-detail-value" id="transferAmount">INR 0</div>
+                            </div>
+                        </div>
+
+                        <div class="instructions-box">
+                            <h4><i class="fas fa-list-ol"></i> Payment Instructions</h4>
+                            <ol>
+                                <li>Please pay the <strong>exact amount: <span id="instructionAmount">INR 0</span></strong></li>
+                                <li>Please share transaction details via:<br>
+                                    <strong>WhatsApp: +91-9674130001</strong><br>
+                                    <strong>Email: care.ompl@gmail.com</strong>
+                                </li>
+                                <li>Service will be activated within 48 hours only after successful payment verification</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-completed" id="btnCompleted">
+                        <i class="fas fa-check-circle"></i> Payment Completed
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- HTML End -->
+
+    <script>
+        // JavaScript Start
+        // ====== STATE MANAGEMENT ======
+        const paymentState = {
+            paymentMode: null,
+            totalAmount: 0,
+            userId: '',
+            userEmail: '',
+            planType: '',
+            planValue: '',
+            paymentMethodFromRegistration: '' // Added to store payment method from registration
+        };
+
+        // ====== DOM ELEMENTS ======
+        const elements = {
+            btnCompleted: document.getElementById('btnCompleted'),
+            modeUPI: document.getElementById('modeUPI'),
+            modeBank: document.getElementById('modeBank'),
+            upiDetails: document.getElementById('upiDetails'),
+            bankDetails: document.getElementById('bankDetails'),
+            transferAmount: document.getElementById('transferAmount'),
+            instructionAmount: document.getElementById('instructionAmount'),
+            upiInstructionAmount: document.getElementById('upiInstructionAmount'),
+            upiTitleAmount: document.getElementById('upiTitleAmount'),
+            termsCheckbox: document.getElementById('termsCheckbox'),
+            paymentDetailsSection: document.getElementById('paymentDetailsSection')
+        };
+
+        // ====== URL PARAMETER EXTRACTION ======
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            
+            // Try URL parameters first
+            let userId = params.get('userId') || '';
+            let amount = parseInt(params.get('amount')) || 0;
+            let email = params.get('email') || '';
+            let planType = params.get('planType') || '';
+            let paymentMethod = params.get('paymentMethod') || ''; // Get payment method from URL
+            
+            // If no URL parameters, try sessionStorage (backup)
+            if (!userId || amount === 0) {
+                try {
+                    const lastReg = JSON.parse(sessionStorage.getItem('lastRegistration') || '{}');
+                    const fiveMinutesAgo = new Date().getTime() - (5 * 60 * 1000);
+                    
+                    // Only use if data is recent (last 5 minutes)
+                    if (lastReg.timestamp && lastReg.timestamp > fiveMinutesAgo) {
+                        console.log('Using sessionStorage backup data');
+                        userId = lastReg.userId || userId;
+                        amount = lastReg.amount || amount;
+                        email = lastReg.email || email;
+                        planType = lastReg.planType || planType;
+                        paymentMethod = lastReg.paymentMethod || paymentMethod;
+                    }
+                } catch (e) {
+                    console.error('Error reading sessionStorage:', e);
+                }
+            }
+            
+            return { userId, amount, email, planType, paymentMethod };
+        }
+
+        // ====== INITIALIZATION ======
+        document.addEventListener('DOMContentLoaded', function() {
+            // Extract data from URL or sessionStorage
+            const urlParams = getUrlParams();
+            
+            console.log('URL Parameters received:', urlParams);
+            
+            // Set payment state
+            paymentState.userId = urlParams.userId;
+            paymentState.totalAmount = urlParams.amount;
+            paymentState.userEmail = decodeURIComponent(urlParams.email) || '';
+            paymentState.planType = urlParams.planType;
+            
+            paymentState.paymentMethodFromRegistration = urlParams.paymentMethod || '';
+
+            // Get plan value from sessionStorage and update the elements directly
+            try {
+                const planData = sessionStorage.getItem('odelya_planDetails');
+                if (planData) {
+                    const plan = JSON.parse(planData);
+                    const planValue = plan.planValue || 'INR 0';
+                    
+                    // Update all 4 places directly
+                    elements.transferAmount.textContent = planValue;
+                    elements.instructionAmount.textContent = planValue;
+                    elements.upiInstructionAmount.textContent = planValue;
+                    elements.upiTitleAmount.textContent = planValue;
+                    
+                    console.log('Plan value set:', planValue);
+                }
+            } catch (error) {
+                console.error('Error setting plan value:', error);
+            }
+            
+            // Debug log
+            console.log('Payment State:', paymentState);
+            console.log('Payment Method from Registration:', paymentState.paymentMethodFromRegistration);
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Add checkbox change listener
+            elements.termsCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    // Unblur the payment section when checkbox is checked
+                    elements.paymentDetailsSection.classList.add('active');
+                    // Automatically select payment mode based on registration
+                    autoSelectPaymentMode();
+                } else {
+                    // Re-blur the payment section when checkbox is unchecked
+                    elements.paymentDetailsSection.classList.remove('active');
+                }
+            });
+        });
+
+        // ====== AUTO SELECT PAYMENT MODE ======
+        function autoSelectPaymentMode() {
+            const paymentMethod = paymentState.paymentMethodFromRegistration.toLowerCase();
+            
+            console.log('Auto-selecting payment mode based on:', paymentMethod);
+            
+            // Default to UPI if no payment method is specified
+            if (!paymentMethod) {
+                console.log('No payment method specified, defaulting to UPI');
+                selectPaymentMode('upi');
+                return;
+            }
+            
+            // Check for UPI related terms
+            if (paymentMethod.includes('upi')) {
+                console.log('Selecting UPI mode');
+                selectPaymentMode('upi');
+            } 
+            // Check for Bank Transfer related terms
+            else if (paymentMethod.includes('bank') || paymentMethod.includes('transfer') || 
+                     paymentMethod.includes('account') || paymentMethod.includes('neft') || 
+                     paymentMethod.includes('rtgs')) {
+                console.log('Selecting Bank Transfer mode');
+                selectPaymentMode('bank');
+            }
+            // Check for Cash (Cash payments might also use bank transfer for documentation)
+            else if (paymentMethod.includes('cash')) {
+                console.log('Cash selected, showing Bank Transfer for reference');
+                selectPaymentMode('bank');
+            }
+            // Default to UPI
+            else {
+                console.log('Payment method not recognized, defaulting to UPI');
+                selectPaymentMode('upi');
+            }
+        }
+
+        // ====== SETUP EVENT LISTENERS ======
+        function setupEventListeners() {
+            elements.modeUPI.addEventListener('click', () => {
+                if (elements.termsCheckbox.checked) {
+                    selectPaymentMode('upi');
+                }
+            });
+            
+            elements.modeBank.addEventListener('click', () => {
+                if (elements.termsCheckbox.checked) {
+                    selectPaymentMode('bank');
+                }
+            });
+            
+            elements.btnCompleted.addEventListener('click', handlePaymentCompletion);
+        }
+
+        // ====== AMOUNT DISPLAY ======
+        function updateAmountDisplay() {
+            const formattedAmount = paymentState.totalAmount.toLocaleString();
+            
+            // Update amount displays
+            elements.transferAmount.textContent = `INR ${formattedAmount}`;
+            elements.instructionAmount.textContent = `INR ${formattedAmount}`;
+            elements.upiInstructionAmount.textContent = `INR ${formattedAmount}`;
+            elements.upiTitleAmount.textContent = `INR ${formattedAmount}`;
+            
+            console.log('Amount updated:', paymentState.totalAmount);
+        }
+
+        // ====== PAYMENT MODE SELECTION ======
+        function selectPaymentMode(mode) {
+            paymentState.paymentMode = mode;
+            
+            elements.modeUPI.classList.remove('selected');
+            elements.modeBank.classList.remove('selected');
+            elements.upiDetails.classList.remove('active');
+            elements.bankDetails.classList.remove('active');
+            
+            if (mode === 'upi') {
+                elements.modeUPI.classList.add('selected');
+                elements.upiDetails.classList.add('active');
+                console.log('UPI payment mode selected');
+            } else {
+                elements.modeBank.classList.add('selected');
+                elements.bankDetails.classList.add('active');
+                console.log('Bank Transfer payment mode selected');
+            }
+        }
+
+        // ====== PAYMENT COMPLETION HANDLER ======
+        function handlePaymentCompletion() {
+            // Removed the redirect to homepage
+            alert("Thank you for completing your payment. Please note that service activation requires verification of your payment details.");
+        }
+
+        // JavaScript End
+    </script>
+</body>
+</html>
