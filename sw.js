@@ -1,5 +1,5 @@
 // sw.js - Service Worker for Odelya (NO PUSH NOTIFICATIONS)
-const CACHE_NAME = 'odelya-cache-v2';
+const CACHE_NAME = 'odelya-cache-v3';
 const urlsToCache = [
   '/',
   '/index.html',
