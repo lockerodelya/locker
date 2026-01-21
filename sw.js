@@ -91,6 +91,32 @@ self.addEventListener('fetch', event => {
   );
 });
 
+// Auto update when new content is available
+self.addEventListener('message', event => {
+  if (event.data === 'skipWaiting') {
+    self.skipWaiting();
+  }
+});
+
+// Force update when new version is detected
+self.addEventListener('activate', event => {
+  console.log('Service Worker: New version activated');
+  
+  // Claim clients immediately
+  event.waitUntil(
+    self.clients.claim().then(() => {
+      // Notify all clients about update
+      self.clients.matchAll().then(clients => {
+        clients.forEach(client => {
+          client.postMessage({
+            type: 'UPDATE_AVAILABLE'
+          });
+        });
+      });
+    })
+  );
+});
+
 // NO PUSH NOTIFICATIONS HERE
 // NO BACKGROUND SYNC HERE
 // NO PERIODIC SYNC HERE
