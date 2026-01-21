@@ -1059,7 +1059,35 @@
                 });
             }
         });
-    </script>
+</script>
+
+<!-- Add this NEW code right here -->
+<script>
+    // Fix Home link scrolling issue
+    document.addEventListener('DOMContentLoaded', function() {
+        const homeNav = document.querySelector('.home-nav');
+        
+        if (homeNav) {
+            homeNav.addEventListener('click', function(e) {
+                // If we're already on homepage, prevent default and scroll to top
+                if (window.location.pathname === '/' || 
+                    window.location.pathname === '/index.html' || 
+                    window.location.pathname === '') {
+                    
+                    e.preventDefault();
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'instant'  // Changed to 'instant' to prevent smooth scroll
+                    });
+                    
+                    // Update URL without hash
+                    history.replaceState(null, null, ' ');
+                }
+            });
+        }
+    });
+</script>
+
 </head>
     
 <body>
