@@ -469,303 +469,6 @@
             font-size: 0.8rem;
         }
         
-        /* Additional CSS for 3-column layout */
-        .services-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 40px;
-        }
-        
-        /* ALL TABS - WHITE BACKGROUND WITH BLUE BORDER */
-        .service-card {
-            flex: 1;
-            min-width: 300px;
-            max-width: 380px;
-            background: white !important; /* White background for ALL tabs */
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 3px solid #4a90e2 !important; /* Blue border for ALL tabs */
-            box-shadow: none !important; /* No shadow for ALL tabs */
-        }
-        
-        .service-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        /* ONLY ICON COLORS ARE DIFFERENT */
-        .storage-card .service-icon {
-            color: #4a90e2; /* Blue icon */
-        }
-        
-        .service-card:nth-child(2) .service-icon {
-            color: #2ecc71; /* Green icon - ONLY THE ICON */
-        }
-        
-        .service-card:nth-child(3) .service-icon {
-            color: #cc0000; 
-        }
-        
-        /* Remove any colored borders or backgrounds from tabs 2 and 3 */
-        .service-card:nth-child(2),
-        .service-card:nth-child(3) {
-            background: white !important;
-            border: 3px solid #4a90e2 !important;
-        }
-        
-        /* AI CHATBOT STYLES - Updated for aichatbot.js */
-        #ai-chat-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        /* Chat Toggle Button */
-        .chat-toggle {
-            background: linear-gradient(135deg, #0D47A1, #4361ee);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            padding: 12px 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px rgba(13, 71, 161, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .chat-toggle:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(13, 71, 161, 0.4);
-        }
-        
-        .chat-banner {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .chat-banner i {
-            font-size: 1.2rem;
-        }
-        
-        .chat-banner span {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-        
-        /* Chat Window */
-        .chat-window {
-            position: absolute;
-            bottom: 70px;
-            right: 0;
-            width: 300px;
-            height: 400px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            border: 1px solid #e0e7ff;
-        }
-        
-        .chat-window.active {
-            display: flex;
-            animation: slideIn 0.3s ease;
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Chat Header */
-        .chat-header {
-            background: linear-gradient(135deg, #0D47A1, #4361ee);
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .chat-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-        
-        .close-chat {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s ease;
-        }
-        
-        .close-chat:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        /* Chat Messages */
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            background: #f8f9ff;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .message {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-        
-        .user-message {
-            background: #ff4444 !important; /* Red for user messages */
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 5px;
-            box-shadow: 0 2px 5px rgba(255, 68, 68, 0.3);
-        }
-        
-        .bot-message {
-            background: white !important; /* White for bot messages */
-            color: #333 !important;
-            align-self: flex-start;
-            border-bottom-left-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e0e7ff;
-        }
-        
-        /* Typing Indicator */
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 15px;
-            align-self: flex-start;
-        }
-        
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: #ccc;
-            border-radius: 50%;
-            animation: typing 1.4s infinite ease-in-out;
-        }
-        
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        
-        @keyframes typing {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-        
-        /* Question Items (Suggestions) */
-        .question-item {
-            background: white;
-            border: 1px solid #e0e7ff;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: left;
-            margin: 5px 0;
-        }
-        
-        .question-item:hover {
-            background: #0D47A1;
-            color: white;
-            border-color: #0D47A1;
-        }
-        
-        /* Chat Input Area */
-        .chat-input-area {
-            padding: 15px;
-            background: white;
-            border-top: 1px solid #e0e7ff;
-        }
-        
-        .input-container {
-            display: flex;
-            gap: 10px;
-        }
-        
-        #chat-input {
-            flex: 1;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border 0.3s ease;
-        }
-        
-        #chat-input:focus {
-            border-color: #0D47A1;
-        }
-        
-        .send-btn {
-            background: linear-gradient(135deg, #0D47A1, #4361ee);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        
-        .send-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        /* Suggested Questions Area - Updated for dynamic suggestions */
-        .suggested-questions {
-            padding: 15px;
-            background: #f8f9ff;
-            border-top: 1px solid #e0e7ff;
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        .suggested-questions.show {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-        
         /* ====== HERO SECTION STYLES (Separated from mobile) ====== */
         .hero {
             background: #20B2AA;
@@ -788,136 +491,20 @@
             color: #FFFFFF;
         }
         
-        /* Section Title Styles */
-        .section-title {
-            text-align: center;
-            margin-bottom: 40px;
-            margin-top: 10px;
-        }
-        .section-title h2 {
-            font-size: 2.2rem;
-        }
-        .section-title h3 {
-            color: #2c3e50;
-            font-size: 2rem;
-        }
-        
-        /* Responsive adjustments for service cards */
-        @media (min-width: 1024px) {
-            .service-card {
-                flex: 1 0 calc(33.333% - 30px);
-            }
-        }
-        
-        @media (max-width: 1023px) and (min-width: 768px) {
-            .service-card {
-                flex: 1 0 calc(50% - 30px);
-            }
-        }
-        
-        .service-icon {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-        }
-        
-        .service-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            color: #333;
-        }
-        
-        .service-card p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-        
-        .click-hint {
-            font-size: 0.9rem;
-            color: #4a90e2;
-            font-style: italic;
-            margin-top: 15px;
-        }
-        
-        #services {
-            margin-bottom: 10px; 
-            padding-bottom: 10px; 
-        }
-
-        .services-grid {
-            margin-bottom: 5px; /* Extra space below cards */
-        }
-    </style>
-
-    <!-- ====== MOBILE RESPONSIVE STYLES (Separated from hero) ====== -->
-    <style>
-        /* Mobile-specific styles */
+        /* HERO SECTION MOBILE STYLES (Separated from main hero styles) */
         @media (max-width: 768px) {
-
-		.hero {
-            padding: 15px 20px !important;
-        }
-        
-        .seo-heading {
-            font-size: 1.5rem !important; 
-            margin-bottom: 8px !important; 
-        }
-        
-        .hero p {
-            font-size: 1rem !important;   
-            margin: 0 auto !important;
-        }	
-		.service-card {
-                flex: 1 0 100%;
-                min-width: 100%;
+            .hero {
+                padding: 15px 20px !important;
             }
             
-            .service-icon {
-                font-size: 3rem;
+            .seo-heading {
+                font-size: 1.5rem !important; 
+                margin-bottom: 8px !important; 
             }
             
-            .section-title h2 {
-                font-size: 1.8rem;
-            }
-            
-            .service-card h3 {
-                font-size: 1.8rem;
-            }
-        #ai-chat-container {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        right: auto;
-        z-index: 9999;
-    }
-    
-    .chat-window {
-        position: fixed;
-        bottom: 80px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 300px;  
-        height: 350px;
-        margin: 0;
-    }
-    .chat-toggle {
-        padding: 12px 20px;
-    }
-}
-@media (max-width: 350px) {
-    .chat-window {
-        width: 300px;
-        height: 420px;
-    }
-}		
-            /* Chatbot responsive styles */
-            .chat-toggle {
-                padding: 15px 15px;
-            }
-            
-            .chat-banner span {
-                font-size: 0.9rem;
+            .hero p {
+                font-size: 1rem !important;   
+                margin: 0 auto !important;
             }
         }
 
@@ -989,25 +576,6 @@
             }
         }
 
-        /* HERO SECTION MOBILE STYLES (Separated from main hero styles) */
-        @media (max-width: 768px) {
-            .hero {
-                padding: 40px 40px;
-            }
-            
-            .seo-heading {
-                font-size: 2rem;
-                line-height: 1.3; 
-                padding: 0 10px;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-                padding: 0 10px;
-                margin: 5px auto;
-            }
-        }
-
         @media (max-width: 480px) {
             .logo span {
                 display: none;
@@ -1031,14 +599,6 @@
                 font-size: 1.8rem;
             }
             
-            .section-title h2 {
-                font-size: 1.6rem;
-            }
-            
-            .service-card h3 {
-                font-size: 1.6rem;
-            }
-            
             .hero {
                 padding: 40px 15px; /* Adjust for very small screens */
             }
@@ -1051,14 +611,6 @@
             .hero p {
                 font-size: 1rem;
                 padding: 0 5px;
-            }
-            
-            .chat-banner span {
-                font-size: 0.85rem;
-            }
-            
-            .chat-toggle {
-                padding: 8px 12px;
             }
         }
     </style>
@@ -1200,53 +752,12 @@
         </div>
     </section>
 
-    <!-- ====== SERVICES SECTION ====== -->
-    <section id="services">
-        <div class="container">
-            <div class="section-title">
-    <h2>Odelya Secure Services</h2>
-</div>
-            
-            <div class="services-grid">
-                <!-- Cloud Storage Card - Updated to link to cloud-storage.html -->
-                <div class="service-card storage-card" 
-     onclick="window.location.href='cloud-storage.html'"
-     role="button" 
-     tabindex="0"
-     aria-label="Learn about Secure Cloud Storage">
-    <div class="service-icon">
-        <i class="fas fa-database"></i>
-    </div>
-    <h3>Secure Cloud Storage</h3>
-    <p>( End-to-End Encryption )</p>
-    <p class="click-hint"><i class="fas fa-mouse-pointer"></i> Click for details</p>
-</div>
-
-                <!-- Event Photo Storage -->
-                <div class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-photo-video"></i>
-                    </div>
-                    <h3>Event Photo Storage</h3>
-                    <p>( Cloud Facility for Event Guest )</p>
-                </div>
-                
-                <!-- Odelya IT Services - CLICKABLE -->
-                <div class="service-card" 
-     onclick="window.location.href='it-services.html'"
-     role="button" 
-     tabindex="0"
-     aria-label="Learn about Odelya IT Services">  <!-- Changed label -->
-    <div class="service-icon">
-        <i class="fas fa-laptop-code"></i>
-    </div>
-    <h3>Odelya IT Services</h3>
-    <p>( IT Services for Personal & Businesses )</p>
-    <p class="click-hint"><i class="fas fa-mouse-pointer"></i> Click for details</p>
-</div>
-            </div>
+    <!-- ====== MAIN CONTENT AREA (Blank for further editing) ====== -->
+    <main class="main-content">
+        <div class="content-placeholder">
+            <!-- Main content area left blank for further editing -->
         </div>
-    </section>
+    </main>
 
     <!-- ====== FIXED FOOTER ====== -->
     <footer>
@@ -1273,54 +784,6 @@
         </div>
     </footer>
 
-    <!-- ====== AI CHAT BOX ====== -->
-    <div id="ai-chat-container">
-        <!-- Chat Toggle Button -->
-        <div id="chat-toggle-btn" class="chat-toggle">
-            <div class="chat-banner">
-                <i class="fas fa-robot"></i>
-                <span>Ask Vooo</span>
-            </div>
-        </div>
-        
-        <!-- Chat Window -->
-        <div id="chat-window" class="chat-window">
-            <div class="chat-header">
-                <div class="chat-title">
-                    <i class="fas fa-robot"></i>
-                    <span>Vooo Talking</span>
-                </div>
-                <button id="close-chat" class="close-chat" aria-label="Close chat">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="chat-messages" id="chat-messages">
-                <!-- Messages will be loaded by aichatbot.js -->
-            </div>
-            
-            <!-- Chat Input Area -->
-            <div class="chat-input-area">
-                <div class="input-container">
-                    <input type="text" 
-                           id="chat-input" 
-                           placeholder="Type your question here..."
-                           autocomplete="off">
-                    <button id="send-btn" class="send-btn">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Suggested Questions Area -->
-            <div class="suggested-questions" id="suggested-questions">
-                <!-- Questions will be dynamically loaded by aichatbot.js -->
-            </div>
-        </div>
-    </div>
-    
-    <!-- AI Chatbot JavaScript -->
-    <script src="aichatbot.js"></script>
 <!-- PWA Install Script -->
     <script src="/pwainstall.js"></script>
 		
