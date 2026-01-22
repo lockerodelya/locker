@@ -1,5 +1,5 @@
 // pwainstall.js - PWA Install Prompt with Auto Update
-// Version: 1.0
+// Version: 3.5
 
 class PWAInstaller {
     constructor() {
