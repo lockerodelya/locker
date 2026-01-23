@@ -1,5 +1,5 @@
 // pwainstall.js - Fixed and Optimized PWA Install Prompt with 5-minute reminders
-// Version: 4.2
+// Version: 4.2 - Centered Button
 
 class PWAInstaller {
     constructor() {
@@ -139,8 +139,7 @@ class PWAInstaller {
     showInstallButton() {
         if (this.isPWAInstalled() || this.hasShownPrompt || this.installButton) return;
         
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        
+        // Create the button
         this.installButton = document.createElement('button');
         this.installButton.id = 'pwa-install-btn';
         this.installButton.innerHTML = `
@@ -148,7 +147,7 @@ class PWAInstaller {
             Install Odelya Locker
         `;
         
-        // Styling for mobile - centered
+        // Common styling for both mobile and desktop - CENTERED
         let styles = `
             position: fixed;
             background: linear-gradient(135deg, #0D47A1, #4361ee);
@@ -166,13 +165,30 @@ class PWAInstaller {
             justify-content: center;
             transition: all 0.3s ease;
             animation: slideIn 0.5s ease;
+            /* ALWAYS CENTERED */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             min-width: 220px;
             text-align: center;
             white-space: nowrap;
+            /* Add some responsive adjustments */
+            max-width: 90%;
         `;
+        
+        // Add responsive font size
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+            styles += `
+                font-size: 1.1rem;
+                padding: 18px 32px;
+            `;
+        } else {
+            styles += `
+                font-size: 1.2rem;
+                padding: 20px 36px;
+            `;
+        }
         
         this.installButton.style.cssText = styles;
         
@@ -181,7 +197,7 @@ class PWAInstaller {
             this.installPWA();
         });
         
-        // Add close button
+        // Add close button (small X in top-right corner)
         const closeBtn = document.createElement('button');
         closeBtn.innerHTML = '×';
         closeBtn.style.cssText = `
@@ -207,8 +223,6 @@ class PWAInstaller {
             e.stopPropagation();
             this.hideInstallButton();
             localStorage.setItem('pwa_declined', Date.now());
-            
-            // Schedule next reminder
             this.scheduleReminder();
         });
         
