@@ -1,5 +1,5 @@
-// pwainstall.js - Fixed and Optimized PWA Install Prompt
-// Version: 4.1
+// pwainstall.js - Fixed and Optimized PWA Install Prompt with 5-minute reminders
+// Version: 4.2
 
 class PWAInstaller {
     constructor() {
@@ -8,6 +8,8 @@ class PWAInstaller {
         this.hasShownPrompt = false;
         this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
         this.isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        this.reminderInterval = 5 * 60 * 1000; // 5 minutes in milliseconds
+        this.reminderTimer = null;
         this.init();
     }
 
@@ -33,14 +35,19 @@ class PWAInstaller {
         window.addEventListener('appinstalled', () => {
             console.log('PWA: App installed successfully');
             localStorage.setItem('pwa_installed', 'true');
+            this.clearReminderTimer();
             this.hideInstallButton();
         });
 
         // Check if already standalone
         if (window.matchMedia('(display-mode: standalone)').matches) {
             localStorage.setItem('pwa_installed', 'true');
+            this.clearReminderTimer();
             return;
         }
+        
+        // Check if we should show reminder based on last declined time
+        this.checkReminderStatus();
         
         // For iOS Safari, show custom prompt
         if (this.isIOS && this.isSafari) {
@@ -57,20 +64,76 @@ class PWAInstaller {
         
         if (isStandalone || isInstalled) {
             console.log('PWA: Already installed or in standalone mode');
+            this.clearReminderTimer();
             return true;
         }
         
-        // Check if user declined recently (24 hours)
+        return false;
+    }
+
+    checkReminderStatus() {
         const lastDeclined = localStorage.getItem('pwa_declined');
         if (lastDeclined) {
-            const hoursSince = (Date.now() - parseInt(lastDeclined)) / (1000 * 60 * 60);
-            if (hoursSince < 24) {
-                console.log('PWA: User declined recently');
-                return true;
+            const timeSince = Date.now() - parseInt(lastDeclined);
+            
+            // If 5 minutes have passed since last decline, show reminder
+            if (timeSince >= this.reminderInterval) {
+                console.log('PWA: 5 minutes passed, showing reminder');
+                this.scheduleReminder();
+            } else {
+                // Schedule reminder for when 5 minutes are complete
+                const timeRemaining = this.reminderInterval - timeSince;
+                console.log(`PWA: Remaining time until next reminder: ${Math.round(timeRemaining/1000)} seconds`);
+                
+                this.reminderTimer = setTimeout(() => {
+                    this.showReminder();
+                }, timeRemaining);
             }
+        } else {
+            // No previous decline, schedule first reminder after 5 minutes
+            this.scheduleReminder();
+        }
+    }
+
+    scheduleReminder() {
+        // Clear any existing timer
+        this.clearReminderTimer();
+        
+        // Schedule reminder after 5 minutes
+        this.reminderTimer = setTimeout(() => {
+            this.showReminder();
+        }, this.reminderInterval);
+        
+        console.log('PWA: Next reminder scheduled in 5 minutes');
+    }
+
+    showReminder() {
+        if (this.isPWAInstalled() || this.hasShownPrompt) return;
+        
+        console.log('PWA: Showing reminder');
+        
+        // For Android/Chrome, show install button
+        if (!this.isIOS && !this.isSafari && this.deferredPrompt) {
+            this.showInstallButton();
+        }
+        // For iOS Safari, show custom hint
+        else if (this.isIOS && this.isSafari) {
+            this.showIOSInstallHint();
+        }
+        // For other browsers
+        else {
+            this.showInstallButton();
         }
         
-        return false;
+        // Schedule next reminder
+        this.scheduleReminder();
+    }
+
+    clearReminderTimer() {
+        if (this.reminderTimer) {
+            clearTimeout(this.reminderTimer);
+            this.reminderTimer = null;
+        }
     }
 
     showInstallButton() {
@@ -118,7 +181,7 @@ class PWAInstaller {
             this.installPWA();
         });
         
-        // Add close button for mobile
+        // Add close button
         const closeBtn = document.createElement('button');
         closeBtn.innerHTML = '×';
         closeBtn.style.cssText = `
@@ -144,6 +207,9 @@ class PWAInstaller {
             e.stopPropagation();
             this.hideInstallButton();
             localStorage.setItem('pwa_declined', Date.now());
+            
+            // Schedule next reminder
+            this.scheduleReminder();
         });
         
         this.installButton.appendChild(closeBtn);
@@ -167,6 +233,7 @@ class PWAInstaller {
                     this.installButton.parentNode.removeChild(this.installButton);
                 }
                 this.installButton = null;
+                this.hasShownPrompt = false;
             }, 300);
         }
     }
@@ -183,8 +250,11 @@ class PWAInstaller {
             
             if (choiceResult.outcome === 'accepted') {
                 console.log('User accepted install');
+                localStorage.removeItem('pwa_declined'); // Clear declined history
             } else {
                 localStorage.setItem('pwa_declined', Date.now());
+                // Schedule next reminder
+                this.scheduleReminder();
             }
             
             this.deferredPrompt = null;
@@ -259,6 +329,9 @@ class PWAInstaller {
             setTimeout(() => {
                 if (hint.parentNode) hint.parentNode.removeChild(hint);
             }, 300);
+            
+            localStorage.setItem('pwa_declined', Date.now());
+            this.scheduleReminder();
         });
         
         setTimeout(() => {
@@ -266,6 +339,8 @@ class PWAInstaller {
                 hint.style.opacity = '0';
                 setTimeout(() => {
                     if (hint.parentNode) hint.parentNode.removeChild(hint);
+                    localStorage.setItem('pwa_declined', Date.now());
+                    this.scheduleReminder();
                 }, 300);
             }
         }, 30000);
@@ -325,6 +400,9 @@ class PWAInstaller {
             setTimeout(() => {
                 if (message.parentNode) message.parentNode.removeChild(message);
             }, 300);
+            
+            localStorage.setItem('pwa_declined', Date.now());
+            this.scheduleReminder();
         });
         
         setTimeout(() => {
@@ -332,6 +410,8 @@ class PWAInstaller {
                 message.style.opacity = '0';
                 setTimeout(() => {
                     if (message.parentNode) message.parentNode.removeChild(message);
+                    localStorage.setItem('pwa_declined', Date.now());
+                    this.scheduleReminder();
                 }, 300);
             }
         }, 5000);
