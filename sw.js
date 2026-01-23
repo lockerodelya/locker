@@ -1,8 +1,8 @@
 // sw.js - Service Worker for Odelya (Enhanced Version)
-// Version: 4.1 (Matches pwainstall.js v4.0)
+// Version: 4.2 (Matches pwainstall.js v4.2)
 
-const CACHE_NAME = 'odelya-cache-v4.1';
-const RUNTIME_CACHE = 'odelya-runtime-v4.1';
+const CACHE_NAME = 'odelya-cache-v4.2';
+const RUNTIME_CACHE = 'odelya-runtime-v4.2';
 const urlsToCache = [
   '/',
   '/index.html',
