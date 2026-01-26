@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
-	<title>FAQ | Odelya Cloud Digital Data Locker Kolkata</title>
+	<title>User Login | Odelya Cloud Digital Data Locker Kolkata</title>
 
     <!-- ====== SEO META TAGS ====== -->
 
@@ -12,21 +12,21 @@
     <meta name="description" content="Odelya Cloud Digital Locker Kolkata - Online cloud data storage with end-to-end encryption. Secure data in digital locker online cloud storage in Kolkata.">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://odelya.online">
+    <link rel="canonical" href="https://odelya.online/user-login.html">
 
 <!-- for social media -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://odelya.online">
+<meta property="og:url" content="https://odelya.online/user-login.html">
 <meta property="og:site_name" content="Odelya Cloud">
-<meta property="og:title" content="Odelya Cloud Digital Locker - Secure End-to-End Encrypted Data Storage">
-<meta property="og:description" content="Private cloud storage with military-grade encryption. Secure files with Odelya Digital Locker solutions in Kolkata.">
+<meta property="og:title" content="Odelya User Login - Secure Encrypted Data Storage">
+<meta property="og:description" content="Login to your Odelya Cloud Digital Locker account. Secure files with end-to-end encryption in Kolkata.">
 <meta property="og:image" content="https://odelya.online/images/logo2.jpg">
 <meta property="og:image:alt" content="Odelya Cloud Digital Locker logo showing secure encrypted data protection">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://odelya.online">
-<meta name="twitter:title" content="Odelya Cloud Digital Locker - Secure Encrypted Data Storage">
-<meta name="twitter:description" content="End-to-end encrypted cloud data storage for complete data privacy and protection in India.">
+<meta name="twitter:url" content="https://odelya.online/user-login.html">
+<meta name="twitter:title" content="Odelya User Login - Secure Encrypted Data Storage">
+<meta name="twitter:description" content="Login to your Odelya Cloud Digital Locker account with end-to-end encrypted cloud data storage.">
 <meta name="twitter:image" content="https://odelya.online/images/logo2.jpg">
 
     <!-- Structured Data (Schema.org) -->
@@ -55,6 +55,13 @@
 	
 	<!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Internal Styles -->
     <style>
@@ -210,6 +217,276 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
+        /* ====== LOGIN STYLES ====== */
+        .login-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: white;
+            padding: 60px 50px;
+            border-radius: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: 40px auto;
+        }
+        
+        .login-logo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .login-logo-image {
+            height: 100px;
+            width: 100px;
+            border-radius: 50%;
+            background-color: white;
+            padding: 8px;
+            object-fit: contain;
+            border: 4px solid #3498db;
+        }
+        
+        .login-box h2 {
+            color: #333;
+            margin-bottom: 40px;
+            font-size: 32px;
+            font-weight: 700;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 600;
+            font-size: 16px;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        
+        .login-box input {
+            width: 100%;
+            padding: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 18px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        
+        .login-box input:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+        
+        .login-box button {
+            background: #00d4ff;
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 30px;
+            width: 100%;
+            transition: all 0.3s;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        
+        .login-box button:hover {
+            background: #0099cc;
+            transform: translateY(-2px);
+        }
+        
+        .login-box button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            color: #f44336;
+            font-size: 16px;
+            margin-top: 10px;
+            display: none;
+            font-weight: 500;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        
+        /* Dashboard Styles */
+        .dashboard-container {
+            width: 90%;
+            max-width: 900px;
+            padding: 20px;
+            margin: 40px auto;
+        }
+        
+        .dashboard-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            min-height: 80vh;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background: #00d4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .user-details h3 {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+        }
+        
+        .user-details p {
+            margin: 5px 0 0;
+            color: #666;
+        }
+        
+        .logout-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: #ff4757;
+        }
+        
+        .data-section {
+            margin-top: 30px;
+        }
+        
+        .data-section h4 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .data-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #00d4ff;
+        }
+        
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .data-row:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .data-label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .data-value {
+            color: #333;
+            text-align: right;
+            max-width: 200px;
+            word-break: break-word;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-style: italic;
+        }
+        
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #5a6268;
+        }
+        
+        .secure-note {
+            margin-top: 40px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+        
         /* ====== MAIN CONTENT AREA ====== */
         .main-content {
             flex: 1;
@@ -217,33 +494,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             text-align: center;
-            color: #666;
-        }
-        
-        .content-placeholder {
-            max-width: 600px;
-            width: 100%;
-        }
-        
-        .content-icon {
-            font-size: 4rem;
-            color: #4361ee;
-            margin-bottom: 20px;
-            opacity: 0.7;
-        }
-        
-        .content-title {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-        
-        .content-description {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            margin-bottom: 30px;
             color: #666;
         }
         
@@ -310,8 +562,7 @@
             font-size: 0.8rem;
         }
         
-       
-        /* HERO SECTION MOBILE STYLES (Separated from main hero styles) */
+        /* ====== RESPONSIVE DESIGN ====== */
         @media (max-width: 768px) {
             .header-container {
                 padding: 0 15px;
@@ -346,20 +597,17 @@
                 min-width: 200px;
             }
             
+            .login-box {
+                padding: 40px 35px;
+            }
+            
+            .dashboard-box {
+                padding: 30px 25px;
+                min-height: 85vh;
+            }
+            
             .main-content {
                 padding: 30px 15px;
-            }
-            
-            .content-icon {
-                font-size: 3rem;
-            }
-            
-            .content-title {
-                font-size: 2rem;
-            }
-            
-            .content-description {
-                font-size: 1.1rem;
             }
             
             .footer-links {
@@ -377,6 +625,36 @@
 
             body.menu-open {
                 overflow: hidden;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            
+            .login-box {
+                padding: 35px 30px;
+            }
+            
+            .login-box h2 {
+                font-size: 28px;
+                margin-bottom: 30px;
+            }
+            
+            .login-box input {
+                padding: 16px;
+                font-size: 16px;
+            }
+            
+            .login-box button {
+                padding: 16px 30px;
+                font-size: 16px;
+            }
+            
+            .dashboard-box {
+                padding: 25px 20px;
+                min-height: 85vh;
             }
         }
 
@@ -408,6 +686,37 @@
             .dropdown a {
                 padding: 10px 15px;
                 font-size: 0.95rem;
+            }
+            
+            .login-box {
+                padding: 30px 25px;
+                border-radius: 15px;
+            }
+            
+            .login-logo-image {
+                height: 80px;
+                width: 80px;
+            }
+            
+            .login-box h2 {
+                font-size: 24px;
+                margin-bottom: 25px;
+            }
+            
+            .login-box input {
+                padding: 14px;
+                font-size: 16px;
+            }
+            
+            .login-box button {
+                padding: 14px 30px;
+                font-size: 16px;
+            }
+            
+            .dashboard-box {
+                padding: 20px 15px;
+                border-radius: 12px;
+                min-height: 85vh;
             }
         }
     
@@ -486,10 +795,8 @@
                 });
             }
         });
-    </script>
 
-    <!-- Fix Home link scrolling issue -->
-    <script>
+        // Fix Home link scrolling issue
         document.addEventListener('DOMContentLoaded', function() {
             const homeNav = document.querySelector('.home-nav');
             
@@ -562,11 +869,73 @@
         </div>
     </header>
 
-   
-    <!-- ====== MAIN CONTENT AREA (Blank for further editing) ====== -->
+    <!-- ====== MAIN CONTENT AREA ====== -->
     <main class="main-content">
-        <div class="content-placeholder">
-            <!-- Main content area left blank for further editing -->
+        <div id="loginPage" class="login-container">
+            <div class="login-box">
+                <!-- Logo image above the title -->
+                <div class="login-logo-container">
+                    <img src="images/logo1.jpg" alt="Odelya Logo" class="login-logo-image" 
+                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9IiMwMEM0N0ExIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjUwIiBmaWxsPSIjRkZGIi8+PHRleHQgeD0iNTAiIHk9IjU1IiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0iQXJpYWwiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMwMEM0N0ExIj5PPC90ZXh0Pjwvc3ZnPg==';">
+                </div>
+                
+                <h2>Odelya User Portal</h2>
+                
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="user@example.com">
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password">
+                </div>
+                
+                <div class="error-message" id="errorMessage"></div>
+                
+                <button id="loginBtn">Login</button>
+            </div>
+        </div>
+
+        <div id="dashboardPage" class="dashboard-container" style="display: none;">
+            <button class="back-btn" id="backBtn">← Back to Login</button>
+            <div class="dashboard-box">
+                <div class="user-header">
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <div class="user-details">
+                            <h3 id="userName">Loading...</h3>
+                            <p id="userEmail">user@example.com</p>
+                        </div>
+                    </div>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+                
+                <div class="data-section">
+                    <h4>Personal Information</h4>
+                    <div id="personalInfo" class="data-grid">
+                        <div class="loading">Loading personal information...</div>
+                    </div>
+                </div>
+                
+                <div class="data-section">
+                    <h4>Account Details</h4>
+                    <div id="accountInfo" class="data-grid">
+                        <div class="loading">Loading account details...</div>
+                    </div>
+                </div>
+                
+                <div class="data-section">
+                    <h4>Additional Information</h4>
+                    <div id="additionalInfo" class="data-grid">
+                        <div class="loading">Loading additional information...</div>
+                    </div>
+                </div>
+                
+                <div class="secure-note">
+                    <strong>Note:</strong> All information displayed here is read-only. For security reasons, password field is not displayed. Contact support if you need to update any information.
+                </div>
+            </div>
         </div>
     </main>
 
@@ -611,6 +980,331 @@
           });
       });
     }
+    </script>
+    
+    <!-- Firebase Login Script -->
+    <script>
+        // ==================== FIREBASE & LOGIN CODE ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
+            authDomain: "odelya-user-data.firebaseapp.com",
+            projectId: "odelya-user-data",
+            storageBucket: "odelya-user-data.firebasestorage.app",
+            messagingSenderId: "590231118790",
+            appId: "1:590231118790:web:572c355c8826ad9c9148c7",
+            measurementId: "G-9SWTR9V32R"
+        };
+
+        // Initialize Firebase
+        let auth, db;
+        try {
+            const app = firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+            db = firebase.firestore();
+            console.log("Firebase initialized successfully");
+        } catch (error) {
+            console.error("Firebase initialization error:", error);
+            showError("Firebase initialization failed. Please refresh.");
+        }
+
+        // DOM elements
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const loginPage = document.getElementById('loginPage');
+        const dashboardPage = document.getElementById('dashboardPage');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const backBtn = document.getElementById('backBtn');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        const personalInfo = document.getElementById('personalInfo');
+        const accountInfo = document.getElementById('accountInfo');
+        const additionalInfo = document.getElementById('additionalInfo');
+
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        // Hide error message
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        // Get user data from Firestore
+        async function getUserData(userId, email) {
+            try {
+                // First try to get user by UID
+                let userDoc = await db.collection('users').doc(userId).get();
+                
+                if (userDoc.exists) {
+                    return userDoc.data();
+                }
+                
+                // If not found by UID, try by email
+                const userQuery = await db.collection('users')
+                    .where('email', '==', email)
+                    .limit(1)
+                    .get();
+                
+                if (!userQuery.empty) {
+                    return userQuery.docs[0].data();
+                }
+                
+                // If no user document found, create a basic one from auth data
+                return {
+                    name: email.split('@')[0],
+                    email: email,
+                    uid: userId,
+                    accountCreated: new Date().toISOString(),
+                    lastLogin: new Date().toISOString()
+                };
+                
+            } catch (error) {
+                console.error("Error getting user data:", error);
+                return null;
+            }
+        }
+
+        // Display user data in readonly format
+        function displayUserData(userData) {
+            if (!userData) {
+                personalInfo.innerHTML = '<div class="no-data">No personal information available</div>';
+                accountInfo.innerHTML = '<div class="no-data">No account details available</div>';
+                additionalInfo.innerHTML = '<div class="no-data">No additional information available</div>';
+                return;
+            }
+
+            // Set user avatar and name
+            const name = userData.name || userData.email.split('@')[0];
+            userName.textContent = name;
+            userEmail.textContent = userData.email || 'No email provided';
+            userAvatar.textContent = name.charAt(0).toUpperCase();
+
+            // Personal Information Section
+            const personalFields = {
+                'Full Name': userData.name || 'Not provided',
+                'Email': userData.email || 'Not provided',
+                'Phone': userData.phone || 'Not provided',
+                'Address': userData.address || 'Not provided',
+                'Date of Birth': userData.dob || userData.birthdate || 'Not provided',
+                'Gender': userData.gender || 'Not provided'
+            };
+            
+            personalInfo.innerHTML = '';
+            for (const [label, value] of Object.entries(personalFields)) {
+                if (value !== 'Not provided') {
+                    const card = document.createElement('div');
+                    card.className = 'data-card';
+                    card.innerHTML = `
+                        <div class="data-row">
+                            <span class="data-label">${label}:</span>
+                            <span class="data-value">${value}</span>
+                        </div>
+                    `;
+                    personalInfo.appendChild(card);
+                }
+            }
+            
+            if (personalInfo.children.length === 0) {
+                personalInfo.innerHTML = '<div class="no-data">No personal information available</div>';
+            }
+
+            // Account Details Section
+            const accountFields = {
+                'User ID': userData.uid || 'Not available',
+                'Account Created': userData.accountCreated ? new Date(userData.accountCreated).toLocaleDateString() : 'Not available',
+                'Last Login': userData.lastLogin ? new Date(userData.lastLogin).toLocaleString() : 'Just now',
+                'Account Status': userData.status || 'Active',
+                'User Type': userData.userType || 'Regular User',
+                'Email Verified': userData.emailVerified ? 'Yes' : 'No'
+            };
+            
+            accountInfo.innerHTML = '';
+            for (const [label, value] of Object.entries(accountFields)) {
+                const card = document.createElement('div');
+                card.className = 'data-card';
+                card.innerHTML = `
+                    <div class="data-row">
+                        <span class="data-label">${label}:</span>
+                        <span class="data-value">${value}</span>
+                    </div>
+                `;
+                accountInfo.appendChild(card);
+            }
+
+            // Additional Information Section
+            additionalInfo.innerHTML = '';
+            
+            // Get all other fields that aren't in personal or account sections
+            const excludedFields = ['name', 'email', 'phone', 'address', 'dob', 'birthdate', 'gender', 
+                                   'uid', 'accountCreated', 'lastLogin', 'status', 'userType', 'emailVerified'];
+            
+            let hasAdditionalData = false;
+            
+            for (const [key, value] of Object.entries(userData)) {
+                if (!excludedFields.includes(key) && value !== undefined && value !== null && value !== '') {
+                    hasAdditionalData = true;
+                    const card = document.createElement('div');
+                    card.className = 'data-card';
+                    
+                    // Format the key for display
+                    const displayKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                    
+                    card.innerHTML = `
+                        <div class="data-row">
+                            <span class="data-label">${displayKey}:</span>
+                            <span class="data-value">${typeof value === 'object' ? JSON.stringify(value) : value}</span>
+                        </div>
+                    `;
+                    additionalInfo.appendChild(card);
+                }
+            }
+            
+            if (!hasAdditionalData) {
+                additionalInfo.innerHTML = '<div class="no-data">No additional information available</div>';
+            }
+        }
+
+        // Login function
+        async function login() {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            
+            // Basic validation
+            if (!email || !password) {
+                showError("Please enter both email and password");
+                return;
+            }
+            
+            // Show loading
+            loginBtn.disabled = true;
+            loginBtn.textContent = "Authenticating...";
+            hideError();
+            
+            try {
+                // Authenticate with Firebase
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                console.log("User authenticated:", user.email);
+                
+                // Get user data from Firestore
+                const userData = await getUserData(user.uid, user.email);
+                
+                // Save session data
+                localStorage.setItem('user_logged_in', 'true');
+                localStorage.setItem('user_email', user.email);
+                localStorage.setItem('user_uid', user.uid);
+                if (userData && userData.name) {
+                    localStorage.setItem('user_name', userData.name);
+                }
+                
+                // Redirect to user dashboard page
+                window.location.href = "user-dashboard.html";
+                
+            } catch (error) {
+                console.error("Login error:", error);
+                
+                let errorMsg = "Login failed. ";
+                switch (error.code) {
+                    case 'auth/wrong-password':
+                    case 'auth/user-not-found':
+                    case 'auth/invalid-login-credentials':
+                        errorMsg = "Wrong Email ID / Password";
+                        break;
+                    case 'auth/invalid-email':
+                        errorMsg = "Invalid email format.";
+                        break;
+                    case 'auth/user-disabled':
+                        errorMsg = "This account has been disabled.";
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMsg = "Too many failed attempts. Try again later.";
+                        break;
+                    default:
+                        errorMsg = "Login failed. Please try again.";
+                }
+                
+                showError(errorMsg);
+                loginBtn.disabled = false;
+                loginBtn.textContent = "Login";
+            }
+        }
+
+        // Show dashboard
+        function showDashboard(userData) {
+            loginPage.style.display = 'none';
+            dashboardPage.style.display = 'block';
+            
+            // Display user data
+            displayUserData(userData);
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                await auth.signOut();
+                localStorage.removeItem('user_logged_in');
+                localStorage.removeItem('user_email');
+                localStorage.removeItem('user_uid');
+                localStorage.removeItem('user_name');
+                
+                // Clear form
+                emailInput.value = '';
+                passwordInput.value = '';
+                
+                // Switch to login view
+                dashboardPage.style.display = 'none';
+                loginPage.style.display = 'flex';
+                
+                loginBtn.disabled = false;
+                loginBtn.textContent = "Login";
+                
+            } catch (error) {
+                console.error("Logout error:", error);
+            }
+        }
+
+        // Setup function
+        async function setup() {
+            // Check if already logged in
+            const isLoggedIn = localStorage.getItem('user_logged_in');
+            if (isLoggedIn === 'true') {
+                // Verify the session is still valid
+                try {
+                    const currentUser = auth.currentUser;
+                    if (currentUser) {
+                        // Get user data and show dashboard
+                        const userData = await getUserData(currentUser.uid, currentUser.email);
+                        showDashboard(userData);
+                    }
+                } catch (error) {
+                    // Clear invalid session
+                    localStorage.removeItem('user_logged_in');
+                }
+            }
+            
+            // Setup event listeners
+            loginBtn.addEventListener('click', login);
+            logoutBtn.addEventListener('click', logout);
+            backBtn.addEventListener('click', logout);
+            
+            // Allow pressing Enter to login
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && loginPage.style.display !== 'none') {
+                    login();
+                }
+            });
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("User login page loaded");
+            setup();
+        });
     </script>
 	
 </body>
