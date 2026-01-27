@@ -224,59 +224,63 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function getAnswerFromDatabase(question) {
-        // Check if odelyaQA is loaded
-        if (typeof window.odelyaQA === 'undefined' || !window.odelyaQA.database) {
-            return "I'm sorry, my knowledge base is not loaded. Please try again.";
+    // Check if odelyaQA is loaded
+    if (typeof window.odelyaQA === 'undefined' || !window.odelyaQA.database) {
+        return "I'm sorry, my knowledge base is not loaded. Please try again.";
+    }
+    
+    const normalizedQuestion = question.toLowerCase().trim();
+    
+    // First, try exact match
+    for (const qa of window.odelyaQA.database) {
+        if (qa.question.toLowerCase() === normalizedQuestion) {
+            return qa.answer;
         }
-        
-        const normalizedQuestion = question.toLowerCase().trim();
-        
-        // First, try exact match
-        for (const qa of window.odelyaQA.database) {
-            if (qa.question.toLowerCase() === normalizedQuestion) {
-                return qa.answer;
-            }
+    }
+    
+    // Then try partial match
+    for (const qa of window.odelyaQA.database) {
+        if (normalizedQuestion.includes(qa.question.toLowerCase()) || 
+            qa.question.toLowerCase().includes(normalizedQuestion)) {
+            return qa.answer;
         }
+    }
+    
+    // Try keyword matching
+    const searchWords = normalizedQuestion.split(/\s+/).filter(word => word.length > 2);
+    let bestMatch = null;
+    let bestScore = 0;
+    
+    for (const qa of window.odelyaQA.database) {
+        const qaWords = qa.question.toLowerCase().split(/\s+/);
+        let score = 0;
         
-        // Then try partial match
-        for (const qa of window.odelyaQA.database) {
-            if (normalizedQuestion.includes(qa.question.toLowerCase()) || 
-                qa.question.toLowerCase().includes(normalizedQuestion)) {
-                return qa.answer;
-            }
-        }
-        
-        // Try keyword matching
-        const searchWords = normalizedQuestion.split(/\s+/).filter(word => word.length > 2);
-        let bestMatch = null;
-        let bestScore = 0;
-        
-        for (const qa of window.odelyaQA.database) {
-            const qaWords = qa.question.toLowerCase().split(/\s+/);
-            let score = 0;
-            
-            for (const word of searchWords) {
-                for (const qaWord of qaWords) {
-                    if (qaWord.includes(word) || word.includes(qaWord)) {
-                        score++;
-                        break;
-                    }
+        for (const word of searchWords) {
+            for (const qaWord of qaWords) {
+                if (qaWord.includes(word) || word.includes(qaWord)) {
+                    score++;
+                    break;
                 }
             }
-            
-            if (score > bestScore) {
-                bestScore = score;
-                bestMatch = qa;
-            }
         }
         
-        if (bestMatch && bestScore > 0) {
-            return bestMatch.answer;
+        if (score > bestScore) {
+            bestScore = score;
+            bestMatch = qa;
         }
-        
-        // Default response if no match found
-        return "Dear user, my advice is to please contact our support team via WhatsApp: +91-9674130001 or email: care.ompl@gmail.com during office hours. Thanks.";
     }
+    
+    if (bestMatch && bestScore > 0) {
+        return bestMatch.answer;
+    }
+    
+    // ==== EXACT SAME as odelyafaq.html ====
+    return `Sorry, I don't have an answer for "${question}" in my knowledge base.<br><br>
+            <strong>Please contact our support team:</strong><br>
+            📞 WhatsApp: +91-9674130001<br>
+            📧 Email: care.ompl@gmail.com<br>
+            ⏰ Office Hours: Mon-Sat 9AM-8PM`;
+}
     
     function showTypingIndicator() {
         const typingDiv = document.createElement('div');
