@@ -297,86 +297,49 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Search for answer
-    function searchAnswer(question) {
-        const normalizedQuestion = question.toLowerCase().trim();
-        
-        // First, try exact match
-        for (const qa of qaDatabase) {
-            if (qa.question.toLowerCase() === normalizedQuestion) {
-                return qa.answer;
-            }
+// Search for answer
+function searchAnswer(question) {
+    const normalizedQuestion = question.toLowerCase().trim();
+    
+    // First, try exact match
+    for (const qa of qaDatabase) {
+        if (qa.question.toLowerCase() === normalizedQuestion) {
+            return qa.answer;
         }
-        
-        // Then try partial match
-        for (const qa of qaDatabase) {
-            if (normalizedQuestion.includes(qa.question.toLowerCase()) || 
-                qa.question.toLowerCase().includes(normalizedQuestion)) {
-                return qa.answer;
-            }
-        }
-        
-        // Try keyword matching
-        const matchedByKeywords = [];
-        const inputWords = normalizedQuestion.split(/\s+/).filter(word => word.length > 2);
-        
-        for (const qa of qaDatabase) {
-            const keywords = extractKeywords(qa.question);
-            const matchScore = keywords.filter(keyword => 
-                inputWords.some(word => keyword.includes(word) || word.includes(keyword))
-            ).length;
-            
-            if (matchScore > 0) {
-                matchedByKeywords.push({ qa, score: matchScore });
-            }
-        }
-        
-        if (matchedByKeywords.length > 0) {
-            // Sort by match score and return the best match
-            matchedByKeywords.sort((a, b) => b.score - a.score);
-            return matchedByKeywords[0].qa.answer;
-        }
-        
-        // Category-based fallback answers
-        if (normalizedQuestion.includes('price') || normalizedQuestion.includes('cost') || 
-            normalizedQuestion.includes('how much')) {
-            return "Our prices start from Rs. 18 per month for 10GB storage. Please check our pricing table for detailed rates or ask about a specific storage size.";
-        } else if (normalizedQuestion.includes('contact') || normalizedQuestion.includes('call') || 
-                  normalizedQuestion.includes('phone') || normalizedQuestion.includes('email')) {
-            return "You can contact us at:<br>📞 +91-96741 30001<br>✉️ care.ompl@gmail.com<br>⏰ Mon-Sat 9 AM - 8 PM<br>📍 44E, 2nd Floor, Nandalalmitra Lane, Kolkata-700040";
-        } else if (normalizedQuestion.includes('location') || normalizedQuestion.includes('address') || 
-                  normalizedQuestion.includes('where') || normalizedQuestion.includes('office')) {
-            return "We have two offices in Kolkata:<br><br><strong>Administrative Office:</strong><br>44E, 2nd Floor, Nandalalmitra Lane, Kolkata-700040<br><br><strong>Registered Office:</strong><br>Molina Apartment, 1st Floor, 32/10 Chandi Ghosh Road, Kolkata-700040";
-        } else if (normalizedQuestion.includes('service') || normalizedQuestion.includes('offer') || 
-                  normalizedQuestion.includes('provide')) {
-            return "We offer:<br>1. Secure Cloud Storage with End-to-End Encryption<br>2. Event Guest Photo Storage";
-        } else if (normalizedQuestion.includes('founder') || normalizedQuestion.includes('owner') || 
-                  normalizedQuestion.includes('director') || normalizedQuestion.includes('chairman')) {
-            return "Our company is led by:<br>1. Mr. Aniruddha Ghosh - Chairman<br>2. Mr. Shyamal Sen - Director";
-        } else if (normalizedQuestion.includes('time') || normalizedQuestion.includes('hour') || 
-                  normalizedQuestion.includes('available') || normalizedQuestion.includes('when')) {
-            return "Our business hours are Monday to Saturday, 9 AM to 8 PM.";
-        } else if (normalizedQuestion.includes('storage') || normalizedQuestion.includes('cloud') || 
-                  normalizedQuestion.includes('gb')) {
-            return "We provide secure cloud storage solutions with end-to-end encryption. Plans range from 10GB to 500GB. You can check our pricing table for details.";
-        } else if (normalizedQuestion.includes('payment') || normalizedQuestion.includes('pay') || 
-                  normalizedQuestion.includes('buy') || normalizedQuestion.includes('upi') || 
-                  normalizedQuestion.includes('bank')) {
-            return "You can make payment via:<br>1. UPI Payment (Scan QR code)<br>2. Bank Transfer to State Bank of India<br><br>Account: Odelya Management Pvt Ltd<br>Account No: 39681284318<br>IFSC: SBIN0001140";
-        } else if (normalizedQuestion.includes('secure') || normalizedQuestion.includes('encryption') || 
-                  normalizedQuestion.includes('safe')) {
-            return "We use end-to-end encryption which means your data is encrypted on your device before uploading. Only you have the decryption key, ensuring 100% privacy.";
-        }
-        
-        // Default response for unknown questions
-        return "I'm sorry, I couldn't find a specific answer to your question. Please try rephrasing or ask about:<br><br>" +
-               "• Services we offer<br>" +
-               "• Pricing and storage plans<br>" +
-               "• Contact information<br>" +
-               "• Payment methods<br>" +
-               "• Office location<br>" +
-               "<br>For immediate assistance, call us at +91-96741 30001";
     }
+    
+    // Then try partial match
+    for (const qa of qaDatabase) {
+        if (normalizedQuestion.includes(qa.question.toLowerCase()) || 
+            qa.question.toLowerCase().includes(normalizedQuestion)) {
+            return qa.answer;
+        }
+    }
+    
+    // Try keyword matching
+    const matchedByKeywords = [];
+    const inputWords = normalizedQuestion.split(/\s+/).filter(word => word.length > 2);
+    
+    for (const qa of qaDatabase) {
+        const keywords = extractKeywords(qa.question);
+        const matchScore = keywords.filter(keyword => 
+            inputWords.some(word => keyword.includes(word) || word.includes(keyword))
+        ).length;
+        
+        if (matchScore > 0) {
+            matchedByKeywords.push({ qa, score: matchScore });
+        }
+    }
+    
+    if (matchedByKeywords.length > 0) {
+        // Sort by match score and return the best match
+        matchedByKeywords.sort((a, b) => b.score - a.score);
+        return matchedByKeywords[0].qa.answer;
+    }
+    
+    // If no match found, show your message
+    return "Dear user, my advice is to please contact our support team via WhatsApp: +91-9674130001 or email: care.ompl@gmail.com during office hours. Thanks.";
+}
     
     // Add message to chat
     function addMessage(message, isUser = false) {
