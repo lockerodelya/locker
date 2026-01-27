@@ -352,11 +352,13 @@
             background-color: #f5f5f5;
             color: #666;
             transition: all 0.3s ease;
+            text-align: center; /* Center align text */
         }
         
         #faqSearch::placeholder {
             color: #999;
             font-style: italic;
+            text-align: center; /* Center align placeholder */
         }
         
         #faqSearch:focus {
@@ -443,14 +445,7 @@
             color: #666;
         }
         
-        .no-questions-message {
-            font-size: 1.2rem;
-            color: #888;
-            padding: 40px 20px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
+        /* REMOVED: no-questions-message class */
         
         /* ====== FIXED FOOTER STYLES ====== */
         footer {
@@ -680,7 +675,7 @@
             <input 
                 type="text" 
                 id="faqSearch" 
-                placeholder="Type your question here..." 
+                placeholder="Ask Vooo" 
                 maxlength="100"
                 aria-label="Search FAQ questions"
                 autocomplete="off"
@@ -701,12 +696,6 @@
         <div class="faq-content-container">
             <div id="faqItemsContainer">
                 <!-- FAQ items container (hidden by default) -->
-            </div>
-            
-            <!-- Message when no questions are displayed -->
-            <div class="no-questions-message">
-                <h3>Type your question in the search box above</h3>
-                <p>All answers come from our centralized Q&A database (odelyaqa.js)</p>
             </div>
         </div>
     </div>
@@ -791,12 +780,12 @@
                 // Check if odelyaQA is loaded
                 if (typeof window.odelyaQA === 'undefined') {
                     console.error('odelyaqa.js not loaded!');
-                    showError("FAQ system not loaded. Please check odelyaqa.js file.");
+                    showError("FAQ system not available. Please try again later.");
                     return;
                 }
                 
-                console.log('FAQ system connected to odelyaqa.js');
-                console.log('Total Q&A loaded:', window.odelyaQA.database.length);
+                console.log('FAQ system connected to Q&A database');
+                console.log('Total questions available:', window.odelyaQA.database.length);
                 
                 // Setup search functionality
                 setupSearch();
@@ -1018,9 +1007,9 @@
 
             function showNoAnswerFound(question) {
                 answerContent.innerHTML = `
-                    <div class="answer-question">No answer found</div>
+                    <div class="answer-question">Question not found</div>
                     <div class="answer-text">
-                        We don't have an answer for "${question}" in our database.<br><br>
+                        Sorry, I don't have an answer for "${question}" in my knowledge base.<br><br>
                         <strong>Please contact our support team:</strong><br>
                         📞 WhatsApp: +91-9674130001<br>
                         📧 Email: care.ompl@gmail.com<br>
@@ -1035,7 +1024,7 @@
                     <div class="answer-question" style="color: #ff0000;">System Error</div>
                     <div class="answer-text">
                         ${message}<br><br>
-                        Please ensure odelyaqa.js is properly loaded.
+                        Please try refreshing the page or contact support.
                     </div>
                 `;
                 answerContainer.style.display = 'block';
