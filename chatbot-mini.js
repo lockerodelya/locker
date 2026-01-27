@@ -33,8 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Close chat window
         closeChatBtn.addEventListener('click', closeChatWindow);
         
-        // Send message on button click
-        sendBtn.addEventListener('click', handleSendMessage);
         
         // Send message on Enter key
         chatInput.addEventListener('keypress', function(e) {
