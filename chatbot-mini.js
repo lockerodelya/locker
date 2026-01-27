@@ -18,8 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
         chatWindow.style.display = 'none';
         chatToggleBtn.style.display = 'flex';
         
-        // Show greeting
-        showGreeting();
+        // Don't show greeting here (HTML already has it)
         
         // Setup event listeners
         setupEventListeners();
