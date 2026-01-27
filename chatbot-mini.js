@@ -8,8 +8,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeChatBtn = document.getElementById('close-chat');
     const chatMessages = document.getElementById('chat-messages');
     const chatInput = document.getElementById('chat-input');
-    const sendBtn = document.getElementById('send-btn');
     const suggestedQuestions = document.getElementById('suggested-questions');
+    
+    // Variables for keyboard navigation
+    let selectedSuggestionIndex = -1;
     
     // ====== CHATBOT FUNCTIONS ======
     
@@ -17,8 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Hide chat window initially
         chatWindow.style.display = 'none';
         chatToggleBtn.style.display = 'flex';
-        
-        // Don't show greeting here (HTML already has it)
         
         // Setup event listeners
         setupEventListeners();
@@ -33,18 +33,84 @@ document.addEventListener('DOMContentLoaded', function() {
         // Close chat window
         closeChatBtn.addEventListener('click', closeChatWindow);
         
-        
         // Send message on Enter key
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                handleSendMessage();
-            }
+        chatInput.addEventListener('keydown', function(e) {
+            handleKeyboardInput(e);
         });
         
         // Show suggestions while typing
         chatInput.addEventListener('input', function() {
             showSuggestions(this.value.trim());
+            selectedSuggestionIndex = -1; // Reset selection
         });
+        
+        // Close on Escape key for whole document
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (chatWindow.style.display === 'flex') {
+                    closeChatWindow();
+                }
+            }
+        });
+    }
+    
+    function handleKeyboardInput(e) {
+        const suggestions = document.querySelectorAll('.question-item');
+        
+        // Arrow Down - Navigate suggestions
+        if (e.key === 'ArrowDown' && suggestions.length > 0) {
+            e.preventDefault();
+            selectedSuggestionIndex = (selectedSuggestionIndex + 1) % suggestions.length;
+            updateSelectedSuggestion(suggestions);
+            return;
+        }
+        
+        // Arrow Up - Navigate suggestions
+        if (e.key === 'ArrowUp' && suggestions.length > 0) {
+            e.preventDefault();
+            selectedSuggestionIndex = (selectedSuggestionIndex - 1 + suggestions.length) % suggestions.length;
+            updateSelectedSuggestion(suggestions);
+            return;
+        }
+        
+        // Enter - Send message or select suggestion
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            
+            // If a suggestion is selected, use it
+            if (selectedSuggestionIndex >= 0 && suggestions[selectedSuggestionIndex]) {
+                suggestions[selectedSuggestionIndex].click();
+            } else {
+                // Otherwise send the typed message
+                handleSendMessage();
+            }
+            return;
+        }
+        
+        // Escape - Close suggestions
+        if (e.key === 'Escape') {
+            if (suggestions.length > 0) {
+                suggestedQuestions.style.display = 'none';
+                selectedSuggestionIndex = -1;
+            }
+            return;
+        }
+    }
+    
+    function updateSelectedSuggestion(suggestions) {
+        // Remove selection from all
+        suggestions.forEach(suggestion => {
+            suggestion.classList.remove('selected');
+        });
+        
+        // Add selection to current
+        if (selectedSuggestionIndex >= 0 && suggestions[selectedSuggestionIndex]) {
+            suggestions[selectedSuggestionIndex].classList.add('selected');
+            suggestions[selectedSuggestionIndex].scrollIntoView({
+                block: 'nearest',
+                behavior: 'smooth'
+            });
+        }
     }
     
     function openChatWindow() {
@@ -58,16 +124,14 @@ document.addEventListener('DOMContentLoaded', function() {
         chatWindow.classList.remove('active');
         chatInput.value = '';
         suggestedQuestions.style.display = 'none';
-    }
-    
-    function showGreeting() {
-        addBotMessage("Hi! I am Vooo. How can I help you today?");
+        selectedSuggestionIndex = -1;
     }
     
     function showSuggestions(searchTerm) {
         if (!searchTerm || !window.odelyaQA || !window.odelyaQA.database) {
             suggestedQuestions.style.display = 'none';
             suggestedQuestions.innerHTML = '';
+            selectedSuggestionIndex = -1;
             return;
         }
         
@@ -93,20 +157,36 @@ document.addEventListener('DOMContentLoaded', function() {
         // Display suggestions (max 5)
         if (matched.length > 0) {
             suggestedQuestions.innerHTML = '';
-            matched.slice(0, 5).forEach(qa => {
+            matched.slice(0, 5).forEach((qa, index) => {
                 const div = document.createElement('div');
                 div.className = 'question-item';
+                if (index === 0) {
+                    div.classList.add('selected');
+                    selectedSuggestionIndex = 0;
+                }
                 div.textContent = qa.question;
                 div.addEventListener('click', () => {
                     chatInput.value = qa.question;
                     suggestedQuestions.style.display = 'none';
+                    selectedSuggestionIndex = -1;
                     handleSendMessage();
                 });
+                
+                // Hover effect
+                div.addEventListener('mouseenter', () => {
+                    document.querySelectorAll('.question-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    div.classList.add('selected');
+                    selectedSuggestionIndex = index;
+                });
+                
                 suggestedQuestions.appendChild(div);
             });
             suggestedQuestions.style.display = 'flex';
         } else {
             suggestedQuestions.style.display = 'none';
+            selectedSuggestionIndex = -1;
         }
     }
     
@@ -123,6 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clear input and hide suggestions
         chatInput.value = '';
         suggestedQuestions.style.display = 'none';
+        selectedSuggestionIndex = -1;
         
         // Show typing indicator
         showTypingIndicator();
