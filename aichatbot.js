@@ -568,7 +568,11 @@ document.addEventListener('DOMContentLoaded', function() {
             question: "What makes you different from other cloud storage?",
             answer: "We stand out because:<br>1. <strong>True end-to-end encryption</strong> - Your data is 100% private<br>2. <strong>Transparent pricing</strong> - All-inclusive with no hidden charges<br>3. <strong>Indian company</strong> - Local support and understanding<br>4. <strong>Event photo storage</strong> - Unique service for special occasions",
             category: "general"
-        }
+        },
+        {
+    question: "Which jurisdiction applies?",
+    answer: "Kolkata jurisdiction."
+},
     ];
     
     // ====== CHATBOT FUNCTIONS ======
