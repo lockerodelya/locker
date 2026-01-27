@@ -574,6 +574,959 @@ const qaDatabase = [
             question: "Which jurisdiction applies?",
             answer: "Kolkata jurisdiction."
         },
+        {
+    question: "What is the name of the cloud storage service?",
+    answer: "Odelya Cloud Digital Locker."
+},
+{
+    question: "What is the main service offered by Odelya?",
+    answer: "Secure cloud data storage with end-to-end encryption."
+},
+{
+    question: "Where is Odelya Cloud based?",
+    answer: "Kolkata, India."
+},
+{
+    question: "What type of security does Odelya Cloud use?",
+    answer: "End-to-end encryption and military-grade encryption."
+},
+{
+    question: "What is the tagline or description for Odelya Cloud?",
+    answer: "Secure Cloud Storage for Files and Media."
+},
+{
+    question: "What company produces Odelya Cloud?",
+    answer: "Odelya Management Pvt Ltd (OMPL)."
+},
+{
+    question: "What are the three main services listed on the site?",
+    answer: "Secure Cloud Storage, Event Photo Storage, and Odelya IT Services."
+},
+{
+    question: "What is the Event Photo Storage service described as?",
+    answer: "Cloud Facility for Event Guest."
+},
+{
+    question: "What is described as 'IT Services for Personal & Businesses'?",
+    answer: "Odelya IT Services."
+},
+{
+    question: "What is the phone number for customer service?",
+    answer: "+91-96741-30001."
+},
+{
+    question: "What is the customer service email address?",
+    answer: "care.ompl@gmail.com."
+},
+{
+    question: "What is the street address of Odelya Management Pvt Ltd?",
+    answer: "44E, 2nd Floor, Nandalalmitra Lane, Kolkata."
+},
+{
+    question: "What are the opening hours for customer service?",
+    answer: "Monday to Friday, from 09:00 to 18:00."
+},
+{
+    question: "What languages are available for customer service?",
+    answer: "English, Hindi, and Bengali."
+},
+{
+    question: "What is the name of the AI chatbot on the website?",
+    answer: "Vooo."
+},
+{
+    question: "Which pages are linked in the footer?",
+    answer: "Security, Privacy, Contact, and About."
+},
+{
+    question: "What is the title of the webpage?",
+    answer: "Odelya Cloud Digital Locker | Secure Data Storage Kolkata."
+},
+{
+    question: "What is the website's official URL?",
+    answer: "https://odelya.online."
+},
+{
+    question: "What is the purpose of the service described as 'End-to-End Encryption'?",
+    answer: "Secure Cloud Storage."
+},
+{
+    question: "What does the structured data on the site classify the business as?",
+    answer: "A LocalBusiness."
+},
+{
+    question: "What is the alternate name for Odelya Management Pvt Ltd?",
+    answer: "Odelya Cloud."
+},
+{
+    question: "What options are available in the dropdown menu?",
+    answer: "User, Cloud Storage, IT Services, Contact, and About."
+},
+{
+    question: "What does the logo next to the word 'Locker' represent?",
+    answer: "The Odelya Locker Logo."
+},
+{
+    question: "What is the year in the copyright notice?",
+    answer: "2025."
+},
+{
+    question: "What technology is mentioned for offline use?",
+    answer: "PWA (Progressive Web App)."
+},
+{
+    question: "What does the FAQ say about accessing the digital locker?",
+    answer: "Through a secure web portal or mobile app."
+},
+{
+    question: "What page is this HTML code for?",
+    answer: "The Odelya Cloud Storage Plans and Pricing page."
+},
+{
+    question: "What is the main title of this cloud storage page?",
+    answer: "Odelya Secure Cloud Storage."
+},
+{
+    question: "What is the main offering described on this page?",
+    answer: "Encrypted cloud storage with end-to-end protection."
+},
+{
+    question: "What is the section title for the pricing area?",
+    answer: "Storage Plans & Pricing."
+},
+{
+    question: "What is the GST rate included in all charges?",
+    answer: "18%."
+},
+{
+    question: "How many storage capacity (GB) plans are listed in the pricing table?",
+    answer: "Nine (9) plans."
+},
+{
+    question: "What are the storage capacities available?",
+    answer: "10GB, 30GB, 50GB, 70GB, 100GB, 200GB, 300GB, 400GB, and 500GB."
+},
+{
+    question: "What billing periods are available for the storage plans?",
+    answer: "Monthly and Yearly."
+},
+{
+    question: "How many devices are allowed for the 10GB plan?",
+    answer: "1 Device."
+},
+{
+    question: "How many devices are allowed for the 500GB plan?",
+    answer: "5 Devices."
+},
+{
+    question: "What is the monthly price for the 10GB plan?",
+    answer: "INR 18 per month."
+},
+{
+    question: "What is the yearly price for the 10GB plan?",
+    answer: "INR 195 per year."
+},
+{
+    question: "What is the monthly price for the 50GB plan?",
+    answer: "INR 89 per month."
+},
+{
+    question: "What is the yearly price for the 50GB plan?",
+    answer: "INR 915 per year."
+},
+{
+    question: "What is the monthly price for the 100GB plan?",
+    answer: "INR 177 per month."
+},
+{
+    question: "What is the yearly price for the 100GB plan?",
+    answer: "INR 1,726 per year."
+},
+{
+    question: "What is the monthly price for the 500GB plan?",
+    answer: "INR 885 per month."
+},
+{
+    question: "What is the yearly price for the 500GB plan?",
+    answer: "INR 8,343 per year."
+},
+{
+    question: "What is the main security feature mentioned for Odelya Cloud Storage?",
+    answer: "End-to-end encryption."
+},
+{
+    question: "Where are Odelya's servers located?",
+    answer: "Kolkata, West Bengal, India"
+},
+{
+    question: "What feature allows access from any device?",
+    answer: "Multi-device access."
+},
+{
+    question: "What is the starting price mentioned for data storage in Kolkata?",
+    answer: "Just INR 18/month."
+},
+{
+    question: "What type of backup is mentioned as a feature?",
+    answer: "Automatic backup."
+},
+{
+    question: "When can users access their files?",
+    answer: "Anytime, anywhere with 24/7 accessibility."
+},
+{
+    question: "What type of solutions does Odelya provide for businesses?",
+    answer: "Enterprise-grade cloud storage solutions."
+},
+{
+    question: "What is the Odelya Digital Locker perfect for?",
+    answer: "Individuals needing secure storage in Kolkata for documents, photos, and files."
+},
+{
+    question: "What does the CTA button in the sidebar say?",
+    answer: "Get Free Consultation."
+},
+{
+    question: "What company produces Odelya Cloud Storage?",
+    answer: "Odelya Management Pvt Ltd (OMPL)."
+},
+{
+    question: "What page is this HTML code for?",
+    answer: "The Odelya IT Services Kolkata page."
+},
+{
+    question: "What is the title of the IT services page?",
+    answer: "Odelya IT Services Kolkata | Comprehensive IT Solutions for Personal & Businesses."
+},
+{
+    question: "What is the main description of Odelya IT Services?",
+    answer: "Comprehensive IT & tax solutions including income tax, GST, accounting, cloud storage, website services, SEO, mutation, local taxes & license services for businesses and individuals."
+},
+{
+    question: "What is the first IT service listed?",
+    answer: "Income Tax Related Support."
+},
+{
+    question: "What does the Income Tax Related Support service include?",
+    answer: "Tax filing, Planning & Consultation services for personal & businesses."
+},
+{
+    question: "What is the second IT service listed?",
+    answer: "GST Related Support."
+},
+{
+    question: "What does the GST Related Support service include?",
+    answer: "GST registration, filing, returns, and compliance management services."
+},
+{
+    question: "What is the third IT service listed?",
+    answer: "Online Accounting Solution."
+},
+{
+    question: "What does the Online Accounting Solution service include?",
+    answer: "Cloud-based accounting software and digital bookkeeping solutions."
+},
+{
+    question: "What does AMC Accounting Support stand for?",
+    answer: "Annual Maintenance Contracts for comprehensive accounting support."
+},
+{
+    question: "What is the service 'Cloud Storage for Accounting'?",
+    answer: "Secure cloud storage facility for accounting data and records."
+},
+{
+    question: "What type of support does 'Audit Support' provide?",
+    answer: "All types of Income Tax related Audit support."
+},
+{
+    question: "What does 'MCA Related Support' refer to?",
+    answer: "MCA related all accounting solutions."
+},
+{
+    question: "What services are included in 'Mutation, Local Taxes & Licenses'?",
+    answer: "Property mutation services, local tax filing, trade license applications and compliance."
+},
+{
+    question: "What is 'Heavy Duty Cloud Storage'?",
+    answer: "Enterprise-level secure cloud storage solutions for special software related cloud space.."
+},
+{
+    question: "What does 'SEO for Website' stand for?",
+    answer: "Search Engine Optimization to improve website visibility and rankings."
+},
+{
+    question: "What does the 'Website Making' service provide?",
+    answer: "Custom website design and development from scratch."
+},
+{
+    question: "What does 'Website Related Solutions' include?",
+    answer: "Complete website maintenance, updates, and technical support."
+},
+{
+    question: "What does the 'Website Hosting' service provide?",
+    answer: "Reliable web hosting services with high uptime and security."
+},
+{
+    question: "What is 'IT Solutions for Personal'?",
+    answer: "Information Technology support, data backup, tech assistance for individuals."
+},
+{
+    question: "What is 'IT Solutions for Business'?",
+    answer: "Information Technological infrastructure and support for businesses."
+},
+{
+    question: "What are 'Data Related Cloud Solutions'?",
+    answer: "Cloud-based data management, backup, and recovery solutions."
+},
+{
+    question: "What are 'Data Related Offline Solutions'?",
+    answer: "Local storage, backup, and data management solutions."
+},
+{
+    question: "What does 'Misc. IT Services' include?",
+    answer: "Information Technology related troubleshooting and consultations."
+},
+{
+    question: "What page is this HTML code for?",
+    answer: "The About Us page for Odelya Cloud Digital Locker."
+},
+{
+    question: "What is the title of the About page?",
+    answer: "About Us - Odelya Cloud Digital Locker | Leadership & Mission."
+},
+{
+    question: "What is the main description of the About page?",
+    answer: "Learn about Odelya Cloud Digital Locker leadership, mission, and values. Meet our visionary leaders and discover our commitment to secure end-to-end encrypted cloud storage."
+},
+{
+    question: "What are the four main areas covered in the 'Our Company'?",
+    answer: "Our Mission, Our Vision, Our Values, and Our Service."
+},
+{
+    question: "What is Odelya's mission?",
+    answer: "To revolutionize data storage system by providing iron-clad security with end-to-end encryption, ensuring every byte of data remains private, secure, and instantly accessible to authorized users only."
+},
+{
+    question: "What is Odelya's vision?",
+    answer: "To become one of the most trusted cloud storage provider by making top-most level encryption accessible to individuals and businesses of all sizes, setting new standards in data privacy and security."
+},
+{
+    question: "What are Odelya's three core values?",
+    answer: "Security First, Innovation Driven, and Customer Solutions."
+},
+{
+    question: "What does the 'Security First' value mean?",
+    answer: "Your data's protection is our top priority."
+},
+{
+    question: "What does the 'Innovation Driven' value mean?",
+    answer: "Continuously evolving our technology."
+},
+{
+    question: "What does the 'Customer Solutions' value mean?",
+    answer: "Tailored to your needs through honest communication."
+},
+{
+    question: "What service does Odelya Cloud Digital Locker provide?",
+    answer: "Secure end-to-end encrypted storage with military-grade encryption. We offer private cloud storage solutions that ensure your files are fully protected at all times."
+},
+{
+    question: "Who is the Chairman of Odelya?",
+    answer: "Mr. Aniruddha Ghosh."
+},
+{
+    question: "What is the Chairman's quote?",
+    answer: "\"The word possible makes impossible to irrelevant\"."
+},
+{
+    question: "What is the Chairman's vision?",
+    answer: "Pioneering secure cloud solutions that redefine data protection standards in India and beyond."
+},
+{
+    question: "What is the Chairman's professional background?",
+    answer: "A professional physicist with no prior IT knowledge who established two highly successful software companies - BON-ACCORD (6-time Businessman of the Year award winner from USA) and EREVMAX."
+},
+{
+    question: "What does the Chairman believe in?",
+    answer: "Believes in making the impossible possible through relentless innovation and visionary thinking in the field of data security."
+},
+{
+    question: "Who is the Director of Odelya?",
+    answer: "Mr. Shyamal Sen."
+},
+{
+    question: "What is the Director's quote?",
+    answer: "Every byte of data deserves iron-clad security and privacy."
+},
+{
+    question: "What is the Director's area of expertise?",
+    answer: "Specialized in Accounting, Business Strategy, and Management with a focus on sustainable growth and operational excellence."
+},
+{
+    question: "How much experience does the Director have?",
+    answer: "30+ years of extensive experience in Accounting & Information Technology Business Management."
+},
+{
+    question: "What does the Director bring to Odelya?",
+    answer: "Financial discipline, innovation and strategic vision to Odelya's seamless operations."
+},
+{
+    question: "What is the Director's strategic approach?",
+    answer: "Combines financial acumen with technological insight to create scalable business models that prioritize security & privacy."
+},
+{
+    question: "What are the three commitments listed in the 'Our Commitment'?",
+    answer: "Security First, Instant Access, and User Control."
+},
+{
+    question: "What does 'Security First' commitment mean?",
+    answer: "We implement military-grade end-to-end data encryption ensuring your files remains private and secure. No third-party access or sharing & no compromise."
+},
+{
+    question: "What does 'Instant Access' commitment mean?",
+    answer: "Your data is always available when you need it. Our infrastructure ensures high-speed access from anywhere, at any time."
+},
+{
+    question: "What does 'User Control' commitment mean?",
+    answer: "You maintain complete control over your data. Our zero-knowledge architecture means we cannot access your encrypted files."
+},
+{
+    question: "What page is this HTML code for?",
+    answer: "The Contact page for Odelya Cloud Digital Locker."
+},
+{
+    question: "What is the title of the Contact page?",
+    answer: "Contact Odelya Cloud Digital Locker | Secure Encrypted Storage Kolkata."
+},
+{
+    question: "What is the main description of the Contact page?",
+    answer: "Contact Odelya Cloud Digital Locker for secure encrypted cloud storage solutions in Kolkata. Get cloud storage pricing, IT services, data processing, web hosting, SEO, and income tax support. End-to-end encryption for personal and business data."
+},
+{
+    question: "What are the two main office sections on the Contact page?",
+    answer: "Administrative Office and Registered Office."
+},
+{
+    question: "What is the address of the Administrative Office?",
+    answer: "44E, 2nd Floor, Nandalalmitra Lane, Kolkata - 700040, West Bengal, India."
+},
+{
+    question: "What are the business hours for the Administrative Office?",
+    answer: "Monday to Saturday: 9:00 AM - 8:00 PM, Sunday: Closed."
+},
+{
+    question: "What is the address of the Registered Office?",
+    answer: "Molina Apartment, 1st Floor, 32/10 Chandi Ghosh Road, Kolkata - 700040, West Bengal, India."
+},
+{
+    question: "What does Odelya Cloud Digital Locker provide?",
+    answer: "End-to-end encrypted cloud storage solutions with military-grade security for personal and business data."
+},
+{
+    question: "What encryption does Odelya's secure digital locker use?",
+    answer: "256-bit encryption."
+},
+{
+    question: "What does Odelya offer for a free consultation?",
+    answer: "Cloud storage pricing plans, IT services, or income tax support."
+},
+{
+    question: "What information is required in the contact form?",
+    answer: "Your Name, Email Address, Phone Number, Subject, and Message."
+},
+{
+    question: "What is the maximum character limit for the subject field?",
+    answer: "30 characters."
+},
+{
+    question: "What is the maximum character limit for the message field?",
+    answer: "200 characters."
+},
+{
+    question: "What are the nine options in the dropdown?",
+    answer: "Cloud Storage, Personal Storage, Business Storage, IT Services, Web Hosting, SEO Services, Income Tax Support, Data Processing, and Other."
+},
+{
+    question: "What is the success message that appears after submitting the form?",
+    answer: "Thanks for reaching us! We will contact you within 72 business hours. We have received your inquiry about our cloud storage and IT services."
+},
+{
+    question: "What page is this HTML code for?",
+    answer: "The Privacy Policy page for Odelya Cloud Digital Locker."
+},
+{
+    question: "What is the title of the Privacy Policy page?",
+    answer: "Odelya Cloud Digital Locker | Secure Encrypted Storage Kolkata | End-to-End Encryption."
+},
+{
+    question: "What is the main description of the Privacy Policy page?",
+    answer: "Odelya Cloud Digital Locker - Secure cloud storage with end-to-end encryption. Protect your files with private, encrypted storage solutions in Kolkata. Fully protected data storage."
+},
+{
+    question: "What is the effective date shown in the privacy policy?",
+    answer: "Jan, 2025."
+},
+{
+    question: "How many main privacy policy sections are there?",
+    answer: "Eight sections."
+},
+{
+    question: "What is the title of the first privacy policy section?",
+    answer: "Our Commitment."
+},
+{
+    question: "Who does the privacy policy say it applies to?",
+    answer: "All services offered by Odelya, including Cloud Digital Locker, secure storage solutions, and any related services."
+},
+{
+    question: "What is the title of the second privacy policy section?",
+    answer: "Information We Collect & Our Zero-Knowledge Approach."
+},
+{
+    question: "What is the badge text that says 'Your Data, Your Control'?",
+    answer: "An encryption badge within the privacy policy."
+},
+{
+    question: "What information does Odelya say it collects?",
+    answer: "Account Profile, Authentication Data, Service Metadata, Encrypted Indicators, Payment Information, and Communication Data."
+},
+{
+    question: "What does Odelya say it never accesses?",
+    answer: "File Contents, File Names, Metadata, Decryption Keys, and Folder Structures."
+},
+{
+    question: "What is zero-knowledge architecture explained as?",
+    answer: "Your data is encrypted on your device before upload. We store only encrypted blobs that are meaningless without your private key."
+},
+{
+    question: "What is the title of the third privacy policy section?",
+    answer: "Data Retention & Deletion Policy."
+},
+{
+    question: "What are the retention principles mentioned?",
+    answer: "Active Accounts, Inactive Accounts, Account Deletion, and Legal Requirements."
+},
+{
+    question: "How long after account diactivation does Odelya say complete data deletion occurs?",
+    answer: "Within 24 hrs."
+},
+{
+    question: "What standards does Odelya mention for secure deletion?",
+    answer: "NIST 800-88 standards for media sanitization."
+},
+{
+    question: "What is the title of the fourth privacy policy section?",
+    answer: "How We Use Your Information."
+},
+{
+    question: "For what purposes does Odelya say it uses your information?",
+    answer: "Service Delivery, Payment Processing, Communication, Legal Compliance, Service Improvement, Customer Support, and Security Protection."
+},
+{
+    question: "What promise is made about transparency?",
+    answer: "We will always be clear about how we use your data. If our data practices change, we will update this policy and notify you in advance."
+},
+{
+    question: "What is the title of the fifth privacy policy section?",
+    answer: "Data Security."
+},
+{
+    question: "What encryption methods does Odelya mention?",
+    answer: "256-bit AES Encryption and TLS 1.3 Encryption."
+},
+{
+    question: "What other security layers does Odelya mention?",
+    answer: "Zero-Knowledge Architecture, Regular Security Audits, Multi-Factor Authentication, Secure Key Derivation, Geographically Distributed Data Centers, and Continuous Monitoring."
+},
+{
+    question: "What is the title of the sixth privacy policy section?",
+    answer: "Third-Party Sharing."
+},
+{
+    question: "In what circumstances does Odelya say data may be shared?",
+    answer: "Legal Requirements, Essential Service Providers, Safety & Security, and With Your Consent."
+},
+{
+    question: "What is the title of the seventh privacy policy section?",
+    answer: "International Data Transfers & Compliance."
+},
+{
+    question: "What compliance standards does Odelya mention?",
+    answer: "GDPR & DPDPA Compliant."
+},
+{
+    question: "Where is user data primarily stored according to the policy?",
+    answer: "All user data is stored within Indian borders in secure, certified data centers."
+},
+{
+    question: "What is the title of the eighth privacy policy section?",
+    answer: "Your Rights."
+},
+{
+    question: "What rights are listed for users under applicable privacy laws?",
+    answer: "Access Right, Correction Right, Deletion Right, Objection Right, Portability Right, Consent Withdrawal, and Complaint Right."
+},
+{
+    question: "What important note is given about zero-knowledge architecture?",
+    answer: "Due to our zero-knowledge encryption, we cannot recover your encrypted data if you lose your password or encryption key."
+},
+{
+    question: "What page is this HTML code for?",
+    answer: "The Security page for Odelya Cloud Digital Locker."
+},
+{
+    question: "What is the title of the Security page?",
+    answer: "Odelya Cloud Digital Locker | Secure Encrypted Storage Kolkata | End-to-End Encryption."
+},
+{
+    question: "What is the main description of the Security page?",
+    answer: "Odelya Cloud Digital Locker - Secure cloud storage with end-to-end encryption. Protect your files with private, encrypted storage solutions in Kolkata. Fully protected data storage."
+},
+{
+    question: "What other encryption features are listed in the first card?",
+    answer: "Client-side encryption, Zero-knowledge architecture, and Secure key management."
+},
+{
+    question: "What does Odelya say about data sharing?",
+    answer: "Data is never shared with third parties under any circumstances."
+},
+{
+    question: "What data privacy features are listed?",
+    answer: "No third-party data sharing, Strict internal access controls, Regular privacy audits, and GDPR compliant practices."
+},
+{
+    question: "What does Odelya say about access control?",
+    answer: "Only authorized users can access their respective storage areas."
+},
+{
+    question: "What access control features are listed?",
+    answer: "Multi-factor authentication, Role-based access control, Session management, and Login attempt monitoring."
+},
+{
+    question: "What does Odelya say about system monitoring?",
+    answer: "Our systems are monitored 24X7 to prevent unauthorized access & data breaches."
+},
+{
+    question: "What security features are listed?",
+    answer: "24/7 security monitoring, Regular security audits, DDoS protection, and Secure data centers."
+},
+{
+    question: "What advice does Odelya give about user credentials?",
+    answer: "Users are advised to keep their login credentials secure and avoid sharing details with others."
+},
+{
+    question: "What credential security practices are listed?",
+    answer: "Secure password practices, Regular password updates, Avoid credential sharing, and Monitor account activity."
+},
+{
+    question: "What does Odelya say about compliance and standards?",
+    answer: "We adhere to industry security standards and compliance to ensure data protection."
+},
+{
+    question: "What compliance standards are listed?",
+    answer: "ISO 27001 aligned, GDPR compliance, Regular penetration testing, and Security certifications."
+},
+{
+    question: "What does the Zero-Knowledge principle mean?",
+    answer: "We cannot access your encrypted data. Only you hold the keys."
+},
+{
+    question: "What does the Defense principle mean?",
+    answer: "Multiple layers of security protecting your data at every level."
+},
+{
+    question: "What does the Monitoring principle mean?",
+    answer: "Data under 24/7 security monitoring per global standards."
+},
+{
+    question: "What does the Improvement principle mean?",
+    answer: "Regular updates and security enhancements based on latest threats."
+},
+{
+    question: "What security level percentage is shown?",
+    answer: "95% Security Level."
+},
+{
+    question: "What is the security level described as?",
+    answer: "Military-Grade."
+},
+{
+    question: "How many FAQ questions are listed on the Security page?",
+    answer: "Five FAQ questions."
+},
+{
+    question: "What is the first FAQ question?",
+    answer: "Can Odelya access my encrypted files?"
+},
+{
+    question: "What is the answer to the first FAQ?",
+    answer: "No. We follow a zero-knowledge architecture where all encryption and decryption happens on your device. We never have access to your encryption keys or unencrypted data."
+},
+{
+    question: "What is the second FAQ question?",
+    answer: "What happens if I forget my password?"
+},
+{
+    question: "What is the answer to the second FAQ?",
+    answer: "Due to our zero-knowledge architecture, we cannot reset your password. We recommend using a password manager and securely storing your recovery key during account setup."
+},
+{
+    question: "What is the third FAQ question?",
+    answer: "How often is security testing performed?"
+},
+{
+    question: "What is the answer to the third FAQ?",
+    answer: "We conduct 24/7 regular security audits and penetration testing every quarter, along with continuous vulnerability scanning and real-time threat monitoring."
+},
+{
+    question: "What is the fourth FAQ question?",
+    answer: "Is my data backed up?"
+},
+{
+    question: "What is the answer to the fourth FAQ?",
+    answer: "Yes, all data is redundantly stored across multiple secure data servers with regular backups. Your encrypted data remains available even in case of hardware failures."
+},
+{
+    question: "What is the fifth FAQ question?",
+    answer: "What encryption standards do you use?"
+},
+{
+    question: "What is the answer to the fifth FAQ?",
+    answer: "We use AES-256 encryption for data at rest and in transit, along with RSA-2048 for key exchange and SSL/TLS 1.3 for secure communications."
+},
+{
+    question: "What is the CTA button text at the bottom of the Security page?",
+    answer: "Contact Security Team."
+},
+{
+    question: "What page is this?",
+    answer: "Terms & Conditions page."
+},
+{
+    question: "What is the page title?",
+    answer: "Terms & Conditions - Odelya Cloud Digital Locker."
+},
+{
+    question: "What is the main description?",
+    answer: "Terms and Conditions for Odelya Cloud Digital Locker."
+},
+{
+    question: "How many quick navigation items are there?",
+    answer: "Six items."
+},
+{
+    question: "What is the first navigation item?",
+    answer: "Cloud Storage Agreement."
+},
+{
+    question: "What is the second navigation item?",
+    answer: "Definitions."
+},
+{
+    question: "What is the third navigation item?",
+    answer: "Data Security."
+},
+{
+    question: "What is the fourth navigation item?",
+    answer: "DPDP Act Compliance."
+},
+{
+    question: "What is the fifth navigation item?",
+    answer: "Service Level Agreement."
+},
+{
+    question: "What is the sixth navigation item?",
+    answer: "User Terms."
+},
+{
+    question: "What is section 1 about?",
+    answer: "Cloud Storage Services Agreement."
+},
+{
+    question: "Who is the Service Provider?",
+    answer: "Odelya Management Pvt. Ltd."
+},
+{
+    question: "Where is Odelya's registered office?",
+    answer: "Molina Apartment, 1st Floor, 32/10 Chandi Ghosh Road, Kolkata, West Bengal 700040, India."
+},
+{
+    question: "What is section 2 about?",
+    answer: "Definitions."
+},
+{
+    question: "What does 'Applicable Law' include?",
+    answer: "Information Technology Act, 2000, Digital Personal Data Protection Act, 2023."
+},
+{
+    question: "What is 'Client Data'?",
+    answer: "All data, information, files, and content uploaded by the Client."
+},
+{
+    question: "What is 'DPDPA'?",
+    answer: "Digital Personal Data Protection Act, 2023."
+},
+{
+    question: "What is 'Personal Data'?",
+    answer: "As defined under the DPDPA."
+},
+{
+    question: "What is 'Services'?",
+    answer: "The cloud storage services described in the Order Form."
+},
+{
+    question: "What is 'User'?",
+    answer: "Any individual authorized by the Client to use the Services."
+},
+{
+    question: "What is section 3 about?",
+    answer: "Data Security."
+},
+{
+    question: "Who owns the Client Data?",
+    answer: "The Client retains all rights to Client Data."
+},
+{
+    question: "What encryption is used for data in transit?",
+    answer: "Secure TLS protocols."
+},
+{
+    question: "What encryption is used for data at rest?",
+    answer: "AES-256 encryption or equivalent."
+},
+{
+    question: "What is section 4 about?",
+    answer: "DPDP Act Compliance."
+},
+{
+    question: "Who is the Data Fiduciary?",
+    answer: "The Client."
+},
+{
+    question: "Who is the Data Processor?",
+    answer: "The Service Provider."
+},
+{
+    question: "How soon must Data Breach be notified?",
+    answer: "Within 24 hours."
+},
+{
+    question: "Where are primary data centers located?",
+    answer: "Kolkata, West Bengal, India."
+},
+{
+    question: "What is section 5 about?",
+    answer: "Service Level Agreement."
+},
+{
+    question: "What is the uptime commitment?",
+    answer: "99.9% Monthly Uptime Percentage."
+},
+{
+    question: "What is excluded from Downtime?",
+    answer: "Scheduled maintenance and Force Majeure."
+},
+{
+    question: "What is section 6 about?",
+    answer: "User Terms and Conditions."
+},
+{
+    question: "How many user terms are listed?",
+    answer: "Eleven terms."
+},
+{
+    question: "What is term 1 about?",
+    answer: "Acceptance of Terms."
+},
+{
+    question: "What is term 2 about?",
+    answer: "Service Description."
+},
+{
+    question: "What does the service provide?",
+    answer: "Secure cloud storage with end-to-end encryption."
+},
+{
+    question: "What is term 3 about?",
+    answer: "User Responsibilities."
+},
+{
+    question: "What are users responsible for?",
+    answer: "Maintaining confidentiality of login credentials and authorized devices."
+},
+{
+    question: "What is term 4 about?",
+    answer: "Payment Terms."
+},
+{
+    question: "Are payments refundable?",
+    answer: "No, all payments are non-refundable."
+},
+{
+    question: "When is service activated?",
+    answer: "Within 48 hours of successful payment verification."
+},
+{
+    question: "What is term 5 about?",
+    answer: "Data Security."
+},
+{
+    question: "What are users advised to do?",
+    answer: "Maintain their own backups."
+},
+{
+    question: "What is term 6 about?",
+    answer: "Service Availability."
+},
+{
+    question: "What uptime is strived for?",
+    answer: "99.9% uptime."
+},
+{
+    question: "What is term 7 about?",
+    answer: "Prohibited Content."
+},
+{
+    question: "What content may not be stored?",
+    answer: "Illegal, copyrighted, or malicious content."
+},
+{
+    question: "What happens for violation?",
+    answer: "Immediate termination."
+},
+{
+    question: "What is term 8 about?",
+    answer: "Termination."
+},
+{
+    question: "Can service be terminated without refund?",
+    answer: "Yes, for violation of terms."
+},
+{
+    question: "What is term 9 about?",
+    answer: "Limitation of Liability."
+},
+{
+    question: "What is Odelya not liable for?",
+    answer: "Any indirect, incidental, or consequential damages."
+},
+{
+    question: "What is term 10 about?",
+    answer: "Governing Law."
+},
+{
+    question: "Which laws govern the terms?",
+    answer: "Laws of India."
+},
+{
+    question: "Which jurisdiction applies?",
+    answer: "Kolkata jurisdiction."
+},
+{
+    question: "What is term 11 about?",
+    answer: "Contact Information."
+},
+
 
 
 ];
