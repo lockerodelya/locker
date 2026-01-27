@@ -2,6 +2,7 @@
 // Link to main file: aichatbot.js
 
 const qaDatabase = [
+    
     // ====== PRICING TABLE SPECIFIC Q&A ======
     // 10GB Plan
     {
@@ -275,57 +276,6 @@ const qaDatabase = [
             category: "pricing"
         },
 
-        // ====== SPECIFIC NUMBER Q&A ======
-        {
-            question: "10",
-            answer: "10GB Storage Plan:<br><br>• Storage: 10GB<br>• Users: 1 user<br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• GST: Included",
-            category: "pricing"
-        },
-        {
-            question: "30",
-            answer: "30GB Storage Plan:<br><br>• Storage: 30GB<br>• Users: 2 users<br>• Monthly: Rs. 53<br>• Yearly: Rs. 605<br>• GST: Included",
-            category: "pricing"
-        },
-        {
-            question: "50",
-            answer: "50GB Storage Plan:<br><br>• Storage: 50GB<br>• Users: 2 users<br>• Monthly: Rs. 89<br>• Yearly: Rs. 956<br>• GST: Included",
-            category: "pricing"
-        },
-        {
-            question: "70",
-            answer: "70GB Storage Plan:<br><br>• Storage: 70GB<br>• Users: 3 users<br>• Monthly: Rs. 124<br>• Yearly: Rs. 1,338<br>• GST: Included",
-            category: "pricing"
-        },
-        {
-            question: "100",
-            answer: "100GB Storage Plan:<br><br>• Storage: 100GB<br>• Users: 3 users<br>• Monthly: Rs. 177<br>• Yearly: Rs. 1,805<br>• GST: Included",
-            category: "pricing"
-        },
-        {
-            question: "150",
-            answer: "150GB Storage Plan:<br><br>• Storage: 150GB<br>• Users: 3 users<br>• Monthly: Rs. 266<br>• Yearly: Rs. 2,708<br>• GST: Included",
-            category: "pricing"
-        },
-        {
-            question: "200",
-            answer: "200GB Storage Plan:<br><br>• Storage: 200GB<br>• Users: 4 users<br>• Monthly: Rs. 354<br>• Yearly: Rs. 3,611<br>• GST: Included",
-            category: "pricing"
-        },
-        {
-            question: "300",
-            answer: "300GB Storage Plan:<br><br>• Storage: 300GB<br>• Users: 4 users<br>• Monthly: Rs. 531<br>• Yearly: Rs. 5,098<br>• GST: Included",
-            category: "pricing"
-        },
-        {
-            question: "400",
-            answer: "400GB Storage Plan:<br><br>• Storage: 400GB<br>• Users: 4 users<br>• Monthly: Rs. 708<br>• Yearly: Rs. 6,797<br>• GST: Included",
-            category: "pricing"
-        },
-        {
-            question: "500",
-            answer: "500GB Storage Plan:<br><br>• Storage: 500GB<br>• Users: 5 users<br>• Monthly: Rs. 885<br>• Yearly: Rs. 7,965<br>• GST: Included",
-            category: "pricing"
-        },
 
         // ====== PRICING GENERAL Q&A ======
         {
@@ -362,7 +312,7 @@ const qaDatabase = [
         },
         {
             question: "Is GST included in price?",
-            answer: "Yes! All our prices include 18% GST (Goods and Services Tax). There are no hidden charges or additional taxes. The prices shown are the final amounts you pay.",
+            answer: "Yes! All our prices include 18% GST.",
             category: "pricing"
         },
         {
@@ -386,7 +336,7 @@ const qaDatabase = [
         },
         {
             question: "Where is your office located?",
-            answer: "We have two offices in Kolkata:<br><br><strong>Administrative Office:</strong><br>44E, 2nd Floor, Nandalalmitra Lane, Kolkata-700040, India<br><br><strong>Registered Office:</strong><br>Molina Apartment, 1st Floor, 32/10 Chandi Ghosh Road, Kolkata-700040, India",
+            answer: "We have <strong>Administrative Office:</strong><br>44E, 2nd Floor, Nandalalmitra Lane, Kolkata-700040, West Bengal, India<br>",
             category: "contact"
         },
         {
@@ -398,7 +348,7 @@ const qaDatabase = [
         // Services Information
         {
             question: "What services do you offer?",
-            answer: "We offer two main services:<br><br>1. <strong>Secure Cloud Storage</strong> with End-to-End Encryption<br>2. <strong>Event Guest Photo Storage</strong> - Photos captured by specific guests are simultaneously stored in the cloud",
+            answer: "We offer two main services:<br><br>1. <strong>Secure Cloud Storage</strong> with secure End-to-End Encryption<br>2. <strong>Odelya IT Services</strong> - Various types of Information Technology related services from Income Tax, GST, Auditing, Licese, to Data Recovery, Website Hosting, SEO etc.",
             category: "services"
         },
         {
@@ -433,12 +383,6 @@ const qaDatabase = [
             answer: "Yes! We offer both monthly and yearly subscription options for all our storage plans. Yearly plans offer better value compared to paying monthly.",
             category: "pricing"
         },
-        {
-            question: "What is included in the price?",
-            answer: "All our prices include:<br>1. Secure cloud storage with end-to-end encryption<br>2. GST (Goods and Services Tax) at 18%<br>3. Technical support during business hours<br>4. Regular security updates",
-            category: "pricing"
-        },
-        
         // Payment Information
         {
             question: "How can I make payment?",
@@ -469,7 +413,7 @@ const qaDatabase = [
         },
         {
             question: "What are your business hours?",
-            answer: "Our business hours are:<br><br><strong>Monday to Saturday:</strong> 9:00 AM - 8:00 PM<br><strong>Sunday:</strong> Closed<br><br>We are available for calls and emails during these hours.",
+            answer: "Our business hours are:<br><br><strong>Monday to Saturday:</strong> 10:00 AM - 7:00 PM<br><strong>Sunday:</strong> Closed<br><br>We are available for calls and emails during these hours.",
             category: "contact"
         },
         {
@@ -512,11 +456,6 @@ const qaDatabase = [
             category: "business"
         },
         {
-            question: "Who is your target customer?",
-            answer: "We serve:<br>1. <strong>Individuals</strong> needing secure personal storage<br>2. <strong>Businesses</strong> requiring protected data storage<br>3. <strong>Event organizers</strong> for guest photo storage<br>4. <strong>Professionals</strong> with sensitive documents",
-            category: "business"
-        },
-        {
             question: "Do you serve customers outside Kolkata?",
             answer: "Yes! While our offices are in Kolkata, we serve customers across India. Our cloud storage services are accessible from anywhere with an internet connection.",
             category: "business"
@@ -525,7 +464,7 @@ const qaDatabase = [
         // Process Information
         {
             question: "How do I sign up for your service?",
-            answer: "To sign up:<br>1. Choose a plan from our pricing table<br>2. Click 'Buy' for monthly or yearly<br>3. Complete the payment process<br>4. Share payment proof via WhatsApp or email<br>5. We'll set up your account and send login details",
+            answer: "To sign up:<br>1. Choose a plan from our pricing table<br>2. Click 'Select Plan' for monthly or yearly<br>3. Complete the payment process<br>4. Share payment proof via WhatsApp or email<br>5. We'll set up your account and send login details",
             category: "process"
         },
         {
@@ -540,7 +479,7 @@ const qaDatabase = [
         },
         {
             question: "Can I cancel my subscription?",
-            answer: "Yes, you can cancel your subscription. Please contact us at +91-96741 30001 or care.ompl@gmail.com for assistance with subscription cancellation.",
+            answer: "Yes, you can cancel your subscription. Please contact us at +91-96741 30001 or care.ompl@gmail.com for assistance with subscription cancellation. Also for your reference, paid money cannot be refunded under any circumstances.",
             category: "process"
         },
         
@@ -596,7 +535,7 @@ const qaDatabase = [
 },
 {
     question: "What company produces Odelya Cloud?",
-    answer: "Odelya Management Pvt Ltd (OMPL)."
+    answer: "Odelya Management private Limited (OMPL)."
 },
 {
     question: "What are the three main services listed on the site?",
@@ -624,7 +563,7 @@ const qaDatabase = [
 },
 {
     question: "What are the opening hours for customer service?",
-    answer: "Monday to Friday, from 09:00 to 18:00."
+    answer: "Monday to Friday, from 10:00 to 19:00."
 },
 {
     question: "What languages are available for customer service?",
@@ -639,24 +578,12 @@ const qaDatabase = [
     answer: "Security, Privacy, Contact, and About."
 },
 {
-    question: "What is the title of the webpage?",
-    answer: "Odelya Cloud Digital Locker | Secure Data Storage Kolkata."
-},
-{
     question: "What is the website's official URL?",
-    answer: "https://odelya.online."
+    answer: "https://odelya.online"
 },
 {
     question: "What is the purpose of the service described as 'End-to-End Encryption'?",
     answer: "Secure Cloud Storage."
-},
-{
-    question: "What does the structured data on the site classify the business as?",
-    answer: "A LocalBusiness."
-},
-{
-    question: "What is the alternate name for Odelya Management Pvt Ltd?",
-    answer: "Odelya Cloud."
 },
 {
     question: "What options are available in the dropdown menu?",
@@ -671,16 +598,8 @@ const qaDatabase = [
     answer: "2025."
 },
 {
-    question: "What technology is mentioned for offline use?",
-    answer: "PWA (Progressive Web App)."
-},
-{
     question: "What does the FAQ say about accessing the digital locker?",
     answer: "Through a secure web portal or mobile app."
-},
-{
-    question: "What page is this HTML code for?",
-    answer: "The Odelya Cloud Storage Plans and Pricing page."
 },
 {
     question: "What is the main title of this cloud storage page?",
@@ -691,12 +610,8 @@ const qaDatabase = [
     answer: "Encrypted cloud storage with end-to-end protection."
 },
 {
-    question: "What is the section title for the pricing area?",
-    answer: "Storage Plans & Pricing."
-},
-{
     question: "What is the GST rate included in all charges?",
-    answer: "18%."
+    answer: "18% GST."
 },
 {
     question: "How many storage capacity (GB) plans are listed in the pricing table?",
@@ -751,10 +666,6 @@ const qaDatabase = [
     answer: "INR 8,343 per year."
 },
 {
-    question: "What is the main security feature mentioned for Odelya Cloud Storage?",
-    answer: "End-to-end encryption."
-},
-{
     question: "Where are Odelya's servers located?",
     answer: "Kolkata, West Bengal, India"
 },
@@ -765,10 +676,6 @@ const qaDatabase = [
 {
     question: "What is the starting price mentioned for data storage in Kolkata?",
     answer: "Just INR 18/month."
-},
-{
-    question: "What type of backup is mentioned as a feature?",
-    answer: "Automatic backup."
 },
 {
     question: "When can users access their files?",
@@ -783,24 +690,8 @@ const qaDatabase = [
     answer: "Individuals needing secure storage in Kolkata for documents, photos, and files."
 },
 {
-    question: "What does the CTA button in the sidebar say?",
-    answer: "Get Free Consultation."
-},
-{
     question: "What company produces Odelya Cloud Storage?",
     answer: "Odelya Management Pvt Ltd (OMPL)."
-},
-{
-    question: "What page is this HTML code for?",
-    answer: "The Odelya IT Services Kolkata page."
-},
-{
-    question: "What is the title of the IT services page?",
-    answer: "Odelya IT Services Kolkata | Comprehensive IT Solutions for Personal & Businesses."
-},
-{
-    question: "What is the main description of Odelya IT Services?",
-    answer: "Comprehensive IT & tax solutions including income tax, GST, accounting, cloud storage, website services, SEO, mutation, local taxes & license services for businesses and individuals."
 },
 {
     question: "What is the first IT service listed?",
@@ -936,7 +827,7 @@ const qaDatabase = [
 },
 {
     question: "What is the Chairman's quote?",
-    answer: "\"The word possible makes impossible to irrelevant\"."
+    answer: "The word possible makes impossible to irrelevant."
 },
 {
     question: "What is the Chairman's vision?",
@@ -964,7 +855,7 @@ const qaDatabase = [
 },
 {
     question: "How much experience does the Director have?",
-    answer: "30+ years of extensive experience in Accounting & Information Technology Business Management."
+    answer: "40+ years of extensive experience in Accounting & Information Technology Business Management."
 },
 {
     question: "What does the Director bring to Odelya?",
@@ -979,28 +870,12 @@ const qaDatabase = [
     answer: "Security First, Instant Access, and User Control."
 },
 {
-    question: "What does 'Security First' commitment mean?",
-    answer: "We implement military-grade end-to-end data encryption ensuring your files remains private and secure. No third-party access or sharing & no compromise."
-},
-{
     question: "What does 'Instant Access' commitment mean?",
     answer: "Your data is always available when you need it. Our infrastructure ensures high-speed access from anywhere, at any time."
 },
 {
     question: "What does 'User Control' commitment mean?",
     answer: "You maintain complete control over your data. Our zero-knowledge architecture means we cannot access your encrypted files."
-},
-{
-    question: "What page is this HTML code for?",
-    answer: "The Contact page for Odelya Cloud Digital Locker."
-},
-{
-    question: "What is the title of the Contact page?",
-    answer: "Contact Odelya Cloud Digital Locker | Secure Encrypted Storage Kolkata."
-},
-{
-    question: "What is the main description of the Contact page?",
-    answer: "Contact Odelya Cloud Digital Locker for secure encrypted cloud storage solutions in Kolkata. Get cloud storage pricing, IT services, data processing, web hosting, SEO, and income tax support. End-to-end encryption for personal and business data."
 },
 {
     question: "What are the two main office sections on the Contact page?",
@@ -1012,7 +887,7 @@ const qaDatabase = [
 },
 {
     question: "What are the business hours for the Administrative Office?",
-    answer: "Monday to Saturday: 9:00 AM - 8:00 PM, Sunday: Closed."
+    answer: "Monday to Saturday: 10:00 AM - 7:00 PM, Sunday: Closed."
 },
 {
     question: "What is the address of the Registered Office?",
@@ -1043,24 +918,8 @@ const qaDatabase = [
     answer: "200 characters."
 },
 {
-    question: "What are the nine options in the dropdown?",
-    answer: "Cloud Storage, Personal Storage, Business Storage, IT Services, Web Hosting, SEO Services, Income Tax Support, Data Processing, and Other."
-},
-{
     question: "What is the success message that appears after submitting the form?",
     answer: "Thanks for reaching us! We will contact you within 72 business hours. We have received your inquiry about our cloud storage and IT services."
-},
-{
-    question: "What page is this HTML code for?",
-    answer: "The Privacy Policy page for Odelya Cloud Digital Locker."
-},
-{
-    question: "What is the title of the Privacy Policy page?",
-    answer: "Odelya Cloud Digital Locker | Secure Encrypted Storage Kolkata | End-to-End Encryption."
-},
-{
-    question: "What is the main description of the Privacy Policy page?",
-    answer: "Odelya Cloud Digital Locker - Secure cloud storage with end-to-end encryption. Protect your files with private, encrypted storage solutions in Kolkata. Fully protected data storage."
 },
 {
     question: "What is the effective date shown in the privacy policy?",
@@ -1079,28 +938,12 @@ const qaDatabase = [
     answer: "All services offered by Odelya, including Cloud Digital Locker, secure storage solutions, and any related services."
 },
 {
-    question: "What is the title of the second privacy policy section?",
-    answer: "Information We Collect & Our Zero-Knowledge Approach."
-},
-{
-    question: "What is the badge text that says 'Your Data, Your Control'?",
-    answer: "An encryption badge within the privacy policy."
-},
-{
-    question: "What information does Odelya say it collects?",
-    answer: "Account Profile, Authentication Data, Service Metadata, Encrypted Indicators, Payment Information, and Communication Data."
-},
-{
     question: "What does Odelya say it never accesses?",
     answer: "File Contents, File Names, Metadata, Decryption Keys, and Folder Structures."
 },
 {
     question: "What is zero-knowledge architecture explained as?",
     answer: "Your data is encrypted on your device before upload. We store only encrypted blobs that are meaningless without your private key."
-},
-{
-    question: "What is the title of the third privacy policy section?",
-    answer: "Data Retention & Deletion Policy."
 },
 {
     question: "What are the retention principles mentioned?",
@@ -1115,10 +958,6 @@ const qaDatabase = [
     answer: "NIST 800-88 standards for media sanitization."
 },
 {
-    question: "What is the title of the fourth privacy policy section?",
-    answer: "How We Use Your Information."
-},
-{
     question: "For what purposes does Odelya say it uses your information?",
     answer: "Service Delivery, Payment Processing, Communication, Legal Compliance, Service Improvement, Customer Support, and Security Protection."
 },
@@ -1127,28 +966,8 @@ const qaDatabase = [
     answer: "We will always be clear about how we use your data. If our data practices change, we will update this policy and notify you in advance."
 },
 {
-    question: "What is the title of the fifth privacy policy section?",
-    answer: "Data Security."
-},
-{
-    question: "What encryption methods does Odelya mention?",
-    answer: "256-bit AES Encryption and TLS 1.3 Encryption."
-},
-{
-    question: "What other security layers does Odelya mention?",
-    answer: "Zero-Knowledge Architecture, Regular Security Audits, Multi-Factor Authentication, Secure Key Derivation, Geographically Distributed Data Centers, and Continuous Monitoring."
-},
-{
-    question: "What is the title of the sixth privacy policy section?",
-    answer: "Third-Party Sharing."
-},
-{
     question: "In what circumstances does Odelya say data may be shared?",
     answer: "Legal Requirements, Essential Service Providers, Safety & Security, and With Your Consent."
-},
-{
-    question: "What is the title of the seventh privacy policy section?",
-    answer: "International Data Transfers & Compliance."
 },
 {
     question: "What compliance standards does Odelya mention?",
@@ -1159,32 +978,8 @@ const qaDatabase = [
     answer: "All user data is stored within Indian borders in secure, certified data centers."
 },
 {
-    question: "What is the title of the eighth privacy policy section?",
-    answer: "Your Rights."
-},
-{
     question: "What rights are listed for users under applicable privacy laws?",
     answer: "Access Right, Correction Right, Deletion Right, Objection Right, Portability Right, Consent Withdrawal, and Complaint Right."
-},
-{
-    question: "What important note is given about zero-knowledge architecture?",
-    answer: "Due to our zero-knowledge encryption, we cannot recover your encrypted data if you lose your password or encryption key."
-},
-{
-    question: "What page is this HTML code for?",
-    answer: "The Security page for Odelya Cloud Digital Locker."
-},
-{
-    question: "What is the title of the Security page?",
-    answer: "Odelya Cloud Digital Locker | Secure Encrypted Storage Kolkata | End-to-End Encryption."
-},
-{
-    question: "What is the main description of the Security page?",
-    answer: "Odelya Cloud Digital Locker - Secure cloud storage with end-to-end encryption. Protect your files with private, encrypted storage solutions in Kolkata. Fully protected data storage."
-},
-{
-    question: "What other encryption features are listed in the first card?",
-    answer: "Client-side encryption, Zero-knowledge architecture, and Secure key management."
 },
 {
     question: "What does Odelya say about data sharing?",
@@ -1193,10 +988,6 @@ const qaDatabase = [
 {
     question: "What data privacy features are listed?",
     answer: "No third-party data sharing, Strict internal access controls, Regular privacy audits, and GDPR compliant practices."
-},
-{
-    question: "What does Odelya say about access control?",
-    answer: "Only authorized users can access their respective storage areas."
 },
 {
     question: "What access control features are listed?",
@@ -1213,10 +1004,6 @@ const qaDatabase = [
 {
     question: "What advice does Odelya give about user credentials?",
     answer: "Users are advised to keep their login credentials secure and avoid sharing details with others."
-},
-{
-    question: "What credential security practices are listed?",
-    answer: "Secure password practices, Regular password updates, Avoid credential sharing, and Monitor account activity."
 },
 {
     question: "What does Odelya say about compliance and standards?",
@@ -1247,112 +1034,12 @@ const qaDatabase = [
     answer: "95% Security Level."
 },
 {
-    question: "What is the security level described as?",
-    answer: "Military-Grade."
-},
-{
-    question: "How many FAQ questions are listed on the Security page?",
-    answer: "Five FAQ questions."
-},
-{
-    question: "What is the first FAQ question?",
-    answer: "Can Odelya access my encrypted files?"
-},
-{
-    question: "What is the answer to the first FAQ?",
-    answer: "No. We follow a zero-knowledge architecture where all encryption and decryption happens on your device. We never have access to your encryption keys or unencrypted data."
-},
-{
-    question: "What is the second FAQ question?",
-    answer: "What happens if I forget my password?"
-},
-{
-    question: "What is the answer to the second FAQ?",
-    answer: "Due to our zero-knowledge architecture, we cannot reset your password. We recommend using a password manager and securely storing your recovery key during account setup."
-},
-{
-    question: "What is the third FAQ question?",
-    answer: "How often is security testing performed?"
-},
-{
-    question: "What is the answer to the third FAQ?",
-    answer: "We conduct 24/7 regular security audits and penetration testing every quarter, along with continuous vulnerability scanning and real-time threat monitoring."
-},
-{
-    question: "What is the fourth FAQ question?",
-    answer: "Is my data backed up?"
-},
-{
-    question: "What is the answer to the fourth FAQ?",
-    answer: "Yes, all data is redundantly stored across multiple secure data servers with regular backups. Your encrypted data remains available even in case of hardware failures."
-},
-{
-    question: "What is the fifth FAQ question?",
-    answer: "What encryption standards do you use?"
-},
-{
-    question: "What is the answer to the fifth FAQ?",
-    answer: "We use AES-256 encryption for data at rest and in transit, along with RSA-2048 for key exchange and SSL/TLS 1.3 for secure communications."
-},
-{
-    question: "What is the CTA button text at the bottom of the Security page?",
-    answer: "Contact Security Team."
-},
-{
-    question: "What page is this?",
-    answer: "Terms & Conditions page."
-},
-{
-    question: "What is the page title?",
-    answer: "Terms & Conditions - Odelya Cloud Digital Locker."
-},
-{
-    question: "What is the main description?",
-    answer: "Terms and Conditions for Odelya Cloud Digital Locker."
-},
-{
-    question: "How many quick navigation items are there?",
-    answer: "Six items."
-},
-{
-    question: "What is the first navigation item?",
-    answer: "Cloud Storage Agreement."
-},
-{
-    question: "What is the second navigation item?",
-    answer: "Definitions."
-},
-{
-    question: "What is the third navigation item?",
-    answer: "Data Security."
-},
-{
-    question: "What is the fourth navigation item?",
-    answer: "DPDP Act Compliance."
-},
-{
-    question: "What is the fifth navigation item?",
-    answer: "Service Level Agreement."
-},
-{
-    question: "What is the sixth navigation item?",
-    answer: "User Terms."
-},
-{
     question: "What is section 1 about?",
     answer: "Cloud Storage Services Agreement."
 },
 {
     question: "Who is the Service Provider?",
     answer: "Odelya Management Pvt. Ltd."
-},
-{
-    question: "Where is Odelya's registered office?",
-    answer: "Molina Apartment, 1st Floor, 32/10 Chandi Ghosh Road, Kolkata, West Bengal 700040, India."
-},
-{
-    question: "What is section 2 about?",
-    answer: "Definitions."
 },
 {
     question: "What does 'Applicable Law' include?",
@@ -1376,11 +1063,7 @@ const qaDatabase = [
 },
 {
     question: "What is 'User'?",
-    answer: "Any individual authorized by the Client to use the Services."
-},
-{
-    question: "What is section 3 about?",
-    answer: "Data Security."
+    answer: "Any Individual or Ogranisation authorized by the Client to use the Services."
 },
 {
     question: "Who owns the Client Data?",
@@ -1389,14 +1072,6 @@ const qaDatabase = [
 {
     question: "What encryption is used for data in transit?",
     answer: "Secure TLS protocols."
-},
-{
-    question: "What encryption is used for data at rest?",
-    answer: "AES-256 encryption or equivalent."
-},
-{
-    question: "What is section 4 about?",
-    answer: "DPDP Act Compliance."
 },
 {
     question: "Who is the Data Fiduciary?",
@@ -1408,7 +1083,7 @@ const qaDatabase = [
 },
 {
     question: "How soon must Data Breach be notified?",
-    answer: "Within 24 hours."
+    answer: "Within 24 working hours."
 },
 {
     question: "Where are primary data centers located?",
@@ -1479,10 +1154,6 @@ const qaDatabase = [
     answer: "Service Availability."
 },
 {
-    question: "What uptime is strived for?",
-    answer: "99.9% uptime."
-},
-{
     question: "What is term 7 about?",
     answer: "Prohibited Content."
 },
@@ -1500,7 +1171,7 @@ const qaDatabase = [
 },
 {
     question: "Can service be terminated without refund?",
-    answer: "Yes, for violation of terms."
+    answer: "Yes, for violation of terms. Also for your reference paid money cannot be refunded under any circumstances."
 },
 {
     question: "What is term 9 about?",
@@ -1531,6 +1202,8 @@ const qaDatabase = [
 
 ];
 
+
+    
 // Function to add new Q&A pairs
 function addNewQA(newQuestions) {
     if (Array.isArray(newQuestions)) {
