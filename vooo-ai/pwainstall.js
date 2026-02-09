@@ -10,6 +10,7 @@ class VoooPWAInstaller {
         this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
         this.isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
         this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        this.initialDelay = 6000; // 6 seconds for first time
         this.reminderInterval = 5 * 60 * 1000; // 5 minutes
         this.reminderTimer = null;
         this.maxAttempts = 3; // Max reminders per session
@@ -34,14 +35,14 @@ class VoooPWAInstaller {
         // Listen for app installed
         window.addEventListener('appinstalled', () => {
             console.log('Vooo AI PWA: App installed successfully');
-            localStorage.setItem('vooo_pwa_installed', 'true');
+            localStorage.setItem('pwa_installed', 'true');
             this.clearReminderTimer();
             this.hideInstallButton();
         });
 
         // Check if already standalone
         if (window.matchMedia('(display-mode: standalone)').matches) {
-            localStorage.setItem('vooo_pwa_installed', 'true');
+            localStorage.setItem('pwa_installed', 'true');
             this.clearReminderTimer();
             return;
         }
@@ -57,29 +58,74 @@ class VoooPWAInstaller {
     }
 
     scheduleInitialPrompt() {
-        // Show first prompt after 3 seconds
-        setTimeout(() => {
-            if (!this.hasShownPrompt && !this.isPWAInstalled()) {
-                this.showInstallButton();
+        // Check if user has declined before
+        const lastDeclined = localStorage.getItem('vooo_pwa_declined');
+        
+        if (lastDeclined) {
+            // User declined before - check if 5 minutes have passed
+            const timeSinceDecline = Date.now() - parseInt(lastDeclined);
+            
+            if (timeSinceDecline >= this.reminderInterval) {
+                // 5 minutes have passed, show after 6 seconds
+                setTimeout(() => {
+                    if (!this.hasShownPrompt && !this.isPWAInstalled()) {
+                        this.showInstallButton();
+                    }
+                }, this.initialDelay);
+            } else {
+                // Wait for remaining time
+                const remainingTime = this.reminderInterval - timeSinceDecline;
+                console.log(`Vooo AI PWA: Remaining time until next reminder: ${Math.round(remainingTime/1000)} seconds`);
+                
+                this.reminderTimer = setTimeout(() => {
+                    if (!this.isPWAInstalled() && !this.hasShownPrompt) {
+                        this.showInstallButton();
+                    }
+                }, remainingTime);
             }
-        }, 3000);
+        } else {
+            // First time - show after 6 seconds
+            setTimeout(() => {
+                if (!this.hasShownPrompt && !this.isPWAInstalled()) {
+                    this.showInstallButton();
+                }
+            }, this.initialDelay);
+        }
     }
 
     scheduleMobileReminder() {
         // For mobile devices that don't fire beforeinstallprompt reliably
-        setTimeout(() => {
-            if (!this.isPWAInstalled() && this.attemptCount < this.maxAttempts) {
-                console.log('Vooo AI PWA: Mobile fallback reminder');
-                this.showMobileInstallPrompt();
-                this.attemptCount++;
+        const lastDeclined = localStorage.getItem('vooo_pwa_declined');
+        
+        if (lastDeclined) {
+            const timeSinceDecline = Date.now() - parseInt(lastDeclined);
+            
+            if (timeSinceDecline >= this.reminderInterval) {
+                // Show after 6 seconds
+                setTimeout(() => {
+                    if (!this.isPWAInstalled() && this.attemptCount < this.maxAttempts) {
+                        console.log('Vooo AI PWA: Mobile fallback reminder');
+                        this.showMobileInstallPrompt();
+                        this.attemptCount++;
+                    }
+                }, this.initialDelay);
             }
-        }, 10000); // Wait 10 seconds for mobile
+        } else {
+            // First time - show after 6 seconds
+            setTimeout(() => {
+                if (!this.isPWAInstalled() && this.attemptCount < this.maxAttempts) {
+                    console.log('Vooo AI PWA: Mobile fallback reminder');
+                    this.showMobileInstallPrompt();
+                    this.attemptCount++;
+                }
+            }, this.initialDelay);
+        }
     }
 
     isPWAInstalled() {
         // Check multiple indicators
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-        const isInstalled = localStorage.getItem('vooo_pwa_installed') === 'true';
+        const isInstalled = localStorage.getItem('pwa_installed') === 'true';
         
         if (isStandalone || isInstalled) {
             console.log('Vooo AI PWA: Already installed or in standalone mode');
@@ -109,7 +155,7 @@ class VoooPWAInstaller {
                 }, timeRemaining);
             }
         } else {
-            // No previous decline, schedule first reminder after 5 minutes
+            // No previous decline, schedule first reminder after 6 seconds
             this.scheduleReminder();
         }
     }
@@ -349,60 +395,68 @@ class VoooPWAInstaller {
     }
 
     hideInstallButton() {
-        if (this.installButton && this.installButton.parentNode) {
+        if (this.installButton) {
             this.installButton.style.opacity = '0';
-            this.installButton.style.transform = 'translate(-50%, -50%) scale(0.9)';
             setTimeout(() => {
-                if (this.installButton.parentNode) {
+                if (this.installButton && this.installButton.parentNode) {
                     this.installButton.parentNode.removeChild(this.installButton);
+                    this.installButton = null;
+                    this.hasShownPrompt = false;
                 }
-                this.installButton = null;
-                this.hasShownPrompt = false;
             }, 300);
         }
     }
 
     async installPWA() {
         if (!this.deferredPrompt) {
-            this.showManualInstructions();
-            return;
-        }
-        
-        try {
-            this.deferredPrompt.prompt();
-            const choiceResult = await this.deferredPrompt.userChoice;
+            console.log('Vooo AI PWA: No install prompt available');
             
-            if (choiceResult.outcome === 'accepted') {
-                console.log('Vooo AI: User accepted install');
-                localStorage.removeItem('vooo_pwa_declined'); // Clear declined history
+            // Show platform-specific instructions
+            if (this.isIOS && this.isSafari) {
+                this.showIOSInstallHint();
+            } else if (!this.isIOS) {
+                this.showAndroidInstructions();
             } else {
-                localStorage.setItem('vooo_pwa_declined', Date.now());
-                // Schedule next reminder
-                this.scheduleReminder();
+                this.showManualInstructions();
             }
             
+            this.hideInstallButton();
+            return;
+        }
+
+        try {
+            this.deferredPrompt.prompt();
+            const { outcome } = await this.deferredPrompt.userChoice;
+            console.log(`Vooo AI PWA: User choice: ${outcome}`);
+
+            if (outcome === 'accepted') {
+                console.log('Vooo AI PWA: User accepted the install prompt');
+                localStorage.setItem('pwa_installed', 'true');
+                this.clearReminderTimer();
+            } else {
+                console.log('Vooo AI PWA: User dismissed the install prompt');
+                localStorage.setItem('vooo_pwa_declined', Date.now());
+                this.scheduleReminder();
+            }
+
             this.deferredPrompt = null;
             this.hideInstallButton();
         } catch (error) {
-            console.error('Vooo AI install error:', error);
-            this.showManualInstructions();
+            console.error('Vooo AI PWA: Error showing install prompt', error);
+            this.hideInstallButton();
         }
     }
 
     showIOSInstallHint() {
-        if (document.getElementById('vooo-ios-install-hint') || this.isPWAInstalled()) return;
-        
         const hint = document.createElement('div');
-        hint.id = 'vooo-ios-install-hint';
+        hint.id = 'vooo-ios-hint';
         hint.innerHTML = `
             <div style="
                 background: linear-gradient(135deg, #0D47A1, #4361ee);
                 color: white;
                 padding: 20px;
                 border-radius: 15px;
-                margin: 0;
                 width: 280px;
-                box-shadow: 0 4px 25px rgba(0,0,0,0.3);
                 text-align: center;
                 position: relative;
             ">
