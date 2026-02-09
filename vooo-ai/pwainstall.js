@@ -697,3 +697,11 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Vooo AI PWA installer initialized');
     new VoooPWAInstaller();
 });
+// Ensure the Service Worker is registered to the correct subfolder
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/vooo-ai/sw.js') // Point to the new subfolder
+            .then(reg => console.log('PWA: Service Worker registered', reg))
+            .catch(err => console.log('PWA: Service Worker failed', err));
+    });
+}
