@@ -700,8 +700,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // Ensure the Service Worker is registered to the correct subfolder
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/vooo-ai/sw.js') // Point to the new subfolder
-            .then(reg => console.log('PWA: Service Worker registered', reg))
-            .catch(err => console.log('PWA: Service Worker failed', err));
+        // You MUST include the scope: '/vooo-ai/' for subfolders
+        navigator.serviceWorker.register('/vooo-ai/sw.js', { scope: '/vooo-ai/' })
+            .then(reg => console.log('PWA: Service Worker Registered for /vooo-ai/'))
+            .catch(err => console.error('PWA: Service Worker Failed', err));
     });
 }
