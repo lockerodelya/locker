@@ -34,7 +34,7 @@ class VoooPWAInstaller {
         // Listen for app installed
         window.addEventListener('appinstalled', () => {
             console.log('Vooo AI PWA: App installed successfully');
-            localStorage.setItem('vooo_pwa_installed', 'true');
+            localStorage.setItem('pwa_installed', 'true');
             this.clearReminderTimer();
             this.hideInstallButton();
         });
@@ -79,7 +79,7 @@ class VoooPWAInstaller {
     isPWAInstalled() {
         // Check multiple indicators
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-        const isInstalled = localStorage.getItem('vooo_pwa_installed') === 'true';
+        const isInstalled = localStorage.getItem('pwa_installed') === 'true';
         
         if (isStandalone || isInstalled) {
             console.log('Vooo AI PWA: Already installed or in standalone mode');
