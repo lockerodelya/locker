@@ -1,0 +1,148 @@
+{
+  "puzzle_type": "beginner_math",
+  "display_name": "🧒 Beginner Math",
+  "templates": [
+    {
+      "template_id": "BEG_ADD_01",
+      "pattern": "[A] + [B] = ?",
+      "variables": {
+        "A": {"min": 1, "max": 10},
+        "B": {"min": 1, "max": 10}
+      },
+      "calculation": "A + B",
+      "explanation": "[A] plus [B] equals [RESULT]."
+    },
+    {
+      "template_id": "BEG_SUB_01",
+      "pattern": "[A] - [B] = ?",
+      "variables": {
+        "A": {"min": 2, "max": 10},
+        "B": {"min": 1, "max": "A-1"}
+      },
+      "calculation": "A - B",
+      "explanation": "[A] minus [B] equals [RESULT]."
+    },
+    {
+      "template_id": "BEG_MISS_01",
+      "pattern": "[A] + ? = [C]",
+      "variables": {
+        "A": {"min": 1, "max": 8},
+        "C": {"min": "A+1", "max": 10}
+      },
+      "calculation": "C - A",
+      "explanation": "? = [C] - [A] = [RESULT]"
+    },
+    {
+      "template_id": "BEG_MISS_02",
+      "pattern": "? - [B] = [C]",
+      "variables": {
+        "B": {"min": 1, "max": 5},
+        "C": {"min": 1, "max": 5}
+      },
+      "calculation": "B + C",
+      "explanation": "? = [B] + [C] = [RESULT]"
+    },
+    {
+      "template_id": "BEG_BONDS_01",
+      "pattern": "[A] + ? = 10",
+      "variables": {
+        "A": {"min": 1, "max": 9}
+      },
+      "calculation": "10 - A",
+      "explanation": "10 - [A] = [RESULT]"
+    },
+    {
+      "template_id": "BEG_COMP_01",
+      "pattern": "[A] ? [B]",
+      "variables": {
+        "A": {"min": 1, "max": 20},
+        "B": {"min": 1, "max": 20}
+      },
+      "calculation": "compare(A, B)",
+      "answer_type": "comparison_operator",
+      "options": ["<", "=", ">"],
+      "explanation": "[A] [RESULT] [B]"
+    },
+    {
+      "template_id": "BEG_SKIP_01",
+      "pattern": "Count by [STEP]: [START], ?, [START+2*STEP], [START+3*STEP]",
+      "variables": {
+        "START": {"min": 0, "max": 10},
+        "STEP": {"values": [2, 3, 5, 10]}
+      },
+      "calculation": "START + STEP",
+      "explanation": "[START] + [STEP] = [RESULT]"
+    },
+    {
+      "template_id": "BEG_WORD_01",
+      "patterns": [
+        "I have [A] apples. I get [B] more. How many total?",
+        "There are [A] birds. [B] fly away. How many left?"
+      ],
+      "variables": {
+        "A": {"min": 1, "max": 10},
+        "B": {"min": 1, "max": 5},
+        "OPERATION": {"values": ["add", "subtract"]}
+      },
+      "calculation": "OPERATION == 'add' ? A + B : A - B",
+      "explanation": "[A] [OPERATION_TEXT] [B] = [RESULT]"
+    },
+    {
+      "template_id": "BEG_TIME_01",
+      "pattern": "What time is it?",
+      "image": "clock_[HOUR]_[MINUTE].png",
+      "variables": {
+        "HOUR": {"min": 1, "max": 12},
+        "MINUTE": {"values": [0, 15, 30, 45]}
+      },
+      "calculation": "format_time(HOUR, MINUTE)",
+      "answer_type": "time_input"
+    },
+    {
+      "template_id": "BEG_MONEY_01",
+      "pattern": "💰 + 💰💰 = ? cents",
+      "variables": {
+        "COIN_A": {"values": [1, 5, 10]},
+        "COUNT_A": {"min": 1, "max": 3},
+        "COIN_B": {"values": [1, 5, 10]},
+        "COUNT_B": {"min": 1, "max": 3}
+      },
+      "calculation": "(COIN_A * COUNT_A) + (COIN_B * COUNT_B)",
+      "explanation": "[COUNT_A] of [COIN_A]¢ + [COUNT_B] of [COIN_B]¢ = [RESULT]¢"
+    },
+    {
+      "template_id": "BEG_DOUBLE_01",
+      "pattern": "Double of [A] is ?",
+      "variables": {
+        "A": {"min": 1, "max": 10}
+      },
+      "calculation": "A * 2",
+      "explanation": "2 × [A] = [RESULT]"
+    },
+    {
+      "template_id": "BEG_HALF_01",
+      "pattern": "Half of [A] is ?",
+      "variables": {
+        "A": {"values": [2, 4, 6, 8, 10]}
+      },
+      "calculation": "A / 2",
+      "explanation": "[A] ÷ 2 = [RESULT]"
+    },
+    {
+      "template_id": "BEG_ORDER_01",
+      "pattern": "Put in order: [A], [B], [C]",
+      "variables": {
+        "A": {"min": 1, "max": 20},
+        "B": {"min": 1, "max": 20},
+        "C": {"min": 1, "max": 20}
+      },
+      "calculation": "sort([A, B, C])",
+      "answer_type": "ordering",
+      "explanation": "From smallest to largest: [SORTED]"
+    }
+  ],
+  "responses": {
+    "correct": ["Great! 🎯", "Perfect! ✅", "You're learning fast! 🚀", "Excellent! 🌟"],
+    "incorrect": ["Close! Try again 🔄", "Check your work 📝", "Think carefully 🤔", "Almost there! 💪"]
+  }
+}

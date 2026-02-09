@@ -1,0 +1,232 @@
+{
+  "puzzle_type": "advanced_math",
+  "display_name": "🚀 Advanced Math",
+  "templates": [
+    {
+      "template_id": "ADV_QUAD_01",
+      "pattern": "Solve: x² + [B]x + [C] = 0. x = ?",
+      "variables": {
+        "B": {"min": -10, "max": 10},
+        "C": {"min": -20, "max": 20}
+      },
+      "constraints": ["has_rational_solution(B, C)"],
+      "calculation": "solve_quadratic(1, B, C)",
+      "answer_type": "two_solutions",
+      "explanation": "x = [-B ± √(B²-4C)]/2 = [RESULT]"
+    },
+    {
+      "template_id": "ADV_SIMUL_01",
+      "pattern": "[A]x + [B]y = [C], [D]x + [E]y = [F]. x = ?",
+      "variables": {
+        "A": {"min": 1, "max": 5},
+        "B": {"min": 1, "max": 5},
+        "D": {"min": 1, "max": 5},
+        "E": {"min": 1, "max": 5},
+        "C": {"min": 10, "max": 30},
+        "F": {"min": 10, "max": 30}
+      },
+      "constraints": ["A*E != B*D"],
+      "calculation": "solve_simultaneous_x(A, B, C, D, E, F)",
+      "explanation": "Using elimination/substitution: x = [RESULT]"
+    },
+    {
+      "template_id": "ADV_EXP_01",
+      "pattern": "[A]^[B] = ?",
+      "variables": {
+        "A": {"min": 2, "max": 6},
+        "B": {"min": 2, "max": 5}
+      },
+      "calculation": "A ** B",
+      "explanation": "[A] to the power [B] = [RESULT]"
+    },
+    {
+      "template_id": "ADV_EXP_02",
+      "pattern": "[A]^[B] × [A]^[C] = [A]^?",
+      "variables": {
+        "A": {"values": [2, 3, 5]},
+        "B": {"min": 2, "max": 4},
+        "C": {"min": 2, "max": 4}
+      },
+      "calculation": "B + C",
+      "explanation": "[A]^[B] × [A]^[C] = [A]^([B]+[C]) = [A]^[RESULT]"
+    },
+    {
+      "template_id": "ADV_ROOT_01",
+      "pattern": "√[A] × √[B] = √?",
+      "variables": {
+        "A": {"values": [4, 9, 16, 25, 36, 49, 64, 81]},
+        "B": {"values": [4, 9, 16, 25, 36, 49, 64, 81]}
+      },
+      "calculation": "A * B",
+      "explanation": "√[A] × √[B] = √([A]×[B]) = √[RESULT]"
+    },
+    {
+      "template_id": "ADV_LINEAR_01",
+      "pattern": "Slope of line through ([X1],[Y1]) and ([X2],[Y2]) = ?",
+      "variables": {
+        "X1": {"min": -5, "max": 5},
+        "Y1": {"min": -5, "max": 5},
+        "X2": {"min": -5, "max": 5},
+        "Y2": {"min": -5, "max": 5}
+      },
+      "constraints": ["X1 != X2"],
+      "calculation": "(Y2 - Y1) / (X2 - X1)",
+      "explanation": "Slope = (y₂-y₁)/(x₂-x₁) = ([Y2]-[Y1])/([X2]-[X1]) = [RESULT]"
+    },
+    {
+      "template_id": "ADV_INEQ_01",
+      "pattern": "Solve: [A]x + [B] > [C]. x > ?",
+      "variables": {
+        "A": {"min": 2, "max": 10},
+        "B": {"min": -10, "max": 10},
+        "C": {"min": 5, "max": 30}
+      },
+      "calculation": "(C - B) / A",
+      "explanation": "[A]x > [C] - [B], so x > ([C]-[B])/[A] = [RESULT]"
+    },
+    {
+      "template_id": "ADV_PROB_01",
+      "pattern": "Probability: [F] favorable, [T] total. P = ?",
+      "variables": {
+        "F": {"min": 1, "max": 10},
+        "T": {"min": "F+5", "max": 20}
+      },
+      "calculation": "F / T",
+      "explanation": "P = favorable/total = [F]/[T] = [RESULT]"
+    },
+    {
+      "template_id": "ADV_PROB_02",
+      "pattern": "Dice: sum of [A] and [B] = ? Probability = ?",
+      "variables": {
+        "A": {"min": 1, "max": 6},
+        "B": {"min": 1, "max": 6}
+      },
+      "calculation": "A + B",
+      "probability": "count_favorable(A+B)/36",
+      "answer_type": "value_with_probability",
+      "explanation": "Sum = [A+B], Probability = [FAVORABLE]/36 = [PROB]"
+    },
+    {
+      "template_id": "ADV_STATS_01",
+      "pattern": "Mean of [A], [B], [C], [D], [E] = ?",
+      "variables": {
+        "A": {"min": 10, "max": 50},
+        "B": {"min": 10, "max": 50},
+        "C": {"min": 10, "max": 50},
+        "D": {"min": 10, "max": 50},
+        "E": {"min": 10, "max": 50}
+      },
+      "calculation": "(A + B + C + D + E) / 5",
+      "explanation": "Mean = (sum)/5 = ([A]+[B]+[C]+[D]+[E])/5 = [RESULT]"
+    },
+    {
+      "template_id": "ADV_STATS_02",
+      "pattern": "Median of [A], [B], [C], [D], [E] = ?",
+      "variables": {
+        "A": {"min": 10, "max": 50},
+        "B": {"min": 10, "max": 50},
+        "C": {"min": 10, "max": 50},
+        "D": {"min": 10, "max": 50},
+        "E": {"min": 10, "max": 50}
+      },
+      "calculation": "median([A, B, C, D, E])",
+      "explanation": "Sorted: [SORTED], Median = [RESULT]"
+    },
+    {
+      "template_id": "ADV_TRIG_01",
+      "pattern": "sin([ANGLE]°) = ?",
+      "variables": {
+        "ANGLE": {"values": [0, 30, 45, 60, 90, 120, 135, 150, 180]}
+      },
+      "calculation": "sin(radians(ANGLE))",
+      "explanation": "sin([ANGLE]°) = [RESULT]"
+    },
+    {
+      "template_id": "ADV_TRIG_02",
+      "pattern": "cos([ANGLE]°) = ?",
+      "variables": {
+        "ANGLE": {"values": [0, 30, 45, 60, 90, 120, 135, 150, 180]}
+      },
+      "calculation": "cos(radians(ANGLE))",
+      "explanation": "cos([ANGLE]°) = [RESULT]"
+    },
+    {
+      "template_id": "ADV_TRIG_03",
+      "pattern": "tan([ANGLE]°) = ?",
+      "variables": {
+        "ANGLE": {"values": [0, 30, 45, 60, 120, 135, 150, 180]}
+      },
+      "calculation": "tan(radians(ANGLE))",
+      "explanation": "tan([ANGLE]°) = [RESULT]"
+    },
+    {
+      "template_id": "ADV_TRIG_04",
+      "pattern": "Right triangle: opposite = [O], hypotenuse = [H]. sinθ = ?",
+      "variables": {
+        "O": {"min": 3, "max": 12},
+        "H": {"min": "O+1", "max": 15}
+      },
+      "constraints": ["H > O"],
+      "calculation": "O / H",
+      "explanation": "sinθ = opposite/hypotenuse = [O]/[H] = [RESULT]"
+    },
+    {
+      "template_id": "ADV_FUNC_01",
+      "pattern": "f(x) = [A]x + [B]. f([C]) = ?",
+      "variables": {
+        "A": {"min": -5, "max": 5},
+        "B": {"min": -10, "max": 10},
+        "C": {"min": -5, "max": 5}
+      },
+      "calculation": "A * C + B",
+      "explanation": "f([C]) = [A]×[C] + [B] = [RESULT]"
+    },
+    {
+      "template_id": "ADV_FUNC_02",
+      "pattern": "f(x) = x² + [A]x + [B]. f([C]) = ?",
+      "variables": {
+        "A": {"min": -5, "max": 5},
+        "B": {"min": -10, "max": 10},
+        "C": {"min": -5, "max": 5}
+      },
+      "calculation": "C*C + A*C + B",
+      "explanation": "f([C]) = [C]² + [A]×[C] + [B] = [RESULT]"
+    },
+    {
+      "template_id": "ADV_COMPLEX_01",
+      "pattern": "([A] + [B]i) + ([C] + [D]i) = ? + ?i",
+      "variables": {
+        "A": {"min": -5, "max": 5},
+        "B": {"min": -5, "max": 5},
+        "C": {"min": -5, "max": 5},
+        "D": {"min": -5, "max": 5}
+      },
+      "calculation": "(A + C, B + D)",
+      "answer_type": "complex_number",
+      "explanation": "Real: [A]+[C]=[A+C], Imaginary: [B]+[D]=[B+D]"
+    },
+    {
+      "template_id": "ADV_LOGS_01",
+      "pattern": "log₂([A]) = ?",
+      "variables": {
+        "A": {"values": [2, 4, 8, 16, 32, 64, 128, 256]}
+      },
+      "calculation": "log2(A)",
+      "explanation": "2^[RESULT] = [A], so log₂([A]) = [RESULT]"
+    },
+    {
+      "template_id": "ADV_LOGS_02",
+      "pattern": "log([A]) + log([B]) = log(?)",
+      "variables": {
+        "A": {"values": [10, 100, 1000, 10000]},
+        "B": {"values": [10, 100, 1000, 10000]}
+      },
+      "calculation": "A * B",
+      "explanation": "log([A]) + log([B]) = log([A]×[B]) = log([RESULT])"
+    }
+  ],
+  "responses": {
+    "correct": ["Mathematical brilliance! 🌟", "Perfect derivation! ✅", "You've mastered it! 🏆", "Flawless logic! 💎"],
+    "incorrect": ["Check the formula 📐", "Review the method 📚", "Try systematic approach 🔍", "Close! Refine your solution ✨"]
+  }
+}

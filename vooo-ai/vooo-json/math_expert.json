@@ -1,0 +1,430 @@
+{
+  "puzzle_type": "math_expert",
+  "display_name": "🎓 Expert Math (16-18 yrs)",
+  "templates": [
+    {
+      "template_id": "EXP_DER_01",
+      "pattern": "Find the derivative: f(x) = [A]x³ + [B]x² + [C]x + [D]",
+      "variables": {
+        "A": {"min": 1, "max": 10},
+        "B": {"min": -10, "max": 10},
+        "C": {"min": -20, "max": 20},
+        "D": {"min": -50, "max": 50}
+      },
+      "calculation": "3*A*x² + 2*B*x + C",
+      "explanation": "f'(x) = 3×[A]x² + 2×[B]x + [C]"
+    },
+    {
+      "template_id": "EXP_DER_02",
+      "pattern": "Differentiate: f(x) = sin([A]x) + cos([B]x)",
+      "variables": {
+        "A": {"min": 1, "max": 6},
+        "B": {"min": 1, "max": 6}
+      },
+      "calculation": "A*cos(A*x) - B*sin(B*x)",
+      "explanation": "f'(x) = [A]cos([A]x) - [B]sin([B]x)"
+    },
+    {
+      "template_id": "EXP_DER_03",
+      "pattern": "Find f'(x) where f(x) = e^([A]x) × ln([B]x)",
+      "variables": {
+        "A": {"min": 1, "max": 5},
+        "B": {"min": 2, "max": 10}
+      },
+      "calculation": "A*e^(A*x)*ln(B*x) + e^(A*x)/x",
+      "explanation": "Using product rule: f'(x) = [A]e^([A]x)ln([B]x) + e^([A]x)/x"
+    },
+    {
+      "template_id": "EXP_INT_01",
+      "pattern": "∫([A]x² + [B]x + [C]) dx = ?",
+      "variables": {
+        "A": {"min": 1, "max": 8},
+        "B": {"min": -8, "max": 8},
+        "C": {"min": -10, "max": 10}
+      },
+      "calculation": "(A/3)x³ + (B/2)x² + C*x + K",
+      "explanation": "∫[A]x² dx = ([A]/3)x³, ∫[B]x dx = ([B]/2)x², ∫[C] dx = [C]x"
+    },
+    {
+      "template_id": "EXP_INT_02",
+      "pattern": "∫ from 0 to [A] of (x² + [B]x) dx = ?",
+      "variables": {
+        "A": {"min": 1, "max": 10},
+        "B": {"min": 1, "max": 8}
+      },
+      "calculation": "(A^3/3) + (B*A^2/2)",
+      "explanation": "∫₀^[A] (x²+[B]x)dx = [x³/3 + [B]x²/2]₀^[A] = ([A]³/3) + ([B][A]²/2)"
+    },
+    {
+      "template_id": "EXP_INT_03",
+      "pattern": "∫([A]e^([B]x) + [C]) dx = ?",
+      "variables": {
+        "A": {"min": 1, "max": 6},
+        "B": {"min": 1, "max": 4},
+        "C": {"min": -5, "max": 5}
+      },
+      "calculation": "(A/B)*e^(B*x) + C*x + K",
+      "explanation": "∫[A]e^([B]x)dx = ([A]/[B])e^([B]x), ∫[C]dx = [C]x"
+    },
+    {
+      "template_id": "EXP_LOG_01",
+      "pattern": "Solve: log_[A]([B]) + log_[A]([C]) = ?",
+      "variables": {
+        "A": {"min": 2, "max": 10},
+        "B": {"min": 1, "max": 100},
+        "C": {"min": 1, "max": 100}
+      },
+      "constraints": ["B*C <= 1000"],
+      "calculation": "log(A, B*C)",
+      "explanation": "log_[A]([B]) + log_[A]([C]) = log_[A]([B]×[C]) = log_[A]([B*C])"
+    },
+    {
+      "template_id": "EXP_LOG_02",
+      "pattern": "Simplify: ln(e^[A] × [B]) = ?",
+      "variables": {
+        "A": {"min": 1, "max": 8},
+        "B": {"min": 1, "max": 50}
+      },
+      "calculation": "A + ln(B)",
+      "explanation": "ln(e^[A]×[B]) = ln(e^[A]) + ln([B]) = [A] + ln([B])"
+    },
+    {
+      "template_id": "EXP_LOG_03",
+      "pattern": "Solve for x: [A]^(x+[B]) = [C]",
+      "variables": {
+        "A": {"min": 2, "max": 5},
+        "B": {"min": 1, "max": 4},
+        "C": {"min": 4, "max": 625}
+      },
+      "constraints": ["C == A**(round(log(A, C)))"],
+      "calculation": "log(A, C) - B",
+      "explanation": "[A]^(x+[B]) = [C] ⇒ x+[B] = log_[A]([C]) ⇒ x = log_[A]([C]) - [B]"
+    },
+    {
+      "template_id": "EXP_COMP_01",
+      "pattern": "([A] + [B]i) + ([C] + [D]i) = ?",
+      "variables": {
+        "A": {"min": -10, "max": 20},
+        "B": {"min": -10, "max": 20},
+        "C": {"min": -10, "max": 20},
+        "D": {"min": -10, "max": 20}
+      },
+      "calculation": "(A+C) + (B+D)i",
+      "explanation": "Real: [A]+[C]=[A+C], Imaginary: [B]i+[D]i=[B+D]i"
+    },
+    {
+      "template_id": "EXP_COMP_02",
+      "pattern": "([A] + [B]i) × ([C] + [D]i) = ?",
+      "variables": {
+        "A": {"min": -6, "max": 10},
+        "B": {"min": -6, "max": 10},
+        "C": {"min": -6, "max": 10},
+        "D": {"min": -6, "max": 10}
+      },
+      "calculation": "(A*C - B*D) + (A*D + B*C)i",
+      "explanation": "([A][C]-[B][D]) + ([A][D]+[B][C])i = [A*C-B*D] + [A*D+B*C]i"
+    },
+    {
+      "template_id": "EXP_COMP_03",
+      "pattern": "|[A] + [B]i| = ? (magnitude)",
+      "variables": {
+        "A": {"min": -12, "max": 12},
+        "B": {"min": -12, "max": 12}
+      },
+      "calculation": "sqrt(A^2 + B^2)",
+      "explanation": "|a+bi| = √(a²+b²) = √([A]²+[B]²) = √([A^2+B^2])"
+    },
+    {
+      "template_id": "EXP_MAT_01",
+      "pattern": "[ [A], [B] ] + [ [C], [D] ] = ?\n[ [E], [F] ]   [ [G], [H] ]",
+      "variables": {
+        "A": {"min": 1, "max": 10},
+        "B": {"min": 1, "max": 10},
+        "C": {"min": 1, "max": 10},
+        "D": {"min": 1, "max": 10},
+        "E": {"min": 1, "max": 10},
+        "F": {"min": 1, "max": 10},
+        "G": {"min": 1, "max": 10},
+        "H": {"min": 1, "max": 10}
+      },
+      "calculation": "[[A+C, B+D], [E+G, F+H]]",
+      "explanation": "Matrix addition: [[A+C, B+D], [E+G, F+H]]"
+    },
+    {
+      "template_id": "EXP_MAT_02",
+      "pattern": "[ [A], [B] ] × [ [C], [D] ] = ?\n[ [E], [F] ]   [ [G], [H] ]",
+      "variables": {
+        "A": {"min": 1, "max": 5},
+        "B": {"min": 1, "max": 5},
+        "C": {"min": 1, "max": 5},
+        "D": {"min": 1, "max": 5},
+        "E": {"min": 1, "max": 5},
+        "F": {"min": 1, "max": 5},
+        "G": {"min": 1, "max": 5},
+        "H": {"min": 1, "max": 5}
+      },
+      "calculation": "[[A*C+B*G, A*D+B*H], [E*C+F*G, E*D+F*H]]",
+      "explanation": "Matrix multiplication: element (1,1)=[A][C]+[B][G]=[A*C+B*G], etc."
+    },
+    {
+      "template_id": "EXP_MAT_03",
+      "pattern": "det( [ [A], [B] ] ) = ?\n        [ [C], [D] ]",
+      "variables": {
+        "A": {"min": 1, "max": 12},
+        "B": {"min": 1, "max": 12},
+        "C": {"min": 1, "max": 12},
+        "D": {"min": 1, "max": 12}
+      },
+      "calculation": "A*D - B*C",
+      "explanation": "det = [A]×[D] - [B]×[C] = [A*D - B*C]"
+    },
+    {
+      "template_id": "EXP_SEQ_01",
+      "pattern": "Find the nth term: [A], [A+B], [A+2B], ...",
+      "variables": {
+        "A": {"min": 1, "max": 20},
+        "B": {"min": 2, "max": 10}
+      },
+      "calculation": "A + (n-1)*B",
+      "explanation": "Arithmetic sequence: a_n = a₁ + (n-1)d = [A] + (n-1)×[B]"
+    },
+    {
+      "template_id": "EXP_SEQ_02",
+      "pattern": "Sum of first [N] terms: [A] + [A+B] + [A+2B] + ...",
+      "variables": {
+        "A": {"min": 1, "max": 10},
+        "B": {"min": 2, "max": 8},
+        "N": {"min": 5, "max": 15}
+      },
+      "calculation": "(N/2)*(2*A + (N-1)*B)",
+      "explanation": "S_n = n/2 × (2a₁ + (n-1)d) = [N]/2 × (2×[A] + ([N]-1)×[B])"
+    },
+    {
+      "template_id": "EXP_SEQ_03",
+      "pattern": "Geometric sequence: [A], [A×R], [A×R²], ... 5th term?",
+      "variables": {
+        "A": {"min": 2, "max": 8},
+        "R": {"min": 2, "max": 5}
+      },
+      "calculation": "A * R**4",
+      "explanation": "a₅ = a₁ × r⁴ = [A] × [R]⁴ = [A] × [R^4]"
+    },
+    {
+      "template_id": "EXP_3DGEO_01",
+      "pattern": "Volume of sphere with radius r = [R]",
+      "variables": {
+        "R": {"min": 1, "max": 10}
+      },
+      "calculation": "(4/3)*pi*R**3",
+      "explanation": "V = (4/3)πr³ = (4/3)π×[R]³ ≈ [RESULT]"
+    },
+    {
+      "template_id": "EXP_3DGEO_02",
+      "pattern": "Distance between (0,0,0) and ([X],[Y],[Z])",
+      "variables": {
+        "X": {"min": 1, "max": 10},
+        "Y": {"min": 1, "max": 10},
+        "Z": {"min": 1, "max": 10}
+      },
+      "calculation": "sqrt(X**2 + Y**2 + Z**2)",
+      "explanation": "d = √(x²+y²+z²) = √([X]²+[Y]²+[Z]²) = √([X^2+Y^2+Z^2])"
+    },
+    {
+      "template_id": "EXP_3DGEO_03",
+      "pattern": "Surface area of cube with side [S]",
+      "variables": {
+        "S": {"min": 2, "max": 12}
+      },
+      "calculation": "6*S**2",
+      "explanation": "SA = 6s² = 6×[S]² = [6*S^2]"
+    },
+    {
+      "template_id": "EXP_VEC_01",
+      "pattern": "v = ([A],[B],[C]), w = ([D],[E],[F]). v + w = ?",
+      "variables": {
+        "A": {"min": -8, "max": 12},
+        "B": {"min": -8, "max": 12},
+        "C": {"min": -8, "max": 12},
+        "D": {"min": -8, "max": 12},
+        "E": {"min": -8, "max": 12},
+        "F": {"min": -8, "max": 12}
+      },
+      "calculation": "(A+D, B+E, C+F)",
+      "explanation": "v + w = ([A]+[D], [B]+[E], [C]+[F]) = ([A+D], [B+E], [C+F])"
+    },
+    {
+      "template_id": "EXP_VEC_02",
+      "pattern": "Dot product: ([A],[B]) · ([C],[D]) = ?",
+      "variables": {
+        "A": {"min": -6, "max": 10},
+        "B": {"min": -6, "max": 10},
+        "C": {"min": -6, "max": 10},
+        "D": {"min": -6, "max": 10}
+      },
+      "calculation": "A*C + B*D",
+      "explanation": "a·b = [A]×[C] + [B]×[D] = [A*C + B*D]"
+    },
+    {
+      "template_id": "EXP_VEC_03",
+      "pattern": "Magnitude of vector ([A],[B],[C])",
+      "variables": {
+        "A": {"min": -5, "max": 10},
+        "B": {"min": -5, "max": 10},
+        "C": {"min": -5, "max": 10}
+      },
+      "calculation": "sqrt(A**2 + B**2 + C**2)",
+      "explanation": "|v| = √(a²+b²+c²) = √([A]²+[B]²+[C]²) = √([A^2+B^2+C^2])"
+    },
+    {
+      "template_id": "EXP_ALG_01",
+      "pattern": "Solve: [A]x² + [B]x + [C] = 0",
+      "variables": {
+        "A": {"min": 1, "max": 6},
+        "B": {"min": -10, "max": 10},
+        "C": {"min": -12, "max": 12}
+      },
+      "constraints": ["B**2 - 4*A*C >= 0"],
+      "calculation": "(-B ± sqrt(B**2 - 4*A*C)) / (2*A)",
+      "explanation": "Quadratic formula: x = ( -[B] ± √([B]²-4×[A]×[C]) ) / (2×[A])"
+    },
+    {
+      "template_id": "EXP_ALG_02",
+      "pattern": "Simplify: ([A]x^[B])^[C]",
+      "variables": {
+        "A": {"min": 2, "max": 6},
+        "B": {"min": 2, "max": 5},
+        "C": {"min": 2, "max": 4}
+      },
+      "calculation": "A**C * x**(B*C)",
+      "explanation": "([A]x^[B])^[C] = [A]^[C] × x^([B]×[C]) = [A^C]x^[B*C]"
+    },
+    {
+      "template_id": "EXP_ALG_03",
+      "pattern": "Factor: [A]x² + [B]x + [C]",
+      "variables": {
+        "A": {"min": 1, "max": 6},
+        "B": {"min": 5, "max": 20},
+        "C": {"min": 4, "max": 24}
+      },
+      "constraints": ["sqrt(B**2 - 4*A*C) % 1 == 0"],
+      "calculation": "A*x^2 + B*x + C",
+      "explanation": "Find two numbers that multiply to [A]×[C] and add to [B]"
+    },
+    {
+      "template_id": "EXP_CALC_01",
+      "pattern": "Limit: lim (x→[A]) of (x² - [A]²)/(x - [A])",
+      "variables": {
+        "A": {"min": 2, "max": 10}
+      },
+      "calculation": "2*A",
+      "explanation": "Factor: (x-[A])(x+[A])/(x-[A]) = x+[A], limit = [A]+[A] = [2*A]"
+    },
+    {
+      "template_id": "EXP_CALC_02",
+      "pattern": "Find critical points: f(x) = x³ - [A]x² + [B]x",
+      "variables": {
+        "A": {"min": 3, "max": 8},
+        "B": {"min": 2, "max": 12}
+      },
+      "calculation": "3*x^2 - 2*A*x + B",
+      "explanation": "f'(x) = 3x² - 2[A]x + [B]. Set = 0 to find critical points."
+    },
+    {
+      "template_id": "EXP_WORD_01",
+      "pattern": "Optimize: Rectangle area with perimeter [P]. Max area?",
+      "variables": {
+        "P": {"min": 20, "max": 100, "step": 4}
+      },
+      "calculation": "(P/4)**2",
+      "explanation": "For fixed perimeter, square maximizes area. Side = [P]/4, area = ([P]/4)² = [RESULT]"
+    },
+    {
+      "template_id": "EXP_WORD_02",
+      "pattern": "Rate: Water fills at [A] m³/min. Time to fill [V] m³ sphere?",
+      "variables": {
+        "A": {"min": 2, "max": 10},
+        "V": {"min": 50, "max": 500, "step": 50}
+      },
+      "calculation": "V/A",
+      "explanation": "Time = Volume ÷ Rate = [V] ÷ [A] = [V/A] minutes"
+    },
+    {
+      "template_id": "EXP_FUNC_01",
+      "pattern": "f(g(x)) where f(x)=[A]x+[B], g(x)=[C]x²",
+      "variables": {
+        "A": {"min": 2, "max": 8},
+        "B": {"min": 1, "max": 10},
+        "C": {"min": 1, "max": 5}
+      },
+      "calculation": "A*C*x**2 + B",
+      "explanation": "f(g(x)) = [A]×([C]x²) + [B] = [A*C]x² + [B]"
+    },
+    {
+      "template_id": "EXP_FUNC_02",
+      "pattern": "Inverse of f(x) = [A]x + [B]",
+      "variables": {
+        "A": {"min": 2, "max": 8},
+        "B": {"min": -6, "max": 6}
+      },
+      "calculation": "(x - B)/A",
+      "explanation": "y = [A]x + [B] ⇒ x = (y - [B])/[A] ⇒ f⁻¹(x) = (x - [B])/[A]"
+    },
+    {
+      "template_id": "EXP_SERIES_01",
+      "pattern": "Sum: Σ (n=1 to [N]) of [A]n",
+      "variables": {
+        "A": {"min": 1, "max": 5},
+        "N": {"min": 5, "max": 15}
+      },
+      "calculation": "A * N * (N+1) / 2",
+      "explanation": "Σ[A]n = [A] × Σn = [A] × [N]([N]+1)/2 = [A*N*(N+1)/2]"
+    },
+    {
+      "template_id": "EXP_SERIES_02",
+      "pattern": "Infinite geometric: [A] + [A]/[R] + [A]/[R]² + ... (|1/R|<1)",
+      "variables": {
+        "A": {"min": 10, "max": 50},
+        "R": {"min": 2, "max": 5}
+      },
+      "calculation": "A / (1 - 1/R)",
+      "explanation": "S = a/(1-r) = [A]/(1-1/[R]) = [A]/(([R]-1)/[R]) = [A*R/(R-1)]"
+    },
+    {
+      "template_id": "EXP_TRIG_01",
+      "pattern": "sin²θ + cos²θ = ?",
+      "variables": {},
+      "calculation": "1",
+      "explanation": "Fundamental identity: sin²θ + cos²θ = 1 for all θ"
+    },
+    {
+      "template_id": "EXP_TRIG_02",
+      "pattern": "Simplify: tan([A]°) × cot([A]°)",
+      "variables": {
+        "A": {"min": 10, "max": 80}
+      },
+      "calculation": "1",
+      "explanation": "tanθ × cotθ = 1 for all θ ≠ 90°"
+    },
+    {
+      "template_id": "EXP_COMPLEX_04",
+      "pattern": "([A]+[B]i) / ([C]+[D]i), simplify",
+      "variables": {
+        "A": {"min": 1, "max": 10},
+        "B": {"min": 1, "max": 10},
+        "C": {"min": 1, "max": 5},
+        "D": {"min": 1, "max": 5}
+      },
+      "calculation": "((A*C+B*D)/(C**2+D**2)) + ((B*C-A*D)/(C**2+D**2))i",
+      "explanation": "Multiply numerator and denominator by conjugate: = ([A*C+B*D]+[B*C-A*D]i)/([C]²+[D]²)"
+    },
+    {
+      "template_id": "EXP_PROB_01",
+      "pattern": "Probability: Roll two dice. Sum = [S]?",
+      "variables": {
+        "S": {"min": 2, "max": 12}
+      },
+      "calculation": "min(S-1, 13-S)/36",
+      "explanation": "Number of favorable outcomes: [min(S-1,13-S)]/36"
+    }
+  ]
+}

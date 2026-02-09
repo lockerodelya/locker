@@ -1,0 +1,170 @@
+{
+  "puzzle_type": "elementary_math",
+  "display_name": "📚 Elementary Math",
+  "templates": [
+    {
+      "template_id": "ELE_MULT_01",
+      "pattern": "[A] × [B] = ?",
+      "variables": {
+        "A": {"min": 2, "max": 12},
+        "B": {"min": 2, "max": 12}
+      },
+      "calculation": "A * B",
+      "explanation": "[A] times [B] equals [RESULT]."
+    },
+    {
+      "template_id": "ELE_DIV_01",
+      "pattern": "[A] ÷ [B] = ?",
+      "variables": {
+        "A": {"min": 4, "max": 144, "step": 1},
+        "B": {"min": 2, "max": 12}
+      },
+      "constraints": ["A % B == 0"],
+      "calculation": "A / B",
+      "explanation": "[A] divided by [B] equals [RESULT]."
+    },
+    {
+      "template_id": "ELE_DIVREM_01",
+      "pattern": "[A] ÷ [B] = ? remainder ?",
+      "variables": {
+        "A": {"min": 10, "max": 50},
+        "B": {"min": 3, "max": 12}
+      },
+      "constraints": ["A > B"],
+      "calculation": "floor(A / B)",
+      "remainder": "A % B",
+      "answer_type": "two_part",
+      "explanation": "[A] ÷ [B] = [QUOTIENT] R[REMAINDER]"
+    },
+    {
+      "template_id": "ELE_FRAC_01",
+      "pattern": "[A]/[B] + [C]/[B] = ?",
+      "variables": {
+        "A": {"min": 1, "max": 5},
+        "B": {"values": [2, 4, 8]},
+        "C": {"min": 1, "max": 5}
+      },
+      "constraints": ["A + C <= B"],
+      "calculation": "(A + C)/B",
+      "explanation": "[A]/[B] + [C]/[B] = [A+C]/[B] = [RESULT]"
+    },
+    {
+      "template_id": "ELE_FRAC_02",
+      "pattern": "[A]/[B] = ?/100",
+      "variables": {
+        "A": {"values": [1, 1, 2, 3, 4]},
+        "B": {"values": [2, 4, 5, 10, 20, 25, 50]}
+      },
+      "calculation": "(A * 100) / B",
+      "explanation": "[A]/[B] = [RESULT]%"
+    },
+    {
+      "template_id": "ELE_MONEY_01",
+      "pattern": "$[DOLLARS].[CENTS_A] + $[DOLLARS_B].[CENTS_B] = $?",
+      "variables": {
+        "DOLLARS": {"min": 1, "max": 10},
+        "DOLLARS_B": {"min": 1, "max": 10},
+        "CENTS_A": {"values": [25, 50, 75]},
+        "CENTS_B": {"values": [25, 50, 75]}
+      },
+      "calculation": "DOLLARS + DOLLARS_B + ((CENTS_A + CENTS_B) / 100)",
+      "explanation": "$[DOLLARS].[CENTS_A] + $[DOLLARS_B].[CENTS_B] = $[RESULT]"
+    },
+    {
+      "template_id": "ELE_MEASURE_01",
+      "pattern": "[A] cm + [B] mm = ? mm",
+      "variables": {
+        "A": {"min": 1, "max": 10},
+        "B": {"min": 1, "max": 9}
+      },
+      "calculation": "(A * 10) + B",
+      "explanation": "[A] cm = [A*10] mm, so total = [RESULT] mm"
+    },
+    {
+      "template_id": "ELE_PERIM_01",
+      "pattern": "Rectangle: length = [L] cm, width = [W] cm. Perimeter = ? cm",
+      "variables": {
+        "L": {"min": 3, "max": 12},
+        "W": {"min": 2, "max": 8}
+      },
+      "calculation": "2 * (L + W)",
+      "explanation": "Perimeter = 2 × (length + width) = 2 × ([L] + [W]) = [RESULT] cm"
+    },
+    {
+      "template_id": "ELE_AREA_01",
+      "pattern": "Rectangle: length = [L] cm, width = [W] cm. Area = ? cm²",
+      "variables": {
+        "L": {"min": 2, "max": 10},
+        "W": {"min": 2, "max": 10}
+      },
+      "calculation": "L * W",
+      "explanation": "Area = length × width = [L] × [W] = [RESULT] cm²"
+    },
+    {
+      "template_id": "ELE_ROMAN_01",
+      "pattern": "[ROMAN] = ?",
+      "variables": {
+        "ROMAN": {"values": ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"]}
+      },
+      "calculation": "roman_to_int(ROMAN)",
+      "explanation": "[ROMAN] in Roman numerals equals [RESULT]"
+    },
+    {
+      "template_id": "ELE_PATTERN_01",
+      "pattern": "Rule: Add [STEP]. [START], ?, [START+2*STEP], [START+3*STEP]",
+      "variables": {
+        "START": {"min": 1, "max": 20},
+        "STEP": {"min": 2, "max": 10}
+      },
+      "calculation": "START + STEP",
+      "explanation": "[START] + [STEP] = [RESULT]"
+    },
+    {
+      "template_id": "ELE_PATTERN_02",
+      "pattern": "Rule: Multiply by [FACTOR]. [START], ?, [START*FACTOR²]",
+      "variables": {
+        "START": {"values": [2, 3, 4, 5]},
+        "FACTOR": {"values": [2, 3]}
+      },
+      "calculation": "START * FACTOR",
+      "explanation": "[START] × [FACTOR] = [RESULT]"
+    },
+    {
+      "template_id": "ELE_ORDER_OPS_01",
+      "pattern": "[A] + [B] × [C] = ?",
+      "variables": {
+        "A": {"min": 1, "max": 20},
+        "B": {"min": 2, "max": 5},
+        "C": {"min": 2, "max": 5}
+      },
+      "calculation": "A + (B * C)",
+      "explanation": "First multiply: [B] × [C] = [B*C], then add [A]: [A] + [B*C] = [RESULT]"
+    },
+    {
+      "template_id": "ELE_ORDER_OPS_02",
+      "pattern": "([A] + [B]) × [C] = ?",
+      "variables": {
+        "A": {"min": 1, "max": 10},
+        "B": {"min": 1, "max": 10},
+        "C": {"min": 2, "max": 5}
+      },
+      "calculation": "(A + B) * C",
+      "explanation": "First add: [A] + [B] = [A+B], then multiply: [A+B] × [C] = [RESULT]"
+    },
+    {
+      "template_id": "ELE_TIME_01",
+      "pattern": "[HOUR]:[MINUTE] + [ADD_MIN] minutes = ?",
+      "variables": {
+        "HOUR": {"min": 1, "max": 11},
+        "MINUTE": {"values": [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]},
+        "ADD_MIN": {"min": 5, "max": 60, "step": 5}
+      },
+      "calculation": "add_minutes(HOUR, MINUTE, ADD_MIN)",
+      "answer_type": "time_output"
+    }
+  ],
+  "responses": {
+    "correct": ["Math Master! 🏆", "Perfect calculation! ✅", "You're getting it! 📈", "Excellent work! 🌟"],
+    "incorrect": ["Check the steps 🔄", "Review the rules 📘", "Think step by step 🧮", "Try again! 💪"]
+  }
+}

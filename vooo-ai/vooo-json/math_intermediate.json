@@ -1,0 +1,205 @@
+{
+  "puzzle_type": "intermediate_math",
+  "display_name": "🎯 Intermediate Math",
+  "templates": [
+    {
+      "template_id": "INT_OOP_01",
+      "pattern": "[A] + [B] × [C] ÷ [D] = ?",
+      "variables": {
+        "A": {"min": 10, "max": 50},
+        "B": {"min": 2, "max": 12},
+        "C": {"min": 2, "max": 12},
+        "D": {"min": 2, "max": 6}
+      },
+      "constraints": ["(B * C) % D == 0"],
+      "calculation": "A + ((B * C) / D)",
+      "explanation": "First: [B] × [C] = [B*C], then ÷ [D] = [(B*C)/D], then + [A] = [RESULT]"
+    },
+    {
+      "template_id": "INT_DEC_01",
+      "pattern": "[A].[B] + [C].[D] = ?",
+      "variables": {
+        "A": {"min": 1, "max": 20},
+        "B": {"values": [25, 50, 75]},
+        "C": {"min": 1, "max": 20},
+        "D": {"values": [25, 50, 75]}
+      },
+      "calculation": "A + C + ((B + D) / 100)",
+      "explanation": "[A].[B] + [C].[D] = [RESULT]"
+    },
+    {
+      "template_id": "INT_DEC_02",
+      "pattern": "[A].[B] × [C] = ?",
+      "variables": {
+        "A": {"min": 1, "max": 10},
+        "B": {"values": [5, 25, 5, 75]},
+        "C": {"min": 2, "max": 8}
+      },
+      "calculation": "(A + (B/100)) * C",
+      "explanation": "[A].[B] × [C] = [RESULT]"
+    },
+    {
+      "template_id": "INT_PERC_01",
+      "pattern": "[A]% of [B] = ?",
+      "variables": {
+        "A": {"values": [10, 20, 25, 50, 75, 100]},
+        "B": {"min": 20, "max": 200, "step": 5}
+      },
+      "calculation": "(A * B) / 100",
+      "explanation": "[A]% of [B] = ([A]/100) × [B] = [RESULT]"
+    },
+    {
+      "template_id": "INT_PERC_02",
+      "pattern": "[A] is what percent of [B]?",
+      "variables": {
+        "A": {"min": 5, "max": 95, "step": 5},
+        "B": {"min": 50, "max": 200, "step": 10}
+      },
+      "constraints": ["A < B"],
+      "calculation": "(A * 100) / B",
+      "explanation": "[A]/[B] × 100 = [RESULT]%"
+    },
+    {
+      "template_id": "INT_RATIO_01",
+      "pattern": "Ratio [A]:[B]. If total is [TOTAL], first part = ?",
+      "variables": {
+        "A": {"min": 1, "max": 5},
+        "B": {"min": 1, "max": 5},
+        "TOTAL": {"min": 20, "max": 100, "step": 5}
+      },
+      "constraints": ["TOTAL % (A + B) == 0"],
+      "calculation": "(A * TOTAL) / (A + B)",
+      "explanation": "First part = ([A]/([A]+[B])) × [TOTAL] = [RESULT]"
+    },
+    {
+      "template_id": "INT_ALG_01",
+      "pattern": "[A]x + [B] = [C]. x = ?",
+      "variables": {
+        "A": {"min": 2, "max": 10},
+        "B": {"min": 5, "max": 30},
+        "C": {"min": "B+10", "max": "B+50"}
+      },
+      "constraints": ["(C - B) % A == 0"],
+      "calculation": "(C - B) / A",
+      "explanation": "[A]x = [C] - [B] = [C-B], so x = [C-B] ÷ [A] = [RESULT]"
+    },
+    {
+      "template_id": "INT_ALG_02",
+      "pattern": "[A](x + [B]) = [C]. x = ?",
+      "variables": {
+        "A": {"min": 2, "max": 6},
+        "B": {"min": 2, "max": 6},
+        "C": {"min": 20, "max": 60, "step": "A"}
+      },
+      "constraints": ["C % A == 0"],
+      "calculation": "(C / A) - B",
+      "explanation": "x + [B] = [C] ÷ [A] = [C/A], so x = [C/A] - [B] = [RESULT]"
+    },
+    {
+      "template_id": "INT_COORD_01",
+      "pattern": "Point A([X1],[Y1]), Point B([X2],[Y2]). Midpoint = (?,?)",
+      "variables": {
+        "X1": {"min": -10, "max": 10},
+        "Y1": {"min": -10, "max": 10},
+        "X2": {"min": -10, "max": 10},
+        "Y2": {"min": -10, "max": 10}
+      },
+      "calculation": "((X1 + X2)/2, (Y1 + Y2)/2)",
+      "answer_type": "coordinate_pair",
+      "explanation": "Midpoint = (([X1]+[X2])/2, ([Y1]+[Y2])/2) = ([RESULT])"
+    },
+    {
+      "template_id": "INT_ANGLE_01",
+      "pattern": "Triangle angles: [A]°, [B]°. Third angle = ?°",
+      "variables": {
+        "A": {"min": 30, "max": 80},
+        "B": {"min": 40, "max": 90}
+      },
+      "constraints": ["A + B < 180"],
+      "calculation": "180 - (A + B)",
+      "explanation": "Sum of angles = 180°, so third = 180 - ([A] + [B]) = [RESULT]°"
+    },
+    {
+      "template_id": "INT_SPEED_01",
+      "pattern": "Speed = [S] km/h, Time = [T] hours. Distance = ? km",
+      "variables": {
+        "S": {"min": 20, "max": 100, "step": 5},
+        "T": {"values": [0.5, 0.75, 1, 1.5, 2, 2.5, 3]}
+      },
+      "calculation": "S * T",
+      "explanation": "Distance = Speed × Time = [S] × [T] = [RESULT] km"
+    },
+    {
+      "template_id": "INT_SPEED_02",
+      "pattern": "Distance = [D] km, Time = [T] hours. Speed = ? km/h",
+      "variables": {
+        "D": {"min": 30, "max": 180, "step": 10},
+        "T": {"values": [0.5, 1, 1.5, 2, 2.5, 3]}
+      },
+      "calculation": "D / T",
+      "explanation": "Speed = Distance ÷ Time = [D] ÷ [T] = [RESULT] km/h"
+    },
+    {
+      "template_id": "INT_AREA_02",
+      "pattern": "Triangle: base = [B] cm, height = [H] cm. Area = ? cm²",
+      "variables": {
+        "B": {"min": 4, "max": 20},
+        "H": {"min": 3, "max": 15}
+      },
+      "calculation": "0.5 * B * H",
+      "explanation": "Area = ½ × base × height = 0.5 × [B] × [H] = [RESULT] cm²"
+    },
+    {
+      "template_id": "INT_VOLUME_01",
+      "pattern": "Cube side = [S] cm. Volume = ? cm³",
+      "variables": {
+        "S": {"min": 2, "max": 10}
+      },
+      "calculation": "S * S * S",
+      "explanation": "Volume = side³ = [S] × [S] × [S] = [RESULT] cm³"
+    },
+    {
+      "template_id": "INT_POWERS_01",
+      "pattern": "[A]² = ?",
+      "variables": {
+        "A": {"min": 5, "max": 20}
+      },
+      "calculation": "A * A",
+      "explanation": "[A] squared = [A] × [A] = [RESULT]"
+    },
+    {
+      "template_id": "INT_POWERS_02",
+      "pattern": "[A]³ = ?",
+      "variables": {
+        "A": {"min": 3, "max": 10}
+      },
+      "calculation": "A * A * A",
+      "explanation": "[A] cubed = [A] × [A] × [A] = [RESULT]"
+    },
+    {
+      "template_id": "INT_SQROOT_01",
+      "pattern": "√[A] = ?",
+      "variables": {
+        "A": {"values": [4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225]}
+      },
+      "calculation": "sqrt(A)",
+      "explanation": "Square root of [A] = [RESULT]"
+    },
+    {
+      "template_id": "INT_FRAC_MULT_01",
+      "pattern": "[A]/[B] × [C]/[D] = ?",
+      "variables": {
+        "A": {"min": 1, "max": 5},
+        "B": {"min": 2, "max": 6},
+        "C": {"min": 1, "max": 5},
+        "D": {"min": 2, "max": 6}
+      },
+      "calculation": "(A * C) / (B * D)",
+      "explanation": "[A]/[B] × [C]/[D] = ([A]×[C])/([B]×[D]) = [RESULT]"
+    }
+  ],
+  "responses": {
+    "correct": ["Brilliant! 💡", "Perfect solution! ✅", "Math genius! 🧠", "Excellent reasoning! 🌟"],
+    "incorrect": ["Check your steps 🔍", "Review the concept 📚", "Try a different approach 🔄", "Almost! Try again 💪"]
+  }
+}
