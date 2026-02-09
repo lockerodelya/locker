@@ -41,7 +41,7 @@ class VoooPWAInstaller {
 
         // Check if already standalone
         if (window.matchMedia('(display-mode: standalone)').matches) {
-            localStorage.setItem('vooo_pwa_installed', 'true');
+            localStorage.setItem('pwa_installed', 'true');
             this.clearReminderTimer();
             return;
         }
