@@ -10,14 +10,20 @@ const urlsToCache = [
   '/vooo-ai/images/vooo-logo.jpg'
 ];
 
-// Install event
+// Install event - Forgiving Version
 self.addEventListener('install', event => {
-  self.skipWaiting(); // Force activation
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then(cache => {
+      // Using map so that one 404 error doesn't kill the whole PWA
+      return Promise.all(
+        urlsToCache.map(url => {
+          return cache.add(url).catch(error => {
+            console.error('PWA: Failed to cache file:', url, error);
+          });
+        })
+      );
+    })
   );
 });
 
