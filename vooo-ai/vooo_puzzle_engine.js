@@ -9,20 +9,16 @@ class VOOOPuzzleEngine {
         this.currentTemplate = null;
         this.score = 0;
         this.totalAttempts = 0;
-        this.currentCategory = 'quick_math';
+        this.currentCategory = 'math_toddler';
         this.categories = {
-            'quick_math': 'vooo_quick_math.json',
-            'number_sequences': 'vooo_number_sequences.json',
-            'logic_equations': 'vooo_logic_equations.json',
-            'visual_patterns': 'vooo_visual_patterns.json',
-            'word_number': 'vooo_word_number.json',
-            'odd_one_out': 'vooo_odd_one_out.json',
-            'reverse_calc': 'vooo_reverse_calc.json',
-            'comparison': 'vooo_comparison.json',
-            'missing_operation': 'vooo_missing_operation.json',
-            'base_systems': 'vooo_base_systems.json',
-            'code_cracker': 'vooo_code_cracker.json',
-            'time_measurement': 'vooo_time_measurement.json'
+            'math_toddler': 'math_toddler.json',
+            'math_beginner': 'math_beginner.json',
+            'math_elementary': 'math_elementary.json',
+            'math_intermediate': 'math_intermediate.json',
+            'math_advanced': 'math_advanced.json',
+            'math_expert': 'math_expert.json',
+            'math_scholar': 'math_scholar.json',
+            'math_genius': 'math_genius.json'
         };
     }
 
@@ -73,7 +69,8 @@ class VOOOPuzzleEngine {
             correctAnswer: answer,
             correctIndex: options.indexOf(answer.toString()),
             explanation: this.generateExplanation(this.currentTemplate.explanation, variables, answer),
-            templateId: this.currentTemplate.template_id
+            templateId: this.currentTemplate.template_id,
+            level: this.currentCategory.replace('math_', '')
         };
 
         return this.currentPuzzle;
@@ -85,6 +82,9 @@ class VOOOPuzzleEngine {
         for (const [varName, def] of Object.entries(variableDefs)) {
             if (def.value !== undefined) {
                 variables[varName] = def.value;
+            } else if (def.values !== undefined) {
+                // Random selection from array of values
+                variables[varName] = def.values[Math.floor(Math.random() * def.values.length)];
             } else if (def.calc !== undefined) {
                 // Calculate based on other variables
                 try {
@@ -220,14 +220,16 @@ class VOOOPuzzleEngine {
             return {
                 correct: true,
                 message: this.getRandomResponse('correct'),
-                explanation: this.currentPuzzle.explanation
+                explanation: this.currentPuzzle.explanation,
+                level: this.currentPuzzle.level
             };
         } else {
             return {
                 correct: false,
                 message: this.getRandomResponse('incorrect'),
                 explanation: this.currentPuzzle.explanation,
-                correctAnswer: this.currentPuzzle.correctAnswer
+                correctAnswer: this.currentPuzzle.correctAnswer,
+                level: this.currentPuzzle.level
             };
         }
     }
@@ -250,7 +252,8 @@ class VOOOPuzzleEngine {
             score: this.score,
             totalAttempts: this.totalAttempts,
             accuracy: accuracy,
-            currentCategory: this.currentCategory
+            currentCategory: this.currentCategory,
+            currentLevel: this.currentCategory.replace('math_', '')
         };
     }
 
@@ -286,8 +289,47 @@ class VOOOPuzzleEngine {
         return Object.keys(this.categories).map(key => ({
             key: key,
             name: this.formatCategoryName(key),
+            display: this.formatCategoryName(key.replace('math_', '')),
             file: this.categories[key]
         }));
+    }
+
+    getLevelOrder() {
+        return [
+            'math_toddler',
+            'math_beginner', 
+            'math_elementary',
+            'math_intermediate',
+            'math_advanced',
+            'math_expert',
+            'math_scholar',
+            'math_genius'
+        ];
+    }
+
+    async progressToNextLevel() {
+        const levels = this.getLevelOrder();
+        const currentIndex = levels.indexOf(this.currentCategory);
+        
+        if (currentIndex < levels.length - 1) {
+            const nextLevel = levels[currentIndex + 1];
+            const success = await this.loadCategory(nextLevel);
+            if (success) {
+                this.resetScore();
+                return nextLevel;
+            }
+        }
+        return null;
+    }
+
+    getCurrentLevelIndex() {
+        const levels = this.getLevelOrder();
+        return levels.indexOf(this.currentCategory);
+    }
+
+    isMaxLevel() {
+        const levels = this.getLevelOrder();
+        return this.currentCategory === levels[levels.length - 1];
     }
 }
 
@@ -300,8 +342,8 @@ window.voooEngine = new VOOOPuzzleEngine();
 
 // Initialize the game
 async function initVOOOGame() {
-    // Load default category
-    await voooEngine.loadCategory('quick_math');
+    // Load default category (Toddler level)
+    await voooEngine.loadCategory('math_toddler');
     
     // Generate first puzzle
     const puzzle = voooEngine.generateNewPuzzle();
@@ -310,8 +352,11 @@ async function initVOOOGame() {
         updatePuzzleDisplay(puzzle);
     }
     
-    // Update category selector
-    updateCategorySelector();
+    // Update level selector
+    updateLevelSelector();
+    
+    // Update level indicator
+    updateLevelIndicator();
 }
 
 function updatePuzzleDisplay(puzzle) {
@@ -348,12 +393,21 @@ function selectAnswer(selectedIndex) {
         feedbackEl.className = 'vooo-feedback correct';
         explanationEl.textContent = result.explanation;
         
-        // Auto-next after delay
-        setTimeout(nextPuzzle, 1500);
+        // Check if should progress to next level
+        const stats = voooEngine.getStats();
+        if (stats.score >= 10 && stats.accuracy >= 80 && !voooEngine.isMaxLevel()) {
+            showLevelUpPrompt();
+        } else {
+            // Auto-next after delay
+            setTimeout(nextPuzzle, 1500);
+        }
     } else {
         feedbackEl.textContent = result.message;
         feedbackEl.className = 'vooo-feedback incorrect';
         explanationEl.textContent = `${result.explanation} (Correct: ${result.correctAnswer})`;
+        
+        // Next puzzle after delay for incorrect answers
+        setTimeout(nextPuzzle, 2500);
     }
     
     updateStatsDisplay();
@@ -366,10 +420,12 @@ async function nextPuzzle() {
     }
 }
 
-async function changeCategory(categoryKey) {
-    const success = await voooEngine.loadCategory(categoryKey);
+async function changeLevel(levelKey) {
+    const success = await voooEngine.loadCategory(levelKey);
     if (success) {
+        voooEngine.resetScore();
         nextPuzzle();
+        updateLevelIndicator();
     }
 }
 
@@ -377,28 +433,89 @@ function updateStatsDisplay() {
     const stats = voooEngine.getStats();
     document.getElementById('vooo-score').textContent = `Score: ${stats.score}`;
     document.getElementById('vooo-accuracy').textContent = `Accuracy: ${stats.accuracy}%`;
+    
+    // Update level progress
+    const levelProgress = document.getElementById('vooo-level-progress');
+    if (levelProgress) {
+        const levelIndex = voooEngine.getCurrentLevelIndex() + 1;
+        levelProgress.textContent = `Level ${levelIndex}/8 - ${stats.currentLevel}`;
+    }
 }
 
-function updateCategorySelector() {
-    const categories = voooEngine.getAllCategories();
-    const selector = document.getElementById('vooo-category-select');
+function updateLevelSelector() {
+    const levels = voooEngine.getAllCategories();
+    const selector = document.getElementById('vooo-level-select');
     
     if (selector) {
         selector.innerHTML = '';
-        categories.forEach(cat => {
+        levels.forEach(level => {
             const option = document.createElement('option');
-            option.value = cat.key;
-            option.textContent = cat.name;
+            option.value = level.key;
+            option.textContent = level.display;
             selector.appendChild(option);
         });
         
-        selector.onchange = (e) => changeCategory(e.target.value);
+        // Set current level
+        selector.value = voooEngine.currentCategory;
+        
+        selector.onchange = (e) => changeLevel(e.target.value);
+    }
+}
+
+function updateLevelIndicator() {
+    const levelIndicator = document.getElementById('vooo-current-level');
+    if (levelIndicator) {
+        const displayName = voooEngine.getCategoryDisplayName(voooEngine.currentCategory);
+        levelIndicator.textContent = displayName;
     }
 }
 
 function resetGame() {
     voooEngine.resetScore();
     nextPuzzle();
+}
+
+function showLevelUpPrompt() {
+    const prompt = document.getElementById('vooo-level-up-prompt');
+    if (prompt) {
+        prompt.style.display = 'block';
+        prompt.innerHTML = `
+            <div class="level-up-content">
+                <h3>🎉 Level Up Unlocked! 🎉</h3>
+                <p>You've mastered this level with ${voooEngine.getStats().accuracy}% accuracy!</p>
+                <p>Ready for the next challenge?</p>
+                <button onclick="progressToNextLevel()" class="level-up-btn">Advance to Next Level</button>
+                <button onclick="stayAtCurrentLevel()" class="stay-btn">Stay Here</button>
+            </div>
+        `;
+    }
+}
+
+function hideLevelUpPrompt() {
+    const prompt = document.getElementById('vooo-level-up-prompt');
+    if (prompt) {
+        prompt.style.display = 'none';
+    }
+}
+
+async function progressToNextLevel() {
+    const nextLevel = await voooEngine.progressToNextLevel();
+    if (nextLevel) {
+        hideLevelUpPrompt();
+        nextPuzzle();
+        updateLevelIndicator();
+        updateLevelSelector();
+        
+        // Show level up message
+        const feedbackEl = document.getElementById('vooo-feedback');
+        feedbackEl.textContent = `🎊 Advanced to ${voooEngine.getCategoryDisplayName(nextLevel)}! 🎊`;
+        feedbackEl.className = 'vooo-feedback level-up';
+    }
+}
+
+function stayAtCurrentLevel() {
+    hideLevelUpPrompt();
+    setTimeout(nextPuzzle, 1000);
 }
 
 // Initialize when page loads
