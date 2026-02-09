@@ -13,7 +13,7 @@ class VoooPWAInstaller {
         this.initialDelay = 6000; // 6 seconds for first time
         this.reminderInterval = 5 * 60 * 1000; // 5 minutes
         this.reminderTimer = null;
-        this.maxAttempts = 3; // Max reminders per session
+        this.maxAttempts = 10; // Max reminders per session
         this.attemptCount = 0;
         this.init();
     }
