@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vooo AI Tool - Odedya.online</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .vooo-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .vooo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .vooo-title {
+            color: #4a5568;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .vooo-subtitle {
+            color: #718096;
+            font-size: 1.1em;
+        }
+        
+        .vooo-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .vooo-select {
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1em;
+            color: #4a5568;
+            background: white;
+            cursor: pointer;
+            flex-grow: 1;
+            max-width: 300px;
+        }
+        
+        .vooo-button {
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .vooo-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .vooo-puzzle-box {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .vooo-question {
+            font-size: 1.8em;
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 30px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .vooo-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .vooo-option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1.1em;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .vooo-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .vooo-option:active {
+            transform: scale(0.98);
+        }
+        
+        .vooo-feedback {
+            text-align: center;
+            font-size: 1.2em;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        
+        .vooo-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #9ae6b4;
+        }
+        
+        .vooo-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #fc8181;
+        }
+        
+        .vooo-explanation {
+            background: #ebf8ff;
+            padding: 15px;
+            border-radius: 10px;
+            color: #2c5282;
+            margin: 15px 0;
+            font-size: 0.95em;
+        }
+        
+        .vooo-stats {
+            display: flex;
+            justify-content: space-around;
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .vooo-stat {
+            text-align: center;
+        }
+        
+        .vooo-stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #4a5568;
+        }
+        
+        .vooo-stat-label {
+            font-size: 0.9em;
+            color: #718096;
+            margin-top: 5px;
+        }
+        
+        .vooo-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #718096;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 600px) {
+            .vooo-container {
+                padding: 20px;
+            }
+            
+            .vooo-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .vooo-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .vooo-select, .vooo-button {
+                width: 100%;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="vooo-container">
+        <div class="vooo-header">
+            <h1 class="vooo-title">🧠 VOOO AI Puzzles</h1>
+            <p class="vooo-subtitle">Endless math challenges • No login required</p>
+        </div>
+        
+        <div class="vooo-controls">
+            <select id="vooo-category-select" class="vooo-select">
+                <!-- Categories will be loaded by JavaScript -->
+            </select>
+            <button onclick="resetGame()" class="vooo-button">🔄 Reset Score</button>
+        </div>
+        
+        <div class="vooo-puzzle-box">
+            <div id="vooo-question" class="vooo-question">
+                Loading puzzle...
+            </div>
+            
+            <div id="vooo-options" class="vooo-options">
+                <!-- Options will be loaded by JavaScript -->
+            </div>
+            
+            <div id="vooo-feedback" class="vooo-feedback"></div>
+            <div id="vooo-explanation" class="vooo-explanation"></div>
+        </div>
+        
+        <div class="vooo-stats">
+            <div class="vooo-stat">
+                <div id="vooo-score" class="vooo-stat-value">0</div>
+                <div class="vooo-stat-label">Score</div>
+            </div>
+            <div class="vooo-stat">
+                <div id="vooo-accuracy" class="vooo-stat-value">0%</div>
+                <div class="vooo-stat-label">Accuracy</div>
+            </div>
+            <div class="vooo-stat">
+                <button onclick="nextPuzzle()" class="vooo-button">⏭️ Next Puzzle</button>
+            </div>
+        </div>
+        
+        <div class="vooo-footer">
+            <p>AI-powered puzzles • No data stored • Refresh for new challenges</p>
+            <p>odelya.online © 2024</p>
+        </div>
+    </div>
+    
+    <script src="vooo_puzzle_engine.js"></script>
+</body>
+</html>
