@@ -35,7 +35,7 @@ class VOOOPuzzleEngine {
         const fileName = this.categories[categoryName];
         
         try {
-            const response = await fetch(`vooo-json/${fileName}`);
+            const response = await fetch(`/vooo-ai/vooo-json/${fileName}`);
             this.categoryData = await response.json();
             return true;
         } catch (error) {
