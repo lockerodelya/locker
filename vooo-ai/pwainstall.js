@@ -9,7 +9,8 @@ class VoooPWAInstaller {
         this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
         this.isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
         this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        this.welcomeDelay = 5 * 60 * 1000; // 5 minutes in milliseconds
+        this.initialDelay = 6000; // 6 seconds for first time
+        this.reminderDelay = 5 * 60 * 1000; // 5 minutes for reminders after decline
         this.welcomeTimer = null;
         this.init();
     }
@@ -62,13 +63,42 @@ class VoooPWAInstaller {
     }
 
     scheduleWelcomeScreen() {
-        console.log('Vooo AI PWA: Welcome screen scheduled in 5 minutes');
+        // Check if user has declined before
+        const lastDeclined = localStorage.getItem('vooo_pwa_declined');
         
-        this.welcomeTimer = setTimeout(() => {
-            if (!this.isPWAInstalled() && !this.hasShownWelcome) {
-                this.showWelcomeScreen();
+        if (lastDeclined) {
+            // User declined before - check if 5 minutes have passed
+            const timeSinceDecline = Date.now() - parseInt(lastDeclined);
+            
+            if (timeSinceDecline >= this.reminderDelay) {
+                // 5 minutes have passed, show immediately
+                console.log('Vooo AI PWA: 5 minutes passed since decline, showing reminder');
+                setTimeout(() => {
+                    if (!this.isPWAInstalled() && !this.hasShownWelcome) {
+                        this.showWelcomeScreen();
+                    }
+                }, 6000); // Still wait 6 seconds on page load
+            } else {
+                // Wait for remaining time
+                const remainingTime = this.reminderDelay - timeSinceDecline;
+                console.log(`Vooo AI PWA: Reminder scheduled in ${Math.round(remainingTime/1000)} seconds`);
+                
+                this.welcomeTimer = setTimeout(() => {
+                    if (!this.isPWAInstalled() && !this.hasShownWelcome) {
+                        this.showWelcomeScreen();
+                    }
+                }, remainingTime);
             }
-        }, this.welcomeDelay);
+        } else {
+            // First time - show after 6 seconds
+            console.log('Vooo AI PWA: First time - welcome screen scheduled in 6 seconds');
+            
+            this.welcomeTimer = setTimeout(() => {
+                if (!this.isPWAInstalled() && !this.hasShownWelcome) {
+                    this.showWelcomeScreen();
+                }
+            }, this.initialDelay);
+        }
     }
 
     clearWelcomeTimer() {
@@ -366,10 +396,17 @@ class VoooPWAInstaller {
     closeWelcomeScreen() {
         const overlay = document.getElementById('vooo-pwa-welcome');
         if (overlay) {
+            // Save decline timestamp for 5-minute reminder
+            localStorage.setItem('vooo_pwa_declined', Date.now().toString());
+            console.log('Vooo AI PWA: User declined, will remind in 5 minutes');
+            
             overlay.style.animation = 'voooFadeOut 0.3s ease';
             overlay.style.opacity = '0';
             setTimeout(() => {
                 overlay.remove();
+                
+                // Schedule next reminder after 5 minutes
+                this.scheduleWelcomeScreen();
             }, 300);
         }
     }
