@@ -632,17 +632,19 @@ function updatePuzzleDisplay(puzzle) {
     
     // Clear feedback
     document.getElementById('vooo-feedback').textContent = '';
+    document.getElementById('vooo-feedback').className = 'vooo-feedback';
+    
+    // Reset custom styles
+    document.getElementById('vooo-feedback').style.background = '';
+    document.getElementById('vooo-feedback').style.border = '';
+    document.getElementById('vooo-feedback').style.color = '';
+    document.getElementById('vooo-feedback').style.fontWeight = '';
+    
     document.getElementById('vooo-explanation').textContent = '';
     
     // Update stats
     updateStatsDisplay();
 }
-
-// RESET ALL BUTTONS FIRST
-optionButtons.forEach(button => {
-    button.style.backgroundColor = '';  // Reset to default
-    button.style.borderColor = '';      // Reset to default
-});
 
 function selectAnswer(selectedIndex) {
     console.log('Selected answer:', selectedIndex);
@@ -652,10 +654,10 @@ function selectAnswer(selectedIndex) {
     const optionsContainer = document.getElementById('vooo-options');
     const optionButtons = optionsContainer.querySelectorAll('.vooo-option');
     
-    // RESET ALL BUTTONS FIRST
+    // Reset all button colors first
     optionButtons.forEach(button => {
-        button.style.backgroundColor = '';  // Reset to default
-        button.style.borderColor = '';      // Reset to default
+        button.style.backgroundColor = '';
+        button.style.borderColor = '';
     });
     
     if (result.correct) {
@@ -677,100 +679,13 @@ function selectAnswer(selectedIndex) {
         feedbackEl.textContent = 'Please try again';
         feedbackEl.className = 'vooo-feedback incorrect';
         
-        // Add your custom styling here:
+        // Custom styling
         feedbackEl.style.background = 'white';
         feedbackEl.style.border = '2px solid black';
         feedbackEl.style.color = 'red';
         feedbackEl.style.fontWeight = 'bold';
     }
     
-    updateStatsDisplay();
-}
-
-// Show "Next Puzzle" button (for correct answers)
-function showNextButton() {
-    const feedbackEl = document.getElementById('vooo-feedback');
-    
-    // Remove any existing buttons
-    const existingBtn = document.getElementById('action-btn');
-    if (existingBtn) existingBtn.remove();
-    
-    const nextBtn = document.createElement('button');
-    nextBtn.id = 'action-btn';
-    nextBtn.className = 'vooo-button';
-    nextBtn.textContent = 'Next Logic →';
-    nextBtn.style.marginTop = '10px';
-    nextBtn.style.width = '100%';
-    nextBtn.onclick = () => {
-        nextBtn.remove();
-        nextLogic();
-    };
-    
-    feedbackEl.appendChild(nextBtn);
-}
-
-// Show "Try Again" button (for wrong answers - continues to next puzzle)
-function showTryAgainButton() {
-    const feedbackEl = document.getElementById('vooo-feedback');
-    
-    // Remove any existing buttons
-    const existingBtn = document.getElementById('action-btn');
-    if (existingBtn) existingBtn.remove();
-    
-    const tryAgainBtn = document.createElement('button');
-    tryAgainBtn.id = 'action-btn';
-    tryAgainBtn.className = 'vooo-button';
-    tryAgainBtn.textContent = 'Next Logic';
-    tryAgainBtn.style.marginTop = '10px';
-    tryAgainBtn.style.width = '100%';
-    tryAgainBtn.onclick = () => {
-        tryAgainBtn.remove();
-        nextPuzzle();
-    };
-    
-    feedbackEl.appendChild(tryAgainBtn);
-}
-
-// Update the updatePuzzleDisplay function to reset button states
-function updatePuzzleDisplay(puzzle) {
-    console.log('Updating puzzle display:', puzzle);
-    
-    // Update question
-    document.getElementById('vooo-question').textContent = puzzle.question;
-    
-    // Update options
-    const optionsContainer = document.getElementById('vooo-options');
-    optionsContainer.innerHTML = '';
-    
-    puzzle.options.forEach((option, index) => {
-        const button = document.createElement('button');
-        button.className = 'vooo-option';
-        
-        // Handle emoji/visual options
-        if (typeof option === 'string' && option.length > 2 && !option.match(/^[0-9]+$/)) {
-            button.textContent = option;
-            button.style.fontSize = '1.5em'; // Make emojis bigger
-        } else {
-            button.textContent = option;
-        }
-        
-        // Reset button styles
-        
-        button.onclick = () => selectAnswer(index);
-        optionsContainer.appendChild(button);
-    });
-    
-    // Clear feedback and remove any action buttons
-    document.getElementById('vooo-feedback').textContent = '';
-    document.getElementById('vooo-feedback').className = 'vooo-feedback';
-    
-    // Remove any action buttons
-    const actionBtn = document.getElementById('action-btn');
-    if (actionBtn) actionBtn.remove();
-    
-    document.getElementById('vooo-explanation').textContent = '';
-    
-    // Update stats
     updateStatsDisplay();
 }
 
