@@ -638,6 +638,12 @@ function updatePuzzleDisplay(puzzle) {
     updateStatsDisplay();
 }
 
+// RESET ALL BUTTONS FIRST
+optionButtons.forEach(button => {
+    button.style.backgroundColor = '';  // Reset to default
+    button.style.borderColor = '';      // Reset to default
+});
+
 function selectAnswer(selectedIndex) {
     console.log('Selected answer:', selectedIndex);
     const result = voooEngine.checkAnswer(selectedIndex);
@@ -645,6 +651,12 @@ function selectAnswer(selectedIndex) {
     const explanationEl = document.getElementById('vooo-explanation');
     const optionsContainer = document.getElementById('vooo-options');
     const optionButtons = optionsContainer.querySelectorAll('.vooo-option');
+    
+    // RESET ALL BUTTONS FIRST
+    optionButtons.forEach(button => {
+        button.style.backgroundColor = '';  // Reset to default
+        button.style.borderColor = '';      // Reset to default
+    });
     
     if (result.correct) {
         // Correct answer - turn button green
@@ -655,22 +667,22 @@ function selectAnswer(selectedIndex) {
         feedbackEl.className = 'vooo-feedback correct';
         explanationEl.textContent = result.explanation;
         
-        // Auto next after 1.5 seconds
-        setTimeout(nextPuzzle, 1500);
+        // Auto next after 3 seconds
+        setTimeout(nextPuzzle, 3000);
     } else {
-    // Wrong answer - turn button red
-    optionButtons[selectedIndex].style.backgroundColor = '#fed7d7';
-    optionButtons[selectedIndex].style.borderColor = '#fc8181';
-    
-    feedbackEl.textContent = 'Please try again';
-    feedbackEl.className = 'vooo-feedback incorrect';
-    
-    // Add your custom styling here:
-    feedbackEl.style.background = 'white';
-    feedbackEl.style.border = '2px solid black';
-    feedbackEl.style.color = 'red';
-    feedbackEl.style.fontWeight = 'bold';
-}
+        // Wrong answer - turn button red
+        optionButtons[selectedIndex].style.backgroundColor = '#fed7d7';
+        optionButtons[selectedIndex].style.borderColor = '#fc8181';
+        
+        feedbackEl.textContent = 'Please try again';
+        feedbackEl.className = 'vooo-feedback incorrect';
+        
+        // Add your custom styling here:
+        feedbackEl.style.background = 'white';
+        feedbackEl.style.border = '2px solid black';
+        feedbackEl.style.color = 'red';
+        feedbackEl.style.fontWeight = 'bold';
+    }
     
     updateStatsDisplay();
 }
