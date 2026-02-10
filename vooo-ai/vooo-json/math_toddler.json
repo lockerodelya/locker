@@ -13,18 +13,18 @@
       "calculation": "COUNT",
       "explanation": "There are [COUNT] [EMOJI]s."
     },
-{
-  "template_id": "TOD_MATCH_01",
-  "pattern": "Match [NUMBER] with:",
-  "options_builder": "generate_options(NUMBER, EMOJI)",
-  "variables": {
-    "NUMBER": {"min": 1, "max": 5},
-    "EMOJI": {"values": ["🍎", "🍌", "🍪", "🎈", "⭐", "❤️", "🔵", "🔺"]}
-  },
-  "calculation": "repeat(EMOJI, NUMBER)",
-  "answer_type": "multiple_choice_visual",
-  "explanation": "There are [NUMBER] [EMOJI]s."
-},
+    {
+      "template_id": "TOD_MATCH_01",
+      "pattern": "Match [NUMBER] with:",
+      "options_builder": "generate_options(NUMBER, EMOJI)",
+      "variables": {
+        "NUMBER": {"min": 1, "max": 5},
+        "EMOJI": {"values": ["🍎", "🍌", "🍪", "🎈", "⭐", "❤️", "🔵", "🔺"]}
+      },
+      "calculation": "repeat(EMOJI, NUMBER)",
+      "answer_type": "multiple_choice_visual",
+      "explanation": "There are [NUMBER] [EMOJI]s."
+    },
     {
       "template_id": "TOD_ADD_PIC_01",
       "pattern": "[A_EMOJI] + [B_EMOJI] = ?",
@@ -68,23 +68,24 @@
       "calculation": "COLOR",
       "answer_type": "color_picker"
     },
-{
-  "template_id": "TOD_SEQ_01",
-  "pattern": "[A], [B], ?, [D]",
-  "variables": {
-    "A": {"min": 1, "max": 5},
-    "STEP": {"values": [1, 2]}
-  },
-  "pattern_builder": "A + ', ' + (A + STEP) + ', ?, ' + (A + 3*STEP)",
-  "calculation": "A + (2 * STEP)",
-  "explanation": "Counting by [STEP]: [A], [A+STEP], [A+2*STEP], [A+3*STEP]"
-},
+    {
+      "template_id": "TOD_SEQ_01",
+      "pattern": "[A], [B], ?, [D]",
+      "variables": {
+        "A": {"min": 1, "max": 5},
+        "STEP": {"values": [1, 2]}
+      },
+      "pattern_builder": "A + ', ' + (A + STEP) + ', ?, ' + (A + 3*STEP)",
+      "calculation": "A + (2 * STEP)",
+      "explanation": "Counting by [STEP]: [A], [A+STEP], [A+2*STEP], [A+3*STEP]"
+    },
     {
       "template_id": "TOD_PATTERN_01",
       "pattern": "🔴🟡🔴🟡?",
       "variables": {
         "PATTERN": {"values": ["ABAB", "AABB", "ABCABC"]}
       },
+      "options": ["🔴", "🟡", "🔵", "🟢"],
       "calculation": "next_in_pattern(PATTERN)",
       "answer_type": "pattern_completion"
     }
@@ -93,6 +94,4 @@
     "correct": ["Good job! 👍", "You're smart! 🧠", "Perfect! ⭐", "Wow! 🎉"],
     "incorrect": ["Try again! 💪", "Look carefully 👀", "Almost! 😊", "You can do it! 🌟"]
   }
-
 }
-
