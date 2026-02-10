@@ -656,7 +656,7 @@ function selectAnswer(selectedIndex) {
         explanationEl.textContent = result.explanation;
         
         // Auto next after 1.5 seconds
-        setTimeout(nextPuzzle, 1500);
+        setTimeout(nextPuzzle, 3000);
     } else {
     // Wrong answer - turn button red
     optionButtons[selectedIndex].style.backgroundColor = '#fed7d7';
