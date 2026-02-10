@@ -658,17 +658,19 @@ function selectAnswer(selectedIndex) {
         // Auto next after 1.5 seconds
         setTimeout(nextPuzzle, 1500);
     } else {
-        // Wrong answer - turn button red
-        optionButtons[selectedIndex].style.backgroundColor = '#fed7d7';
-        optionButtons[selectedIndex].style.borderColor = '#fc8181';
-        
-        feedbackEl.textContent = 'Please try again';
-        feedbackEl.className = 'vooo-feedback incorrect';
-        
-        // User can try another answer - DON'T disable buttons
-        // DON'T show "Next Logic" button
-        // Just show message and let user try again
-    }
+    // Wrong answer - turn button red
+    optionButtons[selectedIndex].style.backgroundColor = '#fed7d7';
+    optionButtons[selectedIndex].style.borderColor = '#fc8181';
+    
+    feedbackEl.textContent = 'Please try again';
+    feedbackEl.className = 'vooo-feedback incorrect';
+    
+    // Add your custom styling here:
+    feedbackEl.style.background = 'white';
+    feedbackEl.style.border = '2px solid black';
+    feedbackEl.style.color = 'red';
+    feedbackEl.style.fontWeight = 'bold';
+}
     
     updateStatsDisplay();
 }
