@@ -109,26 +109,28 @@
       "calculation": "roman_to_int(ROMAN)",
       "explanation": "[ROMAN] in Roman numerals equals [RESULT]"
     },
-    {
-      "template_id": "ELE_PATTERN_01",
-      "pattern": "Rule: Add [STEP]. [START], ?, [START+2*STEP], [START+3*STEP]",
-      "variables": {
-        "START": {"min": 1, "max": 20},
-        "STEP": {"min": 2, "max": 10}
-      },
-      "calculation": "START + STEP",
-      "explanation": "[START] + [STEP] = [RESULT]"
-    },
-    {
-      "template_id": "ELE_PATTERN_02",
-      "pattern": "Rule: Multiply by [FACTOR]. [START], ?, [START*FACTOR²]",
-      "variables": {
-        "START": {"values": [2, 3, 4, 5]},
-        "FACTOR": {"values": [2, 3]}
-      },
-      "calculation": "START * FACTOR",
-      "explanation": "[START] × [FACTOR] = [RESULT]"
-    },
+{
+  "template_id": "ELE_PATTERN_01",
+  "pattern": "Rule: Add [STEP]. [START], ?, [B], [C]",
+  "variables": {
+    "START": {"min": 1, "max": 20},
+    "STEP": {"min": 2, "max": 10}
+  },
+  "pattern_builder": "'Rule: Add ' + STEP + '. ' + START + ', ?, ' + (START + 2*STEP) + ', ' + (START + 3*STEP)",
+  "calculation": "START + STEP",
+  "explanation": "[START] + [STEP] = [RESULT]"
+},
+{
+  "template_id": "ELE_PATTERN_02",
+  "pattern": "Rule: Multiply by [FACTOR]. [START], ?, [C]",
+  "variables": {
+    "START": {"values": [2, 3, 4, 5]},
+    "FACTOR": {"values": [2, 3]}
+  },
+  "pattern_builder": "'Rule: Multiply by ' + FACTOR + '. ' + START + ', ?, ' + (START * FACTOR * FACTOR)",
+  "calculation": "START * FACTOR",
+  "explanation": "[START] × [FACTOR] = [RESULT]"
+},
     {
       "template_id": "ELE_ORDER_OPS_01",
       "pattern": "[A] + [B] × [C] = ?",
