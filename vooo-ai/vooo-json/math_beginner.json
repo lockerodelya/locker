@@ -63,30 +63,27 @@
       "options": ["<", "=", ">"],
       "explanation": "[A] [RESULT] [B]"
     },
-    {
-      "template_id": "BEG_SKIP_01",
-      "pattern": "Count by [STEP]: [START], ?, [START+2*STEP], [START+3*STEP]",
-      "variables": {
-        "START": {"min": 0, "max": 10},
-        "STEP": {"values": [2, 3, 5, 10]}
-      },
-      "calculation": "START + STEP",
-      "explanation": "[START] + [STEP] = [RESULT]"
-    },
-    {
-      "template_id": "BEG_WORD_01",
-      "patterns": [
-        "I have [A] apples. I get [B] more. How many total?",
-        "There are [A] birds. [B] fly away. How many left?"
-      ],
-      "variables": {
-        "A": {"min": 1, "max": 10},
-        "B": {"min": 1, "max": 5},
-        "OPERATION": {"values": ["add", "subtract"]}
-      },
-      "calculation": "OPERATION == 'add' ? A + B : A - B",
-      "explanation": "[A] [OPERATION_TEXT] [B] = [RESULT]"
-    },
+{
+  "template_id": "BEG_SKIP_01",
+  "pattern": "Count by [STEP]: [START], ?, [B], [C]",
+  "variables": {
+    "START": {"min": 0, "max": 10},
+    "STEP": {"values": [2, 3, 5, 10]}
+  },
+  "pattern_builder": "'Count by ' + STEP + ': ' + START + ', ?, ' + (START + 2*STEP) + ', ' + (START + 3*STEP)",
+  "calculation": "START + STEP",
+  "explanation": "[START] + [STEP] = [RESULT]"
+},
+{
+  "template_id": "BEG_WORD_01",
+  "pattern": "I have [A] apples. I get [B] more. How many total?",
+  "variables": {
+    "A": {"min": 1, "max": 10},
+    "B": {"min": 1, "max": 10}
+  },
+  "calculation": "A + B",
+  "explanation": "[A] + [B] = [RESULT]"
+},
     {
       "template_id": "BEG_TIME_01",
       "pattern": "What time is it?",
