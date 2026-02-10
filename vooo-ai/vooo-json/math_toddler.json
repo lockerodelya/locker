@@ -13,17 +13,18 @@
       "calculation": "COUNT",
       "explanation": "There are [COUNT] [EMOJI]s."
     },
-    {
-      "template_id": "TOD_MATCH_01",
-      "pattern": "Match [NUMBER] with:",
-      "options_builder": "generate_options(NUMBER, EMOJI)",
-      "variables": {
-        "NUMBER": {"min": 1, "max": 5},
-        "EMOJI": {"values": ["🍎", "🍌", "🍪", "🎈", "⭐", "❤️", "🔵", "🔺"]}
-      },
-      "calculation": "NUMBER",
-      "answer_type": "multiple_choice_visual"
-    },
+{
+  "template_id": "TOD_MATCH_01",
+  "pattern": "Match [NUMBER] with:",
+  "options_builder": "generate_options(NUMBER, EMOJI)",
+  "variables": {
+    "NUMBER": {"min": 1, "max": 5},
+    "EMOJI": {"values": ["🍎", "🍌", "🍪", "🎈", "⭐", "❤️", "🔵", "🔺"]}
+  },
+  "calculation": "repeat(EMOJI, NUMBER)",
+  "answer_type": "multiple_choice_visual",
+  "explanation": "There are [NUMBER] [EMOJI]s."
+},
     {
       "template_id": "TOD_ADD_PIC_01",
       "pattern": "[A_EMOJI] + [B_EMOJI] = ?",
@@ -94,3 +95,4 @@
   }
 
 }
+
