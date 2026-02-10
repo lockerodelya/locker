@@ -758,7 +758,7 @@ function updateStatsDisplay() {
     const levelProgress = document.getElementById('vooo-level-progress');
     if (levelProgress) {
         const levelIndex = voooEngine.getCurrentLevelIndex() + 1;
-        levelProgress.textContent = `Level ${levelIndex}/8 - ${stats.currentLevel}`;
+        levelProgress.textContent = `Level ${levelIndex}/4 - ${stats.currentLevel}`;
     }
 }
 
