@@ -17,7 +17,7 @@
       "pattern": "[A] - [B] = ?",
       "variables": {
         "A": {"min": 2, "max": 10},
-        "B": {"min": 1, "max": "A-1"}
+        "B": {"min": 1, "max": 9}
       },
       "calculation": "A - B",
       "explanation": "[A] minus [B] equals [RESULT]."
@@ -27,7 +27,7 @@
       "pattern": "[A] + ? = [C]",
       "variables": {
         "A": {"min": 1, "max": 8},
-        "C": {"min": "A+1", "max": 10}
+        "C": {"min": 2, "max": 10}
       },
       "calculation": "C - A",
       "explanation": "? = [C] - [A] = [RESULT]"
@@ -58,46 +58,34 @@
         "A": {"min": 1, "max": 20},
         "B": {"min": 1, "max": 20}
       },
-      "calculation": "compare(A, B)",
+      "calculation": "comparison",
       "answer_type": "comparison_operator",
       "options": ["<", "=", ">"],
       "explanation": "[A] [RESULT] [B]"
     },
-{
-  "template_id": "BEG_SKIP_01",
-  "pattern": "Count by [STEP]: [START], ?, [B], [C]",
-  "variables": {
-    "START": {"min": 0, "max": 10},
-    "STEP": {"values": [2, 3, 5, 10]}
-  },
-  "pattern_builder": "'Count by ' + STEP + ': ' + START + ', ?, ' + (START + 2*STEP) + ', ' + (START + 3*STEP)",
-  "calculation": "START + STEP",
-  "explanation": "[START] + [STEP] = [RESULT]"
-},
-{
-  "template_id": "BEG_WORD_01",
-  "pattern": "I have [A] apples. I get [B] more. How many total?",
-  "variables": {
-    "A": {"min": 1, "max": 10},
-    "B": {"min": 1, "max": 10}
-  },
-  "calculation": "A + B",
-  "explanation": "[A] + [B] = [RESULT]"
-},
     {
-      "template_id": "BEG_TIME_01",
-      "pattern": "What time is it?",
-      "image": "clock_[HOUR]_[MINUTE].png",
+      "template_id": "BEG_SKIP_01",
+      "pattern": "Count by [STEP]: [START], ?, [NEXT2], [NEXT3]",
       "variables": {
-        "HOUR": {"min": 1, "max": 12},
-        "MINUTE": {"values": [0, 15, 30, 45]}
+        "START": {"min": 0, "max": 10},
+        "STEP": {"values": [2, 3, 5, 10]}
       },
-      "calculation": "format_time(HOUR, MINUTE)",
-      "answer_type": "time_input"
+      "calculation": "START + STEP",
+      "explanation": "[START] + [STEP] = [RESULT]"
+    },
+    {
+      "template_id": "BEG_WORD_01",
+      "pattern": "I have [A] apples. I get [B] more. How many total?",
+      "variables": {
+        "A": {"min": 1, "max": 10},
+        "B": {"min": 1, "max": 10}
+      },
+      "calculation": "A + B",
+      "explanation": "[A] + [B] = [RESULT]"
     },
     {
       "template_id": "BEG_MONEY_01",
-      "pattern": "💰 + 💰💰 = ? cents",
+      "pattern": "[COUNT_A] coins of [COIN_A]¢ + [COUNT_B] coins of [COIN_B]¢ = ? cents",
       "variables": {
         "COIN_A": {"values": [1, 5, 10]},
         "COUNT_A": {"min": 1, "max": 3},
@@ -133,7 +121,7 @@
         "B": {"min": 1, "max": 20},
         "C": {"min": 1, "max": 20}
       },
-      "calculation": "sort([A, B, C])",
+      "calculation": "sort_numbers",
       "answer_type": "ordering",
       "explanation": "From smallest to largest: [SORTED]"
     }
