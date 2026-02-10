@@ -1,6 +1,6 @@
 // ============================================
-// VOOO AI Puzzle Engine
-// Lightweight, no dependencies, no storage
+// VOOO AI Puzzle Engine - ENHANCED VERSION
+// Supports all JSON features we created
 // ============================================
 
 class VOOOPuzzleEngine {
@@ -20,10 +20,36 @@ class VOOOPuzzleEngine {
             'math_scholar': 'math_scholar.json',
             'math_genius': 'math_genius.json'
         };
+        
+        // Shape and color mappings
+        this.shapeMap = {
+            'circle': '○',
+            'square': '□', 
+            'triangle': '△',
+            'star': '★',
+            'heart': '♥',
+            'diamond': '◇',
+            'rectangle': '▢',
+            'hexagon': '⬡'
+        };
+        
+        this.colorMap = {
+            'red': '🔴',
+            'blue': '🔵',
+            'yellow': '🟡',
+            'green': '🟢',
+            'black': '⚫',
+            'white': '⚪'
+        };
+        
+        this.sizeComparison = {
+            '🐘': 'big', '🦒': 'big', '🐋': 'big', '🏠': 'big', '🌳': 'big',
+            '🐭': 'small', '🐦': 'small', '🐜': 'small', '📦': 'small', '🌸': 'small'
+        };
     }
 
     // ============================================
-    // CORE ENGINE FUNCTIONS
+    // CORE ENGINE FUNCTIONS - UPDATED
     // ============================================
 
     async loadCategory(categoryName) {
@@ -53,24 +79,25 @@ class VOOOPuzzleEngine {
         // Generate variables
         const variables = this.generateVariables(this.currentTemplate.variables);
         
-        // Calculate answer
+        // Generate question based on pattern or pattern_builder
+        const question = this.generateQuestion(this.currentTemplate, variables);
+        
+        // Generate answer
         const answer = this.calculateAnswer(this.currentTemplate, variables);
         
-        // Generate question text
-        const question = this.generateQuestion(this.currentTemplate.pattern, variables);
-        
-        // Generate options
-        const options = this.generateOptions(answer, this.currentTemplate);
+        // Generate options based on answer_type
+        const options = this.generateOptions(answer, this.currentTemplate, variables);
         
         // Store current puzzle
         this.currentPuzzle = {
             question: question,
             options: options,
             correctAnswer: answer,
-            correctIndex: options.indexOf(answer.toString()),
-            explanation: this.generateExplanation(this.currentTemplate.explanation, variables, answer),
+            correctIndex: this.findCorrectIndex(options, answer, this.currentTemplate.answer_type),
+            explanation: this.generateExplanation(this.currentTemplate, variables, answer),
             templateId: this.currentTemplate.template_id,
-            level: this.currentCategory.replace('math_', '')
+            level: this.currentCategory.replace('math_', ''),
+            answerType: this.currentTemplate.answer_type || 'text'
         };
 
         return this.currentPuzzle;
@@ -114,30 +141,62 @@ class VOOOPuzzleEngine {
             evaluated = evaluated.replace(new RegExp(varName, 'g'), value);
         }
         
+        // Add support for custom functions
+        if (evaluated.includes('repeat(')) {
+            evaluated = evaluated.replace(/repeat\(([^,]+),\s*([^)]+)\)/g, (match, emoji, count) => {
+                // Remove quotes from emoji variable name and get its value
+                const emojiName = emoji.trim().replace(/['"]/g, '');
+                const emojiValue = variables[emojiName] || emojiName;
+                const repeatCount = parseInt(count) || 1;
+                return `"${emojiValue.repeat(repeatCount)}"`;
+            });
+        }
+        
+        if (evaluated.includes('next_in_pattern(')) {
+            evaluated = evaluated.replace(/next_in_pattern\(([^)]+)\)/g, (match, pattern) => {
+                return this.calculateNextInPattern(pattern.trim().replace(/['"]/g, ''), variables);
+            });
+        }
+        
+        if (evaluated.includes('generate_options(')) {
+            evaluated = evaluated.replace(/generate_options\(([^)]+)\)/g, (match, params) => {
+                const [num, emoji] = params.split(',').map(p => p.trim().replace(/['"]/g, ''));
+                return this.generateVisualOptions(num, emoji, variables);
+            });
+        }
+        
         // Evaluate the expression safely
         try {
-            // Using Function constructor as it's more secure than eval
+            // Convert string booleans to actual booleans
+            if (evaluated === 'true') return true;
+            if (evaluated === 'false') return false;
+            
+            // Handle string results (for emojis, etc.)
+            if (evaluated.startsWith('"') && evaluated.endsWith('"')) {
+                return evaluated.slice(1, -1);
+            }
+            
+            // For numeric/boolean expressions
             return new Function('return ' + evaluated)();
         } catch (e) {
-            console.error('Error evaluating expression:', expr, e);
+            console.error('Error evaluating expression:', expr, '->', evaluated, e);
             return 0;
         }
     }
 
-    calculateAnswer(template, variables) {
-        if (template.calculation !== undefined) {
-            return this.evaluateExpression(template.calculation, variables);
-        } else if (template.correct_index !== undefined) {
-            // For multiple choice with fixed options
-            return template.options[template.correct_index];
+    generateQuestion(template, variables) {
+        // Use pattern_builder if available
+        if (template.pattern_builder) {
+            try {
+                const result = this.evaluateExpression(template.pattern_builder, variables);
+                return result;
+            } catch (e) {
+                console.error('Error building pattern:', e);
+            }
         }
-        return 0;
-    }
-
-    generateQuestion(pattern, variables) {
-        let question = pattern;
         
-        // Replace variables in pattern
+        // Fallback to pattern
+        let question = template.pattern;
         for (const [varName, value] of Object.entries(variables)) {
             question = question.replace(`[${varName}]`, value);
         }
@@ -145,21 +204,74 @@ class VOOOPuzzleEngine {
         return question;
     }
 
-    generateOptions(correctAnswer, template) {
-        if (template.options) {
-            // Use predefined options
-            return [...template.options];
+    calculateAnswer(template, variables) {
+        if (template.calculation) {
+            const result = this.evaluateExpression(template.calculation, variables);
+            
+            // Handle special answer types
+            if (template.answer_type === 'shape_selector' && typeof result === 'string') {
+                return this.shapeMap[result] || result;
+            }
+            
+            if (template.answer_type === 'color_picker' && typeof result === 'string') {
+                return this.colorMap[result] || result;
+            }
+            
+            if (template.answer_type === 'comparison' && typeof result === 'string') {
+                return variables[result + '_EMOJI'] || result;
+            }
+            
+            return result;
+        }
+        return 0;
+    }
+
+    generateOptions(correctAnswer, template, variables) {
+        // Use options_builder if available
+        if (template.options_builder) {
+            try {
+                const options = this.evaluateExpression(template.options_builder, variables);
+                if (Array.isArray(options)) {
+                    return this.shuffleArray(options);
+                }
+            } catch (e) {
+                console.error('Error building options:', e);
+            }
         }
         
-        // Generate random options around correct answer
+        // Use predefined options if available
+        if (template.options && Array.isArray(template.options)) {
+            const options = [...template.options];
+            // Add correct answer if not already in options
+            if (!options.includes(correctAnswer)) {
+                options.push(correctAnswer);
+            }
+            return this.shuffleArray(options);
+        }
+        
+        // Generate default options for different answer types
+        if (template.answer_type === 'shape_selector') {
+            const shapes = Object.values(this.shapeMap);
+            return this.shuffleArray([...shapes]);
+        }
+        
+        if (template.answer_type === 'color_picker') {
+            const colors = Object.values(this.colorMap);
+            return this.shuffleArray([...colors]);
+        }
+        
+        if (template.answer_type === 'comparison') {
+            const options = [variables.A_EMOJI, variables.B_EMOJI];
+            return this.shuffleArray(options);
+        }
+        
+        // Default: generate numeric options
         const options = [];
         const correctNum = Number(correctAnswer);
         
         if (!isNaN(correctNum)) {
-            // Numerical answer
             options.push(correctAnswer.toString());
             
-            // Generate 3 wrong options
             for (let i = 0; i < 3; i++) {
                 let wrongAnswer;
                 const offset = (i + 1) * (Math.random() > 0.5 ? 1 : -1);
@@ -172,7 +284,6 @@ class VOOOPuzzleEngine {
                     wrongAnswer = i + 1;
                 }
                 
-                // Ensure wrong answer is different and positive if needed
                 if (wrongAnswer === correctNum || wrongAnswer <= 0) {
                     wrongAnswer = correctNum + (i + 2);
                 }
@@ -180,11 +291,9 @@ class VOOOPuzzleEngine {
                 options.push(wrongAnswer.toString());
             }
         } else {
-            // Non-numerical answer
+            // Non-numerical
             options.push(correctAnswer);
-            
-            // For non-numeric, provide generic wrong options
-            const wrongOptions = ['A', 'B', 'C', 'D', 'X', 'Y', 'Z', 'N/A', 'None'];
+            const wrongOptions = ['A', 'B', 'C', 'D'];
             for (let i = 0; i < 3; i++) {
                 let wrongOpt;
                 do {
@@ -194,28 +303,68 @@ class VOOOPuzzleEngine {
             }
         }
         
-        // Shuffle options
         return this.shuffleArray(options);
     }
 
-    generateExplanation(explanationTemplate, variables, answer) {
-        let explanation = explanationTemplate;
+    generateVisualOptions(number, emojiName, variables) {
+        const emoji = variables[emojiName] || emojiName;
+        const options = [];
         
-        // Replace variables in explanation
+        // Create visual representations of numbers
+        for (let i = 1; i <= 5; i++) {
+            options.push(emoji.repeat(i));
+        }
+        
+        return this.shuffleArray(options);
+    }
+
+    calculateNextInPattern(patternType, variables) {
+        switch (patternType) {
+            case 'ABAB':
+                return '🔴'; // Next in 🔴🟡🔴🟡 is 🔴
+            case 'AABB':
+                return '🟡'; // Next in 🔴🔴🟡🟡? is 🟡
+            case 'ABCABC':
+                return '🔵'; // Next in 🔴🟡🔵🔴🟡? is 🔵
+            default:
+                return '?';
+        }
+    }
+
+    findCorrectIndex(options, correctAnswer, answerType) {
+        // For visual comparisons, we need to check differently
+        if (answerType === 'comparison') {
+            const aSize = this.sizeComparison[options[0]] || 'medium';
+            const bSize = this.sizeComparison[options[1]] || 'medium';
+            
+            // Assuming bigger is correct (as per your template)
+            return aSize === 'big' ? 0 : 1;
+        }
+        
+        // Default: find by value
+        return options.findIndex(opt => opt === correctAnswer);
+    }
+
+    generateExplanation(template, variables, answer) {
+        if (!template.explanation) {
+            return `The correct answer is ${answer}.`;
+        }
+        
+        let explanation = template.explanation;
         for (const [varName, value] of Object.entries(variables)) {
             explanation = explanation.replace(`[${varName}]`, value);
         }
         
-        // Replace [RESULT] with actual answer
         explanation = explanation.replace('[RESULT]', answer);
-        
         return explanation;
     }
 
     checkAnswer(selectedIndex) {
         this.totalAttempts++;
         
-        if (selectedIndex === this.currentPuzzle.correctIndex) {
+        const isCorrect = selectedIndex === this.currentPuzzle.correctIndex;
+        
+        if (isCorrect) {
             this.score++;
             return {
                 correct: true,
@@ -350,6 +499,9 @@ async function initVOOOGame() {
     
     if (puzzle) {
         updatePuzzleDisplay(puzzle);
+    } else {
+        // Show error message
+        document.getElementById('vooo-question').textContent = 'Error loading puzzles. Please check console.';
     }
     
     // Update level selector
@@ -370,7 +522,15 @@ function updatePuzzleDisplay(puzzle) {
     puzzle.options.forEach((option, index) => {
         const button = document.createElement('button');
         button.className = 'vooo-option';
-        button.textContent = option;
+        
+        // Handle emoji/visual options
+        if (typeof option === 'string' && option.length > 2 && !option.match(/^[0-9]+$/)) {
+            button.textContent = option;
+            button.style.fontSize = '1.5em'; // Make emojis bigger
+        } else {
+            button.textContent = option;
+        }
+        
         button.onclick = () => selectAnswer(index);
         optionsContainer.appendChild(button);
     });
@@ -444,7 +604,7 @@ function updateStatsDisplay() {
 
 function updateLevelSelector() {
     const levels = voooEngine.getAllCategories();
-    const selector = document.getElementById('vooo-level-select');
+    const selector = document.getElementById('vooo-category-select');
     
     if (selector) {
         selector.innerHTML = '';
