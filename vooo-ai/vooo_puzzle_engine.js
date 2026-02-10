@@ -136,76 +136,90 @@ class VOOOPuzzleEngine {
         return variables;
     }
 
-    evaluateExpression(expr, variables) {
-        console.log('Evaluating expression:', expr, 'with variables:', variables);
-        
-        // Replace variable names with their values
-        let evaluated = expr;
-        for (const [varName, value] of Object.entries(variables)) {
-            evaluated = evaluated.replace(new RegExp(varName, 'g'), value);
-        }
-        
-        console.log('After variable substitution:', evaluated);
-        
-        // Add support for custom functions
-        if (evaluated.includes('repeat(')) {
-            evaluated = evaluated.replace(/repeat\(([^,]+),\s*([^)]+)\)/g, (match, emoji, count) => {
-                // Remove quotes from emoji variable name and get its value
-                const emojiName = emoji.trim().replace(/['"]/g, '');
-                const emojiValue = variables[emojiName] || emojiName;
-                const repeatCount = parseInt(count) || 1;
-                return `"${emojiValue.repeat(repeatCount)}"`;
-            });
-        }
-        
-        if (evaluated.includes('next_in_pattern(')) {
-            evaluated = evaluated.replace(/next_in_pattern\(([^)]+)\)/g, (match, pattern) => {
-                const result = this.calculateNextInPattern(pattern.trim().replace(/['"]/g, ''), variables);
-                return `"${result}"`;
-            });
-        }
-        
-        if (evaluated.includes('generate_options(')) {
-            evaluated = evaluated.replace(/generate_options\(([^)]+)\)/g, (match, params) => {
-                const [num, emoji] = params.split(',').map(p => p.trim().replace(/['"]/g, ''));
-                const options = this.generateVisualOptions(num, emoji, variables);
-                // Return as JSON array string
-                return JSON.stringify(options);
-            });
-        }
-        
-        console.log('After function processing:', evaluated);
-        
-        // Evaluate the expression safely
-        try {
-            // Convert string booleans to actual booleans
-            if (evaluated === 'true') return true;
-            if (evaluated === 'false') return false;
-            
-            // Handle string results (for emojis, etc.)
-            if (evaluated.startsWith('"') && evaluated.endsWith('"')) {
-                return evaluated.slice(1, -1);
-            }
-            
-            // Handle array results
-            if (evaluated.startsWith('[') && evaluated.endsWith(']')) {
-                try {
-                    return JSON.parse(evaluated);
-                } catch (e) {
-                    console.error('Error parsing array:', evaluated, e);
-                    return [];
-                }
-            }
-            
-            // For numeric/boolean expressions
-            const result = new Function('return ' + evaluated)();
-            console.log('Evaluation result:', result);
-            return result;
-        } catch (e) {
-            console.error('Error evaluating expression:', expr, '->', evaluated, e);
-            return 0;
-        }
+evaluateExpression(expr, variables) {
+    console.log('Evaluating expression:', expr, 'with variables:', variables);
+    
+    // Replace variable names with their values
+    let evaluated = expr;
+    for (const [varName, value] of Object.entries(variables)) {
+        // Use word boundaries to avoid partial matches
+        const regex = new RegExp('\\b' + varName + '\\b', 'g');
+        evaluated = evaluated.replace(regex, JSON.stringify(value));
     }
+    
+    console.log('After variable substitution:', evaluated);
+    
+    // Add support for custom functions
+    if (evaluated.includes('repeat(')) {
+        evaluated = evaluated.replace(/repeat\(([^,]+),\s*([^)]+)\)/g, (match, emoji, count) => {
+            // Remove quotes from emoji variable name and get its value
+            const emojiName = emoji.trim().replace(/['"]/g, '');
+            const emojiValue = variables[emojiName] || emojiName;
+            const repeatCount = parseInt(count) || 1;
+            return JSON.stringify(emojiValue.repeat(repeatCount));
+        });
+    }
+    
+    if (evaluated.includes('next_in_pattern(')) {
+        evaluated = evaluated.replace(/next_in_pattern\(([^)]+)\)/g, (match, pattern) => {
+            const result = this.calculateNextInPattern(pattern.trim().replace(/['"]/g, ''), variables);
+            return JSON.stringify(result);
+        });
+    }
+    
+    if (evaluated.includes('generate_options(')) {
+        evaluated = evaluated.replace(/generate_options\(([^)]+)\)/g, (match, params) => {
+            const [num, emoji] = params.split(',').map(p => p.trim().replace(/['"]/g, ''));
+            const options = this.generateVisualOptions(num, emoji, variables);
+            // Return as JSON array string
+            return JSON.stringify(options);
+        });
+    }
+    
+    console.log('After function processing:', evaluated);
+    
+    // Evaluate the expression safely
+    try {
+        // If it's already a JSON string, parse it
+        if (evaluated.startsWith('[') && evaluated.endsWith(']')) {
+            try {
+                return JSON.parse(evaluated);
+            } catch (e) {
+                console.error('Error parsing array:', evaluated, e);
+                return [];
+            }
+        }
+        
+        // If it's a quoted string, return it
+        if ((evaluated.startsWith('"') && evaluated.endsWith('"')) || 
+            (evaluated.startsWith("'") && evaluated.endsWith("'"))) {
+            return evaluated.slice(1, -1);
+        }
+        
+        // If it's a boolean string
+        if (evaluated === 'true') return true;
+        if (evaluated === 'false') return false;
+        
+        // If it's a number
+        if (!isNaN(evaluated) && evaluated.trim() !== '') {
+            return Number(evaluated);
+        }
+        
+        // If it's just a string value (like "square"), return it
+        if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(evaluated)) {
+            return evaluated;
+        }
+        
+        // For complex expressions
+        const result = new Function('return ' + evaluated)();
+        console.log('Evaluation result:', result);
+        return result;
+    } catch (e) {
+        console.error('Error evaluating expression:', expr, '->', evaluated, e);
+        // Return as string if all else fails
+        return expr;
+    }
+}
 
     generateQuestion(template, variables) {
         // Use pattern_builder if available
@@ -228,27 +242,51 @@ class VOOOPuzzleEngine {
         return question;
     }
 
-    calculateAnswer(template, variables) {
-        if (template.calculation) {
-            const result = this.evaluateExpression(template.calculation, variables);
+calculateAnswer(template, variables) {
+    if (template.calculation) {
+        // First check if the calculation is just a variable name
+        const calc = template.calculation.trim();
+        
+        // If it's just a variable name (like "SHAPE"), return its value directly
+        if (variables.hasOwnProperty(calc)) {
+            const value = variables[calc];
             
             // Handle special answer types
-            if (template.answer_type === 'shape_selector' && typeof result === 'string') {
-                return this.shapeMap[result] || result;
+            if (template.answer_type === 'shape_selector' && typeof value === 'string') {
+                return this.shapeMap[value] || value;
             }
             
-            if (template.answer_type === 'color_picker' && typeof result === 'string') {
-                return this.colorMap[result] || result;
+            if (template.answer_type === 'color_picker' && typeof value === 'string') {
+                return this.colorMap[value] || value;
             }
             
-            if (template.answer_type === 'comparison' && typeof result === 'string') {
-                return variables[result + '_EMOJI'] || result;
+            if (template.answer_type === 'comparison' && typeof value === 'string') {
+                return variables[value + '_EMOJI'] || value;
             }
             
-            return result;
+            return value;
         }
-        return 0;
+        
+        // Otherwise, evaluate as expression
+        const result = this.evaluateExpression(template.calculation, variables);
+        
+        // Handle special answer types
+        if (template.answer_type === 'shape_selector' && typeof result === 'string') {
+            return this.shapeMap[result] || result;
+        }
+        
+        if (template.answer_type === 'color_picker' && typeof result === 'string') {
+            return this.colorMap[result] || result;
+        }
+        
+        if (template.answer_type === 'comparison' && typeof result === 'string') {
+            return variables[result + '_EMOJI'] || result;
+        }
+        
+        return result;
     }
+    return 0;
+}
 
     generateOptions(correctAnswer, template, variables) {
         console.log('Generating options for answer:', correctAnswer, 'type:', template.answer_type);
