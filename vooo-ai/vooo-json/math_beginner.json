@@ -163,7 +163,107 @@
       },
       "calculation": "A * 3",
       "explanation": "3 × [A] = [RESULT]"
-    }
+    },
+{
+  "template_id": "BEG_ADD_02",
+  "pattern": "[A] + [B] = ?",
+  "variables": {
+    "A": {"min": 10, "max": 20},
+    "B": {"min": 1, "max": 10}
+  },
+  "calculation": "A + B",
+  "explanation": "[A] plus [B] equals [RESULT]."
+},
+{
+  "template_id": "BEG_ADD_03",
+  "pattern": "[A] + [B] = ?",
+  "variables": {
+    "A": {"min": 20, "max": 50},
+    "B": {"min": 1, "max": 10}
+  },
+  "calculation": "A + B",
+  "explanation": "[A] plus [B] equals [RESULT]."
+},
+{
+  "template_id": "BEG_MONEY_02",
+  "pattern": "[A] ten-rupee notes + [B] five-rupee coins = ? rupees",
+  "variables": {
+    "A": {"min": 1, "max": 3},
+    "B": {"min": 1, "max": 3}
+  },
+  "calculation": "(A * 10) + (B * 5)",
+  "explanation": "[A] × 10 rupees + [B] × 5 rupees = [RESULT] rupees"
+},
+{
+  "template_id": "BEG_MONEY_03",
+  "pattern": "₹[A] + ₹[B] = ?",
+  "variables": {
+    "A": {"min": 10, "max": 50, "step": 10},
+    "B": {"min": 5, "max": 20, "step": 5}
+  },
+  "calculation": "A + B",
+  "explanation": "[A] rupees + [B] rupees = [RESULT] rupees"
+},
+{
+  "template_id": "BEG_WORD_03",
+  "pattern": "Rohan has [A] marbles. Priya has [B] marbles. How many total?",
+  "variables": {
+    "A": {"min": 5, "max": 15},
+    "B": {"min": 5, "max": 15}
+  },
+  "calculation": "A + B",
+  "explanation": "[A] + [B] = [RESULT] marbles"
+},
+{
+  "template_id": "BEG_WORD_04",
+  "pattern": "A shop has [A] pencils. They sell [B]. How many left?",
+  "variables": {
+    "A": {"min": 15, "max": 30},
+    "B": {"min": 5, "max": 15}
+  },
+  "calculation": "A - B",
+  "explanation": "[A] - [B] = [RESULT] pencils"
+},
+    {
+  "template_id": "BEG_MULT_01",
+  "pattern": "[A] × 2 = ?",
+  "variables": {
+    "A": {"min": 1, "max": 10}
+  },
+  "calculation": "A * 2",
+  "explanation": "[A] times 2 equals [RESULT]"
+},
+{
+  "template_id": "BEG_MULT_02",
+  "pattern": "[A] × 5 = ?",
+  "variables": {
+    "A": {"min": 1, "max": 10}
+  },
+  "calculation": "A * 5",
+  "explanation": "[A] times 5 equals [RESULT]"
+},
+{
+  "template_id": "BEG_PATTERN_01",
+  "pattern": "🔴🟡🔴🟡?",
+  "variables": {
+    "FIRST": {"values": ["🔴", "🔵", "🟢", "🟡"]},
+    "SECOND": {"values": ["🔴", "🔵", "🟢", "🟡"]}
+  },
+  "pattern_builder": "FIRST + SECOND + FIRST + SECOND + '?'",
+  "calculation": "FIRST",
+  "explanation": "Pattern repeats: [FIRST], [SECOND], [FIRST], [SECOND], [FIRST]"
+},
+{
+  "template_id": "BEG_PATTERN_02",
+  "pattern": "2, 4, 6, ?",
+  "variables": {
+    "START": {"values": [2, 3, 4, 5]}
+  },
+  "pattern_builder": "START + ', ' + (START+2) + ', ' + (START+4) + ', ?'",
+  "calculation": "START + 6",
+  "explanation": "Counting by 2s: [START], [START+2], [START+4], [RESULT]"
+}
+    
     ],
   "responses": {
     "correct": ["Great! 🎯", "Perfect! ✅", "You're learning fast! 🚀", "Excellent! 🌟"],
