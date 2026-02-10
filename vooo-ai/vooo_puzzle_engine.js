@@ -7,6 +7,7 @@ class VOOOPuzzleEngine {
     constructor() {
         this.currentPuzzle = null;
         this.currentTemplate = null;
+        this.currentTemplateIndex = 0; // NEW: Track which template to use next
         this.score = 0;
         this.totalAttempts = 0;
         this.currentCategory = 'math_toddler';
@@ -59,6 +60,7 @@ class VOOOPuzzleEngine {
         try {
             const response = await fetch(`/vooo-ai/vooo-json/${fileName}`);
             this.categoryData = await response.json();
+            this.currentTemplateIndex = 0; // NEW: Reset template index when loading new category
             return true;
         } catch (error) {
             console.error('Error loading puzzle category:', error);
@@ -72,10 +74,20 @@ class VOOOPuzzleEngine {
             return null;
         }
 
-        // Randomly select a template
+        // FIXED: Cycle through ALL templates sequentially
         const templates = this.categoryData.templates;
-        const templateIndex = Math.floor(Math.random() * templates.length);
-        this.currentTemplate = templates[templateIndex];
+        
+        // Select current template
+        this.currentTemplate = templates[this.currentTemplateIndex];
+        
+        console.log(`🎯 Using template ${this.currentTemplateIndex + 1}/${templates.length}: ${this.currentTemplate.template_id}`);
+        
+        // Move to next template, loop back to 0 when we reach the end
+        this.currentTemplateIndex = (this.currentTemplateIndex + 1) % templates.length;
+        
+        if (this.currentTemplateIndex === 0) {
+            console.log('✅ All templates cycled! Starting from beginning.');
+        }
 
         // Generate variables
         const variables = this.generateVariables(this.currentTemplate.variables);
@@ -614,7 +626,7 @@ async function initVOOOGame() {
     console.log('Initializing VOOO game...');
     
     // Load default category (Toddler level)
-    const loaded = await voooEngine.loadCategory('math_toddler');
+    const loaded = await voooEngine.loadCategory('math_beginner');
     
     if (!loaded) {
         document.getElementById('vooo-question').textContent = 'Error loading puzzles.';
