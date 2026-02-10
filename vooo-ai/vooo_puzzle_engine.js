@@ -15,11 +15,7 @@ class VOOOPuzzleEngine {
             'math_toddler': 'math_toddler.json',
             'math_beginner': 'math_beginner.json',
             'math_elementary': 'math_elementary.json',
-            'math_intermediate': 'math_intermediate.json',
-            'math_advanced': 'math_advanced.json',
-            'math_expert': 'math_expert.json',
-            'math_scholar': 'math_scholar.json',
-            'math_genius': 'math_genius.json'
+            'math_intermediate': 'math_intermediate.json'
         };
         
         // Shape and color mappings
