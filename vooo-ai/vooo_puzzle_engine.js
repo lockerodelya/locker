@@ -507,11 +507,18 @@ calculateAnswer(template, variables) {
         return this.categoryData?.display_name || this.formatCategoryName(categoryKey);
     }
 
-    formatCategoryName(name) {
-        return name.split('_').map(word => 
-            word.charAt(0).toUpperCase() + word.slice(1)
-        ).join(' ');
+formatCategoryName(name) {
+    const words = name.split('_').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+    );
+    
+    // Join with space and ensure "Math" is included
+    let result = words.join(' ');
+    if (!result.includes('Math')) {
+        result = result.replace(/(Toddler|Beginner|Elementary|Intermediate|Advanced|Expert|Scholar|Genius)/, '$1 Math');
     }
+    return result;
+}
 
     getAllCategories() {
         return Object.keys(this.categories).map(key => ({
