@@ -178,16 +178,17 @@
       "calculation": "A*D - B*C",
       "explanation": "det = [A]×[D] - [B]×[C] = [A*D - B*C]"
     },
-    {
-      "template_id": "EXP_SEQ_01",
-      "pattern": "Find the nth term: [A], [A+B], [A+2B], ...",
-      "variables": {
-        "A": {"min": 1, "max": 20},
-        "B": {"min": 2, "max": 10}
-      },
-      "calculation": "A + (n-1)*B",
-      "explanation": "Arithmetic sequence: a_n = a₁ + (n-1)d = [A] + (n-1)×[B]"
-    },
+{
+  "template_id": "EXP_SEQ_01",
+  "pattern": "Find the nth term: [A], [TERM2], [TERM3], ...",
+  "variables": {
+    "A": {"min": 1, "max": 20},
+    "B": {"min": 2, "max": 10}
+  },
+  "pattern_builder": "'Find the nth term: ' + A + ', ' + (A+B) + ', ' + (A+2*B) + ', ...'",
+  "calculation": "A + (n-1)*B",
+  "explanation": "Arithmetic sequence: a_n = a₁ + (n-1)d = [A] + (n-1)×[B]"
+},
     {
       "template_id": "EXP_SEQ_02",
       "pattern": "Sum of first [N] terms: [A] + [A+B] + [A+2B] + ...",
