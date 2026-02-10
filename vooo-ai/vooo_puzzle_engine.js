@@ -598,6 +598,22 @@ function selectAnswer(selectedIndex) {
     const result = voooEngine.checkAnswer(selectedIndex);
     const feedbackEl = document.getElementById('vooo-feedback');
     const explanationEl = document.getElementById('vooo-explanation');
+    const optionsContainer = document.getElementById('vooo-options');
+    
+    // Disable all option buttons temporarily
+    const optionButtons = optionsContainer.querySelectorAll('.vooo-option');
+    optionButtons.forEach(button => {
+        button.disabled = true;
+        button.style.opacity = '0.6';
+        button.style.cursor = 'not-allowed';
+    });
+    
+    // Highlight correct answer
+    const correctIndex = voooEngine.currentPuzzle.correctIndex;
+    if (correctIndex >= 0 && correctIndex < optionButtons.length) {
+        optionButtons[correctIndex].style.backgroundColor = '#c6f6d5';
+        optionButtons[correctIndex].style.borderColor = '#9ae6b4';
+    }
     
     if (result.correct) {
         feedbackEl.textContent = result.message;
@@ -609,18 +625,110 @@ function selectAnswer(selectedIndex) {
         if (stats.score >= 10 && stats.accuracy >= 80 && !voooEngine.isMaxLevel()) {
             showLevelUpPrompt();
         } else {
-            // Auto-next after delay
-            setTimeout(nextPuzzle, 1500);
+            // Show "Next Puzzle" button for correct answers
+            showNextButton();
         }
     } else {
         feedbackEl.textContent = result.message;
         feedbackEl.className = 'vooo-feedback incorrect';
-        explanationEl.textContent = `${result.explanation} (Correct: ${result.correctAnswer})`;
+        explanationEl.textContent = `${result.explanation}`;
         
-        // Next puzzle after delay for incorrect answers
-        setTimeout(nextPuzzle, 2500);
+        // Show "Try Again" button for wrong answers
+        showTryAgainButton();
     }
     
+    updateStatsDisplay();
+}
+
+// Show "Next Puzzle" button (for correct answers)
+function showNextButton() {
+    const feedbackEl = document.getElementById('vooo-feedback');
+    
+    // Remove any existing buttons
+    const existingBtn = document.getElementById('action-btn');
+    if (existingBtn) existingBtn.remove();
+    
+    const nextBtn = document.createElement('button');
+    nextBtn.id = 'action-btn';
+    nextBtn.className = 'vooo-button';
+    nextBtn.textContent = 'Next Puzzle →';
+    nextBtn.style.marginTop = '10px';
+    nextBtn.style.width = '100%';
+    nextBtn.onclick = () => {
+        nextBtn.remove();
+        nextPuzzle();
+    };
+    
+    feedbackEl.appendChild(nextBtn);
+}
+
+// Show "Try Again" button (for wrong answers - continues to next puzzle)
+function showTryAgainButton() {
+    const feedbackEl = document.getElementById('vooo-feedback');
+    
+    // Remove any existing buttons
+    const existingBtn = document.getElementById('action-btn');
+    if (existingBtn) existingBtn.remove();
+    
+    const tryAgainBtn = document.createElement('button');
+    tryAgainBtn.id = 'action-btn';
+    tryAgainBtn.className = 'vooo-button';
+    tryAgainBtn.textContent = 'Try Next Puzzle';
+    tryAgainBtn.style.marginTop = '10px';
+    tryAgainBtn.style.width = '100%';
+    tryAgainBtn.onclick = () => {
+        tryAgainBtn.remove();
+        nextPuzzle();
+    };
+    
+    feedbackEl.appendChild(tryAgainBtn);
+}
+
+// Update the updatePuzzleDisplay function to reset button states
+function updatePuzzleDisplay(puzzle) {
+    console.log('Updating puzzle display:', puzzle);
+    
+    // Update question
+    document.getElementById('vooo-question').textContent = puzzle.question;
+    
+    // Update options
+    const optionsContainer = document.getElementById('vooo-options');
+    optionsContainer.innerHTML = '';
+    
+    puzzle.options.forEach((option, index) => {
+        const button = document.createElement('button');
+        button.className = 'vooo-option';
+        
+        // Handle emoji/visual options
+        if (typeof option === 'string' && option.length > 2 && !option.match(/^[0-9]+$/)) {
+            button.textContent = option;
+            button.style.fontSize = '1.5em'; // Make emojis bigger
+        } else {
+            button.textContent = option;
+        }
+        
+        // Reset button styles
+        button.style.backgroundColor = '';
+        button.style.borderColor = '';
+        button.style.opacity = '1';
+        button.disabled = false;
+        button.style.cursor = 'pointer';
+        
+        button.onclick = () => selectAnswer(index);
+        optionsContainer.appendChild(button);
+    });
+    
+    // Clear feedback and remove any action buttons
+    document.getElementById('vooo-feedback').textContent = '';
+    document.getElementById('vooo-feedback').className = 'vooo-feedback';
+    
+    // Remove any action buttons
+    const actionBtn = document.getElementById('action-btn');
+    if (actionBtn) actionBtn.remove();
+    
+    document.getElementById('vooo-explanation').textContent = '';
+    
+    // Update stats
     updateStatsDisplay();
 }
 
