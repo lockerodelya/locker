@@ -4,41 +4,30 @@
   "templates": [
     {
       "template_id": "BEG_ADD_01",
-      "pattern": "[PERSON] [HAS] [A] [OBJECT_A]. [ACTION] [B] [OBJECT_B]. How many total [OBJECT_PLURAL]?",
+      "pattern": "[A] + [B] = ?",
       "variables": {
-        "A": {"min": 1, "max": 25},
-        "B": {"min": 1, "max": 25},
-        "PERSON": {"values": ["Rohan", "Priya", "Amit", "Sara", "Tom", "Lucy", "Sam", "Maya", "Alex", "Emma"]},
-        "HAS": {"values": ["has", "finds", "gets", "buys", "collects", "sees"]},
-        "OBJECT_A": {"values": ["apple", "toy", "ball", "book", "candy", "pencil", "marble", "cookie", "sticker", "block"]},
-        "ACTION": {"values": ["Then gets", "Finds", "Buys", "Receives", "Collects"]},
-        "OBJECT_B": {"values": ["more", "extra", "additional", ""]},
-        "OBJECT_PLURAL": {"values": ["apples", "toys", "balls", "books", "candies", "pencils", "marbles", "cookies", "stickers", "blocks"]}
+        "A": {"min": 1, "max": 50},
+        "B": {"min": 1, "max": 50}
       },
       "calculation": "A + B",
-      "explanation": "[A] plus [B] equals [RESULT] [OBJECT_PLURAL]."
+      "explanation": "[A] plus [B] equals [RESULT]."
     },
     {
       "template_id": "BEG_SUB_01",
-      "pattern": "[PERSON] [HAS] [A] [OBJECT_PLURAL]. [GIVES] [B] to [RECEIVER]. How many left?",
+      "pattern": "[A] - [B] = ?",
       "variables": {
-        "A": {"min": 5, "max": 30},
-        "B": {"min": 1, "max": "A-1"},
-        "PERSON": {"values": ["Rohan", "Priya", "Amit", "Sara", "Mom", "Dad", "Teacher", "Friend"]},
-        "HAS": {"values": ["has", "starts with", "buys", "makes"]},
-        "OBJECT_PLURAL": {"values": ["candies", "toys", "apples", "cookies", "balloons", "pencils", "books", "stickers"]},
-        "GIVES": {"values": ["gives", "shares", "sells", "loses", "eats"]},
-        "RECEIVER": {"values": ["friend", "sister", "brother", "classmate", "teacher"]}
+        "A": {"min": 5, "max": 100},
+        "B": {"min": 1, "max": "A-1"}
       },
       "calculation": "A - B",
-      "explanation": "[A] minus [B] equals [RESULT] [OBJECT_PLURAL] left."
+      "explanation": "[A] minus [B] equals [RESULT]."
     },
     {
       "template_id": "BEG_MISS_01",
       "pattern": "[A] + ? = [C]",
       "variables": {
-        "A": {"min": 1, "max": 20},
-        "C": {"min": "A+1", "max": "A+15"}
+        "A": {"min": 1, "max": 50},
+        "C": {"min": "A+1", "max": 100}
       },
       "calculation": "C - A",
       "explanation": "? = [C] - [A] = [RESULT]"
@@ -47,8 +36,8 @@
       "template_id": "BEG_MISS_02",
       "pattern": "? - [B] = [C]",
       "variables": {
-        "B": {"min": 1, "max": 15},
-        "C": {"min": 1, "max": 15}
+        "B": {"min": 1, "max": 50},
+        "C": {"min": 1, "max": 50}
       },
       "calculation": "B + C",
       "explanation": "? = [B] + [C] = [RESULT]"
@@ -64,23 +53,20 @@
     },
     {
       "template_id": "BEG_WORD_01",
-      "pattern": "[PERSON] has [A] [OBJECT_PLURAL]. [GETS] [B] more. Total?",
+      "pattern": "I have [A] apples. I get [B] more. How many total?",
       "variables": {
-        "A": {"min": 1, "max": 20},
-        "B": {"min": 1, "max": 20},
-        "PERSON": {"values": ["I", "You", "We", "They", "He", "She", "Rohan", "Priya"]},
-        "OBJECT_PLURAL": {"values": ["apples", "toys", "books", "candies", "pencils", "balls", "dolls", "cars", "blocks", "crayons"]},
-        "GETS": {"values": ["gets", "finds", "buys", "receives", "is given"]}
+        "A": {"min": 1, "max": 100},
+        "B": {"min": 1, "max": 100}
       },
       "calculation": "A + B",
-      "explanation": "[A] + [B] = [RESULT] [OBJECT_PLURAL]."
+      "explanation": "[A] + [B] = [RESULT]"
     },
     {
       "template_id": "BEG_MONEY_01",
       "pattern": "[A] one-rupee coins + [B] two-rupee coins = ? rupees",
       "variables": {
-        "A": {"min": 1, "max": 10},
-        "B": {"min": 1, "max": 10}
+        "A": {"min": 1, "max": 20},
+        "B": {"min": 1, "max": 20}
       },
       "calculation": "(A * 1) + (B * 2)",
       "explanation": "[A] × 1 rupee + [B] × 2 rupees = [RESULT] rupees"
@@ -89,7 +75,7 @@
       "template_id": "BEG_DOUBLE_01",
       "pattern": "Double of [A] is ?",
       "variables": {
-        "A": {"min": 1, "max": 25}
+        "A": {"min": 1, "max": 50}
       },
       "calculation": "A * 2",
       "explanation": "2 × [A] = [RESULT]"
@@ -98,7 +84,7 @@
       "template_id": "BEG_HALF_01",
       "pattern": "Half of [A] is ?",
       "variables": {
-        "A": {"values": [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]}
+        "A": {"values": [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50]}
       },
       "calculation": "A / 2",
       "explanation": "[A] ÷ 2 = [RESULT]"
@@ -107,7 +93,7 @@
       "template_id": "BEG_NEXT_01",
       "pattern": "What comes next? [A], ?, ?, ?",
       "variables": {
-        "A": {"min": 1, "max": 50}
+        "A": {"min": 1, "max": 100}
       },
       "calculation": "A + 1",
       "explanation": "The numbers go up by 1: [A], [RESULT], [A+2], [A+3]"
@@ -116,7 +102,7 @@
       "template_id": "BEG_COUNT2_01",
       "pattern": "Count by 2s: [A], ?, ?",
       "variables": {
-        "A": {"values": [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]}
+        "A": {"values": [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50]}
       },
       "calculation": "A + 2",
       "explanation": "Counting by 2s: [A], [RESULT], [RESULT+2]"
@@ -125,7 +111,7 @@
       "template_id": "BEG_COUNT5_01",
       "pattern": "Count by 5s: [A], ?, ?",
       "variables": {
-        "A": {"values": [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]}
+        "A": {"values": [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]}
       },
       "calculation": "A + 5",
       "explanation": "Counting by 5s: [A], [RESULT], [RESULT+5]"
@@ -134,7 +120,7 @@
       "template_id": "BEG_COUNT10_01",
       "pattern": "Count by 10s: [A], ?, ?",
       "variables": {
-        "A": {"values": [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
+        "A": {"values": [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150]}
       },
       "calculation": "A + 10",
       "explanation": "Counting by 10s: [A], [RESULT], [RESULT+10]"
@@ -143,8 +129,8 @@
       "template_id": "BEG_BIGGER_01",
       "pattern": "Which is bigger: [A] or [B]?",
       "variables": {
-        "A": {"min": 1, "max": 50},
-        "B": {"min": 1, "max": 50}
+        "A": {"min": 1, "max": 100},
+        "B": {"min": 1, "max": 100}
       },
       "calculation": "(A > B) ? A : B",
       "explanation": "[RESULT] is the bigger number."
@@ -153,30 +139,27 @@
       "template_id": "BEG_SMALLER_01",
       "pattern": "Which is smaller: [A] or [B]?",
       "variables": {
-        "A": {"min": 1, "max": 50},
-        "B": {"min": 1, "max": 50}
+        "A": {"min": 1, "max": 100},
+        "B": {"min": 1, "max": 100}
       },
       "calculation": "(A < B) ? A : B",
       "explanation": "[RESULT] is the smaller number."
     },
     {
       "template_id": "BEG_WORD_02",
-      "pattern": "There are [A] [ANIMALS]. [ACTION] [B] [LEAVE]. How many left?",
+      "pattern": "There are [A] birds. [B] fly away. How many left?",
       "variables": {
-        "A": {"min": 5, "max": 30},
-        "B": {"min": 1, "max": "A-1"},
-        "ANIMALS": {"values": ["birds", "butterflies", "bees", "fish", "rabbits", "cats", "dogs", "ducks"]},
-        "ACTION": {"values": ["fly away", "swim away", "run away", "go away"]},
-        "LEAVE": {"values": ["", "", "of them"]}
+        "A": {"min": 5, "max": 100},
+        "B": {"min": 1, "max": "A-1"}
       },
       "calculation": "A - B",
-      "explanation": "[A] - [B] = [RESULT] [ANIMALS] left."
+      "explanation": "[A] - [B] = [RESULT]"
     },
     {
       "template_id": "BEG_TRIPLE_01",
       "pattern": "Triple of [A] is ?",
       "variables": {
-        "A": {"min": 1, "max": 15}
+        "A": {"min": 1, "max": 30}
       },
       "calculation": "A * 3",
       "explanation": "3 × [A] = [RESULT]"
@@ -185,8 +168,8 @@
       "template_id": "BEG_ADD_02",
       "pattern": "[A] + [B] = ?",
       "variables": {
-        "A": {"min": 10, "max": 40},
-        "B": {"min": 1, "max": 30}
+        "A": {"min": 10, "max": 100},
+        "B": {"min": 1, "max": 100}
       },
       "calculation": "A + B",
       "explanation": "[A] plus [B] equals [RESULT]."
@@ -195,8 +178,8 @@
       "template_id": "BEG_ADD_03",
       "pattern": "[A] + [B] = ?",
       "variables": {
-        "A": {"min": 20, "max": 80},
-        "B": {"min": 1, "max": 30}
+        "A": {"min": 20, "max": 200},
+        "B": {"min": 1, "max": 100}
       },
       "calculation": "A + B",
       "explanation": "[A] plus [B] equals [RESULT]."
@@ -205,8 +188,8 @@
       "template_id": "BEG_MONEY_02",
       "pattern": "[A] ten-rupee notes + [B] five-rupee coins = ? rupees",
       "variables": {
-        "A": {"min": 1, "max": 8},
-        "B": {"min": 1, "max": 8}
+        "A": {"min": 1, "max": 20},
+        "B": {"min": 1, "max": 20}
       },
       "calculation": "(A * 10) + (B * 5)",
       "explanation": "[A] × 10 rupees + [B] × 5 rupees = [RESULT] rupees"
@@ -215,40 +198,37 @@
       "template_id": "BEG_MONEY_03",
       "pattern": "₹[A] + ₹[B] = ?",
       "variables": {
-        "A": {"min": 10, "max": 100, "step": 5},
-        "B": {"min": 5, "max": 50, "step": 5}
+        "A": {"min": 10, "max": 200, "step": 10},
+        "B": {"min": 5, "max": 100, "step": 5}
       },
       "calculation": "A + B",
       "explanation": "[A] rupees + [B] rupees = [RESULT] rupees"
     },
     {
       "template_id": "BEG_WORD_03",
-      "pattern": "[PERSON1] has [A] marbles. [PERSON2] has [B] marbles. Total marbles?",
+      "pattern": "Rohan has [A] marbles. Priya has [B] marbles. How many total?",
       "variables": {
-        "A": {"min": 5, "max": 25},
-        "B": {"min": 5, "max": 25},
-        "PERSON1": {"values": ["Rohan", "Amit", "Sam", "Alex", "Tom", "Raj", "Max", "Leo"]},
-        "PERSON2": {"values": ["Priya", "Sara", "Lucy", "Maya", "Emma", "Anya", "Zara", "Mia"]}
+        "A": {"min": 5, "max": 100},
+        "B": {"min": 5, "max": 100}
       },
       "calculation": "A + B",
       "explanation": "[A] + [B] = [RESULT] marbles"
     },
     {
       "template_id": "BEG_WORD_04",
-      "pattern": "A shop has [A] [ITEMS]. They sell [B]. How many left?",
+      "pattern": "A shop has [A] pencils. They sell [B]. How many left?",
       "variables": {
-        "A": {"min": 15, "max": 50},
-        "B": {"min": 5, "max": 30},
-        "ITEMS": {"values": ["pencils", "pens", "notebooks", "erasers", "crayons", "rulers", "books", "toys"]}
+        "A": {"min": 15, "max": 200},
+        "B": {"min": 5, "max": 100}
       },
       "calculation": "A - B",
-      "explanation": "[A] - [B] = [RESULT] [ITEMS] left."
+      "explanation": "[A] - [B] = [RESULT] pencils"
     },
     {
       "template_id": "BEG_MULT_01",
       "pattern": "[A] × 2 = ?",
       "variables": {
-        "A": {"min": 1, "max": 20}
+        "A": {"min": 1, "max": 50}
       },
       "calculation": "A * 2",
       "explanation": "[A] times 2 equals [RESULT]"
@@ -257,27 +237,29 @@
       "template_id": "BEG_MULT_02",
       "pattern": "[A] × 5 = ?",
       "variables": {
-        "A": {"min": 1, "max": 20}
+        "A": {"min": 1, "max": 40}
       },
       "calculation": "A * 5",
       "explanation": "[A] times 5 equals [RESULT]"
     },
     {
       "template_id": "BEG_PATTERN_01",
-      "pattern": "[C1][C2][C1][C2]?",
+      "pattern": "🔴🟡🔴🟡?",
       "variables": {
-        "C1": {"values": ["🔴", "🔵", "🟢", "🟡", "🟠", "🟣", "⚫", "⚪"]},
-        "C2": {"values": ["🔴", "🔵", "🟢", "🟡", "🟠", "🟣", "⚫", "⚪"]}
+        "FIRST": {"values": ["🔴", "🔵", "🟢", "🟡", "🟠", "🟣", "⚫", "⚪"]},
+        "SECOND": {"values": ["🔴", "🔵", "🟢", "🟡", "🟠", "🟣", "⚫", "⚪"]}
       },
-      "calculation": "C1",
-      "explanation": "Pattern repeats: [C1], [C2], [C1], [C2], [C1]"
+      "pattern_builder": "FIRST + SECOND + FIRST + SECOND + '?'",
+      "calculation": "FIRST",
+      "explanation": "Pattern repeats: [FIRST], [SECOND], [FIRST], [SECOND], [FIRST]"
     },
     {
       "template_id": "BEG_PATTERN_02",
-      "pattern": "[START], [START+2], [START+4], ?",
+      "pattern": "2, 4, 6, ?",
       "variables": {
-        "START": {"values": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}
+        "START": {"values": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]}
       },
+      "pattern_builder": "START + ', ' + (START+2) + ', ' + (START+4) + ', ?'",
       "calculation": "START + 6",
       "explanation": "Counting by 2s: [START], [START+2], [START+4], [RESULT]"
     },
@@ -285,7 +267,7 @@
       "template_id": "BEG_FRAC_01",
       "pattern": "½ of [A] = ?",
       "variables": {
-        "A": {"values": [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40]}
+        "A": {"values": [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50]}
       },
       "calculation": "A / 2",
       "explanation": "Half of [A] = [A] ÷ 2 = [RESULT]"
@@ -294,7 +276,7 @@
       "template_id": "BEG_FRAC_02",
       "pattern": "¼ of [A] = ?",
       "variables": {
-        "A": {"values": [4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60]}
+        "A": {"values": [4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80]}
       },
       "calculation": "A / 4",
       "explanation": "Quarter of [A] = [A] ÷ 4 = [RESULT]"
@@ -303,8 +285,8 @@
       "template_id": "BEG_MEASURE_01",
       "pattern": "[A] cm + [B] cm = ? cm",
       "variables": {
-        "A": {"min": 5, "max": 40},
-        "B": {"min": 5, "max": 40}
+        "A": {"min": 5, "max": 100},
+        "B": {"min": 5, "max": 100}
       },
       "calculation": "A + B",
       "explanation": "[A] cm + [B] cm = [RESULT] cm"
