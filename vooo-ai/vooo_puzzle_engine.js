@@ -247,9 +247,43 @@ calculateAnswer(template, variables) {
         // First check if the calculation is just a variable name
         const calc = template.calculation.trim();
         
-        // If it's just a variable name (like "SHAPE"), return its value directly
+        // Check if calculation uses repeat() function
+        if (calc.includes('repeat(')) {
+            return this.evaluateExpression(calc, variables);
+        }
+        
+        // Check if calculation uses next_in_pattern() function
+        if (calc.includes('next_in_pattern(')) {
+            const pattern = this.evaluateExpression(calc, variables);
+            
+            // Get the template options (the emojis available)
+            const options = template.options || [];
+            
+            // Determine which emoji to return based on pattern
+            if (pattern === 'ABAB' || pattern === 'AABB') {
+                // Next in ABAB (🔴🟡🔴🟡?) is 🔴 (first)
+                // Next in AABB (🔴🔴🟡🟡?) is 🔴 (first)
+                return options[0] || '🔴';
+            } else if (pattern === 'ABCABC') {
+                // Next in ABCABC (🔴🟡🔵🔴🟡?) is 🔵 (third)
+                return options[2] || '🔵';
+            }
+            
+            return options[0] || '?';
+        }
+        
+        // If it's just a variable name (like "SHAPE" or "NUMBER"), return its value directly
         if (variables.hasOwnProperty(calc)) {
             const value = variables[calc];
+            
+            // Special handling for visual matching (TOD_MATCH_01)
+            if (template.answer_type === 'multiple_choice_visual' && template.options_builder) {
+                // The answer should be the emoji repeated, not just the number
+                const emojiVar = template.options_builder.match(/generate_options\([^,]+,\s*(\w+)\)/);
+                if (emojiVar && variables[emojiVar[1]]) {
+                    return variables[emojiVar[1]].repeat(value);
+                }
+            }
             
             // Handle special answer types
             if (template.answer_type === 'shape_selector' && typeof value === 'string') {
