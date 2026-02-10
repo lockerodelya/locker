@@ -4,7 +4,7 @@
   "templates": [
     {
       "template_id": "BEG_ADD_01",
-      "pattern_builder": "[PERSON] [HAS] [A] [OBJECT_A]. [ACTION] [B] [OBJECT_B]. How many total [OBJECT_PLURAL]?",
+      "pattern_builder": "function(v) { return v.PERSON + ' ' + v.HAS + ' ' + v.A + ' ' + v.OBJECT_A + '. ' + v.ACTION + ' ' + v.B + ' ' + v.OBJECT_B + '. How many total ' + v.OBJECT_PLURAL + '?'; }",
       "variables": {
         "A": {"min": 1, "max": 25},
         "B": {"min": 1, "max": 25},
@@ -20,7 +20,7 @@
     },
     {
       "template_id": "BEG_SUB_01",
-      "pattern_builder": "[PERSON] [HAS] [A] [OBJECT_PLURAL]. [GIVES] [B] to [RECEIVER]. How many left?",
+      "pattern_builder": "function(v) { return v.PERSON + ' ' + v.HAS + ' ' + v.A + ' ' + v.OBJECT_PLURAL + '. ' + v.GIVES + ' ' + v.B + ' to ' + v.RECEIVER + '. How many left?'; }",
       "variables": {
         "A": {"min": 5, "max": 30},
         "B": {"min": 1, "max": "A-1"},
@@ -35,7 +35,7 @@
     },
     {
       "template_id": "BEG_MISS_01",
-      "pattern_builder": "[A] + ? = [C] (Find the missing number)",
+      "pattern": "[A] + ? = [C]",
       "variables": {
         "A": {"min": 1, "max": 20},
         "C": {"min": "A+1", "max": "A+15"}
@@ -45,7 +45,7 @@
     },
     {
       "template_id": "BEG_MISS_02",
-      "pattern_builder": "? - [B] = [C] (Find the missing number)",
+      "pattern": "? - [B] = [C]",
       "variables": {
         "B": {"min": 1, "max": 15},
         "C": {"min": 1, "max": 15}
@@ -55,7 +55,7 @@
     },
     {
       "template_id": "BEG_BONDS_01",
-      "pattern_builder": "[A] + ? = 10",
+      "pattern": "[A] + ? = 10",
       "variables": {
         "A": {"min": 1, "max": 9}
       },
@@ -64,7 +64,7 @@
     },
     {
       "template_id": "BEG_WORD_01",
-      "pattern_builder": "[PERSON] has [A] [OBJECT_PLURAL]. [GETS] [B] more. Total?",
+      "pattern_builder": "function(v) { return v.PERSON + ' has ' + v.A + ' ' + v.OBJECT_PLURAL + '. ' + v.GETS + ' ' + v.B + ' more. Total?'; }",
       "variables": {
         "A": {"min": 1, "max": 20},
         "B": {"min": 1, "max": 20},
@@ -77,7 +77,7 @@
     },
     {
       "template_id": "BEG_MONEY_01",
-      "pattern_builder": "[A] one-rupee coins + [B] two-rupee coins = ? rupees",
+      "pattern": "[A] one-rupee coins + [B] two-rupee coins = ? rupees",
       "variables": {
         "A": {"min": 1, "max": 10},
         "B": {"min": 1, "max": 10}
@@ -87,7 +87,7 @@
     },
     {
       "template_id": "BEG_DOUBLE_01",
-      "pattern_builder": "Double of [A] is ?",
+      "pattern": "Double of [A] is ?",
       "variables": {
         "A": {"min": 1, "max": 25}
       },
@@ -96,7 +96,7 @@
     },
     {
       "template_id": "BEG_HALF_01",
-      "pattern_builder": "Half of [A] is ?",
+      "pattern": "Half of [A] is ?",
       "variables": {
         "A": {"values": [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]}
       },
@@ -105,7 +105,7 @@
     },
     {
       "template_id": "BEG_NEXT_01",
-      "pattern_builder": "What comes next? [A], ?, ?, ?",
+      "pattern": "What comes next? [A], ?, ?, ?",
       "variables": {
         "A": {"min": 1, "max": 50}
       },
@@ -114,7 +114,7 @@
     },
     {
       "template_id": "BEG_COUNT2_01",
-      "pattern_builder": "Count by 2s: [A], ?, ?",
+      "pattern": "Count by 2s: [A], ?, ?",
       "variables": {
         "A": {"values": [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]}
       },
@@ -123,7 +123,7 @@
     },
     {
       "template_id": "BEG_COUNT5_01",
-      "pattern_builder": "Count by 5s: [A], ?, ?",
+      "pattern": "Count by 5s: [A], ?, ?",
       "variables": {
         "A": {"values": [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]}
       },
@@ -132,7 +132,7 @@
     },
     {
       "template_id": "BEG_COUNT10_01",
-      "pattern_builder": "Count by 10s: [A], ?, ?",
+      "pattern": "Count by 10s: [A], ?, ?",
       "variables": {
         "A": {"values": [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
       },
@@ -141,7 +141,7 @@
     },
     {
       "template_id": "BEG_BIGGER_01",
-      "pattern_builder": "Which is bigger: [A] or [B]?",
+      "pattern": "Which is bigger: [A] or [B]?",
       "variables": {
         "A": {"min": 1, "max": 50},
         "B": {"min": 1, "max": 50}
@@ -151,7 +151,7 @@
     },
     {
       "template_id": "BEG_SMALLER_01",
-      "pattern_builder": "Which is smaller: [A] or [B]?",
+      "pattern": "Which is smaller: [A] or [B]?",
       "variables": {
         "A": {"min": 1, "max": 50},
         "B": {"min": 1, "max": 50}
@@ -161,7 +161,7 @@
     },
     {
       "template_id": "BEG_WORD_02",
-      "pattern_builder": "There are [A] [ANIMALS]. [ACTION] [B] [LEAVE]. How many left?",
+      "pattern_builder": "function(v) { return 'There are ' + v.A + ' ' + v.ANIMALS + '. ' + v.ACTION + ' ' + v.B + ' ' + v.LEAVE + '. How many left?'; }",
       "variables": {
         "A": {"min": 5, "max": 30},
         "B": {"min": 1, "max": "A-1"},
@@ -174,7 +174,7 @@
     },
     {
       "template_id": "BEG_TRIPLE_01",
-      "pattern_builder": "Triple of [A] is ?",
+      "pattern": "Triple of [A] is ?",
       "variables": {
         "A": {"min": 1, "max": 15}
       },
@@ -183,7 +183,7 @@
     },
     {
       "template_id": "BEG_ADD_02",
-      "pattern_builder": "[A] + [B] = ?",
+      "pattern": "[A] + [B] = ?",
       "variables": {
         "A": {"min": 10, "max": 40},
         "B": {"min": 1, "max": 30}
@@ -193,7 +193,7 @@
     },
     {
       "template_id": "BEG_ADD_03",
-      "pattern_builder": "[A] + [B] = ?",
+      "pattern": "[A] + [B] = ?",
       "variables": {
         "A": {"min": 20, "max": 80},
         "B": {"min": 1, "max": 30}
@@ -203,7 +203,7 @@
     },
     {
       "template_id": "BEG_MONEY_02",
-      "pattern_builder": "[A] ten-rupee notes + [B] five-rupee coins = ? rupees",
+      "pattern": "[A] ten-rupee notes + [B] five-rupee coins = ? rupees",
       "variables": {
         "A": {"min": 1, "max": 8},
         "B": {"min": 1, "max": 8}
@@ -213,7 +213,7 @@
     },
     {
       "template_id": "BEG_MONEY_03",
-      "pattern_builder": "₹[A] + ₹[B] = ?",
+      "pattern": "₹[A] + ₹[B] = ?",
       "variables": {
         "A": {"min": 10, "max": 100, "step": 5},
         "B": {"min": 5, "max": 50, "step": 5}
@@ -223,7 +223,7 @@
     },
     {
       "template_id": "BEG_WORD_03",
-      "pattern_builder": "[PERSON1] has [A] marbles. [PERSON2] has [B] marbles. Total marbles?",
+      "pattern_builder": "function(v) { return v.PERSON1 + ' has ' + v.A + ' marbles. ' + v.PERSON2 + ' has ' + v.B + ' marbles. Total marbles?'; }",
       "variables": {
         "A": {"min": 5, "max": 25},
         "B": {"min": 5, "max": 25},
@@ -235,7 +235,7 @@
     },
     {
       "template_id": "BEG_WORD_04",
-      "pattern_builder": "A shop has [A] [ITEMS]. They sell [B]. How many left?",
+      "pattern_builder": "function(v) { return 'A shop has ' + v.A + ' ' + v.ITEMS + '. They sell ' + v.B + '. How many left?'; }",
       "variables": {
         "A": {"min": 15, "max": 50},
         "B": {"min": 5, "max": 30},
@@ -246,7 +246,7 @@
     },
     {
       "template_id": "BEG_MULT_01",
-      "pattern_builder": "[A] × 2 = ?",
+      "pattern": "[A] × 2 = ?",
       "variables": {
         "A": {"min": 1, "max": 20}
       },
@@ -255,7 +255,7 @@
     },
     {
       "template_id": "BEG_MULT_02",
-      "pattern_builder": "[A] × 5 = ?",
+      "pattern": "[A] × 5 = ?",
       "variables": {
         "A": {"min": 1, "max": 20}
       },
@@ -264,7 +264,7 @@
     },
     {
       "template_id": "BEG_PATTERN_01",
-      "pattern_builder": "[C1][C2][C1][C2]?",
+      "pattern_builder": "function(v) { return v.C1 + v.C2 + v.C1 + v.C2 + '?'; }",
       "variables": {
         "C1": {"values": ["🔴", "🔵", "🟢", "🟡", "🟠", "🟣", "⚫", "⚪"]},
         "C2": {"values": ["🔴", "🔵", "🟢", "🟡", "🟠", "🟣", "⚫", "⚪"]}
@@ -274,7 +274,7 @@
     },
     {
       "template_id": "BEG_PATTERN_02",
-      "pattern_builder": "[START], [START+2], [START+4], ?",
+      "pattern_builder": "function(v) { return v.START + ', ' + (v.START+2) + ', ' + (v.START+4) + ', ?'; }",
       "variables": {
         "START": {"values": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}
       },
@@ -283,7 +283,7 @@
     },
     {
       "template_id": "BEG_FRAC_01",
-      "pattern_builder": "½ of [A] = ?",
+      "pattern": "½ of [A] = ?",
       "variables": {
         "A": {"values": [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40]}
       },
@@ -292,7 +292,7 @@
     },
     {
       "template_id": "BEG_FRAC_02",
-      "pattern_builder": "¼ of [A] = ?",
+      "pattern": "¼ of [A] = ?",
       "variables": {
         "A": {"values": [4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60]}
       },
@@ -301,7 +301,7 @@
     },
     {
       "template_id": "BEG_MEASURE_01",
-      "pattern_builder": "[A] cm + [B] cm = ? cm",
+      "pattern": "[A] cm + [B] cm = ? cm",
       "variables": {
         "A": {"min": 5, "max": 40},
         "B": {"min": 5, "max": 40}
@@ -311,7 +311,7 @@
     },
     {
       "template_id": "BEG_MEASURE_02",
-      "pattern_builder": "[A] meters = ? cm",
+      "pattern": "[A] meters = ? cm",
       "variables": {
         "A": {"min": 1, "max": 10}
       },
