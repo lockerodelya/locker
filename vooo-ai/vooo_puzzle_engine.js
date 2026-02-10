@@ -462,14 +462,14 @@ calculateAnswer(template, variables) {
         }
     }
 
-    getRandomResponse(type) {
-        const responses = this.categoryData?.responses?.[type] || 
-            (type === 'correct' 
-                ? ['Correct!', 'Well done!', 'Perfect!', 'Excellent!']
-                : ['Try again!', 'Not quite!', 'Almost!', 'Keep going!']);
-        
-        return responses[Math.floor(Math.random() * responses.length)];
+getRandomResponse(type) {
+    // Return fixed messages, not random ones
+    if (type === 'correct') {
+        return 'Yes Correct Answer';
+    } else {
+        return 'Please try again';
     }
+}
 
     getStats() {
         const accuracy = this.totalAttempts > 0 
@@ -644,42 +644,30 @@ function selectAnswer(selectedIndex) {
     const feedbackEl = document.getElementById('vooo-feedback');
     const explanationEl = document.getElementById('vooo-explanation');
     const optionsContainer = document.getElementById('vooo-options');
-    
-    // Disable all option buttons temporarily
     const optionButtons = optionsContainer.querySelectorAll('.vooo-option');
-    optionButtons.forEach(button => {
-        button.disabled = true;
-        button.style.opacity = '0.6';
-        button.style.cursor = 'not-allowed';
-    });
-    
-    // Highlight correct answer
-    const correctIndex = voooEngine.currentPuzzle.correctIndex;
-    if (correctIndex >= 0 && correctIndex < optionButtons.length) {
-        optionButtons[correctIndex].style.backgroundColor = '#c6f6d5';
-        optionButtons[correctIndex].style.borderColor = '#9ae6b4';
-    }
     
     if (result.correct) {
-        feedbackEl.textContent = result.message;
+        // Correct answer - turn button green
+        optionButtons[selectedIndex].style.backgroundColor = '#c6f6d5';
+        optionButtons[selectedIndex].style.borderColor = '#9ae6b4';
+        
+        feedbackEl.textContent = 'Yes Correct Answer';
         feedbackEl.className = 'vooo-feedback correct';
         explanationEl.textContent = result.explanation;
         
-        // Check if should progress to next level
-        const stats = voooEngine.getStats();
-        if (stats.score >= 10 && stats.accuracy >= 80 && !voooEngine.isMaxLevel()) {
-            showLevelUpPrompt();
-        } else {
-            // Show "Next Puzzle" button for correct answers
-            showNextButton();
-        }
+        // Auto next after 1.5 seconds
+        setTimeout(nextPuzzle, 1500);
     } else {
-        feedbackEl.textContent = result.message;
-        feedbackEl.className = 'vooo-feedback incorrect';
-        explanationEl.textContent = `${result.explanation}`;
+        // Wrong answer - turn button red
+        optionButtons[selectedIndex].style.backgroundColor = '#fed7d7';
+        optionButtons[selectedIndex].style.borderColor = '#fc8181';
         
-        // Show "Try Again" button for wrong answers
-        showTryAgainButton();
+        feedbackEl.textContent = 'Please try again';
+        feedbackEl.className = 'vooo-feedback incorrect';
+        
+        // User can try another answer - DON'T disable buttons
+        // DON'T show "Next Logic" button
+        // Just show message and let user try again
     }
     
     updateStatsDisplay();
@@ -753,11 +741,6 @@ function updatePuzzleDisplay(puzzle) {
         }
         
         // Reset button styles
-        button.style.backgroundColor = '';
-        button.style.borderColor = '';
-        button.style.opacity = '1';
-        button.disabled = false;
-        button.style.cursor = 'pointer';
         
         button.onclick = () => selectAnswer(index);
         optionsContainer.appendChild(button);
