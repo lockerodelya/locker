@@ -68,6 +68,7 @@ class VOOOPuzzleEngine {
 
     generateNewPuzzle() {
         if (!this.categoryData || !this.categoryData.templates) {
+            console.error('No category data or templates found');
             return null;
         }
 
@@ -100,6 +101,7 @@ class VOOOPuzzleEngine {
             answerType: this.currentTemplate.answer_type || 'text'
         };
 
+        console.log('Generated puzzle:', this.currentPuzzle);
         return this.currentPuzzle;
     }
 
@@ -135,11 +137,15 @@ class VOOOPuzzleEngine {
     }
 
     evaluateExpression(expr, variables) {
+        console.log('Evaluating expression:', expr, 'with variables:', variables);
+        
         // Replace variable names with their values
         let evaluated = expr;
         for (const [varName, value] of Object.entries(variables)) {
             evaluated = evaluated.replace(new RegExp(varName, 'g'), value);
         }
+        
+        console.log('After variable substitution:', evaluated);
         
         // Add support for custom functions
         if (evaluated.includes('repeat(')) {
@@ -154,16 +160,21 @@ class VOOOPuzzleEngine {
         
         if (evaluated.includes('next_in_pattern(')) {
             evaluated = evaluated.replace(/next_in_pattern\(([^)]+)\)/g, (match, pattern) => {
-                return this.calculateNextInPattern(pattern.trim().replace(/['"]/g, ''), variables);
+                const result = this.calculateNextInPattern(pattern.trim().replace(/['"]/g, ''), variables);
+                return `"${result}"`;
             });
         }
         
         if (evaluated.includes('generate_options(')) {
             evaluated = evaluated.replace(/generate_options\(([^)]+)\)/g, (match, params) => {
                 const [num, emoji] = params.split(',').map(p => p.trim().replace(/['"]/g, ''));
-                return this.generateVisualOptions(num, emoji, variables);
+                const options = this.generateVisualOptions(num, emoji, variables);
+                // Return as JSON array string
+                return JSON.stringify(options);
             });
         }
+        
+        console.log('After function processing:', evaluated);
         
         // Evaluate the expression safely
         try {
@@ -176,8 +187,20 @@ class VOOOPuzzleEngine {
                 return evaluated.slice(1, -1);
             }
             
+            // Handle array results
+            if (evaluated.startsWith('[') && evaluated.endsWith(']')) {
+                try {
+                    return JSON.parse(evaluated);
+                } catch (e) {
+                    console.error('Error parsing array:', evaluated, e);
+                    return [];
+                }
+            }
+            
             // For numeric/boolean expressions
-            return new Function('return ' + evaluated)();
+            const result = new Function('return ' + evaluated)();
+            console.log('Evaluation result:', result);
+            return result;
         } catch (e) {
             console.error('Error evaluating expression:', expr, '->', evaluated, e);
             return 0;
@@ -189,6 +212,7 @@ class VOOOPuzzleEngine {
         if (template.pattern_builder) {
             try {
                 const result = this.evaluateExpression(template.pattern_builder, variables);
+                console.log('Built question:', result);
                 return result;
             } catch (e) {
                 console.error('Error building pattern:', e);
@@ -227,10 +251,13 @@ class VOOOPuzzleEngine {
     }
 
     generateOptions(correctAnswer, template, variables) {
+        console.log('Generating options for answer:', correctAnswer, 'type:', template.answer_type);
+        
         // Use options_builder if available
         if (template.options_builder) {
             try {
                 const options = this.evaluateExpression(template.options_builder, variables);
+                console.log('Built options:', options);
                 if (Array.isArray(options)) {
                     return this.shuffleArray(options);
                 }
@@ -308,11 +335,19 @@ class VOOOPuzzleEngine {
 
     generateVisualOptions(number, emojiName, variables) {
         const emoji = variables[emojiName] || emojiName;
+        const targetNumber = parseInt(number) || 3;
         const options = [];
         
-        // Create visual representations of numbers
+        // Create visual representations of numbers around the target
         for (let i = 1; i <= 5; i++) {
             options.push(emoji.repeat(i));
+        }
+        
+        // Make sure the correct number is in options
+        if (targetNumber >= 1 && targetNumber <= 5) {
+            if (!options.includes(emoji.repeat(targetNumber))) {
+                options[0] = emoji.repeat(targetNumber);
+            }
         }
         
         return this.shuffleArray(options);
@@ -332,17 +367,23 @@ class VOOOPuzzleEngine {
     }
 
     findCorrectIndex(options, correctAnswer, answerType) {
+        console.log('Finding correct index for:', correctAnswer, 'in options:', options, 'type:', answerType);
+        
         // For visual comparisons, we need to check differently
         if (answerType === 'comparison') {
             const aSize = this.sizeComparison[options[0]] || 'medium';
             const bSize = this.sizeComparison[options[1]] || 'medium';
             
             // Assuming bigger is correct (as per your template)
-            return aSize === 'big' ? 0 : 1;
+            const correctIndex = aSize === 'big' ? 0 : 1;
+            console.log('Comparison correct index:', correctIndex);
+            return correctIndex;
         }
         
         // Default: find by value
-        return options.findIndex(opt => opt === correctAnswer);
+        const index = options.findIndex(opt => opt === correctAnswer);
+        console.log('Found correct index:', index);
+        return index;
     }
 
     generateExplanation(template, variables, answer) {
@@ -491,8 +532,15 @@ window.voooEngine = new VOOOPuzzleEngine();
 
 // Initialize the game
 async function initVOOOGame() {
+    console.log('Initializing VOOO game...');
+    
     // Load default category (Toddler level)
-    await voooEngine.loadCategory('math_toddler');
+    const loaded = await voooEngine.loadCategory('math_toddler');
+    
+    if (!loaded) {
+        document.getElementById('vooo-question').textContent = 'Error loading puzzles.';
+        return;
+    }
     
     // Generate first puzzle
     const puzzle = voooEngine.generateNewPuzzle();
@@ -501,7 +549,7 @@ async function initVOOOGame() {
         updatePuzzleDisplay(puzzle);
     } else {
         // Show error message
-        document.getElementById('vooo-question').textContent = 'Error loading puzzles. Please check console.';
+        document.getElementById('vooo-question').textContent = 'Error generating puzzle. Check console.';
     }
     
     // Update level selector
@@ -512,6 +560,8 @@ async function initVOOOGame() {
 }
 
 function updatePuzzleDisplay(puzzle) {
+    console.log('Updating puzzle display:', puzzle);
+    
     // Update question
     document.getElementById('vooo-question').textContent = puzzle.question;
     
@@ -544,6 +594,7 @@ function updatePuzzleDisplay(puzzle) {
 }
 
 function selectAnswer(selectedIndex) {
+    console.log('Selected answer:', selectedIndex);
     const result = voooEngine.checkAnswer(selectedIndex);
     const feedbackEl = document.getElementById('vooo-feedback');
     const explanationEl = document.getElementById('vooo-explanation');
@@ -574,6 +625,7 @@ function selectAnswer(selectedIndex) {
 }
 
 async function nextPuzzle() {
+    console.log('Loading next puzzle...');
     const puzzle = voooEngine.generateNewPuzzle();
     if (puzzle) {
         updatePuzzleDisplay(puzzle);
@@ -581,6 +633,7 @@ async function nextPuzzle() {
 }
 
 async function changeLevel(levelKey) {
+    console.log('Changing level to:', levelKey);
     const success = await voooEngine.loadCategory(levelKey);
     if (success) {
         voooEngine.resetScore();
@@ -631,6 +684,7 @@ function updateLevelIndicator() {
 }
 
 function resetGame() {
+    console.log('Resetting game...');
     voooEngine.resetScore();
     nextPuzzle();
 }
