@@ -17,7 +17,7 @@
       "pattern": "[A] - [B] = ?",
       "variables": {
         "A": {"min": 2, "max": 10},
-        "B": {"min": 1, "max": 9}
+        "B": {"min": 1, "max": "A-1"}
       },
       "calculation": "A - B",
       "explanation": "[A] minus [B] equals [RESULT]."
@@ -27,7 +27,7 @@
       "pattern": "[A] + ? = [C]",
       "variables": {
         "A": {"min": 1, "max": 8},
-        "C": {"min": 2, "max": 10}
+        "C": {"min": "A+1", "max": 10}
       },
       "calculation": "C - A",
       "explanation": "? = [C] - [A] = [RESULT]"
@@ -58,20 +58,10 @@
         "A": {"min": 1, "max": 20},
         "B": {"min": 1, "max": 20}
       },
-      "calculation": "comparison",
+      "calculation": "compare(A, B)",
       "answer_type": "comparison_operator",
       "options": ["<", "=", ">"],
       "explanation": "[A] [RESULT] [B]"
-    },
-    {
-      "template_id": "BEG_SKIP_01",
-      "pattern": "Count by [STEP]: [START], ?, [NEXT2], [NEXT3]",
-      "variables": {
-        "START": {"min": 0, "max": 10},
-        "STEP": {"values": [2, 3, 5, 10]}
-      },
-      "calculation": "START + STEP",
-      "explanation": "[START] + [STEP] = [RESULT]"
     },
     {
       "template_id": "BEG_WORD_01",
@@ -84,8 +74,19 @@
       "explanation": "[A] + [B] = [RESULT]"
     },
     {
+      "template_id": "BEG_TIME_01",
+      "pattern": "What time is it?",
+      "image": "clock_[HOUR]_[MINUTE].png",
+      "variables": {
+        "HOUR": {"min": 1, "max": 12},
+        "MINUTE": {"values": [0, 15, 30, 45]}
+      },
+      "calculation": "format_time(HOUR, MINUTE)",
+      "answer_type": "time_input"
+    },
+    {
       "template_id": "BEG_MONEY_01",
-      "pattern": "[COUNT_A] coins of [COIN_A]¢ + [COUNT_B] coins of [COIN_B]¢ = ? cents",
+      "pattern": "💰 + 💰💰 = ? cents",
       "variables": {
         "COIN_A": {"values": [1, 5, 10]},
         "COUNT_A": {"min": 1, "max": 3},
@@ -114,21 +115,103 @@
       "explanation": "[A] ÷ 2 = [RESULT]"
     },
     {
-  "template_id": "BEG_ORDER_01",
-  "pattern": "Put in order from smallest to largest: [A], [B], [C]",
-  "variables": {
-    "A": {"min": 1, "max": 20},
-    "B": {"min": 1, "max": 20, "not_equal": ["A"]},
-    "C": {"min": 1, "max": 20, "not_equal": ["A", "B"]}
-  },
-  "calculation": "sort([A, B, C])",
-  "explanation": "From smallest to largest: [SORTED]"
-}
+      "template_id": "BEG_NEXT_01",
+      "pattern": "What comes next? [A], [B], [C], ?",
+      "variables": {
+        "A": {"min": 1, "max": 15}
+      },
+      "calculation": "A + 3",
+      "explanation": "The pattern increases by 1: [A], [A+1], [A+2], [RESULT]"
+    },
+    {
+      "template_id": "BEG_COUNT2_01",
+      "pattern": "Count by 2s: [A], [B], ?",
+      "variables": {
+        "A": {"values": [0, 2, 4, 6, 8, 10]}
+      },
+      "calculation": "A + 4",
+      "explanation": "Counting by 2s: [A], [A+2], [RESULT]"
+    },
+    {
+      "template_id": "BEG_COUNT5_01",
+      "pattern": "Count by 5s: [A], [B], ?",
+      "variables": {
+        "A": {"values": [0, 5, 10, 15, 20]}
+      },
+      "calculation": "A + 10",
+      "explanation": "Counting by 5s: [A], [A+5], [RESULT]"
+    },
+    {
+      "template_id": "BEG_COUNT10_01",
+      "pattern": "Count by 10s: [A], [B], ?",
+      "variables": {
+        "A": {"values": [0, 10, 20, 30]}
+      },
+      "calculation": "A + 20",
+      "explanation": "Counting by 10s: [A], [A+10], [RESULT]"
+    },
+    {
+      "template_id": "BEG_BIGGER_01",
+      "pattern": "Which is bigger: [A] or [B]?",
+      "variables": {
+        "A": {"min": 1, "max": 20},
+        "B": {"min": 1, "max": 20}
+      },
+      "calculation": "max(A, B)",
+      "explanation": "[RESULT] is the bigger number."
+    },
+    {
+      "template_id": "BEG_SMALLER_01",
+      "pattern": "Which is smaller: [A] or [B]?",
+      "variables": {
+        "A": {"min": 1, "max": 20},
+        "B": {"min": 1, "max": 20}
+      },
+      "calculation": "min(A, B)",
+      "explanation": "[RESULT] is the smaller number."
+    },
+    {
+      "template_id": "BEG_WORD_02",
+      "pattern": "There are [A] birds. [B] fly away. How many left?",
+      "variables": {
+        "A": {"min": 5, "max": 10},
+        "B": {"min": 1, "max": "A-1"}
+      },
+      "calculation": "A - B",
+      "explanation": "[A] - [B] = [RESULT]"
+    },
+    {
+      "template_id": "BEG_TRIPLE_01",
+      "pattern": "Triple of [A] is ?",
+      "variables": {
+        "A": {"min": 1, "max": 5}
+      },
+      "calculation": "A * 3",
+      "explanation": "3 × [A] = [RESULT]"
+    },
+    {
+      "template_id": "BEG_ROUND_01",
+      "pattern": "Round [A] to the nearest 10",
+      "variables": {
+        "A": {"min": 11, "max": 99}
+      },
+      "calculation": "round_to_10(A)",
+      "explanation": "[A] rounds to [RESULT]"
+    },
+    {
+      "template_id": "BEG_ODD_EVEN_01",
+      "pattern": "Is [A] odd or even?",
+      "variables": {
+        "A": {"min": 1, "max": 20}
+      },
+      "calculation": "is_even(A) ? 'even' : 'odd'",
+      "answer_type": "choice",
+      "options": ["odd", "even"],
+      "explanation": "[A] is [RESULT]"
+    }
   ],
   "responses": {
     "correct": ["Great! 🎯", "Perfect! ✅", "You're learning fast! 🚀", "Excellent! 🌟"],
     "incorrect": ["Close! Try again 🔄", "Check your work 📝", "Think carefully 🤔", "Almost there! 💪"]
   }
 }
-
-
