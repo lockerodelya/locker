@@ -696,12 +696,12 @@ function showNextButton() {
     const nextBtn = document.createElement('button');
     nextBtn.id = 'action-btn';
     nextBtn.className = 'vooo-button';
-    nextBtn.textContent = 'Next Puzzle →';
+    nextBtn.textContent = 'Next Logic →';
     nextBtn.style.marginTop = '10px';
     nextBtn.style.width = '100%';
     nextBtn.onclick = () => {
         nextBtn.remove();
-        nextPuzzle();
+        nextLogic();
     };
     
     feedbackEl.appendChild(nextBtn);
@@ -718,7 +718,7 @@ function showTryAgainButton() {
     const tryAgainBtn = document.createElement('button');
     tryAgainBtn.id = 'action-btn';
     tryAgainBtn.className = 'vooo-button';
-    tryAgainBtn.textContent = 'Try Next Puzzle';
+    tryAgainBtn.textContent = 'Next Logic';
     tryAgainBtn.style.marginTop = '10px';
     tryAgainBtn.style.width = '100%';
     tryAgainBtn.onclick = () => {
