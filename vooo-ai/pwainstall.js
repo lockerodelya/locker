@@ -209,7 +209,7 @@ class VoooPWAInstaller {
         this.installButton.id = 'vooo-pwa-install-btn';
         this.installButton.innerHTML = `
             <i class="fas fa-download" style="margin-right: 8px;"></i> 
-            Install Odelya Vooo AI
+            Install Vooo AI
         `;
         
         // Common styling for both mobile and desktop - CENTERED
