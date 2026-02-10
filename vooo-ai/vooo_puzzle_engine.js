@@ -404,25 +404,25 @@ calculateAnswer(template, variables) {
         }
     }
 
-    findCorrectIndex(options, correctAnswer, answerType) {
-        console.log('Finding correct index for:', correctAnswer, 'in options:', options, 'type:', answerType);
+findCorrectIndex(options, correctAnswer, answerType) {
+    console.log('Finding correct index for:', correctAnswer, 'in options:', options, 'type:', answerType);
+    
+    // For visual comparisons, we need to check differently
+    if (answerType === 'comparison') {
+        const aSize = this.sizeComparison[options[0]] || 'medium';
+        const bSize = this.sizeComparison[options[1]] || 'medium';
         
-        // For visual comparisons, we need to check differently
-        if (answerType === 'comparison') {
-            const aSize = this.sizeComparison[options[0]] || 'medium';
-            const bSize = this.sizeComparison[options[1]] || 'medium';
-            
-            // Assuming bigger is correct (as per your template)
-            const correctIndex = aSize === 'big' ? 0 : 1;
-            console.log('Comparison correct index:', correctIndex);
-            return correctIndex;
-        }
-        
-        // Default: find by value
-        const index = options.findIndex(opt => opt === correctAnswer);
-        console.log('Found correct index:', index);
-        return index;
+        // Assuming bigger is correct (as per your template)
+        const correctIndex = aSize === 'big' ? 0 : 1;
+        console.log('Comparison correct index:', correctIndex);
+        return correctIndex;
     }
+    
+    // Default: find by value - compare as strings to handle type differences
+    const index = options.findIndex(opt => String(opt) === String(correctAnswer));
+    console.log('Found correct index:', index);
+    return index;
+}
 
     generateExplanation(template, variables, answer) {
         if (!template.explanation) {
