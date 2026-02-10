@@ -115,11 +115,11 @@
     },
     {
   "template_id": "BEG_ORDER_01",
-  "pattern": "Put in order: [A], [B], [C]",
+  "pattern": "Put in order from smallest to largest: [A], [B], [C]",
   "variables": {
     "A": {"min": 1, "max": 20},
-    "B": {"min": 1, "max": 20},
-    "C": {"min": 1, "max": 20}
+    "B": {"min": 1, "max": 20, "not_equal": ["A"]},
+    "C": {"min": 1, "max": 20, "not_equal": ["A", "B"]}
   },
   "calculation": "sort([A, B, C])",
   "explanation": "From smallest to largest: [SORTED]"
@@ -130,4 +130,5 @@
     "incorrect": ["Close! Try again 🔄", "Check your work 📝", "Think carefully 🤔", "Almost there! 💪"]
   }
 }
+
 
