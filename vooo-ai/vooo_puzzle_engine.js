@@ -306,6 +306,11 @@ calculateAnswer(template, variables) {
                 return variables[value + '_EMOJI'] || value;
             }
             
+            // Format numbers to max 4 decimal places
+            if (typeof value === 'number') {
+                return parseFloat(value.toFixed(4));
+            }
+            
             return value;
         }
         
@@ -323,6 +328,11 @@ calculateAnswer(template, variables) {
         
         if (template.answer_type === 'comparison' && typeof result === 'string') {
             return variables[result + '_EMOJI'] || result;
+        }
+        
+        // Format numbers to max 4 decimal places
+        if (typeof result === 'number') {
+            return parseFloat(result.toFixed(4));
         }
         
         return result;
@@ -377,7 +387,7 @@ calculateAnswer(template, variables) {
         const correctNum = Number(correctAnswer);
         
         if (!isNaN(correctNum)) {
-            options.push(correctAnswer.toString());
+            options.push(parseFloat(correctAnswer.toFixed(4)).toString());
             
             for (let i = 0; i < 3; i++) {
                 let wrongAnswer;
@@ -395,7 +405,7 @@ calculateAnswer(template, variables) {
                     wrongAnswer = correctNum + (i + 2);
                 }
                 
-                options.push(wrongAnswer.toString());
+                options.push(parseFloat(wrongAnswer.toFixed(4)).toString());
             }
         } else {
             // Non-numerical
@@ -473,10 +483,14 @@ findCorrectIndex(options, correctAnswer, answerType) {
         
         let explanation = template.explanation;
         for (const [varName, value] of Object.entries(variables)) {
-            explanation = explanation.replace(`[${varName}]`, value);
+            // Format numeric values to 4 decimal places in explanation
+            const displayValue = typeof value === 'number' ? parseFloat(value.toFixed(4)) : value;
+            explanation = explanation.replace(`[${varName}]`, displayValue);
         }
         
-        explanation = explanation.replace('[RESULT]', answer);
+        // Format answer to 4 decimal places in explanation
+        const displayAnswer = typeof answer === 'number' ? parseFloat(answer.toFixed(4)) : answer;
+        explanation = explanation.replace('[RESULT]', displayAnswer);
         return explanation;
     }
 
