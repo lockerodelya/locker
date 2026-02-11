@@ -9,9 +9,7 @@
         "B": {"min": -10, "max": 10},
         "C": {"min": -20, "max": 20}
       },
-      "constraints": ["has_rational_solution(B, C)"],
-      "calculation": "solve_quadratic(1, B, C)",
-      "answer_type": "two_solutions",
+      "calculation": "quadratic_solution(1, B, C)",
       "explanation": "x = [-B ± √(B²-4C)]/2 = [RESULT]"
     },
     {
@@ -25,8 +23,7 @@
         "C": {"min": 10, "max": 30},
         "F": {"min": 10, "max": 30}
       },
-      "constraints": ["A*E != B*D"],
-      "calculation": "solve_simultaneous_x(A, B, C, D, E, F)",
+      "calculation": "solve_system_x(A, B, C, D, E, F)",
       "explanation": "Using elimination/substitution: x = [RESULT]"
     },
     {
@@ -69,8 +66,7 @@
         "X2": {"min": -5, "max": 5},
         "Y2": {"min": -5, "max": 5}
       },
-      "constraints": ["X1 != X2"],
-      "calculation": "(Y2 - Y1) / (X2 - X1)",
+      "calculation": "slope_between_points(X1, Y1, X2, Y2)",
       "explanation": "Slope = (y₂-y₁)/(x₂-x₁) = ([Y2]-[Y1])/([X2]-[X1]) = [RESULT]"
     },
     {
@@ -89,22 +85,19 @@
       "pattern": "Probability: [F] favorable, [T] total. P = ?",
       "variables": {
         "F": {"min": 1, "max": 10},
-        "T": {"min": "F+5", "max": 20}
+        "T": {"min": 11, "max": 20}
       },
       "calculation": "F / T",
       "explanation": "P = favorable/total = [F]/[T] = [RESULT]"
     },
     {
       "template_id": "ADV_PROB_02",
-      "pattern": "Dice: sum of [A] and [B] = ? Probability = ?",
+      "pattern": "Two dice: P(sum = [S]) = ?",
       "variables": {
-        "A": {"min": 1, "max": 6},
-        "B": {"min": 1, "max": 6}
+        "S": {"min": 2, "max": 12}
       },
-      "calculation": "A + B",
-      "probability": "count_favorable(A+B)/36",
-      "answer_type": "value_with_probability",
-      "explanation": "Sum = [A+B], Probability = [FAVORABLE]/36 = [PROB]"
+      "calculation": "dice_probability(S)",
+      "explanation": "Sum = [S], Probability = [RESULT]"
     },
     {
       "template_id": "ADV_STATS_01",
@@ -129,8 +122,8 @@
         "D": {"min": 10, "max": 50},
         "E": {"min": 10, "max": 50}
       },
-      "calculation": "median([A, B, C, D, E])",
-      "explanation": "Sorted: [SORTED], Median = [RESULT]"
+      "calculation": "median_of_five(A, B, C, D, E)",
+      "explanation": "Sorted values, middle = [RESULT]"
     },
     {
       "template_id": "ADV_TRIG_01",
@@ -138,7 +131,7 @@
       "variables": {
         "ANGLE": {"values": [0, 30, 45, 60, 90, 120, 135, 150, 180]}
       },
-      "calculation": "sin(radians(ANGLE))",
+      "calculation": "sin_degrees(ANGLE)",
       "explanation": "sin([ANGLE]°) = [RESULT]"
     },
     {
@@ -147,7 +140,7 @@
       "variables": {
         "ANGLE": {"values": [0, 30, 45, 60, 90, 120, 135, 150, 180]}
       },
-      "calculation": "cos(radians(ANGLE))",
+      "calculation": "cos_degrees(ANGLE)",
       "explanation": "cos([ANGLE]°) = [RESULT]"
     },
     {
@@ -156,7 +149,7 @@
       "variables": {
         "ANGLE": {"values": [0, 30, 45, 60, 120, 135, 150, 180]}
       },
-      "calculation": "tan(radians(ANGLE))",
+      "calculation": "tan_degrees(ANGLE)",
       "explanation": "tan([ANGLE]°) = [RESULT]"
     },
     {
@@ -164,9 +157,8 @@
       "pattern": "Right triangle: opposite = [O], hypotenuse = [H]. sinθ = ?",
       "variables": {
         "O": {"min": 3, "max": 12},
-        "H": {"min": "O+1", "max": 15}
+        "H": {"min": 13, "max": 15}
       },
-      "constraints": ["H > O"],
       "calculation": "O / H",
       "explanation": "sinθ = opposite/hypotenuse = [O]/[H] = [RESULT]"
     },
@@ -194,16 +186,15 @@
     },
     {
       "template_id": "ADV_COMPLEX_01",
-      "pattern": "([A] + [B]i) + ([C] + [D]i) = ? + ?i",
+      "pattern": "([A] + [B]i) + ([C] + [D]i) = ?",
       "variables": {
         "A": {"min": -5, "max": 5},
         "B": {"min": -5, "max": 5},
         "C": {"min": -5, "max": 5},
         "D": {"min": -5, "max": 5}
       },
-      "calculation": "(A + C, B + D)",
-      "answer_type": "complex_number",
-      "explanation": "Real: [A]+[C]=[A+C], Imaginary: [B]+[D]=[B+D]"
+      "calculation": "A + C",
+      "explanation": "Real part: [A]+[C]=[RESULT], Imaginary: [B]+[D]"
     },
     {
       "template_id": "ADV_LOGS_01",
@@ -211,7 +202,7 @@
       "variables": {
         "A": {"values": [2, 4, 8, 16, 32, 64, 128, 256]}
       },
-      "calculation": "log2(A)",
+      "calculation": "log_base_2(A)",
       "explanation": "2^[RESULT] = [A], so log₂([A]) = [RESULT]"
     },
     {
@@ -223,6 +214,24 @@
       },
       "calculation": "A * B",
       "explanation": "log([A]) + log([B]) = log([A]×[B]) = log([RESULT])"
+    },
+    {
+      "template_id": "ADV_DERIVATIVE_01",
+      "pattern": "d/dx([A]x²) = ?",
+      "variables": {
+        "A": {"min": 2, "max": 10}
+      },
+      "calculation": "2 * A",
+      "explanation": "Power rule: d/dx([A]x²) = [A]×2x¹ = [RESULT]x"
+    },
+    {
+      "template_id": "ADV_INTEGRAL_01",
+      "pattern": "∫[A]x dx = ?x² + C",
+      "variables": {
+        "A": {"min": 2, "max": 10}
+      },
+      "calculation": "A / 2",
+      "explanation": "∫[A]x dx = [A]×(x²/2) + C = [RESULT]x² + C"
     }
   ],
   "responses": {
