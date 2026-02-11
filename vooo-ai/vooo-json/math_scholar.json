@@ -3,85 +3,65 @@
   "display_name": "🧠 Scholar Math (Undergrad)",
   "templates": [
     {
-      "template_id": "SCH_PROOF_01",
-      "pattern": "Prove: If n is even, then n² is even",
-      "variables": {},
-      "calculation": "Let n = 2k, then n² = (2k)² = 4k² = 2(2k²), which is even",
-      "explanation": "Direct proof: n even ⇒ n=2k ⇒ n²=4k²=2(2k²) ⇒ n² even"
-    },
-    {
-      "template_id": "SCH_PROOF_02",
-      "pattern": "Prove by induction: 1+2+...+n = n(n+1)/2",
-      "variables": {},
-      "calculation": "Base: n=1, 1=1(2)/2. Assume true for n, show for n+1",
-      "explanation": "P(1) true. Assume P(k): Σi=1 to k = k(k+1)/2. Then Σi=1 to k+1 = k(k+1)/2 + (k+1) = (k+1)(k+2)/2"
-    },
-    {
-      "template_id": "SCH_PROOF_03",
-      "pattern": "Contrapositive: If x² is odd, then x is odd",
-      "variables": {},
-      "calculation": "Equivalent to: If x is even, then x² is even (already proven)",
-      "explanation": "Contrapositive of 'If x odd then x² odd' is 'If x² even then x even'. Proof: x=2k ⇒ x²=4k²=2(2k²) even"
-    },
-    {
       "template_id": "SCH_DE_01",
-      "pattern": "Solve: dy/dx = [A]y",
+      "pattern": "Solve dy/dx = [A]y at x=[X], y₀=[Y0]. y = ?",
       "variables": {
-        "A": {"min": 1, "max": 5}
+        "A": {"min": 1, "max": 3},
+        "X": {"min": 1, "max": 3},
+        "Y0": {"min": 1, "max": 5}
       },
-      "calculation": "y = Ce^(A*x)",
-      "explanation": "Separable: dy/y = [A]dx ⇒ ln|y| = [A]x + C ⇒ y = Ce^([A]x)"
+      "calculation": "Y0 * Math.exp(A * X)",
+      "explanation": "y = y₀e^([A]x) = [Y0]e^([A]×[X]) = [RESULT]"
     },
     {
       "template_id": "SCH_DE_02",
-      "pattern": "Solve: y' + [A]y = [B]",
+      "pattern": "y' + [A]y = 0, y(0)=[Y0], find y([X])",
       "variables": {
         "A": {"min": 1, "max": 4},
-        "B": {"min": 1, "max": 10}
+        "Y0": {"min": 2, "max": 10},
+        "X": {"min": 1, "max": 3}
       },
-      "calculation": "y = (B/A) + Ce^(-A*x)",
-      "explanation": "Integrating factor: μ = e^(∫[A]dx) = e^([A]x). Solution: y = [B]/[A] + Ce^(-[A]x)"
+      "calculation": "Y0 * Math.exp(-A * X)",
+      "explanation": "y = [Y0]e^(-[A]x) = [Y0]e^(-[A]×[X]) = [RESULT]"
     },
     {
       "template_id": "SCH_DE_03",
-      "pattern": "Solve: d²y/dx² + [ω]²y = 0",
+      "pattern": "d²y/dx² + [ω]²y = 0, period T = ?",
       "variables": {
         "ω": {"min": 1, "max": 5}
       },
-      "calculation": "y = C₁cos(ω*x) + C₂sin(ω*x)",
-      "explanation": "Characteristic: r² + [ω]² = 0 ⇒ r = ±[ω]i. Solution: y = C₁cos([ω]x) + C₂sin([ω]x)"
+      "calculation": "2 * Math.PI / ω",
+      "explanation": "Period T = 2π/ω = 2π/[ω] = [RESULT]"
     },
     {
       "template_id": "SCH_NT_01",
-      "pattern": "Find gcd([A], [B])",
+      "pattern": "gcd([A], [B]) = ?",
       "variables": {
-        "A": {"min": 100, "max": 1000},
-        "B": {"min": 100, "max": 1000}
+        "A": {"min": 100, "max": 500},
+        "B": {"min": 100, "max": 500}
       },
       "calculation": "gcd(A, B)",
-      "explanation": "Euclidean algorithm: gcd([A], [B]) = [gcd(A,B)]"
+      "explanation": "Euclidean algorithm: gcd([A], [B]) = [RESULT]"
     },
     {
       "template_id": "SCH_NT_02",
-      "pattern": "Find lcm([A], [B])",
+      "pattern": "lcm([A], [B]) = ?",
       "variables": {
         "A": {"min": 10, "max": 50},
         "B": {"min": 10, "max": 50}
       },
       "calculation": "lcm(A, B)",
-      "explanation": "lcm([A], [B]) = |[A]×[B]|/gcd([A], [B]) = [lcm(A,B)]"
+      "explanation": "lcm([A], [B]) = [A]×[B]/gcd([A], [B]) = [RESULT]"
     },
     {
       "template_id": "SCH_NT_03",
-      "pattern": "Solve: [A]x ≡ [B] (mod [M])",
+      "pattern": "Solve: [A]x ≡ 1 (mod [M]). x = ?",
       "variables": {
-        "A": {"min": 2, "max": 10},
-        "B": {"min": 1, "max": 20},
-        "M": {"min": 5, "max": 15}
+        "A": {"values": [3, 5, 7, 11, 13]},
+        "M": {"values": [8, 10, 12, 14, 16, 18, 20]}
       },
-      "constraints": ["gcd(A, M) == 1"],
-      "calculation": "x ≡ (B * modinv(A, M)) mod M",
-      "explanation": "Since gcd([A],[M])=1, inverse exists. x ≡ [B]×[A]⁻¹ (mod [M])"
+      "calculation": "mod_inverse(A, M)",
+      "explanation": "[A]×x ≡ 1 (mod [M]), so x ≡ [RESULT] (mod [M])"
     },
     {
       "template_id": "SCH_GRAPH_01",
@@ -89,17 +69,18 @@
       "variables": {
         "N": {"min": 3, "max": 10}
       },
-      "calculation": "N*(N-1)/2",
-      "explanation": "K_n has n(n-1)/2 edges. K_[N] has [N]([N]-1)/2 = [N*(N-1)/2] edges"
+      "calculation": "N * (N - 1) / 2",
+      "explanation": "K_n has n(n-1)/2 edges. K_[N] = [N]×[N-1]/2 = [RESULT]"
     },
     {
       "template_id": "SCH_GRAPH_02",
-      "pattern": "Eulerian: Can you traverse every edge once? Graph degree sequence: [DEG]",
+      "pattern": "Complete bipartite K_[M],[N]. Edges = ?",
       "variables": {
-        "DEG": {"values": ["2,2,2,2", "3,3,2", "4,2,2,1,1", "3,3,3,1"]}
+        "M": {"min": 2, "max": 6},
+        "N": {"min": 2, "max": 6}
       },
-      "calculation": "All even degrees ⇒ Eulerian circuit exists",
-      "explanation": "Eulerian circuit exists if all vertices have even degree. Check each vertex degree"
+      "calculation": "M * N",
+      "explanation": "K_m,n has m×n edges. K_[M],[N] = [M]×[N] = [RESULT]"
     },
     {
       "template_id": "SCH_GRAPH_03",
@@ -107,190 +88,234 @@
       "variables": {
         "N": {"min": 2, "max": 20}
       },
-      "calculation": "N-1",
-      "explanation": "Tree with n vertices has n-1 edges. For [N] vertices: [N]-1 = [N-1] edges"
+      "calculation": "N - 1",
+      "explanation": "Tree with n vertices has n-1 edges. [N] vertices: [RESULT] edges"
     },
     {
       "template_id": "SCH_ALG_01",
-      "pattern": "Group: Is {0,1,2,3} under addition mod 4 a group?",
-      "variables": {},
-      "calculation": "Yes: closure, associativity, identity (0), inverses exist",
-      "explanation": "ℤ₄ = {0,1,2,3} under + mod 4 forms a cyclic group of order 4"
+      "pattern": "Order of cyclic group ℤ_[N] = ?",
+      "variables": {
+        "N": {"min": 5, "max": 20}
+      },
+      "calculation": "N",
+      "explanation": "Cyclic group ℤ_[N] has order [RESULT]"
     },
     {
       "template_id": "SCH_ALG_02",
-      "pattern": "Find order of element [A] in ℤ_[N]",
+      "pattern": "Euler's totient: φ([N]) = ?",
       "variables": {
-        "A": {"min": 1, "max": 6},
-        "N": {"min": 7, "max": 12}
+        "N": {"values": [6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 24, 25, 27, 28, 30]}
       },
-      "constraints": ["gcd(A, N) == 1"],
-      "calculation": "Smallest k>0 such that k*A ≡ 0 mod N",
-      "explanation": "Order of [A] in ℤ_[N] is N/gcd([A],N) = [N] since gcd([A],[N])=1"
+      "calculation": "euler_phi(N)",
+      "explanation": "φ([N]) counts integers ≤[N] coprime to [N]: φ([N]) = [RESULT]"
     },
     {
       "template_id": "SCH_ALG_03",
-      "pattern": "Isomorphism: Are ℤ_[A] and ℤ_[B] isomorphic as groups?",
+      "pattern": "In ℤ_[N], order of element [A] = ?",
       "variables": {
-        "A": {"min": 4, "max": 8},
-        "B": {"min": 4, "max": 8}
+        "A": {"min": 2, "max": 8},
+        "N": {"min": 9, "max": 15}
       },
-      "calculation": "A == B",
-      "explanation": "ℤ_m ≅ ℤ_n iff m=n. Here [A] ≠ [B], so not isomorphic"
+      "calculation": "element_order(A, N)",
+      "explanation": "Smallest k: k×[A] ≡ 0 (mod [N]) is k = [RESULT]"
     },
     {
       "template_id": "SCH_ANAL_01",
-      "pattern": "Prove: lim (n→∞) 1/n = 0",
-      "variables": {},
-      "calculation": "∀ε>0, ∃N>1/ε such that n>N ⇒ |1/n|<ε",
-      "explanation": "Given ε>0, choose N>1/ε. Then n>N ⇒ 1/n < 1/N < ε"
+      "pattern": "lim(x→[A]) [B]x + [C] = ?",
+      "variables": {
+        "A": {"min": -5, "max": 5},
+        "B": {"min": 1, "max": 5},
+        "C": {"min": -10, "max": 10}
+      },
+      "calculation": "B * A + C",
+      "explanation": "Continuous function: lim = [B]×[A] + [C] = [RESULT]"
     },
     {
       "template_id": "SCH_ANAL_02",
-      "pattern": "Is f(x)=[A]x continuous at x=[B]?",
+      "pattern": "f(x) = [A]/x. Is f continuous at x=[B]?",
       "variables": {
-        "A": {"min": 1, "max": 5},
-        "B": {"min": -5, "max": 5}
+        "A": {"min": 1, "max": 10},
+        "B": {"values": [1, 2, 3, 4, 5]}
       },
-      "calculation": "Yes, linear functions are continuous everywhere",
-      "explanation": "f(x)=[A]x is linear, hence continuous at all x, including x=[B]"
+      "calculation": "1",
+      "explanation": "Yes, f continuous at x=[B] ≠ 0. f([B]) = [A]/[B]"
     },
     {
       "template_id": "SCH_ANAL_03",
-      "pattern": "Find sup of {1 - 1/n : n∈ℕ}",
-      "variables": {},
-      "calculation": "1",
-      "explanation": "Set = {0, 1/2, 2/3, 3/4, ...}. Supremum = 1 (least upper bound)"
+      "pattern": "Series: Σ(1/2^n) from n=1 to [N] ≈ ?",
+      "variables": {
+        "N": {"min": 5, "max": 10}
+      },
+      "calculation": "geometric_series_sum(0.5, N)",
+      "explanation": "Σ(1/2^n) = 1 - (1/2)^[N] ≈ [RESULT]"
     },
     {
       "template_id": "SCH_DISC_01",
-      "pattern": "Pigeonhole: If [N] items in [M] boxes, at least one box has ≥ ceiling([N]/[M])",
+      "pattern": "Pigeonhole: [N] items, [M] boxes. Max in one box ≥ ?",
       "variables": {
         "N": {"min": 10, "max": 30},
         "M": {"min": 3, "max": 8}
       },
-      "calculation": "ceil(N/M)",
-      "explanation": "By pigeonhole principle: ⌈[N]/[M]⌉ = [ceil(N/M)] items in some box"
+      "calculation": "Math.ceil(N / M)",
+      "explanation": "By pigeonhole: ⌈[N]/[M]⌉ = [RESULT]"
     },
     {
       "template_id": "SCH_DISC_02",
-      "pattern": "Binomial coefficient: C([N], [K]) = ?",
+      "pattern": "C([N], [K]) = ?",
       "variables": {
         "N": {"min": 5, "max": 10},
         "K": {"min": 2, "max": 5}
       },
-      "constraints": ["K <= N"],
-      "calculation": "factorial(N) / (factorial(K) * factorial(N-K))",
-      "explanation": "C([N],[K]) = [N]!/([K]!([N]-[K])!) = [RESULT]"
+      "calculation": "binomial_coefficient(N, K)",
+      "explanation": "C([N],[K]) = [N]!/([K]!×([N]-[K])!) = [RESULT]"
     },
     {
       "template_id": "SCH_DISC_03",
-      "pattern": "Recurrence: aₙ = [A]aₙ₋₁, a₀=[B]. Find aₙ",
+      "pattern": "Permutations: P([N], [K]) = ?",
       "variables": {
-        "A": {"min": 2, "max": 5},
-        "B": {"min": 1, "max": 5}
+        "N": {"min": 5, "max": 10},
+        "K": {"min": 2, "max": 5}
       },
-      "calculation": "B * A**n",
-      "explanation": "Geometric sequence: aₙ = a₀ × rⁿ = [B] × [A]ⁿ"
+      "calculation": "permutations(N, K)",
+      "explanation": "P([N],[K]) = [N]!/([N]-[K])! = [RESULT]"
     },
     {
-      "template_id": "SCH_LOGIC_01",
-      "pattern": "Truth table: (p ∧ q) → (p ∨ q)",
-      "variables": {},
-      "calculation": "Always true (tautology)",
-      "explanation": "p q | p∧q | p∨q | (p∧q)→(p∨q)\nT T |  T  |  T  |     T\nT F |  F  |  T  |     T\nF T |  F  |  T  |     T\nF F |  F  |  F  |     T"
-    },
-    {
-      "template_id": "SCH_LOGIC_02",
-      "pattern": "De Morgan: ¬(p ∧ q) ≡ ?",
-      "variables": {},
-      "calculation": "¬p ∨ ¬q",
-      "explanation": "De Morgan's Law: ¬(p ∧ q) ≡ ¬p ∨ ¬q"
-    },
-    {
-      "template_id": "SCH_LOGIC_03",
-      "pattern": "Quantifiers: ∀x∃y P(x,y) vs ∃y∀x P(x,y)",
-      "variables": {},
-      "calculation": "Not equivalent. Order matters.",
-      "explanation": "∀x∃y: For each x, there exists y. ∃y∀x: There exists y that works for all x. Stronger statement."
+      "template_id": "SCH_RECUR_01",
+      "pattern": "Fibonacci: F([N]) = ?",
+      "variables": {
+        "N": {"min": 5, "max": 15}
+      },
+      "calculation": "fibonacci(N)",
+      "explanation": "F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2). F([N]) = [RESULT]"
     },
     {
       "template_id": "SCH_LINALG_01",
-      "pattern": "Find eigenvalues of [[A,1],[1,A]]",
+      "pattern": "Determinant of [[A,B],[C,D]] = ?",
       "variables": {
-        "A": {"min": 2, "max": 6}
+        "A": {"min": 1, "max": 5},
+        "B": {"min": 1, "max": 5},
+        "C": {"min": 1, "max": 5},
+        "D": {"min": 1, "max": 5}
       },
-      "calculation": "A+1 and A-1",
-      "explanation": "Matrix is A×I + [[0,1],[1,0]]. Eigenvalues: [A]±1 = [A+1] and [A-1]"
+      "calculation": "A * D - B * C",
+      "explanation": "det = [A]×[D] - [B]×[C] = [RESULT]"
     },
     {
       "template_id": "SCH_LINALG_02",
-      "pattern": "Rank of [[A,B],[C,D]]",
+      "pattern": "Trace of [[A,B],[C,D]] = ?",
       "variables": {
-        "A": {"min": 1, "max": 4},
-        "B": {"min": 1, "max": 4},
-        "C": {"min": 1, "max": 4},
-        "D": {"min": 1, "max": 4}
+        "A": {"min": 1, "max": 10},
+        "B": {"min": 1, "max": 10},
+        "C": {"min": 1, "max": 10},
+        "D": {"min": 1, "max": 10}
       },
-      "calculation": "2 if A*D != B*C else 1",
-      "explanation": "Rank = 2 if determinant ([A][D]-[B][C]) ≠ 0, else rank = 1 if not all zero"
+      "calculation": "A + D",
+      "explanation": "Trace = sum of diagonal = [A] + [D] = [RESULT]"
     },
     {
       "template_id": "SCH_LINALG_03",
-      "pattern": "Null space of [[1,2],[2,4]]",
-      "variables": {},
-      "calculation": "span{[-2,1]}",
-      "explanation": "Solve x+2y=0, 2x+4y=0. Solution: x=-2y. Null space = {t[-2,1] : t∈ℝ}"
+      "pattern": "Eigenvalues of [[A,0],[0,B]]: λ₁ = ?",
+      "variables": {
+        "A": {"min": 1, "max": 10},
+        "B": {"min": 1, "max": 10}
+      },
+      "calculation": "A",
+      "explanation": "Diagonal matrix eigenvalues = diagonal entries: [A], [B]"
     },
     {
       "template_id": "SCH_PROB_01",
-      "pattern": "Bayes: P(A|B) = P(B|A)P(A)/P(B). If P(A)=0.[A], P(B|A)=0.[B], P(B)=0.[C]",
-      "variables": {
-        "A": {"min": 1, "max": 4},
-        "B": {"min": 6, "max": 9},
-        "C": {"min": 3, "max": 7}
-      },
-      "calculation": "(0.B * 0.A) / 0.C",
-      "explanation": "P(A|B) = (0.[B] × 0.[A]) / 0.[C] = [0.B*0.A/0.C]"
-    },
-    {
-      "template_id": "SCH_PROB_02",
-      "pattern": "Expected value of die roll",
-      "variables": {},
-      "calculation": "3.5",
-      "explanation": "E = (1+2+3+4+5+6)/6 = 21/6 = 3.5"
-    },
-    {
-      "template_id": "SCH_PROB_03",
-      "pattern": "Variance of uniform {1,2,...,[N]}",
+      "pattern": "E[X] for X ~ Uniform{1,2,...,[N]} = ?",
       "variables": {
         "N": {"min": 4, "max": 10}
       },
-      "calculation": "(N**2 - 1)/12",
-      "explanation": "Var = (N²-1)/12 = ([N]²-1)/12 = [((N**2)-1)/12]"
+      "calculation": "(N + 1) / 2",
+      "explanation": "E[X] = (1+[N])/2 = [RESULT]"
     },
     {
-      "template_id": "SCH_TOPO_01",
-      "pattern": "Is (0,1) open in ℝ with standard topology?",
-      "variables": {},
-      "calculation": "Yes",
-      "explanation": "(0,1) is open because for any x∈(0,1), ∃ε>0 such that (x-ε,x+ε)⊆(0,1)"
-    },
-    {
-      "template_id": "SCH_TOPO_02",
-      "pattern": "Closure of {1/n : n∈ℕ} in ℝ",
-      "variables": {},
-      "calculation": "{0} ∪ {1/n : n∈ℕ}",
-      "explanation": "Set = {1, 1/2, 1/3, ...}. Closure includes limit point 0"
-    },
-    {
-      "template_id": "SCH_COMP_01",
-      "pattern": "Residue of 1/(z-[A]) at z=[A]",
+      "template_id": "SCH_PROB_02",
+      "pattern": "Var(X) for X ~ Uniform{1,...,[N]} = ?",
       "variables": {
-        "A": {"min": 1, "max": 5}
+        "N": {"min": 4, "max": 10}
       },
-      "calculation": "1",
-      "explanation": "Simple pole at z=[A]. Residue = coefficient of 1/(z-[A]) = 1"
+      "calculation": "(N * N - 1) / 12",
+      "explanation": "Var = (N²-1)/12 = ([N]²-1)/12 = [RESULT]"
+    },
+    {
+      "template_id": "SCH_PROB_03",
+      "pattern": "Binomial: P(X=[K]) where X~B([N],0.5) = ?",
+      "variables": {
+        "N": {"min": 4, "max": 8},
+        "K": {"min": 1, "max": 4}
+      },
+      "calculation": "binomial_probability(N, K, 0.5)",
+      "explanation": "P(X=[K]) = C([N],[K])×(0.5)^[N] = [RESULT]"
+    },
+    {
+      "template_id": "SCH_CALC_01",
+      "pattern": "∫₀^[N] x dx = ?",
+      "variables": {
+        "N": {"min": 2, "max": 10}
+      },
+      "calculation": "N * N / 2",
+      "explanation": "∫₀^[N] x dx = [x²/2]₀^[N] = [N]²/2 = [RESULT]"
+    },
+    {
+      "template_id": "SCH_CALC_02",
+      "pattern": "d/dx(x^[N]) at x=[X] = ?",
+      "variables": {
+        "N": {"min": 2, "max": 5},
+        "X": {"min": 1, "max": 5}
+      },
+      "calculation": "N * (X ** (N - 1))",
+      "explanation": "d/dx(x^[N]) = [N]x^([N]-1), at x=[X]: [N]×[X]^[N-1] = [RESULT]"
+    },
+    {
+      "template_id": "SCH_SERIES_01",
+      "pattern": "Sum of geometric series: Σ[A]×r^n, r=[R], n=0 to ∞ = ?",
+      "variables": {
+        "A": {"min": 1, "max": 5},
+        "R": {"values": [0.5, 0.25, 0.1, 0.2, 0.3, 0.4]}
+      },
+      "calculation": "A / (1 - R)",
+      "explanation": "Σar^n = a/(1-r) = [A]/(1-[R]) = [RESULT]"
+    },
+    {
+      "template_id": "SCH_MATRIX_01",
+      "pattern": "[[A,B],[C,D]] × [[E,F],[G,H]], element (1,1) = ?",
+      "variables": {
+        "A": {"min": 1, "max": 3},
+        "B": {"min": 1, "max": 3},
+        "C": {"min": 1, "max": 3},
+        "D": {"min": 1, "max": 3},
+        "E": {"min": 1, "max": 3},
+        "F": {"min": 1, "max": 3},
+        "G": {"min": 1, "max": 3},
+        "H": {"min": 1, "max": 3}
+      },
+      "calculation": "A * E + B * G",
+      "explanation": "(1,1) entry = [A]×[E] + [B]×[G] = [RESULT]"
+    },
+    {
+      "template_id": "SCH_NUMBER_01",
+      "pattern": "[N]! = ?",
+      "variables": {
+        "N": {"min": 5, "max": 10}
+      },
+      "calculation": "factorial(N)",
+      "explanation": "[N]! = [N]×([N]-1)×...×2×1 = [RESULT]"
+    },
+    {
+      "template_id": "SCH_PRIME_01",
+      "pattern": "Is [N] prime?",
+      "variables": {
+        "N": {"values": [17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53]}
+      },
+      "calculation": "is_prime(N) ? 1 : 0",
+      "explanation": "[N] is [RESULT_TEXT]"
     }
-  ]
+  ],
+  "responses": {
+    "correct": ["Brilliant work! 🎓", "Undergraduate level mastered! 🌟", "Perfect analysis! ✅", "Scholar-level thinking! 💎"],
+    "incorrect": ["Review the theorem 📚", "Check your proof 🔍", "Revisit the concept 📐", "Almost there! Try again ✨"]
+  }
 }
