@@ -5,29 +5,30 @@ const CACHE_NAME = 'odelya-cache-v4.2';
 const RUNTIME_CACHE = 'odelya-runtime-v4.2';
 const urlsToCache = [
   '/',
-  '/index.html',
   '/manifest.json',
   '/favicon.ico',
   '/images/logo2.jpg',
   '/images/pwa-icon-192x192.png',
   '/images/pwa-icon-512x512.png',
-  '/cloud-storage.html', 
-  '/it-services.html',
-  '/contact.html',
-  '/about.html',
-  '/privacy-policy.html',
-  '/security.html',
-  '/user-login.html',
-  '/user-plan.html',
+  '/cloud-storage',
+  '/it-services',
+  '/contact',
+  '/about',
+  '/privacy-policy',
+  '/security',
+  '/user-login',
+  '/user-plan',
+  '/vooo-ai',
+  '/terms',
+  '/odelyafaq',
   '/pwainstall.js',
   '/aichatbot.js',
-  '/vooo-ai.html',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
 
 // ====== INSTALL ======
 self.addEventListener('install', event => {
-  console.log('📦 Service Worker: Installing v4...');
+  console.log('📦 Service Worker: Installing v4.2...');
   
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -56,7 +57,7 @@ self.addEventListener('install', event => {
 
 // ====== ACTIVATE ======
 self.addEventListener('activate', event => {
-  console.log('🚀 Service Worker: Activating v4...');
+  console.log('🚀 Service Worker: Activating v4.2...');
   
   const cacheWhitelist = [CACHE_NAME, RUNTIME_CACHE];
   
@@ -82,14 +83,14 @@ self.addEventListener('activate', event => {
         clients.forEach(client => {
           client.postMessage({
             type: 'SW_UPDATED',
-            version: '4.0',
+            version: '4.2',
             cacheName: CACHE_NAME
           });
         });
       })
     ])
     .then(() => {
-      console.log('✅ Service Worker: v4 activated successfully');
+      console.log('✅ Service Worker: v4.2 activated successfully');
     })
   );
 });
@@ -116,19 +117,26 @@ self.addEventListener('fetch', event => {
       (url.pathname.endsWith('.jpg') || 
        url.pathname.endsWith('.png') ||
        url.pathname.endsWith('.css') ||
-       url.pathname.endsWith('.js'))) {
+       url.pathname.endsWith('.js') ||
+       url.pathname.endsWith('.ico'))) {
     event.respondWith(cacheFirstStrategy(event));
     return;
   }
   
-  // Strategy 2: Network First for HTML pages
+  // Strategy 2: Network First for HTML pages (both .html files and clean URLs)
   if (url.origin === self.location.origin &&
-      url.pathname.endsWith('.html')) {
+      (url.pathname.endsWith('.html') || 
+       (!url.pathname.includes('.') && url.pathname !== '/'))) {
     event.respondWith(networkFirstStrategy(event));
     return;
   }
   
-  // Strategy 3: Stale-While-Revalidate for API calls (future use)
+  // Strategy 3: Network First for homepage
+  if (url.origin === self.location.origin && url.pathname === '/') {
+    event.respondWith(networkFirstStrategy(event));
+    return;
+  }
+  
   // Default: Network with cache fallback
   event.respondWith(networkWithCacheFallback(event));
 });
@@ -154,7 +162,7 @@ function cacheFirstStrategy(event) {
     });
 }
 
-// Strategy: Network First (for HTML pages)
+// Strategy: Network First (for HTML pages and clean URLs)
 function networkFirstStrategy(event) {
   return fetch(event.request)
     .then(networkResponse => {
@@ -267,7 +275,7 @@ self.addEventListener('message', event => {
         .then(keys => {
           event.ports[0].postMessage({
             count: keys.length,
-            version: '4.0'
+            version: '4.2'
           });
         });
       break;
@@ -288,4 +296,4 @@ self.addEventListener('error', error => {
 });
 
 // Console log when worker loads
-console.log('✅ Odelya Service Worker v4.0 loaded successfully');
+console.log('✅ Odelya Service Worker v4.2 loaded successfully');
