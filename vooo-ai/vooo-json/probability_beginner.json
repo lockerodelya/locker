@@ -4,347 +4,321 @@
   "templates": [
     {
       "template_id": "BEG_PROB_01",
-      "pattern": "A bag has [A] red and [B] blue balls. Total balls = ?",
+      "pattern": "A [CONTAINER] has [A] [COLOR1] and [B] [COLOR2] [ITEM]. Total [ITEM] = ?",
       "variables": {
-        "A": {
-          "min": 3,
-          "max": 10
-        },
-        "B": {
-          "min": 3,
-          "max": 10
-        }
+        "A": {"min": 3, "max": 15},
+        "B": {"min": 3, "max": 15},
+        "CONTAINER": {"values": ["bag", "box", "basket", "jar", "bowl"]},
+        "COLOR1": {"values": ["red", "blue", "green", "yellow", "white", "black"]},
+        "COLOR2": {"values": ["red", "blue", "green", "yellow", "white", "black"]},
+        "ITEM": {"values": ["balls", "marbles", "stones", "beads", "candies"]}
       },
       "calculation": "A + B",
-      "explanation": "[A] + [B] = [RESULT] balls"
+      "explanation": "[A] + [B] = [RESULT] [ITEM]"
     },
     {
       "template_id": "BEG_PROB_02",
-      "pattern": "If you have [A] choices, how many options?",
+      "pattern": "[A] [ITEM1] and [B] [ITEM2] in a box. Total items = ?",
       "variables": {
-        "A": {
-          "min": 3,
-          "max": 10
-        }
+        "A": {"min": 4, "max": 12},
+        "B": {"min": 4, "max": 12},
+        "ITEM1": {"values": ["pencils", "pens", "erasers", "crayons", "markers"]},
+        "ITEM2": {"values": ["notebooks", "books", "papers", "folders", "files"]}
       },
-      "calculation": "A",
-      "explanation": "[A] choices = [A] options"
+      "calculation": "A + B",
+      "explanation": "[A] + [B] = [RESULT] total items"
     },
     {
       "template_id": "BEG_PROB_03",
-      "pattern": "A dice has 6 faces. Rolling [A] dice gives ? total faces",
+      "pattern": "A [DICE_TYPE] dice has [FACES] faces. Rolling [COUNT] dice gives ? total faces",
       "variables": {
-        "A": {
-          "min": 2,
-          "max": 5
-        }
+        "COUNT": {"min": 2, "max": 8},
+        "FACES": {"values": [4, 6, 8, 10, 12]},
+        "DICE_TYPE": {"values": ["standard", "gaming", "number", "dot", "special"]}
       },
-      "calculation": "A * 6",
-      "explanation": "[A] dice × 6 = [RESULT] faces"
+      "calculation": "COUNT * FACES",
+      "explanation": "[COUNT] dice × [FACES] faces = [RESULT] total faces"
     },
     {
       "template_id": "BEG_PROB_04",
-      "pattern": "[A] possible outcomes in set 1, [B] in set 2. Total = ?",
+      "pattern": "[A] [CHOICE1] choices and [B] [CHOICE2] choices. Total combinations = ?",
       "variables": {
-        "A": {
-          "min": 2,
-          "max": 6
-        },
-        "B": {
-          "min": 2,
-          "max": 6
-        }
+        "A": {"min": 2, "max": 8},
+        "B": {"min": 2, "max": 8},
+        "CHOICE1": {"values": ["color", "size", "shape", "flavor", "type"]},
+        "CHOICE2": {"values": ["brand", "style", "design", "model", "variant"]}
       },
       "calculation": "A * B",
-      "explanation": "[A] × [B] = [RESULT] outcomes"
+      "explanation": "[A] × [B] = [RESULT] combinations"
     },
     {
       "template_id": "BEG_PROB_05",
-      "pattern": "Out of [A] items, you pick [B]. Remaining = ?",
+      "pattern": "Out of [A] [ITEM], you pick [B]. Remaining = ?",
       "variables": {
-        "A": {
-          "min": 10,
-          "max": 20
-        },
-        "B": {
-          "min": 3,
-          "max": 9
-        }
+        "A": {"min": 10, "max": 30},
+        "B": {"min": 3, "max": 15},
+        "ITEM": {"values": ["apples", "oranges", "books", "toys", "cards", "coins", "flowers", "chocolates"]}
       },
       "calculation": "A - B",
-      "explanation": "[A] - [B] = [RESULT] remaining"
+      "explanation": "[A] - [B] = [RESULT] [ITEM] remaining"
     },
     {
       "template_id": "BEG_PROB_06",
-      "pattern": "[A] possible outcomes in set 1, [B] in set 2. Total = ?",
+      "pattern": "Toss [A] coins. Each has [B] outcomes. Total outcomes = ?",
       "variables": {
-        "A": {
-          "min": 2,
-          "max": 6
-        },
-        "B": {
-          "min": 2,
-          "max": 6
-        }
+        "A": {"min": 2, "max": 6},
+        "B": {"values": [2]}
       },
-      "calculation": "A * B",
-      "explanation": "[A] × [B] = [RESULT] outcomes"
+      "calculation": "Math.pow(B, A)",
+      "explanation": "[B]^[A] = [RESULT] total outcomes"
     },
     {
       "template_id": "BEG_PROB_07",
-      "pattern": "Out of [A] items, you pick [B]. Remaining = ?",
+      "pattern": "[A] [TEAM] students, [B] selected for [EVENT]. Not selected = ?",
       "variables": {
-        "A": {
-          "min": 10,
-          "max": 20
-        },
-        "B": {
-          "min": 3,
-          "max": 9
-        }
+        "A": {"min": 15, "max": 40},
+        "B": {"min": 5, "max": 20},
+        "TEAM": {"values": ["class", "group", "team", "batch"]},
+        "EVENT": {"values": ["quiz", "debate", "sports", "competition", "dance"]}
       },
       "calculation": "A - B",
-      "explanation": "[A] - [B] = [RESULT] remaining"
+      "explanation": "[A] - [B] = [RESULT] not selected"
     },
     {
       "template_id": "BEG_PROB_08",
-      "pattern": "[A] possible outcomes in set 1, [B] in set 2. Total = ?",
+      "pattern": "[A] [FOOD1] and [B] [FOOD2] on menu. Total choices = ?",
       "variables": {
-        "A": {
-          "min": 2,
-          "max": 6
-        },
-        "B": {
-          "min": 2,
-          "max": 6
-        }
+        "A": {"min": 3, "max": 10},
+        "B": {"min": 3, "max": 10},
+        "FOOD1": {"values": ["pizzas", "burgers", "sandwiches", "wraps", "rolls"]},
+        "FOOD2": {"values": ["drinks", "juices", "shakes", "sodas", "teas"]}
       },
-      "calculation": "A * B",
-      "explanation": "[A] × [B] = [RESULT] outcomes"
+      "calculation": "A + B",
+      "explanation": "[A] + [B] = [RESULT] total menu items"
     },
     {
       "template_id": "BEG_PROB_09",
-      "pattern": "Out of [A] items, you pick [B]. Remaining = ?",
+      "pattern": "Draw [A] cards from deck of [B]. Remaining cards = ?",
       "variables": {
-        "A": {
-          "min": 10,
-          "max": 20
-        },
-        "B": {
-          "min": 3,
-          "max": 9
-        }
+        "A": {"min": 5, "max": 20},
+        "B": {"values": [52, 40, 30, 24]}
       },
-      "calculation": "A - B",
-      "explanation": "[A] - [B] = [RESULT] remaining"
+      "calculation": "B - A",
+      "explanation": "[B] - [A] = [RESULT] cards left"
     },
     {
       "template_id": "BEG_PROB_10",
-      "pattern": "[A] possible outcomes in set 1, [B] in set 2. Total = ?",
+      "pattern": "[A] [SHIRT] shirts, [B] [PANT] pants. Total outfits = ?",
       "variables": {
-        "A": {
-          "min": 2,
-          "max": 6
-        },
-        "B": {
-          "min": 2,
-          "max": 6
-        }
+        "A": {"min": 3, "max": 8},
+        "B": {"min": 3, "max": 8},
+        "SHIRT": {"values": ["red", "blue", "white", "black", "green"]},
+        "PANT": {"values": ["jeans", "trousers", "shorts", "tracks"]}
       },
       "calculation": "A * B",
-      "explanation": "[A] × [B] = [RESULT] outcomes"
+      "explanation": "[A] × [B] = [RESULT] outfit combinations"
     },
     {
       "template_id": "BEG_PROB_11",
-      "pattern": "Out of [A] items, you pick [B]. Remaining = ?",
+      "pattern": "Spinner with [A] sections. Spin [B] times. Total outcomes = ?",
       "variables": {
-        "A": {
-          "min": 10,
-          "max": 20
-        },
-        "B": {
-          "min": 3,
-          "max": 9
-        }
+        "A": {"values": [3, 4, 5, 6, 8]},
+        "B": {"min": 2, "max": 4}
       },
-      "calculation": "A - B",
-      "explanation": "[A] - [B] = [RESULT] remaining"
+      "calculation": "Math.pow(A, B)",
+      "explanation": "[A]^[B] = [RESULT] outcomes"
     },
     {
       "template_id": "BEG_PROB_12",
-      "pattern": "[A] possible outcomes in set 1, [B] in set 2. Total = ?",
+      "pattern": "[A] [FRUIT] in basket, eat [B]. How many left?",
       "variables": {
-        "A": {
-          "min": 2,
-          "max": 6
-        },
-        "B": {
-          "min": 2,
-          "max": 6
-        }
+        "A": {"min": 12, "max": 25},
+        "B": {"min": 3, "max": 12},
+        "FRUIT": {"values": ["mangoes", "apples", "bananas", "oranges", "grapes"]}
       },
-      "calculation": "A * B",
-      "explanation": "[A] × [B] = [RESULT] outcomes"
+      "calculation": "A - B",
+      "explanation": "[A] - [B] = [RESULT] [FRUIT] left"
     },
     {
       "template_id": "BEG_PROB_13",
-      "pattern": "Out of [A] items, you pick [B]. Remaining = ?",
+      "pattern": "[A] routes to [PLACE1], [B] routes from [PLACE1] to [PLACE2]. Total paths = ?",
       "variables": {
-        "A": {
-          "min": 10,
-          "max": 20
-        },
-        "B": {
-          "min": 3,
-          "max": 9
-        }
+        "A": {"min": 2, "max": 6},
+        "B": {"min": 2, "max": 6},
+        "PLACE1": {"values": ["school", "market", "park", "station"]},
+        "PLACE2": {"values": ["home", "library", "mall", "office"]}
       },
-      "calculation": "A - B",
-      "explanation": "[A] - [B] = [RESULT] remaining"
+      "calculation": "A * B",
+      "explanation": "[A] × [B] = [RESULT] total paths"
     },
     {
       "template_id": "BEG_PROB_14",
-      "pattern": "[A] possible outcomes in set 1, [B] in set 2. Total = ?",
+      "pattern": "[A] [VEHICLE] parked, [B] leave. Remaining [VEHICLE] = ?",
       "variables": {
-        "A": {
-          "min": 2,
-          "max": 6
-        },
-        "B": {
-          "min": 2,
-          "max": 6
-        }
+        "A": {"min": 15, "max": 35},
+        "B": {"min": 5, "max": 18},
+        "VEHICLE": {"values": ["cars", "bikes", "scooters", "buses", "trucks"]}
       },
-      "calculation": "A * B",
-      "explanation": "[A] × [B] = [RESULT] outcomes"
+      "calculation": "A - B",
+      "explanation": "[A] - [B] = [RESULT] [VEHICLE] parked"
     },
     {
       "template_id": "BEG_PROB_15",
-      "pattern": "Out of [A] items, you pick [B]. Remaining = ?",
+      "pattern": "[A] [SIZE] sizes, [B] [COLOR] colors. Total options = ?",
       "variables": {
-        "A": {
-          "min": 10,
-          "max": 20
-        },
-        "B": {
-          "min": 3,
-          "max": 9
-        }
+        "A": {"values": [3, 4, 5, 6]},
+        "B": {"values": [4, 5, 6, 7, 8]},
+        "SIZE": {"values": ["shirt", "shoe", "hat", "bag"]},
+        "COLOR": {"values": ["available", "different", "paint"]}
       },
-      "calculation": "A - B",
-      "explanation": "[A] - [B] = [RESULT] remaining"
+      "calculation": "A * B",
+      "explanation": "[A] × [B] = [RESULT] options"
     },
     {
       "template_id": "BEG_PROB_16",
-      "pattern": "[A] possible outcomes in set 1, [B] in set 2. Total = ?",
+      "pattern": "Class has [A] boys and [B] girls. Total students = ?",
       "variables": {
-        "A": {
-          "min": 2,
-          "max": 6
-        },
-        "B": {
-          "min": 2,
-          "max": 6
-        }
+        "A": {"min": 10, "max": 25},
+        "B": {"min": 10, "max": 25}
       },
-      "calculation": "A * B",
-      "explanation": "[A] × [B] = [RESULT] outcomes"
+      "calculation": "A + B",
+      "explanation": "[A] + [B] = [RESULT] students"
     },
     {
       "template_id": "BEG_PROB_17",
-      "pattern": "Out of [A] items, you pick [B]. Remaining = ?",
+      "pattern": "[A] [SUBJECT] books, [B] [SUBJECT] magazines. Total reading items = ?",
       "variables": {
-        "A": {
-          "min": 10,
-          "max": 20
-        },
-        "B": {
-          "min": 3,
-          "max": 9
-        }
+        "A": {"min": 5, "max": 15},
+        "B": {"min": 4, "max": 12},
+        "SUBJECT": {"values": ["science", "math", "history", "English", "Hindi"]}
       },
-      "calculation": "A - B",
-      "explanation": "[A] - [B] = [RESULT] remaining"
+      "calculation": "A + B",
+      "explanation": "[A] + [B] = [RESULT] items"
     },
     {
       "template_id": "BEG_PROB_18",
-      "pattern": "[A] possible outcomes in set 1, [B] in set 2. Total = ?",
+      "pattern": "Roll [A] dice of [B] faces each. Maximum possible sum = ?",
       "variables": {
-        "A": {
-          "min": 2,
-          "max": 6
-        },
-        "B": {
-          "min": 2,
-          "max": 6
-        }
+        "A": {"min": 2, "max": 5},
+        "B": {"values": [6, 8, 10, 12]}
       },
       "calculation": "A * B",
-      "explanation": "[A] × [B] = [RESULT] outcomes"
+      "explanation": "[A] × [B] = [RESULT] maximum"
     },
     {
       "template_id": "BEG_PROB_19",
-      "pattern": "Out of [A] items, you pick [B]. Remaining = ?",
+      "pattern": "[A] [ITEM] available, [B] sold. Stock remaining = ?",
       "variables": {
-        "A": {
-          "min": 10,
-          "max": 20
-        },
-        "B": {
-          "min": 3,
-          "max": 9
-        }
+        "A": {"min": 20, "max": 50},
+        "B": {"min": 8, "max": 30},
+        "ITEM": {"values": ["toys", "books", "phones", "watches", "shoes"]}
       },
       "calculation": "A - B",
-      "explanation": "[A] - [B] = [RESULT] remaining"
+      "explanation": "[A] - [B] = [RESULT] in stock"
     },
     {
       "template_id": "BEG_PROB_20",
-      "pattern": "[A] possible outcomes in set 1, [B] in set 2. Total = ?",
+      "pattern": "[A] [TOPPING1] toppings, [B] [TOPPING2] toppings. Pizza combinations = ?",
       "variables": {
-        "A": {
-          "min": 2,
-          "max": 6
-        },
-        "B": {
-          "min": 2,
-          "max": 6
-        }
+        "A": {"min": 3, "max": 8},
+        "B": {"min": 3, "max": 8},
+        "TOPPING1": {"values": ["veg", "non-veg", "cheese", "spicy"]},
+        "TOPPING2": {"values": ["sauce", "extra", "special", "premium"]}
       },
       "calculation": "A * B",
-      "explanation": "[A] × [B] = [RESULT] outcomes"
+      "explanation": "[A] × [B] = [RESULT] combinations"
     },
     {
       "template_id": "BEG_PROB_21",
-      "pattern": "Out of [A] items, you pick [B]. Remaining = ?",
+      "pattern": "Team of [A] players, [B] on bench. Playing = ?",
       "variables": {
-        "A": {
-          "min": 10,
-          "max": 20
-        },
-        "B": {
-          "min": 3,
-          "max": 9
-        }
+        "A": {"min": 15, "max": 25},
+        "B": {"min": 4, "max": 12}
       },
       "calculation": "A - B",
-      "explanation": "[A] - [B] = [RESULT] remaining"
+      "explanation": "[A] - [B] = [RESULT] playing"
     },
     {
       "template_id": "BEG_PROB_22",
-      "pattern": "[A] possible outcomes in set 1, [B] in set 2. Total = ?",
+      "pattern": "[A] [FLAVOR1] and [B] [FLAVOR2] ice creams. Total flavors = ?",
       "variables": {
-        "A": {
-          "min": 2,
-          "max": 6
-        },
-        "B": {
-          "min": 2,
-          "max": 6
-        }
+        "A": {"min": 4, "max": 10},
+        "B": {"min": 4, "max": 10},
+        "FLAVOR1": {"values": ["chocolate", "vanilla", "strawberry", "mango"]},
+        "FLAVOR2": {"values": ["butterscotch", "pista", "kulfi", "coffee"]}
+      },
+      "calculation": "A + B",
+      "explanation": "[A] + [B] = [RESULT] flavors"
+    },
+    {
+      "template_id": "BEG_PROB_23",
+      "pattern": "Bag has [A] ₹[COIN1] coins and [B] ₹[COIN2] coins. Total coins = ?",
+      "variables": {
+        "A": {"min": 5, "max": 20},
+        "B": {"min": 5, "max": 20},
+        "COIN1": {"values": [1, 2, 5]},
+        "COIN2": {"values": [10, 20, 50]}
+      },
+      "calculation": "A + B",
+      "explanation": "[A] + [B] = [RESULT] coins"
+    },
+    {
+      "template_id": "BEG_PROB_24",
+      "pattern": "Choose [A] from [B] [ITEM]. Ways to choose = ?",
+      "variables": {
+        "A": {"values": [1, 2]},
+        "B": {"min": 3, "max": 8},
+        "ITEM": {"values": ["fruits", "colors", "numbers", "letters", "toys"]}
+      },
+      "calculation": "A === 1 ? B : B * (B - 1) / 2",
+      "explanation": "Choosing [A] from [B] = [RESULT] ways"
+    },
+    {
+      "template_id": "BEG_PROB_25",
+      "pattern": "[A] [FLOWER] flowers, gift [B] flowers. Remaining = ?",
+      "variables": {
+        "A": {"min": 12, "max": 30},
+        "B": {"min": 4, "max": 15},
+        "FLOWER": {"values": ["rose", "lily", "tulip", "jasmine", "marigold"]}
+      },
+      "calculation": "A - B",
+      "explanation": "[A] - [B] = [RESULT] flowers left"
+    },
+    {
+      "template_id": "BEG_PROB_26",
+      "pattern": "[A] [MEAL] meal choices, [B] [DRINK] drinks. Combo options = ?",
+      "variables": {
+        "A": {"min": 3, "max": 7},
+        "B": {"min": 3, "max": 6},
+        "MEAL": {"values": ["lunch", "dinner", "breakfast", "snack"]},
+        "DRINK": {"values": ["cold", "hot", "fresh", "juice"]}
       },
       "calculation": "A * B",
-      "explanation": "[A] × [B] = [RESULT] outcomes"
+      "explanation": "[A] × [B] = [RESULT] combos"
+    },
+    {
+      "template_id": "BEG_PROB_27",
+      "pattern": "Draw [A] from [B] lottery tickets. Remaining tickets = ?",
+      "variables": {
+        "A": {"min": 5, "max": 25},
+        "B": {"min": 30, "max": 100}
+      },
+      "calculation": "B - A",
+      "explanation": "[B] - [A] = [RESULT] tickets"
+    },
+    {
+      "template_id": "BEG_PROB_28",
+      "pattern": "[A] [ITEM1], [B] [ITEM2], [C] [ITEM3] in bag. Total items = ?",
+      "variables": {
+        "A": {"min": 3, "max": 10},
+        "B": {"min": 3, "max": 10},
+        "C": {"min": 3, "max": 10},
+        "ITEM1": {"values": ["pens", "pencils", "erasers"]},
+        "ITEM2": {"values": ["rulers", "sharpeners", "clips"]},
+        "ITEM3": {"values": ["staples", "pins", "tapes"]}
+      },
+      "calculation": "A + B + C",
+      "explanation": "[A] + [B] + [C] = [RESULT] items"
     }
   ],
   "responses": {
