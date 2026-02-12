@@ -4,201 +4,231 @@
   "templates": [
     {
       "template_id": "BEG_CAUSE_01",
-      "pattern": "If it rains, what happens? (ground/...)",
-      "variables": {},
-      "wrong_options": ["dry", "hot", "dusty"],
-      "correct": "wet",
+      "pattern": "If it [WEATHER], what happens to the [SURFACE]?",
+      "variables": {
+        "WEATHER": {"values": ["rains", "snows", "storms", "drizzles"]},
+        "SURFACE": {"values": ["ground", "road", "grass", "floor"]}
+      },
+      "options": ["wet", "dry", "hot", "dusty"],
       "calculation": "'wet'",
-      "explanation": "Cause: It rains → Effect: Ground gets wet"
+      "explanation": "When it [WEATHER], the [SURFACE] gets wet"
     },
     {
       "template_id": "BEG_CAUSE_02",
-      "pattern": "If sun shines, what happens? (day/...)",
-      "variables": {},
-      "wrong_options": ["dark", "cold", "cloudy"],
-      "correct": "bright",
+      "pattern": "If [LIGHT_SOURCE] shines, what happens to the [AREA]?",
+      "variables": {
+        "LIGHT_SOURCE": {"values": ["sun", "lamp", "flashlight", "moon"]},
+        "AREA": {"values": ["day", "room", "path", "street"]}
+      },
+      "options": ["bright", "dark", "cold", "cloudy"],
       "calculation": "'bright'",
-      "explanation": "Cause: Sun shines → Effect: Day is bright"
+      "explanation": "When [LIGHT_SOURCE] shines, the [AREA] becomes bright"
     },
     {
       "template_id": "BEG_CAUSE_03",
-      "pattern": "If you study hard, what happens? (you/...)",
-      "variables": {},
-      "wrong_options": ["sleep", "play", "eat"],
-      "correct": "learn",
+      "pattern": "If you study [SUBJECT] hard, what happens?",
+      "variables": {
+        "SUBJECT": {"values": ["math", "science", "English", "history", "geography"]}
+      },
+      "options": ["learn", "sleep", "play", "eat"],
       "calculation": "'learn'",
-      "explanation": "Cause: You study hard → Effect: You learn more"
+      "explanation": "When you study [SUBJECT] hard, you learn more"
     },
     {
       "template_id": "BEG_CAUSE_04",
-      "pattern": "If plant gets water, what happens? (plant/...)",
-      "variables": {},
-      "wrong_options": ["dies", "wilts", "yellow"],
-      "correct": "grows",
+      "pattern": "If [PLANT] gets water, what happens?",
+      "variables": {
+        "PLANT": {"values": ["plant", "flower", "tree", "crop", "garden"]}
+      },
+      "options": ["grows", "dies", "wilts", "yellows"],
       "calculation": "'grows'",
-      "explanation": "Cause: Plant gets water → Effect: Plant grows"
+      "explanation": "When [PLANT] gets water, it grows"
     },
     {
       "template_id": "BEG_CAUSE_05",
-      "pattern": "If you exercise, what happens? (you/...)",
-      "variables": {},
-      "wrong_options": ["tired", "sick", "slow"],
-      "correct": "stronger",
+      "pattern": "If you [EXERCISE] regularly, what happens?",
+      "variables": {
+        "EXERCISE": {"values": ["exercise", "run", "swim", "play sports", "walk"]}
+      },
+      "options": ["stronger", "tired", "sick", "slow"],
       "calculation": "'stronger'",
-      "explanation": "Cause: You exercise → Effect: You get stronger"
+      "explanation": "When you [EXERCISE] regularly, you get stronger"
     },
     {
       "template_id": "BEG_CAUSE_06",
-      "pattern": "If ice in sun, what happens? (ice/...)",
-      "variables": {},
-      "wrong_options": ["grows", "hardens", "cools"],
-      "correct": "melts",
+      "pattern": "If [ICE_ITEM] is in the sun, what happens?",
+      "variables": {
+        "ICE_ITEM": {"values": ["ice", "ice cream", "snowman", "frozen water", "popsicle"]}
+      },
+      "options": ["melts", "grows", "hardens", "cools"],
       "calculation": "'melts'",
-      "explanation": "Cause: Ice in sun → Effect: Ice melts"
+      "explanation": "When [ICE_ITEM] is in the sun, it melts"
     },
     {
       "template_id": "BEG_CAUSE_07",
-      "pattern": "If you eat food, what happens? (you/...)",
-      "variables": {},
-      "wrong_options": ["hungry", "weak", "thirsty"],
-      "correct": "full",
+      "pattern": "If you eat [FOOD], what happens?",
+      "variables": {
+        "FOOD": {"values": ["food", "lunch", "dinner", "breakfast", "snacks"]}
+      },
+      "options": ["full", "hungry", "weak", "thirsty"],
       "calculation": "'full'",
-      "explanation": "Cause: You eat food → Effect: You feel full"
+      "explanation": "When you eat [FOOD], you feel full"
     },
     {
       "template_id": "BEG_CAUSE_08",
-      "pattern": "If light is off, what happens? (room/...)",
-      "variables": {},
-      "wrong_options": ["bright", "sunny", "warm"],
-      "correct": "dark",
+      "pattern": "If [LIGHT] is turned off, what happens to the [PLACE]?",
+      "variables": {
+        "LIGHT": {"values": ["light", "lamp", "bulb", "candle"]},
+        "PLACE": {"values": ["room", "hall", "house", "street"]}
+      },
+      "options": ["dark", "bright", "sunny", "warm"],
       "calculation": "'dark'",
-      "explanation": "Cause: Light is off → Effect: Room is dark"
+      "explanation": "When [LIGHT] is turned off, the [PLACE] becomes dark"
     },
     {
       "template_id": "BEG_CAUSE_09",
-      "pattern": "If ball is thrown up, what happens? (ball/...)",
-      "variables": {},
-      "wrong_options": ["floats", "stops", "rises"],
-      "correct": "falls",
+      "pattern": "If you throw [OBJECT] up, what happens?",
+      "variables": {
+        "OBJECT": {"values": ["ball", "stone", "coin", "paper", "toy"]}
+      },
+      "options": ["falls", "floats", "stops", "rises"],
       "calculation": "'falls'",
-      "explanation": "Cause: Ball is thrown up → Effect: Ball falls down"
+      "explanation": "When you throw [OBJECT] up, it falls down due to gravity"
     },
     {
       "template_id": "BEG_CAUSE_10",
-      "pattern": "If you practice, what happens? (you/...)",
-      "variables": {},
-      "wrong_options": ["forget", "quit", "struggle"],
-      "correct": "improve",
+      "pattern": "If you practice [SKILL], what happens?",
+      "variables": {
+        "SKILL": {"values": ["piano", "drawing", "singing", "dancing", "coding"]}
+      },
+      "options": ["improve", "forget", "quit", "struggle"],
       "calculation": "'improve'",
-      "explanation": "Cause: You practice → Effect: You improve"
+      "explanation": "When you practice [SKILL], you improve"
     },
     {
       "template_id": "BEG_CAUSE_11",
-      "pattern": "If fire burns, what happens? (heat/...)",
-      "variables": {},
-      "wrong_options": ["cold", "dark", "silence"],
-      "correct": "heat",
+      "pattern": "If [FIRE_SOURCE] burns, what is produced?",
+      "variables": {
+        "FIRE_SOURCE": {"values": ["fire", "candle", "stove", "furnace", "campfire"]}
+      },
+      "options": ["heat", "cold", "darkness", "silence"],
       "calculation": "'heat'",
-      "explanation": "Cause: Fire burns → Effect: Heat is produced"
+      "explanation": "When [FIRE_SOURCE] burns, heat is produced"
     },
     {
       "template_id": "BEG_CAUSE_12",
-      "pattern": "If wind blows, what happens? (leaves/...)",
-      "variables": {},
-      "wrong_options": ["fall", "grow", "dry"],
-      "correct": "move",
+      "pattern": "If [WIND_STRENGTH] wind blows, what happens to [OBJECT]?",
+      "variables": {
+        "WIND_STRENGTH": {"values": ["strong", "gentle", "heavy", "light"]},
+        "OBJECT": {"values": ["leaves", "papers", "curtains", "flags"]}
+      },
+      "options": ["move", "fall", "grow", "dry"],
       "calculation": "'move'",
-      "explanation": "Cause: Wind blows → Effect: Leaves move"
+      "explanation": "When [WIND_STRENGTH] wind blows, [OBJECT] move"
     },
     {
       "template_id": "BEG_CAUSE_13",
-      "pattern": "If you sleep well, what happens? (you/...)",
-      "variables": {},
-      "wrong_options": ["tired", "sick", "angry"],
-      "correct": "refreshed",
+      "pattern": "If you sleep for [HOURS] hours, what happens?",
+      "variables": {
+        "HOURS": {"min": 7, "max": 10}
+      },
+      "options": ["refreshed", "tired", "sick", "angry"],
       "calculation": "'refreshed'",
-      "explanation": "Cause: You sleep well → Effect: You feel refreshed"
+      "explanation": "When you sleep for [HOURS] hours, you feel refreshed"
     },
     {
       "template_id": "BEG_CAUSE_14",
-      "pattern": "If you turn key, what happens? (door/...)",
-      "variables": {},
-      "wrong_options": ["breaks", "locks", "closes"],
-      "correct": "opens",
+      "pattern": "If you turn the [KEY_TYPE] key, what happens to the [DOOR_TYPE]?",
+      "variables": {
+        "KEY_TYPE": {"values": ["car", "house", "room", "office"]},
+        "DOOR_TYPE": {"values": ["door", "gate", "lock", "entrance"]}
+      },
+      "options": ["opens", "breaks", "locks", "closes"],
       "calculation": "'opens'",
-      "explanation": "Cause: You turn key → Effect: Door opens"
+      "explanation": "When you turn the [KEY_TYPE] key, the [DOOR_TYPE] opens"
     },
     {
       "template_id": "BEG_CAUSE_15",
-      "pattern": "If battery dies, what happens? (device/...)",
-      "variables": {},
-      "wrong_options": ["charges", "runs", "beeps"],
-      "correct": "stops",
+      "pattern": "If [DEVICE] battery dies, what happens?",
+      "variables": {
+        "DEVICE": {"values": ["phone", "laptop", "tablet", "watch", "remote"]}
+      },
+      "options": ["stops", "charges", "runs", "beeps"],
       "calculation": "'stops'",
-      "explanation": "Cause: Battery dies → Effect: Device stops"
+      "explanation": "When [DEVICE] battery dies, the device stops working"
     },
     {
       "template_id": "BEG_CAUSE_16",
-      "pattern": "If you add sugar, what happens? (taste/...)",
-      "variables": {},
-      "wrong_options": ["sour", "bitter", "salty"],
-      "correct": "sweet",
+      "pattern": "If you add [SWEET] to [DRINK], what happens to the taste?",
+      "variables": {
+        "SWEET": {"values": ["sugar", "honey", "syrup", "sweetener"]},
+        "DRINK": {"values": ["tea", "coffee", "milk", "water"]}
+      },
+      "options": ["sweet", "sour", "bitter", "salty"],
       "calculation": "'sweet'",
-      "explanation": "Cause: You add sugar → Effect: Taste is sweet"
+      "explanation": "When you add [SWEET] to [DRINK], the taste becomes sweet"
     },
     {
       "template_id": "BEG_CAUSE_17",
-      "pattern": "If temperature drops, what happens? (water/...)",
-      "variables": {},
-      "wrong_options": ["boils", "evaporates", "flows"],
-      "correct": "freezes",
+      "pattern": "If temperature drops to [TEMP]°C, what happens to water?",
+      "variables": {
+        "TEMP": {"values": ["-5", "-10", "0", "-2"]}
+      },
+      "options": ["freezes", "boils", "evaporates", "flows"],
       "calculation": "'freezes'",
-      "explanation": "Cause: Temperature drops → Effect: Water freezes"
+      "explanation": "When temperature drops to [TEMP]°C, water freezes"
     },
     {
       "template_id": "BEG_CAUSE_18",
-      "pattern": "If you smile, what happens? (others/...)",
-      "variables": {},
-      "wrong_options": ["frown", "ignore", "leave"],
-      "correct": "smile",
-      "calculation": "'smile'",
-      "explanation": "Cause: You smile → Effect: Others smile back"
+      "pattern": "If you smile at [PERSON], what happens?",
+      "variables": {
+        "PERSON": {"values": ["someone", "a friend", "a stranger", "people", "neighbors"]}
+      },
+      "options": ["smile back", "frown", "ignore", "leave"],
+      "calculation": "'smile back'",
+      "explanation": "When you smile at [PERSON], they usually smile back"
     },
     {
       "template_id": "BEG_CAUSE_19",
-      "pattern": "If clock ticks, what happens? (time/...)",
-      "variables": {},
-      "wrong_options": ["stops", "returns", "waits"],
-      "correct": "passes",
+      "pattern": "If [TIME_DEVICE] ticks for [DURATION], what happens to time?",
+      "variables": {
+        "TIME_DEVICE": {"values": ["clock", "watch", "timer", "stopwatch"]},
+        "DURATION": {"values": ["1 hour", "30 minutes", "5 minutes", "2 hours"]}
+      },
+      "options": ["passes", "stops", "returns", "waits"],
       "calculation": "'passes'",
-      "explanation": "Cause: Clock ticks → Effect: Time passes"
+      "explanation": "As [TIME_DEVICE] ticks for [DURATION], time passes"
     },
     {
       "template_id": "BEG_CAUSE_20",
-      "pattern": "If you save money, what happens? (money/...)",
-      "variables": {},
-      "wrong_options": ["spends", "loses", "stays"],
-      "correct": "grows",
+      "pattern": "If you save INR [AMOUNT] every month, what happens to your savings?",
+      "variables": {
+        "AMOUNT": {"values": ["500", "1000", "2000", "5000"]}
+      },
+      "options": ["grows", "shrinks", "disappears", "stays same"],
       "calculation": "'grows'",
-      "explanation": "Cause: You save money → Effect: Money grows"
+      "explanation": "When you save INR [AMOUNT] every month, your savings grow"
     },
     {
       "template_id": "BEG_CAUSE_21",
-      "pattern": "If alarm rings, what happens? (you/...)",
-      "variables": {},
-      "wrong_options": ["sleep", "dream", "snore"],
-      "correct": "wake",
-      "calculation": "'wake'",
-      "explanation": "Cause: Alarm rings → Effect: You wake up"
+      "pattern": "If [ALARM_TYPE] alarm rings at [TIME], what happens?",
+      "variables": {
+        "ALARM_TYPE": {"values": ["morning", "phone", "clock", "school"]},
+        "TIME": {"values": ["6 AM", "7 AM", "8 AM", "5 AM"]}
+      },
+      "options": ["wake up", "sleep more", "dream", "snore"],
+      "calculation": "'wake up'",
+      "explanation": "When [ALARM_TYPE] alarm rings at [TIME], you wake up"
     },
     {
       "template_id": "BEG_CAUSE_22",
-      "pattern": "If you press button, what happens? (light/...)",
-      "variables": {},
-      "wrong_options": ["dim", "broken", "flicker"],
-      "correct": "on",
-      "calculation": "'on'",
-      "explanation": "Cause: You press button → Effect: Light turns on"
+      "pattern": "If you press the [COLOR] button, what happens to the light?",
+      "variables": {
+        "COLOR": {"values": ["red", "green", "blue", "white", "yellow"]}
+      },
+      "options": ["turns on", "dims", "breaks", "flickers"],
+      "calculation": "'turns on'",
+      "explanation": "When you press the [COLOR] button, the light turns on"
     }
   ],
   "responses": {
