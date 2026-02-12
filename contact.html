@@ -31,6 +31,35 @@
 <meta name="twitter:image" content="https://odelya.online/images/logo2.jpg">
 <meta name="twitter:image:alt" content="Contact Odelya Cloud Digital Locker - Secure cloud & IT services support Kolkata">
 
+<script>
+(function() {
+    // Get current URL
+    var currentPath = window.location.pathname;
+    var currentSearch = window.location.search;
+    var currentHash = window.location.hash;
+    
+    // Check if URL contains .html extension
+    if (currentPath.endsWith('.html')) {
+        // Remove .html extension
+        var cleanPath = currentPath.replace('.html', '');
+        
+        // Redirect to clean URL (301 equivalent in browser)
+        window.location.replace(cleanPath + currentSearch + currentHash);
+    }
+    
+    // Check if URL has www (GitHub should handle this, but just in case)
+    if (window.location.hostname.startsWith('www.')) {
+        var newUrl = window.location.protocol + '//' + 
+                     window.location.hostname.replace('www.', '') + 
+                     window.location.pathname + 
+                     window.location.search + 
+                     window.location.hash;
+        window.location.replace(newUrl);
+    }
+})();
+</script>
+
+	
 <!-- Structured Data (Schema.org) -->
 <script type="application/ld+json">
 {
@@ -1864,6 +1893,7 @@
 	
 </body>
 </html>
+
 
 
 
