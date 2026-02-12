@@ -1,8 +1,8 @@
 // sw.js - Vooo AI Service Worker
 const CACHE_NAME = 'vooo-math-v2';
 const urlsToCache = [
-  '/vooo-ai/',
-  '/vooo-ai/index.html',
+  '/vooo-ai',
+  '/vooo-ai.html',
   '/vooo-ai/pwainstall.js',
   '/vooo-ai/manifest.json',
   '/vooo-ai/vooo_puzzle_engine.js',
@@ -27,8 +27,8 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME).then(cache => {
       console.log('SW: Caching app shell');
       return cache.addAll([
-        '/vooo-ai/',
-        '/vooo-ai/index.html',
+        '/vooo-ai',
+        '/vooo-ai.html',
         '/vooo-ai/pwainstall.js',
         '/vooo-ai/manifest.json',
         '/vooo-ai/vooo_puzzle_engine.js',
@@ -113,7 +113,7 @@ async function cacheFirst(request) {
   } catch (error) {
     // Return offline page or fallback
     if (request.destination === 'document') {
-      return caches.match('/vooo-ai/index.html');
+      return caches.match('/vooo-ai.html');
     }
     throw error;
   }
