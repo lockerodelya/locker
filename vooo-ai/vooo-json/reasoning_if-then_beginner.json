@@ -9,7 +9,7 @@
 "WEATHER": {"values": ["rains", "snows", "is sunny", "is windy"]},
 "ACTION": {"values": ["use an umbrella", "wear boots", "wear sunglasses", "stay inside"]}
 },
-"options": ["'use an umbrella'", "'wear boots'", "'wear sunglasses'", "'stay inside'"],
+"options": ["[ACTION]", "Go swimming", "Sleep", "Read a book"],
 "calculation": "[ACTION]",
 "explanation": "The condition is met, so you must [ACTION]."
 },
@@ -21,7 +21,7 @@
 "STATE": {"values": ["hungry", "thirsty", "tired", "happy"]},
 "VERB": {"values": ["eats", "drinks", "sleeps", "wiggles"]}
 },
-"options": ["'eats'", "'drinks'", "'sleeps'", "'wiggles'"],
+"options": ["[VERB]", "runs", "flies", "jumps"],
 "calculation": "[VERB]",
 "explanation": "Because the [SUBJECT] is [STATE], it [VERB]."
 },
@@ -32,8 +32,8 @@
 "EVENT1": {"values": ["the sun rises", "the bell rings", "the door opens", "the timer beeps"]},
 "EVENT2": {"values": ["the day begins", "class starts", "someone enters", "food is ready"]}
 },
-"options": ["'Yes'", "'No'", "'Maybe'", "'Never'"],
-"calculation": "'Yes'",
+"options": ["Yes", "No", "Maybe", "Never"],
+"calculation": "Yes",
 "explanation": "The rule says [EVENT1] causes [EVENT2]."
 },
 {
@@ -44,8 +44,8 @@
 "ACTION1": {"values": ["studied", "practiced", "worked", "trained"]},
 "ACTION2": {"values": ["passed", "won", "got paid", "succeeded"]}
 },
-"options": ["'No'", "'Yes'", "'Maybe'", "'Always'"],
-"calculation": "'No'",
+"options": ["No", "Yes", "Maybe", "Always"],
+"calculation": "No",
 "explanation": "If the result didn't happen, the cause didn't happen."
 },
 {
@@ -56,7 +56,7 @@
 "OBJECT": {"values": ["light", "fan", "bell", "toy"]},
 "ACTION": {"values": ["turns on", "starts spinning", "rings", "moves"]}
 },
-"options": ["'turns on'", "'starts spinning'", "'rings'", "'moves'"],
+"options": ["[ACTION]", "breaks", "disappears", "changes color"],
 "calculation": "[ACTION]",
 "explanation": "Pressing the button triggers the action."
 },
@@ -67,8 +67,8 @@
 "TIME": {"values": ["morning", "evening", "night", "noon"]},
 "ACTIVITY": {"values": ["sunrise", "sunset", "starlight", "lunchtime"]}
 },
-"options": ["'Yes'", "'No'", "'Uncertain'", "'Tomorrow'"],
-"calculation": "'Yes'",
+"options": ["Yes", "No", "Uncertain", "Tomorrow"],
+"calculation": "Yes",
 "explanation": "The activity confirms the time."
 },
 {
@@ -79,8 +79,8 @@
 "STATUS": {"values": ["red", "yellow", "sour", "moldy"]},
 "QUALITY": {"values": ["ripe", "sweet", "spoiled", "bad"]}
 },
-"options": ["'Yes'", "'No'", "'Maybe'", "'Sometimes'"],
-"calculation": "'Yes'",
+"options": ["Yes", "No", "Maybe", "Sometimes"],
+"calculation": "Yes",
 "explanation": "The status matches the quality rule."
 },
 {
@@ -91,7 +91,7 @@
 "AGE": {"values": ["5", "1", "15"]},
 "CATEGORY": {"values": ["child", "baby", "teenager"]}
 },
-"options": ["'child'", "'baby'", "'teenager'", "'adult'"],
+"options": ["[CATEGORY]", "adult", "senior", "toddler"],
 "calculation": "[CATEGORY]",
 "explanation": "Age determines the category."
 },
@@ -103,8 +103,8 @@
 "VAL_A": {"min": 50, "max": 100},
 "VAL_B": {"min": 1, "max": 49}
 },
-"options": ["'Yes'", "'No'", "'Draw'", "'Unknown'"],
-"calculation": "'Yes'",
+"options": ["Yes", "No", "Draw", "Unknown"],
+"calculation": "Yes",
 "explanation": "Higher value wins."
 },
 {
@@ -112,10 +112,10 @@
 "pattern": "Rule: If you [ACTION1] OR [ACTION2], the door opens. You [ACTION1]. Does it open?",
 "variables": {
 "ACTION1": {"values": ["push", "pull", "turn the key"]},
-"ACTION2": {"values": ["knock", "ring the bell"]}
+"ACTION2": {"values": ["knock", "ring the bell", "say please"]}
 },
-"options": ["'Yes'", "'No'", "'Maybe'", "'Locked'"],
-"calculation": "'Yes'",
+"options": ["Yes", "No", "Maybe", "Locked"],
+"calculation": "Yes",
 "explanation": "One action is enough to open the door."
 },
 {
@@ -125,8 +125,8 @@
 "TIME": {"values": ["daytime", "winter", "summer"]},
 "STATUS": {"values": ["light", "cold", "hot"]}
 },
-"options": ["'No'", "'Yes'", "'Always'", "'Often'"],
-"calculation": "'No'",
+"options": ["No", "Yes", "Always", "Often"],
+"calculation": "No",
 "explanation": "Status is missing, so time is false."
 },
 {
@@ -137,8 +137,8 @@
 "PLACE1": {"values": ["kitchen", "box", "car"]},
 "PLACE2": {"values": ["garden", "shelf", "pocket"]}
 },
-"options": ["'No'", "'Yes'", "'Both'", "'Nowhere'"],
-"calculation": "'No'",
+"options": ["No", "Yes", "Both", "Nowhere"],
+"calculation": "No",
 "explanation": "Cannot be in two places at once."
 },
 {
@@ -149,7 +149,7 @@
 "ITEM": {"values": ["glass", "water", "metal"]},
 "RESULT": {"values": ["broken", "ice", "hot"]}
 },
-"options": ["'broken'", "'ice'", "'hot'", "'clean'"],
+"options": ["[RESULT]", "clean", "new", "soft"],
 "calculation": "[RESULT]",
 "explanation": "The action creates the result."
 },
@@ -161,7 +161,7 @@
 "CLOTHING": {"values": ["a coat", "shorts", "raincoat"]},
 "FEELING": {"values": ["warm", "cool", "dry"]}
 },
-"options": ["'warm'", "'cool'", "'dry'", "'sad'"],
+"options": ["[FEELING]", "sad", "tired", "hungry"],
 "calculation": "[FEELING]",
 "explanation": "Clothing affects feeling."
 },
@@ -173,13 +173,13 @@
 "ACTION": {"values": ["wags tail", "purrs", "sings"]},
 "EMOTION": {"values": ["happy", "content", "cheerful"]}
 },
-"options": ["'happy'", "'content'", "'cheerful'", "'mad'"],
+"options": ["[EMOTION]", "mad", "scared", "sleepy"],
 "calculation": "[EMOTION]",
 "explanation": "Action reveals emotion."
 }
 ],
 "responses": {
-"correct": ["Perfect! ⭐", "Excellent! 🎯"],
-"incorrect": ["Try again! 💪", "Think again! 🤔"]
+"correct": ["Perfect! ⭐", "Logic Master! 🎯", "Great! 🌟", "Brilliant! ✨"],
+"incorrect": ["Try again! 💪", "Almost! 😊", "Think again! 🤔"]
 }
 }
