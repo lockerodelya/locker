@@ -1,0 +1,2800 @@
+{
+  "puzzle_type": "pattern_advanced",
+  "display_name": "🔮 Advanced Pattern",
+  "version": "2.0",
+  "generator_strategy": "combinatorial_dynamic",
+  "templates": [
+    {
+      "template_id": "ENT_PAT_001",
+      "pattern": "[A], [A]+[B], [A]+[B]×2, [A]+[B]×3, ... Next?",
+      "variables": {
+        "A": {
+          "min": -50,
+          "max": 100,
+          "step": 1,
+          "sets": ["negative", "positive", "large"]
+        },
+        "B": {
+          "min": -25,
+          "max": 50,
+          "step": 1,
+          "sets": ["negative", "positive", "fractional"]
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 8,
+      "calculation": "A + B * (4 + offset)",
+      "offset_range": {"min": -2, "max": 2},
+      "difficulty_bands": ["elementary", "middle", "high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Pattern: +[B] each. Next: [A]+[B]×4 = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_002",
+      "pattern": "[A]², ([A]+1)², ([A]+2)², ([A]+3)², ... Next?",
+      "variables": {
+        "A": {
+          "min": -20,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive", "decimal"]
+        }
+      },
+      "variable_combinations": 3,
+      "pattern_variants": 6,
+      "calculation": "(A + 4 + shift) * (A + 4 + shift)",
+      "shift_range": {"min": -1, "max": 1},
+      "difficulty_bands": ["elementary", "middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Squares: ([A]+4)² = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_003",
+      "pattern": "[F1], [F2], [F1+F2], [F1+2F2], 2[F1]+3[F2], 3[F1]+5[F2], ... Next?",
+      "variables": {
+        "F1": {
+          "min": -10,
+          "max": 20,
+          "step": 1,
+          "sets": ["fib_base1", "fib_base2", "custom"]
+        },
+        "F2": {
+          "min": -10,
+          "max": 20,
+          "step": 1,
+          "sets": ["fib_base1", "fib_base2", "custom"]
+        },
+        "multiplier_set": {
+          "type": "preset",
+          "values": [[1,1], [1,2], [2,3], [3,5], [5,8], [8,13]]
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 7,
+      "calculation": "multiplier_set[4][0] * F1 + multiplier_set[4][1] * F2",
+      "difficulty_bands": ["middle", "high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Fibonacci-style: Next = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_004",
+      "pattern": "[A], [A]×[B], [A]×[B]², [A]×[B]³, ... Next?",
+      "variables": {
+        "A": {
+          "min": -15,
+          "max": 25,
+          "step": 1,
+          "sets": ["negative", "positive", "fractional"]
+        },
+        "B": {
+          "min": -8,
+          "max": 12,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional", "decimal"]
+        },
+        "power_offset": {
+          "min": -1,
+          "max": 2,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 6,
+      "calculation": "A * Math.pow(B, 4 + power_offset)",
+      "difficulty_bands": ["middle", "high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Pattern: ×[B] each. Next: [A]×[B]⁴ = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_005",
+      "pattern": "[A], [A]×2, [A]×4, [A]×8, ... Next?",
+      "variables": {
+        "A": {
+          "min": -20,
+          "max": 40,
+          "step": 1,
+          "sets": ["negative", "positive", "fractional"]
+        },
+        "multiplier_base": {
+          "min": 1.5,
+          "max": 3.5,
+          "step": 0.5
+        },
+        "power": {
+          "min": 2,
+          "max": 5,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "A * Math.pow(multiplier_base, 4)",
+      "difficulty_bands": ["elementary", "middle", "high", "competition"],
+      "explanation_variants": 3,
+      "explanation": "Pattern: ×[multiplier_base] each. Next: [A]×[multiplier_base]⁴ = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_006",
+      "pattern": "[A]³, ([A]+1)³, ([A]+2)³, ... Next?",
+      "variables": {
+        "A": {
+          "min": -10,
+          "max": 20,
+          "step": 1,
+          "sets": ["negative", "positive", "decimal"]
+        },
+        "step_size": {
+          "min": 0.5,
+          "max": 2.5,
+          "step": 0.5
+        },
+        "cube_offset": {
+          "min": -2,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 6,
+      "calculation": "Math.pow(A + 3 * step_size + cube_offset, 3)",
+      "difficulty_bands": ["middle", "high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Cubes: ([A]+3)³ = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_007",
+      "pattern": "[A], [A]×3, [A]×9, [A]×27, ... Next?",
+      "variables": {
+        "A": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "base": {
+          "min": 2,
+          "max": 5,
+          "step": 1
+        },
+        "exponent_offset": {
+          "min": -1,
+          "max": 2,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "A * Math.pow(base, 3 + exponent_offset)",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 3,
+      "explanation": "Pattern: ×[base] each. Next: [A]×[base]⁴ = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_008",
+      "pattern": "[A], [A]+[B]², [A]+([B]+[S])², [A]+([B]+2[S])², ... Next?",
+      "variables": {
+        "A": {
+          "min": -20,
+          "max": 50,
+          "step": 1,
+          "sets": ["negative", "positive", "large"]
+        },
+        "B": {
+          "min": -10,
+          "max": 15,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "S": {
+          "min": 0.5,
+          "max": 3,
+          "step": 0.5
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 7,
+      "calculation": "A + Math.pow(B + 3 * S, 2)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Adding squares with step [S]. Next: [A]+([B]+3[S])² = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_009",
+      "pattern": "[A]×2-1, [A]×4-1, [A]×8-1, ... Next?",
+      "variables": {
+        "A": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "base": {
+          "min": 1.5,
+          "max": 3,
+          "step": 0.5
+        },
+        "constant": {
+          "min": -5,
+          "max": 5,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "A * Math.pow(base, 4) + constant",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Pattern: ×[base] then +[constant]. Next: [A]×[base]⁴+[constant] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_010",
+      "pattern": "[A]×2+[B], [A]×4+[B], [A]×8+[B], ... Next?",
+      "variables": {
+        "A": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -20,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "base": {
+          "min": 1.5,
+          "max": 3.5,
+          "step": 0.5
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "A * Math.pow(base, 4) + B",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Pattern: ×[base] then +[B]. Next: [A]×[base]⁴+[B] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_011",
+      "pattern": "[A], [A]+[B], [A]+[B]+[B]², [A]+[B]+[B]²+[B]³, ... Next?",
+      "variables": {
+        "A": {
+          "min": -20,
+          "max": 40,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -5,
+          "max": 8,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        },
+        "max_power": {
+          "min": 3,
+          "max": 6,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 7,
+      "calculation": "A + B + Math.pow(B, 2) + Math.pow(B, 3) + Math.pow(B, max_power)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Sum of powers through [B]^{max_power}. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_012",
+      "pattern": "[T1], [T2], [T3], [T1+T2+T3], [T2+T3+T4], [T3+T4+T5], ... Next?",
+      "variables": {
+        "T1": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["tribase1"]
+        },
+        "T2": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["tribase2"]
+        },
+        "T3": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["tribase3"]
+        },
+        "coefficient_set": {
+          "type": "preset",
+          "values": [[1,1,1], [1,1,2], [1,2,3], [2,3,4], [3,4,5]]
+        }
+      },
+      "variable_combinations": 6,
+      "pattern_variants": 8,
+      "calculation": "coefficient_set[4][0]*T1 + coefficient_set[4][1]*T2 + coefficient_set[4][2]*T3",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 6,
+      "explanation": "Tribonacci-style with coefficients. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_013",
+      "pattern": "[A], [A]×[B]+[C], ([A]×[B]+[C])×[B]+[C], ... Next?",
+      "variables": {
+        "A": {
+          "min": -10,
+          "max": 20,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -5,
+          "max": 8,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        },
+        "C": {
+          "min": -10,
+          "max": 15,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "iterations": {
+          "min": 2,
+          "max": 5,
+          "step": 1
+        }
+      },
+      "variable_combinations": 6,
+      "pattern_variants": 7,
+      "calculation": "((A * B + C) * B + C) * B + C",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Recursive ×[B]+[C] for [iterations] steps. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_014",
+      "pattern": "[A]!, ([A]+[S])!, ([A]+2[S])!, ... Next?",
+      "variables": {
+        "A": {
+          "min": 0,
+          "max": 8,
+          "step": 1,
+          "sets": ["factorial_base"]
+        },
+        "S": {
+          "min": 0.5,
+          "max": 2.5,
+          "step": 0.5
+        },
+        "multiplier": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "factorial(A + multiplier * S)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Factorials with step [S]. Next: ([A]+[multiplier][S])! = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_015",
+      "pattern": "Prime numbers starting from [P] with step [D]: [P], next prime, next prime, ... Next?",
+      "variables": {
+        "P": {
+          "min": 2,
+          "max": 100,
+          "step": 1,
+          "primes_only": true
+        },
+        "D": {
+          "min": 1,
+          "max": 10,
+          "step": 1
+        },
+        "prime_family": {
+          "type": "preset",
+          "values": ["regular", "twin", "cousin", "sexy", "sophie"]
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 8,
+      "calculation": "nth_prime_of_family(P, prime_family, 4)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 6,
+      "explanation": "[prime_family] primes starting from [P]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_016",
+      "pattern": "[A], [A]+1², [A]+1²+2², [A]+1²+2²+3², ... Next?",
+      "variables": {
+        "A": {
+          "min": -20,
+          "max": 50,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "start_power": {
+          "min": 1,
+          "max": 3,
+          "step": 1
+        },
+        "power_base": {
+          "min": 2,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "A + Math.pow(start_power, power_base) + Math.pow(start_power+1, power_base) + Math.pow(start_power+2, power_base) + Math.pow(start_power+3, power_base)",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Sum of [power_base] powers from [start_power]³. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_017",
+      "pattern": "[A]², [A]²+[A], [A]²+[A]+[A]², [A]²+[A]+[A]²+[A], ... Next?",
+      "variables": {
+        "A": {
+          "min": -10,
+          "max": 20,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "pattern_type": {
+          "type": "preset",
+          "values": ["alternating", "cumulative", "switching"]
+        },
+        "cycle_length": {
+          "min": 2,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 6,
+      "calculation": "3 * A * A + 2 * A",
+      "difficulty_bands": ["high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "[pattern_type] pattern with cycle [cycle_length]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_018",
+      "pattern": "[A], [A]÷2+[B], [A]÷4+[B], [A]÷8+[B], ... Next?",
+      "variables": {
+        "A": {
+          "min": 8,
+          "max": 512,
+          "step": 8,
+          "sets": ["powers_of_2", "large"]
+        },
+        "B": {
+          "min": -20,
+          "max": 50,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "divisor_base": {
+          "min": 1.5,
+          "max": 3,
+          "step": 0.5
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "A / Math.pow(divisor_base, 4) + B",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Pattern: ÷[divisor_base] then +[B]. Next: [A]÷[divisor_base]⁴+[B] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_019",
+      "pattern": "[C1], [C2], [C1+C2], [C1+2C2], 2[C1]+3[C2], ... Next?",
+      "variables": {
+        "C1": {
+          "min": -8,
+          "max": 15,
+          "step": 1,
+          "sets": ["catalan_base1"]
+        },
+        "C2": {
+          "min": -8,
+          "max": 15,
+          "step": 1,
+          "sets": ["catalan_base2"]
+        },
+        "multiplier_sequence": {
+          "type": "preset",
+          "values": [[1,1], [1,2], [2,3], [3,5], [5,8], [8,13], [13,21]]
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 7,
+      "calculation": "multiplier_sequence[5][0] * C1 + multiplier_sequence[5][1] * C2",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Catalan-style sequence with multipliers. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_020",
+      "pattern": "[L1], [L2], [L1+L2], [L1+2L2], 2[L1]+3[L2], ... Next?",
+      "variables": {
+        "L1": {
+          "min": -10,
+          "max": 20,
+          "step": 1,
+          "sets": ["lucas_base1", "negative", "positive"]
+        },
+        "L2": {
+          "min": -10,
+          "max": 20,
+          "step": 1,
+          "sets": ["lucas_base2", "negative", "positive"]
+        },
+        "coefficient_pattern": {
+          "type": "preset",
+          "values": ["fibonacci", "lucas", "pell", "jacobsthal"]
+        }
+      },
+      "variable_combinations": 6,
+      "pattern_variants": 8,
+      "calculation": "get_coefficient(coefficient_pattern, 4, 0) * L1 + get_coefficient(coefficient_pattern, 4, 1) * L2",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 6,
+      "explanation": "[coefficient_pattern]-style sequence. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_021",
+      "pattern": "[A], [A]×[B]-[C], ([A]×[B]-[C])×[B]-[C], ... Next?",
+      "variables": {
+        "A": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -4,
+          "max": 6,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        },
+        "C": {
+          "min": -10,
+          "max": 15,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "depth": {
+          "min": 2,
+          "max": 5,
+          "step": 1
+        }
+      },
+      "variable_combinations": 6,
+      "pattern_variants": 7,
+      "calculation": "((A * B - C) * B - C) * B - C",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Recursive ×[B]-[C] for [depth] steps. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_022",
+      "pattern": "Pentagonal numbers: [P], [P]+4, [P]+4+7, [P]+4+7+10, ... Next?",
+      "variables": {
+        "P": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "start_diff": {
+          "min": 1,
+          "max": 6,
+          "step": 1
+        },
+        "diff_step": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "P + start_diff + (start_diff+diff_step) + (start_diff+2*diff_step) + (start_diff+3*diff_step)",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Pentagonal-style with differences +[diff_step]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_023",
+      "pattern": "Hexagonal numbers: [H], [H]+5, [H]+5+9, [H]+5+9+13, ... Next?",
+      "variables": {
+        "H": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "start_diff": {
+          "min": 2,
+          "max": 7,
+          "step": 1
+        },
+        "diff_step": {
+          "min": 2,
+          "max": 5,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "H + start_diff + (start_diff+diff_step) + (start_diff+2*diff_step) + (start_diff+3*diff_step)",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Hexagonal-style with differences +[diff_step]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_024",
+      "pattern": "[A], [A]+[B]!, [A]+[B]!+([B]+[S])!, ... Next?",
+      "variables": {
+        "A": {
+          "min": -20,
+          "max": 40,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": 0,
+          "max": 6,
+          "step": 1,
+          "sets": ["factorial_base"]
+        },
+        "S": {
+          "min": 0.5,
+          "max": 2.5,
+          "step": 0.5
+        },
+        "terms": {
+          "min": 2,
+          "max": 5,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "A + factorial(B) + factorial(B+S) + factorial(B+2*S)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Sum of factorials with step [S]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_025",
+      "pattern": "[A]×[B]¹, [A]×[B]², [A]×[B]³, [A]×[B]⁴, ... Next?",
+      "variables": {
+        "A": {
+          "min": -15,
+          "max": 25,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -5,
+          "max": 8,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        },
+        "power_start": {
+          "min": 1,
+          "max": 3,
+          "step": 1
+        },
+        "power_step": {
+          "min": 1,
+          "max": 2,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "A * Math.pow(B, power_start + 4 * power_step)",
+      "difficulty_bands": ["middle", "high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Powers of [B] starting at exponent [power_start]. Next: [A]×[B]^{power_start+4} = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_026",
+      "pattern": "Double factorial: [D], [D]×2, [D]×2×4, [D]×2×4×6, ... Next?",
+      "variables": {
+        "D": {
+          "min": 1,
+          "max": 15,
+          "step": 1,
+          "sets": ["odd", "even"]
+        },
+        "start_mult": {
+          "min": 1,
+          "max": 3,
+          "step": 1
+        },
+        "mult_step": {
+          "min": 1,
+          "max": 3,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "D * start_mult * (start_mult+mult_step) * (start_mult+2*mult_step) * (start_mult+3*mult_step)",
+      "difficulty_bands": ["high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Double factorial starting at multiplier [start_mult]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_027",
+      "pattern": "[A], [A]+[B]³, [A]+([B]+[S])³, [A]+([B]+2[S])³, ... Next?",
+      "variables": {
+        "A": {
+          "min": -20,
+          "max": 50,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "S": {
+          "min": 0.5,
+          "max": 3,
+          "step": 0.5
+        },
+        "cube_power": {
+          "min": 2,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "A + Math.pow(B + 3 * S, cube_power)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Adding [cube_power] powers with step [S]. Next: [A]+([B]+3[S])^{cube_power} = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_028",
+      "pattern": "[S]^{P}, -([S]+1)^{P}, ([S]+2)^{P}, -([S]+3)^{P}, ... Next?",
+      "variables": {
+        "S": {
+          "min": -8,
+          "max": 15,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        },
+        "sign_pattern": {
+          "type": "preset",
+          "values": ["+-+", "+-+-", "-+-+", "alternating"]
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 6,
+      "calculation": "Math.pow(-1, 4) * Math.pow(S + 4, P)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Alternating signs with pattern [sign_pattern]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_029",
+      "pattern": "[A], [A]^{P}-[B], ([A]^{P}-[B])^{P}-[B], ... Next?",
+      "variables": {
+        "A": {
+          "min": -8,
+          "max": 15,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -10,
+          "max": 20,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P": {
+          "min": 2,
+          "max": 4,
+          "step": 1
+        },
+        "iterations": {
+          "min": 1,
+          "max": 3,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "Math.pow(Math.pow(A, P) - B, P) - B",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Raise to [P] then -[B], repeated. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_030",
+      "pattern": "[B1], [B2], [B3], [B4], ... Next? (Bell-style with offsets)",
+      "variables": {
+        "B1": {
+          "min": 0,
+          "max": 8,
+          "step": 1
+        },
+        "B2": {
+          "min": 0,
+          "max": 8,
+          "step": 1
+        },
+        "B3": {
+          "min": 0,
+          "max": 8,
+          "step": 1
+        },
+        "B4": {
+          "min": 0,
+          "max": 8,
+          "step": 1
+        },
+        "formula_type": {
+          "type": "preset",
+          "values": ["bell", "catalan", "motzkin", "schroder"]
+        }
+      },
+      "variable_combinations": 7,
+      "pattern_variants": 9,
+      "calculation": "apply_combinatorial_formula([B1,B2,B3,B4], formula_type, 5)",
+      "difficulty_bands": ["competition", "expert", "research"],
+      "explanation_variants": 7,
+      "explanation": "[formula_type] numbers with custom seed. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_031",
+      "pattern": "[A], [A]×[R], [A]×[R]², [A]×[R]³, ... Next?",
+      "variables": {
+        "A": {
+          "min": -20,
+          "max": 50,
+          "step": 1,
+          "sets": ["negative", "positive", "decimal"]
+        },
+        "R": {
+          "min": -3,
+          "max": 5,
+          "step": 0.25,
+          "sets": ["negative", "positive", "fractional", "decimal"]
+        },
+        "scale_factor": {
+          "min": 0.5,
+          "max": 2,
+          "step": 0.25
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "A * Math.pow(R * scale_factor, 4)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Geometric with ratio [R] scaled by [scale_factor]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_032",
+      "pattern": "Tetrahedral: [T], [T]+3, [T]+3+6, [T]+3+6+10, ... Next?",
+      "variables": {
+        "T": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "start_tri": {
+          "min": 1,
+          "max": 5,
+          "step": 1
+        },
+        "tri_step": {
+          "min": 1,
+          "max": 3,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "T + start_tri + (start_tri+tri_step) + (start_tri+2*tri_step) + (start_tri+3*tri_step) + (start_tri+4*tri_step)",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Tetrahedral-style with triangular numbers starting at [start_tri]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_033",
+      "pattern": "[A], [A]+[B]×[C], [A]+[B]×[C]², [A]+[B]×[C]³, ... Next?",
+      "variables": {
+        "A": {
+          "min": -25,
+          "max": 50,
+          "step": 1,
+          "sets": ["negative", "positive", "large"]
+        },
+        "B": {
+          "min": -10,
+          "max": 15,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "C": {
+          "min": -4,
+          "max": 6,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        },
+        "power_offset": {
+          "min": -1,
+          "max": 2,
+          "step": 1
+        }
+      },
+      "variable_combinations": 6,
+      "pattern_variants": 7,
+      "calculation": "A + B * Math.pow(C, 4 + power_offset)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Pattern: +[B]×powers of [C]. Next: [A]+[B]×[C]^{4+power_offset} = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_034",
+      "pattern": "Centered square: [C], [C]+4, [C]+4+8, [C]+4+8+12, ... Next?",
+      "variables": {
+        "C": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "start_diff": {
+          "min": 2,
+          "max": 6,
+          "step": 1
+        },
+        "diff_step": {
+          "min": 2,
+          "max": 5,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "C + start_diff + (start_diff+diff_step) + (start_diff+2*diff_step) + (start_diff+3*diff_step) + (start_diff+4*diff_step)",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Centered square with diff step [diff_step]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_035",
+      "pattern": "Centered hexagonal: [H], [H]+6, [H]+6+12, [H]+6+12+18, ... Next?",
+      "variables": {
+        "H": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "start_diff": {
+          "min": 3,
+          "max": 8,
+          "step": 1
+        },
+        "diff_step": {
+          "min": 3,
+          "max": 7,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "H + start_diff + (start_diff+diff_step) + (start_diff+2*diff_step) + (start_diff+3*diff_step) + (start_diff+4*diff_step)",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Centered hexagonal with diff step [diff_step]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_036",
+      "pattern": "[A]^{P}, ([A]×[M])^{P}, ([A]×[M]²)^{P}, ([A]×[M]³)^{P}, ... Next?",
+      "variables": {
+        "A": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "M": {
+          "min": -4,
+          "max": 5,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        },
+        "P": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "Math.pow(A * Math.pow(M, 4), P)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Powers of [P] with multiplier [M]. Next: ([A]×[M]⁴)^{P} = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_037",
+      "pattern": "[M1], [M2], [M1+M2], [M1+2M2], 2[M1]+3[M2], ... Next? (Moser-de Bruijn style)",
+      "variables": {
+        "M1": {
+          "min": -8,
+          "max": 15,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "M2": {
+          "min": -8,
+          "max": 15,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "coeff_sequence": {
+          "type": "preset",
+          "values": ["fibonacci", "powers_of_2", "powers_of_3", "custom"]
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 7,
+      "calculation": "get_coeff(coeff_sequence, 4, 0) * M1 + get_coeff(coeff_sequence, 4, 1) * M2",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "[coeff_sequence] coefficients applied. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_038",
+      "pattern": "[A], [A]+[B]^{P}, [A]+[B]^{P}+([B]+[S])^{P}, [A]+[B]^{P}+([B]+[S])^{P}+([B]+2[S])^{P}, ... Next?",
+      "variables": {
+        "A": {
+          "min": -20,
+          "max": 40,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "S": {
+          "min": 0.5,
+          "max": 3,
+          "step": 0.5
+        },
+        "P": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        },
+        "terms": {
+          "min": 3,
+          "max": 6,
+          "step": 1
+        }
+      },
+      "variable_combinations": 7,
+      "pattern_variants": 8,
+      "calculation": "A + Math.pow(B, P) + Math.pow(B+S, P) + Math.pow(B+2*S, P) + Math.pow(B+3*S, P)",
+      "difficulty_bands": ["competition", "expert", "research"],
+      "explanation_variants": 6,
+      "explanation": "Cumulative [P] powers with step [S]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_039",
+      "pattern": "[P1], [P2], [P3], [P1+P2], [P2+P3], [P3+P4], ... Next? (Padovan-style)",
+      "variables": {
+        "P1": {
+          "min": -6,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P2": {
+          "min": -6,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P3": {
+          "min": -6,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "rule": {
+          "type": "preset",
+          "values": ["padovan", "perrin", "custom"]
+        }
+      },
+      "variable_combinations": 6,
+      "pattern_variants": 7,
+      "calculation": "P1 + P2",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "[rule] sequence. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_040",
+      "pattern": "[P1], [P2], 2×[P2]+[P1], 2×(2×[P2]+[P1])+[P2], ... Next? (Pell-style)",
+      "variables": {
+        "P1": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P2": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "multiplier": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "multiplier * P2 + P1",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Pell-style with multiplier [multiplier]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_041",
+      "pattern": "[A], [A]×[B]^{P}+[C], ([A]×[B]^{P}+[C])×[B]^{P}+[C], ... Next?",
+      "variables": {
+        "A": {
+          "min": -10,
+          "max": 15,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -4,
+          "max": 6,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        },
+        "C": {
+          "min": -10,
+          "max": 15,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P": {
+          "min": 1,
+          "max": 3,
+          "step": 1
+        },
+        "depth": {
+          "min": 2,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 7,
+      "pattern_variants": 8,
+      "calculation": "((A * Math.pow(B, P) + C) * Math.pow(B, P) + C) * Math.pow(B, P) + C",
+      "difficulty_bands": ["competition", "expert", "research"],
+      "explanation_variants": 6,
+      "explanation": "Recursive ×[B]^{P}+[C]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_042",
+      "pattern": "Sum of divisors: σ([N]), σ([N]+[D]), σ([N]+2[D]), ... Next?",
+      "variables": {
+        "N": {
+          "min": 1,
+          "max": 50,
+          "step": 1
+        },
+        "D": {
+          "min": 1,
+          "max": 10,
+          "step": 1
+        },
+        "function_type": {
+          "type": "preset",
+          "values": ["sigma", "phi", "tau", "omega"]
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "number_theory_function(N + 3*D, function_type)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "[function_type] of [N]+3[D] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_043",
+      "pattern": "Euler's totient: φ([N]), φ([N]+[D]), φ([N]+2[D]), ... Next?",
+      "variables": {
+        "N": {
+          "min": 1,
+          "max": 50,
+          "step": 1
+        },
+        "D": {
+          "min": 1,
+          "max": 10,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "phi(N + 3*D)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "φ([N]+3[D]) = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_044",
+      "pattern": "[A]^{P}, ([A]+[S])^{P}, ([A]+2[S])^{P}, ([A]+3[S])^{P}, ... Next?",
+      "variables": {
+        "A": {
+          "min": -10,
+          "max": 20,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "S": {
+          "min": 0.5,
+          "max": 3,
+          "step": 0.5
+        },
+        "P": {
+          "min": 1,
+          "max": 5,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "Math.pow(A + 4*S, P)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Powers of [P] with step [S]. Next: ([A]+4[S])^{P} = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_045",
+      "pattern": "Star numbers: [S], [S]+12, [S]+12+24, [S]+12+24+36, ... Next?",
+      "variables": {
+        "S": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "start_diff": {
+          "min": 6,
+          "max": 15,
+          "step": 1
+        },
+        "diff_step": {
+          "min": 6,
+          "max": 15,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "S + start_diff + (start_diff+diff_step) + (start_diff+2*diff_step) + (start_diff+3*diff_step) + (start_diff+4*diff_step)",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Star numbers with differences +[diff_step]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_046",
+      "pattern": "[A], [A]^{P}+[B], ([A]^{P}+[B])^{P}+[B], ... Next?",
+      "variables": {
+        "A": {
+          "min": -5,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P": {
+          "min": 2,
+          "max": 4,
+          "step": 1
+        },
+        "depth": {
+          "min": 1,
+          "max": 3,
+          "step": 1
+        }
+      },
+      "variable_combinations": 6,
+      "pattern_variants": 7,
+      "calculation": "Math.pow(Math.pow(A, P) + B, P) + B",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Raise to [P] then +[B], repeated. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_047",
+      "pattern": "[J1], [J2], [J1]+2×[J2], [J2]+2×([J1]+2×[J2]), ... Next? (Jacobsthal-style)",
+      "variables": {
+        "J1": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "J2": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "coeff": {
+          "min": 1,
+          "max": 3,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "coeff * J2 + J1",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Jacobsthal-style with coefficient [coeff]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_048",
+      "pattern": "[P1], [P2], [P3], [P1+P2], [P2+P3], [P3+P4], ... Next? (Perrin-style)",
+      "variables": {
+        "P1": {
+          "min": -6,
+          "max": 10,
+          "step": 1
+        },
+        "P2": {
+          "min": -6,
+          "max": 10,
+          "step": 1
+        },
+        "P3": {
+          "min": -6,
+          "max": 10,
+          "step": 1
+        },
+        "rule": {
+          "type": "preset",
+          "values": ["perrin", "padovan", "custom"]
+        }
+      },
+      "variable_combinations": 6,
+      "pattern_variants": 7,
+      "calculation": "P1 + P2",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "[rule] sequence. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_049",
+      "pattern": "[A], [A]+2×[B], [A]+2×[B]+3×[B], [A]+2×[B]+3×[B]+4×[B], ... Next?",
+      "variables": {
+        "A": {
+          "min": -20,
+          "max": 40,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -10,
+          "max": 15,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "start_mult": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        },
+        "end_mult": {
+          "min": 4,
+          "max": 7,
+          "step": 1
+        }
+      },
+      "variable_combinations": 6,
+      "pattern_variants": 7,
+      "calculation": "A + B * (start_mult + (start_mult+1) + (start_mult+2) + (start_mult+3) + end_mult)",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 5,
+      "explanation": "Cumulative multiples from [start_mult] to [end_mult]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_050",
+      "pattern": "[R], [R]±1, [R]±3, [R]±6, ... (Recamán-style starting at [R] with step [S])",
+      "variables": {
+        "R": {
+          "min": -15,
+          "max": 25,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "S": {
+          "min": 1,
+          "max": 5,
+          "step": 1
+        },
+        "rule": {
+          "type": "preset",
+          "values": ["recaman", "modified", "alternating"]
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "R + 4*S",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "[rule] sequence with step [S]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_051",
+      "pattern": "Lazy caterer: [L], [L]+1, [L]+1+2, [L]+1+2+3, ... Next?",
+      "variables": {
+        "L": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "start_diff": {
+          "min": 0,
+          "max": 3,
+          "step": 1
+        },
+        "max_cuts": {
+          "min": 4,
+          "max": 7,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "L + start_diff + (start_diff+1) + (start_diff+2) + (start_diff+3) + max_cuts",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Lazy caterer with [max_cuts] cuts. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_052",
+      "pattern": "Cake numbers: [C], [C]+1, [C]+1+2, [C]+1+2+4, ... Next?",
+      "variables": {
+        "C": {
+          "min": -10,
+          "max": 25,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "sequence_type": {
+          "type": "preset",
+          "values": ["cake", "lazy_caterer", "mosaic"]
+        }
+      },
+      "variable_combinations": 3,
+      "pattern_variants": 5,
+      "calculation": "C + 1 + 2 + 4 + 7 + 11",
+      "difficulty_bands": ["high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "[sequence_type] numbers. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_053",
+      "pattern": "[A]×[B]+[C], [A]×[B]^{P}+[C], [A]×[B]^{2P}+[C], ... Next?",
+      "variables": {
+        "A": {
+          "min": -10,
+          "max": 15,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -4,
+          "max": 6,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        },
+        "C": {
+          "min": -12,
+          "max": 18,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P": {
+          "min": 1,
+          "max": 3,
+          "step": 1
+        }
+      },
+      "variable_combinations": 6,
+      "pattern_variants": 7,
+      "calculation": "A * Math.pow(B, 4*P) + C",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Powers pattern with exponent step [P]. Next: [A]×[B]^{4P}+[C] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_054",
+      "pattern": "[M1], [M2], [M1+M2], [M1+M2+M3], ... Next? (Motzkin-style)",
+      "variables": {
+        "M1": {
+          "min": -5,
+          "max": 8,
+          "step": 1
+        },
+        "M2": {
+          "min": -5,
+          "max": 8,
+          "step": 1
+        },
+        "M3": {
+          "min": -5,
+          "max": 8,
+          "step": 1
+        },
+        "formula": {
+          "type": "preset",
+          "values": ["motzkin", "catalan", "schroder"]
+        }
+      },
+      "variable_combinations": 6,
+      "pattern_variants": 7,
+      "calculation": "apply_recurrence([M1,M2,M3], formula, 4)",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "[formula] numbers with custom seeds. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_055",
+      "pattern": "[S1], [S2], [S1+S2], [S1+S2+S3], ... Next? (Schröder-style)",
+      "variables": {
+        "S1": {
+          "min": -5,
+          "max": 8,
+          "step": 1
+        },
+        "S2": {
+          "min": -5,
+          "max": 8,
+          "step": 1
+        },
+        "S3": {
+          "min": -5,
+          "max": 8,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "S1 + 2*S2 + 6*S3",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Schröder-style recurrence. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_056",
+      "pattern": "[A]^{P}, [A]^{P}×[M], [A]^{P}×[M]², [A]^{P}×[M]³, ... Next?",
+      "variables": {
+        "A": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        },
+        "M": {
+          "min": -4,
+          "max": 5,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "Math.pow(A, P) * Math.pow(M, 4)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Multiples of [A]^{P}. Next: [A]^{P}×[M]⁴ = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_057",
+      "pattern": "[N1], [N2], [N3], [N1+N3], [N2+N4], ... Next? (Narayana's cows style)",
+      "variables": {
+        "N1": {
+          "min": -5,
+          "max": 8,
+          "step": 1
+        },
+        "N2": {
+          "min": -5,
+          "max": 8,
+          "step": 1
+        },
+        "N3": {
+          "min": -5,
+          "max": 8,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "N1 + N2 + N3",
+      "difficulty_bands": ["high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Narayana's cows recurrence. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_058",
+      "pattern": "Partition numbers p([N]), p([N]+[D]), p([N]+2[D]), ... Next?",
+      "variables": {
+        "N": {
+          "min": 0,
+          "max": 20,
+          "step": 1
+        },
+        "D": {
+          "min": 1,
+          "max": 5,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "partition(N + 3*D)",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Partition of [N]+3[D] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_059",
+      "pattern": "[A]!, ([A]+[S])!, ([A]+2[S])!, ([A]+3[S])!, ... Next?",
+      "variables": {
+        "A": {
+          "min": 0,
+          "max": 8,
+          "step": 1
+        },
+        "S": {
+          "min": 0.5,
+          "max": 2.5,
+          "step": 0.5
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "factorial(A + 4*S)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Factorials with step [S]. Next: ([A]+4[S])! = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_060",
+      "pattern": "Mersenne: [M], [M]×2+1, ([M]×2+1)×2+1, ... Next?",
+      "variables": {
+        "M": {
+          "min": -10,
+          "max": 20,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "multiplier": {
+          "min": 1.5,
+          "max": 3,
+          "step": 0.5
+        },
+        "constant": {
+          "min": -3,
+          "max": 3,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "M * Math.pow(multiplier, 3) + constant * (Math.pow(multiplier, 3) - 1)/(multiplier - 1)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Mersenne-style with multiplier [multiplier]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_061",
+      "pattern": "Fermat: [F], [F]^{P}-[C], ([F]^{P}-[C])^{P}-[C], ... Next?",
+      "variables": {
+        "F": {
+          "min": 2,
+          "max": 6,
+          "step": 1
+        },
+        "P": {
+          "min": 2,
+          "max": 3,
+          "step": 1
+        },
+        "C": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "Math.pow(Math.pow(F, P) - C, P) - C",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Fermat-style iteration. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_062",
+      "pattern": "[A], [A]^{P}+[B], ([A]^{P}+[B])^{P}+[B], ... Next?",
+      "variables": {
+        "A": {
+          "min": -5,
+          "max": 8,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -6,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P": {
+          "min": 2,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "Math.pow(Math.pow(A, P) + B, P) + B",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Power then +[B] iteration. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_063",
+      "pattern": "[C1], [C2], [C3], ... Next? (Carmichael-style with offsets)",
+      "variables": {
+        "C1": {
+          "min": 500,
+          "max": 600,
+          "step": 5
+        },
+        "C2": {
+          "min": 1000,
+          "max": 1200,
+          "step": 10
+        },
+        "family": {
+          "type": "preset",
+          "values": ["carmichael", "korselt", "knödel"]
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "next_in_family(C2, family)",
+      "difficulty_bands": ["expert", "research"],
+      "explanation_variants": 4,
+      "explanation": "Next [family] number = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_064",
+      "pattern": "[A]×[B]!, [A]×([B]+[S])!, [A]×([B]+2[S])!, ... Next?",
+      "variables": {
+        "A": {
+          "min": -5,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": 0,
+          "max": 5,
+          "step": 1
+        },
+        "S": {
+          "min": 0.5,
+          "max": 2,
+          "step": 0.5
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "A * factorial(B + 3*S)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Multiples of factorials with step [S]. Next: [A]×([B]+3[S])! = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_065",
+      "pattern": "Highly composite: [H], next highly composite, ... Next?",
+      "variables": {
+        "H": {
+          "min": 1,
+          "max": 100,
+          "step": 1
+        },
+        "property": {
+          "type": "preset",
+          "values": ["highly_composite", "superior", "colossally"]
+        }
+      },
+      "variable_combinations": 3,
+      "pattern_variants": 4,
+      "calculation": "next_highly_composite(H, property)",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 3,
+      "explanation": "Next [property] highly composite after [H] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_066",
+      "pattern": "Superior highly composite: [S], next superior highly composite, ... Next?",
+      "variables": {
+        "S": {
+          "min": 2,
+          "max": 200,
+          "step": 2
+        }
+      },
+      "variable_combinations": 2,
+      "pattern_variants": 4,
+      "calculation": "next_superior_highly_composite(S)",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 3,
+      "explanation": "Next superior highly composite after [S] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_067",
+      "pattern": "[A]+[B]^{P}, [A]+[B]^{P+1}+[B]^{P}, [A]+[B]^{P+2}+[B]^{P+1}+[B]^{P}, ... Next?",
+      "variables": {
+        "A": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -4,
+          "max": 6,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        },
+        "P": {
+          "min": 1,
+          "max": 3,
+          "step": 1
+        },
+        "terms": {
+          "min": 3,
+          "max": 5,
+          "step": 1
+        }
+      },
+      "variable_combinations": 6,
+      "pattern_variants": 7,
+      "calculation": "A + Math.pow(B, P+3) + Math.pow(B, P+2) + Math.pow(B, P+1) + Math.pow(B, P)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 5,
+      "explanation": "Cumulative powers from exponent [P]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_068",
+      "pattern": "Abundant numbers: [A], next abundant, ... Next?",
+      "variables": {
+        "A": {
+          "min": 12,
+          "max": 100,
+          "step": 1
+        },
+        "type": {
+          "type": "preset",
+          "values": ["abundant", "deficient", "perfect"]
+        }
+      },
+      "variable_combinations": 3,
+      "pattern_variants": 4,
+      "calculation": "next_number_of_type(A, type)",
+      "difficulty_bands": ["middle", "high"],
+      "explanation_variants": 3,
+      "explanation": "Next [type] number after [A] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_069",
+      "pattern": "Deficient numbers: [D], next deficient, ... Next?",
+      "variables": {
+        "D": {
+          "min": 1,
+          "max": 50,
+          "step": 1
+        }
+      },
+      "variable_combinations": 2,
+      "pattern_variants": 3,
+      "calculation": "next_deficient(D)",
+      "difficulty_bands": ["middle", "high"],
+      "explanation_variants": 3,
+      "explanation": "Next deficient after [D] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_070",
+      "pattern": "Perfect numbers: [P], next perfect, ... Next?",
+      "variables": {
+        "P": {
+          "min": 6,
+          "max": 500,
+          "step": 1,
+          "perfect_only": true
+        }
+      },
+      "variable_combinations": 2,
+      "pattern_variants": 4,
+      "calculation": "next_perfect(P)",
+      "difficulty_bands": ["high", "competition"],
+      "explanation_variants": 3,
+      "explanation": "Next perfect after [P] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_071",
+      "pattern": "[A]^{P}×[B], [A]^{P}×[B]², [A]^{P}×[B]³, ... Next?",
+      "variables": {
+        "A": {
+          "min": -6,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        },
+        "B": {
+          "min": -4,
+          "max": 6,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "Math.pow(A, P) * Math.pow(B, 4)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "[A]^{P} × powers of [B]. Next: [A]^{P}×[B]⁴ = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_072",
+      "pattern": "Semiprime numbers: [S], next semiprime, ... Next?",
+      "variables": {
+        "S": {
+          "min": 4,
+          "max": 100,
+          "step": 1
+        },
+        "type": {
+          "type": "preset",
+          "values": ["semiprime", "sphenic", "squarefree"]
+        }
+      },
+      "variable_combinations": 3,
+      "pattern_variants": 4,
+      "calculation": "next_semiprime(S, type)",
+      "difficulty_bands": ["high", "competition"],
+      "explanation_variants": 3,
+      "explanation": "Next [type] after [S] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_073",
+      "pattern": "Sphenic numbers: [S], next sphenic, ... Next?",
+      "variables": {
+        "S": {
+          "min": 30,
+          "max": 150,
+          "step": 1
+        }
+      },
+      "variable_combinations": 2,
+      "pattern_variants": 3,
+      "calculation": "next_sphenic(S)",
+      "difficulty_bands": ["high", "competition"],
+      "explanation_variants": 3,
+      "explanation": "Next sphenic after [S] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_074",
+      "pattern": "[A]^{P}+[B]^{Q}, ([A]+[S])^{P}+[B]^{Q}, ([A]+2[S])^{P}+[B]^{Q}, ... Next?",
+      "variables": {
+        "A": {
+          "min": -6,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -6,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "S": {
+          "min": 0.5,
+          "max": 2.5,
+          "step": 0.5
+        },
+        "P": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        },
+        "Q": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 7,
+      "pattern_variants": 8,
+      "calculation": "Math.pow(A + 3*S, P) + Math.pow(B, Q)",
+      "difficulty_bands": ["competition", "expert", "research"],
+      "explanation_variants": 6,
+      "explanation": "[A]^{P}+[B]^{Q} with step [S]. Next: ([A]+3[S])^{P}+[B]^{Q} = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_075",
+      "pattern": "Square pyramidal: [S], [S]+4, [S]+4+9, [S]+4+9+16, ... Next?",
+      "variables": {
+        "S": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "start_sq": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        },
+        "layers": {
+          "min": 4,
+          "max": 7,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "S + start_sq*start_sq + (start_sq+1)*(start_sq+1) + (start_sq+2)*(start_sq+2) + (start_sq+3)*(start_sq+3) + (start_sq+4)*(start_sq+4)",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Square pyramidal starting at [start_sq]². Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_076",
+      "pattern": "[A]×[B]^{n} where n=[N], [N]+1, [N]+2, ... Next?",
+      "variables": {
+        "A": {
+          "min": -10,
+          "max": 15,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -4,
+          "max": 6,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        },
+        "N": {
+          "min": 0,
+          "max": 3,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "A * Math.pow(B, N + 4)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Geometric starting at exponent [N]. Next: [A]×[B]^{N+4} = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_077",
+      "pattern": "Centered triangular: [C], [C]+3, [C]+3+6, [C]+3+6+9, ... Next?",
+      "variables": {
+        "C": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "start_diff": {
+          "min": 2,
+          "max": 5,
+          "step": 1
+        },
+        "diff_step": {
+          "min": 2,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "C + start_diff + (start_diff+diff_step) + (start_diff+2*diff_step) + (start_diff+3*diff_step) + (start_diff+4*diff_step)",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Centered triangular with differences +[diff_step]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_078",
+      "pattern": "Centered pentagonal: [P], [P]+5, [P]+5+10, [P]+5+10+15, ... Next?",
+      "variables": {
+        "P": {
+          "min": -15,
+          "max": 30,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "start_diff": {
+          "min": 3,
+          "max": 7,
+          "step": 1
+        },
+        "diff_step": {
+          "min": 3,
+          "max": 6,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "P + start_diff + (start_diff+diff_step) + (start_diff+2*diff_step) + (start_diff+3*diff_step) + (start_diff+4*diff_step)",
+      "difficulty_bands": ["middle", "high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Centered pentagonal with differences +[diff_step]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_079",
+      "pattern": "[A]^{P}, [A]^{P+1}, [A]^{P+2}, [A]^{P+3}, ... Next?",
+      "variables": {
+        "A": {
+          "min": -5,
+          "max": 8,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "Math.pow(A, P + 4)",
+      "difficulty_bands": ["high", "competition"],
+      "explanation_variants": 4,
+      "explanation": "Powers of [A] starting at exponent [P]. Next: [A]^{P+4} = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_080",
+      "pattern": "Cullen: [C], 2×[C]+1, 4×[C]+3, ... Next?",
+      "variables": {
+        "C": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "base": {
+          "min": 1.5,
+          "max": 3,
+          "step": 0.5
+        },
+        "const": {
+          "min": -2,
+          "max": 2,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "C * Math.pow(base, 3) + const * (Math.pow(base, 3) - 1)/(base - 1)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Cullen-style with base [base]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_081",
+      "pattern": "Woodall: [W], 2×[W]-1, 4×[W]-3, ... Next?",
+      "variables": {
+        "W": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "base": {
+          "min": 1.5,
+          "max": 3,
+          "step": 0.5
+        },
+        "const": {
+          "min": -2,
+          "max": 2,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "W * Math.pow(base, 3) - const * (Math.pow(base, 3) - 1)/(base - 1)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Woodall-style with base [base]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_082",
+      "pattern": "[A]^{P}+[B]^{Q}, ([A]+[S])^{P}+[B]^{Q}, ([A]+2[S])^{P}+[B]^{Q}, ... Next?",
+      "variables": {
+        "A": {
+          "min": -6,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "B": {
+          "min": -6,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "S": {
+          "min": 0.5,
+          "max": 2,
+          "step": 0.5
+        },
+        "P": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        },
+        "Q": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 7,
+      "pattern_variants": 8,
+      "calculation": "Math.pow(A + 3*S, P) + Math.pow(B, Q)",
+      "difficulty_bands": ["competition", "expert", "research"],
+      "explanation_variants": 5,
+      "explanation": "Powers sum with step [S]. Next: ([A]+3[S])^{P}+[B]^{Q} = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_083",
+      "pattern": "Pronic: [N]×([N]+1), ([N]+1)×([N]+2), ([N]+2)×([N]+3), ... Next?",
+      "variables": {
+        "N": {
+          "min": -10,
+          "max": 20,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        }
+      },
+      "variable_combinations": 3,
+      "pattern_variants": 4,
+      "calculation": "(N + 3) * (N + 4)",
+      "difficulty_bands": ["middle", "high"],
+      "explanation_variants": 3,
+      "explanation": "Pronic numbers. Next: ([N]+3)×([N]+4) = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_084",
+      "pattern": "Oblong: [O]×([O]+1), ([O]+1)×([O]+2), ([O]+2)×([O]+3), ... Next?",
+      "variables": {
+        "O": {
+          "min": -10,
+          "max": 20,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        }
+      },
+      "variable_combinations": 3,
+      "pattern_variants": 4,
+      "calculation": "(O + 3) * (O + 4)",
+      "difficulty_bands": ["middle", "high"],
+      "explanation_variants": 3,
+      "explanation": "Oblong numbers. Next: ([O]+3)×([O]+4) = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_085",
+      "pattern": "[A]!, [M]×[A]!, [M]²×[A]!, [M]³×[A]!, ... Next?",
+      "variables": {
+        "A": {
+          "min": 1,
+          "max": 7,
+          "step": 1
+        },
+        "M": {
+          "min": -3,
+          "max": 5,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "factorial(A) * Math.pow(M, 4)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Multiples of [A]! by powers of [M]. Next: [A]!×[M]⁴ = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_086",
+      "pattern": "Carol: [C], 4×[C]+3, 16×[C]+15, ... Next?",
+      "variables": {
+        "C": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "base": {
+          "min": 2,
+          "max": 4,
+          "step": 1
+        },
+        "const": {
+          "min": 1,
+          "max": 3,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "C * Math.pow(base, 6) + const * (Math.pow(base, 6) - 1)/(base - 1)",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Carol-style with base [base]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_087",
+      "pattern": "Kynea: [K], 4×[K]-3, 16×[K]-15, ... Next?",
+      "variables": {
+        "K": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "base": {
+          "min": 2,
+          "max": 4,
+          "step": 1
+        },
+        "const": {
+          "min": 1,
+          "max": 3,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "K * Math.pow(base, 6) - const * (Math.pow(base, 6) - 1)/(base - 1)",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Kynea-style with base [base]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_088",
+      "pattern": "[A]+[S]^{P}, [A]+([S]+1)^{P}, [A]+([S]+2)^{P}, [A]+([S]+3)^{P}, ... Next?",
+      "variables": {
+        "A": {
+          "min": -20,
+          "max": 40,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "S": {
+          "min": -5,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "A + Math.pow(S + 4, P)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Adding powers. Next: [A]+([S]+4)^{P} = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_089",
+      "pattern": "Thabit: [T], 2×[T]+1, 4×[T]+3, ... Next?",
+      "variables": {
+        "T": {
+          "min": -8,
+          "max": 12,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "base": {
+          "min": 1.5,
+          "max": 3,
+          "step": 0.5
+        },
+        "const": {
+          "min": -2,
+          "max": 2,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "T * Math.pow(base, 3) + const * (Math.pow(base, 3) - 1)/(base - 1)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Thabit-style with base [base]. Next: [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_090",
+      "pattern": "Sophie Germain: [S], next Sophie Germain prime, ... Next?",
+      "variables": {
+        "S": {
+          "min": 2,
+          "max": 100,
+          "step": 1,
+          "primes_only": true
+        },
+        "prime_family": {
+          "type": "preset",
+          "values": ["sophie_germain", "safe", "cunningham"]
+        }
+      },
+      "variable_combinations": 3,
+      "pattern_variants": 5,
+      "calculation": "next_prime_of_family(S, prime_family)",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Next [prime_family] prime after [S] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_091",
+      "pattern": "[A]×(2^{N}), [A]×(2^{N+1}), [A]×(2^{N+2}), [A]×(2^{N+3}), ... Next?",
+      "variables": {
+        "A": {
+          "min": -15,
+          "max": 25,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "N": {
+          "min": 0,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "A * Math.pow(2, N + 4)",
+      "difficulty_bands": ["middle", "high"],
+      "explanation_variants": 3,
+      "explanation": "Powers of 2 starting at 2^{N}. Next: [A]×2^{N+4} = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_092",
+      "pattern": "Safe primes: [S], next safe prime, ... Next?",
+      "variables": {
+        "S": {
+          "min": 5,
+          "max": 100,
+          "step": 1,
+          "primes_only": true
+        }
+      },
+      "variable_combinations": 2,
+      "pattern_variants": 4,
+      "calculation": "next_safe_prime(S)",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 3,
+      "explanation": "Next safe prime after [S] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_093",
+      "pattern": "Primorial: [P]#, next primorial, ... Next?",
+      "variables": {
+        "P": {
+          "min": 1,
+          "max": 10,
+          "step": 1
+        }
+      },
+      "variable_combinations": 2,
+      "pattern_variants": 4,
+      "calculation": "primorial(P + 1)",
+      "difficulty_bands": ["high", "competition"],
+      "explanation_variants": 3,
+      "explanation": "Next primorial after [P]# = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_094",
+      "pattern": "[A]^{P}×[B], [A]^{P}×[B]², [A]^{P}×[B]³, ... Next?",
+      "variables": {
+        "A": {
+          "min": -6,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        },
+        "B": {
+          "min": -4,
+          "max": 6,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "Math.pow(A, P) * Math.pow(B, 4)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "[A]^{P} × powers of [B]. Next: [A]^{P}×[B]⁴ = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_095",
+      "pattern": "Factorial primes: [F]!±1, next factorial prime, ... Next?",
+      "variables": {
+        "F": {
+          "min": 1,
+          "max": 8,
+          "step": 1
+        },
+        "variant": {
+          "type": "preset",
+          "values": ["plus_one", "minus_one", "both"]
+        }
+      },
+      "variable_combinations": 3,
+      "pattern_variants": 5,
+      "calculation": "next_factorial_prime(F, variant)",
+      "difficulty_bands": ["competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Next factorial prime after [F]! = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_096",
+      "pattern": "[A]^{P}×2, [A]^{P}×4, [A]^{P}×8, [A]^{P}×16, ... Next?",
+      "variables": {
+        "A": {
+          "min": -6,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "P": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "variable_combinations": 4,
+      "pattern_variants": 5,
+      "calculation": "Math.pow(A, P) * 32",
+      "difficulty_bands": ["high", "competition"],
+      "explanation_variants": 3,
+      "explanation": "[A]^{P} × powers of 2. Next: [A]^{P}×32 = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_097",
+      "pattern": "Giuga: [G], next Giuga number, ... Next?",
+      "variables": {
+        "G": {
+          "min": 30,
+          "max": 2000,
+          "step": 10
+        },
+        "family": {
+          "type": "preset",
+          "values": ["giuga", "carmichael", "korselt"]
+        }
+      },
+      "variable_combinations": 3,
+      "pattern_variants": 5,
+      "calculation": "next_giuga(G, family)",
+      "difficulty_bands": ["expert", "research"],
+      "explanation_variants": 4,
+      "explanation": "Next [family] number after [G] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_098",
+      "pattern": "[A]^{P}, ([A]+[S])^{P}, ([A]+2[S])^{P}, ... Next?",
+      "variables": {
+        "A": {
+          "min": -6,
+          "max": 10,
+          "step": 1,
+          "sets": ["negative", "positive"]
+        },
+        "S": {
+          "min": 0.5,
+          "max": 2.5,
+          "step": 0.5
+        },
+        "P": {
+          "min": 2,
+          "max": 5,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "Math.pow(A + 3*S, P)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Powers with step [S]. Next: ([A]+3[S])^{P} = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_099",
+      "pattern": "Wieferich primes: only 1093 and 3511 known. Next from [W]?",
+      "variables": {
+        "W": {
+          "min": 1093,
+          "max": 3511,
+          "step": 1,
+          "primes_only": true
+        },
+        "alternative": {
+          "type": "preset",
+          "values": ["wieferich", "mirimanoff", "wall-sun-sun"]
+        }
+      },
+      "variable_combinations": 3,
+      "pattern_variants": 4,
+      "calculation": "if W==1093 then 3511 else 'unknown'",
+      "difficulty_bands": ["expert", "research"],
+      "explanation_variants": 4,
+      "explanation": "Next [alternative] prime after [W] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_100",
+      "pattern": "[A]+[B]^{P}, [A]+[B]^{P+1}, [A]+[B]^{P+2}, [A]+[B]^{P+3}, ... Next?",
+      "variables": {
+        "A": {
+          "min": -20,
+          "max": 40,
+          "step": 1,
+          "sets": ["negative", "positive", "large"]
+        },
+        "B": {
+          "min": -5,
+          "max": 8,
+          "step": 0.5,
+          "sets": ["negative", "positive", "fractional"]
+        },
+        "P": {
+          "min": 0,
+          "max": 3,
+          "step": 1
+        }
+      },
+      "variable_combinations": 5,
+      "pattern_variants": 6,
+      "calculation": "A + Math.pow(B, P + 4)",
+      "difficulty_bands": ["high", "competition", "expert"],
+      "explanation_variants": 4,
+      "explanation": "Powers of [B] starting at exponent [P]. Next: [A]+[B]^{P+4} = [RESULT]"
+    }
+  ],
+  "generator_metadata": {
+    "version": "2.0",
+    "strategy": "combinatorial_dynamic",
+    "estimated_questions": "1,500,000+",
+    "variable_depth": 7,
+    "pattern_variants_per_template": "4-9",
+    "difficulty_bands": ["elementary", "middle", "high", "competition", "expert", "research"],
+    "generation_notes": "Enterprise version with negative numbers, fractions, decimals, multiple coefficient sets, and combinatorial explosion"
+  },
+  "responses": {
+    "correct": [
+      "Perfect! ⭐",
+      "Excellent! 🎯",
+      "Great! 🌟",
+      "Brilliant! ✨",
+      "Amazing! 🎉",
+      "Outstanding! 🏆",
+      "Superb! 🚀",
+      "Fantastic! 💫",
+      "Genius level! 🧠",
+      "Enterprise quality! 💼"
+    ],
+    "incorrect": [
+      "Try again! 💪",
+      "Almost! 😊",
+      "Keep trying! 🌟",
+      "Think again! 🤔",
+      "So close! 💝",
+      "Review the pattern! 🔍",
+      "Check your math! 🧮",
+      "One more try! ⚡"
+    ]
+  }
+}
