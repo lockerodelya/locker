@@ -30,15 +30,15 @@
     },
     {
       "template_id": "ENT_PAT_003",
-      "pattern": "[F1], [F2], [F1+F2], [F2+([F1+F2])], ... Next?",
+      "pattern": "[F1], [F2], [F1+F2], [F1+2×F2], ... Next?",
       "variables": {
         "F1": {"min": -10, "max": 20, "step": 2},
         "F2": {"min": -10, "max": 20, "step": 2}
       },
       "variable_combinations": 225,
-      "calculation": "(F1 + F2) + (F1 + 2*F2)",
+      "calculation": "2 * F1 + 3 * F2",
       "difficulty": "expert",
-      "explanation": "Fibonacci-style: each term = sum of previous two. Next = [RESULT]"
+      "explanation": "Fibonacci-style: each term = previous two summed. Next = 2×[F1]+3×[F2] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_004",
@@ -141,9 +141,9 @@
         "T3": {"min": -8, "max": 12, "step": 2}
       },
       "variable_combinations": 1000,
-      "calculation": "T1 + T2 + 2*T3",
+      "calculation": "T1 + 2*T2 + 2*T3",
       "difficulty": "expert",
-      "explanation": "Tribonacci-style: sum of previous three. Next = [RESULT]"
+      "explanation": "Tribonacci-style: sum of previous three. Next = [T2] + [T3] + ([T1]+[T2]+[T3]) = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_013",
@@ -160,25 +160,25 @@
     },
     {
       "template_id": "ENT_PAT_014",
-      "pattern": "1!, 2!, 3!, 4!, ... Next?",
+      "pattern": "[N]!, ([N]+1)!, ([N]+2)!, ([N]+3)!, ... Next?",
       "variables": {
-        "A": {"min": 1, "max": 7, "step": 1}
+        "N": {"min": 1, "max": 5, "step": 1}
       },
-      "variable_combinations": 7,
-      "calculation": "A * (A-1) * (A-2) * (A-3) * Math.max(1, A-4)",
+      "variable_combinations": 5,
+      "calculation": "(function fact(x){return x<=1?1:x*fact(x-1)})(N+4)",
       "difficulty": "expert",
-      "explanation": "Factorial sequence. Next term = [A]! = [RESULT]"
+      "explanation": "Factorial sequence. Next = ([N]+4)! = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_015",
-      "pattern": "2, 3, 5, 7, 11, ... Next prime?",
+      "pattern": "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, ... Next prime after [P]?",
       "variables": {
-        "P": {"min": 2, "max": 50, "step": 1}
+        "P": {"min": 2, "max": 23, "step": 1, "primes": [2,3,5,7,11,13,17,19,23,29]}
       },
-      "variable_combinations": 15,
-      "calculation": "P + 1",
+      "variable_combinations": 9,
+      "calculation": "function nextPrime(p){var primes=[2,3,5,7,11,13,17,19,23,29]; return primes[primes.indexOf(p)+1];}(P)",
       "difficulty": "expert",
-      "explanation": "Prime number sequence. Next prime after [P] (simplified) = [RESULT]"
+      "explanation": "Prime number sequence. Next prime after [P] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_016",
@@ -193,14 +193,26 @@
     },
     {
       "template_id": "ENT_PAT_017",
-      "pattern": "[A]², [A]²+[A], [A]²+[A]+[A]², ... Next?",
+      "pattern": "[A], [A]², [A]²+[A], [A]²+[A]+[A]², ... Next?",
       "variables": {
         "A": {"min": -10, "max": 20, "step": 2}
       },
       "variable_combinations": 15,
       "calculation": "3 * Math.pow(A, 2) + 2 * A",
       "difficulty": "expert",
-      "explanation": "Alternating [A]² and [A]. Next = 3[A]²+2[A] = [RESULT]"
+      "explanation": "Pattern: add [A], then add [A]², then add [A]. Next = 3[A]²+2[A] = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_018",
+      "pattern": "[A], [A]÷2+[B], [A]÷4+[B], [A]÷8+[B], ... Next?",
+      "variables": {
+        "A": {"min": 64, "max": 512, "step": 64},
+        "B": {"min": -20, "max": 50, "step": 5}
+      },
+      "variable_combinations": 112,
+      "calculation": "A / 16 + B",
+      "difficulty": "expert",
+      "explanation": "Dividing by powers of 2. Next = [A]÷16+[B] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_018",
@@ -344,14 +356,14 @@
     },
     {
       "template_id": "ENT_PAT_030",
-      "pattern": "1, 1, 2, 5, 15, 52, ... Next?",
+      "pattern": "1, 1, 2, 5, 15, 52, 203, 877, 4140, ... Next Bell number after [B]?",
       "variables": {
-        "B1": {"min": 1, "max": 5, "step": 1}
+        "B": {"min": 1, "max": 877, "step": 1, "bell_numbers": [1,1,2,5,15,52,203,877,4140]}
       },
-      "variable_combinations": 5,
-      "calculation": "B1 * 5",
+      "variable_combinations": 8,
+      "calculation": "function nextBell(b){var bells=[1,1,2,5,15,52,203,877,4140]; return bells[bells.indexOf(b)+1];}(B)",
       "difficulty": "expert",
-      "explanation": "Bell numbers (simplified). Next ≈ [RESULT]"
+      "explanation": "Bell numbers. Next Bell number after [B] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_031",
@@ -456,21 +468,21 @@
         "P3": {"min": -6, "max": 10, "step": 2}
       },
       "variable_combinations": 512,
-      "calculation": "P1 + P2",
+      "calculation": "P1 + P2 + P3",
       "difficulty": "expert",
-      "explanation": "Padovan-style. Next = [P1]+[P2] = [RESULT]"
+      "explanation": "Padovan-style: each term = sum of previous two. Next = [P3] + ([P1]+[P2]) = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_040",
-      "pattern": "[P1], [P2], 2×[P2]+[P1], ... Next?",
+      "pattern": "[P1], [P2], 2×[P2]+[P1], 2×(2×[P2]+[P1])+[P2], ... Next?",
       "variables": {
         "P1": {"min": -8, "max": 12, "step": 2},
         "P2": {"min": -8, "max": 12, "step": 2}
       },
       "variable_combinations": 100,
-      "calculation": "2 * (2 * P2 + P1) + P2",
+      "calculation": "5 * P2 + 2 * P1",
       "difficulty": "expert",
-      "explanation": "Pell-style recurrence. Next = [RESULT]"
+      "explanation": "Pell-style recurrence: Pn = 2*P(n-1) + P(n-2). Next = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_041",
@@ -487,25 +499,25 @@
     },
     {
       "template_id": "ENT_PAT_042",
-      "pattern": "6, 12, 18, 24, 30, ... (divisors sum pattern)",
+      "pattern": "[N]×6, ([N]+1)×6, ([N]+2)×6, ([N]+3)×6, ... Next?",
       "variables": {
-        "N": {"min": 6, "max": 30, "step": 6}
+        "N": {"min": 1, "max": 10, "step": 1}
       },
-      "variable_combinations": 5,
-      "calculation": "N + 6",
+      "variable_combinations": 10,
+      "calculation": "(N + 4) * 6",
       "difficulty": "high",
-      "explanation": "Multiples of 6. Next = [N]+6 = [RESULT]"
+      "explanation": "Multiples of 6. Next = ([N]+4)×6 = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_043",
-      "pattern": "1, 1, 2, 2, 4, 2, 6, 4, ... (Euler totient pattern)",
+      "pattern": "φ(1), φ(2), φ(3), φ(4), φ(5), φ(6), φ(7), φ(8), ... Next Euler totient after φ([N])?",
       "variables": {
-        "N": {"min": 1, "max": 20, "step": 1}
+        "N": {"min": 1, "max": 15, "step": 1, "totients": [1,1,2,2,4,2,6,4,6,4,10,4,12,6,8]}
       },
-      "variable_combinations": 20,
-      "calculation": "N",
+      "variable_combinations": 15,
+      "calculation": "function nextTotient(n){var tots=[1,1,2,2,4,2,6,4,6,4,10,4,12,6,8]; return tots[n];}(N)",
       "difficulty": "expert",
-      "explanation": "Totient approximation. Next ≈ [RESULT]"
+      "explanation": "Euler totient function φ(n). φ([N]+1) = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_044",
@@ -543,28 +555,26 @@
     },
     {
       "template_id": "ENT_PAT_047",
-      "pattern": "[J1], [J2], [J1]+2×[J2], ... Next?",
+      "pattern": "[J1], [J2], [J1]+2×[J2], [J2]+2×([J1]+2×[J2]), ... Next?",
       "variables": {
         "J1": {"min": -8, "max": 12, "step": 2},
         "J2": {"min": -8, "max": 12, "step": 2}
       },
       "variable_combinations": 100,
-      "calculation": "(J1 + 2 * J2) + 2 * J2",
+      "calculation": "2*J1 + 5*J2",
       "difficulty": "expert",
-      "explanation": "Jacobsthal-style. Next = [RESULT]"
+      "explanation": "Jacobsthal-style: Jn = J(n-1) + 2*J(n-2). Next = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_048",
-      "pattern": "3, 0, 2, 3, 2, 5, ... (Perrin sequence)",
+      "pattern": "3, 0, 2, 3, 2, 5, 5, 7, 10, ... Next Perrin number after [P]?",
       "variables": {
-        "P1": {"min": -6, "max": 10, "step": 2},
-        "P2": {"min": -6, "max": 10, "step": 2},
-        "P3": {"min": -6, "max": 10, "step": 2}
+        "P": {"min": 0, "max": 10, "step": 1, "perrin": [3,0,2,3,2,5,5,7,10,12]}
       },
-      "variable_combinations": 512,
-      "calculation": "P1 + P2",
+      "variable_combinations": 9,
+      "calculation": "function nextPerrin(p){var perrin=[3,0,2,3,2,5,5,7,10,12]; return perrin[perrin.indexOf(p)+1];}(P)",
       "difficulty": "expert",
-      "explanation": "Perrin sequence. Next = [P1]+[P2] = [RESULT]"
+      "explanation": "Perrin sequence. Next Perrin number after [P] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_049",
@@ -580,14 +590,14 @@
     },
     {
       "template_id": "ENT_PAT_050",
-      "pattern": "[R], [R]+1, [R]-2, [R]+4, ... (Recamán-style)",
+      "pattern": "[R], [R]-1, [R]+2, [R]-3, [R]+4, ... Next?",
       "variables": {
         "R": {"min": -15, "max": 25, "step": 5}
       },
       "variable_combinations": 8,
-      "calculation": "R + 1 - 2 + 4 - 5",
+      "calculation": "R - 5",
       "difficulty": "expert",
-      "explanation": "Recamán pattern. Next ≈ [RESULT]"
+      "explanation": "Alternating subtraction/addition pattern. Next = [R]-5 = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_051",
@@ -602,14 +612,14 @@
     },
     {
       "template_id": "ENT_PAT_052",
-      "pattern": "1, 2, 4, 7, 11, 16, ... (Cake numbers)",
+      "pattern": "1, 2, 4, 7, 11, 16, 22, 29, ... Next cake number after [C]?",
       "variables": {
-        "C": {"min": 1, "max": 16, "step": 3}
+        "C": {"min": 1, "max": 22, "step": 1, "cake": [1,2,4,7,11,16,22,29,37]}
       },
-      "variable_combinations": 6,
-      "calculation": "C + 5",
+      "variable_combinations": 8,
+      "calculation": "function nextCake(c){var cake=[1,2,4,7,11,16,22,29,37]; return cake[cake.indexOf(c)+1];}(C)",
       "difficulty": "high",
-      "explanation": "Cake number pattern. Next ≈ [RESULT]"
+      "explanation": "Cake numbers (maximum pieces from cuts). Next = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_053",
@@ -626,25 +636,25 @@
     },
     {
       "template_id": "ENT_PAT_054",
-      "pattern": "1, 1, 2, 4, 9, 21, ... (Motzkin numbers)",
+      "pattern": "1, 1, 2, 4, 9, 21, 51, 127, 323, ... Next Motzkin number after [M]?",
       "variables": {
-        "M1": {"min": 1, "max": 5, "step": 1}
+        "M": {"min": 1, "max": 127, "step": 1, "motzkin": [1,1,2,4,9,21,51,127,323]}
       },
-      "variable_combinations": 5,
-      "calculation": "M1 * 4",
+      "variable_combinations": 8,
+      "calculation": "function nextMotzkin(m){var mot=[1,1,2,4,9,21,51,127,323]; return mot[mot.indexOf(m)+1];}(M)",
       "difficulty": "expert",
-      "explanation": "Motzkin approximation. Next ≈ [RESULT]"
+      "explanation": "Motzkin numbers. Next Motzkin number after [M] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_055",
-      "pattern": "1, 2, 6, 22, 90, ... (Schröder numbers)",
+      "pattern": "1, 2, 6, 22, 90, 394, 1806, ... Next Schröder number after [S]?",
       "variables": {
-        "S1": {"min": 1, "max": 22, "step": 5}
+        "S": {"min": 1, "max": 394, "step": 1, "schroder": [1,2,6,22,90,394,1806]}
       },
-      "variable_combinations": 5,
-      "calculation": "S1 * 4",
+      "variable_combinations": 6,
+      "calculation": "function nextSchroder(s){var sch=[1,2,6,22,90,394,1806]; return sch[sch.indexOf(s)+1];}(S)",
       "difficulty": "expert",
-      "explanation": "Schröder approximation. Next ≈ [RESULT]"
+      "explanation": "Schröder numbers. Next Schröder number after [S] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_056",
@@ -660,58 +670,58 @@
     },
     {
       "template_id": "ENT_PAT_057",
-      "pattern": "1, 1, 1, 2, 3, 4, 6, ... (Narayana's cows)",
+      "pattern": "1, 1, 1, 2, 3, 4, 6, 9, 13, 19, ... Next Narayana number after [N]?",
       "variables": {
-        "N1": {"min": 1, "max": 6, "step": 1}
+        "N": {"min": 1, "max": 13, "step": 1, "narayana": [1,1,1,2,3,4,6,9,13,19]}
       },
-      "variable_combinations": 6,
-      "calculation": "N1 + 3",
+      "variable_combinations": 9,
+      "calculation": "function nextNarayana(n){var nar=[1,1,1,2,3,4,6,9,13,19]; return nar[nar.indexOf(n)+1];}(N)",
       "difficulty": "expert",
-      "explanation": "Narayana approximation. Next ≈ [RESULT]"
+      "explanation": "Narayana's cows sequence. Next = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_058",
-      "pattern": "1, 1, 2, 3, 5, 7, 11, 15, 22, ... (Partition)",
+      "pattern": "1, 1, 2, 3, 5, 7, 11, 15, 22, 30, 42, ... Next partition number after [P]?",
       "variables": {
-        "N": {"min": 1, "max": 15, "step": 2}
+        "P": {"min": 1, "max": 30, "step": 1, "partitions": [1,1,2,3,5,7,11,15,22,30,42]}
       },
-      "variable_combinations": 8,
-      "calculation": "N + 7",
+      "variable_combinations": 10,
+      "calculation": "function nextPartition(p){var part=[1,1,2,3,5,7,11,15,22,30,42]; return part[part.indexOf(p)+1];}(P)",
       "difficulty": "expert",
-      "explanation": "Partition approximation. Next ≈ [RESULT]"
+      "explanation": "Integer partition numbers. Next partition number after [P] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_059",
-      "pattern": "1!, 2!, 3!, 4!, 5!, ... Next?",
+      "pattern": "[N]!, ([N]+1)!, ([N]+2)!, ([N]+3)!, ... Next?",
       "variables": {
-        "A": {"min": 1, "max": 7, "step": 1}
+        "N": {"min": 1, "max": 5, "step": 1}
       },
-      "variable_combinations": 7,
-      "calculation": "A * (A-1) * Math.max(1, A-2) * Math.max(1, A-3)",
+      "variable_combinations": 5,
+      "calculation": "(function fact(x){return x<=1?1:x*fact(x-1)})(N+4)",
       "difficulty": "expert",
-      "explanation": "Factorial. Next = [A]! = [RESULT]"
+      "explanation": "Factorial. Next = ([N]+4)! = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_060",
-      "pattern": "1, 3, 7, 15, 31, ... (Mersenne)",
+      "pattern": "1, 3, 7, 15, 31, 63, 127, ... Next Mersenne number after [M]?",
       "variables": {
-        "M": {"min": 1, "max": 15, "step": 2}
+        "M": {"min": 1, "max": 63, "step": 1, "mersenne": [1,3,7,15,31,63,127]}
       },
-      "variable_combinations": 8,
-      "calculation": "M * 2 + 1",
+      "variable_combinations": 6,
+      "calculation": "function nextMersenne(m){var mer=[1,3,7,15,31,63,127]; return mer[mer.indexOf(m)+1];}(M)",
       "difficulty": "high",
-      "explanation": "Mersenne 2ⁿ-1. Next ≈ [RESULT]"
+      "explanation": "Mersenne numbers (2ⁿ-1). Next Mersenne after [M] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_061",
-      "pattern": "3, 5, 17, 257, ... (Fermat)",
+      "pattern": "3, 5, 17, 257, 65537, ... Next Fermat number after [F]?",
       "variables": {
-        "F": {"min": 3, "max": 5, "step": 1}
+        "F": {"min": 3, "max": 257, "step": 1, "fermat": [3,5,17,257,65537]}
       },
-      "variable_combinations": 3,
-      "calculation": "F * F + 12",
+      "variable_combinations": 4,
+      "calculation": "function nextFermat(f){var fer=[3,5,17,257,65537]; return fer[fer.indexOf(f)+1];}(F)",
       "difficulty": "expert",
-      "explanation": "Fermat pattern. Next ≈ [RESULT]"
+      "explanation": "Fermat numbers (2^(2ⁿ)+1). Next Fermat after [F] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_062",
@@ -727,47 +737,47 @@
     },
     {
       "template_id": "ENT_PAT_063",
-      "pattern": "561, 1105, 1729, ... (Carmichael)",
+      "pattern": "561, 1105, 1729, 2465, 2821, ... Next Carmichael number after [C]?",
       "variables": {
-        "C1": {"min": 561, "max": 1105, "step": 100}
+        "C": {"min": 561, "max": 2465, "step": 1, "carmichael": [561,1105,1729,2465,2821]}
       },
-      "variable_combinations": 6,
-      "calculation": "C1 + 544",
+      "variable_combinations": 4,
+      "calculation": "function nextCarmichael(c){var car=[561,1105,1729,2465,2821]; return car[car.indexOf(c)+1];}(C)",
       "difficulty": "expert",
-      "explanation": "Carmichael approximation. Next ≈ [RESULT]"
+      "explanation": "Carmichael numbers. Next Carmichael after [C] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_064",
-      "pattern": "[A]×2!, [A]×3!, [A]×4!, ... Next?",
+      "pattern": "[A]×2!, [A]×3!, [A]×4!, [A]×5!, ... Next?",
       "variables": {
         "A": {"min": -5, "max": 10, "step": 2}
       },
       "variable_combinations": 8,
-      "calculation": "A * 120",
+      "calculation": "A * 720",
       "difficulty": "expert",
-      "explanation": "Multiples of 5!. Next = [A]×120 = [RESULT]"
+      "explanation": "Multiples of factorials. Next = [A]×6! = [A]×720 = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_065",
-      "pattern": "1, 2, 4, 6, 12, 24, 36, ... (Highly composite)",
+      "pattern": "1, 2, 4, 6, 12, 24, 36, 48, 60, 120, ... Next highly composite after [H]?",
       "variables": {
-        "H": {"min": 12, "max": 36, "step": 12}
+        "H": {"min": 1, "max": 60, "step": 1, "highly_composite": [1,2,4,6,12,24,36,48,60,120]}
       },
-      "variable_combinations": 3,
-      "calculation": "H + 12",
+      "variable_combinations": 9,
+      "calculation": "function nextHighlyComposite(h){var hc=[1,2,4,6,12,24,36,48,60,120]; return hc[hc.indexOf(h)+1];}(H)",
       "difficulty": "expert",
-      "explanation": "Highly composite pattern. Next ≈ [RESULT]"
+      "explanation": "Highly composite numbers. Next after [H] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_066",
-      "pattern": "2, 6, 12, 60, 120, ... (Superior highly composite)",
+      "pattern": "2, 6, 12, 60, 120, 360, 2520, ... Next superior highly composite after [S]?",
       "variables": {
-        "S": {"min": 12, "max": 60, "step": 12}
+        "S": {"min": 2, "max": 360, "step": 1, "superior_hc": [2,6,12,60,120,360,2520]}
       },
-      "variable_combinations": 5,
-      "calculation": "S * 2",
+      "variable_combinations": 6,
+      "calculation": "function nextSuperiorHC(s){var shc=[2,6,12,60,120,360,2520]; return shc[shc.indexOf(s)+1];}(S)",
       "difficulty": "expert",
-      "explanation": "Superior highly composite. Next ≈ [RESULT]"
+      "explanation": "Superior highly composite numbers. Next after [S] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_067",
@@ -779,40 +789,40 @@
       "variable_combinations": 27,
       "calculation": "A + Math.pow(B, 5) + Math.pow(B, 4) + Math.pow(B, 3) + Math.pow(B, 2)",
       "difficulty": "expert",
-      "explanation": "Cumulative powers. Next = [RESULT]"
+      "explanation": "Cumulative powers descending. Next = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_068",
-      "pattern": "12, 18, 20, 24, 30, ... (Abundant)",
+      "pattern": "12, 18, 20, 24, 30, 36, 40, 42, 48, ... Next abundant number after [A]?",
       "variables": {
-        "A": {"min": 12, "max": 30, "step": 6}
+        "A": {"min": 12, "max": 42, "step": 1, "abundant": [12,18,20,24,30,36,40,42,48]}
       },
-      "variable_combinations": 4,
-      "calculation": "A + 6",
+      "variable_combinations": 8,
+      "calculation": "function nextAbundant(a){var ab=[12,18,20,24,30,36,40,42,48]; return ab[ab.indexOf(a)+1];}(A)",
       "difficulty": "high",
-      "explanation": "Abundant numbers. Next ≈ [RESULT]"
+      "explanation": "Abundant numbers. Next abundant after [A] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_069",
-      "pattern": "1, 2, 3, 4, 5, 7, 8, 9, ... (Deficient)",
+      "pattern": "1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 13, ... Next deficient number after [D]?",
       "variables": {
-        "D": {"min": 1, "max": 20, "step": 2}
+        "D": {"min": 1, "max": 11, "step": 1, "deficient": [1,2,3,4,5,7,8,9,10,11,13]}
       },
       "variable_combinations": 10,
-      "calculation": "D + 2",
+      "calculation": "function nextDeficient(d){var def=[1,2,3,4,5,7,8,9,10,11,13]; return def[def.indexOf(d)+1];}(D)",
       "difficulty": "high",
-      "explanation": "Deficient numbers. Next ≈ [RESULT]"
+      "explanation": "Deficient numbers. Next deficient after [D] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_070",
-      "pattern": "6, 28, 496, 8128, ... (Perfect)",
+      "pattern": "6, 28, 496, 8128, 33550336, ... Next perfect number after [P]?",
       "variables": {
-        "P": {"min": 6, "max": 28, "step": 22}
+        "P": {"min": 6, "max": 8128, "step": 1, "perfect": [6,28,496,8128,33550336]}
       },
-      "variable_combinations": 2,
-      "calculation": "496",
+      "variable_combinations": 4,
+      "calculation": "function nextPerfect(p){var perf=[6,28,496,8128,33550336]; return perf[perf.indexOf(p)+1];}(P)",
       "difficulty": "expert",
-      "explanation": "Perfect numbers. Next = 496"
+      "explanation": "Perfect numbers. Next perfect after [P] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_071",
@@ -828,25 +838,25 @@
     },
     {
       "template_id": "ENT_PAT_072",
-      "pattern": "4, 6, 9, 10, 14, 15, ... (Semiprime)",
+      "pattern": "4, 6, 9, 10, 14, 15, 21, 22, 25, 26, ... Next semiprime after [S]?",
       "variables": {
-        "S": {"min": 4, "max": 15, "step": 1}
+        "S": {"min": 4, "max": 25, "step": 1, "semiprime": [4,6,9,10,14,15,21,22,25,26]}
       },
-      "variable_combinations": 12,
-      "calculation": "S + 1",
+      "variable_combinations": 9,
+      "calculation": "function nextSemiprime(s){var semi=[4,6,9,10,14,15,21,22,25,26]; return semi[semi.indexOf(s)+1];}(S)",
       "difficulty": "expert",
-      "explanation": "Semiprime pattern. Next ≈ [RESULT]"
+      "explanation": "Semiprime numbers (product of two primes). Next after [S] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_073",
-      "pattern": "30, 42, 66, 70, 78, ... (Sphenic)",
+      "pattern": "30, 42, 66, 70, 78, 102, 105, 110, ... Next sphenic number after [S]?",
       "variables": {
-        "S": {"min": 30, "max": 78, "step": 12}
+        "S": {"min": 30, "max": 105, "step": 1, "sphenic": [30,42,66,70,78,102,105,110]}
       },
-      "variable_combinations": 5,
-      "calculation": "S + 12",
+      "variable_combinations": 7,
+      "calculation": "function nextSphenic(s){var sph=[30,42,66,70,78,102,105,110]; return sph[sph.indexOf(s)+1];}(S)",
       "difficulty": "expert",
-      "explanation": "Sphenic numbers. Next ≈ [RESULT]"
+      "explanation": "Sphenic numbers (product of three distinct primes). Next after [S] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_074",
@@ -918,25 +928,25 @@
     },
     {
       "template_id": "ENT_PAT_080",
-      "pattern": "1, 3, 7, 15, 31, ... (Cullen-style)",
+      "pattern": "1, 3, 7, 15, 31, 63, 127, ... Next Cullen number after [C]?",
       "variables": {
-        "C": {"min": 1, "max": 15, "step": 2}
+        "C": {"min": 1, "max": 63, "step": 1, "cullen": [1,3,7,15,31,63,127]}
       },
-      "variable_combinations": 8,
-      "calculation": "C * 2 + 1",
+      "variable_combinations": 6,
+      "calculation": "function nextCullen(c){var cul=[1,3,7,15,31,63,127]; return cul[cul.indexOf(c)+1];}(C)",
       "difficulty": "high",
-      "explanation": "Cullen pattern. Next ≈ [RESULT]"
+      "explanation": "Cullen numbers (n×2ⁿ+1). Next after [C] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_081",
-      "pattern": "1, 7, 23, 63, ... (Woodall)",
+      "pattern": "1, 7, 23, 63, 159, 383, ... Next Woodall number after [W]?",
       "variables": {
-        "W": {"min": 1, "max": 23, "step": 6}
+        "W": {"min": 1, "max": 159, "step": 1, "woodall": [1,7,23,63,159,383]}
       },
-      "variable_combinations": 4,
-      "calculation": "W * 3 - 2",
+      "variable_combinations": 5,
+      "calculation": "function nextWoodall(w){var wood=[1,7,23,63,159,383]; return wood[wood.indexOf(w)+1];}(W)",
       "difficulty": "expert",
-      "explanation": "Woodall pattern. Next ≈ [RESULT]"
+      "explanation": "Woodall numbers (n×2ⁿ-1). Next after [W] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_082",
@@ -952,59 +962,58 @@
     },
     {
       "template_id": "ENT_PAT_083",
-      "pattern": "[N]×([N]+1), ([N]+1)×([N]+2), ... Next?",
+      "pattern": "[N]×([N]+1), ([N]+1)×([N]+2), ([N]+2)×([N]+3), ... Next?",
       "variables": {
         "N": {"min": -10, "max": 20, "step": 2}
       },
       "variable_combinations": 15,
-      "calculation": "(N + 2) * (N + 3)",
+      "calculation": "(N + 3) * (N + 4)",
       "difficulty": "high",
-      "explanation": "Pronic numbers. Next = ([N]+2)×([N]+3) = [RESULT]"
+      "explanation": "Pronic numbers. Next = ([N]+3)×([N]+4) = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_084",
-      "pattern": "[O]×([O]+1), ([O]+1)×([O]+2), ... Next?",
+      "pattern": "[O]×([O]+1), ([O]+1)×([O]+2), ([O]+2)×([O]+3), ... Next?",
       "variables": {
         "O": {"min": -10, "max": 20, "step": 2}
       },
       "variable_combinations": 15,
-      "calculation": "(O + 2) * (O + 3)",
+      "calculation": "(O + 3) * (O + 4)",
       "difficulty": "high",
-      "explanation": "Oblong numbers. Next = ([O]+2)×([O]+3) = [RESULT]"
+      "explanation": "Oblong numbers. Next = ([O]+3)×([O]+4) = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_085",
-      "pattern": "4!, 2×4!, 3×4!, ... Next?",
+      "pattern": "[M]×4!, [M]×5!, [M]×6!, ... Next?",
       "variables": {
-        "A": {"min": 1, "max": 5, "step": 1},
-        "M": {"min": 2, "max": 4, "step": 1}
+        "M": {"min": 1, "max": 5, "step": 1}
       },
-      "variable_combinations": 15,
-      "calculation": "24 * Math.pow(M, 4)",
+      "variable_combinations": 5,
+      "calculation": "M * 5040",
       "difficulty": "expert",
-      "explanation": "Factorial multiples. Next ≈ [RESULT]"
+      "explanation": "Factorial multiples. Next = [M]×7! = [M]×5040 = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_086",
-      "pattern": "7, 47, 223, ... (Carol)",
+      "pattern": "7, 47, 223, 959, 3967, ... Next Carol number after [C]?",
       "variables": {
-        "C": {"min": 7, "max": 47, "step": 20}
+        "C": {"min": 7, "max": 959, "step": 1, "carol": [7,47,223,959,3967]}
       },
-      "variable_combinations": 3,
-      "calculation": "C * 5 - 12",
+      "variable_combinations": 4,
+      "calculation": "function nextCarol(c){var carol=[7,47,223,959,3967]; return carol[carol.indexOf(c)+1];}(C)",
       "difficulty": "expert",
-      "explanation": "Carol numbers. Next ≈ [RESULT]"
+      "explanation": "Carol numbers ((2ⁿ-1)²-2). Next after [C] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_087",
-      "pattern": "1, 17, 97, ... (Kynea)",
+      "pattern": "1, 17, 97, 577, 3457, ... Next Kynea number after [K]?",
       "variables": {
-        "K": {"min": 1, "max": 17, "step": 8}
+        "K": {"min": 1, "max": 577, "step": 1, "kynea": [1,17,97,577,3457]}
       },
-      "variable_combinations": 3,
-      "calculation": "K * 6 - 1",
+      "variable_combinations": 4,
+      "calculation": "function nextKynea(k){var kynea=[1,17,97,577,3457]; return kynea[kynea.indexOf(k)+1];}(K)",
       "difficulty": "expert",
-      "explanation": "Kynea numbers. Next ≈ [RESULT]"
+      "explanation": "Kynea numbers ((2ⁿ+1)²-2). Next after [K] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_088",
@@ -1020,25 +1029,25 @@
     },
     {
       "template_id": "ENT_PAT_089",
-      "pattern": "2, 5, 11, 23, ... (Thabit)",
+      "pattern": "2, 5, 11, 23, 47, 95, 191, ... Next Thabit number after [T]?",
       "variables": {
-        "T": {"min": 2, "max": 11, "step": 3}
+        "T": {"min": 2, "max": 95, "step": 1, "thabit": [2,5,11,23,47,95,191]}
       },
-      "variable_combinations": 4,
-      "calculation": "T * 2 + 1",
+      "variable_combinations": 6,
+      "calculation": "function nextThabit(t){var thabit=[2,5,11,23,47,95,191]; return thabit[thabit.indexOf(t)+1];}(T)",
       "difficulty": "expert",
-      "explanation": "Thabit numbers. Next ≈ [RESULT]"
+      "explanation": "Thabit numbers (3×2ⁿ-1). Next after [T] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_090",
-      "pattern": "2, 3, 5, 11, 23, ... (Sophie Germain)",
+      "pattern": "2, 3, 5, 11, 23, 29, 41, 53, 83, 89, ... Next Sophie Germain prime after [S]?",
       "variables": {
-        "S": {"min": 2, "max": 23, "step": 5}
+        "S": {"min": 2, "max": 83, "step": 1, "sophie": [2,3,5,11,23,29,41,53,83,89]}
       },
-      "variable_combinations": 5,
-      "calculation": "S + 6",
+      "variable_combinations": 9,
+      "calculation": "function nextSophie(s){var soph=[2,3,5,11,23,29,41,53,83,89]; return soph[soph.indexOf(s)+1];}(S)",
       "difficulty": "expert",
-      "explanation": "Sophie Germain primes. Next ≈ [RESULT]"
+      "explanation": "Sophie Germain primes (p where 2p+1 is also prime). Next after [S] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_091",
@@ -1053,25 +1062,25 @@
     },
     {
       "template_id": "ENT_PAT_092",
-      "pattern": "5, 7, 11, 23, 47, ... (Safe primes)",
+      "pattern": "5, 7, 11, 23, 47, 59, 83, 107, 167, ... Next safe prime after [S]?",
       "variables": {
-        "S": {"min": 5, "max": 23, "step": 6}
+        "S": {"min": 5, "max": 107, "step": 1, "safe": [5,7,11,23,47,59,83,107,167]}
       },
-      "variable_combinations": 4,
-      "calculation": "S * 2 + 1",
+      "variable_combinations": 8,
+      "calculation": "function nextSafe(s){var safe=[5,7,11,23,47,59,83,107,167]; return safe[safe.indexOf(s)+1];}(S)",
       "difficulty": "expert",
-      "explanation": "Safe primes. Next ≈ [RESULT]"
+      "explanation": "Safe primes (where (p-1)/2 is also prime). Next after [S] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_093",
-      "pattern": "2, 6, 30, 210, ... (Primorial)",
+      "pattern": "2, 6, 30, 210, 2310, 30030, ... Next primorial after [P]?",
       "variables": {
-        "P": {"min": 2, "max": 6, "step": 2}
+        "P": {"min": 2, "max": 2310, "step": 1, "primorial": [2,6,30,210,2310,30030]}
       },
-      "variable_combinations": 3,
-      "calculation": "P * 5",
+      "variable_combinations": 5,
+      "calculation": "function nextPrimorial(p){var prim=[2,6,30,210,2310,30030]; return prim[prim.indexOf(p)+1];}(P)",
       "difficulty": "expert",
-      "explanation": "Primorial pattern. Next ≈ [RESULT]"
+      "explanation": "Primorial numbers (product of first n primes). Next after [P] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_094",
@@ -1087,58 +1096,56 @@
     },
     {
       "template_id": "ENT_PAT_095",
-      "pattern": "2!-1, 3!-1, 4!-1, 5!-1, ... Next?",
+      "pattern": "[N]!-1, ([N]+1)!-1, ([N]+2)!-1, ... Next?",
       "variables": {
-        "F": {"min": 2, "max": 6, "step": 1}
+        "N": {"min": 1, "max": 5, "step": 1}
       },
       "variable_combinations": 5,
-      "calculation": "F * (F-1) * Math.max(1, F-2) * Math.max(1, F-3) - 1",
+      "calculation": "(function fact(x){return x<=1?1:x*fact(x-1)})(N+3) - 1",
       "difficulty": "expert",
-      "explanation": "Factorial minus 1. Next ≈ [RESULT]"
+      "explanation": "Factorial minus 1. Next = ([N]+3)!-1 = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_096",
-      "pattern": "[A]²×2, [A]²×4, [A]²×8, ... Next?",
+      "pattern": "[A]²×2, [A]²×4, [A]²×8, [A]²×16, ... Next?",
       "variables": {
         "A": {"min": -6, "max": 10, "step": 2}
       },
       "variable_combinations": 8,
-      "calculation": "Math.pow(A, 2) * 16",
+      "calculation": "Math.pow(A, 2) * 32",
       "difficulty": "high",
-      "explanation": "[A]² × powers of 2. Next = [A]²×16 = [RESULT]"
+      "explanation": "[A]² × powers of 2. Next = [A]²×32 = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_097",
-      "pattern": "30, 858, 1722, ... (Giuga)",
+      "pattern": "30, 858, 1722, 66198, ... Next Giuga number after [G]?",
       "variables": {
-        "G": {"min": 30, "max": 858, "step": 400}
+        "G": {"min": 30, "max": 1722, "step": 1, "giuga": [30,858,1722,66198]}
       },
       "variable_combinations": 3,
-      "calculation": "G + 828",
+      "calculation": "function nextGiuga(g){var giuga=[30,858,1722,66198]; return giuga[giuga.indexOf(g)+1];}(G)",
       "difficulty": "expert",
-      "explanation": "Giuga numbers. Next ≈ [RESULT]"
+      "explanation": "Giuga numbers. Next after [G] = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_098",
-      "pattern": "[A]², ([A]+1)², ([A]+2)², ... Next?",
+      "pattern": "[A]², ([A]+1)², ([A]+2)², ([A]+3)², ... Next?",
       "variables": {
         "A": {"min": -6, "max": 10, "step": 2}
       },
       "variable_combinations": 8,
-      "calculation": "Math.pow(A + 3, 2)",
+      "calculation": "Math.pow(A + 4, 2)",
       "difficulty": "high",
-      "explanation": "Perfect squares. Next = ([A]+3)² = [RESULT]"
+      "explanation": "Perfect squares. Next = ([A]+4)² = [RESULT]"
     },
     {
       "template_id": "ENT_PAT_099",
-      "pattern": "1093, 3511, ... (Wieferich primes)",
-      "variables": {
-        "W": {"min": 1093, "max": 3511, "step": 1209}
-      },
-      "variable_combinations": 2,
-      "calculation": "W + 2418",
+      "pattern": "1093, 3511, ... (Wieferich primes) Next known Wieferich prime? Only two are known.",
+      "variables": {},
+      "variable_combinations": 1,
+      "calculation": "null",
       "difficulty": "expert",
-      "explanation": "Wieferich primes (only 2 known). Next unknown ≈ [RESULT]"
+      "explanation": "Wieferich primes (only 2 known: 1093 and 3511). No next known prime."
     },
     {
       "template_id": "ENT_PAT_100",
@@ -1162,7 +1169,7 @@
       "high": 42,
       "expert": 58
     },
-    "calculation_method": "Pure JavaScript Math functions - 100% implementable"
+    "calculation_method": "Pure JavaScript Math functions with hardcoded sequences for special number types"
   },
   "responses": {
     "correct": [
