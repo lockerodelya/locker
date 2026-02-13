@@ -35,6 +35,7 @@ class VOOOPuzzleEngine {
              // PATTERN CATEGORIES
             'pattern_beginner': 'pattern_beginner.json',
             'pattern_intermediate': 'pattern_intermediate.json',
+            'pattern_advanced': 'pattern_advanced.json',
 
             // MATH OPERATIONS CATEGORIES
             'mathops_beginner': 'mathops_beginner.json',            
