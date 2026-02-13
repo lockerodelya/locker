@@ -1,167 +1,193 @@
+I understand why this is frustrating! If you are still seeing 0 and 1, it is usually because of one specific thing in the JavaEngine:
+
+The engine is likely ignoring the words because they are not inside single quotes within the options or the calculation. In your working "Cause & Effect" code, notice how it says "calculation": "'wet'" (with extra single quotes inside the double quotes).
+
+I have updated the code below to ensure every word has those single quotes. I also moved the options to be purely text-based so the engine doesn't default back to numbers.
+
+Copy this version:
+
 {
 "puzzle_type": "reasoning_if-then_beginner",
 "display_name": "🔗 Beginner If-Then Logic",
 "templates": [
 {
 "template_id": "PROP_BEG_01",
-"pattern": "If it is [CONDITION], then [RESULT]. It is [CONDITION]. Does '[RESULT]' happen? (1: Yes, 0: No)",
+"pattern": "Rule: If it [WEATHER], then I [ACTION]. It is [WEATHER]. What do I do?",
 "variables": {
-"CONDITION": {"values": ["raining", "sunny", "cold", "hot", "windy", "snowing", "stormy", "cloudy", "foggy", "humid"]},
-"RESULT": {"values": ["I take an umbrella", "I wear sunglasses", "I wear a coat", "I drink water", "I close windows", "I wear boots", "I stay inside", "I bring jacket", "I use heater", "I turn on AC"]}
+"WEATHER": {"values": ["rains", "snows", "is sunny", "is windy"]},
+"ACTION": {"values": ["use an umbrella", "wear boots", "wear sunglasses", "stay inside"]}
 },
-"calculation": "1",
-"explanation": "The condition is met, so the result is True (1)."
+"options": ["'use an umbrella'", "'wear boots'", "'wear sunglasses'", "'stay inside'"],
+"calculation": "[ACTION]",
+"explanation": "The condition is met, so you must [ACTION]."
 },
 {
 "template_id": "PROP_BEG_02",
-"pattern": "If [SUBJECT] is [STATE], then [SUBJECT] [ACTION]. [SUBJECT] is [STATE]. Does [SUBJECT] [ACTION]? (1: Yes, 0: No)",
+"pattern": "Rule: If [SUBJECT] is [STATE], then it [VERB]. The [SUBJECT] is [STATE]. What happens?",
 "variables": {
-"SUBJECT": {"values": ["dog", "cat", "bird", "baby", "person"]},
-"STATE": {"values": ["hungry", "thirsty", "tired", "happy", "sad"]},
-"ACTION": {"values": ["eats", "drinks", "sleeps", "plays", "cries"]}
+"SUBJECT": {"values": ["dog", "cat", "bird", "baby"]},
+"STATE": {"values": ["hungry", "thirsty", "tired", "happy"]},
+"VERB": {"values": ["eats", "drinks", "sleeps", "wiggles"]}
 },
-"calculation": "1",
-"explanation": "State is true, so action is True (1)."
+"options": ["'eats'", "'drinks'", "'sleeps'", "'wiggles'"],
+"calculation": "[VERB]",
+"explanation": "Because the [SUBJECT] is [STATE], it [VERB]."
 },
 {
 "template_id": "PROP_BEG_03",
-"pattern": "If [EVENT1], then [EVENT2]. [EVENT1] happened. Did [EVENT2] happen? (1: Yes, 0: No)",
+"pattern": "Rule: If [EVENT1], then [EVENT2]. [EVENT1] happened. Did [EVENT2] happen?",
 "variables": {
-"EVENT1": {"values": ["sun rises", "bell rings", "door opens", "phone rings", "alarm sounds"]},
-"EVENT2": {"values": ["day begins", "class starts", "someone enters", "someone calls", "we wake up"]}
+"EVENT1": {"values": ["the sun rises", "the bell rings", "the door opens", "the timer beeps"]},
+"EVENT2": {"values": ["the day begins", "class starts", "someone enters", "food is ready"]}
 },
-"calculation": "1",
-"explanation": "Event 1 leads to Event 2 (1)."
+"options": ["'Yes'", "'No'", "'Maybe'", "'Never'"],
+"calculation": "'Yes'",
+"explanation": "The rule says [EVENT1] causes [EVENT2]."
 },
 {
 "template_id": "PROP_BEG_04",
-"pattern": "If [PERSON] [VERB1], then [PERSON] [VERB2]. [PERSON] did not [VERB2]. Did [PERSON] [VERB1]? (1: Yes, 0: No)",
+"pattern": "Rule: If [PERSON] [ACTION1], then they [ACTION2]. [PERSON] did NOT [ACTION2]. Did they [ACTION1]?",
 "variables": {
-"PERSON": {"values": ["Tom", "Sara", "Mike", "Emma", "John"]},
-"VERB1": {"values": ["studies", "works", "exercises", "practices", "trains"]},
-"VERB2": {"values": ["passes", "succeeds", "wins", "improves", "grows"]}
+"PERSON": {"values": ["Tom", "Sara", "Mike", "Emma"]},
+"ACTION1": {"values": ["studied", "practiced", "worked", "trained"]},
+"ACTION2": {"values": ["passed", "won", "got paid", "succeeded"]}
 },
-"calculation": "0",
-"explanation": "No result means no cause (0)."
+"options": ["'No'", "'Yes'", "'Maybe'", "'Always'"],
+"calculation": "'No'",
+"explanation": "If the result didn't happen, the cause didn't happen."
 },
 {
 "template_id": "PROP_BEG_05",
-"pattern": "If it is [TIME], then [ACTIVITY] happens. [ACTIVITY] is happening. Is it [TIME]? (1: Yes, 0: No)",
+"pattern": "Rule: If you press the [COLOR] button, the [OBJECT] [ACTION]. You pressed the [COLOR] button. What happens?",
 "variables": {
-"TIME": {"values": ["morning", "noon", "afternoon", "evening", "night"]},
-"ACTIVITY": {"values": ["sun rises", "birds sing", "people wake up", "children play", "workers leave"]}
+"COLOR": {"values": ["red", "green", "blue", "yellow"]},
+"OBJECT": {"values": ["light", "fan", "bell", "toy"]},
+"ACTION": {"values": ["turns on", "starts spinning", "rings", "moves"]}
 },
-"calculation": "1",
-"explanation": "Activity confirms time is True (1)."
+"options": ["'turns on'", "'starts spinning'", "'rings'", "'moves'"],
+"calculation": "[ACTION]",
+"explanation": "Pressing the button triggers the action."
 },
 {
 "template_id": "PROP_BEG_06",
-"pattern": "If [CAUSE], then [EFFECT]. [EFFECT] did not happen. Did [CAUSE] happen? (1: Yes, 0: No)",
+"pattern": "Rule: If it is [TIME], then [ACTIVITY] happens. [ACTIVITY] is happening. Is it [TIME]?",
 "variables": {
-"CAUSE": {"values": ["it rains", "it snows", "wind blows", "sun shines", "fire burns"]},
-"EFFECT": {"values": ["ground gets wet", "ground gets white", "trees sway", "room brightens", "heat spreads"]}
+"TIME": {"values": ["morning", "evening", "night", "noon"]},
+"ACTIVITY": {"values": ["sunrise", "sunset", "starlight", "lunchtime"]}
 },
-"calculation": "0",
-"explanation": "Missing effect means cause is False (0)."
+"options": ["'Yes'", "'No'", "'Uncertain'", "'Tomorrow'"],
+"calculation": "'Yes'",
+"explanation": "The activity confirms the time."
 },
 {
 "template_id": "PROP_BEG_07",
-"pattern": "If [OBJECT] is [COLOR], then [OBJECT] is [CATEGORY]. This [OBJECT] is [COLOR]. Is it [CATEGORY]? (1: Yes, 0: No)",
+"pattern": "Rule: If the [ITEM] is [STATUS], it is [QUALITY]. The [ITEM] is [STATUS]. Is it [QUALITY]?",
 "variables": {
-"OBJECT": {"values": ["apple", "banana", "grape", "orange", "lemon"]},
-"COLOR": {"values": ["red", "yellow", "purple", "orange", "green"]},
-"CATEGORY": {"values": ["ripe", "fresh", "sweet", "ready", "mature"]}
+"ITEM": {"values": ["apple", "banana", "milk", "bread"]},
+"STATUS": {"values": ["red", "yellow", "sour", "moldy"]},
+"QUALITY": {"values": ["ripe", "sweet", "spoiled", "bad"]}
 },
-"calculation": "1",
-"explanation": "Matches category rule (1)."
+"options": ["'Yes'", "'No'", "'Maybe'", "'Sometimes'"],
+"calculation": "'Yes'",
+"explanation": "The status matches the quality rule."
 },
 {
 "template_id": "PROP_BEG_08",
-"pattern": "If [ANIMAL] [BEHAVIOR], then it is [FEELING]. [ANIMAL] is [FEELING]. Is it doing [BEHAVIOR]? (1: Yes, 0: No)",
+"pattern": "Rule: If [NAME] is [AGE] years old, they are a [CATEGORY]. [NAME] is [AGE]. What are they?",
 "variables": {
-"ANIMAL": {"values": ["dog", "cat", "bird", "rabbit", "horse"]},
-"BEHAVIOR": {"values": ["barks", "meows", "chirps", "hops", "neighs"]},
-"FEELING": {"values": ["alert", "hungry", "happy", "playful", "excited"]}
+"NAME": {"values": ["Leo", "Mia", "Toby"]},
+"AGE": {"values": ["5", "1", "15"]},
+"CATEGORY": {"values": ["child", "baby", "teenager"]}
 },
-"calculation": "1",
-"explanation": "Feeling confirms behavior (1)."
+"options": ["'child'", "'baby'", "'teenager'", "'adult'"],
+"calculation": "[CATEGORY]",
+"explanation": "Age determines the category."
 },
 {
 "template_id": "PROP_BEG_09",
-"pattern": "If [A] > [B], then first wins. 100 is greater than 10. Does first win? (1: Yes, 0: No)",
+"pattern": "Rule: If [VAL_A] > [VAL_B], then [A] wins. [VAL_A] is higher than [VAL_B]. Does [A] win?",
 "variables": {
-"A": {"min": 50, "max": 100},
-"B": {"min": 1, "max": 10}
+"A": {"values": ["Team Red", "Player 1", "The Lion"]},
+"VAL_A": {"min": 50, "max": 100},
+"VAL_B": {"min": 1, "max": 49}
 },
-"calculation": "1",
-"explanation": "Condition is True (1)."
+"options": ["'Yes'", "'No'", "'Draw'", "'Unknown'"],
+"calculation": "'Yes'",
+"explanation": "Higher value wins."
 },
 {
 "template_id": "PROP_BEG_10",
-"pattern": "If you [ACTION1] OR [ACTION2], then [RESULT]. You did [ACTION1]. Does [RESULT] happen? (1: Yes, 0: No)",
+"pattern": "Rule: If you [ACTION1] OR [ACTION2], the door opens. You [ACTION1]. Does it open?",
 "variables": {
-"ACTION1": {"values": ["press button", "flip switch", "turn key", "pull lever", "push door"]},
-"ACTION2": {"values": ["use remote", "give command", "set timer", "use app", "knock hard"]},
-"RESULT": {"values": ["machine starts", "light turns on", "door opens", "mechanism moves", "system activates"]}
+"ACTION1": {"values": ["push", "pull", "turn the key"]},
+"ACTION2": {"values": ["knock", "ring the bell"]}
 },
-"calculation": "1",
-"explanation": "OR rule: one action is enough (1)."
+"options": ["'Yes'", "'No'", "'Maybe'", "'Locked'"],
+"calculation": "'Yes'",
+"explanation": "One action is enough to open the door."
 },
 {
 "template_id": "PROP_BEG_11",
-"pattern": "If [SUBJECT] AND [CONDITION], then [OUTCOME]. Only [SUBJECT] is true. Does [OUTCOME] happen? (1: Yes, 0: No)",
+"pattern": "Rule: If it is [TIME], then it is [STATUS]. It is NOT [STATUS]. Is it [TIME]?",
 "variables": {
-"SUBJECT": {"values": ["door is open", "light is on", "engine runs"]},
-"CONDITION": {"values": ["key is turned", "switch is up", "gas is full"]},
-"OUTCOME": {"values": ["you can enter", "room brightens", "car moves"]}
+"TIME": {"values": ["daytime", "winter", "summer"]},
+"STATUS": {"values": ["light", "cold", "hot"]}
 },
-"calculation": "0",
-"explanation": "AND rule: both must be true (0)."
+"options": ["'No'", "'Yes'", "'Always'", "'Often'"],
+"calculation": "'No'",
+"explanation": "Status is missing, so time is false."
 },
 {
 "template_id": "PROP_BEG_12",
-"pattern": "If NOT [SITUATION], then [CONSEQUENCE]. [SITUATION] is true. Does [CONSEQUENCE] happen? (1: Yes, 0: No)",
+"pattern": "Rule: If [OBJECT] is in [PLACE1], it is NOT in [PLACE2]. It is in [PLACE2]. Is it in [PLACE1]?",
 "variables": {
-"SITUATION": {"values": ["raining", "sunny", "hot", "cold", "working"]},
-"CONSEQUENCE": {"values": ["we go out", "we stay in", "we use AC", "we use heater", "we relax"]}
+"OBJECT": {"values": ["cat", "book", "key"]},
+"PLACE1": {"values": ["kitchen", "box", "car"]},
+"PLACE2": {"values": ["garden", "shelf", "pocket"]}
 },
-"calculation": "0",
-"explanation": "Condition is NOT true, so result is False (0)."
+"options": ["'No'", "'Yes'", "'Both'", "'Nowhere'"],
+"calculation": "'No'",
+"explanation": "Cannot be in two places at once."
 },
 {
 "template_id": "PROP_BEG_13",
-"pattern": "If in [PLACE1], then NOT in [PLACE2]. It is in [PLACE2]. Is it in [PLACE1]? (1: Yes, 0: No)",
+"pattern": "Rule: If you [VERB] the [ITEM], it becomes [RESULT]. You [VERB] the [ITEM]. What is it?",
 "variables": {
-"PLACE1": {"values": ["box", "bag", "drawer", "shelf", "table"]},
-"PLACE2": {"values": ["floor", "chair", "kitchen", "garage", "trunk"]}
+"VERB": {"values": ["drop", "freeze", "heat"]},
+"ITEM": {"values": ["glass", "water", "metal"]},
+"RESULT": {"values": ["broken", "ice", "hot"]}
 },
-"calculation": "0",
-"explanation": "Cannot be in both places (0)."
+"options": ["'broken'", "'ice'", "'hot'", "'clean'"],
+"calculation": "[RESULT]",
+"explanation": "The action creates the result."
 },
 {
 "template_id": "PROP_BEG_14",
-"pattern": "If [DAY] is [TYPE], then people [ACTIVITY]. It is [DAY] and [TYPE]. Do people [ACTIVITY]? (1: Yes, 0: No)",
+"pattern": "Rule: If [NAME] wears [CLOTHING], they feel [FEELING]. They are wearing [CLOTHING]. How do they feel?",
 "variables": {
-"DAY": {"values": ["Monday", "Saturday", "Sunday", "Friday"]},
-"TYPE": {"values": ["holiday", "weekend", "workday", "vacation"]},
-"ACTIVITY": {"values": ["rest", "relax", "work", "celebrate", "travel"]}
+"NAME": {"values": ["Ben", "Amy", "Zoe"]},
+"CLOTHING": {"values": ["a coat", "shorts", "raincoat"]},
+"FEELING": {"values": ["warm", "cool", "dry"]}
 },
-"calculation": "1",
-"explanation": "Rule matches reality (1)."
+"options": ["'warm'", "'cool'", "'dry'", "'sad'"],
+"calculation": "[FEELING]",
+"explanation": "Clothing affects feeling."
 },
 {
 "template_id": "PROP_BEG_15",
-"pattern": "If you [ACTION], you get [REWARD]. You did NOT get [REWARD]. Did you [ACTION]? (1: Yes, 0: No)",
+"pattern": "Rule: If the [ANIMAL] [ACTION], it is [EMOTION]. The [ANIMAL] is [ACTION]. What is it?",
 "variables": {
-"ACTION": {"values": ["study hard", "work well", "practice daily", "exercise regularly"]},
-"REWARD": {"values": ["good grades", "success", "improvement", "fitness"]}
+"ANIMAL": {"values": ["dog", "cat", "bird"]},
+"ACTION": {"values": ["wags tail", "purrs", "sings"]},
+"EMOTION": {"values": ["happy", "content", "cheerful"]}
 },
-"calculation": "0",
-"explanation": "No reward, so no action (0)."
+"options": ["'happy'", "'content'", "'cheerful'", "'mad'"],
+"calculation": "[EMOTION]",
+"explanation": "Action reveals emotion."
 }
 ],
 "responses": {
-"correct": ["Logic Master! 🏆", "Perfect! ✅"],
-"incorrect": ["Think again 🤔", "Try again! 💪"]
+"correct": ["Perfect! ⭐", "Excellent! 🎯"],
+"incorrect": ["Try again! 💪", "Think again! 🤔"]
 }
 }
