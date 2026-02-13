@@ -40,12 +40,12 @@ class VOOOPuzzleEngine {
             'mathops_beginner': 'mathops_beginner.json',            
 
             // PROBLEM SOLVING CATEGORIES
-            'comparison_beginner': 'comparison_beginner.json',
-            'time_beginner': 'time_beginner.json',
-            'probability_beginner': 'probability_beginner.json',
-            'classification_beginner': 'classification_beginner.json',
-            'problemsolving_beginner': 'problemsolving_beginner.json',
-            'causeeffect_beginner': 'causeeffect_beginner.json'
+            'problem_comparison_beginner': 'problem_comparison_beginner.json',
+            'problem_time_beginner': 'problem_time_beginner.json',
+            'problem_probability_beginner': 'problem_probability_beginner.json',
+            'problem_classification_beginner': 'problem_classification_beginner.json',
+            'problem_solving_beginner': 'problem_problemsolving_beginner.json',
+            'problem_causeeffect_beginner': 'problem_causeeffect_beginner.json'
             
             
         };
