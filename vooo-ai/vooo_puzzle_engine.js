@@ -27,7 +27,7 @@ class VOOOPuzzleEngine {
             // REASONING CATEGORIES
             'reasoning_beginner': 'reasoning_beginner.json',
             'reasoning_analogical_beginner': 'reasoning_analogical_beginner.json',
-            'reasoning_propositional_beginner': 'reasoning_propositional_beginner.json',
+            'reasoning_if-then_beginner': 'reasoning_if-then_beginner.json',
             'reasoning_syllogistic_beginner': 'reasoning_syllogistic_beginner.json',
             'reasoning_intermediate': 'reasoning_intermediate.json',
             'reasoning_advanced': 'reasoning_advanced.json',
