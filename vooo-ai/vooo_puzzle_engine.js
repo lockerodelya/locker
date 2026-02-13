@@ -16,7 +16,7 @@ class VOOOPuzzleEngine {
         // CATEGORIES - MATH + REASONING
         // ============================================
         this.categories = {
-            // EXISTING MATH CATEGORIES
+            // MATH CATEGORIES
             'math_toddler': 'math_toddler.json',
             'math_beginner': 'math_beginner.json',
             'math_elementary': 'math_elementary.json',
@@ -24,22 +24,30 @@ class VOOOPuzzleEngine {
             'math_advanced': 'math_advanced.json',
             'math_scholar': 'math_scholar.json',
             
-            // NEW REASONING CATEGORIES
+            // REASONING CATEGORIES
             'reasoning_beginner': 'reasoning_beginner.json',
             'reasoning_analogical_beginner': 'reasoning_analogical_beginner.json',
             'reasoning_propositional_beginner': 'reasoning_propositional_beginner.json',
             'reasoning_syllogistic_beginner': 'reasoning_syllogistic_beginner.json',
             'reasoning_intermediate': 'reasoning_intermediate.json',
             'reasoning_advanced': 'reasoning_advanced.json',
+
+             // PATTERN CATEGORIES
             'pattern_beginner': 'pattern_beginner.json',
             'pattern_intermediate': 'pattern_intermediate.json',
-            'mathops_beginner': 'mathops_beginner.json',
+
+            // MATH OPERATIONS CATEGORIES
+            'mathops_beginner': 'mathops_beginner.json',            
+
+            // PROBLEM SOLVING CATEGORIES
             'comparison_beginner': 'comparison_beginner.json',
             'time_beginner': 'time_beginner.json',
             'probability_beginner': 'probability_beginner.json',
             'classification_beginner': 'classification_beginner.json',
             'problemsolving_beginner': 'problemsolving_beginner.json',
             'causeeffect_beginner': 'causeeffect_beginner.json'
+            
+            
         };
         
         // Shape and color mappings
