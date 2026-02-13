@@ -44,7 +44,7 @@ class VOOOPuzzleEngine {
             'problem_time_beginner': 'problem_time_beginner.json',
             'problem_probability_beginner': 'problem_probability_beginner.json',
             'problem_classification_beginner': 'problem_classification_beginner.json',
-            'problem_solving_beginner': 'problem_problemsolving_beginner.json',
+            'problem_solving_beginner': 'problem_solving_beginner.json',
             'problem_causeeffect_beginner': 'problem_causeeffect_beginner.json'
             
             
