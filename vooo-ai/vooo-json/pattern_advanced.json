@@ -541,33 +541,31 @@
       "explanation": "Catalan-style sequence with multipliers. Next: [RESULT]"
     },
     {
-      "template_id": "ENT_PAT_020",
-      "pattern": "[L1], [L2], [L1+L2], [L1+2L2], 2[L1]+3[L2], ... Next?",
-      "variables": {
-        "L1": {
-          "min": -10,
-          "max": 20,
-          "step": 1,
-          "sets": ["lucas_base1", "negative", "positive"]
-        },
-        "L2": {
-          "min": -10,
-          "max": 20,
-          "step": 1,
-          "sets": ["lucas_base2", "negative", "positive"]
-        },
-        "coefficient_pattern": {
-          "type": "preset",
-          "values": ["fibonacci", "lucas", "pell", "jacobsthal"]
-        }
-      },
-      "variable_combinations": 6,
-      "pattern_variants": 8,
-      "calculation": "get_coefficient(coefficient_pattern, 4, 0) * L1 + get_coefficient(coefficient_pattern, 4, 1) * L2",
-      "difficulty_bands": ["high", "competition", "expert"],
-      "explanation_variants": 6,
-      "explanation": "[coefficient_pattern]-style sequence. Next: [RESULT]"
+  "template_id": "ENT_PAT_020",
+  "pattern": "-7, 8, [L1+L2], [L1+2×L2], 2×[L1]+3×[L2], ... Next?",
+  "variables": {
+    "L1": {"min": -10, "max": 20, "step": 1},
+    "L2": {"min": -10, "max": 20, "step": 1},
+    "L3": {"min": -5, "max": 15, "step": 1}
+  },
+  "answer_fields": 3,
+  "answers": [
+    {
+      "formula": "L1 + L2",
+      "display": "Third term"
     },
+    {
+      "formula": "L1 + 2 * L2", 
+      "display": "Fourth term"
+    },
+    {
+      "formula": "2 * L1 + 3 * L2",
+      "display": "Fifth term"
+    }
+  ],
+  "calculation": "3 * L1 + 5 * L2 + L3",
+  "explanation": "The pattern shows:\n• First two terms are fixed: -7, 8\n• Third term = [L1] + [L2]\n• Fourth term = [L1] + 2×[L2]\n• Fifth term = 2×[L1] + 3×[L2]\n• Next term = 3×[L1] + 5×[L2] + [L3]\n\nYou need to calculate terms 3, 4, and 5 using the given L1, L2 values."
+},
     {
       "template_id": "ENT_PAT_021",
       "pattern": "[A], [A]×[B]-[C], ([A]×[B]-[C])×[B]-[C], ... Next?",
