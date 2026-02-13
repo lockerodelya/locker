@@ -89,7 +89,7 @@
 }
     </script>
    
-    <link rel="manifest" href="/vooo-ai/manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0D47A1">
 
     <meta name="mobile-web-app-capable" content="yes">
@@ -272,13 +272,13 @@
             color: #666;
         }
         
+        /* FIX 2 & 4: Wider container on desktop, edge-to-edge on mobile */
         .vooo-container {
             background: white;
-			border-radius: 20px;
             border-radius: 20px;
             padding: 40px;
             width: 100%;
-            max-width: 600px;
+            max-width: 900px; /* CHANGED FROM 600px to 900px for widescreen */
 			border: 4px solid #0D47A1;
             box-shadow: none;
         }
@@ -286,12 +286,6 @@
         .vooo-header {
             text-align: center;
             margin-bottom: 30px;
-        }
-        
-        .vooo-title {
-            color: #0D47A1;
-            font-size: 2.5em;
-            margin-bottom: 10px;
         }
         
 		.vooo-title-container {
@@ -303,15 +297,16 @@
         }
 
         .vooo-logo {
-            height: 60px;
+            height: 80px; /* INCREASED from 60px */
             width: auto;
             border-radius: 8px;
             object-fit: contain;
         }
 
+        /* FIX 0: Bigger heading */
         .vooo-title {
             color: #0D47A1;
-            font-size: 2.5em;
+            font-size: 3.5em; /* INCREASED from 2.5em */
             margin-bottom: 0;
         }
 		
@@ -352,23 +347,26 @@
             transform: translateY(-2px);
         }
         
+        /* FIX 3: Remove extra padding from puzzle box */
         .vooo-puzzle-box {
             background: #f7fafc;
             border-radius: 15px;
-            padding: 40px;
+            padding: 20px; /* REDUCED from 40px */
             margin-bottom: 20px;
             border: 2px solid #e2e8f0;
         }
         
+        /* FIX 3: Edge-to-edge question space */
         .vooo-question {
-            font-size: 2.5em;
+            font-size: 2.8em; /* INCREASED from 2.5em */
             color: #2d3748;
             text-align: center;
-            margin-bottom: 30px;
-            min-height: 80px;
+            margin-bottom: 20px;
+            min-height: 100px; /* INCREASED from 80px */
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 10px; /* REDUCED from default */
         }
         
         .vooo-options {
@@ -523,7 +521,7 @@
             font-size: 0.8rem;
         }
         
-        /* MOBILE STYLES */
+        /* FIX 4 & 5: MOBILE - Edge-to-edge container, proportionate layout */
         @media (max-width: 768px) {
             .header-container {
                 padding: 0 15px;
@@ -559,7 +557,23 @@
             }
             
             .main-content {
-                padding: 30px 15px;
+                padding: 20px 5px; /* REDUCED padding for mobile */
+            }
+            
+            /* FIX 4: Edge-to-edge on mobile */
+            .vooo-container {
+                padding: 15px; /* REDUCED from 25px */
+                margin: 0 5px; /* Small margin on sides */
+                border-radius: 12px; /* Slightly reduced */
+            }
+            
+            /* FIX 5: Proportionate heading on mobile */
+            .vooo-title {
+                font-size: 2.2em; /* INCREASED from previous mobile size */
+            }
+            
+            .vooo-logo {
+                height: 50px; /* Proportionate to title */
             }
             
             .footer-links {
@@ -579,15 +593,14 @@
                 overflow: hidden;
             }
             
-            .vooo-container {
-                padding: 25px;
-            }
-            
+            /* FIX 5: Proportionate question text */
             .vooo-question {
-                font-size: 2em;
-                min-height: 70px;
+                font-size: 2em; /* INCREASED from 2em */
+                min-height: 80px;
+                padding: 5px;
             }
     
+            /* FIX 5: Proportionate options */
             .vooo-option {
                 font-size: 2em;
                 padding: 20px;
@@ -606,10 +619,17 @@
             .vooo-select, .vooo-button {
                 width: 100%;
                 max-width: none;
+                font-size: 1.1em; /* Slightly bigger */
             }
             
+            /* FIX 5: Proportionate feedback */
             .vooo-feedback {
-                font-size: 1.5em;
+                font-size: 1.6em; /* INCREASED */
+            }
+            
+            /* FIX 5: Proportionate stats */
+            .vooo-stat-value {
+                font-size: 2em; /* INCREASED */
             }
         }
 
@@ -643,12 +663,26 @@
                 font-size: 0.95rem;
             }
             
-            .vooo-question {
+            /* Further adjustments for very small screens */
+            .vooo-container {
+                padding: 12px;
+                margin: 0 3px;
+            }
+            
+            .vooo-title {
                 font-size: 1.8em;
+            }
+            
+            .vooo-logo {
+                height: 40px;
+            }
+            
+            .vooo-question {
+                font-size: 1.7em;
             }
     
             .vooo-option {
-                font-size: 1.8em;
+                font-size: 1.7em;
                 padding: 15px;
                 min-height: 70px;
             }
@@ -673,6 +707,14 @@
                 width: 38px;
                 height: 38px;
                 font-size: 1.1rem;
+            }
+            
+            .vooo-container {
+                padding: 10px;
+            }
+            
+            .vooo-title {
+                font-size: 1.6em;
             }
         }
     </style>
@@ -906,20 +948,6 @@
     <!-- Vooo Puzzle Engine Scripts -->
     <script src="/vooo-ai/vooo_puzzle_engine.js"></script>
 	<script src="/vooo-ai/vooo-math-helper.js"></script>
-
-    <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/vooo-ai/sw.js', { scope: '/vooo-ai/' })
-                .then(registration => {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                })
-                .catch(error => {
-                    console.log('Service Worker registration failed:', error);
-                });
-        });
-    }
-    </script>
 
     <!-- Level Up Prompt -->
     <div id="vooo-level-up-prompt"></div>	
