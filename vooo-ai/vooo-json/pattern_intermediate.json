@@ -1083,42 +1083,8 @@
       "Review the pattern! 🔍"
     ]
   }
-}
-
-function factorial(n) {
-  if (n <= 1) return 1;
-  return n * factorial(n - 1);
-}
-
-// ADD THESE LINES HERE ↓↓↓
-
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function generateQuestion() {
-  const data = /* paste your entire JSON object here */;
-  const template = data.templates[getRandomInt(0, data.templates.length - 1)];
-  
-  let pattern = template.pattern;
-  let calculation = template.calculation;
-  let explanation = template.explanation;
-  
-  for (let [varName, config] of Object.entries(template.variables || {})) {
-    const value = getRandomInt(config.min, config.max);
-    const regex = new RegExp(`\\[${varName}\\]`, 'g');
-    pattern = pattern.replace(regex, value);
-    calculation = calculation.replace(new RegExp(varName, 'g'), value);
-    explanation = explanation.replace(regex, value);
+  "helpers": {
+    "factorial": "function(n) { if (n <= 1) return 1; return n * factorial(n - 1); }",
+    "getRandomInt": "function(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }"
   }
-  
-  const result = eval(calculation);
-  explanation = explanation.replace('[RESULT]', result);
-  
-  return { pattern, answer: result, explanation };
 }
-
-// Test it
-const q = generateQuestion();
-console.log(q.pattern);
-console.log("Answer:", q.answer);
