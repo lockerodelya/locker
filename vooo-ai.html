@@ -950,9 +950,65 @@
         </div>
     </footer>
 
-    <!-- Vooo Puzzle Engine Scripts -->
+    <!-- ============================================ -->
+    <!-- VOOO PUZZLE ENGINE SCRIPTS - WITH TEMPLATE MANAGER -->
+    <!-- ============================================ -->
+    
+    <!-- STEP 1: Load Template Manager FIRST -->
+    <script src="/vooo-ai/vooo-template-manager.js"></script>
+    
+    <!-- STEP 2: Load Helper Libraries -->
+    <script src="/vooo-ai/vooo-math-helper.js"></script>
+    <script src="/vooo-ai/vooo-reasoning-engine.js"></script>
+    
+    <!-- STEP 3: Load Main Puzzle Engine -->
     <script src="/vooo-ai/vooo_puzzle_engine.js"></script>
-	<script src="/vooo-ai/vooo-math-helper.js"></script>
+
+    <!-- STEP 4: Initialize with Template Manager Integration -->
+    <script>
+        // Override the default initialization to use randomized templates
+        async function initVOOOGame() {
+            console.log('🎲 Initializing VOOO game with randomized templates...');
+            
+            const loaded = await voooEngine.loadCategory('math_beginner');
+            
+            if (!loaded) {
+                document.getElementById('vooo-question').textContent = 'Error loading puzzles.';
+                return;
+            }
+            
+            // ✨ INTEGRATE TEMPLATE MANAGER - This makes templates random!
+            integrateWithPuzzleEngine(voooEngine, voooTemplateManager);
+            
+            const puzzle = voooEngine.generateNewPuzzle();
+            
+            if (puzzle) {
+                updatePuzzleDisplay(puzzle);
+            } else {
+                document.getElementById('vooo-question').textContent = 'Error generating puzzle. Check console.';
+            }
+        }
+
+        // Override changeLevel to re-integrate template manager when switching categories
+        async function changeLevel(levelKey) {
+            console.log('🔄 Changing level to:', levelKey);
+            const success = await voooEngine.loadCategory(levelKey);
+            if (success) {
+                // Re-integrate template manager for new category
+                integrateWithPuzzleEngine(voooEngine, voooTemplateManager);
+                
+                voooEngine.resetScore();
+                nextPuzzle();
+            }
+        }
+
+        // Start the game when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initVOOOGame);
+        } else {
+            initVOOOGame();
+        }
+    </script>
 
     <!-- Level Up Prompt -->
     <div id="vooo-level-up-prompt"></div>	
