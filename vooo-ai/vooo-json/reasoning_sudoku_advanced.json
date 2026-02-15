@@ -7,14 +7,14 @@
       "template_id": "SUDOKU_ADV_01",
       "pattern": "In 6×6 Sudoku, row has [A], [B], ?, [C], [D], [E]. Uses 1-6. What's position 3?",
       "variables": {
-        "A": {"values": [1,2,3,4]},
-        "B": {"values": [1,2,3,4]},
-        "C": {"values": [1,2,3,4]},
-        "D": {"values": [1,2,3,4]},
-        "E": {"values": [1,2,3,4]}
+        "A": {"values": [1,2,3,4,5]},
+        "B": {"values": [1,2,3,4,5]},
+        "C": {"values": [1,2,3,4,5]},
+        "D": {"values": [1,2,3,4,5]},
+        "E": {"values": [1,2,3,4,5]}
       },
       "calculation": "21 - A - B - C - D - E",
-      "explanation": "Row uses 1-6 (sum=21). Missing = 21 - A - B - C - D - E",
+      "explanation": "Row sum=21. Missing = 21 - A - B - C - D - E",
       "options": [1,2,3,4]
     },
 
@@ -22,13 +22,13 @@
       "template_id": "SUDOKU_ADV_02",
       "pattern": "Cell constraints: Row has [A], [B]. Column has [C]. Box has [D]. Uses 1-4. What fits?",
       "variables": {
-        "A": {"values": [1,2,3]},
-        "B": {"values": [1,2,3]},
-        "C": {"values": [1,2,3]},
-        "D": {"values": [1,2,3]}
+        "A": {"values": [1,2,3,4]},
+        "B": {"values": [1,2,3,4]},
+        "C": {"values": [1,2,3,4]},
+        "D": {"values": [1,2,3,4]}
       },
       "calculation": "10 - A - B - C - D",
-      "explanation": "Uses 1-4 once. Missing = 10 - A - B - C - D",
+      "explanation": "Total 1-4 sum=10. Missing = 10 - A - B - C - D",
       "options": [1,2,3,4]
     },
 
@@ -36,23 +36,23 @@
       "template_id": "SUDOKU_ADV_03",
       "pattern": "Box has [A], [B], [C], [D], ?, ?, ?, ?, ?. Uses 1-9. Sum of missing 5 numbers?",
       "variables": {
-        "A": {"values": [1,2,3,4,5]},
-        "B": {"values": [2,3,4,5,6]},
-        "C": {"values": [3,4,5,6,7]},
-        "D": {"values": [4,5,6,7,8]}
+        "A": {"values": [1,2,3,4,5,6]},
+        "B": {"values": [2,3,4,5,6,7]},
+        "C": {"values": [3,4,5,6,7,8]},
+        "D": {"values": [4,5,6,7,8,9]}
       },
       "calculation": "45 - A - B - C - D",
       "explanation": "Box sum=45. Missing sum = 45 - A - B - C - D",
-      "options": [15,20,25,30]
+      "options": [20,25,30,35]
     },
 
     {
       "template_id": "SUDOKU_ADV_04",
       "pattern": "X-Sudoku: Main diagonal has [A], ?, [B], [C]. Uses 1-4. No repeats. What's position 2?",
       "variables": {
-        "A": {"values": [1,2,3]},
-        "B": {"values": [1,2,3]},
-        "C": {"values": [1,2,3]}
+        "A": {"values": [1,2,3,4]},
+        "B": {"values": [1,2,3,4]},
+        "C": {"values": [1,2,3,4]}
       },
       "calculation": "10 - A - B - C",
       "explanation": "Diagonal sum=10. Missing = 10 - A - B - C",
@@ -63,10 +63,10 @@
       "template_id": "SUDOKU_ADV_05",
       "pattern": "Row has [A], [B], [C], ?. Sum must be [SUM]. What's the missing number?",
       "variables": {
-        "A": {"values": [1,2,3,4,5]},
-        "B": {"values": [2,3,4,5,6]},
-        "C": {"values": [3,4,5,6,7]},
-        "SUM": {"values": [15,18,20,22,24,26]}
+        "A": {"values": [1,2,3,4,5,6]},
+        "B": {"values": [2,3,4,5,6,7]},
+        "C": {"values": [3,4,5,6,7,8]},
+        "SUM": {"values": [18,20,22,24,26,28]}
       },
       "calculation": "SUM - A - B - C",
       "explanation": "Missing = SUM - A - B - C",
@@ -77,9 +77,9 @@
       "template_id": "SUDOKU_ADV_06",
       "pattern": "Row needs [A] or [B]. Column needs [B] or [C]. What's at intersection?",
       "variables": {
-        "A": {"values": [1,2,3]},
-        "B": {"values": [4,5,6]},
-        "C": {"values": [7,8,9]}
+        "A": {"values": [1,2,3,4,5]},
+        "B": {"values": [4,5,6,7,8]},
+        "C": {"values": [6,7,8,9]}
       },
       "calculation": "B",
       "explanation": "Common value is B",
@@ -90,56 +90,30 @@
       "template_id": "SUDOKU_ADV_07",
       "pattern": "Box has [A], [B], [C], ?, ?, ?. Uses 1-6. What's the sum of missing 3?",
       "variables": {
-        "A": {"values": [1,2,3]},
-        "B": {"values": [2,3,4]},
-        "C": {"values": [3,4,5]}
+        "A": {"values": [1,2,3,4]},
+        "B": {"values": [2,3,4,5]},
+        "C": {"values": [3,4,5,6]}
       },
       "calculation": "21 - A - B - C",
       "explanation": "Missing sum = 21 - A - B - C",
-      "options": [10,12,14,16]
+      "options": [9,12,15,18]
     },
 
     {
       "template_id": "SUDOKU_ADV_08",
       "pattern": "Main diagonal has [A], ?, [B], [C], [D], [E], [F], [G], [H]. Uses 1-9. What's position 2?",
       "variables": {
-        "A": {"values": [1,2,3]},
-        "B": {"values": [2,3,4]},
-        "C": {"values": [3,4,5]},
-        "D": {"values": [4,5,6]},
-        "E": {"values": [5,6,7]},
-        "F": {"values": [6,7,8]},
-        "G": {"values": [7,8,9]},
-        "H": {"values": [1,8,9]}
+        "A": {"values": [1,2,3,4]},
+        "B": {"values": [2,3,4,5]},
+        "C": {"values": [3,4,5,6]},
+        "D": {"values": [4,5,6,7]},
+        "E": {"values": [5,6,7,8]},
+        "F": {"values": [6,7,8,9]},
+        "G": {"values": [1,7,8,9]},
+        "H": {"values": [2,8,9]}
       },
       "calculation": "45 - A - B - C - D - E - F - G - H",
       "explanation": "Diagonal sum=45. Missing = 45 - all given",
-      "options": [1,2,3,4]
-    },
-
-    {
-      "template_id": "SUDOKU_ADV_09",
-      "pattern": "Cell blocked by row ([A]), column ([B]), box ([C]). Uses 1-4. What fits?",
-      "variables": {
-        "A": {"values": [1,2,3]},
-        "B": {"values": [1,2,3]},
-        "C": {"values": [1,2,3]}
-      },
-      "calculation": "10 - A - B - C",
-      "explanation": "Remaining = 10 - A - B - C",
-      "options": [1,2,3,4]
-    },
-
-    {
-      "template_id": "SUDOKU_ADV_10",
-      "pattern": "Box has [A], [B], [C], ?. Uses 1-4. What completes box?",
-      "variables": {
-        "A": {"values": [1,2,3]},
-        "B": {"values": [1,2,3]},
-        "C": {"values": [1,2,3]}
-      },
-      "calculation": "10 - A - B - C",
-      "explanation": "Missing = 10 - A - B - C",
       "options": [1,2,3,4]
     }
 
