@@ -13,8 +13,7 @@
         "E": {"values": [5, 6]}
       },
       "calculation": "21 - A - B - C - D - E",
-      "explanation": "Row uses 1-6 (sum=21). Missing = 21 - [A] - [B] - [C] - [D] - [E]",
-      "options": [1, 2, 3, 4]
+      "explanation": "Row uses 1-6 (sum=21). Missing = 21 - [A] - [B] - [C] - [D] - [E]"
     },
     {
       "template_id": "SUDOKU_ADV_02",
@@ -25,8 +24,7 @@
         "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
-      "explanation": "Uses 1-4 (sum=10). Row blocks [A],[B]. Column blocks [C]. Missing = 10 - A - B - C",
-      "options": [1, 2, 3, 4]
+      "explanation": "Uses 1-4 (sum=10). Row blocks [A],[B]. Column blocks [C]. Missing = 10 - A - B - C"
     },
     {
       "template_id": "SUDOKU_ADV_03",
@@ -38,8 +36,7 @@
         "D": {"values": [7, 8, 9]}
       },
       "calculation": "45 - A - B - C - D",
-      "explanation": "Box uses 1-9 (sum=45). Has [A], [B], [C], [D]. Missing sum = 45 - A - B - C - D",
-      "options": [18, 22, 26, 30]
+      "explanation": "Box uses 1-9 (sum=45). Has [A], [B], [C], [D]. Missing sum = 45 - A - B - C - D"
     },
     {
       "template_id": "SUDOKU_ADV_04",
@@ -50,8 +47,7 @@
         "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
-      "explanation": "Diagonal uses 1-4 once. Missing = 10 - [A] - [B] - [C]",
-      "options": [1, 2, 3, 4]
+      "explanation": "Diagonal uses 1-4 once. Missing = 10 - [A] - [B] - [C]"
     },
     {
       "template_id": "SUDOKU_ADV_05",
@@ -63,8 +59,7 @@
         "SUM": {"values": [20, 22, 24, 26]}
       },
       "calculation": "SUM - A - B - C",
-      "explanation": "Row sum is [SUM]. Has [A], [B], [C]. Missing = [SUM] - [A] - [B] - [C]",
-      "options": [8, 10, 12, 14]
+      "explanation": "Row sum is [SUM]. Has [A], [B], [C]. Missing = [SUM] - [A] - [B] - [C]"
     },
     {
       "template_id": "SUDOKU_ADV_06",
@@ -102,8 +97,7 @@
         "H": {"values": [4, 9]}
       },
       "calculation": "45 - A - B - C - D - E - F - G - H",
-      "explanation": "Diagonal uses 1-9 (sum=45). Missing = 45 - all given",
-      "options": [1, 2, 3, 4]
+      "explanation": "Diagonal uses 1-9 (sum=45). Missing = 45 - all given"
     },
     {
       "template_id": "SUDOKU_ADV_09",
@@ -114,8 +108,7 @@
         "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
-      "explanation": "Row has [A], column has [B], box has [C]. Remaining = 10 - A - B - C",
-      "options": [1, 2, 3, 4]
+      "explanation": "Row has [A], column has [B], box has [C]. Remaining = 10 - A - B - C"
     },
     {
       "template_id": "SUDOKU_ADV_10",
@@ -126,8 +119,7 @@
         "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
-      "explanation": "Box has [A],[B],[C]. Missing = 10 - A - B - C",
-      "options": [1, 2, 3, 4]
+      "explanation": "Box has [A],[B],[C]. Missing = 10 - A - B - C"
     },
     {
       "template_id": "SUDOKU_ADV_11",
@@ -137,17 +129,17 @@
         "A": {"values": [2, 9]}
       },
       "calculation": "N + 1",
-      "explanation": "Must be [N] + 1. That equals N + 1",
-      "options": [4, 5, 6, 7]
+      "explanation": "Must be [N] + 1. That equals N + 1"
     },
     {
       "template_id": "SUDOKU_ADV_12",
-      "pattern": "Cell must be odd and > 3. Row blocks [A]. Uses 1-9. What odd number fits?",
+      "pattern": "Cell must be odd and > [X]. Row blocks [A]. Uses 1-9. What odd number fits?",
       "variables": {
+        "X": {"values": [2, 3, 4]},
         "A": {"values": [2, 4, 6, 8]}
       },
-      "calculation": "5",
-      "explanation": "Odd numbers > 3 are 5,7,9. Row blocks even [A]. Answer is 5",
+      "calculation": "X + 2",
+      "explanation": "Odd numbers > [X]. Row blocks even [A]. Next odd after [X] is X + 2",
       "options": [5, 7, 9, 3]
     },
     {
@@ -165,23 +157,21 @@
       "template_id": "SUDOKU_ADV_14",
       "pattern": "Arrow sum: Circle = [A] + [B]. What's circle value?",
       "variables": {
-        "A": {"values": [2, 3]},
-        "B": {"values": [4, 5]}
+        "A": {"values": [2, 3, 4]},
+        "B": {"values": [3, 4, 5]}
       },
       "calculation": "A + B",
-      "explanation": "Circle = sum of arrow cells [A] + [B]",
-      "options": [6, 7, 8, 9]
+      "explanation": "Circle = sum of arrow cells [A] + [B]"
     },
     {
       "template_id": "SUDOKU_ADV_15",
       "pattern": "Thermometer: [A] < ? < [C]. What fits middle?",
       "variables": {
-        "A": {"values": [2, 3]},
+        "A": {"values": [2, 3, 4]},
         "C": {"values": [6, 7, 8]}
       },
       "calculation": "A + 2",
-      "explanation": "Must be between [A] and [C]. Middle value is A + 2",
-      "options": [4, 5, 6, 7]
+      "explanation": "Must be between [A] and [C]. Middle value is A + 2"
     },
     {
       "template_id": "SUDOKU_ADV_16",
@@ -189,46 +179,42 @@
       "variables": {
         "SUM": {"values": [12, 15, 18, 21]},
         "B": {"values": [2, 3, 4, 5]},
-        "C": {"values": [4, 5, 6, 7]}
+        "C": {"values": [3, 4, 5, 6]}
       },
       "calculation": "SUM - B - C",
-      "explanation": "Sum is [SUM]. Has [B] and [C]. Missing = [SUM] - [B] - [C]",
-      "options": [3, 6, 9, 12]
+      "explanation": "Sum is [SUM]. Has [B] and [C]. Missing = [SUM] - [B] - [C]"
     },
     {
       "template_id": "SUDOKU_ADV_17",
-      "pattern": "Cell A = [X]. Cell B must be < A. B options: 4 or [Z]. Which B value works?",
+      "pattern": "Cell A = [X]. Cell B must be < A. B can be 3, 4, or 5. Which B works if A = [X]?",
       "variables": {
-        "X": {"values": [6, 7, 8]},
-        "Z": {"values": [9]}
+        "X": {"values": [6, 7, 8, 9]}
       },
       "calculation": "4",
-      "explanation": "[X] is 6-8. B must be < [X]. Between 4 and 9, only 4 works",
-      "options": [4, 5, 3, 2]
+      "explanation": "[X] is at least 6. B must be < [X]. Among 3,4,5, answer is 4",
+      "options": [3, 4, 5, 2]
     },
     {
       "template_id": "SUDOKU_ADV_18",
       "pattern": "Anti-Knight blocks [N]. Cell must be [N] + 2. What's the cell value?",
       "variables": {
-        "N": {"values": [3, 4, 5]}
+        "N": {"values": [3, 4, 5, 6]}
       },
       "calculation": "N + 2",
-      "explanation": "Anti-knight blocks [N]. Cell is [N] + 2",
-      "options": [5, 6, 7, 8]
+      "explanation": "Anti-knight blocks [N]. Cell is [N] + 2"
     },
     {
       "template_id": "SUDOKU_ADV_19",
-      "pattern": "Kropki white: consecutive. Cell [A] = [VAL]. Adjacent must be VAL + 1. What's adjacent?",
+      "pattern": "Kropki white: consecutive. Cell A = [VAL]. Adjacent must be VAL + 1. What's adjacent?",
       "variables": {
-        "VAL": {"values": [4, 5, 6, 7]}
+        "VAL": {"values": [3, 4, 5, 6]}
       },
       "calculation": "VAL + 1",
-      "explanation": "White dot = consecutive. Adjacent = [VAL] + 1",
-      "options": [5, 6, 7, 8]
+      "explanation": "White dot = consecutive. Adjacent = [VAL] + 1"
     },
     {
       "template_id": "SUDOKU_ADV_20",
-      "pattern": "XV sum = 10. Cell [A] = [VAL]. What's the other cell?",
+      "pattern": "XV sum = 10. Cell A = [VAL]. What's the other cell?",
       "variables": {
         "VAL": {"values": [3, 4, 6, 7]}
       },
@@ -255,8 +241,7 @@
         "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
-      "explanation": "Box has [A],[B],[C]. Missing = 10 - A - B - C",
-      "options": [1, 2, 3, 4]
+      "explanation": "Box has [A],[B],[C]. Missing = 10 - A - B - C"
     },
     {
       "template_id": "SUDOKU_ADV_23",
@@ -282,19 +267,17 @@
         "F": {"values": [5, 6]}
       },
       "calculation": "21 - A - B - D - E - F",
-      "explanation": "Region uses 1-6 (sum=21). Missing = 21 - [A] - [B] - [D] - [E] - [F]",
-      "options": [1, 2, 3, 4]
+      "explanation": "Region uses 1-6 (sum=21). Missing = 21 - [A] - [B] - [D] - [E] - [F]"
     },
     {
       "template_id": "SUDOKU_ADV_25",
       "pattern": "Cell must be > [X] and odd. Column blocks [A]. Uses 1-9. What works?",
       "variables": {
-        "X": {"values": [4, 6]},
+        "X": {"values": [3, 4, 5, 6]},
         "A": {"values": [3, 8]}
       },
-      "calculation": "X + 1",
-      "explanation": "Must be odd and > [X]. Column blocks [A]. Answer is X + 1",
-      "options": [5, 7, 9, 3]
+      "calculation": "X + 2",
+      "explanation": "Must be odd and > [X]. Column blocks [A]. Next odd after [X] is X + 2"
     }
   ],
   "responses": {
