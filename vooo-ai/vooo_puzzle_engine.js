@@ -1,6 +1,7 @@
 // ============================================
 // VOOO AI Puzzle Engine - ENHANCED VERSION
 // Supports all JSON features + NEW REASONING TYPES
+// WITH VALIDATION & DUPLICATE PREVENTION
 // ============================================
 
 class VOOOPuzzleEngine {
@@ -11,6 +12,7 @@ class VOOOPuzzleEngine {
         this.score = 0;
         this.totalAttempts = 0;
         this.currentCategory = 'math_toddler';
+        this.usedQuestions = [];
         
         // ============================================
         // CATEGORIES - MATH + REASONING
@@ -59,8 +61,6 @@ class VOOOPuzzleEngine {
             'problem_classification_beginner': 'problem_classification_beginner.json',
             'problem_solving_beginner': 'problem_solving_beginner.json',
             'problem_causeeffect_beginner': 'problem_causeeffect_beginner.json'
-            
-            
         };
         
         // Shape and color mappings
@@ -91,6 +91,64 @@ class VOOOPuzzleEngine {
     }
 
     // ============================================
+    // VALIDATION & DUPLICATE PREVENTION
+    // ============================================
+
+    initLocalStorage() {
+        const storageKey = `vooo_used_questions_${this.currentCategory}`;
+        const stored = localStorage.getItem(storageKey);
+        this.usedQuestions = stored ? JSON.parse(stored) : [];
+        console.log(`📦 Loaded ${this.usedQuestions.length} used questions for ${this.currentCategory}`);
+    }
+
+    saveUsedQuestion(questionHash) {
+        const storageKey = `vooo_used_questions_${this.currentCategory}`;
+        this.usedQuestions.push(questionHash);
+        localStorage.setItem(storageKey, JSON.stringify(this.usedQuestions));
+    }
+
+    createQuestionHash(template, variables) {
+        const key = template.template_id + '_' + JSON.stringify(variables);
+        return btoa(key).substring(0, 20);
+    }
+
+    isQuestionUsed(hash) {
+        return this.usedQuestions.includes(hash);
+    }
+
+    validateOptions(options, correctAnswer) {
+        // Must have exactly 4 options
+        if (options.length !== 4) {
+            console.warn('❌ Invalid: Not 4 options, got', options.length);
+            return false;
+        }
+        
+        // All options must be unique
+        const unique = new Set(options.map(opt => String(opt)));
+        if (unique.size !== 4) {
+            console.warn('❌ Invalid: Duplicate options', options);
+            return false;
+        }
+        
+        // Correct answer must be in options
+        const answerStr = String(correctAnswer);
+        const optionsStr = options.map(opt => String(opt));
+        if (!optionsStr.includes(answerStr)) {
+            console.warn('❌ Invalid: Answer not in options', correctAnswer, options);
+            return false;
+        }
+        
+        return true;
+    }
+
+    clearUsedQuestions() {
+        const storageKey = `vooo_used_questions_${this.currentCategory}`;
+        this.usedQuestions = [];
+        localStorage.removeItem(storageKey);
+        console.log('🗑️ Cleared used questions for', this.currentCategory);
+    }
+
+    // ============================================
     // CORE ENGINE FUNCTIONS - UPDATED
     // ============================================
 
@@ -102,6 +160,7 @@ class VOOOPuzzleEngine {
             const response = await fetch(`/vooo-ai/vooo-json/${fileName}`);
             this.categoryData = await response.json();
             this.currentTemplateIndex = 0;
+            this.initLocalStorage();
             return true;
         } catch (error) {
             console.error('Error loading puzzle category:', error);
@@ -116,17 +175,60 @@ class VOOOPuzzleEngine {
         }
 
         const templates = this.categoryData.templates;
+        let attempts = 0;
+        const maxAttempts = 50;
         
-        this.currentTemplate = templates[this.currentTemplateIndex];
-        
-        console.log(`🎯 Using template ${this.currentTemplateIndex + 1}/${templates.length}: ${this.currentTemplate.template_id}`);
-        
-        this.currentTemplateIndex = (this.currentTemplateIndex + 1) % templates.length;
-        
-        if (this.currentTemplateIndex === 0) {
-            console.log('✅ All templates cycled! Starting from beginning.');
-        }
+        while (attempts < maxAttempts) {
+            attempts++;
+            
+            // Pick random template
+            const templateIndex = Math.floor(Math.random() * templates.length);
+            this.currentTemplate = templates[templateIndex];
+            
+            const variables = this.generateVariables(this.currentTemplate.variables);
+            const questionHash = this.createQuestionHash(this.currentTemplate, variables);
+            
+            // Skip if already used
+            if (this.isQuestionUsed(questionHash)) {
+                console.log(`⏭️ Skipping duplicate (attempt ${attempts})`);
+                continue;
+            }
+            
+            const question = this.generateQuestion(this.currentTemplate, variables);
+            const answer = this.calculateAnswer(this.currentTemplate, variables);
+            const options = this.generateOptions(answer, this.currentTemplate, variables);
+            
+            // Validate: Must have exactly 4 unique options with answer included
+            if (!this.validateOptions(options, answer)) {
+                console.log(`❌ Invalid options (attempt ${attempts})`);
+                continue;
+            }
+            
+            // Valid question found!
+            this.saveUsedQuestion(questionHash);
+            
+            this.currentPuzzle = {
+                question: question,
+                options: options,
+                correctAnswer: answer,
+                correctIndex: this.findCorrectIndex(options, answer, this.currentTemplate.answer_type),
+                explanation: this.generateExplanation(this.currentTemplate, variables, answer),
+                templateId: this.currentTemplate.template_id,
+                level: this.currentCategory,
+                answerType: this.currentTemplate.answer_type || 'text'
+            };
 
+            console.log(`✅ Valid question generated (attempt ${attempts}):`, this.currentPuzzle);
+            return this.currentPuzzle;
+        }
+        
+        // If all attempts failed, clear history and try once more
+        console.warn('⚠️ Max attempts reached. Clearing duplicate history...');
+        this.clearUsedQuestions();
+        
+        // One final attempt
+        const templateIndex = Math.floor(Math.random() * templates.length);
+        this.currentTemplate = templates[templateIndex];
         const variables = this.generateVariables(this.currentTemplate.variables);
         const question = this.generateQuestion(this.currentTemplate, variables);
         const answer = this.calculateAnswer(this.currentTemplate, variables);
@@ -142,8 +244,8 @@ class VOOOPuzzleEngine {
             level: this.currentCategory,
             answerType: this.currentTemplate.answer_type || 'text'
         };
-
-        console.log('Generated puzzle:', this.currentPuzzle);
+        
+        console.log('⚠️ Generated fallback question:', this.currentPuzzle);
         return this.currentPuzzle;
     }
 
@@ -543,12 +645,10 @@ class VOOOPuzzleEngine {
     }
 
     formatCategoryName(name) {
-        // Get display name from JSON if available
         if (this.categoryData && this.categoryData.display_name) {
             return this.categoryData.display_name;
         }
         
-        // Fallback formatting
         const words = name.split('_').map(word => 
             word.charAt(0).toUpperCase() + word.slice(1)
         );
