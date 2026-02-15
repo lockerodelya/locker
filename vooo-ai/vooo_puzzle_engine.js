@@ -24,7 +24,7 @@ class VOOOPuzzleEngine {
             'math_advanced': 'math_advanced.json',
             'math_scholar': 'math_scholar.json',
             
-            // REASONING CATEGORIES
+            // LOGICAL REASONING
             'reasoning_beginner': 'reasoning_beginner.json',
             'reasoning_analogical_beginner': 'reasoning_analogical_beginner.json',
             'reasoning_if-then_beginner': 'reasoning_if-then_beginner.json',
@@ -32,6 +32,18 @@ class VOOOPuzzleEngine {
             'reasoning_intermediate': 'reasoning_intermediate.json',
             'reasoning_advanced': 'reasoning_advanced.json',
 
+            // LOGICAL REASONING
+            'reasoning_sudoku_intermediate': 'reasoning_sudoku_intermediate.json',
+            'reasoning_sudoku_advanced': 'reasoning_sudoku_advanced.json',
+            'reasoning_grid_intermediate': 'reasoning_grid_intermediate.json',
+            'reasoning_grid_advanced': 'reasoning_grid_advanced.json',
+            'reasoning_sequence_intermediate': 'reasoning_sequence_intermediate.json',
+            'reasoning_sequence_advanced': 'reasoning_sequence_advanced.json',
+            'reasoning_code_intermediate': 'reasoning_code_intermediate.json',
+            'reasoning_code_advanced': 'reasoning_code_advanced.json',
+            'reasoning_lateral_intermediate': 'reasoning_lateral_intermediate.json',
+            'reasoning_lateral_advanced': 'reasoning_lateral_advanced.json',
+            
              // PATTERN CATEGORIES
             'pattern_beginner': 'pattern_beginner.json',
             'pattern_intermediate': 'pattern_intermediate.json',
