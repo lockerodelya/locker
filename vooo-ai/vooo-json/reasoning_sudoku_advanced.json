@@ -6,51 +6,49 @@
       "template_id": "SUDOKU_ADV_01",
       "pattern": "In 6×6 Sudoku, row has [A], [B], ?, [C], [D], [E]. Uses 1-6. What's position 3?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6]},
-        "B": {"values": [1, 2, 3, 4, 5, 6]},
-        "C": {"values": [1, 2, 3, 4, 5, 6]},
-        "D": {"values": [1, 2, 3, 4, 5, 6]},
-        "E": {"values": [1, 2, 3, 4, 5, 6]}
+        "A": {"values": [1]},
+        "B": {"values": [2]},
+        "C": {"values": [3]},
+        "D": {"values": [4]},
+        "E": {"values": [5, 6]}
       },
       "calculation": "21 - A - B - C - D - E",
       "explanation": "Row uses 1-6 (sum=21). Missing = 21 - [A] - [B] - [C] - [D] - [E]",
-      "options": [1, 2, 3, 4, 5, 6]
+      "options": [1, 2, 3, 4]
     },
     {
       "template_id": "SUDOKU_ADV_02",
-      "pattern": "Cell (3,4) constraints: Row has [A],[B]. Column has [C],[D]. Box has [E]. Uses 1-6. What fits?",
+      "pattern": "Cell constraints: Row has [A], [B]. Column has [C]. Box has [D]. Uses 1-4. What fits?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6]},
-        "B": {"values": [1, 2, 3, 4, 5, 6]},
-        "C": {"values": [1, 2, 3, 4, 5, 6]},
-        "D": {"values": [1, 2, 3, 4, 5, 6]},
-        "E": {"values": [1, 2, 3, 4, 5, 6]}
+        "A": {"values": [1]},
+        "B": {"values": [2]},
+        "C": {"values": [3]},
+        "D": {"values": [4]}
       },
-      "calculation": "21 - A - B - C - D - E",
-      "explanation": "Blocked by [A],[B] in row, [C],[D] in column, [E] in box. Remaining number from 1-6",
-      "options": [1, 2, 3, 4, 5, 6]
+      "calculation": "Only valid if all different",
+      "explanation": "Blocked by [A],[B] in row, [C] in column, [D] in box. If all 1-4 used, complex scenario",
+      "options": [1, 2, 3, 4]
     },
     {
       "template_id": "SUDOKU_ADV_03",
-      "pattern": "9-cell box has [A], [B], [C], [D], [E], ?, ?, ?, ?. Uses 1-9. Sum of missing 4 numbers?",
+      "pattern": "Box has [A], [B], [C], [D], ?, ?, ?, ?, ?. Uses 1-9. Sum of missing 5 numbers?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "B": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "C": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "D": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "E": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+        "A": {"values": [1, 2]},
+        "B": {"values": [3, 4]},
+        "C": {"values": [5, 6]},
+        "D": {"values": [7, 8]}
       },
-      "calculation": "45 - A - B - C - D - E",
-      "explanation": "Box uses 1-9 (sum=45). Has 5 numbers. Missing sum = 45 - [A] - [B] - [C] - [D] - [E]",
-      "options": [10, 15, 20, 25, 30]
+      "calculation": "45 - A - B - C - D",
+      "explanation": "Box uses 1-9 (sum=45). Has [A], [B], [C], [D]. Missing sum = 45 - A - B - C - D",
+      "options": [30, 32, 34, 36]
     },
     {
       "template_id": "SUDOKU_ADV_04",
       "pattern": "X-Sudoku: Main diagonal has [A], ?, [B], [C]. Uses 1-4. No repeats. What's position 2?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1]},
+        "B": {"values": [2, 3]},
+        "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
       "explanation": "Diagonal uses 1-4 once. Missing = 10 - [A] - [B] - [C]",
@@ -58,257 +56,251 @@
     },
     {
       "template_id": "SUDOKU_ADV_05",
-      "pattern": "Killer Sudoku cage: [A] + [B] + ? = [SUM]. Uses 1-9, no repeats. What's ?",
+      "pattern": "Row has [A], [B], [C], ?. Sum must be [SUM]. What's the missing number?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "B": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "SUM": {"values": [10, 12, 15, 18, 20, 24]}
+        "A": {"values": [2, 3]},
+        "B": {"values": [4, 5]},
+        "C": {"values": [6, 7]},
+        "SUM": {"values": [18, 20, 22]}
       },
-      "calculation": "SUM - A - B",
-      "explanation": "Cage sum is [SUM]. Has [A] and [B]. Missing = [SUM] - [A] - [B]",
-      "options": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      "calculation": "SUM - A - B - C",
+      "explanation": "Row sum is [SUM]. Has [A], [B], [C]. Missing = [SUM] - [A] - [B] - [C]",
+      "options": [3, 5, 7, 9]
     },
     {
       "template_id": "SUDOKU_ADV_06",
-      "pattern": "Row and column intersection: Row needs [A] or [B]. Column needs [B] or [C]. What's at intersection?",
+      "pattern": "Row needs [A] or [B]. Column needs [B] or [C]. What's at intersection?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6]},
-        "B": {"values": [1, 2, 3, 4, 5, 6]},
-        "C": {"values": [1, 2, 3, 4, 5, 6]}
+        "A": {"values": [1, 2]},
+        "B": {"values": [3]},
+        "C": {"values": [4]}
       },
       "calculation": "B",
       "explanation": "Row needs [A] or [B]. Column needs [B] or [C]. Common is [B]",
-      "options": [1, 2, 3, 4, 5, 6]
+      "options": [1, 2, 3, 4]
     },
     {
       "template_id": "SUDOKU_ADV_07",
-      "pattern": "3×2 box in 6×6 grid has [A], [B], [C], ?, ?, ?. Uses 1-6. What's the sum of missing 3?",
+      "pattern": "Box has [A], [B], [C], ?, ?, ?. Uses 1-6. What's the sum of missing 3?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6]},
-        "B": {"values": [1, 2, 3, 4, 5, 6]},
-        "C": {"values": [1, 2, 3, 4, 5, 6]}
+        "A": {"values": [1]},
+        "B": {"values": [2]},
+        "C": {"values": [3, 4]}
       },
       "calculation": "21 - A - B - C",
       "explanation": "Box uses 1-6 (sum=21). Has [A], [B], [C]. Missing sum = 21 - A - B - C",
-      "options": [6, 9, 12, 15]
+      "options": [14, 15, 16, 18]
     },
     {
       "template_id": "SUDOKU_ADV_08",
-      "pattern": "Diagonal Sudoku: Both diagonals use 1-9. Main diagonal has [A], ?, [B], [C], [D], [E], [F], [G], [H]. What's position 2?",
+      "pattern": "Main diagonal has [A], ?, [B], [C], [D], [E], [F], [G], [H]. Uses 1-9. What's position 2?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "B": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "C": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "D": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "E": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "F": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "G": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "H": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+        "A": {"values": [1]},
+        "B": {"values": [2]},
+        "C": {"values": [3]},
+        "D": {"values": [4]},
+        "E": {"values": [5]},
+        "F": {"values": [6]},
+        "G": {"values": [7]},
+        "H": {"values": [8, 9]}
       },
       "calculation": "45 - A - B - C - D - E - F - G - H",
-      "explanation": "Diagonal uses 1-9 (sum=45). Missing = 45 - all given numbers",
-      "options": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      "explanation": "Diagonal uses 1-9 (sum=45). Missing = 45 - all given",
+      "options": [1, 2, 3, 4]
     },
     {
       "template_id": "SUDOKU_ADV_09",
-      "pattern": "Cell has 3 constraints: Can't be [A] (row), [B] (column), [C] (box), [D] (region). Uses 1-5. What fits?",
+      "pattern": "Cell blocked by row ([A]), column ([B]), box ([C]). Uses 1-4. What fits?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5]},
-        "B": {"values": [1, 2, 3, 4, 5]},
-        "C": {"values": [1, 2, 3, 4, 5]},
-        "D": {"values": [1, 2, 3, 4, 5]}
+        "A": {"values": [1]},
+        "B": {"values": [2]},
+        "C": {"values": [3]}
       },
-      "calculation": "15 - A - B - C - D",
-      "explanation": "Blocked by 4 numbers. Uses 1-5. Remaining = 15 - A - B - C - D",
-      "options": [1, 2, 3, 4, 5]
+      "calculation": "10 - A - B - C",
+      "explanation": "Row has [A], column has [B], box has [C]. Remaining = 10 - A - B - C",
+      "options": [1, 2, 3, 4]
     },
     {
       "template_id": "SUDOKU_ADV_10",
-      "pattern": "Hyper Sudoku: Extra box has [A], [B], [C], ?. Also in row with [D]. Uses 1-4. What fits?",
+      "pattern": "Box has [A], [B], [C], ?. Uses 1-4. What completes box?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]},
-        "D": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1]},
+        "B": {"values": [2]},
+        "C": {"values": [3, 4]}
       },
-      "calculation": "10 - A - B - C - D",
-      "explanation": "Box has [A],[B],[C]. Row has [D]. All different, so 10 - A - B - C - D",
+      "calculation": "10 - A - B - C",
+      "explanation": "Box has [A],[B],[C]. Missing = 10 - A - B - C",
       "options": [1, 2, 3, 4]
     },
     {
       "template_id": "SUDOKU_ADV_11",
-      "pattern": "Consecutive constraint: Cell must be ±1 of [N]. Column has [A], [B]. Uses 1-9. What works?",
+      "pattern": "Cell must be ±1 of [N]. Column blocks [A]. Uses 1-9. What works?",
       "variables": {
-        "N": {"values": [3, 4, 5, 6, 7]},
-        "A": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "B": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+        "N": {"values": [5, 6]},
+        "A": {"values": [4, 7]}
       },
-      "calculation": "N+1 or N-1 excluding A,B",
-      "explanation": "Must be [N]-1 or [N]+1. Column blocks [A] and [B]. Find valid option",
-      "options": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      "calculation": "N+1 or N-1, excluding A",
+      "explanation": "Must be [N]-1 or [N]+1. Column blocks [A]. Find valid",
+      "options": [4, 5, 6, 7]
     },
     {
       "template_id": "SUDOKU_ADV_12",
-      "pattern": "Odd-Even Sudoku: Cell must be odd. Row has [A], [B]. Column has [C]. Uses 1-9. What odd number fits?",
+      "pattern": "Cell must be odd. Row has [A], [B]. Uses 1-9. What odd number fits?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "B": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "C": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+        "A": {"values": [2, 4]},
+        "B": {"values": [6, 8]}
       },
-      "calculation": "Odd from 1,3,5,7,9 excluding A,B,C",
-      "explanation": "Must be odd (1,3,5,7,9). Row blocks [A],[B]. Column blocks [C]. Find remaining odd",
+      "calculation": "Odd from 1,3,5,7,9",
+      "explanation": "Must be odd (1,3,5,7,9). Row blocks [A],[B]",
       "options": [1, 3, 5, 7, 9]
     },
     {
       "template_id": "SUDOKU_ADV_13",
-      "pattern": "Samurai Sudoku overlap: Cell in 2 grids. Grid1 row has [A], [B]. Grid2 column has [C]. Uses 1-9. What fits?",
+      "pattern": "Overlapping grids. Grid1 row has [A]. Grid2 column has [B]. Uses 1-9. What fits overlap?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "B": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "C": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+        "A": {"values": [1, 2, 3]},
+        "B": {"values": [4, 5, 6]}
       },
-      "calculation": "45 - A - B - C and find valid",
-      "explanation": "Grid1 blocks [A],[B]. Grid2 blocks [C]. Need number not in these",
-      "options": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      "calculation": "Not A or B",
+      "explanation": "Grid1 blocks [A]. Grid2 blocks [B]. Need different number",
+      "options": [7, 8, 9]
     },
     {
       "template_id": "SUDOKU_ADV_14",
-      "pattern": "Arrow Sudoku: Arrow sum = circle. Circle has ?. Arrow cells are [A] and [B]. What's circle value?",
+      "pattern": "Arrow sum: Circle = [A] + [B]. What's circle value?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "B": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+        "A": {"values": [2, 3]},
+        "B": {"values": [4, 5]}
       },
       "calculation": "A + B",
-      "explanation": "Circle = sum of arrow cells. Circle = [A] + [B]",
-      "options": [2, 4, 6, 8, 10, 12, 14, 16, 18]
+      "explanation": "Circle = sum of arrow cells [A] + [B]",
+      "options": [6, 7, 8]
     },
     {
       "template_id": "SUDOKU_ADV_15",
-      "pattern": "Thermometer Sudoku: Cells increase along thermometer. Has [A], ?, [C]. [A] < ? < [C]. Uses 1-9. What's ?",
+      "pattern": "Thermometer: [A] < ? < [C]. What fits middle?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6, 7]},
-        "C": {"values": [3, 4, 5, 6, 7, 8, 9]}
+        "A": {"values": [2, 3]},
+        "C": {"values": [6, 7]}
       },
-      "calculation": "(A+C)/2 rounded",
-      "explanation": "Must be between [A] and [C]. Middle value logically fits",
-      "options": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      "calculation": "Between A and C",
+      "explanation": "Must be between [A] and [C]",
+      "options": [4, 5]
     },
     {
       "template_id": "SUDOKU_ADV_16",
-      "pattern": "Sandwich Sudoku: Sum between 1 and 9 in row is [SUM]. Cells between: ?, [B], [C]. What's ?",
+      "pattern": "Sandwich: Sum between 1 and 9 is [SUM]. Has [B], [C]. What's third number?",
       "variables": {
-        "SUM": {"values": [10, 15, 20, 25, 30, 35]},
-        "B": {"values": [2, 3, 4, 5, 6, 7, 8]},
-        "C": {"values": [2, 3, 4, 5, 6, 7, 8]}
+        "SUM": {"values": [15, 18, 20]},
+        "B": {"values": [3, 4]},
+        "C": {"values": [5, 6]}
       },
       "calculation": "SUM - B - C",
-      "explanation": "Sum between 1 and 9 is [SUM]. Has [B] and [C]. Missing = [SUM] - [B] - [C]",
-      "options": [2, 3, 4, 5, 6, 7, 8]
+      "explanation": "Sum is [SUM]. Has [B] and [C]. Missing = [SUM] - [B] - [C]",
+      "options": [7, 9, 10, 12]
     },
     {
       "template_id": "SUDOKU_ADV_17",
-      "pattern": "Greater-than constraint: Cell A > Cell B. A is [X]. B could be [Y] or [Z]. Is this valid?",
+      "pattern": "Cell A = [X] must be > Cell B. B can be [Y] or [Z]. Which B works?",
       "variables": {
-        "X": {"values": [5, 6, 7, 8, 9]},
-        "Y": {"values": [1, 2, 3, 4]},
-        "Z": {"values": [5, 6, 7, 8, 9]}
+        "X": {"values": [6, 7]},
+        "Y": {"values": [4, 5]},
+        "Z": {"values": [7, 8]}
       },
-      "calculation": "IF X > Y AND X > Z THEN yes ELSE no",
+      "calculation": "Y if X>Y",
       "explanation": "[X] > [Y]? [X] > [Z]? Check both",
-      "options": ["yes for Y", "yes for Z", "yes for both", "no for both"]
+      "options": ["Y only", "Z only", "both", "neither"]
     },
     {
       "template_id": "SUDOKU_ADV_18",
-      "pattern": "Anti-Knight Sudoku: Cell can't be [N] (knight's move away). Row needs [A] or [N]. What fits?",
+      "pattern": "Anti-Knight blocks [N]. Options are [A] or [N]. Which works?",
       "variables": {
-        "N": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "A": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+        "N": {"values": [3, 4]},
+        "A": {"values": [6, 7]}
       },
       "calculation": "A",
-      "explanation": "Row needs [A] or [N]. Anti-knight blocks [N]. Must be [A]",
-      "options": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      "explanation": "Anti-knight blocks [N]. Must be [A]",
+      "options": [3, 4, 6, 7]
     },
     {
       "template_id": "SUDOKU_ADV_19",
-      "pattern": "Kropki Sudoku: White dot means consecutive. Cells with white dot: [A] and ?. [A]=4. What's ?",
+      "pattern": "Kropki white: consecutive. [A] = [VAL]. What's adjacent?",
       "variables": {
-        "A": {"values": [3, 4, 5, 6, 7]}
+        "VAL": {"values": [4, 5, 6]}
       },
-      "calculation": "A+1 or A-1",
-      "explanation": "White dot = consecutive. If [A]=4, then ? is 3 or 5",
-      "options": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      "calculation": "VAL+1 or VAL-1",
+      "explanation": "White dot = consecutive. [VAL]±1",
+      "options": [3, 4, 5, 6, 7]
     },
     {
       "template_id": "SUDOKU_ADV_20",
-      "pattern": "XV Sudoku: X means sum=10. Cells with X: [A] and ?. What's ?",
+      "pattern": "XV sum=10. Cell [A] = [VAL]. What's other cell?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 6, 7, 8, 9]}
+        "VAL": {"values": [3, 4, 6, 7]}
       },
-      "calculation": "10 - A",
-      "explanation": "X means sum is 10. [A] + ? = 10. So ? = 10 - [A]",
-      "options": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      "calculation": "10 - VAL",
+      "explanation": "X means sum is 10. [VAL] + ? = 10. So ? = 10 - [VAL]",
+      "options": [3, 4, 6, 7]
     },
     {
       "template_id": "SUDOKU_ADV_21",
-      "pattern": "Clone Sudoku: Two grids mirror. Grid1 cell has [A]. Same position Grid2 has ?. What's in Grid2?",
+      "pattern": "Clone grids identical. Grid1 = [A]. Grid2 same position = ?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+        "A": {"values": [1, 2, 3, 4]}
       },
       "calculation": "A",
-      "explanation": "Clone grids are identical. Grid1 has [A], so Grid2 has [A]",
-      "options": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      "explanation": "Clone grids identical. Grid1 has [A], so Grid2 has [A]",
+      "options": [1, 2, 3, 4]
     },
     {
       "template_id": "SUDOKU_ADV_22",
-      "pattern": "Windoku: 4 extra boxes. Box2 has [A], [B], [C], ?. Also shares row with [D]. Uses 1-4. What's ?",
+      "pattern": "Box has [A], [B], [C], ?. Uses 1-4. What's missing?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]},
-        "D": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1]},
+        "B": {"values": [2]},
+        "C": {"values": [3, 4]}
       },
-      "calculation": "10 - A - B - C - D if valid",
-      "explanation": "Box has [A],[B],[C]. Row has [D]. All unique, so 10 - A - B - C - D",
+      "calculation": "10 - A - B - C",
+      "explanation": "Box has [A],[B],[C]. Missing = 10 - A - B - C",
       "options": [1, 2, 3, 4]
     },
     {
       "template_id": "SUDOKU_ADV_23",
-      "pattern": "Irregular Sudoku: Region has [A], [B], [C], [D], ?. Uses 1-5. What completes region?",
+      "pattern": "Irregular region has [A], [B], [C], [D], ?. Uses 1-5. What completes?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5]},
-        "B": {"values": [1, 2, 3, 4, 5]},
-        "C": {"values": [1, 2, 3, 4, 5]},
-        "D": {"values": [1, 2, 3, 4, 5]}
+        "A": {"values": [1]},
+        "B": {"values": [2]},
+        "C": {"values": [3]},
+        "D": {"values": [4, 5]}
       },
       "calculation": "15 - A - B - C - D",
       "explanation": "Region uses 1-5 (sum=15). Missing = 15 - [A] - [B] - [C] - [D]",
-      "options": [1, 2, 3, 4, 5]
+      "options": [1, 2, 3, 4]
     },
     {
       "template_id": "SUDOKU_ADV_24",
-      "pattern": "Jigsaw Sudoku: Shaped region has [A], [B], ?, [D], [E], [F]. Uses 1-6. What's position 3?",
+      "pattern": "Jigsaw region has [A], [B], ?, [D], [E], [F]. Uses 1-6. What's position 3?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6]},
-        "B": {"values": [1, 2, 3, 4, 5, 6]},
-        "D": {"values": [1, 2, 3, 4, 5, 6]},
-        "E": {"values": [1, 2, 3, 4, 5, 6]},
-        "F": {"values": [1, 2, 3, 4, 5, 6]}
+        "A": {"values": [1]},
+        "B": {"values": [2]},
+        "D": {"values": [3]},
+        "E": {"values": [4]},
+        "F": {"values": [5, 6]}
       },
       "calculation": "21 - A - B - D - E - F",
       "explanation": "Region uses 1-6 (sum=21). Missing = 21 - [A] - [B] - [D] - [E] - [F]",
-      "options": [1, 2, 3, 4, 5, 6]
+      "options": [1, 2, 3, 4]
     },
     {
       "template_id": "SUDOKU_ADV_25",
-      "pattern": "Multi-constraint: Cell must be > [X], odd, not in column ([A], [B]), uses 1-9. What fits?",
+      "pattern": "Cell must be > [X] and odd. Column has [A]. Uses 1-9. What works?",
       "variables": {
-        "X": {"values": [3, 4, 5]},
-        "A": {"values": [1, 3, 5, 7, 9]},
-        "B": {"values": [1, 3, 5, 7, 9]}
+        "X": {"values": [4, 5]},
+        "A": {"values": [3, 7]}
       },
-      "calculation": "Odd, > X, not A or B",
-      "explanation": "Must be odd, greater than [X], not [A] or [B]. Find valid odd number",
-      "options": [1, 3, 5, 7, 9]
+      "calculation": "Odd, > X, not A",
+      "explanation": "Must be odd, greater than [X], not [A]. Find valid odd",
+      "options": [5, 7, 9]
     }
   ],
   "responses": {
