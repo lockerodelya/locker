@@ -1,0 +1,275 @@
+{
+  "puzzle_type": "reasoning_grid_advanced",
+  "display_name": "Advanced Grid Logic",
+  "templates": [
+    {
+      "template_id": "GRID_ADV_01",
+      "pattern": "5×5 grid: [A] at (2,3), [B] at (4,1), [C] at (1,5). Triangle area formed by these points?",
+      "variables": {
+        "A": {"values": ["Red", "Blue", "Green"]},
+        "B": {"values": ["Circle", "Square", "Star"]},
+        "C": {"values": ["X", "O", "Plus"]}
+      },
+      "calculation": "0.5 * |x1(y2-y3) + x2(y3-y1) + x3(y1-y2)|",
+      "explanation": "Triangle area = 0.5 * |2(1-5) + 4(5-3) + 1(3-1)| = 0.5 * |-8+8+2| = 1",
+      "options": [1, 2, 3, 4, 5, 6]
+    },
+    {
+      "template_id": "GRID_ADV_02",
+      "pattern": "6×6 path from (1,1) to (6,6). Blocked: ([X1],[Y1]), ([X2],[Y2]), ([X3],[Y3]). Min steps avoiding blocks?",
+      "variables": {
+        "X1": {"values": [2, 3]},
+        "Y1": {"values": [2, 3]},
+        "X2": {"values": [3, 4]},
+        "Y2": {"values": [3, 4]},
+        "X3": {"values": [4, 5]},
+        "Y3": {"values": [4, 5]}
+      },
+      "calculation": "10 + detour penalty",
+      "explanation": "Direct path is 10 steps. Blocks force detours, adding 2-4 extra steps",
+      "options": [10, 11, 12, 13, 14]
+    },
+    {
+      "template_id": "GRID_ADV_03",
+      "pattern": "Knight's tour: Start (1,1). After [N] L-moves on 5×5 board, how many cells visited?",
+      "variables": {
+        "N": {"values": [3, 4, 5]}
+      },
+      "calculation": "N + 1",
+      "explanation": "[N] moves visits [N]+1 cells (including start)",
+      "options": [3, 4, 5, 6, 7]
+    },
+    {
+      "template_id": "GRID_ADV_04",
+      "pattern": "Grid spiral: Start center, spiral outward. In 5×5 grid, position [N] in spiral is?",
+      "variables": {
+        "N": {"values": [5, 8, 10, 15, 20]}
+      },
+      "calculation": "Calculate spiral coordinates",
+      "explanation": "Spiral pattern: center→right→up→left→down. Calculate position [N]",
+      "options": ["(1,1)", "(2,2)", "(3,3)", "(4,4)", "(5,5)", "(2,3)", "(3,2)", "(3,4)"]
+    },
+    {
+      "template_id": "GRID_ADV_05",
+      "pattern": "8-queens: Place [N] queens on [N]×[N] board, no attacks. For N=[SIZE], is this possible?",
+      "variables": {
+        "SIZE": {"values": [2, 3, 4, 5, 6, 7, 8]}
+      },
+      "calculation": "Possible if N≠2,3",
+      "explanation": "N-queens has solution for all N≥4 and N=1. No solution for N=2,3",
+      "options": ["yes", "no", "sometimes", "unknown"]
+    },
+    {
+      "template_id": "GRID_ADV_06",
+      "pattern": "Grid distance: Manhattan distance from (X1,Y1)=([A],[B]) to (X2,Y2)=([C],[D])?",
+      "variables": {
+        "A": {"values": [1, 2, 3, 4, 5]},
+        "B": {"values": [1, 2, 3, 4, 5]},
+        "C": {"values": [1, 2, 3, 4, 5]},
+        "D": {"values": [1, 2, 3, 4, 5]}
+      },
+      "calculation": "ABS(C-A) + ABS(D-B)",
+      "explanation": "Manhattan distance = |[C]-[A]| + |[D]-[B]|",
+      "options": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    },
+    {
+      "template_id": "GRID_ADV_07",
+      "pattern": "Bishop movement: From ([X],[Y]) in 8×8 board, how many cells reachable in 1 move?",
+      "variables": {
+        "X": {"values": [4, 5]},
+        "Y": {"values": [4, 5]}
+      },
+      "calculation": "Count diagonal cells",
+      "explanation": "Bishop moves diagonally. From center-ish position, count all diagonal cells within board",
+      "options": [7, 9, 11, 13]
+    },
+    {
+      "template_id": "GRID_ADV_08",
+      "pattern": "Grid fold: 4×4 grid folds in half vertically. Cell (2,1) overlaps with?",
+      "variables": {},
+      "calculation": "(2,4)",
+      "explanation": "Vertical fold at column 2.5: (2,1) overlaps with (2,4)",
+      "options": ["(2,2)", "(2,3)", "(2,4)", "(3,1)"]
+    },
+    {
+      "template_id": "GRID_ADV_09",
+      "pattern": "Rook on ([X],[Y]) in 6×6. King on ([A],[B]). Can rook capture king in 1 move?",
+      "variables": {
+        "X": {"values": [2, 3, 4]},
+        "Y": {"values": [2, 3, 4]},
+        "A": {"values": [1, 2, 3, 4, 5, 6]},
+        "B": {"values": [1, 2, 3, 4, 5, 6]}
+      },
+      "calculation": "Yes if X=A OR Y=B",
+      "explanation": "Rook captures if king is same row (X=[A]) or same column (Y=[B])",
+      "options": ["yes", "no", "depends", "insufficient info"]
+    },
+    {
+      "template_id": "GRID_ADV_10",
+      "pattern": "Torus grid: 4×4 wraps around. From (4,4), move right 2, down 3. Final position?",
+      "variables": {},
+      "calculation": "((4+2-1) mod 4 + 1, (4+3-1) mod 4 + 1) = (2,3)",
+      "explanation": "Wrapping: (4,4) + right 2 = (4+2=6 → wraps to 2), down 3 = (4+3=7 → wraps to 3) = (2,3)",
+      "options": ["(1,1)", "(2,2)", "(2,3)", "(3,2)"]
+    },
+    {
+      "template_id": "GRID_ADV_11",
+      "pattern": "Grid graph: Each cell connects to adjacent. 5×5 grid has how many edges?",
+      "variables": {},
+      "calculation": "40",
+      "explanation": "5×5 grid: 4×5=20 horizontal edges + 5×4=20 vertical edges = 40 total",
+      "options": [30, 35, 40, 45]
+    },
+    {
+      "template_id": "GRID_ADV_12",
+      "pattern": "Checkerboard coloring: 7×7 grid, alternating colors. How many black cells?",
+      "variables": {},
+      "calculation": "25",
+      "explanation": "7×7=49 cells. Start with black: 25 black, 24 white",
+      "options": [24, 25, 26, 27]
+    },
+    {
+      "template_id": "GRID_ADV_13",
+      "pattern": "Grid symmetry: Point ([X],[Y]) reflects across y=x line. New coordinates?",
+      "variables": {
+        "X": {"values": [1, 2, 3, 4, 5]},
+        "Y": {"values": [1, 2, 3, 4, 5]}
+      },
+      "calculation": "(Y, X)",
+      "explanation": "Reflection across y=x swaps coordinates: ([X],[Y]) → ([Y],[X])",
+      "options": ["swap coordinates", "same", "negate both", "negate one"]
+    },
+    {
+      "template_id": "GRID_ADV_14",
+      "pattern": "Domino tiling: 2×[N] grid. How many ways to tile with 1×2 dominoes? N=[SIZE]",
+      "variables": {
+        "SIZE": {"values": [3, 4, 5, 6]}
+      },
+      "calculation": "Fibonacci number",
+      "explanation": "2×N grid tiling follows Fibonacci: F(N+1). N=3→3, N=4→5, N=5→8, N=6→13",
+      "options": [2, 3, 5, 8, 13, 21]
+    },
+    {
+      "template_id": "GRID_ADV_15",
+      "pattern": "Queen on ([X],[Y]). How many cells can it attack on 8×8 board?",
+      "variables": {
+        "X": {"values": [1, 4, 8]},
+        "Y": {"values": [1, 4, 8]}
+      },
+      "calculation": "Row + Column + Diagonals - 1 - overlaps",
+      "explanation": "Queen attacks row, column, and diagonals. Count varies by position",
+      "options": [21, 23, 25, 27]
+    },
+    {
+      "template_id": "GRID_ADV_16",
+      "pattern": "Hamiltonian path: Visit all cells once in 3×3 grid. How many such paths from (1,1) to (3,3)?",
+      "variables": {},
+      "calculation": "8",
+      "explanation": "3×3 grid Hamiltonian paths from corner to opposite corner: approximately 8",
+      "options": [4, 6, 8, 10]
+    },
+    {
+      "template_id": "GRID_ADV_17",
+      "pattern": "Hexagonal grid: Center cell touches [N] neighbors. What's [N]?",
+      "variables": {
+        "N": {"values": [6]}
+      },
+      "calculation": "6",
+      "explanation": "Hexagonal grid cells have 6 neighbors (hexagon has 6 sides)",
+      "options": [4, 5, 6, 8]
+    },
+    {
+      "template_id": "GRID_ADV_18",
+      "pattern": "Grid coloring: 4-color theorem. Max colors needed for [N]×[M] grid where N=[A], M=[B]?",
+      "variables": {
+        "A": {"values": [3, 4, 5, 6]},
+        "B": {"values": [3, 4, 5, 6]}
+      },
+      "calculation": "2 if both even, 3 if one odd, 4 if both odd",
+      "explanation": "Grid coloring depends on parity: 2 colors if both even, else more",
+      "options": [2, 3, 4, 5]
+    },
+    {
+      "template_id": "GRID_ADV_19",
+      "pattern": "Diagonal count: [N]×[N] grid has how many distinct diagonals (both directions)? N=[SIZE]",
+      "variables": {
+        "SIZE": {"values": [4, 5, 6, 7, 8]}
+      },
+      "calculation": "2*(2*N-1) - 2",
+      "explanation": "N×N grid has 2N-1 diagonals each direction. Total distinct: 2(2N-1) minus 2 main ones already counted",
+      "options": [10, 14, 18, 22, 26, 30]
+    },
+    {
+      "template_id": "GRID_ADV_20",
+      "pattern": "Grid matching: Bipartite graph of [N]×[M] grid. Max matching size? N=[A], M=[B]",
+      "variables": {
+        "A": {"values": [3, 4, 5]},
+        "B": {"values": [3, 4, 5]}
+      },
+      "calculation": "min(A*B/2, edges)",
+      "explanation": "Checkerboard bipartite matching depends on smaller color class",
+      "options": [4, 6, 8, 10, 12]
+    },
+    {
+      "template_id": "GRID_ADV_21",
+      "pattern": "Maze: [N]×[N] grid with walls. From (1,1) to (N,N), walls at [W] positions. Min path length? N=[SIZE], W=[WALLS]",
+      "variables": {
+        "SIZE": {"values": [4, 5, 6]},
+        "WALLS": {"values": [2, 3, 4]}
+      },
+      "calculation": "2*(N-1) + detour",
+      "explanation": "Direct path is 2(N-1). Walls add 2×[W] detour approximately",
+      "options": [6, 8, 10, 12, 14, 16]
+    },
+    {
+      "template_id": "GRID_ADV_22",
+      "pattern": "Grid percolation: [N]×[N] grid, [P]% cells open. Does path exist from top to bottom? N=[SIZE], P=[PERCENT]",
+      "variables": {
+        "SIZE": {"values": [5, 10, 15, 20]},
+        "PERCENT": {"values": [30, 50, 70, 90]}
+      },
+      "calculation": "Likely if P > 59.27%",
+      "explanation": "Percolation threshold ≈59.27%. Above this, path likely exists",
+      "options": ["very unlikely", "unlikely", "likely", "very likely"]
+    },
+    {
+      "template_id": "GRID_ADV_23",
+      "pattern": "Voronoi grid: Points at ([X1],[Y1]), ([X2],[Y2]), ([X3],[Y3]). Cell (3,3) closest to which point?",
+      "variables": {
+        "X1": {"values": [1, 2]},
+        "Y1": {"values": [1, 2]},
+        "X2": {"values": [4, 5]},
+        "Y2": {"values": [4, 5]},
+        "X3": {"values": [2, 3]},
+        "Y3": {"values": [4, 5]}
+      },
+      "calculation": "Compare distances from (3,3)",
+      "explanation": "Calculate Manhattan or Euclidean distance from (3,3) to each point",
+      "options": ["point 1", "point 2", "point 3", "equidistant"]
+    },
+    {
+      "template_id": "GRID_ADV_24",
+      "pattern": "Grid transform: Rotate 5×5 grid 180°. Cell (2,3) moves to?",
+      "variables": {},
+      "calculation": "(4,3)",
+      "explanation": "180° rotation: (r,c) → (N+1-r, N+1-c). (2,3) → (5+1-2, 5+1-3) = (4,3)",
+      "options": ["(2,3)", "(3,2)", "(4,3)", "(3,4)"]
+    },
+    {
+      "template_id": "GRID_ADV_25",
+      "pattern": "Grid automaton: Rule: cell becomes [STATE] if [N] neighbors are [STATE]. Starting pattern: [INIT]. After 1 step, how many [STATE] cells?",
+      "variables": {
+        "STATE": {"values": ["alive", "active", "on"]},
+        "N": {"values": [2, 3]},
+        "INIT": {"values": ["3 in a row", "4 in square", "L-shape"]}
+      },
+      "calculation": "Depends on rule and init",
+      "explanation": "Cellular automaton evolution depends on neighbor rules",
+      "options": [2, 3, 4, 5, 6]
+    }
+  ],
+  "responses": {
+    "correct": ["Perfect! ⭐", "Logic Master! 🎯", "Great! 🌟", "Brilliant! ✨"],
+    "incorrect": ["Try again! 💪", "Almost! 😊", "Think again! 🤔"]
+  }
+}

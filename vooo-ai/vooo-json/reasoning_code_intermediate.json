@@ -1,0 +1,274 @@
+{
+  "puzzle_type": "reasoning_code_intermediate",
+  "display_name": "Intermediate Code Breaking",
+  "templates": [
+    {
+      "template_id": "CODE_INT_01",
+      "pattern": "A=1, B=2, C=3... Decode: [CODE]",
+      "variables": {
+        "CODE": {"values": ["3-1-20", "8-5-12-12-15", "3-15-4-5", "23-15-18-4"]}
+      },
+      "calculation": "Decode to letters",
+      "explanation": "Simple A1Z26 cipher. Convert numbers to corresponding letters",
+      "options": ["CAT", "HELLO", "CODE", "WORD", "TEST", "GAME"]
+    },
+    {
+      "template_id": "CODE_INT_02",
+      "pattern": "Caesar cipher shift +[N]. Decode: [WORD]",
+      "variables": {
+        "N": {"values": [1, 2, 3, 5]},
+        "WORD": {"values": ["BCD", "DEF", "XYZ", "JKL"]}
+      },
+      "calculation": "Shift back by N",
+      "explanation": "Caesar cipher: shift each letter back [N] positions",
+      "options": ["generate shifted words"]
+    },
+    {
+      "template_id": "CODE_INT_03",
+      "pattern": "Reverse alphabet: A=Z, B=Y, C=X... Decode: [CODE]",
+      "variables": {
+        "CODE": {"values": ["ZYX", "SVOOL", "XLWV", "URMWH"]}
+      },
+      "calculation": "Reverse substitution",
+      "explanation": "Atbash cipher: A↔Z, B↔Y, C↔X. Decode by reversing",
+      "options": ["ABC", "HELLO", "CODE", "FIGHT", "WORLD"]
+    },
+    {
+      "template_id": "CODE_INT_04",
+      "pattern": "Symbol code: ☆=A, ★=B, ○=C, ●=D. Decode: [SYMBOLS]",
+      "variables": {
+        "SYMBOLS": {"values": ["☆★", "○☆●", "★☆●", "○●☆"]}
+      },
+      "calculation": "Symbol to letter mapping",
+      "explanation": "Each symbol represents a letter. Decode using given key",
+      "options": ["AB", "CAD", "BAD", "CDA", "ABC"]
+    },
+    {
+      "template_id": "CODE_INT_05",
+      "pattern": "Binary code: A=01, B=10, C=11. Decode: [BINARY]",
+      "variables": {
+        "BINARY": {"values": ["0110", "1011", "011011", "101101"]}
+      },
+      "calculation": "Binary pairs to letters",
+      "explanation": "Each 2-bit pair represents a letter. Decode pairs",
+      "options": ["AB", "BC", "ACC", "BAA", "CBA"]
+    },
+    {
+      "template_id": "CODE_INT_06",
+      "pattern": "ROT13 cipher. Decode: [WORD]",
+      "variables": {
+        "WORD": {"values": ["URYYB", "JBEYQ", "PBQR", "CHMMYR"]}
+      },
+      "calculation": "Shift 13 positions",
+      "explanation": "ROT13: shift each letter 13 positions (A→N, B→O, etc.)",
+      "options": ["HELLO", "WORLD", "CODE", "PUZZLE", "FIGHT"]
+    },
+    {
+      "template_id": "CODE_INT_07",
+      "pattern": "Morse code: .-=A, -...=B, -.-.=C. Decode: [MORSE]",
+      "variables": {
+        "MORSE": {"values": [".- -...", ".-- .... -.--", "... --- ...", ".... .."]}
+      },
+      "calculation": "Morse to letters",
+      "explanation": "Standard Morse code. Decode each pattern",
+      "options": ["AD", "WHY", "SOS", "HI", "OK"]
+    },
+    {
+      "template_id": "CODE_INT_08",
+      "pattern": "Number pattern: 1=[A], 2=[B], 3=[C]. Code: [X][Y]. Sum?",
+      "variables": {
+        "A": {"values": [5, 10, 15]},
+        "B": {"values": [7, 12, 17]},
+        "C": {"values": [9, 14, 19]},
+        "X": {"values": [1, 2, 3]},
+        "Y": {"values": [1, 2, 3]}
+      },
+      "calculation": "Value[X] + Value[Y]",
+      "explanation": "Each number maps to value. Sum values of [X] and [Y]",
+      "options": ["generate sums"]
+    },
+    {
+      "template_id": "CODE_INT_09",
+      "pattern": "Vowel code: A=1, E=2, I=3, O=4, U=5. Word [WORD] encodes to?",
+      "variables": {
+        "WORD": {"values": ["CAT", "DOG", "BIRD", "FISH"]}
+      },
+      "calculation": "Extract vowels and encode",
+      "explanation": "Find vowels in word and replace with numbers: CAT→C1T",
+      "options": ["C1T", "D4G", "B3RD", "F3SH", "G1M2"]
+    },
+    {
+      "template_id": "CODE_INT_10",
+      "pattern": "Position cipher: 1st letter +1, 2nd letter +2, 3rd +3. Encode [WORD]",
+      "variables": {
+        "WORD": {"values": ["ABC", "CAT", "DOG"]}
+      },
+      "calculation": "Shift each by position",
+      "explanation": "A+1=B, B+2=D, C+3=F → BDF. Encode similarly",
+      "options": ["generate encoded"]
+    },
+    {
+      "template_id": "CODE_INT_11",
+      "pattern": "Color code: Red=R, Blue=B, Green=G. Pattern: [C1][C2][C3]. Decode?",
+      "variables": {
+        "C1": {"values": ["Red", "Blue", "Green"]},
+        "C2": {"values": ["Red", "Blue", "Green"]},
+        "C3": {"values": ["Red", "Blue", "Green"]}
+      },
+      "calculation": "First letters",
+      "explanation": "Take first letter of each color: Red,Blue,Green → RBG",
+      "options": ["RBG", "RRR", "BBG", "GGR", "RGB", "BGR"]
+    },
+    {
+      "template_id": "CODE_INT_12",
+      "pattern": "Keyboard shift: Each letter → right neighbor. A→S, B→N. Decode: [CODE]",
+      "variables": {
+        "CODE": {"values": ["SDU", "YJOD", "EPTR", "VSY"]}
+      },
+      "calculation": "Shift left on keyboard",
+      "explanation": "Reverse keyboard shift to decode",
+      "options": ["CAT", "THIS", "WORD", "BAT", "DOG"]
+    },
+    {
+      "template_id": "CODE_INT_13",
+      "pattern": "Skip cipher: Take every [N]th letter from [TEXT]. What word?",
+      "variables": {
+        "N": {"values": [2, 3]},
+        "TEXT": {"values": ["ABCDEF", "XAYBZC", "PQRSTUV"]}
+      },
+      "calculation": "Extract every Nth",
+      "explanation": "Every [N]th letter forms the code word",
+      "options": ["generate from skip"]
+    },
+    {
+      "template_id": "CODE_INT_14",
+      "pattern": "Number sum: Letters→numbers (A=1,B=2...). Word [WORD] sums to?",
+      "variables": {
+        "WORD": {"values": ["CAT", "DOG", "BAT", "BEE"]}
+      },
+      "calculation": "Sum letter values",
+      "explanation": "CAT = 3+1+20 = 24. Calculate sum for word",
+      "options": ["generate sums"]
+    },
+    {
+      "template_id": "CODE_INT_15",
+      "pattern": "Mirror digits: 1↔9, 2↔8, 3↔7, 4↔6, 5↔5. Decode: [CODE]",
+      "variables": {
+        "CODE": {"values": ["19", "28", "37", "46", "55"]}
+      },
+      "calculation": "Mirror each digit",
+      "explanation": "1→9, 9→1. Mirror each digit: 19→91",
+      "options": ["91", "82", "73", "64", "55"]
+    },
+    {
+      "template_id": "CODE_INT_16",
+      "pattern": "Phone keypad: 2=ABC, 3=DEF, 4=GHI... Code: [NUMBERS]. First letter option?",
+      "variables": {
+        "NUMBERS": {"values": ["222", "333", "444", "555"]}
+      },
+      "calculation": "Keypad mapping",
+      "explanation": "222 on keypad 2(ABC) = C (3rd press). 333 = F",
+      "options": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "L"]
+    },
+    {
+      "template_id": "CODE_INT_17",
+      "pattern": "Pig Latin: [WORD] in Pig Latin is?",
+      "variables": {
+        "WORD": {"values": ["CAT", "DOG", "EGG", "APPLE"]}
+      },
+      "calculation": "Move first to end + ay",
+      "explanation": "CAT → atcay (move C to end, add 'ay'). If starts with vowel, just add 'ay'",
+      "options": ["atcay", "ogday", "eggay", "appleay"]
+    },
+    {
+      "template_id": "CODE_INT_18",
+      "pattern": "Reverse code: [WORD] backwards is?",
+      "variables": {
+        "WORD": {"values": ["CAT", "DOG", "STAR", "MOON"]}
+      },
+      "calculation": "Reverse string",
+      "explanation": "Simply reverse the letters: CAT → TAC",
+      "options": ["TAC", "GOD", "RATS", "NOOM"]
+    },
+    {
+      "template_id": "CODE_INT_19",
+      "pattern": "Alternate case: [WORD] in alternating case starting with [CASE]?",
+      "variables": {
+        "WORD": {"values": ["HELLO", "WORLD", "CODE"]},
+        "CASE": {"values": ["upper", "lower"]}
+      },
+      "calculation": "Alternate upper/lower",
+      "explanation": "HELLO with upper start: HeLlO. Lower start: hElLo",
+      "options": ["HeLlO", "hElLo", "WoRlD", "wOrLd", "CoDe", "cOdE"]
+    },
+    {
+      "template_id": "CODE_INT_20",
+      "pattern": "Grid code: Letters in 3×3 grid. Position (2,2) is [LETTER]. What letter?",
+      "variables": {
+        "LETTER": {"values": ["E", "F", "K", "L"]}
+      },
+      "calculation": "Grid position lookup",
+      "explanation": "Standard grid: A-I in 3×3. (2,2) is typically E",
+      "options": ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
+    },
+    {
+      "template_id": "CODE_INT_21",
+      "pattern": "XOR cipher: [A] XOR [B] = ?. A=[X], B=[Y]",
+      "variables": {
+        "X": {"values": [5, 7, 12, 15]},
+        "Y": {"values": [3, 6, 9, 10]}
+      },
+      "calculation": "X XOR Y",
+      "explanation": "Binary XOR operation: 5(101) XOR 3(011) = 6(110)",
+      "options": ["generate XOR results"]
+    },
+    {
+      "template_id": "CODE_INT_22",
+      "pattern": "Alphabet position sum: [WORD] positions sum to?",
+      "variables": {
+        "WORD": {"values": ["ACE", "BED", "CAB", "DAD"]}
+      },
+      "calculation": "Sum letter positions",
+      "explanation": "ACE: A=1,C=3,E=5. Sum=1+3+5=9",
+      "options": ["generate sums"]
+    },
+    {
+      "template_id": "CODE_INT_23",
+      "pattern": "Polybius square: Row [R], Column [C] = [LETTER]. What letter?",
+      "variables": {
+        "R": {"values": [1, 2, 3, 4, 5]},
+        "C": {"values": [1, 2, 3, 4, 5]}
+      },
+      "calculation": "Grid lookup",
+      "explanation": "5×5 grid with alphabet (I/J combined). Position determines letter",
+      "options": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L"]
+    },
+    {
+      "template_id": "CODE_INT_24",
+      "pattern": "NATO phonetic: [CODE] stands for?",
+      "variables": {
+        "CODE": {"values": ["Alpha", "Bravo", "Charlie", "Delta", "Echo"]}
+      },
+      "calculation": "NATO to letter",
+      "explanation": "Alpha=A, Bravo=B, Charlie=C, Delta=D, Echo=E",
+      "options": ["A", "B", "C", "D", "E", "F"]
+    },
+    {
+      "template_id": "CODE_INT_25",
+      "pattern": "Substitution: A=[X], B=[Y], C=[Z]. Code [WORD]",
+      "variables": {
+        "X": {"values": ["@", "#", "$", "%"]},
+        "Y": {"values": ["&", "*", "!", "+"]},
+        "Z": {"values": ["=", "~", "^", "-"]},
+        "WORD": {"values": ["ABC", "CAB", "BAC"]}
+      },
+      "calculation": "Replace letters with symbols",
+      "explanation": "Direct substitution using given mapping",
+      "options": ["generate substitutions"]
+    }
+  ],
+  "responses": {
+    "correct": ["Perfect! ⭐", "Logic Master! 🎯", "Great! 🌟", "Brilliant! ✨"],
+    "incorrect": ["Try again! 💪", "Almost! 😊", "Think again! 🤔"]
+  }
+}
