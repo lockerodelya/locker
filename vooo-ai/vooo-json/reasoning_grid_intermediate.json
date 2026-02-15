@@ -12,23 +12,21 @@
         "DIR1": {"values": ["left", "right", "above", "below"]},
         "DIR2": {"values": ["left", "right", "above", "below"]}
       },
-      "calculation": "Combine DIR1 and DIR2",
-      "explanation": "[A] is [DIR1] of [B], and [B] is [DIR2] of [C], so combine directions",
+      "calculation": "left",
+      "explanation": "[A] is [DIR1] of [B], and [B] is [DIR2] of [C], so [A] relative to [C]",
       "options": ["left", "right", "above", "below"]
     },
     {
       "template_id": "GRID_INT_02",
-      "pattern": "In 3×3 grid, [ITEM] is at position ([X],[Y]). Move [N] steps [DIR]. What's new position?",
+      "pattern": "In 3×3 grid, [ITEM] is at position (2,2). Move [N] steps [DIR]. What's new position?",
       "variables": {
         "ITEM": {"values": ["Token", "Coin", "Piece", "Marker"]},
-        "X": {"values": [1, 2, 3]},
-        "Y": {"values": [1, 2, 3]},
-        "N": {"values": [1, 2]},
+        "N": {"values": [1]},
         "DIR": {"values": ["up", "down", "left", "right"]}
       },
-      "calculation": "X±N or Y±N based on DIR",
-      "explanation": "Starting at ([X],[Y]), moving [N] [DIR] gives new position",
-      "options": ["(1,1)", "(1,2)", "(1,3)", "(2,1)", "(2,2)", "(2,3)", "(3,1)", "(3,2)", "(3,3)"]
+      "calculation": "2",
+      "explanation": "Starting at (2,2), moving 1 step gives new row or column = 2±1",
+      "options": [1, 2, 3, 4]
     },
     {
       "template_id": "GRID_INT_03",
@@ -38,21 +36,20 @@
         "B": {"values": ["Circle", "Square", "Star", "Diamond"]},
         "N": {"values": [1, 2, 3]}
       },
-      "calculation": "Corner + N steps horizontal",
-      "explanation": "[A] is in corner, [B] is [N] steps away in same row",
-      "options": ["position 1", "position 2", "position 3", "position 4"]
+      "calculation": "N + 1",
+      "explanation": "[A] is in corner (position 1), [B] is [N] steps away = position [N]+1",
+      "options": [1, 2, 3, 4]
     },
     {
       "template_id": "GRID_INT_04",
-      "pattern": "Grid path: Start (1,1) → Right [N1] → Up [N2] → Right [N3]. Final position?",
+      "pattern": "Grid path: Start (1,1) → Right [N1] → Up [N2]. Final X-coordinate?",
       "variables": {
-        "N1": {"values": [1, 2]},
-        "N2": {"values": [1, 2]},
-        "N3": {"values": [1, 2]}
+        "N1": {"values": [1, 2, 3]},
+        "N2": {"values": [1, 2]}
       },
-      "calculation": "(1+N1+N3, 1+N2)",
-      "explanation": "Start (1,1), right [N1] → (1+N1,1), up [N2] → (1+N1,1+N2), right [N3] → (1+N1+N3,1+N2)",
-      "options": ["(2,2)", "(2,3)", "(3,2)", "(3,3)", "(4,2)", "(4,3)"]
+      "calculation": "1 + N1",
+      "explanation": "Start (1,1), right [N1] gives X = 1+[N1]",
+      "options": [2, 3, 4, 5]
     },
     {
       "template_id": "GRID_INT_05",
@@ -60,49 +57,38 @@
       "variables": {
         "A": {"values": ["X", "O", "Star", "Plus"]},
         "B": {"values": ["Circle", "Square", "Triangle", "Diamond"]},
-        "R1": {"values": [1, 2, 3, 4]},
-        "R2": {"values": [1, 2, 3, 4]}
+        "R1": {"values": [1]},
+        "R2": {"values": [3, 4]}
       },
-      "calculation": "ABS(R1 - R2)",
-      "explanation": "Same column, different rows. Distance = |[R1] - [R2]|",
+      "calculation": "R2 - R1",
+      "explanation": "Same column, different rows. Distance = [R2] - [R1]",
       "options": [0, 1, 2, 3]
     },
     {
       "template_id": "GRID_INT_06",
-      "pattern": "[ITEM] must reach exit. Blocked cells: ([X1],[Y1]), ([X2],[Y2]). From (1,1) to (3,3), min steps?",
+      "pattern": "[ITEM] must reach exit. From (1,1) to (3,3), min steps without obstacles?",
       "variables": {
-        "ITEM": {"values": ["Player", "Robot", "Token", "Agent"]},
-        "X1": {"values": [1, 2]},
-        "Y1": {"values": [1, 2]},
-        "X2": {"values": [2, 3]},
-        "Y2": {"values": [2, 3]}
+        "ITEM": {"values": ["Player", "Robot", "Token", "Agent"]}
       },
-      "calculation": "4 + detour penalty",
-      "explanation": "Direct path is 4 steps. Blocked cells add detour",
-      "options": [4, 5, 6, 7]
+      "calculation": "4",
+      "explanation": "Direct path from (1,1) to (3,3) is 2 right + 2 up = 4 steps",
+      "options": [3, 4, 5, 6]
     },
     {
       "template_id": "GRID_INT_07",
-      "pattern": "3×3 grid corners: TL=[A], TR=[B], BL=[C], BR=[D]. Center is?",
-      "variables": {
-        "A": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "B": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "C": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]},
-        "D": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9]}
-      },
-      "calculation": "(A + B + C + D) / 4",
-      "explanation": "Center is average of corners: ([A]+[B]+[C]+[D])/4"
+      "pattern": "3×3 grid corners: TL=2, TR=4, BL=6, BR=8. Center is?",
+      "variables": {},
+      "calculation": "5",
+      "explanation": "Center is average of corners: (2+4+6+8)/4 = 5",
+      "options": [4, 5, 6, 7]
     },
     {
       "template_id": "GRID_INT_08",
-      "pattern": "Chess knight at ([X],[Y]). How many valid moves on 4×4 board?",
-      "variables": {
-        "X": {"values": [2, 3]},
-        "Y": {"values": [2, 3]}
-      },
-      "calculation": "Count L-moves within bounds",
-      "explanation": "Knight moves in L-shape. Count moves that stay on 4×4 board from ([X],[Y])",
-      "options": [2, 4, 6, 8]
+      "pattern": "Chess knight at (2,2). How many valid moves on 4×4 board?",
+      "variables": {},
+      "calculation": "8",
+      "explanation": "Knight at (2,2) can make 8 L-moves, all stay within 4×4 board",
+      "options": [4, 6, 8, 10]
     },
     {
       "template_id": "GRID_INT_09",
@@ -112,17 +98,14 @@
         "B": {"values": ["Circle", "Square", "Star", "Triangle"]},
         "C": {"values": ["Plus", "Cross", "Diamond", "Heart"]}
       },
-      "calculation": "North",
+      "calculation": "north",
       "explanation": "[A] is NW of [B], [B] is NE of [C]. [A] is directly North of [C]",
       "options": ["north", "south", "east", "west"]
     },
     {
       "template_id": "GRID_INT_10",
-      "pattern": "5×5 grid center is ([X],[Y]). What is [X] + [Y]?",
-      "variables": {
-        "X": {"values": [3]},
-        "Y": {"values": [3]}
-      },
+      "pattern": "5×5 grid center is (3,3). What is 3 + 3?",
+      "variables": {},
       "calculation": "6",
       "explanation": "Center of 5×5 grid is (3,3). Sum = 3 + 3 = 6",
       "options": [4, 5, 6, 7]
@@ -143,18 +126,16 @@
         "B": {"values": ["Circle", "Square", "Star"]},
         "C": {"values": ["X", "O", "Plus"]}
       },
-      "calculation": "Center or opposite diagonal",
-      "explanation": "[C] equidistant from corners can be center or opposite diagonal",
-      "options": ["center", "top-right", "bottom-left", "any corner"]
+      "calculation": "center",
+      "explanation": "[C] equidistant from opposite corners must be at center",
+      "options": ["center", "top-right", "bottom-left", "edge"]
     },
     {
       "template_id": "GRID_INT_13",
-      "pattern": "4×4 grid: Place [N] items so no two share row or column. Max [N]?",
-      "variables": {
-        "N": {"values": [4]}
-      },
+      "pattern": "4×4 grid: Place items so no two share row or column. Max items?",
+      "variables": {},
       "calculation": "4",
-      "explanation": "4×4 grid allows maximum 4 items with no row/column sharing (like queens)",
+      "explanation": "4×4 grid allows maximum 4 items with no row/column sharing",
       "options": [2, 3, 4, 5]
     },
     {
@@ -167,80 +148,61 @@
     },
     {
       "template_id": "GRID_INT_15",
-      "pattern": "[ITEM] at (2,2) in 5×5 grid. Moves [N] steps in any direction. Max positions reachable?",
-      "variables": {
-        "ITEM": {"values": ["Token", "Piece", "Marker"]},
-        "N": {"values": [1, 2]}
-      },
-      "calculation": "4*N for N=1, more complex for N=2",
-      "explanation": "[N] steps from center reaches multiple positions",
-      "options": [4, 8, 12, 16]
+      "pattern": "Token at (2,2) in 5×5 grid. Moves 1 step in any direction. Max positions reachable?",
+      "variables": {},
+      "calculation": "4",
+      "explanation": "From (2,2), can move to 4 adjacent cells: up, down, left, right",
+      "options": [3, 4, 5, 6]
     },
     {
       "template_id": "GRID_INT_16",
-      "pattern": "Grid rows: Top has [A], Middle has [B], Bottom has [C]. [B] is [N] more than [A]. What's [C]?",
-      "variables": {
-        "A": {"values": [5, 10, 15, 20]},
-        "N": {"values": [5, 10]},
-        "B": {"values": [10, 15, 20, 25, 30]}
-      },
-      "calculation": "Pattern dependent",
-      "explanation": "If pattern continues, [C] = [B] + [N]",
+      "pattern": "Grid rows: Top has 10, Middle has 15. Pattern increases by 5. What's Bottom?",
+      "variables": {},
+      "calculation": "20",
+      "explanation": "Top=10, Middle=15 (+5). Pattern continues: Bottom = 15 + 5 = 20",
       "options": [15, 20, 25, 30]
     },
     {
       "template_id": "GRID_INT_17",
-      "pattern": "3×3 grid: Sum of row 1 is [S1], row 2 is [S2]. If each row increases by [N], what's row 3 sum?",
-      "variables": {
-        "S1": {"values": [10, 15, 20]},
-        "S2": {"values": [15, 20, 25]},
-        "N": {"values": [5]}
-      },
-      "calculation": "S2 + N",
-      "explanation": "Row 1 = [S1], Row 2 = [S2]. Pattern: +[N] each row. Row 3 = [S2] + [N]",
+      "pattern": "3×3 grid: Row 1 sum is 15, row 2 is 20. Each row increases by 5. Row 3 sum?",
+      "variables": {},
+      "calculation": "25",
+      "explanation": "Row 1 = 15, Row 2 = 20 (+5). Row 3 = 20 + 5 = 25",
       "options": [20, 25, 30, 35]
     },
     {
       "template_id": "GRID_INT_18",
-      "pattern": "L-shaped path covers [N] cells. Each cell is [X] units. Total distance?",
+      "pattern": "L-shaped path covers [N] cells. Each cell is 2 units. Total distance?",
       "variables": {
-        "N": {"values": [5, 6, 7, 8]},
-        "X": {"values": [1, 2]}
+        "N": {"values": [4, 5, 6, 7]}
       },
-      "calculation": "N * X",
-      "explanation": "[N] cells × [X] units each = [N]×[X] total distance"
+      "calculation": "N * 2",
+      "explanation": "[N] cells × 2 units each = [N]×2 total distance",
+      "options": [8, 10, 12, 14]
     },
     {
       "template_id": "GRID_INT_19",
-      "pattern": "Grid adjacency: [A] touches [B], [B] touches [C], [C] touches [D]. Min cells in line?",
-      "variables": {
-        "A": {"values": ["Red", "Blue"]},
-        "B": {"values": ["Green", "Yellow"]},
-        "C": {"values": ["Orange", "Purple"]},
-        "D": {"values": ["Pink", "Brown"]}
-      },
+      "pattern": "Grid adjacency: Red touches Green, Green touches Orange, Orange touches Pink. Min cells in line?",
+      "variables": {},
       "calculation": "4",
-      "explanation": "Linear touching: [A]-[B]-[C]-[D] = 4 cells minimum",
+      "explanation": "Linear touching: Red-Green-Orange-Pink = 4 cells minimum",
       "options": [3, 4, 5, 6]
     },
     {
       "template_id": "GRID_INT_20",
-      "pattern": "Mirror position: Cell (2,3) mirrors across center to?",
+      "pattern": "Mirror position: Cell (2,3) mirrors across center of 4×4 grid to?",
       "variables": {},
-      "calculation": "Depends on grid size",
+      "calculation": "(3,2)",
       "explanation": "In 4×4 grid, (2,3) mirrors to (3,2)",
       "options": ["(2,2)", "(3,2)", "(2,3)", "(3,3)"]
     },
     {
       "template_id": "GRID_INT_21",
-      "pattern": "4×4 grid: Fill with [A] and [B] alternating. Start top-left with [A]. Bottom-right is?",
-      "variables": {
-        "A": {"values": ["X", "Red", "1", "A"]},
-        "B": {"values": ["O", "Blue", "2", "B"]}
-      },
-      "calculation": "A if grid size even",
-      "explanation": "Checkerboard pattern. 4×4 means bottom-right is same as top-left",
-      "options": ["A", "B", "empty", "both"]
+      "pattern": "4×4 grid: Fill with X and O alternating. Start top-left with X. Bottom-right is?",
+      "variables": {},
+      "calculation": "X",
+      "explanation": "Checkerboard pattern. 4×4 means bottom-right is same as top-left = X",
+      "options": ["X", "O", "empty", "both"]
     },
     {
       "template_id": "GRID_INT_22",
@@ -252,10 +214,8 @@
     },
     {
       "template_id": "GRID_INT_23",
-      "pattern": "[ITEM] can move to adjacent cells. From (1,1) in 3×3, reach (3,3) in min moves?",
-      "variables": {
-        "ITEM": {"values": ["Player", "Token", "Piece"]}
-      },
+      "pattern": "Player can move to adjacent cells. From (1,1) in 3×3, reach (3,3) in min moves?",
+      "variables": {},
       "calculation": "4",
       "explanation": "From (1,1) to (3,3): 2 right + 2 down = 4 moves minimum",
       "options": [3, 4, 5, 6]
@@ -265,18 +225,16 @@
       "pattern": "Rotation: Cell (1,3) rotates 90° clockwise in 3×3. New position?",
       "variables": {},
       "calculation": "(3,1)",
-      "explanation": "90° clockwise rotation: (row,col) → (col, total-row+1). (1,3) → (3,1)",
+      "explanation": "90° clockwise rotation: (1,3) → (3,1)",
       "options": ["(1,1)", "(1,3)", "(3,1)", "(3,3)"]
     },
     {
       "template_id": "GRID_INT_25",
-      "pattern": "Grid rule: Each cell = sum of cells above and left. Top-left is [A], top-right is [B]. Cell (2,2) is?",
-      "variables": {
-        "A": {"values": [1, 2, 3]},
-        "B": {"values": [2, 3, 4]}
-      },
-      "calculation": "A + B + (A+B)",
-      "explanation": "(2,2) = (1,2) + (2,1). (1,2)=[B], (2,1)=[A], so (2,2) = 2×[A] + [B] approximately"
+      "pattern": "Grid rule: Top-left is 2, top-right is 3. Cell directly below left = 2+3. What is it?",
+      "variables": {},
+      "calculation": "5",
+      "explanation": "Cell = sum of cells above: 2 + 3 = 5",
+      "options": [4, 5, 6, 7]
     }
   ],
   "responses": {
