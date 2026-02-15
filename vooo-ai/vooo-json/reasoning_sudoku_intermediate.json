@@ -6,21 +6,21 @@
       "template_id": "SUDOKU_INT_01",
       "pattern": "In a 4×4 Sudoku, row 1 has [A], [B], ?, [C]. Numbers 1-4, no repeats. What's missing?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1]},
+        "B": {"values": [2, 3]},
+        "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
-      "explanation": "In a 4×4 Sudoku row with 1,2,3,4, the missing number is 10 - [A] - [B] - [C] = answer",
+      "explanation": "In a 4×4 Sudoku row with 1,2,3,4, the missing number is 10 - [A] - [B] - [C]",
       "options": [1, 2, 3, 4]
     },
     {
       "template_id": "SUDOKU_INT_02",
       "pattern": "Column has [A], ?, [B], [C]. Uses 1-4 once. What fits?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1, 2]},
+        "B": {"values": [2, 3]},
+        "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
       "explanation": "Sum of 1+2+3+4 = 10. Missing number = 10 - [A] - [B] - [C]",
@@ -30,9 +30,9 @@
       "template_id": "SUDOKU_INT_03",
       "pattern": "In a 2×2 box: [A], [B] (top row) and ?, [C] (bottom row). Numbers 1-4. What's missing?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1, 2]},
+        "B": {"values": [3, 4]},
+        "C": {"values": [2, 3]}
       },
       "calculation": "10 - A - B - C",
       "explanation": "Each 2×2 box uses 1-4 once. Missing = 10 - [A] - [B] - [C]",
@@ -61,22 +61,22 @@
     },
     {
       "template_id": "SUDOKU_INT_06",
-      "pattern": "In 4×4 grid, cell (2,3) can't be [A] or [B]. Row needs 1-4. Column has [C]. What goes in (2,3)?",
+      "pattern": "Row has [A], [B], [C], ?. Uses 1-4. What's missing?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1, 2]},
+        "B": {"values": [2, 3]},
+        "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
-      "explanation": "Cell blocked from [A] and [B], column has [C]. Only remaining number from 1-4",
+      "explanation": "Row uses 1-4 once. Has [A], [B], [C]. Missing = 10 - [A] - [B] - [C]",
       "options": [1, 2, 3, 4]
     },
     {
       "template_id": "SUDOKU_INT_07",
       "pattern": "Box has [A], [B], [C], ?. Numbers 1-4 each once. What's last?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
+        "A": {"values": [1, 2]},
+        "B": {"values": [3, 4]},
         "C": {"values": [1, 2, 3, 4]}
       },
       "calculation": "10 - A - B - C",
@@ -123,14 +123,13 @@
     },
     {
       "template_id": "SUDOKU_INT_12",
-      "pattern": "Box constraint: Has [A], [B]. Row constraint: Can't be [C]. Numbers 1-4. What fits?",
+      "pattern": "Box has [A], [B]. Row can't have [A]. Numbers 1-4. What fits?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1, 2]},
+        "B": {"values": [3, 4]}
       },
-      "calculation": "10 - A - B - C",
-      "explanation": "Box has [A],[B]. Row blocks [C]. Remaining from 1-4 is answer",
+      "calculation": "10 - A - B - (next valid)",
+      "explanation": "Box has [A] and [B]. Row blocks [A]. Need remaining number from 1-4 not equal to [A] or [B]",
       "options": [1, 2, 3, 4]
     },
     {
@@ -148,9 +147,9 @@
       "template_id": "SUDOKU_INT_14",
       "pattern": "Row has [A], [B], [C], ?. Uses 1-4. What completes row?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1]},
+        "B": {"values": [2, 3]},
+        "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
       "explanation": "Row uses 1-4 once (sum=10). Has [A], [B], [C]. Missing = 10 - [A] - [B] - [C]",
@@ -179,9 +178,9 @@
       "template_id": "SUDOKU_INT_17",
       "pattern": "Row has [A], [B], [C], ?. Uses 1-4. What's missing?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1, 2]},
+        "B": {"values": [2, 3]},
+        "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
       "explanation": "Row uses 1-4 (sum=10). Has [A], [B], [C]. Missing = 10 - [A] - [B] - [C]",
@@ -191,9 +190,9 @@
       "template_id": "SUDOKU_INT_18",
       "pattern": "Row has [A], [B], [C], ?. Uses 1-4. What's missing?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1]},
+        "B": {"values": [2]},
+        "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
       "explanation": "Row uses 1-4 once (sum=10). Has [A], [B], [C]. Missing = 10 - [A] - [B] - [C]",
@@ -211,9 +210,9 @@
       "template_id": "SUDOKU_INT_20",
       "pattern": "Row has [A], [B], [C], ?. Uses 1-4. What's missing?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1, 2]},
+        "B": {"values": [3]},
+        "C": {"values": [2, 4]}
       },
       "calculation": "10 - A - B - C",
       "explanation": "Row uses 1-4 once. Has [A], [B], [C]. Missing = 10 - [A] - [B] - [C]",
@@ -232,14 +231,14 @@
     },
     {
       "template_id": "SUDOKU_INT_22",
-      "pattern": "Cell blocked by row ([A]), column ([B]), box ([C]). Uses 1-4. What fits?",
+      "pattern": "Row has [A], [B], [C], ?. Uses 1-4. What's missing?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1]},
+        "B": {"values": [2, 3]},
+        "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
-      "explanation": "Row has [A], column has [B], box has [C]. Only remaining number works",
+      "explanation": "Row uses 1-4 once. Has [A], [B], [C]. Missing = 10 - [A] - [B] - [C]",
       "options": [1, 2, 3, 4]
     },
     {
@@ -266,9 +265,9 @@
       "template_id": "SUDOKU_INT_25",
       "pattern": "In 4×4 Sudoku, three cells in row are [A], [B], [C]. What's the 4th?",
       "variables": {
-        "A": {"values": [1, 2, 3, 4]},
-        "B": {"values": [1, 2, 3, 4]},
-        "C": {"values": [1, 2, 3, 4]}
+        "A": {"values": [1]},
+        "B": {"values": [2, 3]},
+        "C": {"values": [3, 4]}
       },
       "calculation": "10 - A - B - C",
       "explanation": "Row uses 1-4 once (sum=10). Missing = 10 - [A] - [B] - [C]",
