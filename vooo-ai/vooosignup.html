@@ -122,47 +122,47 @@
         <div id="error-message" class="error"></div>
         <div id="success-message" class="success"></div>
         
-        <form id="signup-form">
+        <form id="signup-form" autocomplete="off">
             <div class="form-group">
                 <label for="fullname">Full Name *</label>
-                <input type="text" id="fullname" required pattern="[A-Za-z ]{3,50}">
+                <input type="text" id="fullname" name="fullname_vooo" autocomplete="off" required pattern="[A-Za-z ]{3,50}">
                 <small>3-50 characters, letters and spaces only</small>
             </div>
             
             <div class="form-row">
                 <div class="form-group">
                     <label for="dob">Date of Birth *</label>
-                    <input type="text" id="dob" placeholder="DD-MM-YYYY" required pattern="\d{2}-\d{2}-\d{4}">
+                    <input type="text" id="dob" name="dob_vooo" autocomplete="off" placeholder="DD-MM-YYYY" required pattern="\d{2}-\d{2}-\d{4}">
                 </div>
                 
                 <div class="form-group">
                     <label for="phone">Phone Number *</label>
-                    <input type="tel" id="phone" placeholder="+91-XXXXXXXXXX" required pattern="\+91-\d{10}">
+                    <input type="text" id="phone" name="phone_vooo" autocomplete="off" placeholder="+91-XXXXXXXXXX" required>
                 </div>
             </div>
             
             <div class="form-group">
                 <label for="email">Email Address *</label>
-                <input type="email" id="email" required>
+                <input type="email" id="email" name="email_vooo" autocomplete="off" required>
             </div>
             
             <div class="form-row">
                 <div class="form-group">
                     <label for="username">Username *</label>
-                    <input type="text" id="username" required minlength="8" maxlength="12" pattern="[a-z0-9]{8,12}">
+                    <input type="text" id="username" name="username_vooo" autocomplete="off" required minlength="8" maxlength="12" pattern="[a-z0-9]{8,12}">
                     <small>8-12 characters, lowercase letters and numbers only</small>
                 </div>
                 
                 <div class="form-group">
                     <label for="password">Password *</label>
-                    <input type="password" id="password" required minlength="8">
-                    <small>Min 8 characters, include uppercase, lowercase, number, special char</small>
+                    <input type="password" id="password" name="password_vooo" autocomplete="new-password" required minlength="8">
+                    <small>Min 8 chars: uppercase, lowercase, number, special char</small>
                 </div>
             </div>
             
             <div class="form-group">
                 <label for="security-question">Security Question *</label>
-                <select id="security-question" required>
+                <select id="security-question" name="security_vooo" autocomplete="off" required>
                     <option value="">Select a question</option>
                     <option>In which city were you born?</option>
                     <option>What is your favourite subject?</option>
@@ -172,7 +172,7 @@
             
             <div class="form-group">
                 <label for="security-answer">Answer *</label>
-                <input type="text" id="security-answer" required minlength="2">
+                <input type="text" id="security-answer" name="answer_vooo" autocomplete="off" required minlength="2">
             </div>
             
             <button type="submit" class="btn" id="signup-btn">Sign Up Free</button>
@@ -200,6 +200,18 @@
         const successDiv = document.getElementById('success-message');
         const signupBtn = document.getElementById('signup-btn');
         
+        // Clear all fields on page load to prevent autofill
+        window.addEventListener('load', () => {
+            document.getElementById('fullname').value = '';
+            document.getElementById('dob').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('security-question').value = '';
+            document.getElementById('security-answer').value = '';
+        });
+        
         // Format name to title case
         function toTitleCase(str) {
             return str.toLowerCase().split(' ').map(word => 
@@ -217,6 +229,11 @@
             return hasUpper && hasLower && hasNumber && hasSpecial;
         }
         
+        // Validate phone number format
+        function validatePhone(phone) {
+            return /^\+91-\d{10}$/.test(phone);
+        }
+        
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -229,6 +246,13 @@
             const password = document.getElementById('password').value;
             const securityQuestion = document.getElementById('security-question').value;
             const securityAnswer = document.getElementById('security-answer').value.trim().toLowerCase();
+            
+            // Validate phone
+            if (!validatePhone(phone)) {
+                errorDiv.textContent = 'Phone must be in format: +91-XXXXXXXXXX (10 digits)';
+                errorDiv.style.display = 'block';
+                return;
+            }
             
             // Format full name
             fullname = toTitleCase(fullname);
@@ -288,7 +312,7 @@
                 });
                 
                 // Show success message
-                successDiv.textContent = '✓ Registered Successfully! Login to start using Vooo AI Education';
+                successDiv.textContent = '✓ Registered Successfully! Redirecting to login...';
                 successDiv.style.display = 'block';
                 form.reset();
                 
@@ -299,32 +323,86 @@
                 
             } catch (error) {
                 console.error('Signup error:', error);
-                errorDiv.textContent = error.message || 'Signup failed. Please try again.';
+                
+                let errorMessage = error.message;
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = 'Email already registered. Please login or use another email.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Invalid email address.';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'Password is too weak. Use at least 8 characters.';
+                }
+                
+                errorDiv.textContent = errorMessage;
                 errorDiv.style.display = 'block';
                 signupBtn.disabled = false;
                 signupBtn.textContent = 'Sign Up Free';
             }
         });
         
-        // Auto-format phone number
-        document.getElementById('phone').addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 10) value = value.slice(0, 10);
-            if (value) {
-                e.target.value = '+91-' + value;
+        // Phone number input handler - FIXED
+        const phoneInput = document.getElementById('phone');
+        phoneInput.addEventListener('input', (e) => {
+            let value = e.target.value;
+            
+            // Remove everything except digits
+            let numbers = value.replace(/\D/g, '');
+            
+            // Limit to 10 digits
+            if (numbers.length > 10) {
+                numbers = numbers.slice(0, 10);
+            }
+            
+            // Format as +91-XXXXXXXXXX
+            if (numbers.length > 0) {
+                e.target.value = '+91-' + numbers;
+            } else {
+                e.target.value = '';
             }
         });
         
-        // Auto-format DOB
-        document.getElementById('dob').addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length >= 2) {
-                value = value.slice(0, 2) + '-' + value.slice(2);
+        // Prevent paste with formatting
+        phoneInput.addEventListener('paste', (e) => {
+            e.preventDefault();
+            let pastedData = e.clipboardData.getData('text');
+            let numbers = pastedData.replace(/\D/g, '');
+            if (numbers.length > 10) numbers = numbers.slice(0, 10);
+            if (numbers.length > 0) {
+                phoneInput.value = '+91-' + numbers;
             }
-            if (value.length >= 5) {
-                value = value.slice(0, 5) + '-' + value.slice(5, 9);
+        });
+        
+        // DOB input handler - FIXED
+        const dobInput = document.getElementById('dob');
+        dobInput.addEventListener('input', (e) => {
+            let value = e.target.value;
+            
+            // Remove everything except digits
+            let numbers = value.replace(/\D/g, '');
+            
+            // Limit to 8 digits (DDMMYYYY)
+            if (numbers.length > 8) {
+                numbers = numbers.slice(0, 8);
             }
-            e.target.value = value;
+            
+            // Format as DD-MM-YYYY
+            let formatted = '';
+            if (numbers.length >= 1) {
+                formatted = numbers.slice(0, 2);
+            }
+            if (numbers.length >= 3) {
+                formatted += '-' + numbers.slice(2, 4);
+            }
+            if (numbers.length >= 5) {
+                formatted += '-' + numbers.slice(4, 8);
+            }
+            
+            e.target.value = formatted;
+        });
+        
+        // Username - force lowercase
+        document.getElementById('username').addEventListener('input', (e) => {
+            e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '');
         });
     </script>
 </body>
