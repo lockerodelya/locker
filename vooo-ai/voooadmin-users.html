@@ -211,7 +211,10 @@
     <div class="header">
         <div class="header-content">
             <h1>🔐 Vooo AI Admin - User Management</h1>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+            <div>
+                <button class="logout-btn" onclick="changePassword()" style="margin-right: 10px;">Change Password</button>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
         </div>
     </div>
     
@@ -512,6 +515,16 @@
         function logout() {
             sessionStorage.removeItem('vooo_admin_auth');
             window.location.href = 'voooadmin.html';
+        }
+        
+        function changePassword() {
+            const newPassword = prompt('Enter new admin password (minimum 8 characters):');
+            if (newPassword && newPassword.length >= 8) {
+                localStorage.setItem('vooo_admin_password', newPassword);
+                alert('✅ Password changed successfully!\n\nNew password: ' + newPassword + '\n\nWrite it down!');
+            } else if (newPassword) {
+                alert('❌ Password must be at least 8 characters');
+            }
         }
         
         // Load users on page load

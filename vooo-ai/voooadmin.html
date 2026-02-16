@@ -98,10 +98,6 @@
             <p>Vooo AI Education</p>
         </div>
         
-        <div class="info">
-            ℹ️ <strong>Default Password:</strong> Swamiji@1863#
-        </div>
-        
         <div id="error-message" class="error"></div>
         
         <form id="admin-form">
@@ -124,7 +120,10 @@
             const password = document.getElementById('admin-password').value;
             const errorDiv = document.getElementById('error-message');
             
-            if (password === ADMIN_PASSWORD) {
+            // Check custom password first, then default
+            const savedPassword = localStorage.getItem('vooo_admin_password') || ADMIN_PASSWORD;
+            
+            if (password === savedPassword) {
                 sessionStorage.setItem('vooo_admin_auth', 'true');
                 window.location.href = 'voooadmin-users.html';
             } else {
