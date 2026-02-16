@@ -335,10 +335,10 @@
                 return;
             }
             
-            // Check if user is admin
-            const adminDoc = await db.collection('admins').doc(user.uid).get();
+            // Check if user is VOOO admin
+            const adminDoc = await db.collection('vooo_admins').doc(user.uid).get();
             if (!adminDoc.exists) {
-                alert('❌ You are not authorized as admin');
+                alert('❌ You are not authorized as Vooo AI admin');
                 await auth.signOut();
                 window.location.href = 'voooadmin.html';
                 return;
