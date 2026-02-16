@@ -51,7 +51,6 @@
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 1em;
-            transition: border-color 0.3s;
         }
         input:focus {
             outline: none;
@@ -67,10 +66,13 @@
             font-size: 1.1em;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
         }
         .btn:hover {
             background: #1e3a8a;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
         .error {
             background: #fee;
@@ -83,59 +85,130 @@
         .info {
             background: #eff6ff;
             border: 2px solid #2563eb;
-            color: #1e40af;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
             font-size: 0.9em;
+            color: #1e40af;
         }
     </style>
 </head>
 <body>
     <div class="admin-container">
         <div class="logo">
-            <h1>🔐 Admin Access</h1>
+            <h1>🔐 Admin Login</h1>
             <p>Vooo AI Education</p>
+        </div>
+        
+        <div class="info">
+            ℹ️ <strong>First Time Setup:</strong><br>
+            Login with: <strong>care.ompl@gmail.com</strong><br>
+            After first login, you'll be set as admin.
         </div>
         
         <div id="error-message" class="error"></div>
         
         <form id="admin-form">
             <div class="form-group">
-                <label for="admin-password">Admin Password</label>
-                <input type="password" id="admin-password" required>
+                <label for="email">Email</label>
+                <input type="email" id="email" value="care.ompl@gmail.com" required>
             </div>
             
-            <button type="submit" class="btn">Access Admin Panel</button>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            
+            <button type="submit" class="btn" id="login-btn">Login to Admin Panel</button>
         </form>
     </div>
     
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="/vooo-ai/vooo-config.js"></script>
+    
     <script>
-        // ⭐ ADMIN PASSWORD
-        const ADMIN_PASSWORD = 'Swamiji@1863#';
+        // Initialize Firebase
+        firebase.initializeApp(VOOO_CONFIG.firebase);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
         
-        document.getElementById('admin-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const password = document.getElementById('admin-password').value;
-            const errorDiv = document.getElementById('error-message');
-            
-            // Check custom password first, then default
-            const savedPassword = localStorage.getItem('vooo_admin_password') || ADMIN_PASSWORD;
-            
-            if (password === savedPassword) {
-                sessionStorage.setItem('vooo_admin_auth', 'true');
-                window.location.href = 'voooadmin-users.html';
-            } else {
-                errorDiv.textContent = 'Access denied. Incorrect password.';
-                errorDiv.style.display = 'block';
+        const form = document.getElementById('admin-form');
+        const errorDiv = document.getElementById('error-message');
+        const loginBtn = document.getElementById('login-btn');
+        
+        // Check if already logged in
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                // Check if user is admin
+                const adminDoc = await db.collection('admins').doc(user.uid).get();
+                if (adminDoc.exists) {
+                    window.location.href = 'voooadmin-users.html';
+                } else {
+                    errorDiv.textContent = 'You are not authorized as admin. Please contact system administrator.';
+                    errorDiv.style.display = 'block';
+                    await auth.signOut();
+                }
             }
         });
         
-        // Already logged in?
-        if (sessionStorage.getItem('vooo_admin_auth') === 'true') {
-            window.location.href = 'voooadmin-users.html';
-        }
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+            errorDiv.style.display = 'none';
+            
+            try {
+                // Sign in with Firebase
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Check if admin document exists
+                const adminDoc = await db.collection('admins').doc(user.uid).get();
+                
+                if (!adminDoc.exists) {
+                    // First time - create admin document
+                    await db.collection('admins').doc(user.uid).set({
+                        email: email,
+                        role: 'super_admin',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    alert('✅ Admin account created successfully!');
+                }
+                
+                // Redirect to admin panel
+                window.location.href = 'voooadmin-users.html';
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                let errorMessage = 'Login failed. ';
+                
+                if (error.code === 'auth/wrong-password') {
+                    errorMessage += 'Incorrect password.';
+                } else if (error.code === 'auth/user-not-found') {
+                    errorMessage += 'No account found with this email. Please create an account first from the signup page.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage += 'Invalid email address.';
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessage += 'Too many failed attempts. Please try again later.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                errorDiv.textContent = errorMessage;
+                errorDiv.style.display = 'block';
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login to Admin Panel';
+            }
+        });
     </script>
 </body>
 </html>
