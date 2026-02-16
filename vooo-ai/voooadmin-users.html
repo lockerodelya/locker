@@ -314,21 +314,39 @@
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="/vooo-ai/vooo-config.js"></script>
     
     <script>
-        // Check admin auth
-        if (sessionStorage.getItem('vooo_admin_auth') !== 'true') {
-            window.location.href = 'voooadmin.html';
-        }
-        
         // Initialize Firebase
         firebase.initializeApp(VOOO_CONFIG.firebase);
+        const auth = firebase.auth();
         const db = firebase.firestore();
         
         let allUsers = [];
         let currentEditUser = null;
+        
+        // Check if admin is authenticated
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                // Not logged in - redirect to login
+                window.location.href = 'voooadmin.html';
+                return;
+            }
+            
+            // Check if user is admin
+            const adminDoc = await db.collection('admins').doc(user.uid).get();
+            if (!adminDoc.exists) {
+                alert('❌ You are not authorized as admin');
+                await auth.signOut();
+                window.location.href = 'voooadmin.html';
+                return;
+            }
+            
+            // User is admin - load users
+            loadUsers();
+        });
         
         // Load all users
         async function loadUsers() {
@@ -513,17 +531,19 @@
         }
         
         function logout() {
-            sessionStorage.removeItem('vooo_admin_auth');
-            window.location.href = 'voooadmin.html';
+            auth.signOut().then(() => {
+                window.location.href = 'voooadmin.html';
+            });
         }
         
         function changePassword() {
-            const newPassword = prompt('Enter new admin password (minimum 8 characters):');
-            if (newPassword && newPassword.length >= 8) {
-                localStorage.setItem('vooo_admin_password', newPassword);
-                alert('✅ Password changed successfully!\n\nNew password: ' + newPassword + '\n\nWrite it down!');
-            } else if (newPassword) {
-                alert('❌ Password must be at least 8 characters');
+            const user = auth.currentUser;
+            if (user && user.email) {
+                auth.sendPasswordResetEmail(user.email).then(() => {
+                    alert('✅ Password reset email sent to ' + user.email + '\n\nCheck your email to change password.');
+                }).catch((error) => {
+                    alert('❌ Error: ' + error.message);
+                });
             }
         }
         
