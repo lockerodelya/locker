@@ -307,7 +307,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="vooo-config.js"></script>
-    <script src="vooo-usage-tracker.js"></script>
     
     <script>
         // Initialize Firebase
@@ -385,8 +384,16 @@
                     tierBadge.className = 'tier-badge tier-free';
                 }
                 
-                // Get usage stats
-                const stats = await VoooUsageTracker.getUsageStats(userId);
+                // Get usage stats - SIMPLIFIED
+                const stats = {
+                    tier: userData.tier || 'free',
+                    todayUsed: (userData.dailyUsage?.count || 0),
+                    todayLimit: (userData.tier === 'paid' ? -1 : 10),
+                    totalAttempted: userData.totalMCQsAttempted || 0,
+                    dailyStreak: userData.dailyStreak || 0,
+                    accuracyScore: userData.accuracyScore || 0,
+                    badges: userData.badges || []
+                };
                 
                 if (stats) {
                     // Update usage display
