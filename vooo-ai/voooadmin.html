@@ -142,12 +142,12 @@
         // Check if already logged in
         auth.onAuthStateChanged(async (user) => {
             if (user) {
-                // Check if user is admin
-                const adminDoc = await db.collection('admins').doc(user.uid).get();
+                // Check if user is VOOO admin
+                const adminDoc = await db.collection('vooo_admins').doc(user.uid).get();
                 if (adminDoc.exists) {
                     window.location.href = 'voooadmin-users.html';
                 } else {
-                    errorDiv.textContent = 'You are not authorized as admin. Please contact system administrator.';
+                    errorDiv.textContent = 'You are not authorized as Vooo AI admin.';
                     errorDiv.style.display = 'block';
                     await auth.signOut();
                 }
@@ -169,18 +169,18 @@
                 const userCredential = await auth.signInWithEmailAndPassword(email, password);
                 const user = userCredential.user;
                 
-                // Check if admin document exists
-                const adminDoc = await db.collection('admins').doc(user.uid).get();
+                // Check if VOOO admin document exists
+                const adminDoc = await db.collection('vooo_admins').doc(user.uid).get();
                 
                 if (!adminDoc.exists) {
-                    // First time - create admin document
-                    await db.collection('admins').doc(user.uid).set({
+                    // First time - create VOOO admin document
+                    await db.collection('vooo_admins').doc(user.uid).set({
                         email: email,
-                        role: 'super_admin',
+                        role: 'vooo_super_admin',
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                     
-                    alert('✅ Admin account created successfully!');
+                    alert('✅ Vooo AI Admin account created successfully!');
                 }
                 
                 // Redirect to admin panel
