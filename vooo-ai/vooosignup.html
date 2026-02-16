@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Vooo AI Education</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .signup-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 40px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        .logo p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #5568d3;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .error, .success {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .error {
+            background: #fee;
+            color: #c33;
+        }
+        .success {
+            background: #efe;
+            color: #3c3;
+        }
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .links a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        small {
+            color: #666;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="logo">
+            <h1>🎓 Vooo AI</h1>
+            <p>Create Your Free Account</p>
+        </div>
+        
+        <div id="error-message" class="error"></div>
+        <div id="success-message" class="success"></div>
+        
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="fullname">Full Name *</label>
+                <input type="text" id="fullname" required pattern="[A-Za-z ]{3,50}">
+                <small>3-50 characters, letters and spaces only</small>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dob">Date of Birth *</label>
+                    <input type="text" id="dob" placeholder="DD-MM-YYYY" required pattern="\d{2}-\d{2}-\d{4}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" placeholder="+91-XXXXXXXXXX" required pattern="\+91-\d{10}">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" required>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="username">Username *</label>
+                    <input type="text" id="username" required minlength="8" maxlength="12" pattern="[a-z0-9]{8,12}">
+                    <small>8-12 characters, lowercase letters and numbers only</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" required minlength="8">
+                    <small>Min 8 characters, include uppercase, lowercase, number, special char</small>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="security-question">Security Question *</label>
+                <select id="security-question" required>
+                    <option value="">Select a question</option>
+                    <option>In which city were you born?</option>
+                    <option>What is your favourite subject?</option>
+                    <option>Which color do you like most?</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="security-answer">Answer *</label>
+                <input type="text" id="security-answer" required minlength="2">
+            </div>
+            
+            <button type="submit" class="btn" id="signup-btn">Sign Up Free</button>
+        </form>
+        
+        <div class="links">
+            Already have an account? <a href="vooologin.html">Login</a>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="vooo-config.js"></script>
+    
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(VOOO_CONFIG.firebase);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        const form = document.getElementById('signup-form');
+        const errorDiv = document.getElementById('error-message');
+        const successDiv = document.getElementById('success-message');
+        const signupBtn = document.getElementById('signup-btn');
+        
+        // Format name to title case
+        function toTitleCase(str) {
+            return str.toLowerCase().split(' ').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+        
+        // Validate password
+        function validatePassword(password) {
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasNumber = /\d/.test(password);
+            const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            
+            return hasUpper && hasLower && hasNumber && hasSpecial;
+        }
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Get form values
+            let fullname = document.getElementById('fullname').value.trim();
+            const dob = document.getElementById('dob').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const username = document.getElementById('username').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const securityQuestion = document.getElementById('security-question').value;
+            const securityAnswer = document.getElementById('security-answer').value.trim().toLowerCase();
+            
+            // Format full name
+            fullname = toTitleCase(fullname);
+            
+            // Validate password
+            if (!validatePassword(password)) {
+                errorDiv.textContent = 'Password must include uppercase, lowercase, number, and special character';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            signupBtn.disabled = true;
+            signupBtn.textContent = 'Creating account...';
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            try {
+                // Check if username already exists
+                const usernameCheck = await db.collection('users')
+                    .where('username', '==', username)
+                    .limit(1)
+                    .get();
+                
+                if (!usernameCheck.empty) {
+                    throw new Error('Username already taken. Please choose another.');
+                }
+                
+                // Create auth user
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Create user document in Firestore
+                await db.collection('users').doc(user.uid).set({
+                    username: username,
+                    fullName: fullname,
+                    dob: dob,
+                    phone: phone,
+                    email: email,
+                    securityQuestion: securityQuestion,
+                    securityAnswer: securityAnswer,
+                    tier: 'free',
+                    planType: null,
+                    planStartDate: null,
+                    planExpiryDate: null,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    dailyStreak: 0,
+                    totalMCQsAttempted: 0,
+                    accuracyScore: 0,
+                    badges: ['first_login'],
+                    devices: [],
+                    dailyUsage: {
+                        date: new Date().toISOString().split('T')[0],
+                        count: 0
+                    }
+                });
+                
+                // Show success message
+                successDiv.textContent = '✓ Registered Successfully! Login to start using Vooo AI Education';
+                successDiv.style.display = 'block';
+                form.reset();
+                
+                // Redirect to login after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'vooologin.html';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Signup error:', error);
+                errorDiv.textContent = error.message || 'Signup failed. Please try again.';
+                errorDiv.style.display = 'block';
+                signupBtn.disabled = false;
+                signupBtn.textContent = 'Sign Up Free';
+            }
+        });
+        
+        // Auto-format phone number
+        document.getElementById('phone').addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 10) value = value.slice(0, 10);
+            if (value) {
+                e.target.value = '+91-' + value;
+            }
+        });
+        
+        // Auto-format DOB
+        document.getElementById('dob').addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '-' + value.slice(2);
+            }
+            if (value.length >= 5) {
+                value = value.slice(0, 5) + '-' + value.slice(5, 9);
+            }
+            e.target.value = value;
+        });
+    </script>
+</body>
+</html>
+```
+
+## ============================================

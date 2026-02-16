@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Vooo AI Education</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .pricing-card.popular {
+            border: 3px solid #ffd700;
+            transform: scale(1.05);
+        }
+        .badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffd700;
+            color: #333;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        .plan-name {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .price {
+            font-size: 3em;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .price span {
+            font-size: 0.4em;
+            color: #666;
+        }
+        .savings {
+            color: #22c55e;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .features {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+        }
+        .features li {
+            padding: 10px 0;
+            color: #666;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .features li:before {
+            content: "✓ ";
+            color: #22c55e;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #5568d3;
+        }
+        .info-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .info-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        .no-refund {
+            background: #fee;
+            border: 2px solid #fcc;
+            padding: 15px;
+            border-radius: 10px;
+            color: #c33;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .modal-header h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .qr-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .qr-container img {
+            max-width: 300px;
+            width: 100%;
+            border: 5px solid #667eea;
+            border-radius: 15px;
+        }
+        .payment-details {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .payment-details p {
+            margin: 10px 0;
+            color: #333;
+        }
+        .payment-details strong {
+            color: #667eea;
+        }
+        .instructions {
+            background: #eff6ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .instructions ol {
+            margin-left: 20px;
+        }
+        .instructions li {
+            margin: 10px 0;
+            color: #333;
+        }
+        .close-btn {
+            background: #e5e7eb;
+            color: #333;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .close-btn:hover {
+            background: #d1d5db;
+        }
+        .checkbox-container {
+            margin: 20px 0;
+            text-align: left;
+        }
+        .checkbox-container input {
+            margin-right: 10px;
+        }
+        .checkbox-container label {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="pricing-container">
+        <div class="header">
+            <h1>🎓 Vooo AI Education Pricing</h1>
+            <p>Unlimited MCQs • All Categories • No Restrictions</p>
+        </div>
+        
+        <div class="pricing-grid" id="pricing-grid">
+            <!-- Pricing cards will be generated here -->
+        </div>
+        
+        <div class="info-section">
+            <h2>What You Get</h2>
+            <ul class="features">
+                <li>Unlimited unique MCQ questions from all categories</li>
+                <li>Mathematics, Logical Reasoning, Pattern Recognition, and more</li>
+                <li>Daily streak tracking and performance analytics</li>
+                <li>Achievement badges and gamification</li>
+                <li>Login from up to 2 devices simultaneously</li>
+                <li>Download invoices and progress reports (PDF)</li>
+                <li>Email support during business hours (9 AM - 8 PM IST)</li>
+            </ul>
+            
+            <div class="no-refund">
+                ⚠️ No refunds under any circumstances - All sales are final
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>All Prices Inclusive of Taxes</h2>
+            <p>• All prices include 9% CGST + 9% SGST (18% total GST)</p>
+            <p>• No hidden charges</p>
+            <p>• Instant activation after payment verification</p>
+            <p>• GST Invoice provided</p>
+        </div>
+    </div>
+    
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Complete Your Payment</h2>
+                <p id="selected-plan-name"></p>
+            </div>
+            
+            <div class="qr-container">
+                <img src="assets/sbiqr.jpg" alt="Payment QR Code">
+            </div>
+            
+            <div class="payment-details">
+                <p><strong>Amount to Pay:</strong> <span id="amount-to-pay" style="font-size: 1.5em; color: #22c55e;">₹0</span></p>
+                <p><strong>UPI ID:</strong> 9874295005@sbi</p>
+                <p><strong>Beneficiary:</strong> Odelya Management Pvt. Ltd.</p>
+            </div>
+            
+            <div class="instructions">
+                <h3 style="margin-bottom: 15px;">Payment Instructions:</h3>
+                <ol>
+                    <li>Scan the QR code above using any UPI app (Google Pay, PhonePe, Paytm, etc.)</li>
+                    <li>Pay the <strong>EXACT</strong> amount shown above</li>
+                    <li>Take a screenshot of successful payment</li>
+                    <li>Call or WhatsApp us at <strong>+91-9674130001</strong> with:
+                        <ul style="margin-top: 10px;">
+                            <li>Payment screenshot</li>
+                            <li>Your registered username/email</li>
+                            <li>Selected plan (1 month / 3 months / 6 months / 1 year)</li>
+                        </ul>
+                    </li>
+                    <li>Your account will be activated within 1 hour during business hours (9 AM - 8 PM IST)</li>
+                </ol>
+            </div>
+            
+            <div class="checkbox-container">
+                <input type="checkbox" id="agree-refund" required>
+                <label for="agree-refund">
+                    I agree to the no-refund policy. All sales are final.
+                </label>
+            </div>
+            
+            <button class="close-btn" onclick="closePaymentModal()">Close</button>
+        </div>
+    </div>
+    
+    <script src="vooo-config.js"></script>
+    <script>
+        // Generate pricing cards
+        function generatePricingCards() {
+            const grid = document.getElementById('pricing-grid');
+            grid.innerHTML = '';
+            
+            for (const [planKey, planData] of Object.entries(VOOO_CONFIG.pricing.plans)) {
+                const card = document.createElement('div');
+                card.className = 'pricing-card';
+                
+                if (planData.badge) {
+                    card.classList.add('popular');
+                    card.innerHTML += `<div class="badge">${planData.badge}</div>`;
+                }
+                
+                // Calculate monthly cost
+                const monthlyCost = (planData.amount / (planData.duration_days / 30)).toFixed(0);
+                
+                card.innerHTML += `
+                    <div class="plan-name">${planData.display_name}</div>
+                    <div class="price">₹${planData.amount}<span>/plan</span></div>
+                    ${planData.savings ? `<div class="savings">${planData.savings}</div>` : ''}
+                    <p style="color: #666; margin-bottom: 20px;">₹${monthlyCost}/month effective</p>
+                    <ul class="features">
+                        <li>Unlimited MCQs daily</li>
+                        <li>All categories unlocked</li>
+                        <li>2 device logins</li>
+                        <li>${planData.duration_days} days access</li>
+                        <li>Email support</li>
+                    </ul>
+                    <button class="btn" onclick="openPaymentModal('${planKey}', '${planData.display_name}', ${planData.amount})">
+                        Buy Now - ₹${planData.amount}
+                    </button>
+                `;
+                
+                grid.appendChild(card);
+            }
+        }
+        
+        // Open payment modal
+        function openPaymentModal(planKey, planName, amount) {
+            document.getElementById('selected-plan-name').textContent = planName + ' Plan';
+            document.getElementById('amount-to-pay').textContent = '₹' + amount;
+            document.getElementById('payment-modal').classList.add('active');
+        }
+        
+        // Close payment modal
+        function closePaymentModal() {
+            const agreed = document.getElementById('agree-refund').checked;
+            if (!agreed) {
+                alert('Please agree to the no-refund policy to proceed');
+                return;
+            }
+            document.getElementById('payment-modal').classList.remove('active');
+        }
+        
+        // Initialize
+        generatePricingCards();
+        
+        // Close modal when clicking outside
+        document.getElementById('payment-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePaymentModal();
+            }
+        });
+    </script>
+</body>
+</html>
