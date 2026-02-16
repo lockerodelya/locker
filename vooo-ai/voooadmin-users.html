@@ -404,12 +404,14 @@
                     new Date(user.planExpiryDate.seconds * 1000).toLocaleDateString('en-GB') : 
                     '-';
                 
+                const tier = user.tier || 'free'; // Default to 'free' if undefined
+                
                 row.innerHTML = `
-                    <td>${user.username}</td>
-                    <td>${user.fullName}</td>
-                    <td>${user.email}</td>
-                    <td>${user.phone}</td>
-                    <td><span class="badge badge-${user.tier}">${user.tier.toUpperCase()}</span></td>
+                    <td>${user.username || '-'}</td>
+                    <td>${user.fullName || '-'}</td>
+                    <td>${user.email || '-'}</td>
+                    <td>${user.phone || '-'}</td>
+                    <td><span class="badge badge-${tier}">${tier.toUpperCase()}</span></td>
                     <td>${expiryDate}</td>
                     <td>
                         <button class="btn btn-primary" onclick="editUser('${user.id}')">Edit</button>
