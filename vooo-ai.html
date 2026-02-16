@@ -1478,11 +1478,75 @@
         }
 
         // Start the game when page loads
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initVOOOGame);
-        } else {
-            initVOOOGame();
+// ===== MODIFIED: Add MCQ tracking =====
+async function initVOOOGame() {
+    console.log('🎲 Initializing VOOO game with randomized templates...');
+    
+    const loaded = await voooEngine.loadCategory('math_beginner');
+    
+    if (!loaded) {
+        document.getElementById('vooo-question').textContent = 'Error loading puzzles.';
+        return;
+    }
+    
+    // ✨ INTEGRATE TEMPLATE MANAGER
+    integrateWithPuzzleEngine(voooEngine, voooTemplateManager);
+    
+    // 🔥 WRAP generateNewPuzzle to track MCQs
+    const originalGenerate = voooEngine.generateNewPuzzle.bind(voooEngine);
+    voooEngine.generateNewPuzzle = function() {
+        // Check if limit reached BEFORE generating
+        if (VOOO_SIMPLE_TRACKER.isLimitReached()) {
+            VOOO_SIMPLE_TRACKER.showLoginPrompt();
+            return null;
         }
+        
+        // Generate puzzle
+        const puzzle = originalGenerate();
+        
+        // Track this MCQ
+        if (puzzle) {
+            VOOO_SIMPLE_TRACKER.trackMCQ();
+        }
+        
+        return puzzle;
+    };
+    
+    // Generate first puzzle
+    const puzzle = voooEngine.generateNewPuzzle();
+    
+    if (puzzle) {
+        updatePuzzleDisplay(puzzle);
+    } else {
+        document.getElementById('vooo-question').textContent = 'Error generating puzzle. Check console.';
+    }
+}
+
+// Override changeLevel to maintain tracking
+async function changeLevel(levelKey) {
+    console.log('🔄 Changing level to:', levelKey);
+    
+    // Check limit before allowing category change
+    if (VOOO_SIMPLE_TRACKER.isLimitReached()) {
+        VOOO_SIMPLE_TRACKER.showLoginPrompt();
+        return;
+    }
+    
+    const success = await voooEngine.loadCategory(levelKey);
+    if (success) {
+        integrateWithPuzzleEngine(voooEngine, voooTemplateManager);
+        voooEngine.resetScore();
+        nextPuzzle();
+    }
+}
+
+// Start the game when page loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVOOOGame);
+} else {
+    initVOOOGame();
+}
+		
     </script>
 
     <!-- Level Up Prompt -->
