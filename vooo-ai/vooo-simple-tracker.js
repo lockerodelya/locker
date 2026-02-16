@@ -4,7 +4,7 @@
 // ============================================
 
 const VOOO_SIMPLE_TRACKER = {
-    FREE_MCQ_LIMIT: 10,
+    FREE_MCQ_LIMIT: 20,
     STORAGE_KEY: 'vooo_mcq_count',
     
     // Get current count
