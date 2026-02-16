@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-IN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -352,6 +352,8 @@
         async function loadUsers() {
             try {
                 const snapshot = await db.collection('users').get();
+                
+                // ⭐ FILTER in code instead: Only show Vooo AI users
                 allUsers = [];
                 
                 let freeCount = 0;
@@ -360,17 +362,21 @@
                 
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    allUsers.push({ id: doc.id, ...data });
                     
-                    if (data.tier === 'paid') {
-                        paidCount++;
-                        // Calculate revenue based on plan
-                        if (data.planType === '1month') totalRevenue += 200;
-                        else if (data.planType === '3month') totalRevenue += 550;
-                        else if (data.planType === '6month') totalRevenue += 1000;
-                        else if (data.planType === '1year') totalRevenue += 1800;
-                    } else {
-                        freeCount++;
+                    // ⭐ Only add Vooo AI users (skip cloud users)
+                    if (data.vooo_user === true) {
+                        allUsers.push({ id: doc.id, ...data });
+                        
+                        if (data.tier === 'paid') {
+                            paidCount++;
+                            // Calculate revenue based on plan
+                            if (data.planType === '1month') totalRevenue += 200;
+                            else if (data.planType === '3month') totalRevenue += 550;
+                            else if (data.planType === '6month') totalRevenue += 1000;
+                            else if (data.planType === '1year') totalRevenue += 1800;
+                        } else {
+                            freeCount++;
+                        }
                     }
                 });
                 
