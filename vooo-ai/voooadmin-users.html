@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Vooo AI Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+        .header {
+            background: #1e40af;
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 1.8em;
+        }
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #1e40af;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .search-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        tr:hover {
+            background: #f8f9ff;
+        }
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .badge-free {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .badge-paid {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 5px;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2em;
+            color: #666;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>🔐 Vooo AI Admin - User Management</h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Stats Section -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="total-users">0</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="free-users">0</div>
+                <div class="stat-label">Free Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="paid-users">0</div>
+                <div class="stat-label">Paid Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="revenue">₹0</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+        </div>
+        
+        <!-- User List Section -->
+        <div class="section">
+            <h2>All Users</h2>
+            <input type="text" id="search-box" class="search-box" placeholder="Search by username, email, phone...">
+            
+            <div id="loading" class="loading">Loading users...</div>
+            
+            <div id="user-table-container" style="display: none;">
+                <table id="user-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Tier</th>
+                            <th>Expiry</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-tbody">
+                        <!-- Users will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit User Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <h3>Edit User</h3>
+            <form id="edit-form">
+                <div class="form-group">
+                    <label>Username:</label>
+                    <input type="text" id="edit-username" readonly style="background: #f0f0f0;">
+                </div>
+                <div class="form-group">
+                    <label>Full Name:</label>
+                    <input type="text" id="edit-fullname" readonly style="background: #f0f0f0;">
+                </div>
+                <div class="form-group">
+                    <label>Tier:</label>
+                    <select id="edit-tier">
+                        <option value="free">Free</option>
+                        <option value="paid">Paid</option>
+                    </select>
+                </div>
+                <div class="form-group" id="plan-fields" style="display: none;">
+                    <label>Plan Type:</label>
+                    <select id="edit-plan">
+                        <option value="1month">1 Month - ₹200</option>
+                        <option value="3month">3 Months - ₹550</option>
+                        <option value="6month">6 Months - ₹1000</option>
+                        <option value="1year">1 Year - ₹1800</option>
+                    </select>
+                </div>
+                <div class="form-group" id="start-date-field" style="display: none;">
+                    <label>Plan Start Date:</label>
+                    <input type="date" id="edit-start-date">
+                </div>
+                <div class="form-group" id="expiry-field" style="display: none;">
+                    <label>Expiry Date (Auto-calculated):</label>
+                    <input type="text" id="edit-expiry" readonly style="background: #f0f0f0;">
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="/vooo-ai/vooo-config.js"></script>
+    
+    <script>
+        // Check admin auth
+        if (sessionStorage.getItem('vooo_admin_auth') !== 'true') {
+            window.location.href = 'voooadmin.html';
+        }
+        
+        // Initialize Firebase
+        firebase.initializeApp(VOOO_CONFIG.firebase);
+        const db = firebase.firestore();
+        
+        let allUsers = [];
+        let currentEditUser = null;
+        
+        // Load all users
+        async function loadUsers() {
+            try {
+                const snapshot = await db.collection('users').get();
+                allUsers = [];
+                
+                let freeCount = 0;
+                let paidCount = 0;
+                let totalRevenue = 0;
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    allUsers.push({ id: doc.id, ...data });
+                    
+                    if (data.tier === 'paid') {
+                        paidCount++;
+                        // Calculate revenue based on plan
+                        if (data.planType === '1month') totalRevenue += 200;
+                        else if (data.planType === '3month') totalRevenue += 550;
+                        else if (data.planType === '6month') totalRevenue += 1000;
+                        else if (data.planType === '1year') totalRevenue += 1800;
+                    } else {
+                        freeCount++;
+                    }
+                });
+                
+                // Update stats
+                document.getElementById('total-users').textContent = allUsers.length;
+                document.getElementById('free-users').textContent = freeCount;
+                document.getElementById('paid-users').textContent = paidCount;
+                document.getElementById('revenue').textContent = '₹' + totalRevenue.toLocaleString();
+                
+                // Display users
+                displayUsers(allUsers);
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('user-table-container').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading users:', error);
+                document.getElementById('loading').textContent = 'Error loading users: ' + error.message;
+            }
+        }
+        
+        // Display users in table
+        function displayUsers(users) {
+            const tbody = document.getElementById('user-tbody');
+            tbody.innerHTML = '';
+            
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                
+                const expiryDate = user.planExpiryDate ? 
+                    new Date(user.planExpiryDate.seconds * 1000).toLocaleDateString('en-GB') : 
+                    '-';
+                
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.fullName}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td><span class="badge badge-${user.tier}">${user.tier.toUpperCase()}</span></td>
+                    <td>${expiryDate}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="editUser('${user.id}')">Edit</button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Search functionality
+        document.getElementById('search-box').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = allUsers.filter(user => 
+                user.username.toLowerCase().includes(searchTerm) ||
+                user.fullName.toLowerCase().includes(searchTerm) ||
+                user.email.toLowerCase().includes(searchTerm) ||
+                user.phone.includes(searchTerm)
+            );
+            displayUsers(filtered);
+        });
+        
+        // Edit user
+        function editUser(userId) {
+            currentEditUser = allUsers.find(u => u.id === userId);
+            
+            document.getElementById('edit-username').value = currentEditUser.username;
+            document.getElementById('edit-fullname').value = currentEditUser.fullName;
+            document.getElementById('edit-tier').value = currentEditUser.tier || 'free';
+            
+            // Show/hide plan fields
+            if (currentEditUser.tier === 'paid') {
+                document.getElementById('plan-fields').style.display = 'block';
+                document.getElementById('start-date-field').style.display = 'block';
+                document.getElementById('expiry-field').style.display = 'block';
+                
+                if (currentEditUser.planType) {
+                    document.getElementById('edit-plan').value = currentEditUser.planType;
+                }
+                
+                if (currentEditUser.planStartDate) {
+                    const startDate = new Date(currentEditUser.planStartDate.seconds * 1000);
+                    document.getElementById('edit-start-date').value = startDate.toISOString().split('T')[0];
+                }
+            }
+            
+            document.getElementById('edit-modal').classList.add('active');
+        }
+        
+        // Tier change handler
+        document.getElementById('edit-tier').addEventListener('change', function() {
+            if (this.value === 'paid') {
+                document.getElementById('plan-fields').style.display = 'block';
+                document.getElementById('start-date-field').style.display = 'block';
+                document.getElementById('expiry-field').style.display = 'block';
+            } else {
+                document.getElementById('plan-fields').style.display = 'none';
+                document.getElementById('start-date-field').style.display = 'none';
+                document.getElementById('expiry-field').style.display = 'none';
+            }
+        });
+        
+        // Plan or start date change - calculate expiry
+        document.getElementById('edit-plan').addEventListener('change', calculateExpiry);
+        document.getElementById('edit-start-date').addEventListener('change', calculateExpiry);
+        
+        function calculateExpiry() {
+            const plan = document.getElementById('edit-plan').value;
+            const startDate = document.getElementById('edit-start-date').value;
+            
+            if (!plan || !startDate) return;
+            
+            const start = new Date(startDate);
+            const days = plan === '1month' ? 30 : plan === '3month' ? 90 : plan === '6month' ? 180 : 365;
+            
+            const expiry = new Date(start);
+            expiry.setDate(expiry.getDate() + days);
+            
+            document.getElementById('edit-expiry').value = expiry.toLocaleDateString('en-GB');
+        }
+        
+        // Save changes
+        document.getElementById('edit-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const tier = document.getElementById('edit-tier').value;
+            const updateData = { tier: tier };
+            
+            if (tier === 'paid') {
+                const plan = document.getElementById('edit-plan').value;
+                const startDate = new Date(document.getElementById('edit-start-date').value);
+                
+                const days = plan === '1month' ? 30 : plan === '3month' ? 90 : plan === '6month' ? 180 : 365;
+                const expiryDate = new Date(startDate);
+                expiryDate.setDate(expiryDate.getDate() + days);
+                
+                updateData.planType = plan;
+                updateData.planStartDate = firebase.firestore.Timestamp.fromDate(startDate);
+                updateData.planExpiryDate = firebase.firestore.Timestamp.fromDate(expiryDate);
+            } else {
+                updateData.planType = null;
+                updateData.planStartDate = null;
+                updateData.planExpiryDate = null;
+            }
+            
+            try {
+                await db.collection('users').doc(currentEditUser.id).update(updateData);
+                alert('✅ User updated successfully!');
+                closeModal();
+                loadUsers(); // Reload users
+            } catch (error) {
+                alert('❌ Error updating user: ' + error.message);
+            }
+        });
+        
+        function closeModal() {
+            document.getElementById('edit-modal').classList.remove('active');
+            currentEditUser = null;
+        }
+        
+        function logout() {
+            sessionStorage.removeItem('vooo_admin_auth');
+            window.location.href = 'voooadmin.html';
+        }
+        
+        // Load users on page load
+        loadUsers();
+    </script>
+</body>
+</html>
