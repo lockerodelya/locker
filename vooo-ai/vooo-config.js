@@ -91,13 +91,13 @@ const VOOO_CONFIG = {
     // FIREBASE CONFIGURATION
     // ============================================
     firebase: {
-        apiKey: "AIzaSyA9Rg_P5jp3jHYP91LqYrO6fNVxSKn-NvA",
-        authDomain: "odelya-user-data.firebaseapp.com",
-        projectId: "odelya-user-data",
-        storageBucket: "odelya-user-data.firebasestorage.app",
-        messagingSenderId: "590231118790",
-        appId: "1:590231118790:web:572c355c8826ad9c9148c7",
-        measurementId: "G-9SWTR9V32R"
+        apiKey: "AIzaSyCrJ1KVJA0v2-2ARZmY69IzdUmekAXz4xI",
+        authDomain: "odelya-vooo-ai.firebaseapp.com",
+        projectId: "odelya-vooo-ai",
+        storageBucket: "odelya-vooo-ai.firebasestorage.app",
+        messagingSenderId: "860643335615",
+        appId: "1:860643335615:web:9a78cba9f96fb557df150a",
+        measurementId: "G-D5T0JW4W21"
     },
     
     // ============================================
