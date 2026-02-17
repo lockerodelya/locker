@@ -6,557 +6,596 @@
     <title>User Management - Vooo AI Admin</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; }
+        .header { background: #1e40af; color: white; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 1.8em; }
+        .header-btns { display: flex; gap: 10px; }
+        .logout-btn { background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .logout-btn:hover { background: rgba(255,255,255,0.3); }
+        .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+        .stat-value { font-size: 2.5em; font-weight: bold; color: #1e40af; }
+        .stat-label { color: #666; font-size: 0.9em; margin-top: 5px; }
+        .section { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0; }
+        .section-header h2 { color: #333; }
+        .search-box { width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; margin-bottom: 20px; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #e0e0e0; font-size: 0.92em; }
+        th { background: #f8f9fa; font-weight: 600; color: #333; }
+        tr:hover { background: #f8f9ff; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 15px; font-size: 0.82em; font-weight: bold; }
+        .badge-free { background: #fef3c7; color: #92400e; }
+        .badge-paid { background: #d1fae5; color: #065f46; }
+        .btn { padding: 7px 14px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 4px; transition: all 0.3s; font-size: 0.88em; }
+        .btn-primary { background: #2563eb; color: white; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-orange { background: #f97316; color: white; }
+        .btn-orange:hover { background: #ea580c; }
+        .loading { text-align: center; padding: 50px; font-size: 1.2em; color: #666; }
+
+        /* MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: flex-start; padding-top: 30px; overflow-y: auto; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 15px; padding: 30px; max-width: 580px; width: 90%; margin-bottom: 30px; }
+        .modal-content h3 { margin-bottom: 20px; color: #1e40af; font-size: 1.3em; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; color: #333; font-size: 0.93em; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 0.95em;
         }
-        .header {
-            background: #1e40af;
-            color: white;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header h1 {
-            font-size: 1.8em;
-        }
-        .logout-btn {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        .container {
-            max-width: 1400px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #1e40af;
-        }
-        .stat-label {
-            color: #666;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-        .section {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-        .section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-        .search-box {
-            width: 100%;
-            max-width: 400px;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1em;
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #333;
-        }
-        tr:hover {
-            background: #f8f9ff;
-        }
-        .badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.85em;
-            font-weight: bold;
-        }
-        .badge-free {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        .badge-paid {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-right: 5px;
-            transition: all 0.3s;
-        }
-        .btn-primary {
-            background: #2563eb;
-            color: white;
-        }
-        .btn-primary:hover {
-            background: #1d4ed8;
-        }
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-        }
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-        .btn-success {
-            background: #10b981;
-            color: white;
-        }
-        .btn-success:hover {
-            background: #059669;
-        }
-        .loading {
-            text-align: center;
-            padding: 50px;
-            font-size: 1.2em;
-            color: #666;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal.active {
-            display: flex;
-        }
-        .modal-content {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        .modal-content h3 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 1em;
-        }
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #1e40af; }
+        .form-group input[readonly] { background: #f5f5f5; color: #666; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .section-divider { border: none; border-top: 1px solid #e0e0e0; margin: 18px 0; }
+        .field-section-title { font-size: 0.85em; font-weight: 700; color: #1e40af; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; margin-top: 4px; }
+        small { color: #888; font-size: 0.8em; }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="header-content">
-            <h1>🔐 Vooo AI Admin - User Management</h1>
-            <div>
-                <button class="logout-btn" onclick="changePassword()" style="margin-right: 10px;">Change Password</button>
+            <h1>🔐 Vooo AI Admin — User Management</h1>
+            <div class="header-btns">
+                <button class="logout-btn" onclick="changePassword()">Change Password</button>
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
         </div>
     </div>
-    
+
     <div class="container">
-        <!-- Stats Section -->
         <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="total-users">0</div>
-                <div class="stat-label">Total Users</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="free-users">0</div>
-                <div class="stat-label">Free Users</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="paid-users">0</div>
-                <div class="stat-label">Paid Users</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="revenue">₹0</div>
-                <div class="stat-label">Total Revenue</div>
-            </div>
+            <div class="stat-card"><div class="stat-value" id="total-users">0</div><div class="stat-label">Total Users</div></div>
+            <div class="stat-card"><div class="stat-value" id="free-users">0</div><div class="stat-label">Free Users</div></div>
+            <div class="stat-card"><div class="stat-value" id="paid-users">0</div><div class="stat-label">Paid Users</div></div>
+            <div class="stat-card"><div class="stat-value" id="revenue">₹0</div><div class="stat-label">Total Revenue</div></div>
         </div>
-        
-        <!-- User List Section -->
+
         <div class="section">
-            <h2>All Users</h2>
-            <input type="text" id="search-box" class="search-box" placeholder="Search by username, email, phone...">
-            
+            <div class="section-header">
+                <h2>All Users</h2>
+                <button class="btn btn-success" onclick="openCreateModal()">+ Create New User</button>
+            </div>
+            <input type="text" id="search-box" class="search-box" placeholder="Search by username, name, email, phone...">
             <div id="loading" class="loading">Loading users...</div>
-            
-            <div id="user-table-container" style="display: none;">
-                <table id="user-table">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Tier</th>
-                            <th>Expiry</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="user-tbody">
-                        <!-- Users will be loaded here -->
-                    </tbody>
-                </table>
+            <div id="user-table-container" style="display:none;">
+                <div class="table-wrap">
+                    <table id="user-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>DOB</th>
+                                <th>Tier</th>
+                                <th>MCQs</th>
+                                <th>Expiry</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-tbody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-    
-    <!-- Edit User Modal -->
+
+    <!-- ====== EDIT USER MODAL ====== -->
     <div id="edit-modal" class="modal">
         <div class="modal-content">
-            <h3>Edit User</h3>
-            <form id="edit-form">
-                <div class="form-group">
-                    <label>Username:</label>
-                    <input type="text" id="edit-username" readonly style="background: #f0f0f0;">
+            <h3>✏️ Edit User</h3>
+            <form id="edit-form" autocomplete="off">
+
+                <div class="field-section-title">Account Info</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Username <small>(read-only)</small></label>
+                        <input type="text" id="edit-username" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="edit-fullname" required maxlength="25">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="text" id="edit-dob" placeholder="DD-MM-YYYY">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" id="edit-phone" maxlength="10">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Full Name:</label>
-                    <input type="text" id="edit-fullname" readonly style="background: #f0f0f0;">
+                    <label>Email *</label>
+                    <input type="email" id="edit-email" required>
                 </div>
                 <div class="form-group">
-                    <label>Tier:</label>
+                    <label>Password <small>(stored value — change if needed)</small></label>
+                    <input type="text" id="edit-password" maxlength="12">
+                </div>
+
+                <hr class="section-divider">
+                <div class="field-section-title">Security</div>
+                <div class="form-group">
+                    <label>Security Question</label>
+                    <select id="edit-security-question">
+                        <option value="">— select —</option>
+                        <option>In which city were you born?</option>
+                        <option>What is your favourite subject?</option>
+                        <option>Which color do you like most?</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Security Answer</label>
+                    <input type="text" id="edit-security-answer">
+                </div>
+
+                <hr class="section-divider">
+                <div class="field-section-title">Plan &amp; Tier</div>
+                <div class="form-group">
+                    <label>Tier *</label>
                     <select id="edit-tier">
                         <option value="free">Free</option>
                         <option value="paid">Paid</option>
                     </select>
                 </div>
-                <div class="form-group" id="plan-fields" style="display: none;">
-                    <label>Plan Type:</label>
-                    <select id="edit-plan">
-                        <option value="1month">1 Month - ₹200</option>
-                        <option value="3month">3 Months - ₹550</option>
-                        <option value="6month">6 Months - ₹1000</option>
-                        <option value="1year">1 Year - ₹1800</option>
-                    </select>
+                <div id="edit-plan-fields" style="display:none;">
+                    <div class="form-group">
+                        <label>Plan Type</label>
+                        <select id="edit-plan">
+                            <option value="1month">1 Month — ₹200</option>
+                            <option value="3month">3 Months — ₹550</option>
+                            <option value="6month">6 Months — ₹1000</option>
+                            <option value="1year">1 Year — ₹1800</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Plan Start Date</label>
+                            <input type="date" id="edit-start-date">
+                        </div>
+                        <div class="form-group">
+                            <label>Expiry Date (auto)</label>
+                            <input type="text" id="edit-expiry" readonly>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group" id="start-date-field" style="display: none;">
-                    <label>Plan Start Date:</label>
-                    <input type="date" id="edit-start-date">
-                </div>
-                <div class="form-group" id="expiry-field" style="display: none;">
-                    <label>Expiry Date (Auto-calculated):</label>
-                    <input type="text" id="edit-expiry" readonly style="background: #f0f0f0;">
-                </div>
+
                 <div class="modal-buttons">
-                    <button type="submit" class="btn btn-success">Save Changes</button>
-                    <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-success">💾 Save Changes</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal('edit-modal')">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
-    
+
+    <!-- ====== CREATE USER MODAL ====== -->
+    <div id="create-modal" class="modal">
+        <div class="modal-content">
+            <h3>➕ Create New User</h3>
+            <form id="create-form" autocomplete="off">
+
+                <div class="field-section-title">Account Info</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="create-fullname" required maxlength="25">
+                    </div>
+                    <div class="form-group">
+                        <label>Username * <small>8-12 chars</small></label>
+                        <input type="text" id="create-username" required minlength="8" maxlength="12">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="text" id="create-dob" placeholder="DD-MM-YYYY">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" id="create-phone" maxlength="10">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="create-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password * <small>8-12 chars</small></label>
+                    <input type="text" id="create-password" required minlength="8" maxlength="12">
+                </div>
+
+                <hr class="section-divider">
+                <div class="field-section-title">Security</div>
+                <div class="form-group">
+                    <label>Security Question</label>
+                    <select id="create-security-question">
+                        <option value="">— select —</option>
+                        <option>In which city were you born?</option>
+                        <option>What is your favourite subject?</option>
+                        <option>Which color do you like most?</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Security Answer</label>
+                    <input type="text" id="create-security-answer">
+                </div>
+
+                <hr class="section-divider">
+                <div class="field-section-title">Plan &amp; Tier</div>
+                <div class="form-group">
+                    <label>Tier</label>
+                    <select id="create-tier">
+                        <option value="free">Free</option>
+                        <option value="paid">Paid</option>
+                    </select>
+                </div>
+                <div id="create-plan-fields" style="display:none;">
+                    <div class="form-group">
+                        <label>Plan Type</label>
+                        <select id="create-plan">
+                            <option value="1month">1 Month — ₹200</option>
+                            <option value="3month">3 Months — ₹550</option>
+                            <option value="6month">6 Months — ₹1000</option>
+                            <option value="1year">1 Year — ₹1800</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Plan Start Date</label>
+                            <input type="date" id="create-start-date">
+                        </div>
+                        <div class="form-group">
+                            <label>Expiry Date (auto)</label>
+                            <input type="text" id="create-expiry" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-success">✅ Create User</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal('create-modal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="/vooo-ai/vooo-config.js"></script>
-    
+
     <script>
-        // Initialize Firebase
         firebase.initializeApp(VOOO_CONFIG.firebase);
         const auth = firebase.auth();
-        const db = firebase.firestore();
-        
+        const db   = firebase.firestore();
+
         let allUsers = [];
         let currentEditUser = null;
-        
-        // Check if admin is authenticated
+
+        // ====== AUTH CHECK ======
         auth.onAuthStateChanged(async (user) => {
-            if (!user) {
-                // Not logged in - redirect to login
-                window.location.href = 'voooadmin.html';
-                return;
-            }
-            
-            // Check if user is VOOO admin
+            if (!user) { window.location.href = 'voooadmin.html'; return; }
             const adminDoc = await db.collection('vooo_admins').doc(user.uid).get();
             if (!adminDoc.exists) {
-                alert('❌ You are not authorized as Vooo AI admin');
+                alert('❌ Not authorized as Vooo AI admin');
                 await auth.signOut();
                 window.location.href = 'voooadmin.html';
                 return;
             }
-            
-            // User is admin - load users
             loadUsers();
         });
-        
-        // Load all users
+
+        // ====== LOAD USERS ======
         async function loadUsers() {
             try {
                 const snapshot = await db.collection('users').get();
-                
-                // ⭐ FILTER in code instead: Only show Vooo AI users
                 allUsers = [];
-                
-                let freeCount = 0;
-                let paidCount = 0;
-                let totalRevenue = 0;
-                
+                let freeCount = 0, paidCount = 0, totalRevenue = 0;
+
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    
-                    // ⭐ Only add Vooo AI users (skip cloud users)
                     if (data.vooo_user === true) {
                         allUsers.push({ id: doc.id, ...data });
-                        
                         if (data.tier === 'paid') {
                             paidCount++;
-                            // Calculate revenue based on plan
                             if (data.planType === '1month') totalRevenue += 200;
                             else if (data.planType === '3month') totalRevenue += 550;
                             else if (data.planType === '6month') totalRevenue += 1000;
                             else if (data.planType === '1year') totalRevenue += 1800;
-                        } else {
-                            freeCount++;
-                        }
+                        } else { freeCount++; }
                     }
                 });
-                
-                // Update stats
+
                 document.getElementById('total-users').textContent = allUsers.length;
-                document.getElementById('free-users').textContent = freeCount;
-                document.getElementById('paid-users').textContent = paidCount;
-                document.getElementById('revenue').textContent = '₹' + totalRevenue.toLocaleString();
-                
-                // Display users
+                document.getElementById('free-users').textContent  = freeCount;
+                document.getElementById('paid-users').textContent  = paidCount;
+                document.getElementById('revenue').textContent     = '₹' + totalRevenue.toLocaleString();
+
                 displayUsers(allUsers);
-                
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('user-table-container').style.display = 'block';
-                
-            } catch (error) {
-                console.error('Error loading users:', error);
-                document.getElementById('loading').textContent = 'Error loading users: ' + error.message;
+            } catch (err) {
+                document.getElementById('loading').textContent = 'Error: ' + err.message;
             }
         }
-        
-        // Display users in table
+
+        // ====== DISPLAY USERS ======
         function displayUsers(users) {
             const tbody = document.getElementById('user-tbody');
             tbody.innerHTML = '';
-            
-            users.forEach(user => {
+            users.forEach((user, idx) => {
+                const expiry = user.planExpiryDate
+                    ? new Date(user.planExpiryDate.seconds * 1000).toLocaleDateString('en-GB')
+                    : '-';
+                const tier = user.tier || 'free';
                 const row = document.createElement('tr');
-                
-                const expiryDate = user.planExpiryDate ? 
-                    new Date(user.planExpiryDate.seconds * 1000).toLocaleDateString('en-GB') : 
-                    '-';
-                
-                const tier = user.tier || 'free'; // Default to 'free' if undefined
-                
                 row.innerHTML = `
-                    <td>${user.username || '-'}</td>
+                    <td>${idx + 1}</td>
+                    <td><strong>${user.username || '-'}</strong></td>
                     <td>${user.fullName || '-'}</td>
                     <td>${user.email || '-'}</td>
                     <td>${user.phone || '-'}</td>
+                    <td>${user.dob || '-'}</td>
                     <td><span class="badge badge-${tier}">${tier.toUpperCase()}</span></td>
-                    <td>${expiryDate}</td>
+                    <td>${user.totalMCQsAttempted || 0}</td>
+                    <td>${expiry}</td>
                     <td>
-                        <button class="btn btn-primary" onclick="editUser('${user.id}')">Edit</button>
+                        <button class="btn btn-primary" onclick="openEditModal('${user.id}')">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteUser('${user.id}', '${user.username}')">Delete</button>
                     </td>
                 `;
-                
                 tbody.appendChild(row);
             });
         }
-        
-        // Search functionality
-        document.getElementById('search-box').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const filtered = allUsers.filter(user => 
-                user.username.toLowerCase().includes(searchTerm) ||
-                user.fullName.toLowerCase().includes(searchTerm) ||
-                user.email.toLowerCase().includes(searchTerm) ||
-                user.phone.includes(searchTerm)
+
+        // ====== SEARCH ======
+        document.getElementById('search-box').addEventListener('input', function() {
+            const s = this.value.toLowerCase();
+            const filtered = allUsers.filter(u =>
+                (u.username || '').toLowerCase().includes(s) ||
+                (u.fullName || '').toLowerCase().includes(s) ||
+                (u.email || '').toLowerCase().includes(s) ||
+                (u.phone || '').includes(s)
             );
             displayUsers(filtered);
         });
-        
-        // Edit user
-        function editUser(userId) {
+
+        // ====== OPEN EDIT MODAL ======
+        function openEditModal(userId) {
             currentEditUser = allUsers.find(u => u.id === userId);
-            
-            document.getElementById('edit-username').value = currentEditUser.username;
-            document.getElementById('edit-fullname').value = currentEditUser.fullName;
-            document.getElementById('edit-tier').value = currentEditUser.tier || 'free';
-            
-            // Show/hide plan fields
-            if (currentEditUser.tier === 'paid') {
-                document.getElementById('plan-fields').style.display = 'block';
-                document.getElementById('start-date-field').style.display = 'block';
-                document.getElementById('expiry-field').style.display = 'block';
-                
-                if (currentEditUser.planType) {
-                    document.getElementById('edit-plan').value = currentEditUser.planType;
+            const u = currentEditUser;
+
+            document.getElementById('edit-username').value          = u.username || '';
+            document.getElementById('edit-fullname').value          = u.fullName || '';
+            document.getElementById('edit-dob').value               = u.dob || '';
+            document.getElementById('edit-phone').value             = u.phone || '';
+            document.getElementById('edit-email').value             = u.email || '';
+            document.getElementById('edit-password').value          = u.password || '';
+            document.getElementById('edit-security-question').value = u.securityQuestion || '';
+            document.getElementById('edit-security-answer').value   = u.securityAnswer || '';
+            document.getElementById('edit-tier').value              = u.tier || 'free';
+
+            // Plan fields
+            const isPaid = u.tier === 'paid';
+            document.getElementById('edit-plan-fields').style.display = isPaid ? 'block' : 'none';
+            if (isPaid) {
+                document.getElementById('edit-plan').value = u.planType || '1month';
+                if (u.planStartDate) {
+                    document.getElementById('edit-start-date').value =
+                        new Date(u.planStartDate.seconds * 1000).toISOString().split('T')[0];
                 }
-                
-                if (currentEditUser.planStartDate) {
-                    const startDate = new Date(currentEditUser.planStartDate.seconds * 1000);
-                    document.getElementById('edit-start-date').value = startDate.toISOString().split('T')[0];
-                }
+                calcExpiry('edit');
             }
-            
+
             document.getElementById('edit-modal').classList.add('active');
         }
-        
-        // Tier change handler
+
+        // ====== TIER CHANGE HANDLERS ======
         document.getElementById('edit-tier').addEventListener('change', function() {
-            if (this.value === 'paid') {
-                document.getElementById('plan-fields').style.display = 'block';
-                document.getElementById('start-date-field').style.display = 'block';
-                document.getElementById('expiry-field').style.display = 'block';
-            } else {
-                document.getElementById('plan-fields').style.display = 'none';
-                document.getElementById('start-date-field').style.display = 'none';
-                document.getElementById('expiry-field').style.display = 'none';
-            }
+            document.getElementById('edit-plan-fields').style.display = this.value === 'paid' ? 'block' : 'none';
         });
-        
-        // Plan or start date change - calculate expiry
-        document.getElementById('edit-plan').addEventListener('change', calculateExpiry);
-        document.getElementById('edit-start-date').addEventListener('change', calculateExpiry);
-        
-        function calculateExpiry() {
-            const plan = document.getElementById('edit-plan').value;
-            const startDate = document.getElementById('edit-start-date').value;
-            
-            if (!plan || !startDate) return;
-            
-            const start = new Date(startDate);
+        document.getElementById('create-tier').addEventListener('change', function() {
+            document.getElementById('create-plan-fields').style.display = this.value === 'paid' ? 'block' : 'none';
+        });
+
+        // ====== EXPIRY CALC ======
+        function calcExpiry(prefix) {
+            const plan  = document.getElementById(prefix + '-plan').value;
+            const start = document.getElementById(prefix + '-start-date').value;
+            if (!plan || !start) return;
             const days = plan === '1month' ? 30 : plan === '3month' ? 90 : plan === '6month' ? 180 : 365;
-            
-            const expiry = new Date(start);
-            expiry.setDate(expiry.getDate() + days);
-            
-            document.getElementById('edit-expiry').value = expiry.toLocaleDateString('en-GB');
+            const exp  = new Date(start);
+            exp.setDate(exp.getDate() + days);
+            document.getElementById(prefix + '-expiry').value = exp.toLocaleDateString('en-GB');
         }
-        
-        // Save changes
+        ['edit-plan','edit-start-date'].forEach(id => document.getElementById(id).addEventListener('change', () => calcExpiry('edit')));
+        ['create-plan','create-start-date'].forEach(id => document.getElementById(id).addEventListener('change', () => calcExpiry('create')));
+
+        // ====== SAVE EDIT ======
         document.getElementById('edit-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
             const tier = document.getElementById('edit-tier').value;
-            const updateData = { tier: tier };
-            
+
+            const updateData = {
+                fullName:         document.getElementById('edit-fullname').value.trim(),
+                dob:              document.getElementById('edit-dob').value.trim(),
+                phone:            document.getElementById('edit-phone').value.trim(),
+                email:            document.getElementById('edit-email').value.trim().toLowerCase(),
+                password:         document.getElementById('edit-password').value.trim(),
+                securityQuestion: document.getElementById('edit-security-question').value,
+                securityAnswer:   document.getElementById('edit-security-answer').value.trim().toLowerCase(),
+                tier:             tier
+            };
+
             if (tier === 'paid') {
-                const plan = document.getElementById('edit-plan').value;
-                const startDate = new Date(document.getElementById('edit-start-date').value);
-                
-                const days = plan === '1month' ? 30 : plan === '3month' ? 90 : plan === '6month' ? 180 : 365;
-                const expiryDate = new Date(startDate);
-                expiryDate.setDate(expiryDate.getDate() + days);
-                
-                updateData.planType = plan;
-                updateData.planStartDate = firebase.firestore.Timestamp.fromDate(startDate);
-                updateData.planExpiryDate = firebase.firestore.Timestamp.fromDate(expiryDate);
+                const plan  = document.getElementById('edit-plan').value;
+                const start = new Date(document.getElementById('edit-start-date').value);
+                const days  = plan === '1month' ? 30 : plan === '3month' ? 90 : plan === '6month' ? 180 : 365;
+                const exp   = new Date(start);
+                exp.setDate(exp.getDate() + days);
+                updateData.planType       = plan;
+                updateData.planStartDate  = firebase.firestore.Timestamp.fromDate(start);
+                updateData.planExpiryDate = firebase.firestore.Timestamp.fromDate(exp);
             } else {
-                updateData.planType = null;
-                updateData.planStartDate = null;
+                updateData.planType       = null;
+                updateData.planStartDate  = null;
                 updateData.planExpiryDate = null;
             }
-            
+
             try {
                 await db.collection('users').doc(currentEditUser.id).update(updateData);
                 alert('✅ User updated successfully!');
-                closeModal();
-                loadUsers(); // Reload users
-            } catch (error) {
-                alert('❌ Error updating user: ' + error.message);
+                closeModal('edit-modal');
+                loadUsers();
+            } catch (err) {
+                alert('❌ Error: ' + err.message);
             }
         });
-        
-        function closeModal() {
-            document.getElementById('edit-modal').classList.remove('active');
+
+        // ====== OPEN CREATE MODAL ======
+        function openCreateModal() {
+            document.getElementById('create-form').reset();
+            document.getElementById('create-plan-fields').style.display = 'none';
+            document.getElementById('create-modal').classList.add('active');
+        }
+
+        // ====== CREATE USER ======
+        document.getElementById('create-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const fullname  = document.getElementById('create-fullname').value.trim();
+            const username  = document.getElementById('create-username').value.trim();
+            const dob       = document.getElementById('create-dob').value.trim();
+            const phone     = document.getElementById('create-phone').value.trim();
+            const email     = document.getElementById('create-email').value.trim().toLowerCase();
+            const password  = document.getElementById('create-password').value.trim();
+            const secQ      = document.getElementById('create-security-question').value;
+            const secA      = document.getElementById('create-security-answer').value.trim().toLowerCase();
+            const tier      = document.getElementById('create-tier').value;
+
+            // Check username not taken
+            const usernameCheck = await db.collection('users').where('username', '==', username).limit(1).get();
+            if (!usernameCheck.empty) { alert('❌ Username already taken.'); return; }
+
+            try {
+                // Create Firebase Auth user
+                const cred = await auth.createUserWithEmailAndPassword(email, password);
+                const uid  = cred.user.uid;
+                await cred.user.updateProfile({ displayName: fullname });
+
+                const userData = {
+                    username: username,
+                    fullName: fullname,
+                    dob: dob,
+                    phone: phone,
+                    email: email,
+                    password: password,
+                    securityQuestion: secQ,
+                    securityAnswer: secA,
+                    tier: tier,
+                    vooo_user: true,
+                    planType: null,
+                    planStartDate: null,
+                    planExpiryDate: null,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastLogin: null,
+                    dailyStreak: 0,
+                    totalMCQsAttempted: 0,
+                    accuracyScore: 0,
+                    badges: [],
+                    devices: [],
+                    dailyUsage: { date: new Date().toISOString().split('T')[0], count: 0 }
+                };
+
+                if (tier === 'paid') {
+                    const plan  = document.getElementById('create-plan').value;
+                    const start = new Date(document.getElementById('create-start-date').value);
+                    const days  = plan === '1month' ? 30 : plan === '3month' ? 90 : plan === '6month' ? 180 : 365;
+                    const exp   = new Date(start);
+                    exp.setDate(exp.getDate() + days);
+                    userData.planType       = plan;
+                    userData.planStartDate  = firebase.firestore.Timestamp.fromDate(start);
+                    userData.planExpiryDate = firebase.firestore.Timestamp.fromDate(exp);
+                }
+
+                await db.collection('users').doc(uid).set(userData);
+
+                // Sign back in as admin (creating a new auth user signs us in as that user)
+                // We just reload — admin session will be re-checked
+                alert('✅ User "' + username + '" created successfully!\n\nPage will reload to restore admin session.');
+                closeModal('create-modal');
+                window.location.reload();
+
+            } catch (err) {
+                alert('❌ Error creating user: ' + err.message);
+            }
+        });
+
+        // ====== DELETE USER ======
+        async function deleteUser(userId, username) {
+            if (!confirm('⚠️ Delete user "' + username + '"?\n\nThis removes them from Firestore. They will no longer be able to log in.\n\nContinue?')) return;
+            try {
+                await db.collection('users').doc(userId).delete();
+                alert('✅ User "' + username + '" deleted from database.');
+                loadUsers();
+            } catch (err) {
+                alert('❌ Error deleting user: ' + err.message);
+            }
+        }
+
+        // ====== CLOSE MODAL ======
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
             currentEditUser = null;
         }
-        
+
+        // ====== LOGOUT ======
         function logout() {
-            auth.signOut().then(() => {
-                window.location.href = 'voooadmin.html';
-            });
+            auth.signOut().then(() => { window.location.href = 'voooadmin.html'; });
         }
-        
+
         function changePassword() {
             const user = auth.currentUser;
             if (user && user.email) {
                 auth.sendPasswordResetEmail(user.email).then(() => {
-                    alert('✅ Password reset email sent to ' + user.email + '\n\nCheck your email to change password.');
-                }).catch((error) => {
-                    alert('❌ Error: ' + error.message);
-                });
+                    alert('✅ Password reset email sent to ' + user.email);
+                }).catch(err => alert('❌ ' + err.message));
             }
         }
-        
-        // Load users on page load
-        loadUsers();
     </script>
 </body>
 </html>
