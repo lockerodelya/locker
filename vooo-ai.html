@@ -1431,46 +1431,33 @@
     }
 
     async function initVOOOGame() {
-        console.log('🎲 Initialising VOOO game…');
-        const loaded = await voooEngine.loadCategory('math_beginner');
-        if (!loaded) {
-            document.getElementById('vooo-question').textContent = 'Error loading puzzles.';
-            return;
-        }
-        integrateWithPuzzleEngine(voooEngine, voooTemplateManager);
-
-        // Wrap generateNewPuzzle ONCE with limit guard
-        // Store original reference so we never double-wrap
-        if (!voooEngine._originalGenerate) {
-            voooEngine._originalGenerate = voooEngine.generateNewPuzzle.bind(voooEngine);
+        console.log('🎲 Applying limit guard to VOOO game…');
+        // vooo_puzzle_engine.js already called initVOOOGame and loaded the puzzle.
+        // We only wrap generateNewPuzzle with the limit guard here.
+        if (!voooEngine._limitGuardApplied) {
+            voooEngine._limitGuardApplied = true;
+            const _orig = voooEngine.generateNewPuzzle.bind(voooEngine);
             voooEngine.generateNewPuzzle = async function () {
                 const allowed = await canGetNextMCQ();
                 if (!allowed) return null;
-                return voooEngine._originalGenerate();
+                return _orig();
             };
         }
-
-        const puzzle = await voooEngine.generateNewPuzzle();
-        if (puzzle) updatePuzzleDisplay(puzzle);
     }
 
     async function changeLevel(levelKey) {
         console.log('🔄 Changing level to:', levelKey);
         const success = await voooEngine.loadCategory(levelKey);
         if (success) {
-            integrateWithPuzzleEngine(voooEngine, voooTemplateManager);
             voooEngine.resetScore();
-
-            // Re-wrap after integrateWithPuzzleEngine (it may reset the function)
-            if (!voooEngine._originalGenerate) {
-                voooEngine._originalGenerate = voooEngine.generateNewPuzzle.bind(voooEngine);
-            }
+            // Re-apply limit guard after loadCategory resets the engine
+            const _orig = voooEngine.generateNewPuzzle.bind(voooEngine);
+            voooEngine._limitGuardApplied = true;
             voooEngine.generateNewPuzzle = async function () {
                 const allowed = await canGetNextMCQ();
                 if (!allowed) return null;
-                return voooEngine._originalGenerate();
+                return _orig();
             };
-
             nextPuzzle();
         }
     }
