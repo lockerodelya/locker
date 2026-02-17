@@ -368,13 +368,17 @@
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 const user = userCredential.user;
 
-                // Create user document in Firestore
+                // Set displayName immediately — suppresses browser "save password" / change-password prompt
+                await user.updateProfile({ displayName: fullname });
+
+                // Create user document in Firestore — password stored for admin access
                 await db.collection('users').doc(user.uid).set({
                     username: username,
                     fullName: fullname,
                     dob: dob,
                     phone: phone,
                     email: email,
+                    password: password,
                     securityQuestion: securityQuestion,
                     securityAnswer: securityAnswer,
                     tier: 'free',
@@ -394,6 +398,10 @@
                         count: 0
                     }
                 });
+
+                // Sign out immediately after creating account
+                // This prevents browser from detecting an active auth session and showing password prompts
+                await auth.signOut();
 
                 // Show success message
                 successDiv.textContent = '✓ Registration Successful! Redirecting...';
