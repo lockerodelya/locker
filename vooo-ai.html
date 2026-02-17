@@ -1430,11 +1430,16 @@
         }
     }
 
-    async function initVOOOGame() {
-        console.log('🎲 Applying limit guard to VOOO game…');
-        // vooo_puzzle_engine.js already called initVOOOGame and loaded the puzzle.
-        // We only wrap generateNewPuzzle with the limit guard here.
-        if (!voooEngine._limitGuardApplied) {
+    // Apply limit guard to engine's generateNewPuzzle after engine has initialised
+    // We use a small delay to ensure vooo_puzzle_engine.js has finished its own initVOOOGame
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            applyLimitGuard();
+        }, 100);
+    });
+
+    function applyLimitGuard() {
+        if (voooEngine && !voooEngine._limitGuardApplied) {
             voooEngine._limitGuardApplied = true;
             const _orig = voooEngine.generateNewPuzzle.bind(voooEngine);
             voooEngine.generateNewPuzzle = async function () {
@@ -1445,19 +1450,15 @@
         }
     }
 
+    // Override changeLevel to re-apply limit guard after engine resets on category switch
     async function changeLevel(levelKey) {
         console.log('🔄 Changing level to:', levelKey);
         const success = await voooEngine.loadCategory(levelKey);
         if (success) {
             voooEngine.resetScore();
-            // Re-apply limit guard after loadCategory resets the engine
-            const _orig = voooEngine.generateNewPuzzle.bind(voooEngine);
-            voooEngine._limitGuardApplied = true;
-            voooEngine.generateNewPuzzle = async function () {
-                const allowed = await canGetNextMCQ();
-                if (!allowed) return null;
-                return _orig();
-            };
+            // Re-apply guard since loadCategory may reset the engine state
+            voooEngine._limitGuardApplied = false;
+            applyLimitGuard();
             nextPuzzle();
         }
     }
