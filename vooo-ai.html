@@ -248,19 +248,7 @@
 
         .header-logout-btn:hover { background: rgba(255,255,255,0.35); }
 
-        #vooo-header-login-link {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1em;
-            padding: 8px 20px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 6px;
-            transition: background 0.3s;
-            display: none;
-        }
-
-        #vooo-header-login-link:hover { background: rgba(255,255,255,0.35); }
+        
         
         /* ====== INTRO SECTION ====== */
         .vooo-intro-section {
@@ -325,12 +313,35 @@
             padding: 10px 20px;
             display: flex;
             align-items: center;
-            justify-content: flex-end;  /* push buttons to far right */
-            position: relative;
+            justify-content: space-between;
             min-height: 50px;
         }
 
-        /* Sign Up & Login buttons in the gap */
+        /* Buy Plan button — far left of gap strip */
+        .gap-btn-buy {
+            background: #0D47A1;
+            color: white;
+            text-decoration: none;
+            padding: 8px 22px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.95em;
+            border: 2px solid #0D47A1;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .gap-btn-buy:hover {
+            background: #0a3a8a;
+            border-color: #0a3a8a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(13,71,161,0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Sign Up & Login buttons — far right of gap strip */
         .gap-auth-buttons {
             display: flex;
             align-items: center;
@@ -356,6 +367,8 @@
             border-color: #0a3a8a;
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(13,71,161,0.3);
+            color: white;
+            text-decoration: none;
         }
 
         .gap-btn-login {
@@ -376,12 +389,11 @@
             background: #e8eeff;
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(13,71,161,0.2);
+            color: #0D47A1;
+            text-decoration: none;
         }
 
-        /* Hidden by default — shown when logged out */
-        #gap-auth-section { display: flex; }
-
-        /* ====== USER WELCOME STRIP (above container, shown when logged in) ====== */
+        /* ====== USER WELCOME STRIP (above container, logged-in only) ====== */
         .vooo-user-welcome-strip {
             display: none;
             width: 100%;
@@ -398,12 +410,6 @@
             font-size: 0.9em;
             padding: 5px 14px;
             border-radius: 20px;
-        }
-
-        .user-tier-badge.guest {
-            background: #f3f4f6;
-            color: #4b5563;
-            border: 2px solid #d1d5db;
         }
 
         .user-tier-badge.free {
@@ -455,7 +461,7 @@
             margin-bottom: 30px;
         }
 
-        /* Title row: Buy Plan | Logo + Title | Buy Plan */
+        /* Title row: Logo + Title */
         .vooo-title-row {
             display: flex;
             align-items: center;
@@ -484,36 +490,7 @@
             margin-bottom: 0;
         }
 
-        /* Buy Plan button — flanking the title */
-        .btn-buy-plan {
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            color: white;
-            text-decoration: none;
-            padding: 12px 22px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 0.9em;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(255,107,53,0.35);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-buy-plan:hover {
-            background: linear-gradient(135deg, #e55a25, #e8820a);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(255,107,53,0.45);
-            color: white;
-            text-decoration: none;
-        }
-
-        .btn-buy-plan i { font-size: 0.95em; }
+        
         
         .vooo-controls {
             display: flex;
@@ -879,7 +856,6 @@
 
             /* Title row on mobile */
             .vooo-title-row { flex-direction: column; gap: 12px; }
-            .btn-buy-plan { padding: 9px 18px; font-size: 0.82em; }
 
             .vooo-exam-coverage-section { padding: 30px 0; margin-top: 20px; }
             .vooo-coverage-title { font-size: 1.8em; }
@@ -1014,7 +990,8 @@
                 <button onclick="logoutFromVooo()" class="header-logout-btn">Logout</button>
             </div>
 
-            <!-- Dropdown Menu -->
+            
+            
             <div class="nav-right">
                 <a href="/" class="home-nav" onclick="event.preventDefault(); window.location.href='/';">Home</a>
                 <button class="hamburger" id="hamburger" aria-label="Menu">
@@ -1064,25 +1041,24 @@
         </div>
     </section>
 
-    <!-- ====== GAP STRIP: Sign Up / Login buttons (shown when logged out) ====== -->
+    <!-- ====== GAP STRIP: Buy Plan (left) + Sign Up / Login (right) ====== -->
     <div class="vooo-gap-strip">
+        <!-- Far left: Buy Plan -->
+        <a href="https://odelya.online/vooo-ai/vooopricing.html" class="gap-btn-buy">
+            Buy Plan
+        </a>
+        <!-- Far right: Sign Up / Login (hidden when logged in) -->
         <div id="gap-auth-section" class="gap-auth-buttons">
-            <a href="/vooo-ai/vooosignup.html" class="gap-btn-signup">
-                <i class="fas fa-user-plus"></i> Sign Up
-            </a>
-            <a href="/vooo-ai/vooologin.html" class="gap-btn-login">
-                <i class="fas fa-sign-in-alt"></i> Login
-            </a>
+            <a href="/vooo-ai/vooosignup.html" class="gap-btn-signup">Sign Up</a>
+            <a href="/vooo-ai/vooologin.html" class="gap-btn-login">Login</a>
         </div>
     </div>
 
-    <!-- ====== USER WELCOME STRIP (always visible) ====== -->
-    <div id="vooo-user-welcome-strip" class="vooo-user-welcome-strip" style="display:flex;">
-        <!-- Left: Guest / Free / Paid badge -->
-        <div id="vooo-tier-badge" class="user-tier-badge guest">👤 Guest</div>
-        <!-- Centre: welcome message -->
-        <div class="user-welcome-name" id="vooo-welcome-center">
-            
+    <!-- ====== USER WELCOME STRIP (only shown when logged in) ====== -->
+    <div id="vooo-user-welcome-strip" class="vooo-user-welcome-strip">
+        <div id="vooo-tier-badge" class="user-tier-badge free">🆓 Free User</div>
+        <div class="user-welcome-name">
+            Welcome, <span id="vooo-welcome-name-text">User</span>! 👋
         </div>
     </div>
    
@@ -1090,15 +1066,12 @@
     <main class="main-content">
         <div class="vooo-container">
             <div class="vooo-header">
-                <!-- Title row: [Buy Plan] [Logo + Title] [Buy Plan] -->
+                <!-- Title: Logo + Title -->
                 <div class="vooo-title-row">
                     <div class="vooo-title-container">
                         <img src="/vooo-ai/images/vooo-logo.jpg" alt="Vooo AI Logo" class="vooo-logo">
                         <h1 class="vooo-title">Vooo AI Education</h1>
                     </div>
-                    <a href="https://odelya.online/vooo-ai/vooopricing.html" class="btn-buy-plan">
-                        <i class="fas fa-crown"></i> Buy Plan
-                    </a>
                 </div>
             </div>
             
@@ -1355,17 +1328,17 @@
     function showLoggedInUI(data) {
         const displayName = data.fullName || data.username || 'User';
 
-        // Header: show username + logout, hide login link
+        // Header: show username + logout
         document.getElementById('vooo-header-username').textContent = displayName;
         document.getElementById('vooo-user-section').style.display  = 'flex';
-
 
         // Gap strip: hide Sign Up / Login buttons
         document.getElementById('gap-auth-section').style.display = 'none';
 
-        // Welcome strip: always visible — update content for logged-in user
-        document.getElementById('vooo-welcome-name-text').innerHTML =
-            `Welcome, <strong style="color:#7c4dff">${displayName}</strong>! 👋`;
+        // Welcome strip: show
+        const strip = document.getElementById('vooo-user-welcome-strip');
+        strip.style.display = 'flex';
+        document.getElementById('vooo-welcome-name-text').textContent = displayName;
 
         // Tier badge
         const badge = document.getElementById('vooo-tier-badge');
@@ -1379,13 +1352,11 @@
     }
 
     function showLoggedOutUI() {
-        document.getElementById('vooo-user-section').style.display     = 'none';
-        document.getElementById('gap-auth-section').style.display      = 'flex';
+        document.getElementById('vooo-user-section').style.display = 'none';
+        document.getElementById('gap-auth-section').style.display  = 'flex';
 
-        // Welcome strip stays visible — show guest state
-        document.getElementById('vooo-tier-badge').textContent  = '👤 Guest';
-        document.getElementById('vooo-tier-badge').className    = 'user-tier-badge guest';
-        
+        // Welcome strip: hidden for guests
+        document.getElementById('vooo-user-welcome-strip').style.display = 'none';
     }
 
     // ==========================================================
