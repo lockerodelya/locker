@@ -1446,6 +1446,22 @@
             updatePuzzleDisplay(puzzle);
         }
     }
+
+    // Patch createQuestionHash to handle unicode/emoji safely (btoa fails on non-Latin1)
+    voooEngine.createQuestionHash = function(template, variables) {
+        const key = template.template_id + '_' + JSON.stringify(variables);
+        try {
+            return btoa(unescape(encodeURIComponent(key))).substring(0, 20);
+        } catch(e) {
+            // fallback: simple hash
+            let hash = 0;
+            for (let i = 0; i < key.length; i++) {
+                hash = ((hash << 5) - hash) + key.charCodeAt(i);
+                hash |= 0;
+            }
+            return String(Math.abs(hash)).substring(0, 20);
+        }
+    };
         if (voooEngine && !voooEngine._limitGuardApplied) {
             voooEngine._limitGuardApplied = true;
             const _orig = voooEngine.generateNewPuzzle.bind(voooEngine);
