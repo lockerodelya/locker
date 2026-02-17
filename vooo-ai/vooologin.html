@@ -8,7 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0D47A1;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -23,19 +23,56 @@
             width: 100%;
             padding: 40px;
         }
+
+        /* ====== TOP ROW: Back button + Logo ====== */
+        .top-row {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .go-back-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #0D47A1;
+            color: #FFFFFF;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .go-back-btn:hover {
+            background: #0a3a8a;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+
         .logo {
             text-align: center;
-            margin-bottom: 30px;
+            padding-top: 45px;
         }
+
         .logo h1 {
-            color: #667eea;
-            font-size: 2em;
-            margin-bottom: 5px;
+            color: #0D47A1;
+            font-size: 2.8em;
+            font-weight: 800;
+            margin-bottom: 8px;
+            white-space: nowrap;
         }
+
         .logo p {
-            color: #666;
-            font-size: 0.9em;
+            color: #2E7D32;
+            font-size: 1.2em;
+            font-weight: 600;
         }
+
         .form-group {
             margin-bottom: 20px;
         }
@@ -55,12 +92,12 @@
         }
         input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #0D47A1;
         }
         .btn {
             width: 100%;
             padding: 15px;
-            background: #667eea;
+            background: #0D47A1;
             color: white;
             border: none;
             border-radius: 8px;
@@ -69,13 +106,9 @@
             cursor: pointer;
             transition: background 0.3s;
         }
-        .btn:hover {
-            background: #5568d3;
-        }
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
+        .btn:hover { background: #0a3a8a; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+
         .error {
             background: #fee;
             color: #c33;
@@ -92,121 +125,134 @@
             gap: 10px;
         }
         .links a {
-            color: #667eea;
+            color: #000000;
             text-decoration: none;
+            font-weight: 700;
+        }
+        .links a:hover { text-decoration: underline; }
+
+        @media (max-width: 480px) {
+            .logo h1 { font-size: 2em; white-space: normal; }
+            .logo p { font-size: 1em; }
+            .go-back-btn { font-size: 0.9em; padding: 6px 12px; }
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <div class="logo">
-            <h1>🎓 Vooo AI</h1>
-            <p>Login to Your Account</p>
+
+        <!-- Top row: Back button + Logo -->
+        <div class="top-row">
+            <a href="https://odelya.online/vooo-ai" class="go-back-btn">← Back</a>
+            <div class="logo">
+                <h1>🎓 Vooo AI Education</h1>
+                <p>Guaranteed Unlimited Unique MCQs</p>
+            </div>
         </div>
-        
+
         <div id="error-message" class="error"></div>
-        
+
         <form id="login-form" autocomplete="off">
             <div class="form-group">
-                <label for="username">Username or Email</label>
+                <label for="username">Username</label>
                 <input type="text" id="username" name="user_vooo_login" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" required>
             </div>
-            
+
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="text" id="password" name="pass_vooo_login" autocomplete="off" readonly onfocus="this.removeAttribute('readonly'); this.type='password';" required>
             </div>
-            
+
             <button type="submit" class="btn" id="login-btn">Login</button>
         </form>
-        
+
         <div class="links">
             <a href="vooosignup.html">Don't have an account? Sign Up</a>
             <a href="voooreset.html">Forgot Password?</a>
         </div>
     </div>
-    
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="vooo-config.js"></script>
-    
+
     <script>
         // Initialize Firebase
         firebase.initializeApp(VOOO_CONFIG.firebase);
         const auth = firebase.auth();
-        const db = firebase.firestore();
-        
-        const form = document.getElementById('login-form');
+        const db   = firebase.firestore();
+
+        const form     = document.getElementById('login-form');
         const errorDiv = document.getElementById('error-message');
         const loginBtn = document.getElementById('login-btn');
-        
+
         // Clear fields on load
         window.addEventListener('load', () => {
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
         });
-        
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const usernameOrEmail = document.getElementById('username').value.trim().toLowerCase();
-            const password = document.getElementById('password').value;
-            
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Logging in...';
+
+            const usernameInput = document.getElementById('username').value.trim().toLowerCase();
+            const password      = document.getElementById('password').value;
+
+            loginBtn.disabled     = true;
+            loginBtn.textContent  = 'Logging in...';
             errorDiv.style.display = 'none';
-            
+
             try {
-                let email = usernameOrEmail;
-                
-                // If not email format, find email from username
-                if (!usernameOrEmail.includes('@')) {
+                let email = usernameInput;
+
+                // Username entered — look up email from Firestore
+                if (!usernameInput.includes('@')) {
                     const userQuery = await db.collection('users')
-                        .where('username', '==', usernameOrEmail)
+                        .where('username', '==', usernameInput)
                         .limit(1)
                         .get();
-                    
+
                     if (userQuery.empty) {
                         throw new Error('Username not found');
                     }
-                    
+
                     email = userQuery.docs[0].data().email;
                 }
-                
+
                 // Login with Firebase Auth
                 await auth.signInWithEmailAndPassword(email, password);
-                
-                // Update last login
+
+                // Update last login timestamp
                 const user = auth.currentUser;
                 await db.collection('users').doc(user.uid).update({
                     lastLogin: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                
-                // Redirect to dashboard
-                window.location.href = 'vooodashboard.html';
-                
+
+                // Redirect back to Vooo AI page
+                window.location.href = 'https://odelya.online/vooo-ai';
+
             } catch (error) {
                 console.error('Login error:', error);
-                
+
                 let errorMessage = 'Login failed. ';
                 if (error.code === 'auth/wrong-password') {
                     errorMessage += 'Incorrect password.';
                 } else if (error.code === 'auth/user-not-found' || error.message === 'Username not found') {
-                    errorMessage += 'Username or email not found.';
+                    errorMessage += 'Username not found.';
                 } else if (error.code === 'auth/invalid-email') {
-                    errorMessage += 'Invalid email format.';
+                    errorMessage += 'Invalid format.';
                 } else if (error.code === 'auth/too-many-requests') {
                     errorMessage += 'Too many failed attempts. Try again later.';
                 } else {
                     errorMessage += error.message;
                 }
-                
-                errorDiv.textContent = errorMessage;
+
+                errorDiv.textContent   = errorMessage;
                 errorDiv.style.display = 'block';
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'Login';
+                loginBtn.disabled      = false;
+                loginBtn.textContent   = 'Login';
             }
         });
     </script>
