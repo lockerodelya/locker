@@ -1169,11 +1169,43 @@
     <!-- ====== FIXED HEADER ====== -->
     <header>
         <div class="header-container">
-            <div class="logo">
-                <img src="/images/logo2.jpg" alt="Odelya Locker Logo" class="logo-image" 
-     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0iIzBDNDdBMSI+PHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiByeD0iMjUiIGZpbGw9IiNGRkYiLz48dGV4dCB4PSIyNSIgeT0iMzAiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtZmFtaWx5PSJBcmlhbCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzBDNDdBMSI+TzwvdGV4dD48L3N2Zz4=';">
-                <span>Locker</span>
-            </div>
+<div class="logo">
+    <img src="/images/logo2.jpg" alt="Odelya Locker Logo" class="logo-image">
+    <span>Locker</span>
+</div>
+
+<!-- LOGIN/USER INFO - NEW -->
+<div id="vooo-user-section" style="display: none; align-items: center; gap: 15px;">
+    <span id="vooo-header-username" style="color: white; font-weight: bold; font-size: 1.1em;"></span>
+    <button onclick="logoutFromVooo()" style="
+        background: rgba(255,255,255,0.2);
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s;
+    " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
+       onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+        Logout
+    </button>
+</div>
+
+<a id="vooo-login-link" href="/vooo-ai/vooologin.html" style="
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1em;
+    padding: 8px 20px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 6px;
+    transition: background 0.3s;
+    display: none;
+" onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
+   onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+    Login
+</a>
             
             <div class="nav-right">
                 <a href="/" class="home-nav" onclick="event.preventDefault(); window.location.href='/';">Home</a>
@@ -1648,5 +1680,138 @@ function logoutFromMCQ() {
 }
 </script>
 
+<script>
+// ============================================
+// VOOO AI - FIREBASE AUTH INTEGRATION
+// ============================================
+
+// Initialize Firebase (only if not already initialized)
+if (!firebase.apps.length) {
+    firebase.initializeApp(VOOO_CONFIG.firebase);
+}
+const voooAuth = firebase.auth();
+const voooDb = firebase.firestore();
+
+let currentVoooUser = null;
+let userVoooData = null;
+
+// Check authentication state
+voooAuth.onAuthStateChanged(async (user) => {
+    if (user) {
+        // User is logged in
+        currentVoooUser = user;
+        
+        try {
+            const userDoc = await voooDb.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+                userVoooData = userDoc.data();
+                
+                // Show username and logout
+                document.getElementById('vooo-header-username').textContent = userVoooData.username || 'User';
+                document.getElementById('vooo-user-section').style.display = 'flex';
+                document.getElementById('vooo-login-link').style.display = 'none';
+                
+                console.log('✅ Logged in as:', userVoooData.username);
+            }
+        } catch (error) {
+            console.error('Error loading user data:', error);
+        }
+    } else {
+        // User is NOT logged in (guest)
+        currentVoooUser = null;
+        userVoooData = null;
+        
+        // Show login button
+        document.getElementById('vooo-user-section').style.display = 'none';
+        document.getElementById('vooo-login-link').style.display = 'block';
+        
+        console.log('👤 Guest user');
+    }
+});
+
+// Logout function
+function logoutFromVooo() {
+    if (confirm('Logout from Vooo AI?')) {
+        voooAuth.signOut().then(() => {
+            alert('✅ Logged out successfully!');
+            location.reload();
+        });
+    }
+}
+
+// ============================================
+// WRAP MCQ GENERATION WITH SMART TRACKING
+// ============================================
+
+// This runs AFTER the page is fully loaded
+window.addEventListener('load', async () => {
+    // Wait a bit for voooEngine to initialize
+    setTimeout(async () => {
+        if (typeof voooEngine !== 'undefined' && voooEngine.generateNewPuzzle) {
+            const originalGenerate = voooEngine.generateNewPuzzle.bind(voooEngine);
+            
+            voooEngine.generateNewPuzzle = async function() {
+                // Check if user can generate MCQ
+                const canGenerate = await VOOO_SIMPLE_TRACKER.trackMCQ();
+                
+                if (!canGenerate) {
+                    return null; // Blocked by tracker
+                }
+                
+                // If logged in, update Firebase usage
+                if (currentVoooUser && userVoooData) {
+                    try {
+                        const today = new Date().toISOString().split('T')[0];
+                        const currentUsage = userVoooData.dailyUsage || {};
+                        
+                        // Check if same day
+                        if (currentUsage.date === today) {
+                            // Increment count
+                            const newCount = (currentUsage.count || 0) + 1;
+                            
+                            // Check limit for free users
+                            if (userVoooData.tier === 'free' && newCount > 40) {
+                                alert('🎓 Daily limit reached!\n\nYou have used 40/40 MCQs today.\n\nUpgrade for guaranteed millions of unique MCQs!');
+                                window.location.href = '/vooo-ai/vooopricing.html';
+                                return null;
+                            }
+                            
+                            // Update Firebase
+                            await voooDb.collection('users').doc(currentVoooUser.uid).update({
+                                'dailyUsage.count': newCount,
+                                totalMCQsAttempted: firebase.firestore.FieldValue.increment(1)
+                            });
+                            
+                            console.log(`✅ MCQ ${newCount}/40 tracked in Firebase`);
+                        } else {
+                            // New day - reset count
+                            await voooDb.collection('users').doc(currentVoooUser.uid).update({
+                                'dailyUsage.date': today,
+                                'dailyUsage.count': 1,
+                                totalMCQsAttempted: firebase.firestore.FieldValue.increment(1)
+                            });
+                            
+                            console.log('✅ New day - MCQ 1/40 tracked');
+                        }
+                        
+                        // Reload user data
+                        const freshDoc = await voooDb.collection('users').doc(currentVoooUser.uid).get();
+                        userVoooData = freshDoc.data();
+                        
+                    } catch (error) {
+                        console.error('Error tracking MCQ:', error);
+                    }
+                }
+                
+                // Generate the puzzle
+                return originalGenerate();
+            };
+            
+            console.log('✅ Smart MCQ tracking enabled');
+        }
+    }, 1000);
+});
+</script>
+	
 </body>
 </html>
