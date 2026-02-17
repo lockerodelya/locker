@@ -1,32 +1,47 @@
 // ============================================
-// VOOO SIMPLE MCQ TRACKER (localStorage only)
-// Tracks 10 free MCQs before showing login prompt
+// VOOO SMART MCQ TRACKER
+// For GUESTS: localStorage, 20 MCQ limit
+// For LOGGED-IN: Firebase tracks, 40 MCQ limit
 // ============================================
 
 const VOOO_SIMPLE_TRACKER = {
-    FREE_MCQ_LIMIT: 20,
+    GUEST_LIMIT: 20,
     STORAGE_KEY: 'vooo_mcq_count',
     
-    // Get current count
-    getCount() {
+    // Check if user is logged in
+    async isUserLoggedIn() {
+        return new Promise((resolve) => {
+            if (typeof firebase === 'undefined' || !firebase.auth) {
+                resolve(false);
+                return;
+            }
+            
+            firebase.auth().onAuthStateChanged((user) => {
+                resolve(!!user);
+            });
+        });
+    },
+    
+    // Get count for GUESTS only (localStorage)
+    getGuestCount() {
         const count = localStorage.getItem(this.STORAGE_KEY);
         return count ? parseInt(count) : 0;
     },
     
-    // Increment count
-    increment() {
-        const current = this.getCount();
+    // Increment for GUESTS only
+    incrementGuestCount() {
+        const current = this.getGuestCount();
         const newCount = current + 1;
         localStorage.setItem(this.STORAGE_KEY, newCount);
         return newCount;
     },
     
-    // Check if limit reached
-    isLimitReached() {
-        return this.getCount() >= this.FREE_MCQ_LIMIT;
+    // Check if GUEST limit reached
+    isGuestLimitReached() {
+        return this.getGuestCount() >= this.GUEST_LIMIT;
     },
     
-    // Show login prompt
+    // Show login prompt for GUESTS
     showLoginPrompt() {
         const overlay = document.createElement('div');
         overlay.style.cssText = `
@@ -84,18 +99,27 @@ const VOOO_SIMPLE_TRACKER = {
         document.body.appendChild(overlay);
     },
     
-    // Track MCQ generation
-    trackMCQ() {
-        const count = this.increment();
-        console.log(`MCQ ${count}/${this.FREE_MCQ_LIMIT} used`);
+    // Main tracking function - SMART!
+    async trackMCQ() {
+        const isLoggedIn = await this.isUserLoggedIn();
         
-        if (count >= this.FREE_MCQ_LIMIT) {
-            this.showLoginPrompt();
-            return false; // Stop further generation
+        if (isLoggedIn) {
+            // User is logged in - Firebase handles everything, don't block!
+            console.log('✅ Logged-in user - Firebase tracking active');
+            return true; // Allow generation
+        } else {
+            // Guest user - check localStorage limit
+            const count = this.incrementGuestCount();
+            console.log(`Guest MCQ ${count}/${this.GUEST_LIMIT} used`);
+            
+            if (count >= this.GUEST_LIMIT) {
+                this.showLoginPrompt();
+                return false; // Block generation
+            }
+            
+            return true; // Allow generation
         }
-        
-        return true; // Allow generation
     }
 };
 
-console.log('✅ VOOO Simple Tracker loaded');
+console.log('✅ VOOO Smart Tracker loaded');
