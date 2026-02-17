@@ -393,6 +393,25 @@
             text-decoration: none;
         }
 
+        /* NEW: Username text + person icon shown when logged in */
+        .gap-username {
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #0D47A1;
+            display: none;
+        }
+
+        .gap-dashboard-icon {
+            color: #0D47A1;
+            font-size: 2em;
+            text-decoration: none;
+            display: none;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .gap-dashboard-icon:hover { color: #0a3a8a; }
+
         /* ====== USER WELCOME STRIP (above container, logged-in only) ====== */
         .vooo-user-welcome-strip {
             display: none;
@@ -991,8 +1010,6 @@
                 <button onclick="logoutFromVooo()" class="header-logout-btn">Logout</button>
             </div>
 
-            
-            
             <div class="nav-right">
                 <a href="/" class="home-nav" onclick="event.preventDefault(); window.location.href='/';">Home</a>
                 <button class="hamburger" id="hamburger" aria-label="Menu">
@@ -1042,16 +1059,20 @@
         </div>
     </section>
 
-    <!-- ====== GAP STRIP: Buy Plan (left) + Sign Up / Login (right) ====== -->
+    <!-- ====== GAP STRIP: Buy Plan (left) + Auth (right) ====== -->
     <div class="vooo-gap-strip">
-        <!-- Far left: Buy Plan -->
-        <a href="https://odelya.online/vooo-ai/vooopricing.html" class="gap-btn-buy">
+        <!-- Far left: Buy Plan / Upgrade Plan -->
+        <a id="gap-plan-btn" href="https://odelya.online/vooo-ai/vooopricing.html" class="gap-btn-buy">
             Buy Plan
         </a>
-        <!-- Far right: Sign Up / Login (hidden when logged in) -->
+        <!-- Far right: Sign Up + Login (guest) OR Username + Person Icon (logged in) -->
         <div id="gap-auth-section" class="gap-auth-buttons">
-            <a href="/vooo-ai/vooosignup.html" class="gap-btn-signup">Sign Up</a>
-            <a href="/vooo-ai/vooologin.html" class="gap-btn-login">Login</a>
+            <a href="/vooo-ai/vooosignup.html" class="gap-btn-signup" id="gap-signup-btn">Sign Up</a>
+            <a href="/vooo-ai/vooologin.html" class="gap-btn-login" id="gap-login-btn">Login</a>
+            <span id="gap-username-text" class="gap-username"></span>
+            <a href="/vooo-ai/vooodashboard.html" id="gap-dashboard-icon" class="gap-dashboard-icon" title="My Dashboard">
+                <i class="fas fa-user-circle"></i>
+            </a>
         </div>
     </div>
 
@@ -1115,12 +1136,12 @@
                         <option value="mathops_beginner">• General Math Ops</option>
                     </optgroup>
                     <optgroup label="&#128308; Problem Solving">
-                        <option value="problem_comparison_beginner">• Comparison & Analysis</option>
-                        <option value="problem_time_beginner">• Time & Distance</option>
+                        <option value="problem_comparison_beginner">• Comparison &amp; Analysis</option>
+                        <option value="problem_time_beginner">• Time &amp; Distance</option>
                         <option value="problem_probability_beginner">• Probability Basics</option>
                         <option value="problem_classification_beginner">• Basic Classifications</option>
                         <option value="problem_solving_beginner">• Problem Solving</option>
-                        <option value="problem_causeeffect_beginner">• Cause & Effect</option>
+                        <option value="problem_causeeffect_beginner">• Cause &amp; Effect</option>
                     </optgroup>
                 </select>
                 <button onclick="resetGame()" class="vooo-button">Reset</button>
@@ -1212,7 +1233,7 @@
                     </ul>
                 </div>
                 <div class="vooo-exam-category">
-                    <h3 class="vooo-category-title"><span class="vooo-category-icon">🏆</span>Olympiad & Talent</h3>
+                    <h3 class="vooo-category-title"><span class="vooo-category-icon">🏆</span>Olympiad &amp; Talent</h3>
                     <ul class="vooo-exam-list">
                         <li>Math Olympiad (IMO)</li>
                         <li>Science Olympiad (NSO)</li>
@@ -1230,7 +1251,7 @@
                         <li>JEE Main Basics</li>
                         <li>NEET Logical Reasoning</li>
                         <li>Management Aptitude (CAT/MAT)</li>
-                        <li>Insurance & LIC Exams</li>
+                        <li>Insurance &amp; LIC Exams</li>
                     </ul>
                 </div>
             </div>
@@ -1272,19 +1293,11 @@
 
     <!-- ====== FIREBASE AUTH + MCQ LIMIT LOGIC ====== -->
     <script>
-    // ==========================================================
-    // CONSTANTS
-    // ==========================================================
-    const GUEST_MCQ_LIMIT    = 20;   // MCQs for non-logged-in users
-    const FREE_USER_MCQ_LIMIT = 40;  // MCQs for logged-in free users (per day)
-
-    // localStorage keys
+    const GUEST_MCQ_LIMIT    = 20;
+    const FREE_USER_MCQ_LIMIT = 40;
     const LS_GUEST_KEY = 'vooo_guest_mcq_count';
     const LS_GUEST_DATE_KEY = 'vooo_guest_mcq_date';
 
-    // ==========================================================
-    // FIREBASE INIT
-    // ==========================================================
     if (!firebase.apps.length) {
         firebase.initializeApp(VOOO_CONFIG.firebase);
     }
@@ -1293,11 +1306,8 @@
 
     let currentVoooUser = null;
     let userVoooData    = null;
-    let voooInitDone    = false;  // flag so we only init puzzle engine once
+    let voooInitDone    = false;
 
-    // ==========================================================
-    // AUTH STATE OBSERVER
-    // ==========================================================
     voooAuth.onAuthStateChanged(async (user) => {
         if (user) {
             currentVoooUser = user;
@@ -1315,60 +1325,59 @@
             userVoooData    = null;
             showLoggedOutUI();
         }
-
-        // Init puzzle engine exactly once, after auth state is known
         if (!voooInitDone) {
             voooInitDone = true;
             initVOOOGame();
         }
     });
 
-    // ==========================================================
-    // UI HELPERS
-    // ==========================================================
     function showLoggedInUI(data) {
         const displayName = data.fullName || data.username || 'User';
 
-        // Header: show username + logout
+        // Header
         document.getElementById('vooo-header-username').textContent = displayName;
         document.getElementById('vooo-user-section').style.display  = 'flex';
 
-        // Gap strip: hide Sign Up / Login buttons
-        document.getElementById('gap-auth-section').style.display = 'none';
+        // Gap strip RIGHT: hide Sign Up + Login, show username + person icon
+        document.getElementById('gap-signup-btn').style.display     = 'none';
+        document.getElementById('gap-login-btn').style.display      = 'none';
+        document.getElementById('gap-username-text').style.display  = 'inline';
+        document.getElementById('gap-username-text').textContent    = displayName;
+        document.getElementById('gap-dashboard-icon').style.display = 'inline-flex';
 
-        // Welcome strip: show
-        const strip = document.getElementById('vooo-user-welcome-strip');
-        strip.style.display = 'flex';
-        document.getElementById('vooo-welcome-name-text').textContent = displayName;
+        // Gap strip LEFT: Buy Plan or Upgrade Plan
+        const planBtn = document.getElementById('gap-plan-btn');
+        planBtn.textContent = (data.tier === 'paid') ? 'Upgrade Plan' : 'Buy Plan';
+
+        // Welcome strip
+        document.getElementById('vooo-user-welcome-strip').style.display = 'flex';
+        document.getElementById('vooo-welcome-name-text').textContent     = displayName;
 
         // Tier badge
         const badge = document.getElementById('vooo-tier-badge');
         if (data.tier === 'paid') {
             badge.textContent = '⭐ Paid User';
-            badge.className = 'user-tier-badge paid';
+            badge.className   = 'user-tier-badge paid';
         } else {
             badge.textContent = '🆓 Free User';
-            badge.className = 'user-tier-badge free';
+            badge.className   = 'user-tier-badge free';
         }
     }
 
     function showLoggedOutUI() {
-        document.getElementById('vooo-user-section').style.display = 'none';
-        document.getElementById('gap-auth-section').style.display  = 'flex';
-
-        // Welcome strip: hidden for guests
+        document.getElementById('vooo-user-section').style.display       = 'none';
+        document.getElementById('gap-signup-btn').style.display          = 'inline-block';
+        document.getElementById('gap-login-btn').style.display           = 'inline-block';
+        document.getElementById('gap-username-text').style.display       = 'none';
+        document.getElementById('gap-dashboard-icon').style.display      = 'none';
+        document.getElementById('gap-plan-btn').textContent              = 'Buy Plan';
         document.getElementById('vooo-user-welcome-strip').style.display = 'none';
     }
 
-    // ==========================================================
-    // LIMIT MODAL
-    // ==========================================================
     function showLimitModal(title, message) {
         document.getElementById('limit-modal-title').textContent   = title;
         document.getElementById('limit-modal-message').textContent = message;
         document.getElementById('vooo-limit-overlay').classList.add('active');
-
-        // Also blank out the question area
         document.getElementById('vooo-question').textContent = '—';
         document.getElementById('vooo-options').innerHTML    = '';
         document.getElementById('vooo-feedback').textContent  = '';
@@ -1379,14 +1388,10 @@
         document.getElementById('vooo-limit-overlay').classList.remove('active');
     }
 
-    // ==========================================================
-    // GUEST LIMIT (localStorage-based, resets daily)
-    // ==========================================================
     function getGuestCount() {
         const today = new Date().toISOString().split('T')[0];
         const storedDate  = localStorage.getItem(LS_GUEST_DATE_KEY);
         if (storedDate !== today) {
-            // New day — reset
             localStorage.setItem(LS_GUEST_DATE_KEY, today);
             localStorage.setItem(LS_GUEST_KEY, '0');
         }
@@ -1399,22 +1404,12 @@
         return count;
     }
 
-    // ==========================================================
-    // CAN USER GET NEXT MCQ?
-    // Returns: true  → allowed
-    //          false → limit hit (modal already shown)
-    // ==========================================================
     async function canGetNextMCQ() {
-        // ---- LOGGED-IN USER ----
         if (currentVoooUser && userVoooData) {
-            // Paid users: unlimited
             if (userVoooData.tier === 'paid') return true;
-
-            // Free users: 40/day tracked in Firebase
             const today = new Date().toISOString().split('T')[0];
             const usage = userVoooData.dailyUsage || {};
             const count = (usage.date === today) ? (usage.count || 0) : 0;
-
             if (count >= FREE_USER_MCQ_LIMIT) {
                 showLimitModal(
                     'Daily Limit Reached',
@@ -1422,8 +1417,6 @@
                 );
                 return false;
             }
-
-            // Increment in Firebase
             try {
                 const newCount = count + 1;
                 await voooDb.collection('users').doc(currentVoooUser.uid).update({
@@ -1431,15 +1424,12 @@
                     'dailyUsage.count': newCount,
                     totalMCQsAttempted: firebase.firestore.FieldValue.increment(1)
                 });
-                // Keep local copy in sync
                 userVoooData.dailyUsage = { date: today, count: newCount };
             } catch (err) {
                 console.error('Firebase update error:', err);
             }
             return true;
         }
-
-        // ---- GUEST USER ----
         const guestCount = getGuestCount();
         if (guestCount >= GUEST_MCQ_LIMIT) {
             showLimitModal(
@@ -1452,9 +1442,6 @@
         return true;
     }
 
-    // ==========================================================
-    // LOGOUT
-    // ==========================================================
     function logoutFromVooo() {
         if (confirm('Logout from Vooo AI?')) {
             voooAuth.signOut().then(() => {
@@ -1464,40 +1451,28 @@
         }
     }
 
-    // ==========================================================
-    // PUZZLE ENGINE INIT (called once after auth state known)
-    // ==========================================================
     async function initVOOOGame() {
         console.log('🎲 Initialising VOOO game…');
-
         const loaded = await voooEngine.loadCategory('math_beginner');
         if (!loaded) {
             document.getElementById('vooo-question').textContent = 'Error loading puzzles.';
             return;
         }
-
         integrateWithPuzzleEngine(voooEngine, voooTemplateManager);
-
-        // Wrap generateNewPuzzle with limit guard
         const _originalGenerate = voooEngine.generateNewPuzzle.bind(voooEngine);
         voooEngine.generateNewPuzzle = async function () {
             const allowed = await canGetNextMCQ();
             if (!allowed) return null;
             return _originalGenerate();
         };
-
         const puzzle = await voooEngine.generateNewPuzzle();
         if (puzzle) updatePuzzleDisplay(puzzle);
     }
 
-    // Override changeLevel to keep limit guard when switching categories
     async function changeLevel(levelKey) {
         console.log('🔄 Changing level to:', levelKey);
-
-        // Quick pre-check before bothering to load
         const allowed = await canGetNextMCQ();
         if (!allowed) return;
-
         const success = await voooEngine.loadCategory(levelKey);
         if (success) {
             integrateWithPuzzleEngine(voooEngine, voooTemplateManager);
