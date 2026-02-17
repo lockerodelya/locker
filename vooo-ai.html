@@ -1438,7 +1438,14 @@
         }, 100);
     });
 
-    function applyLimitGuard() {
+    // Override nextPuzzle to await the async limit-guarded generateNewPuzzle
+    async function nextPuzzle() {
+        console.log('Loading next puzzle...');
+        const puzzle = await voooEngine.generateNewPuzzle();
+        if (puzzle) {
+            updatePuzzleDisplay(puzzle);
+        }
+    }
         if (voooEngine && !voooEngine._limitGuardApplied) {
             voooEngine._limitGuardApplied = true;
             const _orig = voooEngine.generateNewPuzzle.bind(voooEngine);
