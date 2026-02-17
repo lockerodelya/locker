@@ -396,7 +396,7 @@
         /* NEW: Username text + person icon shown when logged in */
         .gap-username {
             font-weight: 700;
-            font-size: 1.1em;
+            font-size: 1.4em;
             color: #0D47A1;
             display: none;
         }
@@ -1076,13 +1076,7 @@
         </div>
     </div>
 
-    <!-- ====== USER WELCOME STRIP (only shown when logged in) ====== -->
-    <div id="vooo-user-welcome-strip" class="vooo-user-welcome-strip">
-        <div id="vooo-tier-badge" class="user-tier-badge free">🆓 Free User</div>
-        <div class="user-welcome-name">
-            Welcome, <span id="vooo-welcome-name-text">User</span>! 👋
-        </div>
-    </div>
+    <!-- welcome strip removed -->
    
     <!-- ====== MAIN CONTENT — VOOO AI PUZZLE ====== -->
     <main class="main-content">
@@ -1348,20 +1342,6 @@
         // Gap strip LEFT: Buy Plan or Upgrade Plan
         const planBtn = document.getElementById('gap-plan-btn');
         planBtn.textContent = (data.tier === 'paid') ? 'Upgrade Plan' : 'Buy Plan';
-
-        // Welcome strip
-        document.getElementById('vooo-user-welcome-strip').style.display = 'flex';
-        document.getElementById('vooo-welcome-name-text').textContent     = displayName;
-
-        // Tier badge
-        const badge = document.getElementById('vooo-tier-badge');
-        if (data.tier === 'paid') {
-            badge.textContent = '⭐ Paid User';
-            badge.className   = 'user-tier-badge paid';
-        } else {
-            badge.textContent = '🆓 Free User';
-            badge.className   = 'user-tier-badge free';
-        }
     }
 
     function showLoggedOutUI() {
@@ -1371,7 +1351,6 @@
         document.getElementById('gap-username-text').style.display       = 'none';
         document.getElementById('gap-dashboard-icon').style.display      = 'none';
         document.getElementById('gap-plan-btn').textContent              = 'Buy Plan';
-        document.getElementById('vooo-user-welcome-strip').style.display = 'none';
     }
 
     function showLimitModal(title, message) {
