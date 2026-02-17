@@ -488,25 +488,37 @@
                 // Update Firestore
                 await db.collection('users').doc(currentEditUser.id).update(updateData);
 
-                // If password changed, update Firebase Auth too using admin re-auth trick
+                // If password changed, update Firebase Auth by deleting and recreating the auth account
                 if (newPassword && newPassword !== currentEditUser.password) {
-                    // We need the user's current email to sign in as them temporarily
-                    const userEmail = document.getElementById('edit-email').value.trim().toLowerCase();
+                    const userEmail   = document.getElementById('edit-email').value.trim().toLowerCase();
                     const oldPassword = currentEditUser.password || '';
 
                     if (oldPassword) {
                         try {
-                            // Save admin credentials first
                             const adminEmail = auth.currentUser.email;
-                            const adminPasswordForReauth = prompt(
-                                'To change this user\'s login password, enter YOUR admin password:'
-                            );
+                            const adminPasswordForReauth = prompt('To change this user\'s login password, enter YOUR admin password:');
                             if (adminPasswordForReauth) {
-                                creatingUser = true; // pause observer
+                                creatingUser = true;
 
-                                // Sign in as the user to change their password
+                                // Sign in as user with OLD password
                                 const userCred = await auth.signInWithEmailAndPassword(userEmail, oldPassword);
-                                await userCred.user.updatePassword(newPassword);
+                                const userUid  = userCred.user.uid;
+
+                                // Delete their Firebase Auth account
+                                await userCred.user.delete();
+
+                                // Recreate their Firebase Auth account with NEW password
+                                const newCred = await auth.createUserWithEmailAndPassword(userEmail, newPassword);
+                                await newCred.user.updateProfile({ displayName: updateData.fullName });
+
+                                // If UID changed, update Firestore doc to new UID
+                                if (newCred.user.uid !== userUid) {
+                                    const oldData = (await db.collection('users').doc(userUid).get()).data();
+                                    await db.collection('users').doc(newCred.user.uid).set({ ...oldData, ...updateData });
+                                    await db.collection('users').doc(userUid).delete();
+                                }
+
+                                // Sign new auth account out cleanly
                                 await auth.signOut();
 
                                 // Sign admin back in
@@ -522,7 +534,7 @@
                             alert('✅ Firestore updated.\n⚠️ Could not change login password: ' + authErr.message);
                         }
                     } else {
-                        alert('✅ User updated.\n⚠️ Login password NOT changed (old password unknown — user signed up before password storage was added).');
+                        alert('✅ User updated.\n⚠️ Login password NOT changed (old password not stored — this user signed up before the latest update).');
                     }
                 } else {
                     alert('✅ User updated successfully!');
