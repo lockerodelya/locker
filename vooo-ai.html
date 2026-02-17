@@ -1438,24 +1438,39 @@
             return;
         }
         integrateWithPuzzleEngine(voooEngine, voooTemplateManager);
-        const _originalGenerate = voooEngine.generateNewPuzzle.bind(voooEngine);
-        voooEngine.generateNewPuzzle = async function () {
-            const allowed = await canGetNextMCQ();
-            if (!allowed) return null;
-            return _originalGenerate();
-        };
+
+        // Wrap generateNewPuzzle ONCE with limit guard
+        // Store original reference so we never double-wrap
+        if (!voooEngine._originalGenerate) {
+            voooEngine._originalGenerate = voooEngine.generateNewPuzzle.bind(voooEngine);
+            voooEngine.generateNewPuzzle = async function () {
+                const allowed = await canGetNextMCQ();
+                if (!allowed) return null;
+                return voooEngine._originalGenerate();
+            };
+        }
+
         const puzzle = await voooEngine.generateNewPuzzle();
         if (puzzle) updatePuzzleDisplay(puzzle);
     }
 
     async function changeLevel(levelKey) {
         console.log('🔄 Changing level to:', levelKey);
-        const allowed = await canGetNextMCQ();
-        if (!allowed) return;
         const success = await voooEngine.loadCategory(levelKey);
         if (success) {
             integrateWithPuzzleEngine(voooEngine, voooTemplateManager);
             voooEngine.resetScore();
+
+            // Re-wrap after integrateWithPuzzleEngine (it may reset the function)
+            if (!voooEngine._originalGenerate) {
+                voooEngine._originalGenerate = voooEngine.generateNewPuzzle.bind(voooEngine);
+            }
+            voooEngine.generateNewPuzzle = async function () {
+                const allowed = await canGetNextMCQ();
+                if (!allowed) return null;
+                return voooEngine._originalGenerate();
+            };
+
             nextPuzzle();
         }
     }
