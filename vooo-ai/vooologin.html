@@ -19,7 +19,7 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 600px;
+            max-width: 450px;
             width: 100%;
             padding: 40px;
         }
@@ -197,7 +197,7 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const usernameInput = document.getElementById('username').value.trim().toLowerCase();
+            const usernameInput = document.getElementById('username').value.trim();
             const password      = document.getElementById('password').value;
 
             loginBtn.disabled     = true;
@@ -209,10 +209,19 @@
 
                 // Username entered — look up email from Firestore
                 if (!usernameInput.includes('@')) {
-                    const userQuery = await db.collection('users')
+                    // Try exact match first (handles mixed-case usernames)
+                    let userQuery = await db.collection('users')
                         .where('username', '==', usernameInput)
                         .limit(1)
                         .get();
+
+                    // If not found, try lowercase (legacy users)
+                    if (userQuery.empty) {
+                        userQuery = await db.collection('users')
+                            .where('username', '==', usernameInput.toLowerCase())
+                            .limit(1)
+                            .get();
+                    }
 
                     if (userQuery.empty) {
                         throw new Error('Username not found');
