@@ -52,13 +52,13 @@ const VOOO_SIMPLE_TRACKER = {
                 box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             ">
                 <h2 style="color: #2563eb; font-size: 2em; margin-bottom: 20px;">
-                    🎓 You've used your 10 free MCQs!
+                    🎓 You've used your 20 free MCQs!
                 </h2>
                 <p style="font-size: 1.3em; margin-bottom: 30px; line-height: 1.6;">
-                    <strong>Login to get guaranteed millions of unique MCQs from our database</strong>
+                    <strong>Sign up to get 40 free MCQs daily and pay to get guaranteed millions of unique MCQs for all time</strong>
                 </p>
                 <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                    <a href="/vooo-ai/vooologin.html" style="
+                    <a href="/vooo-ai/vooosignup.html" style="
                         background: #2563eb;
                         color: white;
                         padding: 15px 40px;
@@ -66,8 +66,8 @@ const VOOO_SIMPLE_TRACKER = {
                         text-decoration: none;
                         font-weight: bold;
                         font-size: 1.2em;
-                    ">Login</a>
-                    <a href="/vooo-ai/vooosignup.html" style="
+                    ">Sign Up Free</a>
+                    <a href="/vooo-ai/vooologin.html" style="
                         background: white;
                         color: #2563eb;
                         border: 3px solid #2563eb;
@@ -76,7 +76,7 @@ const VOOO_SIMPLE_TRACKER = {
                         text-decoration: none;
                         font-weight: bold;
                         font-size: 1.2em;
-                    ">Sign Up</a>
+                    ">Login</a>
                 </div>
             </div>
         `;
