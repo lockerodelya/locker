@@ -9,40 +9,36 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f7fa;
+            min-height: 100vh;
         }
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             color: white;
-            padding: 20px;
+            padding: 15px 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
         }
-        .header h1 {
-            font-size: 1.8em;
+        .header-left h1 {
+            font-size: 1.5em;
         }
-        .header-nav {
+        .header-right {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
         }
-        .header-nav a, .header-nav button {
-            color: white;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 5px;
+        .btn-header {
+            padding: 10px 20px;
             background: rgba(255,255,255,0.2);
+            color: white;
             border: none;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: bold;
             transition: background 0.3s;
         }
-        .header-nav a:hover, .header-nav button:hover {
+        .btn-header:hover {
             background: rgba(255,255,255,0.3);
         }
         .container {
@@ -50,20 +46,90 @@
             margin: 30px auto;
             padding: 0 20px;
         }
-        .welcome-banner {
+        .welcome-section {
             background: white;
-            border-radius: 15px;
             padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
         }
-        .welcome-banner h2 {
+        .welcome-text h2 {
+            font-size: 2em;
             color: #333;
+            margin-bottom: 5px;
+        }
+        .welcome-text p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        .buy-now-btn {
+            padding: 15px 40px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        .buy-now-btn:hover {
+            background: #5568d3;
+        }
+        .start-mcq-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .start-mcq-btn {
+            padding: 20px 60px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+            transition: all 0.3s;
+        }
+        .start-mcq-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37,99,235,0.4);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
             margin-bottom: 10px;
+        }
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
         }
         .tier-badge {
             display: inline-block;
-            padding: 5px 15px;
+            padding: 8px 20px;
             border-radius: 20px;
             font-weight: bold;
             font-size: 0.9em;
@@ -77,228 +143,134 @@
             background: #d1fae5;
             color: #065f46;
         }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-        .stat-card .icon {
-            font-size: 3em;
-            margin-bottom: 10px;
-        }
-        .stat-card .value {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 5px;
-        }
-        .stat-card .label {
-            color: #666;
-            font-size: 0.9em;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: #e5e7eb;
-            border-radius: 5px;
-            margin-top: 15px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.5s;
-        }
-        .action-section {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .action-section h3 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .btn {
-            padding: 15px 30px;
-            border-radius: 10px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-        .btn-primary:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
-        .btn-secondary {
-            background: #f3f4f6;
-            color: #333;
-        }
-        .btn-secondary:hover {
-            background: #e5e7eb;
-        }
         .upgrade-banner {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            border-radius: 15px;
-            padding: 30px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             color: white;
-            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
             margin-bottom: 30px;
+            text-align: center;
+            display: none;
         }
         .upgrade-banner h3 {
             font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .plan-info {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .plan-info h3 {
+            color: #333;
             margin-bottom: 15px;
         }
-        .upgrade-banner .btn {
-            background: white;
-            color: #f59e0b;
-            margin-top: 15px;
+        .plan-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
         }
-        .badges-section {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .badges-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .badge-item {
-            text-align: center;
-            padding: 15px;
-            border-radius: 10px;
-            background: #f9fafb;
-        }
-        .badge-item.earned {
-            background: #d1fae5;
-        }
-        .badge-item .emoji {
-            font-size: 3em;
-        }
-        .badge-item .name {
-            font-weight: bold;
-            margin-top: 10px;
-            font-size: 0.85em;
+        .plan-detail:last-child {
+            border-bottom: none;
         }
         @media (max-width: 768px) {
-            .header-content {
+            .welcome-section {
                 flex-direction: column;
-                gap: 15px;
+                text-align: center;
             }
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .start-mcq-btn {
+                padding: 15px 40px;
+                font-size: 1.2em;
             }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="header-content">
+        <div class="header-left">
             <h1>🎓 Vooo AI Dashboard</h1>
-            <div class="header-nav">
-                <a href="/vooo-ai.html">Practice MCQs</a>
-                <a href="vooodevices.html">Devices</a>
-                <button onclick="logout()">Logout</button>
-            </div>
+        </div>
+        <div class="header-right">
+            <span id="username-display">Loading...</span>
+            <button class="btn-header" onclick="changePassword()">Change Password</button>
+            <button class="btn-header" onclick="logout()">Logout</button>
         </div>
     </div>
     
     <div class="container">
-        <!-- Welcome Banner -->
-        <div class="welcome-banner">
-            <h2>Welcome back, <span id="user-name">User</span>! 👋</h2>
-            <p>Username: <strong id="username">loading...</strong></p>
-            <span id="tier-badge" class="tier-badge tier-free">Free User</span>
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-text">
+                <h2>Welcome Back, <span id="user-fullname">User</span>!</h2>
+                <p>Your learning journey continues</p>
+            </div>
+            <a href="vooopricing.html" class="buy-now-btn">BUY NOW</a>
         </div>
         
-        <!-- Upgrade Banner (shown only to free users) -->
-        <div id="upgrade-banner" class="upgrade-banner" style="display: none;">
-            <h3>🚀 Upgrade to Unlimited Access!</h3>
-            <p id="upgrade-message">You're using 25/30 MCQs today. Get unlimited questions from all categories!</p>
-            <a href="vooopricing.html" class="btn">View Plans & Pricing</a>
+        <!-- Start MCQ Button -->
+        <div class="start-mcq-section">
+            <button class="start-mcq-btn" onclick="startMCQs()">Start MCQs</button>
+        </div>
+        
+        <!-- Upgrade Banner (for free users approaching limit) -->
+        <div id="upgrade-banner" class="upgrade-banner">
+            <h3>⚡ Upgrade to Unlimited Access!</h3>
+            <p id="upgrade-message"></p>
         </div>
         
         <!-- Stats Grid -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="icon">📊</div>
-                <div class="value" id="today-usage">0/30</div>
-                <div class="label">Today's MCQs Used</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="usage-progress" style="width: 0%"></div>
+                <div class="stat-label">Today's MCQs</div>
+                <div class="stat-value" id="today-usage">0/40</div>
+                <div style="width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; margin-top: 10px; overflow: hidden;">
+                    <div id="usage-progress" style="width: 0%; height: 100%; background: #667eea; transition: width 0.3s;"></div>
                 </div>
             </div>
             
             <div class="stat-card">
-                <div class="icon">🔥</div>
-                <div class="value" id="daily-streak">0</div>
-                <div class="label">Day Streak</div>
+                <div class="stat-label">Account Type</div>
+                <div class="stat-value" style="font-size: 1.5em;">
+                    <span id="tier-badge" class="tier-badge tier-free">FREE</span>
+                </div>
             </div>
             
             <div class="stat-card">
-                <div class="icon">🎯</div>
-                <div class="value" id="accuracy-score">0%</div>
-                <div class="label">Accuracy Score</div>
+                <div class="stat-label">Daily Streak</div>
+                <div class="stat-value" id="daily-streak">0</div>
             </div>
             
             <div class="stat-card">
-                <div class="icon">✅</div>
-                <div class="value" id="total-attempted">0</div>
-                <div class="label">Total MCQs Attempted</div>
+                <div class="stat-label">Total MCQs Attempted</div>
+                <div class="stat-value" id="total-attempted">0</div>
             </div>
         </div>
         
-        <!-- Badges Section -->
-        <div class="badges-section">
-            <h3>🏆 Your Achievements</h3>
-            <div class="badges-grid" id="badges-grid">
-                <!-- Badges will be populated here -->
+        <!-- Plan Info (for paid users) -->
+        <div id="plan-info" class="plan-info" style="display: none;">
+            <h3>📋 Your Plan Details</h3>
+            <div class="plan-detail">
+                <span>Plan Type:</span>
+                <strong id="plan-type">-</strong>
             </div>
-        </div>
-        
-        <!-- Actions Section -->
-        <div class="action-section">
-            <h3>Quick Actions</h3>
-            <div class="action-buttons">
-                <a href="/vooo-ai.html" class="btn btn-primary">Start Practicing MCQs</a>
-                <a href="vooopricing.html" class="btn btn-secondary">View Pricing</a>
-                <button class="btn btn-secondary" onclick="changePassword()">Change Password</button>
-                <button class="btn btn-secondary" onclick="downloadInvoice()" id="invoice-btn" style="display: none;">Download Invoice</button>
+            <div class="plan-detail">
+                <span>Start Date:</span>
+                <strong id="plan-start">-</strong>
             </div>
-        </div>
-        
-        <!-- Account Info (for paid users) -->
-        <div class="action-section" id="plan-info" style="display: none;">
-            <h3>📅 Your Plan</h3>
-            <p><strong>Plan Type:</strong> <span id="plan-type">-</span></p>
-            <p><strong>Started:</strong> <span id="plan-start">-</span></p>
-            <p><strong>Expires:</strong> <span id="plan-expiry">-</span></p>
-            <p><strong>Days Remaining:</strong> <span id="days-remaining">-</span></p>
+            <div class="plan-detail">
+                <span>Expiry Date:</span>
+                <strong id="plan-expiry">-</strong>
+            </div>
+            <div class="plan-detail">
+                <span>Days Remaining:</span>
+                <strong id="days-remaining">-</strong>
+            </div>
         </div>
     </div>
     
@@ -314,8 +286,6 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         
-        let currentUser = null;
-        
         // Check authentication
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
@@ -323,103 +293,91 @@
                 return;
             }
             
-            currentUser = user;
             await loadDashboard(user.uid);
         });
         
-        // Load dashboard data
         async function loadDashboard(userId) {
             try {
                 const userDoc = await db.collection('users').doc(userId).get();
-                const userData = userDoc.data();
                 
-                if (!userData) {
-                    throw new Error('User data not found');
+                if (!userDoc.exists) {
+                    alert('User data not found');
+                    await auth.signOut();
+                    window.location.href = 'vooologin.html';
+                    return;
                 }
                 
-                // Update welcome section
-                document.getElementById('user-name').textContent = userData.fullName;
-                document.getElementById('username').textContent = userData.username;
+                const userData = userDoc.data();
                 
-                // Update tier badge
-                const tierBadge = document.getElementById('tier-badge');
-                if (userData.tier === 'paid') {
-                    tierBadge.textContent = '⭐ Premium User';
-                    tierBadge.className = 'tier-badge tier-paid';
-                    document.getElementById('upgrade-banner').style.display = 'none';
-                    document.getElementById('invoice-btn').style.display = 'inline-block';
+                // Display user info
+                document.getElementById('user-fullname').textContent = userData.fullName || 'User';
+                document.getElementById('username-display').textContent = userData.username || '';
+                
+                // Get usage stats - SIMPLIFIED (40 for free users after signup)
+                const stats = {
+                    tier: userData.tier || 'free',
+                    todayUsed: (userData.dailyUsage?.count || 0),
+                    todayLimit: (userData.tier === 'paid' ? -1 : 40),
+                    totalAttempted: userData.totalMCQsAttempted || 0,
+                    dailyStreak: userData.dailyStreak || 0
+                };
+                
+                // Update usage display
+                if (stats.tier === 'paid') {
+                    document.getElementById('today-usage').textContent = '∞ Unlimited';
+                    document.getElementById('usage-progress').style.width = '100%';
+                    document.getElementById('tier-badge').textContent = 'PREMIUM';
+                    document.getElementById('tier-badge').className = 'tier-badge tier-paid';
+                } else {
+                    document.getElementById('today-usage').textContent = `${stats.todayUsed}/40`;
+                    const percentage = (stats.todayUsed / 40) * 100;
+                    document.getElementById('usage-progress').style.width = percentage + '%';
+                    
+                    // Show upgrade banner if approaching limit
+                    if (stats.todayUsed >= 30) {
+                        document.getElementById('upgrade-banner').style.display = 'block';
+                        document.getElementById('upgrade-message').textContent = 
+                            `You've used ${stats.todayUsed}/40 MCQs today. Upgrade for guaranteed millions of unique MCQs!`;
+                    }
+                }
+                
+                // Update other stats
+                document.getElementById('daily-streak').textContent = stats.dailyStreak;
+                document.getElementById('total-attempted').textContent = stats.totalAttempted;
+                
+                // Show plan info for paid users
+                if (userData.tier === 'paid' && userData.planType) {
                     document.getElementById('plan-info').style.display = 'block';
                     
-                    // Show plan details
-                    if (userData.planType) {
-                        const planConfig = VOOO_CONFIG.pricing.plans[userData.planType];
-                        document.getElementById('plan-type').textContent = planConfig?.display_name || userData.planType;
-                    }
+                    const planNames = {
+                        '1month': '1 Month - ₹200',
+                        '3month': '3 Months - ₹550',
+                        '6month': '6 Months - ₹1000',
+                        '1year': '1 Year - ₹1800'
+                    };
+                    
+                    document.getElementById('plan-type').textContent = planNames[userData.planType] || userData.planType;
                     
                     if (userData.planStartDate) {
-                        const startDate = userData.planStartDate.toDate();
+                        const startDate = new Date(userData.planStartDate.seconds * 1000);
                         document.getElementById('plan-start').textContent = startDate.toLocaleDateString('en-GB');
                     }
                     
                     if (userData.planExpiryDate) {
-                        const expiryDate = userData.planExpiryDate.toDate();
+                        const expiryDate = new Date(userData.planExpiryDate.seconds * 1000);
                         document.getElementById('plan-expiry').textContent = expiryDate.toLocaleDateString('en-GB');
                         
-                        // Calculate days remaining
-                        const now = new Date();
-                        const daysLeft = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
-                        document.getElementById('days-remaining').textContent = daysLeft + ' days';
+                        const today = new Date();
+                        const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                        document.getElementById('days-remaining').textContent = daysLeft > 0 ? daysLeft + ' days' : 'Expired';
                         
-                        // Show renewal reminder if less than 7 days
-                        if (daysLeft <= 7 && daysLeft > 0) {
-                            const banner = document.getElementById('upgrade-banner');
-                            banner.style.display = 'block';
-                            banner.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
-                            document.querySelector('#upgrade-banner h3').textContent = '⚠️ Plan Expiring Soon!';
-                            document.querySelector('#upgrade-banner p').textContent = `Your plan expires in ${daysLeft} days. Renew now to continue unlimited access.`;
-                        }
-                    }
-                } else {
-                    tierBadge.textContent = '📚 Free User';
-                    tierBadge.className = 'tier-badge tier-free';
-                }
-                
-                // Get usage stats - SIMPLIFIED
-                const stats = {
-                    tier: userData.tier || 'free',
-                    todayUsed: (userData.dailyUsage?.count || 0),
-                    todayLimit: (userData.tier === 'paid' ? -1 : 20),
-                    totalAttempted: userData.totalMCQsAttempted || 0,
-                    dailyStreak: userData.dailyStreak || 0,
-                    accuracyScore: userData.accuracyScore || 0,
-                    badges: userData.badges || []
-                };
-                
-                if (stats) {
-                    // Update usage display
-                    if (stats.tier === 'paid') {
-                        document.getElementById('today-usage').textContent = '∞ Unlimited';
-                        document.getElementById('usage-progress').style.width = '100%';
-                    } else {
-                        document.getElementById('today-usage').textContent = `${stats.todayUsed}/${stats.todayLimit}`;
-                        const percentage = (stats.todayUsed / stats.todayLimit) * 100;
-                        document.getElementById('usage-progress').style.width = percentage + '%';
-                        
-                        // Show upgrade banner if approaching limit
-                        if (stats.todayUsed >= stats.todayLimit * 0.8) {
+                        // Show renewal reminder if < 7 days
+                        if (daysLeft > 0 && daysLeft <= 7) {
                             document.getElementById('upgrade-banner').style.display = 'block';
                             document.getElementById('upgrade-message').textContent = 
-                                `You're using ${stats.todayUsed}/${stats.todayLimit} MCQs today. Upgrade for unlimited access!`;
+                                `Your plan expires in ${daysLeft} days. Renew now to continue unlimited access!`;
                         }
                     }
-                    
-                    // Update other stats
-                    document.getElementById('daily-streak').textContent = stats.dailyStreak;
-                    document.getElementById('accuracy-score').textContent = stats.accuracyScore.toFixed(1) + '%';
-                    document.getElementById('total-attempted').textContent = stats.totalAttempted;
-                    
-                    // Update badges
-                    updateBadges(stats.badges);
                 }
                 
             } catch (error) {
@@ -428,44 +386,26 @@
             }
         }
         
-        // Update badges display
-        function updateBadges(earnedBadges) {
-            const badgesGrid = document.getElementById('badges-grid');
-            badgesGrid.innerHTML = '';
-            
-            const allBadges = VOOO_CONFIG.gamification.badges;
-            
-            for (const [badgeId, badgeData] of Object.entries(allBadges)) {
-                const earned = earnedBadges.includes(badgeId);
-                
-                const badgeEl = document.createElement('div');
-                badgeEl.className = 'badge-item' + (earned ? ' earned' : '');
-                badgeEl.innerHTML = `
-                    <div class="emoji">${badgeData.emoji}</div>
-                    <div class="name">${badgeData.name}</div>
-                    <div style="font-size: 0.75em; color: #666; margin-top: 5px;">${badgeData.description}</div>
-                `;
-                
-                badgesGrid.appendChild(badgeEl);
+        function startMCQs() {
+            window.location.href = '/vooo-ai';
+        }
+        
+        function changePassword() {
+            const user = auth.currentUser;
+            if (user && user.email) {
+                auth.sendPasswordResetEmail(user.email).then(() => {
+                    alert('✅ Password reset email sent to ' + user.email + '\n\nCheck your email to change password.');
+                }).catch((error) => {
+                    alert('❌ Error: ' + error.message);
+                });
             }
         }
         
-        // Logout
         async function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 await auth.signOut();
                 window.location.href = 'vooologin.html';
             }
-        }
-        
-        // Change password
-        function changePassword() {
-            alert('Password change feature coming soon! Please use "Forgot Password" on login page for now.');
-        }
-        
-        // Download invoice (placeholder)
-        function downloadInvoice() {
-            alert('Invoice download feature coming soon!');
         }
     </script>
 </body>
