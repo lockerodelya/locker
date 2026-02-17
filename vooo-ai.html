@@ -1024,6 +1024,63 @@
                 font-size: 1.6em;
             }
         }
+
+/* User info bar - shows during MCQ */
+.user-info-bar {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    background: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: none;
+    align-items: center;
+    gap: 15px;
+    z-index: 999;
+}
+
+.user-info-bar.active {
+    display: flex;
+}
+
+.user-name {
+    font-weight: bold;
+    color: #0D47A1;
+}
+
+.logout-btn-mcq {
+    padding: 8px 16px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.logout-btn-mcq:hover {
+    background: #dc2626;
+}
+
+@media (max-width: 768px) {
+    .user-info-bar {
+        top: 50px;
+        right: 10px;
+        padding: 8px 12px;
+        gap: 10px;
+    }
+    
+    .user-name {
+        font-size: 0.9em;
+    }
+    
+    .logout-btn-mcq {
+        padding: 6px 12px;
+        font-size: 0.9em;
+    }
+}
+		
     </style>
     
     <!-- JavaScript for Dropdown -->
@@ -1151,6 +1208,12 @@
         </div>
     </header>
 
+<!-- User Info Bar (shows when logged in during MCQs) -->
+<div id="user-info-bar" class="user-info-bar">
+    <span class="user-name" id="mcq-username">Guest</span>
+    <button class="logout-btn-mcq" onclick="logoutFromMCQ()">Logout</button>
+</div>
+	
     <!-- ====== ✨ NEW: FULL-WIDTH INTRO CONTENT SECTION ====== -->
     <section class="vooo-intro-section">
         <div class="vooo-intro-content">
@@ -1551,5 +1614,39 @@ if (document.readyState === 'loading') {
 
     <!-- Level Up Prompt -->
     <div id="vooo-level-up-prompt"></div>	
+
+<script>
+// Load Firebase and check if user is logged in
+firebase.initializeApp(VOOO_CONFIG.firebase);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+auth.onAuthStateChanged(async (user) => {
+    if (user) {
+        // User is logged in - show username
+        try {
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                document.getElementById('mcq-username').textContent = userData.username || 'User';
+                document.getElementById('user-info-bar').classList.add('active');
+            }
+        } catch (error) {
+            console.error('Error loading user info:', error);
+        }
+    }
+});
+
+function logoutFromMCQ() {
+    if (confirm('Logout from Vooo AI?')) {
+        auth.signOut().then(() => {
+            document.getElementById('user-info-bar').classList.remove('active');
+            alert('Logged out successfully!');
+            location.reload();
+        });
+    }
+}
+</script>
+
 </body>
 </html>
