@@ -41,6 +41,11 @@ const VOOO_SIMPLE_TRACKER = {
         return this.getGuestCount() >= this.GUEST_LIMIT;
     },
     
+    // NEW: Check if limit reached (for compatibility)
+    isLimitReached() {
+        return this.isGuestLimitReached();
+    },
+    
     // Show login prompt for GUESTS
     showLoginPrompt() {
         const overlay = document.createElement('div');
