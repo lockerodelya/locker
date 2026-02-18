@@ -153,7 +153,7 @@
             border: none;
             padding: 15px;
             border-radius: 10px;
-            color: #000;
+            color: #cc0000;
             font-weight: bold;
             font-size: 1.05em;
             text-align: center;
@@ -247,12 +247,23 @@
         .checkbox-container {
             margin: 20px 0;
             text-align: left;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
         }
-        .checkbox-container input {
-            margin-right: 10px;
+        .checkbox-container input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            min-width: 22px;
+            cursor: pointer;
+            margin-top: 2px;
         }
         .checkbox-container label {
-            color: #666;
+            color: #333;
+            font-size: 1.1em;
+            font-weight: 500;
+            line-height: 1.5;
+            cursor: pointer;
         }
 
         /* Mobile Styles */
@@ -291,7 +302,7 @@
 </head>
 <body>
 
-    <a class="back-btn" href="#">
+    <a class="back-btn" href="#" onclick="history.back(); return false;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
@@ -331,6 +342,13 @@
             <p>• No hidden charges</p>
             <p>• GST Invoice provided</p>
         </div>
+
+        <div class="info-section">
+            <h2>Contact and Support</h2>
+            <p>• Phone : +91-96741 30001</p>
+            <p>• Whatsapp : +91-96741 30001</p>
+            <p>• Email : care.ompl@gmail.com</p>
+        </div>
     </div>
     
     <!-- Payment Modal -->
@@ -346,7 +364,7 @@
             </div>
             
             <div class="payment-details">
-                <p><strong>Amount to Pay:</strong> <span id="amount-to-pay" style="font-size: 1.5em; color: #22c55e;">₹0</span></p>
+                <p><strong>Amount to Pay:</strong> <span id="amount-to-pay" style="font-size: 1.5em; color: #22c55e;">INR 0</span></p>
                 <p><strong>UPI ID:</strong> 9874295005@sbi</p>
                 <p><strong>Beneficiary:</strong> Odelya Management Pvt. Ltd.</p>
             </div>
@@ -357,14 +375,13 @@
                     <li>Scan the QR code above using any UPI app (Google Pay, PhonePe, Paytm, etc.)</li>
                     <li>Pay the <strong>EXACT</strong> amount shown above</li>
                     <li>Take a screenshot of successful payment</li>
-                    <li>Call or WhatsApp us at <strong>+91-9674130001</strong> with:
+                    <li>Share with Whatsapp: <strong>+91-96741 30001</strong>
                         <ul style="margin-top: 10px;">
-                            <li>Payment screenshot</li>
-                            <li>Your registered username/email</li>
-                            <li>Selected plan (1 month / 3 months / 6 months / 1 year)</li>
+                            <li>The transaction details</li>
+                            <li>Registered email id</li>
+                            <li>Registered phone no</li>
                         </ul>
                     </li>
-                    <li>Your account will be activated within 1 hour during business hours (9 AM - 8 PM IST)</li>
                 </ol>
             </div>
             
@@ -418,7 +435,7 @@
         // Open payment modal
         function openPaymentModal(planKey, planName, amount) {
             document.getElementById('selected-plan-name').textContent = planName + ' Plan';
-            document.getElementById('amount-to-pay').textContent = '₹' + amount;
+            document.getElementById('amount-to-pay').textContent = 'INR ' + amount;
             document.getElementById('payment-modal').classList.add('active');
         }
         
