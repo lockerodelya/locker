@@ -358,7 +358,7 @@
             <h2>Contact and Support</h2>
             <p>• Phone : +91-96741 30001</p>
             <p>• Whatsapp : +91-96741 30001</p>
-            <p>• Email : <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="84e7e5f6e1aaebe9f4e8c4e3e9e5ede8aae7ebe9">[email&#160;protected]</a></p>
+            <p>• Email : care.ompl@gmail.com</p>
         </div>
     </div>
     
@@ -407,24 +407,28 @@
         </div>
     </div>
     
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="vooo-config.js"></script>
     <script>
+        // Hardcoded pricing plans
+        const plans = [
+            { key: 'plan_1m',  display_name: '1 Month Plan',  amount: 200,  duration_days: 30  },
+            { key: 'plan_3m',  display_name: '3 Months Plan', amount: 550,  duration_days: 90  },
+            { key: 'plan_6m',  display_name: '6 Months Plan', amount: 1000, duration_days: 180 },
+            { key: 'plan_1y',  display_name: '1 Year Plan',   amount: 1800, duration_days: 365 }
+        ];
+
         // Generate pricing cards
         function generatePricingCards() {
             const grid = document.getElementById('pricing-grid');
             grid.innerHTML = '';
             
-            for (const [planKey, planData] of Object.entries(VOOO_CONFIG.pricing.plans)) {
+            for (const planData of plans) {
                 const card = document.createElement('div');
                 card.className = 'pricing-card';
                 
-                // Format price label: INR 200, INR 550, etc.
                 const priceLabel = 'INR ' + planData.amount;
-
-                // Button label
                 const btnLabel = 'Buy Plan ' + priceLabel;
 
-                card.innerHTML += `
+                card.innerHTML = `
                     <div class="plan-name">${planData.display_name}</div>
                     <div class="price">${priceLabel}</div>
                     <ul class="features">
@@ -434,7 +438,7 @@
                         <li>${planData.duration_days} days access</li>
                         <li>Whatsapp Support</li>
                     </ul>
-                    <button class="btn" onclick="openPaymentModal('${planKey}', '${planData.display_name}', ${planData.amount})">
+                    <button class="btn" onclick="openPaymentModal('${planData.key}', '${planData.display_name}', ${planData.amount})">
                         ${btnLabel}
                     </button>
                 `;
