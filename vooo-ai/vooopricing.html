@@ -49,14 +49,23 @@
             color: white;
             margin-bottom: 50px;
         }
-        .header img.logo {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            margin-bottom: 15px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
+        .logo-circle {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 15px auto;
+            border: 3px solid rgba(255,255,255,0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .header h1 {
             font-size: 3em;
@@ -311,7 +320,9 @@
 
     <div class="pricing-container">
         <div class="header">
-            <img class="logo" src="/vooo-ai/images/vooo-logo.jpg" alt="Vooo Logo">
+            <div class="logo-circle">
+                <img src="/vooo-ai/images/vooo-logo.jpg" alt="Vooo Logo">
+            </div>
             <h1>Vooo AI Education Pricing</h1>
             <p>Guaranteed Unlimited Unique MCQs</p>
         </div>
@@ -347,7 +358,7 @@
             <h2>Contact and Support</h2>
             <p>• Phone : +91-96741 30001</p>
             <p>• Whatsapp : +91-96741 30001</p>
-            <p>• Email : care.ompl@gmail.com</p>
+            <p>• Email : <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="84e7e5f6e1aaebe9f4e8c4e3e9e5ede8aae7ebe9">[email&#160;protected]</a></p>
         </div>
     </div>
     
@@ -356,7 +367,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Complete Your Payment</h2>
-                <p id="selected-plan-name"></p>
+                <p id="modal-price" style="font-size: 2em; font-weight: bold; color: #cc0000; margin-top: 8px;"></p>
             </div>
             
             <div class="qr-container">
@@ -375,11 +386,11 @@
                     <li>Scan the QR code above using any UPI app (Google Pay, PhonePe, Paytm, etc.)</li>
                     <li>Pay the <strong>EXACT</strong> amount shown above</li>
                     <li>Take a screenshot of successful payment</li>
-                    <li>Share with Whatsapp: <strong>+91-96741 30001</strong>
-                        <ul style="margin-top: 10px;">
-                            <li>The transaction details</li>
-                            <li>Registered email id</li>
-                            <li>Registered phone no</li>
+                    <li>Share through Whatsapp: <strong>+91-96741 30001</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px; list-style: disc;">
+                            <li style="margin: 6px 0; color: #333;">The transaction details</li>
+                            <li style="margin: 6px 0; color: #333;">Registered email id</li>
+                            <li style="margin: 6px 0; color: #333;">Registered phone no</li>
                         </ul>
                     </li>
                 </ol>
@@ -396,7 +407,7 @@
         </div>
     </div>
     
-    <script src="vooo-config.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="vooo-config.js"></script>
     <script>
         // Generate pricing cards
         function generatePricingCards() {
@@ -434,7 +445,7 @@
         
         // Open payment modal
         function openPaymentModal(planKey, planName, amount) {
-            document.getElementById('selected-plan-name').textContent = planName + ' Plan';
+            document.getElementById('modal-price').textContent = 'INR ' + amount;
             document.getElementById('amount-to-pay').textContent = 'INR ' + amount;
             document.getElementById('payment-modal').classList.add('active');
         }
@@ -452,12 +463,4 @@
         // Initialize
         generatePricingCards();
         
-        // Close modal when clicking outside
-        document.getElementById('payment-modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePaymentModal();
-            }
-        });
-    </script>
-</body>
-</html>
+        // Close modal when clicki
