@@ -95,6 +95,7 @@
             cursor: pointer;
             text-decoration: none;
             transition: background 0.3s;
+            display: inline-block;
         }
         .plan-action-btn:hover { background: #b71c1c; color: white; text-decoration: none; }
         .plan-action-btn.upgrade {
@@ -174,10 +175,123 @@
         }
         .plan-detail:last-child { border-bottom: none; }
 
+        /* ── Change Password Modal ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: white;
+            border-radius: 14px;
+            padding: 35px 30px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .modal-box h3 {
+            color: #0D47A1;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .modal-field {
+            margin-bottom: 16px;
+        }
+        .modal-field label {
+            display: block;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        .modal-field input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .modal-field input:focus { border-color: #0D47A1; }
+        .modal-policy {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .modal-policy ul { padding-left: 18px; }
+        .modal-error {
+            color: #C62828;
+            font-size: 0.85em;
+            margin-bottom: 12px;
+            display: none;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 11px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .modal-btn-confirm {
+            background: #0D47A1;
+            color: white;
+        }
+        .modal-btn-confirm:hover { background: #0a3a8a; }
+        .modal-btn-cancel {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .modal-btn-cancel:hover { background: #e0e0e0; }
+        .modal-close {
+            position: absolute;
+            top: 12px; right: 16px;
+            background: none;
+            border: none;
+            font-size: 1.4em;
+            cursor: pointer;
+            color: #999;
+        }
+        .modal-close:hover { color: #333; }
+
         @media (max-width: 768px) {
             .welcome-section { flex-direction: column; text-align: center; }
             .header { flex-wrap: wrap; gap: 10px; }
-            .start-mcq-btn { padding: 15px 40px; font-size: 1.2em; }
+
+            /* smaller header buttons on mobile */
+            .btn-back {
+                font-size: 1em;
+                font-weight: 500;
+            }
+            .btn-header {
+                font-size: 1em;
+                font-weight: 500;
+                padding: 7px 14px;
+            }
+
+            /* slightly smaller action buttons on mobile */
+            .plan-action-btn,
+            .start-mcq-btn {
+                padding: 12px 28px;
+                font-size: 1.2em;
+            }
+
+            .modal-box { margin: 0 16px; padding: 28px 20px; }
         }
     </style>
 </head>
@@ -188,8 +302,39 @@
             <a href="javascript:history.back()" class="btn-back">← Back</a>
         </div>
         <div class="header-right">
-            <button class="btn-header" onclick="changePassword()">Change Password</button>
+            <button class="btn-header" onclick="openChangePasswordModal()">Change Password</button>
             <button class="btn-header" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="change-password-modal" class="modal-overlay">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeChangePasswordModal()">✕</button>
+            <h3>🔒 Change Password</h3>
+            <div class="modal-policy">
+                Password must contain:
+                <ul>
+                    <li>At least 8 characters</li>
+                    <li>One uppercase letter (A–Z)</li>
+                    <li>One lowercase letter (a–z)</li>
+                    <li>One number (0–9)</li>
+                    <li>One special character (!@#$%^&* etc.)</li>
+                </ul>
+            </div>
+            <div class="modal-field">
+                <label for="new-password">New Password</label>
+                <input type="password" id="new-password" placeholder="Enter new password" oninput="clearModalError()">
+            </div>
+            <div class="modal-field">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" placeholder="Confirm new password" oninput="clearModalError()">
+            </div>
+            <div class="modal-error" id="modal-error"></div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" onclick="closeChangePasswordModal()">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" onclick="submitChangePassword()">Update Password</button>
+            </div>
         </div>
     </div>
 
@@ -368,16 +513,78 @@
             window.location.href = 'https://odelya.online/vooo-ai';
         }
 
-        function changePassword() {
+        // ── Change Password Modal ──
+        function openChangePasswordModal() {
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            clearModalError();
+            document.getElementById('change-password-modal').classList.add('active');
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('change-password-modal').classList.remove('active');
+        }
+
+        function clearModalError() {
+            const err = document.getElementById('modal-error');
+            err.style.display = 'none';
+            err.textContent = '';
+        }
+
+        function showModalError(msg) {
+            const err = document.getElementById('modal-error');
+            err.textContent = msg;
+            err.style.display = 'block';
+        }
+
+        function validatePassword(password) {
+            if (password.length < 8)
+                return 'Password must be at least 8 characters.';
+            if (!/[A-Z]/.test(password))
+                return 'Password must contain at least one uppercase letter.';
+            if (!/[a-z]/.test(password))
+                return 'Password must contain at least one lowercase letter.';
+            if (!/[0-9]/.test(password))
+                return 'Password must contain at least one number.';
+            if (!/[!@#$%^&*()\-_=+\[\]{};':"\\|,.<>\/?]/.test(password))
+                return 'Password must contain at least one special character.';
+            return null;
+        }
+
+        async function submitChangePassword() {
+            const newPass     = document.getElementById('new-password').value;
+            const confirmPass = document.getElementById('confirm-password').value;
+
+            const validationError = validatePassword(newPass);
+            if (validationError) { showModalError(validationError); return; }
+
+            if (newPass !== confirmPass) {
+                showModalError('Passwords do not match.');
+                return;
+            }
+
             const user = auth.currentUser;
-            if (user && user.email) {
-                auth.sendPasswordResetEmail(user.email).then(() => {
-                    alert('✅ Password reset email sent to ' + user.email);
-                }).catch((error) => {
-                    alert('❌ Error: ' + error.message);
-                });
+            if (!user) { showModalError('No user logged in.'); return; }
+
+            try {
+                await user.updatePassword(newPass);
+                closeChangePasswordModal();
+                alert('✅ Password updated successfully! You will be logged out now.');
+                await auth.signOut();
+                window.location.href = 'vooologin.html';
+            } catch (error) {
+                if (error.code === 'auth/requires-recent-login') {
+                    showModalError('Session expired. Please log out and log back in before changing your password.');
+                } else {
+                    showModalError('❌ Error: ' + error.message);
+                }
             }
         }
+
+        // Close modal if clicking outside the box
+        document.getElementById('change-password-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeChangePasswordModal();
+        });
 
         async function logout() {
             if (confirm('Are you sure you want to logout?')) {
