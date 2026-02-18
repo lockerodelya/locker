@@ -29,8 +29,8 @@
 
         /* ← Back button in header */
         .btn-back {
-            background: rgba(255,255,255,0.2);
-            color: #FFFFFF;
+            background: #FFFFFF;
+            color: #0D47A1;
             text-decoration: none;
             padding: 8px 16px;
             border-radius: 8px;
@@ -42,8 +42,8 @@
             white-space: nowrap;
         }
         .btn-back:hover {
-            background: rgba(255,255,255,0.35);
-            color: #FFFFFF;
+            background: #e8eef7;
+            color: #0D47A1;
             text-decoration: none;
         }
 
@@ -54,15 +54,15 @@
         }
         .btn-header {
             padding: 10px 20px;
-            background: rgba(255,255,255,0.2);
-            color: white;
+            background: #FFFFFF;
+            color: #0D47A1;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
             transition: background 0.3s;
         }
-        .btn-header:hover { background: rgba(255,255,255,0.35); }
+        .btn-header:hover { background: #e8eef7; }
 
         .container {
             max-width: 1200px;
@@ -82,11 +82,10 @@
             gap: 20px;
         }
         .welcome-text h2 { font-size: 2em; color: #333; margin-bottom: 5px; }
-        .welcome-text p { color: #666; font-size: 1.1em; }
 
         .plan-action-btn {
             padding: 15px 40px;
-            background: #0D47A1;
+            background: #C62828;
             color: white;
             border: none;
             border-radius: 10px;
@@ -97,7 +96,7 @@
             display: inline-block;
             transition: background 0.3s;
         }
-        .plan-action-btn:hover { background: #0a3a8a; color: white; text-decoration: none; }
+        .plan-action-btn:hover { background: #b71c1c; color: white; text-decoration: none; }
         .plan-action-btn.upgrade {
             background: #2E7D32;
         }
@@ -190,7 +189,6 @@
             <h1>🎓 Vooo AI Dashboard</h1>
         </div>
         <div class="header-right">
-            <span id="username-display">Loading...</span>
             <button class="btn-header" onclick="changePassword()">Change Password</button>
             <button class="btn-header" onclick="logout()">Logout</button>
         </div>
@@ -200,10 +198,9 @@
         <!-- Welcome Section -->
         <div class="welcome-section">
             <div class="welcome-text">
-                <h2>Welcome Back, <span id="user-fullname">User</span>!</h2>
-                <p>Your learning journey continues</p>
+                <h2>Welcome <span id="user-fullname">User</span>!</h2>
             </div>
-            <a id="plan-action-btn" href="/vooo-ai/vooopricing.html" class="plan-action-btn">BUY NOW</a>
+            <a id="plan-action-btn" href="/vooo-ai/vooopricing.html" class="plan-action-btn">Buy Plan</a>
         </div>
 
         <!-- Start MCQ Button -->
@@ -295,18 +292,17 @@
 
                 const userData = userDoc.data();
 
-                document.getElementById('user-fullname').textContent    = userData.fullName || 'User';
-                document.getElementById('username-display').textContent  = userData.username || '';
+                document.getElementById('user-fullname').textContent = userData.fullName || 'User';
 
                 const isPaid = userData.tier === 'paid';
 
-                // Plan action button: BUY NOW or UPGRADE PLAN
+                // Plan action button: Buy Plan or UPGRADE PLAN
                 const planBtn = document.getElementById('plan-action-btn');
                 if (isPaid) {
                     planBtn.textContent = 'UPGRADE PLAN';
                     planBtn.classList.add('upgrade');
                 } else {
-                    planBtn.textContent = 'BUY NOW';
+                    planBtn.textContent = 'Buy Plan';
                 }
 
                 // Usage stats
