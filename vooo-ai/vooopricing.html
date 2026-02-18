@@ -477,8 +477,13 @@ window.location.href = 'https://odelya.online/vooo-ai/vooosignup.html?plan=' + p
             document.getElementById('payment-modal').classList.remove('active');
         }
         
-        // Initialize
-        generatePricingCards();
+       // Initialize
+generatePricingCards();
+const p = new URLSearchParams(window.location.search);
+if (p.get('plan') && p.get('amount'))
+    {
+openPaymentModal(p.get('plan'), p.get('name'), p.get('amount'));
+}
         
         // Close modal when clicking outside
         document.getElementById('payment-modal').addEventListener('click', function(e) {
