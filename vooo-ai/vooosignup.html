@@ -409,9 +409,20 @@
                 form.reset();
 
                 // Redirect to vooo-ai page after 2 seconds
-                setTimeout(() => {
-                    window.location.href = 'https://odelya.online/vooo-ai';
-                }, 2000);
+const urlParams = new URLSearchParams(window.location.search);
+const plan = 
+urlParams.get('plan');
+const name = urlParams.get('name');
+const amount = 
+    urlParams.get('amount');
+if (plan && amount) {
+window.location.href =
+    'https://odelya.online/vooo-ai/vooopricing.html?plan=' + plan + '&name=' + 
+    name + '&amount=' + amount;
+} else {
+window.location.href = 
+    'https://odelya.online/vooo-ai';
+}
 
             } catch (error) {
                 console.error('Signup error:', error);
