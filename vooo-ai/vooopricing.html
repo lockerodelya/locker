@@ -49,6 +49,8 @@
             color: white;
             margin-bottom: 50px;
         }
+
+        /* CHANGE: circular logo container */
         .logo-circle {
             width: 110px;
             height: 110px;
@@ -67,6 +69,7 @@
             height: 100%;
             object-fit: cover;
         }
+
         .header h1 {
             font-size: 3em;
             margin-bottom: 10px;
@@ -97,18 +100,15 @@
             transform: translateY(-10px);
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        .plan-name {
-            font-size: 1.5em;
-            color: #0D47A1;
+
+        /* CHANGE: price shown in red bold large at top of card instead of plan name */
+        .price-highlight {
+            font-size: 2em;
+            color: #cc0000;
+            font-weight: bold;
             margin-bottom: 20px;
-            font-weight: bold;
         }
-        .price {
-            font-size: 2.5em;
-            color: #333;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
+
         .features {
             list-style: none;
             margin: 30px 0;
@@ -203,6 +203,13 @@
             color: #0D47A1;
             margin-bottom: 10px;
         }
+        /* CHANGE: modal price in red bold large */
+        .modal-price {
+            font-size: 2em;
+            font-weight: bold;
+            color: #cc0000;
+            margin-top: 8px;
+        }
         .qr-container {
             text-align: center;
             margin: 30px 0;
@@ -237,6 +244,16 @@
         }
         .instructions li {
             margin: 10px 0;
+            color: #333;
+        }
+        /* CHANGE: sub-list indented with disc bullets to distinguish as sub-categories */
+        .instructions .sub-list {
+            margin-top: 8px;
+            margin-left: 24px;
+            list-style: disc;
+        }
+        .instructions .sub-list li {
+            margin: 6px 0;
             color: #333;
         }
         .close-btn {
@@ -288,7 +305,6 @@
                 border-radius: 0;
                 margin-left: -20px;
                 margin-right: -20px;
-                border-radius: 0;
             }
             .back-btn {
                 top: 10px;
@@ -320,6 +336,7 @@
 
     <div class="pricing-container">
         <div class="header">
+            <!-- CHANGE: logo wrapped in circular container -->
             <div class="logo-circle">
                 <img src="/vooo-ai/images/vooo-logo.jpg" alt="Vooo Logo">
             </div>
@@ -367,7 +384,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Complete Your Payment</h2>
-                <p id="modal-price" style="font-size: 2em; font-weight: bold; color: #cc0000; margin-top: 8px;"></p>
+                <!-- CHANGE: plan name removed, price in red bold large -->
+                <p id="modal-price" class="modal-price"></p>
             </div>
             
             <div class="qr-container">
@@ -386,11 +404,12 @@
                     <li>Scan the QR code above using any UPI app (Google Pay, PhonePe, Paytm, etc.)</li>
                     <li>Pay the <strong>EXACT</strong> amount shown above</li>
                     <li>Take a screenshot of successful payment</li>
+                    <!-- CHANGE: "Share through Whatsapp" with properly indented sub-list -->
                     <li>Share through Whatsapp: <strong>+91-96741 30001</strong>
-                        <ul style="margin-top: 10px; margin-left: 20px; list-style: disc;">
-                            <li style="margin: 6px 0; color: #333;">The transaction details</li>
-                            <li style="margin: 6px 0; color: #333;">Registered email id</li>
-                            <li style="margin: 6px 0; color: #333;">Registered phone no</li>
+                        <ul class="sub-list">
+                            <li>The transaction details</li>
+                            <li>Registered email id</li>
+                            <li>Registered phone no</li>
                         </ul>
                     </li>
                 </ol>
@@ -407,30 +426,26 @@
         </div>
     </div>
     
+    <script src="vooo-config.js"></script>
     <script>
-        // Hardcoded pricing plans
-        const plans = [
-            { key: 'plan_1m',  display_name: '1 Month Plan',  amount: 200,  duration_days: 30  },
-            { key: 'plan_3m',  display_name: '3 Months Plan', amount: 550,  duration_days: 90  },
-            { key: 'plan_6m',  display_name: '6 Months Plan', amount: 1000, duration_days: 180 },
-            { key: 'plan_1y',  display_name: '1 Year Plan',   amount: 1800, duration_days: 365 }
-        ];
-
         // Generate pricing cards
         function generatePricingCards() {
             const grid = document.getElementById('pricing-grid');
             grid.innerHTML = '';
             
-            for (const planData of plans) {
+            for (const [planKey, planData] of Object.entries(VOOO_CONFIG.pricing.plans)) {
                 const card = document.createElement('div');
                 card.className = 'pricing-card';
                 
+                // Format price label: INR 200, INR 550, etc.
                 const priceLabel = 'INR ' + planData.amount;
+
+                // Button label
                 const btnLabel = 'Buy Plan ' + priceLabel;
 
-                card.innerHTML = `
-                    <div class="plan-name">${planData.display_name}</div>
-                    <div class="price">${priceLabel}</div>
+                // CHANGE: plan name line removed; price shown red bold at top of card
+                card.innerHTML += `
+                    <div class="price-highlight">${priceLabel}</div>
                     <ul class="features">
                         <li>Unlimited MCQs daily</li>
                         <li>All categories unlocked</li>
@@ -438,7 +453,7 @@
                         <li>${planData.duration_days} days access</li>
                         <li>Whatsapp Support</li>
                     </ul>
-                    <button class="btn" onclick="openPaymentModal('${planData.key}', '${planData.display_name}', ${planData.amount})">
+                    <button class="btn" onclick="openPaymentModal('${planKey}', '${planData.display_name}', ${planData.amount})">
                         ${btnLabel}
                     </button>
                 `;
@@ -448,6 +463,7 @@
         }
         
         // Open payment modal
+        // CHANGE: show INR amount in red bold in modal header, no plan name
         function openPaymentModal(planKey, planName, amount) {
             document.getElementById('modal-price').textContent = 'INR ' + amount;
             document.getElementById('amount-to-pay').textContent = 'INR ' + amount;
@@ -467,4 +483,12 @@
         // Initialize
         generatePricingCards();
         
-        // Close modal when clicki
+        // Close modal when clicking outside
+        document.getElementById('payment-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePaymentModal();
+            }
+        });
+    </script>
+</body>
+</html>
