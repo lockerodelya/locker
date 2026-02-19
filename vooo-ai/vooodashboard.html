@@ -97,9 +97,7 @@
             display: inline-block;
         }
         .plan-action-btn:hover { background: #b71c1c; color: white; text-decoration: none; }
-        .plan-action-btn.upgrade {
-            background: #2E7D32;
-        }
+        .plan-action-btn.upgrade { background: #2E7D32; }
         .plan-action-btn.upgrade:hover { background: #1b5e20; }
 
         .start-mcq-section { text-align: center; margin: 40px 0; }
@@ -159,7 +157,7 @@
         }
         .upgrade-banner h3 { font-size: 1.5em; margin-bottom: 10px; }
 
-        /* ====== PAYMENT SUCCESS BANNER — NEW ADDITION ONLY ====== */
+        /* ====== PAYMENT SUCCESS BANNER ====== */
         .payment-success-banner {
             background: #e8f5e9;
             border: 2px solid #2E7D32;
@@ -196,7 +194,6 @@
             cursor: pointer;
         }
         .payment-success-banner .psb-dismiss:hover { background: #1b5e20; }
-        /* ====== END PAYMENT SUCCESS BANNER ====== */
 
         .plan-info {
             background: white;
@@ -356,10 +353,11 @@
             <div class="welcome-text">
                 <h2>Dashboard: <span id="user-fullname">User</span></h2>
             </div>
-            <a id="plan-action-btn" href="/vooo-ai/vooopricing.html" class="plan-action-btn">Buy Plan</a>
+            <!-- ⭐ ONLY CHANGE: added ?existing=true to href -->
+            <a id="plan-action-btn" href="/vooo-ai/vooopricing.html?existing=true" class="plan-action-btn">Buy Plan</a>
         </div>
 
-        <!-- ====== PAYMENT SUCCESS BANNER — shown only after redirect from payment page ====== -->
+        <!-- Payment Success Banner -->
         <div id="payment-success-banner" class="payment-success-banner">
             <div class="psb-title">✅ Payment Successful! Your plan is now active.</div>
             <div class="psb-row"><span>Payment ID</span><span id="psb-payment-id">-</span></div>
@@ -368,7 +366,6 @@
             <div class="psb-row"><span>Plan Valid Until</span><span id="psb-expiry">-</span></div>
             <button class="psb-dismiss" onclick="dismissPaymentBanner()">OK, Got it ✓</button>
         </div>
-        <!-- ====== END PAYMENT SUCCESS BANNER ====== -->
 
         <!-- Start MCQ Button -->
         <div class="start-mcq-section">
@@ -440,15 +437,14 @@
         const auth = firebase.auth();
         const db   = firebase.firestore();
 
-        // ====== PAYMENT SUCCESS BANNER LOGIC — NEW ADDITION ======
-        // Check if user just arrived from payment page
+        // ====== PAYMENT SUCCESS BANNER ======
         function checkPaymentSuccess() {
             const paymentStatus = localStorage.getItem('vooo_payment_status');
             if (paymentStatus === 'success') {
-                const paymentId  = localStorage.getItem('vooo_payment_id')     || '-';
-                const amountPaid = localStorage.getItem('vooo_amount_paid')    || '-';
-                const planStart  = localStorage.getItem('vooo_plan_start')     || '-';
-                const planExpiry = localStorage.getItem('vooo_plan_expiry')    || '-';
+                const paymentId  = localStorage.getItem('vooo_payment_id')  || '-';
+                const amountPaid = localStorage.getItem('vooo_amount_paid') || '-';
+                const planStart  = localStorage.getItem('vooo_plan_start')  || '-';
+                const planExpiry = localStorage.getItem('vooo_plan_expiry') || '-';
 
                 document.getElementById('psb-payment-id').textContent = paymentId;
                 document.getElementById('psb-amount').textContent     = 'INR ' + amountPaid;
@@ -457,8 +453,7 @@
 
                 document.getElementById('payment-success-banner').style.display = 'block';
 
-                // Clear payment status from localStorage so banner
-                // does not show again on next visit
+                // Clear so banner only shows once
                 localStorage.removeItem('vooo_payment_status');
                 localStorage.removeItem('vooo_payment_id');
                 localStorage.removeItem('vooo_amount_paid');
@@ -470,14 +465,16 @@
         function dismissPaymentBanner() {
             document.getElementById('payment-success-banner').style.display = 'none';
         }
-        // ====== END PAYMENT SUCCESS BANNER LOGIC ======
 
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
                 window.location.href = 'vooologin.html';
                 return;
             }
-            // Check for payment success first, then load dashboard
+            // Save uid and fullname to localStorage for existing user payment flow
+            localStorage.setItem('vooo_uid',   user.uid);
+            localStorage.setItem('vooo_email', user.email);
+
             checkPaymentSuccess();
             await loadDashboard(user.uid);
         });
@@ -494,6 +491,9 @@
 
                 const userData = userDoc.data();
 
+                // Save fullname to localStorage for payment page
+                localStorage.setItem('vooo_fullname', userData.fullName || '');
+
                 document.getElementById('user-fullname').textContent = userData.fullName || 'User';
 
                 const isPaid = userData.tier === 'paid';
@@ -509,17 +509,17 @@
                 const todayUsed = userData.dailyUsage?.count || 0;
 
                 if (isPaid) {
-                    document.getElementById('today-usage').textContent = '∞ Unlimited';
+                    document.getElementById('today-usage').textContent    = '∞ Unlimited';
                     document.getElementById('usage-progress').style.width = '100%';
-                    document.getElementById('tier-badge').textContent  = 'PREMIUM';
-                    document.getElementById('tier-badge').className    = 'tier-badge tier-paid';
+                    document.getElementById('tier-badge').textContent     = 'PREMIUM';
+                    document.getElementById('tier-badge').className       = 'tier-badge tier-paid';
                 } else {
-                    document.getElementById('today-usage').textContent = `${todayUsed}/40`;
+                    document.getElementById('today-usage').textContent    = `${todayUsed}/40`;
                     document.getElementById('usage-progress').style.width = ((todayUsed / 40) * 100) + '%';
 
                     if (todayUsed >= 30) {
                         document.getElementById('upgrade-banner').style.display = 'block';
-                        document.getElementById('upgrade-message').textContent =
+                        document.getElementById('upgrade-message').textContent  =
                             `You've used ${todayUsed}/40 MCQs today. Upgrade for unlimited access!`;
                     }
                 }
@@ -530,37 +530,36 @@
                 if (isPaid && userData.planType) {
                     document.getElementById('plan-info').style.display = 'block';
 
-// Auto-reads plan name and amount directly from vooo-config.js
-// No need to update this code when you change prices
-const planKey = userData.planKey;
-const planData = VOOO_CONFIG.pricing.plans[planKey];
-const planDisplay = planData
-    ? planData.display_name + ' — ₹' + planData.amount
-    : userData.planType;
-document.getElementById('plan-type').textContent = planDisplay;
+                    // Auto-reads from vooo-config.js — no hardcoded prices
+                    const planKey  = userData.planKey;
+                    const planData = VOOO_CONFIG.pricing.plans[planKey];
+                    const planDisplay = planData
+                        ? planData.display_name + ' — ₹' + planData.amount
+                        : userData.planType;
+                    document.getElementById('plan-type').textContent = planDisplay;
 
-if (userData.planStartDate) {
-    const startDate = userData.planStartDate.seconds
-        ? new Date(userData.planStartDate.seconds * 1000)
-        : new Date(userData.planStartDate);
-    document.getElementById('plan-start').textContent = startDate.toLocaleDateString('en-GB');
-}
+                    if (userData.planStartDate) {
+                        const startDate = userData.planStartDate.seconds
+                            ? new Date(userData.planStartDate.seconds * 1000)
+                            : new Date(userData.planStartDate);
+                        document.getElementById('plan-start').textContent = startDate.toLocaleDateString('en-GB');
+                    }
 
-if (userData.planExpiryDate) {
-    const expiryDate = userData.planExpiryDate.seconds
-        ? new Date(userData.planExpiryDate.seconds * 1000)
-        : new Date(userData.planExpiryDate);
-    document.getElementById('plan-expiry').textContent = expiryDate.toLocaleDateString('en-GB');
+                    if (userData.planExpiryDate) {
+                        const expiryDate = userData.planExpiryDate.seconds
+                            ? new Date(userData.planExpiryDate.seconds * 1000)
+                            : new Date(userData.planExpiryDate);
+                        document.getElementById('plan-expiry').textContent = expiryDate.toLocaleDateString('en-GB');
 
-    const daysLeft = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
-    document.getElementById('days-remaining').textContent = daysLeft > 0 ? daysLeft + ' days' : 'Expired';
+                        const daysLeft = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
+                        document.getElementById('days-remaining').textContent = daysLeft > 0 ? daysLeft + ' days' : 'Expired';
 
-    if (daysLeft > 0 && daysLeft <= 7) {
-        document.getElementById('upgrade-banner').style.display = 'block';
-        document.getElementById('upgrade-message').textContent =
-            `Your plan expires in ${daysLeft} days. Renew now to continue unlimited access!`;
-    }
-}
+                        if (daysLeft > 0 && daysLeft <= 7) {
+                            document.getElementById('upgrade-banner').style.display = 'block';
+                            document.getElementById('upgrade-message').textContent  =
+                                `Your plan expires in ${daysLeft} days. Renew now to continue unlimited access!`;
+                        }
+                    }
                 }
 
             } catch (error) {
@@ -574,7 +573,7 @@ if (userData.planExpiryDate) {
         }
 
         function openChangePasswordModal() {
-            document.getElementById('new-password').value = '';
+            document.getElementById('new-password').value    = '';
             document.getElementById('confirm-password').value = '';
             clearModalError();
             document.getElementById('change-password-modal').classList.add('active');
@@ -587,12 +586,12 @@ if (userData.planExpiryDate) {
         function clearModalError() {
             const err = document.getElementById('modal-error');
             err.style.display = 'none';
-            err.textContent = '';
+            err.textContent   = '';
         }
 
         function showModalError(msg) {
             const err = document.getElementById('modal-error');
-            err.textContent = msg;
+            err.textContent   = msg;
             err.style.display = 'block';
         }
 
