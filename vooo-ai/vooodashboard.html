@@ -27,7 +27,6 @@
         }
         .header-left h1 { font-size: 1.5em; }
 
-        /* ← Back button in header */
         .btn-back {
             background: #FFFFFF;
             color: #0D47A1;
@@ -160,6 +159,45 @@
         }
         .upgrade-banner h3 { font-size: 1.5em; margin-bottom: 10px; }
 
+        /* ====== PAYMENT SUCCESS BANNER — NEW ADDITION ONLY ====== */
+        .payment-success-banner {
+            background: #e8f5e9;
+            border: 2px solid #2E7D32;
+            border-radius: 12px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            display: none;
+        }
+        .payment-success-banner .psb-title {
+            color: #2E7D32;
+            font-size: 1.3em;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+        .payment-success-banner .psb-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 7px 0;
+            border-bottom: 1px solid #c8e6c9;
+            font-size: 0.97em;
+            color: #333;
+        }
+        .payment-success-banner .psb-row:last-child { border-bottom: none; }
+        .payment-success-banner .psb-row span:last-child { font-weight: 700; color: #1b5e20; }
+        .payment-success-banner .psb-dismiss {
+            margin-top: 14px;
+            background: #2E7D32;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            padding: 8px 22px;
+            font-size: 0.9em;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .payment-success-banner .psb-dismiss:hover { background: #1b5e20; }
+        /* ====== END PAYMENT SUCCESS BANNER ====== */
+
         .plan-info {
             background: white;
             padding: 25px;
@@ -201,9 +239,7 @@
             margin-bottom: 20px;
             text-align: center;
         }
-        .modal-field {
-            margin-bottom: 16px;
-        }
+        .modal-field { margin-bottom: 16px; }
         .modal-field label {
             display: block;
             font-size: 0.9em;
@@ -234,10 +270,7 @@
             margin-bottom: 12px;
             display: none;
         }
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-        }
+        .modal-actions { display: flex; gap: 12px; }
         .modal-btn {
             flex: 1;
             padding: 11px;
@@ -248,15 +281,9 @@
             cursor: pointer;
             transition: background 0.3s;
         }
-        .modal-btn-confirm {
-            background: #0D47A1;
-            color: white;
-        }
+        .modal-btn-confirm { background: #0D47A1; color: white; }
         .modal-btn-confirm:hover { background: #0a3a8a; }
-        .modal-btn-cancel {
-            background: #f0f0f0;
-            color: #333;
-        }
+        .modal-btn-cancel { background: #f0f0f0; color: #333; }
         .modal-btn-cancel:hover { background: #e0e0e0; }
         .modal-close {
             position: absolute;
@@ -272,33 +299,17 @@
         @media (max-width: 768px) {
             .welcome-section { flex-direction: column; text-align: center; }
             .header { flex-wrap: wrap; gap: 10px; }
-
-            /* smaller header buttons on mobile */
-            .btn-back {
-                font-size: 1em;
-                font-weight: 600;
-            }
-            .btn-header {
-                font-size: 1em;
-                font-weight: 600;
-                padding: 7px 14px;
-            }
-
-            /* slightly smaller action buttons on mobile */
-            .plan-action-btn,
-            .start-mcq-btn {
-                padding: 12px 28px;
-                font-size: 1.2em;
-            }
-
+            .btn-back { font-size: 1em; font-weight: 600; }
+            .btn-header { font-size: 1em; font-weight: 600; padding: 7px 14px; }
+            .plan-action-btn, .start-mcq-btn { padding: 12px 28px; font-size: 1.2em; }
             .modal-box { margin: 0 16px; padding: 28px 20px; }
+            .payment-success-banner .psb-row { flex-direction: column; gap: 2px; }
         }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="header-left">
-            <!-- Back button -->
             <a href="javascript:history.back()" class="btn-back">← Back</a>
         </div>
         <div class="header-right">
@@ -339,6 +350,7 @@
     </div>
 
     <div class="container">
+
         <!-- Welcome Section -->
         <div class="welcome-section">
             <div class="welcome-text">
@@ -346,6 +358,17 @@
             </div>
             <a id="plan-action-btn" href="/vooo-ai/vooopricing.html" class="plan-action-btn">Buy Plan</a>
         </div>
+
+        <!-- ====== PAYMENT SUCCESS BANNER — shown only after redirect from payment page ====== -->
+        <div id="payment-success-banner" class="payment-success-banner">
+            <div class="psb-title">✅ Payment Successful! Your plan is now active.</div>
+            <div class="psb-row"><span>Payment ID</span><span id="psb-payment-id">-</span></div>
+            <div class="psb-row"><span>Amount Paid</span><span id="psb-amount">-</span></div>
+            <div class="psb-row"><span>Plan Active From</span><span id="psb-start">-</span></div>
+            <div class="psb-row"><span>Plan Valid Until</span><span id="psb-expiry">-</span></div>
+            <button class="psb-dismiss" onclick="dismissPaymentBanner()">OK, Got it ✓</button>
+        </div>
+        <!-- ====== END PAYMENT SUCCESS BANNER ====== -->
 
         <!-- Start MCQ Button -->
         <div class="start-mcq-section">
@@ -403,6 +426,7 @@
                 <strong id="days-remaining">-</strong>
             </div>
         </div>
+
     </div>
 
     <!-- Firebase SDK -->
@@ -416,11 +440,45 @@
         const auth = firebase.auth();
         const db   = firebase.firestore();
 
+        // ====== PAYMENT SUCCESS BANNER LOGIC — NEW ADDITION ======
+        // Check if user just arrived from payment page
+        function checkPaymentSuccess() {
+            const paymentStatus = localStorage.getItem('vooo_payment_status');
+            if (paymentStatus === 'success') {
+                const paymentId  = localStorage.getItem('vooo_payment_id')     || '-';
+                const amountPaid = localStorage.getItem('vooo_amount_paid')    || '-';
+                const planStart  = localStorage.getItem('vooo_plan_start')     || '-';
+                const planExpiry = localStorage.getItem('vooo_plan_expiry')    || '-';
+
+                document.getElementById('psb-payment-id').textContent = paymentId;
+                document.getElementById('psb-amount').textContent     = 'INR ' + amountPaid;
+                document.getElementById('psb-start').textContent      = planStart;
+                document.getElementById('psb-expiry').textContent     = planExpiry;
+
+                document.getElementById('payment-success-banner').style.display = 'block';
+
+                // Clear payment status from localStorage so banner
+                // does not show again on next visit
+                localStorage.removeItem('vooo_payment_status');
+                localStorage.removeItem('vooo_payment_id');
+                localStorage.removeItem('vooo_amount_paid');
+                localStorage.removeItem('vooo_plan_start');
+                localStorage.removeItem('vooo_plan_expiry');
+            }
+        }
+
+        function dismissPaymentBanner() {
+            document.getElementById('payment-success-banner').style.display = 'none';
+        }
+        // ====== END PAYMENT SUCCESS BANNER LOGIC ======
+
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
                 window.location.href = 'vooologin.html';
                 return;
             }
+            // Check for payment success first, then load dashboard
+            checkPaymentSuccess();
             await loadDashboard(user.uid);
         });
 
@@ -440,7 +498,6 @@
 
                 const isPaid = userData.tier === 'paid';
 
-                // Plan action button: Buy Plan or UPGRADE PLAN
                 const planBtn = document.getElementById('plan-action-btn');
                 if (isPaid) {
                     planBtn.textContent = 'UPGRADE PLAN';
@@ -449,7 +506,6 @@
                     planBtn.textContent = 'Buy Plan';
                 }
 
-                // Usage stats
                 const todayUsed = userData.dailyUsage?.count || 0;
 
                 if (isPaid) {
@@ -468,18 +524,17 @@
                     }
                 }
 
-                document.getElementById('daily-streak').textContent    = userData.dailyStreak || 0;
-                document.getElementById('total-attempted').textContent  = userData.totalMCQsAttempted || 0;
+                document.getElementById('daily-streak').textContent   = userData.dailyStreak || 0;
+                document.getElementById('total-attempted').textContent = userData.totalMCQsAttempted || 0;
 
-                // Plan details (paid only)
                 if (isPaid && userData.planType) {
                     document.getElementById('plan-info').style.display = 'block';
 
                     const planNames = {
-                        '1month':  '1 Month - ₹200',
-                        '3month':  '3 Months - ₹550',
-                        '6month':  '6 Months - ₹1000',
-                        '1year':   '1 Year - ₹1800'
+                        '1month': '1 Month - ₹200',
+                        '3month': '3 Months - ₹550',
+                        '6month': '6 Months - ₹1000',
+                        '1year':  '1 Year - ₹1800'
                     };
                     document.getElementById('plan-type').textContent = planNames[userData.planType] || userData.planType;
 
@@ -513,7 +568,6 @@
             window.location.href = 'https://odelya.online/vooo-ai';
         }
 
-        // ── Change Password Modal ──
         function openChangePasswordModal() {
             document.getElementById('new-password').value = '';
             document.getElementById('confirm-password').value = '';
@@ -581,7 +635,6 @@
             }
         }
 
-        // Close modal if clicking outside the box
         document.getElementById('change-password-modal').addEventListener('click', function(e) {
             if (e.target === this) closeChangePasswordModal();
         });
