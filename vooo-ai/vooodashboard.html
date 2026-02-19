@@ -530,32 +530,37 @@
                 if (isPaid && userData.planType) {
                     document.getElementById('plan-info').style.display = 'block';
 
-                    const planNames = {
-                        '1month': '1 Month - ₹200',
-                        '3month': '3 Months - ₹550',
-                        '6month': '6 Months - ₹1000',
-                        '1year':  '1 Year - ₹1800'
-                    };
-                    document.getElementById('plan-type').textContent = planNames[userData.planType] || userData.planType;
+// Auto-reads plan name and amount directly from vooo-config.js
+// No need to update this code when you change prices
+const planKey = userData.planKey;
+const planData = VOOO_CONFIG.pricing.plans[planKey];
+const planDisplay = planData
+    ? planData.display_name + ' — ₹' + planData.amount
+    : userData.planType;
+document.getElementById('plan-type').textContent = planDisplay;
 
-                    if (userData.planStartDate) {
-                        const startDate = new Date(userData.planStartDate.seconds * 1000);
-                        document.getElementById('plan-start').textContent = startDate.toLocaleDateString('en-GB');
-                    }
+if (userData.planStartDate) {
+    const startDate = userData.planStartDate.seconds
+        ? new Date(userData.planStartDate.seconds * 1000)
+        : new Date(userData.planStartDate);
+    document.getElementById('plan-start').textContent = startDate.toLocaleDateString('en-GB');
+}
 
-                    if (userData.planExpiryDate) {
-                        const expiryDate = new Date(userData.planExpiryDate.seconds * 1000);
-                        document.getElementById('plan-expiry').textContent = expiryDate.toLocaleDateString('en-GB');
+if (userData.planExpiryDate) {
+    const expiryDate = userData.planExpiryDate.seconds
+        ? new Date(userData.planExpiryDate.seconds * 1000)
+        : new Date(userData.planExpiryDate);
+    document.getElementById('plan-expiry').textContent = expiryDate.toLocaleDateString('en-GB');
 
-                        const daysLeft = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
-                        document.getElementById('days-remaining').textContent = daysLeft > 0 ? daysLeft + ' days' : 'Expired';
+    const daysLeft = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
+    document.getElementById('days-remaining').textContent = daysLeft > 0 ? daysLeft + ' days' : 'Expired';
 
-                        if (daysLeft > 0 && daysLeft <= 7) {
-                            document.getElementById('upgrade-banner').style.display = 'block';
-                            document.getElementById('upgrade-message').textContent =
-                                `Your plan expires in ${daysLeft} days. Renew now to continue unlimited access!`;
-                        }
-                    }
+    if (daysLeft > 0 && daysLeft <= 7) {
+        document.getElementById('upgrade-banner').style.display = 'block';
+        document.getElementById('upgrade-message').textContent =
+            `Your plan expires in ${daysLeft} days. Renew now to continue unlimited access!`;
+    }
+}
                 }
 
             } catch (error) {
