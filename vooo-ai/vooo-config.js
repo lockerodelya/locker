@@ -227,7 +227,7 @@ VOOO_CONFIG.calculateGST = function(totalAmount) {
 // Returns fee in INR rounded to nearest rupee
 VOOO_CONFIG.calculateGatewayFee = function(amount) {
     const feePercent = this.gateway_fee_percent / 100;
-    return Math.round(amount * feePercent);
+    return Math.ceil(amount * feePercent);
 };
 
 // Get total amount user needs to pay (plan amount + gateway fee)
