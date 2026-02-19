@@ -43,11 +43,68 @@
             background: #f0f4ff; border-radius: 14px;
             padding: 24px 30px; margin-bottom: 22px; text-align: center;
         }
-        .greeting { font-size: 1.1em; color: #333; font-weight: 600; margin-bottom: 12px; }
+        .greeting { font-size: 1.1em; color: #333; font-weight: 600; margin-bottom: 16px; }
         .greeting span { color: #0D47A1; font-weight: 800; }
-        .amount-label { font-size: 0.95em; color: #555; margin-bottom: 4px; }
-        .amount-display { font-size: 2.8em; font-weight: 900; color: #cc0000; letter-spacing: 1px; }
-        .plan-info { margin-top: 8px; font-size: 0.92em; color: #555; }
+
+        /* Fee breakdown table */
+        .fee-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+            font-size: 1em;
+        }
+        .fee-table td {
+            padding: 8px 12px;
+            text-align: left;
+            color: #444;
+            border-bottom: 1px solid #dce8ff;
+        }
+        .fee-table td:last-child { text-align: right; font-weight: 600; }
+        .fee-table tr.total-row td {
+            border-top: 2px solid #0D47A1;
+            border-bottom: none;
+            padding-top: 12px;
+            font-weight: 800;
+            font-size: 1.1em;
+            color: #0D47A1;
+        }
+        .fee-table tr.total-row td:last-child {
+            color: #cc0000;
+            font-size: 1.3em;
+        }
+
+        .plan-info { font-size: 0.88em; color: #555; margin-top: 6px; }
+
+        /* ====== PAYMENT METHODS ICONS ====== */
+        .methods-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 14px;
+            background: #f9f9f9;
+            border-radius: 12px;
+        }
+        .method-badge {
+            background: white;
+            border: 1.5px solid #ddd;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 0.82em;
+            font-weight: 700;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .methods-label {
+            width: 100%;
+            text-align: center;
+            font-size: 0.82em;
+            color: #888;
+            margin-bottom: 4px;
+        }
 
         /* ====== NO REFUND ====== */
         .no-refund-box {
@@ -72,6 +129,16 @@
             font-weight: 500; line-height: 1.5; cursor: pointer;
         }
 
+        /* ====== TIMER ====== */
+        .timer-box {
+            display: none; text-align: center;
+            margin-bottom: 16px; padding: 10px;
+            background: #fff8e1; border-radius: 10px;
+            border: 1px solid #f0c040;
+            font-size: 0.95em; color: #555;
+        }
+        .timer-box span { font-weight: 800; color: #cc0000; font-size: 1.15em; }
+
         /* ====== PAY BUTTON ====== */
         .pay-btn {
             width: 100%; padding: 16px;
@@ -92,37 +159,6 @@
         }
         .error   { background: #fee; color: #c33; }
         .success { background: #efe; color: #2E7D32; font-size: 1.05em; }
-
-        /* ====== TIMER ====== */
-        .timer-box {
-            display: none; text-align: center;
-            margin-bottom: 16px; padding: 10px;
-            background: #fff8e1; border-radius: 10px;
-            border: 1px solid #f0c040;
-            font-size: 0.95em; color: #555;
-        }
-        .timer-box span { font-weight: 800; color: #cc0000; font-size: 1.1em; }
-
-        /* ====== UPI APP ICONS — mobile only ====== */
-        .upi-apps {
-            display: none;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 20px;
-            padding: 16px;
-            background: #f0f4ff;
-            border-radius: 12px;
-        }
-        .upi-app-item {
-            display: flex; flex-direction: column;
-            align-items: center; gap: 6px;
-            font-size: 0.8em; color: #333; font-weight: 600;
-        }
-        .upi-app-item img {
-            width: 48px; height: 48px;
-            border-radius: 12px; object-fit: contain;
-        }
 
         /* ====== SECURE BADGE ====== */
         .secure-badge {
@@ -149,9 +185,8 @@
                 width: 100%; border-radius: 0;
                 margin: 0; padding: 24px 16px;
             }
-            .amount-display { font-size: 2.2em; }
             .logo h1 { font-size: 1.5em; }
-            .upi-apps { display: flex; } /* visible on mobile */
+            .fee-table td { font-size: 0.95em; }
         }
     </style>
 </head>
@@ -169,11 +204,34 @@
     <div id="error-message"   class="error"></div>
     <div id="success-message" class="success"></div>
 
+    <!-- Payment breakdown card -->
     <div class="payment-card">
         <div class="greeting">Welcome, <span id="user-fullname">User</span>!</div>
-        <div class="amount-label">Amount to Pay</div>
-        <div class="amount-display" id="display-amount">INR 0</div>
+        <table class="fee-table">
+            <tr>
+                <td>Plan Amount</td>
+                <td id="row-plan-amount">INR 0</td>
+            </tr>
+            <tr>
+                <td>Gateway Fee (2%)</td>
+                <td id="row-gateway-fee">INR 0</td>
+            </tr>
+            <tr class="total-row">
+                <td>Total Payable</td>
+                <td id="row-total">INR 0</td>
+            </tr>
+        </table>
         <div class="plan-info" id="plan-info"></div>
+    </div>
+
+    <!-- Accepted payment methods -->
+    <div class="methods-bar">
+        <div class="methods-label">Accepted Payment Methods</div>
+        <div class="method-badge">📱 UPI / QR</div>
+        <div class="method-badge">💳 Credit Card</div>
+        <div class="method-badge">💳 Debit Card</div>
+        <div class="method-badge">🏦 Net Banking</div>
+        <div class="method-badge">👛 Wallets</div>
     </div>
 
     <div class="no-refund-box">
@@ -188,36 +246,12 @@
     </div>
 
     <div class="timer-box" id="timer-box">
-        ⏱ Please complete payment within <span id="countdown">120</span> seconds
+        ⏱ Please complete payment within <span id="countdown">300</span> seconds
     </div>
 
     <button class="pay-btn" id="pay-btn" onclick="startPayment()">
-        Pay Now via UPI
+        Proceed to Pay
     </button>
-
-    <!-- UPI app icons — shown on mobile below pay button -->
-    <div class="upi-apps" id="upi-apps">
-        <div class="upi-app-item">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/512px-Google_Pay_Logo.svg.png" alt="GPay">
-            <span>Google Pay</span>
-        </div>
-        <div class="upi-app-item">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/512px-Paytm_Logo_%28standalone%29.svg.png" alt="Paytm">
-            <span>Paytm</span>
-        </div>
-        <div class="upi-app-item">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/PhonePe_Logo.svg/512px-PhonePe_Logo.svg.png" alt="PhonePe">
-            <span>PhonePe</span>
-        </div>
-        <div class="upi-app-item">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/BHIM_logo.svg/512px-BHIM_logo.svg.png" alt="BHIM">
-            <span>BHIM</span>
-        </div>
-        <div class="upi-app-item">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Amazon_Pay_logo.svg/512px-Amazon_Pay_logo.svg.png" alt="Amazon Pay">
-            <span>Amazon Pay</span>
-        </div>
-    </div>
 
     <div class="secure-badge">
         🔒 <b>100% Secure Payment</b> powered by Razorpay
@@ -247,13 +281,12 @@
     const urlParams  = new URLSearchParams(window.location.search);
     const planKey    = urlParams.get('plan')   || localStorage.getItem('vooo_plan_key');
     const planName   = urlParams.get('name')   || localStorage.getItem('vooo_plan_name');
-    const planAmount = urlParams.get('amount') || localStorage.getItem('vooo_plan_amount');
+    const planAmount = parseInt(urlParams.get('amount') || localStorage.getItem('vooo_plan_amount') || '0');
 
     const uid      = localStorage.getItem('vooo_uid');
     const email    = localStorage.getItem('vooo_email');
     const fullname = localStorage.getItem('vooo_fullname');
-    // Phone intentionally NOT passed to Razorpay — avoids SMS charges
-    // Phone is already saved safely in Firestore during signup
+    // contact/phone intentionally NOT passed to Razorpay — avoids SMS charges
 
     // ====== SAFETY CHECK ======
     if (!uid || !planAmount) {
@@ -261,9 +294,17 @@
         window.location.href = 'https://odelya.online/vooo-ai';
     }
 
-    // ====== DISPLAY INFO ======
-    document.getElementById('user-fullname').textContent  = fullname || 'User';
-    document.getElementById('display-amount').textContent = 'INR ' + planAmount;
+    // ====== FEE CALCULATION (2% gateway fee passed to customer) ======
+    // gatewayFee = planAmount * 2% rounded to nearest rupee
+    const gatewayFee  = Math.round(planAmount * 0.02);
+    const totalAmount = planAmount + gatewayFee;  // what user pays
+    const totalPaise  = totalAmount * 100;         // Razorpay needs paise
+
+    // ====== DISPLAY FEE BREAKDOWN ======
+    document.getElementById('user-fullname').textContent   = fullname || 'User';
+    document.getElementById('row-plan-amount').textContent = 'INR ' + planAmount;
+    document.getElementById('row-gateway-fee').textContent = 'INR ' + gatewayFee;
+    document.getElementById('row-total').textContent       = 'INR ' + totalAmount;
 
     // Duration from config
     let durationDays = 30;
@@ -280,18 +321,21 @@
         return d.toISOString().split('T')[0];
     }
 
-    // ====== 120-SECOND COUNTDOWN ======
+    // ====== 300-SECOND COUNTDOWN ======
     let countdownInterval = null;
 
     function startCountdown() {
         const timerBox  = document.getElementById('timer-box');
         const countdown = document.getElementById('countdown');
         timerBox.style.display = 'block';
-        let seconds = 120;
+        let seconds = 300;
         countdown.textContent = seconds;
         countdownInterval = setInterval(() => {
             seconds--;
-            countdown.textContent = seconds;
+            // show MM:SS format
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            countdown.textContent = m + ':' + (s < 10 ? '0' + s : s);
             if (seconds <= 0) {
                 clearInterval(countdownInterval);
                 timerBox.style.display = 'none';
@@ -315,37 +359,21 @@
         }
         document.getElementById('error-message').style.display = 'none';
 
-        const amountPaise = parseInt(planAmount) * 100;
-
         const options = {
             key:         'rzp_live_SHcVTeQa9FBPZT',
-            amount:      amountPaise,
+            amount:      totalPaise,   // total = plan + 2% fee
             currency:    'INR',
             name:        'Vooo AI Education',
-            description: 'Plan INR ' + planAmount + ' — ' + durationDays + ' days',
+            description: 'Plan INR ' + planAmount + ' (' + durationDays + ' days) + Gateway Fee INR ' + gatewayFee,
             image:       '/vooo-ai/images/vooo-logo.jpg',
             prefill: {
                 name:  fullname || '',
                 email: email    || ''
-                // contact intentionally omitted — no SMS charges
+                // contact omitted — no SMS charges
             },
-            config: {
-                display: {
-                    blocks: {
-                        upi_block: {
-                            name: 'Pay via UPI / QR Code',
-                            instruments: [
-                                { method: 'upi', flows: ['qr', 'collect', 'intent'] }
-                            ]
-                        }
-                    },
-                    sequence:    ['block.upi_block'],
-                    preferences: { show_default_blocks: false }
-                }
-            },
-            upi:    { flow: 'qr' },   // open QR directly, no extra click
-            theme:  { color: '#0D47A1' },
-            timeout: 120,              // 120 seconds
+            // All payment methods enabled — no config restriction
+            theme:   { color: '#0D47A1' },
+            timeout: 300,   // 5 minutes
 
             // ====== PAYMENT SUCCESS ======
             handler: async function (response) {
@@ -358,7 +386,7 @@
                     const today      = getTodayDate();
                     const expiryDate = getExpiryDate(durationDays);
 
-                    // Update Firestore
+                    // Update Firestore with full payment details
                     await db.collection('users').doc(uid).update({
                         tier:             'paid',
                         planType:         'INR ' + planAmount,
@@ -368,29 +396,40 @@
                         planDurationDays: durationDays,
                         paymentId:        response.razorpay_payment_id,
                         paymentDate:      today,
+                        amountPaid:       totalAmount,
+                        planAmount:       planAmount,
+                        gatewayFee:       gatewayFee,
                         lastUpdated:      firebase.firestore.FieldValue.serverTimestamp()
                     });
 
-                    // Save summary to localStorage for dashboard display
+                    // Save summary to localStorage for dashboard
                     localStorage.setItem('vooo_payment_id',     response.razorpay_payment_id);
                     localStorage.setItem('vooo_payment_status', 'success');
                     localStorage.setItem('vooo_plan_start',     today);
                     localStorage.setItem('vooo_plan_expiry',    expiryDate);
+                    localStorage.setItem('vooo_amount_paid',    totalAmount);
                     localStorage.removeItem('vooo_plan_key');
                     localStorage.removeItem('vooo_plan_name');
                     localStorage.removeItem('vooo_plan_amount');
 
                     const successDiv = document.getElementById('success-message');
-                    successDiv.innerHTML = '✓ Payment Successful! 🎉<br>Payment ID: <strong>' + response.razorpay_payment_id + '</strong><br>Redirecting to your dashboard...';
+                    successDiv.innerHTML =
+                        '✓ Payment Successful! 🎉<br>' +
+                        'Payment ID: <strong>' + response.razorpay_payment_id + '</strong><br>' +
+                        'Amount Paid: <strong>INR ' + totalAmount + '</strong><br>' +
+                        'Redirecting to your dashboard...';
                     successDiv.style.display = 'block';
 
                     setTimeout(() => { window.location.href = 'vooodashboard.html'; }, 2500);
 
                 } catch (err) {
                     console.error('Firestore update error:', err);
-                    // Payment went through — still redirect, admin can verify from Razorpay dashboard
+                    // Payment went through — still show success and redirect
                     const successDiv = document.getElementById('success-message');
-                    successDiv.innerHTML = '✓ Payment received!<br>Payment ID: <strong>' + response.razorpay_payment_id + '</strong><br>Redirecting to dashboard...';
+                    successDiv.innerHTML =
+                        '✓ Payment received!<br>' +
+                        'Payment ID: <strong>' + response.razorpay_payment_id + '</strong><br>' +
+                        'Redirecting to dashboard...';
                     successDiv.style.display = 'block';
                     setTimeout(() => { window.location.href = 'vooodashboard.html'; }, 2500);
                 }
@@ -403,10 +442,10 @@
                 ondismiss: function () {
                     stopCountdown();
                     const errDiv = document.getElementById('error-message');
-                    errDiv.textContent   = 'Payment was cancelled. Please try again.';
+                    errDiv.textContent   = 'Payment was cancelled. You can try again.';
                     errDiv.style.display = 'block';
                     document.getElementById('pay-btn').disabled    = false;
-                    document.getElementById('pay-btn').textContent = 'Pay Now via UPI';
+                    document.getElementById('pay-btn').textContent = 'Proceed to Pay';
                 }
             }
         };
@@ -419,7 +458,7 @@
             errDiv.textContent   = 'Payment failed: ' + (response.error.description || 'Please try again.');
             errDiv.style.display = 'block';
             document.getElementById('pay-btn').disabled    = false;
-            document.getElementById('pay-btn').textContent = 'Pay Now via UPI';
+            document.getElementById('pay-btn').textContent = 'Proceed to Pay';
         });
 
         startCountdown();
