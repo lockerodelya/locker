@@ -38,7 +38,7 @@
         .logo h1 { color: #0D47A1; font-size: 1.9em; font-weight: 800; margin-bottom: 3px; }
         .logo p  { color: #2E7D32; font-size: 0.95em; font-weight: 600; }
 
-        /* ====== GREETING + AMOUNT ====== */
+        /* ====== PAYMENT CARD ====== */
         .payment-card {
             background: #f0f4ff; border-radius: 14px;
             padding: 24px 30px; margin-bottom: 22px; text-align: center;
@@ -48,62 +48,40 @@
 
         /* Fee breakdown table */
         .fee-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 12px;
-            font-size: 1em;
+            width: 100%; border-collapse: collapse;
+            margin-bottom: 12px; font-size: 1em;
         }
         .fee-table td {
-            padding: 8px 12px;
-            text-align: left;
-            color: #444;
-            border-bottom: 1px solid #dce8ff;
+            padding: 8px 12px; text-align: left;
+            color: #444; border-bottom: 1px solid #dce8ff;
         }
         .fee-table td:last-child { text-align: right; font-weight: 600; }
         .fee-table tr.total-row td {
-            border-top: 2px solid #0D47A1;
-            border-bottom: none;
-            padding-top: 12px;
-            font-weight: 800;
-            font-size: 1.1em;
-            color: #0D47A1;
+            border-top: 2px solid #0D47A1; border-bottom: none;
+            padding-top: 12px; font-weight: 800;
+            font-size: 1.1em; color: #0D47A1;
         }
-        .fee-table tr.total-row td:last-child {
-            color: #cc0000;
-            font-size: 1.3em;
-        }
+        .fee-table tr.total-row td:last-child { color: #cc0000; font-size: 1.3em; }
+        .fee-table tr.fee-row td { color: #888; font-size: 0.93em; }
 
         .plan-info { font-size: 0.88em; color: #555; margin-top: 6px; }
 
-        /* ====== PAYMENT METHODS ICONS ====== */
+        /* ====== PAYMENT METHODS ====== */
         .methods-bar {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding: 14px;
-            background: #f9f9f9;
-            border-radius: 12px;
-        }
-        .method-badge {
-            background: white;
-            border: 1.5px solid #ddd;
-            border-radius: 8px;
-            padding: 6px 14px;
-            font-size: 0.82em;
-            font-weight: 700;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            display: flex; flex-wrap: wrap;
+            justify-content: center; gap: 10px;
+            margin-bottom: 20px; padding: 14px;
+            background: #f9f9f9; border-radius: 12px;
         }
         .methods-label {
-            width: 100%;
-            text-align: center;
-            font-size: 0.82em;
-            color: #888;
-            margin-bottom: 4px;
+            width: 100%; text-align: center;
+            font-size: 0.82em; color: #888; margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .method-badge {
+            background: white; border: 1.5px solid #ddd;
+            border-radius: 8px; padding: 6px 14px;
+            font-size: 0.82em; font-weight: 700; color: #333;
         }
 
         /* ====== NO REFUND ====== */
@@ -134,8 +112,7 @@
             display: none; text-align: center;
             margin-bottom: 16px; padding: 10px;
             background: #fff8e1; border-radius: 10px;
-            border: 1px solid #f0c040;
-            font-size: 0.95em; color: #555;
+            border: 1px solid #f0c040; font-size: 0.95em; color: #555;
         }
         .timer-box span { font-weight: 800; color: #cc0000; font-size: 1.15em; }
 
@@ -186,7 +163,7 @@
                 margin: 0; padding: 24px 16px;
             }
             .logo h1 { font-size: 1.5em; }
-            .fee-table td { font-size: 0.95em; }
+            .fee-table td { font-size: 0.93em; }
         }
     </style>
 </head>
@@ -204,7 +181,7 @@
     <div id="error-message"   class="error"></div>
     <div id="success-message" class="success"></div>
 
-    <!-- Payment breakdown card -->
+    <!-- Payment breakdown -->
     <div class="payment-card">
         <div class="greeting">Welcome, <span id="user-fullname">User</span>!</div>
         <table class="fee-table">
@@ -212,8 +189,8 @@
                 <td>Plan Amount</td>
                 <td id="row-plan-amount">INR 0</td>
             </tr>
-            <tr>
-                <td>Gateway Fee (2%)</td>
+            <tr class="fee-row">
+                <td>Gateway Fee (<span id="fee-percent">2</span>%)</td>
                 <td id="row-gateway-fee">INR 0</td>
             </tr>
             <tr class="total-row">
@@ -226,7 +203,7 @@
 
     <!-- Accepted payment methods -->
     <div class="methods-bar">
-        <div class="methods-label">Accepted Payment Methods</div>
+        <div class="methods-label">We Accept All Payment Methods</div>
         <div class="method-badge">📱 UPI / QR</div>
         <div class="method-badge">💳 Credit Card</div>
         <div class="method-badge">💳 Debit Card</div>
@@ -246,7 +223,7 @@
     </div>
 
     <div class="timer-box" id="timer-box">
-        ⏱ Please complete payment within <span id="countdown">300</span> seconds
+        ⏱ Please complete payment within <span id="countdown">5:00</span>
     </div>
 
     <button class="pay-btn" id="pay-btn" onclick="startPayment()">
@@ -270,6 +247,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<!-- VOOO Config — must load before this script -->
 <script src="vooo-config.js"></script>
 
 <script>
@@ -278,10 +257,9 @@
     const db = firebase.firestore();
 
     // ====== READ PARAMS + LOCALSTORAGE ======
-    const urlParams  = new URLSearchParams(window.location.search);
-    const planKey    = urlParams.get('plan')   || localStorage.getItem('vooo_plan_key');
-    const planName   = urlParams.get('name')   || localStorage.getItem('vooo_plan_name');
-    const planAmount = parseInt(urlParams.get('amount') || localStorage.getItem('vooo_plan_amount') || '0');
+    const urlParams = new URLSearchParams(window.location.search);
+    const planKey   = urlParams.get('plan')   || localStorage.getItem('vooo_plan_key');
+    const planName  = urlParams.get('name')   || localStorage.getItem('vooo_plan_name');
 
     const uid      = localStorage.getItem('vooo_uid');
     const email    = localStorage.getItem('vooo_email');
@@ -289,37 +267,28 @@
     // contact/phone intentionally NOT passed to Razorpay — avoids SMS charges
 
     // ====== SAFETY CHECK ======
-    if (!uid || !planAmount) {
+    if (!uid || !planKey) {
         alert('Session expired or no plan selected. Please sign up again.');
         window.location.href = 'https://odelya.online/vooo-ai';
     }
 
-    // ====== FEE CALCULATION (2% gateway fee passed to customer) ======
-    // gatewayFee = planAmount * 2% rounded to nearest rupee
-    const gatewayFee  = Math.round(planAmount * 0.02);
-    const totalAmount = planAmount + gatewayFee;  // what user pays
-    const totalPaise  = totalAmount * 100;         // Razorpay needs paise
+    // ====== ALL CALCULATIONS FROM VOOO_CONFIG ======
+    // One place to change everything — just edit vooo-config.js
+    const payable    = VOOO_CONFIG.getTotalPayable(planKey);
+    const planAmount = payable.planAmount;
+    const gatewayFee = payable.gatewayFee;
+    const totalAmount= payable.totalAmount;
+    const totalPaise = payable.totalPaise;
+    const durationDays = VOOO_CONFIG.getDurationDays(planKey);
+    const feePercent   = VOOO_CONFIG.gateway_fee_percent;
 
-    // ====== DISPLAY FEE BREAKDOWN ======
+    // ====== DISPLAY ======
     document.getElementById('user-fullname').textContent   = fullname || 'User';
+    document.getElementById('fee-percent').textContent     = feePercent;
     document.getElementById('row-plan-amount').textContent = 'INR ' + planAmount;
     document.getElementById('row-gateway-fee').textContent = 'INR ' + gatewayFee;
     document.getElementById('row-total').textContent       = 'INR ' + totalAmount;
-
-    // Duration from config
-    let durationDays = 30;
-    if (VOOO_CONFIG.pricing && VOOO_CONFIG.pricing.plans && VOOO_CONFIG.pricing.plans[planKey]) {
-        durationDays = VOOO_CONFIG.pricing.plans[planKey].duration_days;
-    }
-    document.getElementById('plan-info').textContent = durationDays + ' days access · All features unlocked';
-
-    // ====== HELPERS ======
-    function getTodayDate()      { return new Date().toISOString().split('T')[0]; }
-    function getExpiryDate(days) {
-        const d = new Date();
-        d.setDate(d.getDate() + days);
-        return d.toISOString().split('T')[0];
-    }
+    document.getElementById('plan-info').textContent       = durationDays + ' days access · All features unlocked';
 
     // ====== 300-SECOND COUNTDOWN ======
     let countdownInterval = null;
@@ -329,13 +298,17 @@
         const countdown = document.getElementById('countdown');
         timerBox.style.display = 'block';
         let seconds = 300;
-        countdown.textContent = seconds;
+
+        function fmt(s) {
+            const m = Math.floor(s / 60);
+            const sec = s % 60;
+            return m + ':' + (sec < 10 ? '0' + sec : sec);
+        }
+
+        countdown.textContent = fmt(seconds);
         countdownInterval = setInterval(() => {
             seconds--;
-            // show MM:SS format
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
-            countdown.textContent = m + ':' + (s < 10 ? '0' + s : s);
+            countdown.textContent = fmt(seconds);
             if (seconds <= 0) {
                 clearInterval(countdownInterval);
                 timerBox.style.display = 'none';
@@ -360,22 +333,22 @@
         document.getElementById('error-message').style.display = 'none';
 
         const options = {
-            key:         'rzp_live_SHcVTeQa9FBPZT',
-            amount:      totalPaise,   // total = plan + 2% fee
+            key:         VOOO_CONFIG.payment.razorpay.key_id,  // from config
+            amount:      totalPaise,                            // from config calculation
             currency:    'INR',
-            name:        'Vooo AI Education',
+            name:        VOOO_CONFIG.business.brand_name,
             description: 'Plan INR ' + planAmount + ' (' + durationDays + ' days) + Gateway Fee INR ' + gatewayFee,
             image:       '/vooo-ai/images/vooo-logo.jpg',
             prefill: {
                 name:  fullname || '',
                 email: email    || ''
-                // contact omitted — no SMS charges
+                // contact omitted — no SMS charges to user
             },
-            // All payment methods enabled — no config restriction
+            // All payment methods enabled — no restriction
             theme:   { color: '#0D47A1' },
-            timeout: 300,   // 5 minutes
+            timeout: 300,   // 5 minutes matches our countdown
 
-            // ====== PAYMENT SUCCESS ======
+            // ====== PAYMENT SUCCESS HANDLER ======
             handler: async function (response) {
                 stopCountdown();
                 const payBtn = document.getElementById('pay-btn');
@@ -383,8 +356,9 @@
                 payBtn.textContent = 'Confirming payment...';
 
                 try {
-                    const today      = getTodayDate();
-                    const expiryDate = getExpiryDate(durationDays);
+                    // Use config helper functions for dates
+                    const today      = VOOO_CONFIG.getTodayDate();
+                    const expiryDate = VOOO_CONFIG.getExpiryDate(planKey);
 
                     // Update Firestore with full payment details
                     await db.collection('users').doc(uid).update({
@@ -417,6 +391,7 @@
                         '✓ Payment Successful! 🎉<br>' +
                         'Payment ID: <strong>' + response.razorpay_payment_id + '</strong><br>' +
                         'Amount Paid: <strong>INR ' + totalAmount + '</strong><br>' +
+                        'Plan Active Until: <strong>' + expiryDate + '</strong><br>' +
                         'Redirecting to your dashboard...';
                     successDiv.style.display = 'block';
 
@@ -424,12 +399,12 @@
 
                 } catch (err) {
                     console.error('Firestore update error:', err);
-                    // Payment went through — still show success and redirect
+                    // Payment successful — still redirect, admin can verify from Razorpay dashboard
                     const successDiv = document.getElementById('success-message');
                     successDiv.innerHTML =
                         '✓ Payment received!<br>' +
                         'Payment ID: <strong>' + response.razorpay_payment_id + '</strong><br>' +
-                        'Redirecting to dashboard...';
+                        'Redirecting to your dashboard...';
                     successDiv.style.display = 'block';
                     setTimeout(() => { window.location.href = 'vooodashboard.html'; }, 2500);
                 }
