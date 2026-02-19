@@ -26,7 +26,7 @@ const VOOO_CONFIG = {
     pricing: {
         plans: {
             '1month': {
-                amount:       20,          // ⭐ Change plan price here
+                amount:       30,          // ⭐ Change plan price here
                 duration_days: 30,          // ⭐ Change plan duration here
                 display_name: '1 Month'
             },
