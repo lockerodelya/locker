@@ -61,19 +61,18 @@
 
         /* ====== LOGO STRIP below header ====== */
         .logo-strip {
-            background: #0D47A1;
+            background: #f5f7fa;
             display: flex;
             justify-content: center;
-            padding: 8px 0 12px 0;
-            border-bottom: 3px solid #1565C0;
+            padding: 18px 0 10px 0;
         }
         .logo-circle {
             width: 55px;
             height: 55px;
             border-radius: 50%;
             overflow: hidden;
-            border: 3px solid white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border: 3px solid #0D47A1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
         .logo-circle img {
             width: 100%;
@@ -234,7 +233,7 @@
         /* ====== STATS GRID ====== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -332,10 +331,17 @@
             .modal-box { margin: 0 16px; padding: 28px 20px; }
             .payment-success-banner .psb-row { flex-direction: column; gap: 2px; }
             .plan-detail { font-size: 1em; }
+            .stats-grid { gap: 10px; }
+            .stat-card { padding: 15px 8px; }
+            .stat-label { font-size: 0.85em; }
+            .stat-value { font-size: 1.6em; }
+            .account-type-value { font-size: 1.2em; }
         }
 
         @media (max-width: 400px) {
             .plan-action-btn, .start-mcq-btn { padding: 8px 12px; font-size: 1em; }
+            .stat-label { font-size: 0.75em; }
+            .stat-value { font-size: 1.3em; }
         }
     </style>
 </head>
@@ -430,9 +436,6 @@
             <div class="stat-card">
                 <div class="stat-label">Today's MCQs</div>
                 <div class="stat-value" id="today-usage">-</div>
-                <div style="width:100%;height:8px;background:#e0e0e0;border-radius:4px;margin-top:10px;overflow:hidden;">
-                    <div id="usage-progress" style="width:0%;height:100%;background:#0D47A1;transition:width 0.3s;"></div>
-                </div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Account Type</div>
@@ -448,7 +451,7 @@
 
         <!-- Plan Info (paid users only) -->
         <div id="plan-info" class="plan-info" style="display:none;">
-            <h3>Your Plan Details</h3>
+            <h3>📋 Your Plan Details</h3>
             <div class="plan-detail">
                 <span>Plan Type</span>
                 <strong id="plan-type">-</strong>
@@ -577,7 +580,7 @@
                 const todayUsed = userData.dailyUsage?.count || 0;
                 const mcqLimit  = isPaid ? '∞' : '40';
                 document.getElementById('today-usage').textContent    = isPaid ? todayUsed + ' / ∞' : todayUsed + ' / 40';
-                document.getElementById('usage-progress').style.width = isPaid ? '100%' : ((todayUsed / 40) * 100) + '%';
+
 
                 // ====== Total MCQs attempted ======
                 document.getElementById('total-attempted').textContent = userData.totalMCQsAttempted || 0;
