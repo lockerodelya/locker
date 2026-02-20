@@ -416,9 +416,11 @@
             document.getElementById('edit-plan-fields').style.display = isPaid ? 'block' : 'none';
             if (isPaid) {
                 document.getElementById('edit-plan').value = u.planType || '1month';
-                if (u.planStartDate) {
-                    document.getElementById('edit-start-date').value =
-                        new Date(u.planStartDate.seconds * 1000).toISOString().split('T')[0];
+                if (u.planStartDate && u.planStartDate.seconds) {
+                    const startDate = new Date(u.planStartDate.seconds * 1000);
+                    if (!isNaN(startDate.getTime())) {
+                        document.getElementById('edit-start-date').value = startDate.toISOString().split('T')[0];
+                    }
                 }
                 calcExpiry('edit');
             }
