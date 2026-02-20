@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -142,7 +142,7 @@
                     <input type="email" id="edit-email" required>
                 </div>
                 <div class="form-group">
-                    <label>Password <small>(stored value — change if needed)</small></label>
+                    <label>Password <small>(type new password to update, leave blank to keep existing)</small></label>
                     <input type="text" id="edit-password" maxlength="12">
                 </div>
 
@@ -299,17 +299,17 @@
     <script src="/vooo-ai/vooo-config.js"></script>
 
     <script>
-        firebase.initializeApp(VOOO_CONFIG.firebase);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(VOOO_CONFIG.firebase);
+        }
         const auth = firebase.auth();
         const db   = firebase.firestore();
 
         let allUsers = [];
         let currentEditUser = null;
-        let creatingUser = false; // flag to prevent auth observer from interfering
 
         // ====== AUTH CHECK ======
         auth.onAuthStateChanged(async (user) => {
-            if (creatingUser) return; // skip during user creation
             if (!user) { window.location.href = 'voooadmin.html'; return; }
             const adminDoc = await db.collection('vooo_admins').doc(user.uid).get();
             if (!adminDoc.exists) {
@@ -406,13 +406,12 @@
             document.getElementById('edit-dob').value               = u.dob || '';
             document.getElementById('edit-phone').value             = u.phone || '';
             document.getElementById('edit-email').value             = u.email || '';
-            document.getElementById('edit-password').value          = u.password || '';
-            document.getElementById('edit-password').placeholder      = u.password ? '' : 'No password stored — type new password to set one';
+            document.getElementById('edit-password').value          = '';
+            document.getElementById('edit-password').placeholder    = 'Leave blank to keep existing password';
             document.getElementById('edit-security-question').value = u.securityQuestion || '';
             document.getElementById('edit-security-answer').value   = u.securityAnswer || '';
             document.getElementById('edit-tier').value              = u.tier || 'free';
 
-            // Plan fields
             const isPaid = u.tier === 'paid';
             document.getElementById('edit-plan-fields').style.display = isPaid ? 'block' : 'none';
             if (isPaid) {
@@ -448,7 +447,7 @@
         ['edit-plan','edit-start-date'].forEach(id => document.getElementById(id).addEventListener('change', () => calcExpiry('edit')));
         ['create-plan','create-start-date'].forEach(id => document.getElementById(id).addEventListener('change', () => calcExpiry('create')));
 
-        // ====== SAVE EDIT ======
+        // ====== SAVE EDIT — FIXED: Firestore only, no Auth manipulation ======
         document.getElementById('edit-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const tier        = document.getElementById('edit-tier').value;
@@ -464,7 +463,7 @@
                 tier:             tier
             };
 
-            // Only update password in Firestore if admin typed something
+            // Only update password in Firestore if admin typed a new one
             if (newPassword) {
                 updateData.password = newPassword;
             }
@@ -485,65 +484,12 @@
             }
 
             try {
-                // Update Firestore
                 await db.collection('users').doc(currentEditUser.id).update(updateData);
-
-                // If password changed, update Firebase Auth by deleting and recreating the auth account
-                if (newPassword && newPassword !== currentEditUser.password) {
-                    const userEmail   = document.getElementById('edit-email').value.trim().toLowerCase();
-                    const oldPassword = currentEditUser.password || '';
-
-                    if (oldPassword) {
-                        try {
-                            const adminEmail = auth.currentUser.email;
-                            const adminPasswordForReauth = prompt('To change this user\'s login password, enter YOUR admin password:');
-                            if (adminPasswordForReauth) {
-                                creatingUser = true;
-
-                                // Sign in as user with OLD password
-                                const userCred = await auth.signInWithEmailAndPassword(userEmail, oldPassword);
-                                const userUid  = userCred.user.uid;
-
-                                // Delete their Firebase Auth account
-                                await userCred.user.delete();
-
-                                // Recreate their Firebase Auth account with NEW password
-                                const newCred = await auth.createUserWithEmailAndPassword(userEmail, newPassword);
-                                await newCred.user.updateProfile({ displayName: updateData.fullName });
-
-                                // If UID changed, update Firestore doc to new UID
-                                if (newCred.user.uid !== userUid) {
-                                    const oldData = (await db.collection('users').doc(userUid).get()).data();
-                                    await db.collection('users').doc(newCred.user.uid).set({ ...oldData, ...updateData });
-                                    await db.collection('users').doc(userUid).delete();
-                                }
-
-                                // Sign new auth account out cleanly
-                                await auth.signOut();
-
-                                // Sign admin back in
-                                await auth.signInWithEmailAndPassword(adminEmail, adminPasswordForReauth);
-                                creatingUser = false;
-
-                                alert('✅ User updated and login password changed successfully!');
-                            } else {
-                                alert('✅ Firestore updated.\n⚠️ Login password NOT changed (admin password not provided).');
-                            }
-                        } catch (authErr) {
-                            creatingUser = false;
-                            alert('✅ Firestore updated.\n⚠️ Could not change login password: ' + authErr.message);
-                        }
-                    } else {
-                        alert('✅ User updated.\n⚠️ Login password NOT changed (old password not stored — this user signed up before the latest update).');
-                    }
-                } else {
-                    alert('✅ User updated successfully!');
-                }
-
+                alert('✅ User updated successfully!');
                 closeModal('edit-modal');
                 loadUsers();
             } catch (err) {
-                alert('❌ Error: ' + err.message);
+                alert('❌ Error updating user: ' + err.message);
             }
         });
 
@@ -554,61 +500,55 @@
             document.getElementById('create-modal').classList.add('active');
         }
 
-        // ====== CREATE USER ======
+        // ====== CREATE USER — FIXED: No admin session juggling ======
         document.getElementById('create-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const fullname  = document.getElementById('create-fullname').value.trim();
-            const username  = document.getElementById('create-username').value.trim();
-            const dob       = document.getElementById('create-dob').value.trim();
-            const phone     = document.getElementById('create-phone').value.trim();
-            const email     = document.getElementById('create-email').value.trim().toLowerCase();
-            const password  = document.getElementById('create-password').value.trim();
-            const secQ      = document.getElementById('create-security-question').value;
-            const secA      = document.getElementById('create-security-answer').value.trim().toLowerCase();
-            const tier      = document.getElementById('create-tier').value;
+            const fullname = document.getElementById('create-fullname').value.trim();
+            const username = document.getElementById('create-username').value.trim();
+            const dob      = document.getElementById('create-dob').value.trim();
+            const phone    = document.getElementById('create-phone').value.trim();
+            const email    = document.getElementById('create-email').value.trim().toLowerCase();
+            const password = document.getElementById('create-password').value.trim();
+            const secQ     = document.getElementById('create-security-question').value;
+            const secA     = document.getElementById('create-security-answer').value.trim().toLowerCase();
+            const tier     = document.getElementById('create-tier').value;
 
-            // Check username not taken
+            // Check username not already taken
             const usernameCheck = await db.collection('users').where('username', '==', username).limit(1).get();
-            if (!usernameCheck.empty) { alert('❌ Username already taken.'); return; }
-
-            // Get admin email BEFORE creating new user (creating new user will sign us out)
-            const adminUser  = auth.currentUser;
-            const adminEmail = adminUser ? adminUser.email : null;
-
-            // Ask admin password now — needed to re-sign in after creating new user
-            const adminPassword = prompt('Enter YOUR admin password to continue.\n(Required to restore admin session after creating user)');
-            if (!adminPassword) { alert('❌ Admin password required. Cancelled.'); return; }
+            if (!usernameCheck.empty) {
+                alert('❌ Username already taken. Please choose another.');
+                return;
+            }
 
             try {
-                creatingUser = true; // pause auth observer
-                // Create Firebase Auth user — this signs OUT admin and signs IN as new user
+                // Create Firebase Auth user
                 const cred = await auth.createUserWithEmailAndPassword(email, password);
                 const uid  = cred.user.uid;
                 await cred.user.updateProfile({ displayName: fullname });
 
                 const userData = {
-                    username: username,
-                    fullName: fullname,
-                    dob: dob,
-                    phone: phone,
-                    email: email,
-                    password: password,
-                    securityQuestion: secQ,
-                    securityAnswer: secA,
-                    tier: tier,
-                    vooo_user: true,
-                    planType: null,
-                    planStartDate: null,
-                    planExpiryDate: null,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    lastLogin: null,
-                    dailyStreak: 0,
+                    username:           username,
+                    fullName:           fullname,
+                    dob:                dob,
+                    phone:              phone,
+                    email:              email,
+                    password:           password,
+                    securityQuestion:   secQ,
+                    securityAnswer:     secA,
+                    tier:               tier,
+                    vooo_user:          true,
+                    planType:           null,
+                    planStartDate:      null,
+                    planExpiryDate:     null,
+                    createdAt:          firebase.firestore.FieldValue.serverTimestamp(),
+                    lastLogin:          null,
+                    dailyStreak:        0,
                     totalMCQsAttempted: 0,
-                    accuracyScore: 0,
-                    badges: [],
-                    devices: [],
-                    dailyUsage: { date: new Date().toISOString().split('T')[0], count: 0 }
+                    accuracyScore:      0,
+                    badges:             [],
+                    devices:            [],
+                    dailyUsage:         { date: new Date().toISOString().split('T')[0], count: 0 }
                 };
 
                 if (tier === 'paid') {
@@ -622,26 +562,15 @@
                     userData.planExpiryDate = firebase.firestore.Timestamp.fromDate(exp);
                 }
 
+                // Save to Firestore
                 await db.collection('users').doc(uid).set(userData);
-
-                // Sign out new user, then sign admin back in immediately
-                await auth.signOut();
-                await auth.signInWithEmailAndPassword(adminEmail, adminPassword);
-                creatingUser = false; // resume auth observer
 
                 alert('✅ User "' + username + '" created successfully!');
                 closeModal('create-modal');
                 loadUsers();
 
             } catch (err) {
-                creatingUser = false; // always reset flag
-                // If new user was created but re-sign-in failed, still show success for user creation
-                if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
-                    alert('✅ User created successfully!\n\n⚠️ Could not restore admin session (wrong admin password entered).\nYou will be redirected to login again.');
-                    window.location.href = 'voooadmin.html';
-                } else {
-                    alert('❌ Error creating user: ' + err.message);
-                }
+                alert('❌ Error creating user: ' + err.message);
             }
         });
 
@@ -668,6 +597,7 @@
             auth.signOut().then(() => { window.location.href = 'voooadmin.html'; });
         }
 
+        // ====== CHANGE ADMIN PASSWORD ======
         function changePassword() {
             const user = auth.currentUser;
             if (user && user.email) {
