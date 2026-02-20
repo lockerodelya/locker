@@ -470,6 +470,48 @@
             </div>
         </div>
 
+        <!-- Basic Information Section — always visible for all users -->
+        <div class="plan-info" style="margin-top: 25px;">
+            <h3>Basic Information :</h3>
+            <div class="plan-detail">
+                <span>Full Name</span>
+                <strong id="basic-fullname">-</strong>
+            </div>
+            <div class="plan-detail">
+                <span>Date of Birth</span>
+                <strong id="basic-dob">-</strong>
+            </div>
+            <div class="plan-detail">
+                <span>Phone Number</span>
+                <strong id="basic-phone">-</strong>
+            </div>
+            <div class="plan-detail">
+                <span>Email ID</span>
+                <strong id="basic-email">-</strong>
+            </div>
+        </div>
+
+        <!-- Basic Information Section -->
+        <div class="plan-info" style="margin-top: 25px;">
+            <h3>Basic Information :</h3>
+            <div class="plan-detail">
+                <span>Full Name</span>
+                <strong id="basic-fullname">-</strong>
+            </div>
+            <div class="plan-detail">
+                <span>Date of Birth</span>
+                <strong id="basic-dob">-</strong>
+            </div>
+            <div class="plan-detail">
+                <span>Phone Number</span>
+                <strong id="basic-phone">-</strong>
+            </div>
+            <div class="plan-detail">
+                <span>Email ID</span>
+                <strong id="basic-email">-</strong>
+            </div>
+        </div>
+
     </div>
 
     <!-- Firebase SDK -->
@@ -579,8 +621,7 @@
                 // ====== Today's MCQs — always show numbers ======
                 const todayUsed = userData.dailyUsage?.count || 0;
                 const mcqLimit  = isPaid ? '∞' : '40';
-                document.getElementById('today-usage').textContent    = isPaid ? todayUsed + ' / ∞' : todayUsed + ' / 40';
-
+                document.getElementById('today-usage').textContent = isPaid ? todayUsed + ' / ∞' : todayUsed + ' / 40';
 
                 // ====== Total MCQs attempted ======
                 document.getElementById('total-attempted').textContent = userData.totalMCQsAttempted || 0;
@@ -608,7 +649,7 @@
                         document.getElementById('plan-start').textContent = startDate.toLocaleDateString('en-GB');
                     }
 
-                    // Expiry date + days remaining from plan start date
+                    // Expiry date + days remaining
                     if (userData.planExpiryDate) {
                         const expiryDate = userData.planExpiryDate.seconds
                             ? new Date(userData.planExpiryDate.seconds * 1000)
@@ -627,6 +668,18 @@
                         }
                     }
                 }
+
+                // ====== Basic Information ======
+                document.getElementById('basic-fullname').textContent = userData.fullName || '-';
+                document.getElementById('basic-dob').textContent      = userData.dob      || '-';
+                document.getElementById('basic-phone').textContent    = userData.phone    || '-';
+                document.getElementById('basic-email').textContent    = userData.email    || '-';
+
+                // ====== Basic Information ======
+                document.getElementById('basic-fullname').textContent = userData.fullName || '-';
+                document.getElementById('basic-dob').textContent      = userData.dob      || '-';
+                document.getElementById('basic-phone').textContent    = userData.phone    || '-';
+                document.getElementById('basic-email').textContent    = userData.email    || '-';
 
                 // All data loaded — show dashboard
                 showDashboard();
