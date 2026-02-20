@@ -40,7 +40,6 @@
         .btn-orange { background: #f97316; color: white; }
         .btn-orange:hover { background: #ea580c; }
         .loading { text-align: center; padding: 50px; font-size: 1.2em; color: #666; }
-
         /* MODAL */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: flex-start; padding-top: 30px; overflow-y: auto; }
         .modal.active { display: flex; }
@@ -48,9 +47,7 @@
         .modal-content h3 { margin-bottom: 20px; color: #1e40af; font-size: 1.3em; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: 600; color: #333; font-size: 0.93em; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 0.95em;
-        }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 0.95em; }
         .form-group input:focus, .form-group select:focus { outline: none; border-color: #1e40af; }
         .form-group input[readonly] { background: #f5f5f5; color: #666; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -58,6 +55,7 @@
         .section-divider { border: none; border-top: 1px solid #e0e0e0; margin: 18px 0; }
         .field-section-title { font-size: 0.85em; font-weight: 700; color: #1e40af; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; margin-top: 4px; }
         small { color: #888; font-size: 0.8em; }
+        .plan-value-display { background: #f0fdf4; border: 2px solid #10b981; border-radius: 6px; padding: 10px; font-weight: 700; color: #065f46; font-size: 1.1em; text-align: center; }
     </style>
 </head>
 <body>
@@ -147,22 +145,6 @@
                 </div>
 
                 <hr class="section-divider">
-                <div class="field-section-title">Security</div>
-                <div class="form-group">
-                    <label>Security Question</label>
-                    <select id="edit-security-question">
-                        <option value="">— select —</option>
-                        <option>In which city were you born?</option>
-                        <option>What is your favourite subject?</option>
-                        <option>Which color do you like most?</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Security Answer</label>
-                    <input type="text" id="edit-security-answer">
-                </div>
-
-                <hr class="section-divider">
                 <div class="field-section-title">Plan &amp; Tier</div>
                 <div class="form-group">
                     <label>Tier *</label>
@@ -171,25 +153,34 @@
                         <option value="paid">Paid</option>
                     </select>
                 </div>
+
                 <div id="edit-plan-fields" style="display:none;">
                     <div class="form-group">
                         <label>Plan Type</label>
-                        <select id="edit-plan">
+                        <select id="edit-plan" onchange="calcExpiry('edit')">
                             <option value="1month">1 Month — ₹200</option>
                             <option value="3month">3 Months — ₹550</option>
                             <option value="6month">6 Months — ₹1000</option>
                             <option value="1year">1 Year — ₹1800</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label>Plan Start Date</label>
+                        <input type="date" id="edit-start-date" onchange="calcExpiry('edit')">
+                    </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Plan Start Date</label>
-                            <input type="date" id="edit-start-date">
+                            <label>Plan End Date <small>(auto)</small></label>
+                            <input type="text" id="edit-expiry" readonly placeholder="Auto calculated">
                         </div>
                         <div class="form-group">
-                            <label>Expiry Date (auto)</label>
-                            <input type="text" id="edit-expiry" readonly>
+                            <label>Duration <small>(auto)</small></label>
+                            <input type="text" id="edit-duration" readonly placeholder="Auto calculated">
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Plan Value <small>(auto)</small></label>
+                        <div class="plan-value-display" id="edit-plan-value">—</div>
                     </div>
                 </div>
 
@@ -238,22 +229,6 @@
                 </div>
 
                 <hr class="section-divider">
-                <div class="field-section-title">Security</div>
-                <div class="form-group">
-                    <label>Security Question</label>
-                    <select id="create-security-question">
-                        <option value="">— select —</option>
-                        <option>In which city were you born?</option>
-                        <option>What is your favourite subject?</option>
-                        <option>Which color do you like most?</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Security Answer</label>
-                    <input type="text" id="create-security-answer">
-                </div>
-
-                <hr class="section-divider">
                 <div class="field-section-title">Plan &amp; Tier</div>
                 <div class="form-group">
                     <label>Tier</label>
@@ -262,25 +237,34 @@
                         <option value="paid">Paid</option>
                     </select>
                 </div>
+
                 <div id="create-plan-fields" style="display:none;">
                     <div class="form-group">
                         <label>Plan Type</label>
-                        <select id="create-plan">
+                        <select id="create-plan" onchange="calcExpiry('create')">
                             <option value="1month">1 Month — ₹200</option>
                             <option value="3month">3 Months — ₹550</option>
                             <option value="6month">6 Months — ₹1000</option>
                             <option value="1year">1 Year — ₹1800</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label>Plan Start Date</label>
+                        <input type="date" id="create-start-date" onchange="calcExpiry('create')">
+                    </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Plan Start Date</label>
-                            <input type="date" id="create-start-date">
+                            <label>Plan End Date <small>(auto)</small></label>
+                            <input type="text" id="create-expiry" readonly placeholder="Auto calculated">
                         </div>
                         <div class="form-group">
-                            <label>Expiry Date (auto)</label>
-                            <input type="text" id="create-expiry" readonly>
+                            <label>Duration <small>(auto)</small></label>
+                            <input type="text" id="create-duration" readonly placeholder="Auto calculated">
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Plan Value <small>(auto)</small></label>
+                        <div class="plan-value-display" id="create-plan-value">—</div>
                     </div>
                 </div>
 
@@ -305,8 +289,28 @@
         const auth = firebase.auth();
         const db   = firebase.firestore();
 
-        let allUsers = [];
+        let allUsers       = [];
         let currentEditUser = null;
+
+        // ====== PLAN LOOKUP TABLES ======
+        const PLAN_VALUES = {
+            '1month': '₹200',
+            '3month': '₹550',
+            '6month': '₹1000',
+            '1year':  '₹1800'
+        };
+        const PLAN_DURATION = {
+            '1month': '1 Month (30 days)',
+            '3month': '3 Months (90 days)',
+            '6month': '6 Months (180 days)',
+            '1year':  '1 Year (365 days)'
+        };
+        const PLAN_DAYS = {
+            '1month': 30,
+            '3month': 90,
+            '6month': 180,
+            '1year':  365
+        };
 
         // ====== AUTH CHECK ======
         auth.onAuthStateChanged(async (user) => {
@@ -360,11 +364,11 @@
             const tbody = document.getElementById('user-tbody');
             tbody.innerHTML = '';
             users.forEach((user, idx) => {
-                const expiry = user.planExpiryDate
+                const expiry = user.planExpiryDate && user.planExpiryDate.seconds
                     ? new Date(user.planExpiryDate.seconds * 1000).toLocaleDateString('en-GB')
                     : '-';
                 const tier = user.tier || 'free';
-                const row = document.createElement('tr');
+                const row  = document.createElement('tr');
                 row.innerHTML = `
                     <td>${idx + 1}</td>
                     <td><strong>${user.username || '-'}</strong></td>
@@ -389,11 +393,44 @@
             const s = this.value.toLowerCase();
             const filtered = allUsers.filter(u =>
                 (u.username || '').toLowerCase().includes(s) ||
-                (u.fullName || '').toLowerCase().includes(s) ||
-                (u.email || '').toLowerCase().includes(s) ||
-                (u.phone || '').includes(s)
+                (u.fullName  || '').toLowerCase().includes(s) ||
+                (u.email     || '').toLowerCase().includes(s) ||
+                (u.phone     || '').includes(s)
             );
             displayUsers(filtered);
+        });
+
+        // ====== CALC EXPIRY, DURATION, PLAN VALUE ======
+        function calcExpiry(prefix) {
+            const plan     = document.getElementById(prefix + '-plan').value;
+            const startVal = document.getElementById(prefix + '-start-date').value;
+
+            // Always update plan value and duration
+            document.getElementById(prefix + '-plan-value').textContent = PLAN_VALUES[plan]   || '—';
+            document.getElementById(prefix + '-duration').value         = PLAN_DURATION[plan] || '';
+
+            if (!startVal) {
+                document.getElementById(prefix + '-expiry').value = '';
+                return;
+            }
+
+            const days = PLAN_DAYS[plan] || 30;
+            const exp  = new Date(startVal);
+            exp.setDate(exp.getDate() + days);
+            document.getElementById(prefix + '-expiry').value = exp.toLocaleDateString('en-GB');
+        }
+
+        // ====== TIER CHANGE HANDLERS ======
+        document.getElementById('edit-tier').addEventListener('change', function() {
+            const show = this.value === 'paid';
+            document.getElementById('edit-plan-fields').style.display = show ? 'block' : 'none';
+            if (show) calcExpiry('edit');
+        });
+
+        document.getElementById('create-tier').addEventListener('change', function() {
+            const show = this.value === 'paid';
+            document.getElementById('create-plan-fields').style.display = show ? 'block' : 'none';
+            if (show) calcExpiry('create');
         });
 
         // ====== OPEN EDIT MODAL ======
@@ -401,86 +438,94 @@
             currentEditUser = allUsers.find(u => u.id === userId);
             const u = currentEditUser;
 
-            document.getElementById('edit-username').value          = u.username || '';
-            document.getElementById('edit-fullname').value          = u.fullName || '';
-            document.getElementById('edit-dob').value               = u.dob || '';
-            document.getElementById('edit-phone').value             = u.phone || '';
-            document.getElementById('edit-email').value             = u.email || '';
-            document.getElementById('edit-password').value          = '';
-            document.getElementById('edit-password').placeholder    = 'Leave blank to keep existing password';
-            document.getElementById('edit-security-question').value = u.securityQuestion || '';
-            document.getElementById('edit-security-answer').value   = u.securityAnswer || '';
-            document.getElementById('edit-tier').value              = u.tier || 'free';
+            document.getElementById('edit-username').value       = u.username || '';
+            document.getElementById('edit-fullname').value       = u.fullName || '';
+            document.getElementById('edit-dob').value            = u.dob || '';
+            document.getElementById('edit-phone').value          = u.phone || '';
+            document.getElementById('edit-email').value          = u.email || '';
+            document.getElementById('edit-password').value       = '';
+            document.getElementById('edit-password').placeholder = 'Leave blank to keep existing password';
+            document.getElementById('edit-tier').value           = u.tier || 'free';
 
             const isPaid = u.tier === 'paid';
             document.getElementById('edit-plan-fields').style.display = isPaid ? 'block' : 'none';
+
             if (isPaid) {
+                // Set plan type
                 document.getElementById('edit-plan').value = u.planType || '1month';
+
+                // Safely set start date
                 if (u.planStartDate && u.planStartDate.seconds) {
                     const startDate = new Date(u.planStartDate.seconds * 1000);
                     if (!isNaN(startDate.getTime())) {
                         document.getElementById('edit-start-date').value = startDate.toISOString().split('T')[0];
+                    } else {
+                        document.getElementById('edit-start-date').value = '';
                     }
+                } else {
+                    document.getElementById('edit-start-date').value = '';
                 }
-                calcExpiry('edit');
+
+                // Safely set expiry date display
+                if (u.planExpiryDate && u.planExpiryDate.seconds) {
+                    const expiryDate = new Date(u.planExpiryDate.seconds * 1000);
+                    if (!isNaN(expiryDate.getTime())) {
+                        document.getElementById('edit-expiry').value = expiryDate.toLocaleDateString('en-GB');
+                    } else {
+                        document.getElementById('edit-expiry').value = '';
+                    }
+                } else {
+                    document.getElementById('edit-expiry').value = '';
+                }
+
+                // Set plan value and duration from lookup
+                document.getElementById('edit-plan-value').textContent = PLAN_VALUES[u.planType]   || u.planValue || '—';
+                document.getElementById('edit-duration').value         = PLAN_DURATION[u.planType] || '';
+            } else {
+                // Reset plan fields for free users
+                document.getElementById('edit-start-date').value      = '';
+                document.getElementById('edit-expiry').value          = '';
+                document.getElementById('edit-duration').value        = '';
+                document.getElementById('edit-plan-value').textContent = '—';
             }
 
             document.getElementById('edit-modal').classList.add('active');
         }
 
-        // ====== TIER CHANGE HANDLERS ======
-        document.getElementById('edit-tier').addEventListener('change', function() {
-            document.getElementById('edit-plan-fields').style.display = this.value === 'paid' ? 'block' : 'none';
-        });
-        document.getElementById('create-tier').addEventListener('change', function() {
-            document.getElementById('create-plan-fields').style.display = this.value === 'paid' ? 'block' : 'none';
-        });
-
-        // ====== EXPIRY CALC ======
-        function calcExpiry(prefix) {
-            const plan  = document.getElementById(prefix + '-plan').value;
-            const start = document.getElementById(prefix + '-start-date').value;
-            if (!plan || !start) return;
-            const days = plan === '1month' ? 30 : plan === '3month' ? 90 : plan === '6month' ? 180 : 365;
-            const exp  = new Date(start);
-            exp.setDate(exp.getDate() + days);
-            document.getElementById(prefix + '-expiry').value = exp.toLocaleDateString('en-GB');
-        }
-        ['edit-plan','edit-start-date'].forEach(id => document.getElementById(id).addEventListener('change', () => calcExpiry('edit')));
-        ['create-plan','create-start-date'].forEach(id => document.getElementById(id).addEventListener('change', () => calcExpiry('create')));
-
-        // ====== SAVE EDIT — FIXED: Firestore only, no Auth manipulation ======
+        // ====== SAVE EDIT ======
         document.getElementById('edit-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const tier        = document.getElementById('edit-tier').value;
             const newPassword = document.getElementById('edit-password').value.trim();
 
             const updateData = {
-                fullName:         document.getElementById('edit-fullname').value.trim(),
-                dob:              document.getElementById('edit-dob').value.trim(),
-                phone:            document.getElementById('edit-phone').value.trim(),
-                email:            document.getElementById('edit-email').value.trim().toLowerCase(),
-                securityQuestion: document.getElementById('edit-security-question').value,
-                securityAnswer:   document.getElementById('edit-security-answer').value.trim().toLowerCase(),
-                tier:             tier
+                fullName: document.getElementById('edit-fullname').value.trim(),
+                dob:      document.getElementById('edit-dob').value.trim(),
+                phone:    document.getElementById('edit-phone').value.trim(),
+                email:    document.getElementById('edit-email').value.trim().toLowerCase(),
+                tier:     tier
             };
 
-            // Only update password in Firestore if admin typed a new one
+            // Only update password if admin typed a new one
             if (newPassword) {
                 updateData.password = newPassword;
             }
 
             if (tier === 'paid') {
-                const plan  = document.getElementById('edit-plan').value;
-                const start = new Date(document.getElementById('edit-start-date').value);
-                const days  = plan === '1month' ? 30 : plan === '3month' ? 90 : plan === '6month' ? 180 : 365;
+                const plan     = document.getElementById('edit-plan').value;
+                const startVal = document.getElementById('edit-start-date').value;
+                if (!startVal) { alert('⚠️ Please select a Plan Start Date.'); return; }
+                const start = new Date(startVal);
+                const days  = PLAN_DAYS[plan] || 30;
                 const exp   = new Date(start);
                 exp.setDate(exp.getDate() + days);
                 updateData.planType       = plan;
+                updateData.planValue      = PLAN_VALUES[plan];
                 updateData.planStartDate  = firebase.firestore.Timestamp.fromDate(start);
                 updateData.planExpiryDate = firebase.firestore.Timestamp.fromDate(exp);
             } else {
                 updateData.planType       = null;
+                updateData.planValue      = null;
                 updateData.planStartDate  = null;
                 updateData.planExpiryDate = null;
             }
@@ -498,11 +543,12 @@
         // ====== OPEN CREATE MODAL ======
         function openCreateModal() {
             document.getElementById('create-form').reset();
-            document.getElementById('create-plan-fields').style.display = 'none';
+            document.getElementById('create-plan-fields').style.display  = 'none';
+            document.getElementById('create-plan-value').textContent     = '—';
             document.getElementById('create-modal').classList.add('active');
         }
 
-        // ====== CREATE USER — FIXED: No admin session juggling ======
+        // ====== CREATE USER ======
         document.getElementById('create-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -512,8 +558,6 @@
             const phone    = document.getElementById('create-phone').value.trim();
             const email    = document.getElementById('create-email').value.trim().toLowerCase();
             const password = document.getElementById('create-password').value.trim();
-            const secQ     = document.getElementById('create-security-question').value;
-            const secA     = document.getElementById('create-security-answer').value.trim().toLowerCase();
             const tier     = document.getElementById('create-tier').value;
 
             // Check username not already taken
@@ -536,11 +580,10 @@
                     phone:              phone,
                     email:              email,
                     password:           password,
-                    securityQuestion:   secQ,
-                    securityAnswer:     secA,
                     tier:               tier,
                     vooo_user:          true,
                     planType:           null,
+                    planValue:          null,
                     planStartDate:      null,
                     planExpiryDate:     null,
                     createdAt:          firebase.firestore.FieldValue.serverTimestamp(),
@@ -554,17 +597,19 @@
                 };
 
                 if (tier === 'paid') {
-                    const plan  = document.getElementById('create-plan').value;
-                    const start = new Date(document.getElementById('create-start-date').value);
-                    const days  = plan === '1month' ? 30 : plan === '3month' ? 90 : plan === '6month' ? 180 : 365;
+                    const plan     = document.getElementById('create-plan').value;
+                    const startVal = document.getElementById('create-start-date').value;
+                    if (!startVal) { alert('⚠️ Please select a Plan Start Date.'); return; }
+                    const start = new Date(startVal);
+                    const days  = PLAN_DAYS[plan] || 30;
                     const exp   = new Date(start);
                     exp.setDate(exp.getDate() + days);
                     userData.planType       = plan;
+                    userData.planValue      = PLAN_VALUES[plan];
                     userData.planStartDate  = firebase.firestore.Timestamp.fromDate(start);
                     userData.planExpiryDate = firebase.firestore.Timestamp.fromDate(exp);
                 }
 
-                // Save to Firestore
                 await db.collection('users').doc(uid).set(userData);
 
                 alert('✅ User "' + username + '" created successfully!');
