@@ -414,9 +414,11 @@
                 return;
             }
 
-            const days = PLAN_DAYS[plan] || 30;
-            const exp  = new Date(startVal);
-            exp.setDate(exp.getDate() + days);
+            const exp = new Date(startVal);
+            if (plan === '1month')      exp.setMonth(exp.getMonth() + 1);
+            else if (plan === '3month') exp.setMonth(exp.getMonth() + 3);
+            else if (plan === '6month') exp.setMonth(exp.getMonth() + 6);
+            else if (plan === '1year')  exp.setFullYear(exp.getFullYear() + 1);
             document.getElementById(prefix + '-expiry').value = exp.toLocaleDateString('en-GB');
         }
 
@@ -516,9 +518,11 @@
                 const startVal = document.getElementById('edit-start-date').value;
                 if (!startVal) { alert('⚠️ Please select a Plan Start Date.'); return; }
                 const start = new Date(startVal);
-                const days  = PLAN_DAYS[plan] || 30;
                 const exp   = new Date(start);
-                exp.setDate(exp.getDate() + days);
+                if (plan === '1month')      exp.setMonth(exp.getMonth() + 1);
+                else if (plan === '3month') exp.setMonth(exp.getMonth() + 3);
+                else if (plan === '6month') exp.setMonth(exp.getMonth() + 6);
+                else if (plan === '1year')  exp.setFullYear(exp.getFullYear() + 1);
                 updateData.planType       = plan;
                 updateData.planValue      = PLAN_VALUES[plan];
                 updateData.planStartDate  = firebase.firestore.Timestamp.fromDate(start);
@@ -601,9 +605,11 @@
                     const startVal = document.getElementById('create-start-date').value;
                     if (!startVal) { alert('⚠️ Please select a Plan Start Date.'); return; }
                     const start = new Date(startVal);
-                    const days  = PLAN_DAYS[plan] || 30;
                     const exp   = new Date(start);
-                    exp.setDate(exp.getDate() + days);
+                    if (plan === '1month')      exp.setMonth(exp.getMonth() + 1);
+                    else if (plan === '3month') exp.setMonth(exp.getMonth() + 3);
+                    else if (plan === '6month') exp.setMonth(exp.getMonth() + 6);
+                    else if (plan === '1year')  exp.setFullYear(exp.getFullYear() + 1);
                     userData.planType       = plan;
                     userData.planValue      = PLAN_VALUES[plan];
                     userData.planStartDate  = firebase.firestore.Timestamp.fromDate(start);
