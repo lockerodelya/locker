@@ -64,10 +64,38 @@
         }
         .btn-header:hover { background: #e8eef7; }
 
+        /* ====== LOADING SPINNER ====== */
+        .loading-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 60vh;
+            gap: 20px;
+        }
+        .spinner {
+            width: 52px;
+            height: 52px;
+            border: 5px solid #e0e0e0;
+            border-top: 5px solid #0D47A1;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: #0D47A1;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
         .container {
             max-width: 1200px;
             margin: 30px auto;
             padding: 0 20px;
+            display: none; /* hidden until data loads */
         }
         .welcome-section {
             background: white;
@@ -146,20 +174,20 @@
         .tier-free { background: #fff3e0; color: #e65100; border: 2px solid #ffb74d; }
         .tier-paid { background: #e8f5e9; color: #2e7d32; border: 2px solid #66bb6a; }
 
-.upgrade-banner {
-    display: inline-block;
-    padding: 15px 40px;
-    background: #2E7D32;
-    color: white;
-    border-radius: 10px;
-    margin-bottom: 30px;
-    text-align: center;
-    font-weight: 700;
-    font-size: 1.5em;
-    text-decoration: none;
-    transition: background 0.3s;
-}
-.upgrade-banner h3 { font-size: 1.5em; margin-bottom: 10px; }
+        .upgrade-banner {
+            display: inline-block;
+            padding: 15px 40px;
+            background: #2E7D32;
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.5em;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .upgrade-banner h3 { font-size: 1.5em; margin-bottom: 10px; }
 
         /* ====== PAYMENT SUCCESS BANNER ====== */
         .payment-success-banner {
@@ -350,14 +378,20 @@
         </div>
     </div>
 
-    <div class="container">
+    <!-- ====== LOADING SPINNER — shown until Firebase data loads ====== -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading your dashboard...</div>
+    </div>
+
+    <!-- ====== MAIN CONTAINER — hidden until Firebase data loads ====== -->
+    <div class="container" id="main-container">
 
         <!-- Welcome Section -->
         <div class="welcome-section">
             <div class="welcome-text">
-                <h2>Dashboard: <span id="user-fullname">User</span></h2>
+                <h2>Dashboard: <span id="user-fullname"></span></h2>
             </div>
-            <!-- ⭐ ONLY CHANGE: added ?existing=true to href -->
             <a id="plan-action-btn" href="/vooo-ai/vooopricing.html?existing=true" class="plan-action-btn">Buy Plan</a>
         </div>
 
@@ -377,7 +411,7 @@
         </div>
 
         <!-- Upgrade Banner -->
-        <div id="upgrade-banner" class="upgrade-banner">
+        <div id="upgrade-banner" class="upgrade-banner" style="display:none;">
             <h3>⚡ Upgrade to Unlimited Access!</h3>
             <p id="upgrade-message"></p>
         </div>
@@ -394,7 +428,7 @@
             <div class="stat-card">
                 <div class="stat-label">Account Type</div>
                 <div class="stat-value" style="font-size:1.5em;">
-                    <span id="tier-badge" class="tier-badge tier-free">FREE</span>
+                    <span id="tier-badge" class="tier-badge"></span>
                 </div>
             </div>
             <div class="stat-card">
@@ -441,6 +475,17 @@
         const auth = firebase.auth();
         const db   = firebase.firestore();
 
+        // ====== SHOW / HIDE HELPERS ======
+        function showDashboard() {
+            document.getElementById('loading-screen').style.display  = 'none';
+            document.getElementById('main-container').style.display  = 'block';
+        }
+
+        function showError() {
+            document.getElementById('loading-screen').innerHTML =
+                '<div style="color:#C62828;font-size:1.1em;font-weight:600;text-align:center;padding:40px;">❌ Failed to load dashboard.<br>Please refresh the page.</div>';
+        }
+
         // ====== PAYMENT SUCCESS BANNER ======
         function checkPaymentSuccess() {
             const paymentStatus = localStorage.getItem('vooo_payment_status');
@@ -475,7 +520,7 @@
                 window.location.href = 'vooologin.html';
                 return;
             }
-            // Save uid and fullname to localStorage for existing user payment flow
+            // Save uid and email to localStorage for existing user payment flow
             localStorage.setItem('vooo_uid',   user.uid);
             localStorage.setItem('vooo_email', user.email);
 
@@ -520,6 +565,8 @@
                 } else {
                     document.getElementById('today-usage').textContent    = `${todayUsed}/40`;
                     document.getElementById('usage-progress').style.width = ((todayUsed / 40) * 100) + '%';
+                    document.getElementById('tier-badge').textContent     = 'FREE';
+                    document.getElementById('tier-badge').className       = 'tier-badge tier-free';
 
                     if (todayUsed >= 30) {
                         document.getElementById('upgrade-banner').style.display = 'block';
@@ -528,13 +575,12 @@
                     }
                 }
 
-                document.getElementById('daily-streak').textContent   = userData.dailyStreak || 0;
-                document.getElementById('total-attempted').textContent = userData.totalMCQsAttempted || 0;
+                document.getElementById('daily-streak').textContent    = userData.dailyStreak || 0;
+                document.getElementById('total-attempted').textContent  = userData.totalMCQsAttempted || 0;
 
                 if (isPaid && userData.planType) {
                     document.getElementById('plan-info').style.display = 'block';
 
-                    // Auto-reads from vooo-config.js — no hardcoded prices
                     const planKey  = userData.planKey;
                     const planData = VOOO_CONFIG.pricing.plans[planKey];
                     const planDisplay = planData
@@ -566,9 +612,12 @@
                     }
                 }
 
+                // ====== ALL DATA LOADED — show dashboard, hide spinner ======
+                showDashboard();
+
             } catch (error) {
                 console.error('Error loading dashboard:', error);
-                alert('Error loading dashboard. Please try again.');
+                showError();
             }
         }
 
@@ -577,7 +626,7 @@
         }
 
         function openChangePasswordModal() {
-            document.getElementById('new-password').value    = '';
+            document.getElementById('new-password').value     = '';
             document.getElementById('confirm-password').value = '';
             clearModalError();
             document.getElementById('change-password-modal').classList.add('active');
