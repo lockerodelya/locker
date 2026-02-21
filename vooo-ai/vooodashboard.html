@@ -431,7 +431,7 @@
             <p id="upgrade-message"></p>
         </div>
 
-        <!-- Stats Grid — Daily Streak removed, only 3 cards -->
+        <!-- Stats Grid -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Today's MCQs</div>
@@ -452,6 +452,11 @@
         <!-- Plan Info (paid users only) -->
         <div id="plan-info" class="plan-info" style="display:none;">
             <h3>Plan Details :</h3>
+            <!-- ✅ NEW: Plan Value row — added just above Plan Type -->
+            <div class="plan-detail">
+                <span>Plan Value</span>
+                <strong id="plan-value">-</strong>
+            </div>
             <div class="plan-detail">
                 <span>Plan Type</span>
                 <strong id="plan-type">-</strong>
@@ -510,6 +515,9 @@
             '6month':  '6 Months',
             '1year':   '1 Year'
         };
+
+        // Plan value is now read directly from Firebase (userData.planValue)
+        // No hardcoding needed — payment pages save it at time of purchase
 
         // ====== SHOW / HIDE HELPERS ======
         function showDashboard() {
@@ -596,10 +604,17 @@
                     accountTypeEl.textContent = 'Free';
                 }
 
-                // ====== Today's MCQs — always show numbers ======
-                const todayUsed = userData.dailyUsage?.count || 0;
-                const mcqLimit  = isPaid ? '∞' : '40';
-                document.getElementById('today-usage').textContent = isPaid ? todayUsed + ' / ∞' : todayUsed + ' / 40';
+                // ====== Today's MCQs ======
+                // Reads dailyUsage.count from Firestore (incremented by the MCQ app each session).
+                // Also checks dailyUsage.date — if it's not today, treat count as 0 (day has reset).
+                const todayStr   = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
+                const dailyData  = userData.dailyUsage || {};
+                const usageDate  = dailyData.date || '';
+                const todayUsed  = (usageDate === todayStr) ? (dailyData.count || 0) : 0;
+
+                document.getElementById('today-usage').textContent = isPaid
+                    ? todayUsed + ' / ∞'
+                    : todayUsed + ' / 40';
 
                 // ====== Total MCQs attempted ======
                 document.getElementById('total-attempted').textContent = userData.totalMCQsAttempted || 0;
@@ -614,6 +629,9 @@
                 // ====== Plan info for paid users ======
                 if (isPaid && userData.planType) {
                     document.getElementById('plan-info').style.display = 'block';
+
+                    // ✅ Plan Value — read directly from Firebase (saved by payment page)
+                    document.getElementById('plan-value').textContent = userData.planValue || '-';
 
                     // Plan type — show friendly name
                     const planDisplay = PLAN_DISPLAY[userData.planType] || userData.planType;
@@ -646,6 +664,8 @@
                         }
                     }
                 }
+
+                // Free users never see the plan-info section — it remains hidden
 
                 // ====== Basic Information ======
                 document.getElementById('basic-fullname').textContent = userData.fullName || '-';
