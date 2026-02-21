@@ -192,7 +192,7 @@
         <label for="agree-refund">
             I have read and agree to the no-refund policy. I understand that all sales are final and no refund will be issued under any circumstances.
         </label>
-    </div>
+        </div>
 
     <div class="timer-box" id="timer-box">
         ⏱ Please complete payment within <span id="countdown">5:00</span>
@@ -222,23 +222,19 @@
     firebase.initializeApp(VOOO_CONFIG.firebase);
     const db = firebase.firestore();
 
-    // ====== READ PLAN FROM URL + LOCALSTORAGE ======
     const urlParams  = new URLSearchParams(window.location.search);
     const planKey    = urlParams.get('plan')   || localStorage.getItem('vooo_plan_key');
     const planName   = urlParams.get('name')   || localStorage.getItem('vooo_plan_name');
 
-    // ====== READ USER FROM LOCALSTORAGE (saved by dashboard on login) ======
     const uid      = localStorage.getItem('vooo_uid');
     const email    = localStorage.getItem('vooo_email');
     const fullname = localStorage.getItem('vooo_fullname');
 
-    // ====== SAFETY CHECK ======
     if (!uid || !planKey) {
         alert('Session expired. Please login again.');
         window.location.href = 'vooologin.html';
     }
 
-    // ====== ALL CALCULATIONS FROM VOOO_CONFIG ======
     const payable      = VOOO_CONFIG.getTotalPayable(planKey);
     const planAmt      = payable.planAmount;
     const gatewayFee   = payable.gatewayFee;
@@ -247,7 +243,6 @@
     const durationDays = VOOO_CONFIG.getDurationDays(planKey);
     const feePercent   = VOOO_CONFIG.gateway_fee_percent;
 
-    // ====== DISPLAY ======
     document.getElementById('user-fullname').textContent   = fullname || 'User';
     document.getElementById('fee-percent').textContent     = feePercent;
     document.getElementById('row-plan-amount').textContent = 'INR ' + planAmt;
@@ -255,7 +250,6 @@
     document.getElementById('row-total').textContent       = 'INR ' + totalAmount;
     document.getElementById('plan-info').textContent       = durationDays + ' days access · All features unlocked';
 
-    // ====== 300-SECOND COUNTDOWN ======
     let countdownInterval = null;
 
     function startCountdown() {
@@ -281,7 +275,6 @@
         document.getElementById('timer-box').style.display = 'none';
     }
 
-    // ====== RAZORPAY PAYMENT ======
     function startPayment() {
         const agreed = document.getElementById('agree-refund').checked;
         if (!agreed) {
@@ -302,7 +295,6 @@
             prefill: {
                 name:  fullname || '',
                 email: email    || ''
-                // contact omitted — no SMS charges
             },
             theme:   { color: '#0D47A1' },
             timeout: 300,
@@ -317,10 +309,10 @@
                     const today      = VOOO_CONFIG.getTodayDate();
                     const expiryDate = VOOO_CONFIG.getExpiryDate(planKey);
 
-                    // Update Firestore for this existing user
                     await db.collection('users').doc(uid).update({
                         tier:             'paid',
-                        planType:         'INR ' + planAmt,
+                        planType:         planKey,             // ✅ FIXED: saves "1month", "3month" etc.
+                        planValue:        'INR ' + planAmt,   // ✅ NEW: saves "INR 200" etc. for dashboard
                         planStartDate:    today,
                         planExpiryDate:   expiryDate,
                         planKey:          planKey,
@@ -333,7 +325,6 @@
                         lastUpdated:      firebase.firestore.FieldValue.serverTimestamp()
                     });
 
-                    // Save for dashboard payment success banner
                     localStorage.setItem('vooo_payment_id',     response.razorpay_payment_id);
                     localStorage.setItem('vooo_payment_status', 'success');
                     localStorage.setItem('vooo_plan_start',     today);
@@ -352,10 +343,7 @@
                         'Redirecting to login...';
                     successDiv.style.display = 'block';
 
-                    // Redirect to login — user logs in and sees dashboard with success banner
-                    setTimeout(() => {
-                        window.location.href = 'vooologin.html';
-                    }, 2500);
+                    setTimeout(() => { window.location.href = 'vooologin.html'; }, 2500);
 
                 } catch (err) {
                     console.error('Firestore update error:', err);
