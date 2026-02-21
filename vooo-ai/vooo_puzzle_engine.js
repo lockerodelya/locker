@@ -349,24 +349,24 @@ class VOOOPuzzleEngine {
         }
     }
 
-    generateQuestion(template, variables) {
-        if (template.pattern_builder) {
-            try {
-                const result = this.evaluateExpression(template.pattern_builder, variables);
-                console.log('Built question:', result);
-                return result;
-            } catch (e) {
-                console.error('Error building pattern:', e);
-            }
+generateQuestion(template, variables) {
+    if (template.pattern_builder) {
+        try {
+            const result = this.evaluateExpression(template.pattern_builder, variables);
+            console.log('Built question:', result);
+            return result;
+        } catch (e) {
+            console.error('Error building pattern:', e);
         }
-        
-        let question = template.pattern;
-        for (const [varName, value] of Object.entries(variables)) {
-            question = question.replace(`[${varName}]`, value);
-        }
-        
-        return question;
     }
+    
+    let question = template.pattern;
+    for (const [varName, value] of Object.entries(variables)) {
+        question = question.replace(new RegExp(`\\[${varName}\\]`, 'g'), value);
+    }
+    
+    return question;
+}
 
     calculateAnswer(template, variables) {
         if (template.calculation) {
@@ -565,21 +565,21 @@ class VOOOPuzzleEngine {
         return index;
     }
 
-    generateExplanation(template, variables, answer) {
-        if (!template.explanation) {
-            return `The correct answer is ${answer}.`;
-        }
-        
-        let explanation = template.explanation;
-        for (const [varName, value] of Object.entries(variables)) {
-            const displayValue = typeof value === 'number' ? parseFloat(value.toFixed(4)) : value;
-            explanation = explanation.replace(`[${varName}]`, displayValue);
-        }
-        
-        const displayAnswer = typeof answer === 'number' ? parseFloat(answer.toFixed(4)) : answer;
-        explanation = explanation.replace('[RESULT]', displayAnswer);
-        return explanation;
+generateExplanation(template, variables, answer) {
+    if (!template.explanation) {
+        return `The correct answer is ${answer}.`;
     }
+    
+    let explanation = template.explanation;
+    for (const [varName, value] of Object.entries(variables)) {
+        const displayValue = typeof value === 'number' ? parseFloat(value.toFixed(4)) : value;
+        explanation = explanation.replace(new RegExp(`\\[${varName}\\]`, 'g'), displayValue);
+    }
+    
+    const displayAnswer = typeof answer === 'number' ? parseFloat(answer.toFixed(4)) : answer;
+    explanation = explanation.replace(new RegExp(`\\[RESULT\\]`, 'g'), displayAnswer);
+    return explanation;
+}
 
     checkAnswer(selectedIndex) {
         this.totalAttempts++;
