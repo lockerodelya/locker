@@ -106,10 +106,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add selection to current
         if (selectedSuggestionIndex >= 0 && suggestions[selectedSuggestionIndex]) {
             suggestions[selectedSuggestionIndex].classList.add('selected');
-            suggestions[selectedSuggestionIndex].scrollIntoView({
-                block: 'nearest',
-                behavior: 'smooth'
-            });
+requestAnimationFrame(() => {
+    suggestions[selectedSuggestionIndex].scrollIntoView({
+        block: 'nearest',
+        behavior: 'smooth'
+    });
+});
         }
     }
     
