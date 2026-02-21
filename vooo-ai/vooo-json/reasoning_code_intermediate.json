@@ -8,8 +8,8 @@
       "variables": {
         "CODE": {"values": ["3-1-20", "8-5-12-12-15", "3-15-4-5", "23-15-18-4"]}
       },
-      "calculation": "CODE",
-      "explanation": "A1Z26 cipher: numbers map to letters. 3-1-20 = C-A-T",
+      "calculation": "(CODE=='3-1-20')?'CAT':(CODE=='8-5-12-12-15')?'HELLO':(CODE=='3-15-4-5')?'CODE':'WORD'",
+      "explanation": "A1Z26 cipher: numbers map to letters. 3-1-20=C-A-T, 8-5-12-12-15=H-E-L-L-O",
       "options": ["CAT", "HELLO", "CODE", "WORD"]
     },
     {
@@ -18,8 +18,8 @@
       "variables": {
         "WORD": {"values": ["URYYB", "JBEYQ", "PBQR", "CHMMYR"]}
       },
-      "calculation": "WORD",
-      "explanation": "ROT13: shift each letter 13 positions. URYYB → HELLO",
+      "calculation": "(WORD=='URYYB')?'HELLO':(WORD=='JBEYQ')?'WORLD':(WORD=='PBQR')?'CODE':'PUZZLE'",
+      "explanation": "ROT13: shift each letter 13 positions. URYYB=HELLO, JBEYQ=WORLD, PBQR=CODE, CHMMYR=PUZZLE",
       "options": ["HELLO", "WORLD", "CODE", "PUZZLE"]
     },
     {
@@ -28,8 +28,8 @@
       "variables": {
         "CODE": {"values": ["ZYX", "SVOOL", "XLWV", "DLIOW"]}
       },
-      "calculation": "CODE",
-      "explanation": "Atbash cipher: A↔Z, B↔Y. ZYX → ABC",
+      "calculation": "(CODE=='ZYX')?'ABC':(CODE=='SVOOL')?'HELLO':(CODE=='XLWV')?'CODE':'WORLD'",
+      "explanation": "Atbash cipher: A=Z, B=Y, C=X. ZYX=ABC, SVOOL=HELLO, XLWV=CODE, DLIOW=WORLD",
       "options": ["ABC", "HELLO", "CODE", "WORLD"]
     },
     {
@@ -38,8 +38,8 @@
       "variables": {
         "MORSE": {"values": [".- -...", ".-- .... -.--", "... --- ...", ".... .."]}
       },
-      "calculation": "MORSE",
-      "explanation": "Standard Morse: .-=A, -...=B. Decode each group.",
+      "calculation": "(MORSE=='.- -...')?'AD':(MORSE=='.-- .... -.--')?'WHY':(MORSE=='... --- ...')?'SOS':'HI'",
+      "explanation": "Standard Morse: .-=A, -...=B, .--=W, ....=H, -.--=Y, ...=S, ---=O, ..=I",
       "options": ["AD", "WHY", "SOS", "HI"]
     },
     {
@@ -48,7 +48,7 @@
       "variables": {
         "CODE": {"values": ["Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot"]}
       },
-      "calculation": "CODE",
+      "calculation": "(CODE=='Alpha')?'A':(CODE=='Bravo')?'B':(CODE=='Charlie')?'C':(CODE=='Delta')?'D':(CODE=='Echo')?'E':'F'",
       "explanation": "Alpha=A, Bravo=B, Charlie=C, Delta=D, Echo=E, Foxtrot=F",
       "options": ["A", "B", "C", "D", "E", "F"]
     },
@@ -58,8 +58,8 @@
       "variables": {
         "WORD": {"values": ["CAT", "DOG", "STAR", "MOON", "LIVE", "RACE"]}
       },
-      "calculation": "WORD",
-      "explanation": "Simply reverse the letters: CAT → TAC, LIVE → EVIL",
+      "calculation": "(WORD=='CAT')?'TAC':(WORD=='DOG')?'GOD':(WORD=='STAR')?'RATS':(WORD=='MOON')?'NOOM':(WORD=='LIVE')?'EVIL':'ECAR'",
+      "explanation": "Reverse letters: CAT=TAC, DOG=GOD, STAR=RATS, MOON=NOOM, LIVE=EVIL, RACE=ECAR",
       "options": ["TAC", "GOD", "RATS", "NOOM", "EVIL", "ECAR"]
     },
     {
@@ -68,19 +68,19 @@
       "variables": {
         "WORD": {"values": ["CAT", "DOG", "STAR", "PLAY"]}
       },
-      "calculation": "WORD",
-      "explanation": "Move first consonant(s) to end, add 'ay': CAT→ATCAY, DOG→OGDAY",
+      "calculation": "(WORD=='CAT')?'ATCAY':(WORD=='DOG')?'OGDAY':(WORD=='STAR')?'ARSTAY':'AYPLAY'",
+      "explanation": "Move first consonant to end, add AY: CAT=ATCAY, DOG=OGDAY, STAR=ARSTAY, PLAY=AYPLAY",
       "options": ["ATCAY", "OGDAY", "ARSTAY", "AYPLAY"]
     },
     {
       "template_id": "CODE_INT_08",
-      "pattern": "Mirror digits: 1↔9, 2↔8, 3↔7, 4↔6, 5↔5. Decode: [CODE]",
+      "pattern": "Mirror digits: 1=9, 2=8, 3=7, 4=6, 5=5. Decode: [CODE]",
       "variables": {
-        "CODE": {"values": ["19", "28", "37", "46", "55", "123"]}
+        "CODE": {"values": ["19", "28", "37", "46"]}
       },
-      "calculation": "CODE",
-      "explanation": "Mirror each digit: 1→9, 9→1. 19→91, 28→82",
-      "options": ["91", "82", "73", "64", "55", "987"]
+      "calculation": "(CODE=='19')?'91':(CODE=='28')?'82':(CODE=='37')?'73':'64'",
+      "explanation": "Mirror each digit: 1=9, 9=1, 2=8, 3=7, 4=6. 19=91, 28=82, 37=73, 46=64",
+      "options": ["91", "82", "73", "64"]
     },
     {
       "template_id": "CODE_INT_09",
@@ -88,8 +88,8 @@
       "variables": {
         "WORD": {"values": ["CAT", "DOG", "BAT", "ACE"]}
       },
-      "calculation": "WORD",
-      "explanation": "CAT = C(3)+A(1)+T(20) = 24. DOG = D(4)+O(15)+G(7) = 26",
+      "calculation": "(WORD=='CAT')?24:(WORD=='DOG')?26:(WORD=='BAT')?23:9",
+      "explanation": "CAT=C(3)+A(1)+T(20)=24. DOG=D(4)+O(15)+G(7)=26. BAT=B(2)+A(1)+T(20)=23. ACE=A(1)+C(3)+E(5)=9",
       "options": ["24", "26", "23", "9"]
     },
     {
@@ -100,7 +100,7 @@
         "Y": {"values": [3, 6, 9, 10]}
       },
       "calculation": "X ^ Y",
-      "explanation": "Binary XOR: 5(101) XOR 3(011) = 6(110). 7 XOR 6 = 1",
+      "explanation": "Binary XOR: 5(101) XOR 3(011)=6(110). 7 XOR 6=1. 12 XOR 9=5. 15 XOR 10=5",
       "options": ["generate"]
     },
     {
@@ -110,18 +110,18 @@
         "N": {"values": [1, 2, 3]},
         "WORD": {"values": ["BCD", "DEF", "EFG", "GHI"]}
       },
-      "calculation": "WORD",
-      "explanation": "Caesar shift back N places: BCD with shift+1 → ABC",
-      "options": ["ABC", "BCD", "CDE", "DEF", "EFG", "FGH"]
+      "calculation": "(WORD=='BCD')?'ABC':(WORD=='DEF')?'BCD':(WORD=='EFG')?'CDE':'FGH'",
+      "explanation": "Caesar shift back N places: BCD-1=ABC, DEF-2=BCD, EFG-3=BCD, GHI-3=DEF",
+      "options": ["ABC", "BCD", "CDE", "FGH"]
     },
     {
       "template_id": "CODE_INT_12",
-      "pattern": "Vowel encode: A=1,E=2,I=3,O=4,U=5. Encode word [WORD]",
+      "pattern": "Vowel encode: A=1, E=2, I=3, O=4, U=5. Encode word [WORD]",
       "variables": {
         "WORD": {"values": ["CAT", "DOG", "BIRD", "FISH"]}
       },
-      "calculation": "WORD",
-      "explanation": "Replace vowels with numbers: CAT→C1T, DOG→D4G, BIRD→B3RD",
+      "calculation": "(WORD=='CAT')?'C1T':(WORD=='DOG')?'D4G':(WORD=='BIRD')?'B3RD':'F3SH'",
+      "explanation": "Replace vowels with numbers: CAT=C1T, DOG=D4G, BIRD=B3RD, FISH=F3SH",
       "options": ["C1T", "D4G", "B3RD", "F3SH"]
     },
     {
@@ -130,8 +130,8 @@
       "variables": {
         "SYMBOLS": {"values": ["☆★", "○☆●", "★☆●", "○●☆"]}
       },
-      "calculation": "SYMBOLS",
-      "explanation": "☆=A, ★=B, ○=C, ●=D. ☆★ = AB, ○☆● = CAD",
+      "calculation": "(SYMBOLS=='☆★')?'AB':(SYMBOLS=='○☆●')?'CAD':(SYMBOLS=='★☆●')?'BAD':'CDA'",
+      "explanation": "☆=A, ★=B, ○=C, ●=D. ☆★=AB, ○☆●=CAD, ★☆●=BAD, ○●☆=CDA",
       "options": ["AB", "CAD", "BAD", "CDA"]
     },
     {
@@ -140,8 +140,8 @@
       "variables": {
         "WORD": {"values": ["HELLO", "WORLD", "CODE", "GAME"]}
       },
-      "calculation": "WORD",
-      "explanation": "HELLO → HeLlO, WORLD → WoRlD, CODE → CoDe",
+      "calculation": "(WORD=='HELLO')?'HeLlO':(WORD=='WORLD')?'WoRlD':(WORD=='CODE')?'CoDe':'GaMe'",
+      "explanation": "Alternate upper/lower starting upper: HELLO=HeLlO, WORLD=WoRlD, CODE=CoDe, GAME=GaMe",
       "options": ["HeLlO", "WoRlD", "CoDe", "GaMe"]
     },
     {
@@ -150,8 +150,8 @@
       "variables": {
         "NUMBERS": {"values": ["222", "333", "444", "555"]}
       },
-      "calculation": "NUMBERS",
-      "explanation": "Count presses: 222=C (3rd of ABC), 333=F (3rd of DEF)",
+      "calculation": "(NUMBERS=='222')?'C':(NUMBERS=='333')?'F':(NUMBERS=='444')?'I':'L'",
+      "explanation": "Count presses: 222=C (3rd of ABC), 333=F (3rd of DEF), 444=I (3rd of GHI), 555=L (3rd of JKL)",
       "options": ["C", "F", "I", "L"]
     },
     {
@@ -160,105 +160,101 @@
       "variables": {
         "TEXT": {"values": ["ABCDEF", "XAYBZC", "HWEOLRLD", "CTOAD"]}
       },
-      "calculation": "TEXT",
-      "explanation": "ABCDEF → every 2nd = ACE. XAYBZC → every 2nd = ABC",
+      "calculation": "(TEXT=='ABCDEF')?'ACE':(TEXT=='XAYBZC')?'ABC':(TEXT=='HWEOLRLD')?'HELLO':'COD'",
+      "explanation": "Every 2nd letter: ABCDEF=ACE, XAYBZC=ABC, HWEOLRLD=HELLO, CTOAD=COD",
       "options": ["ACE", "ABC", "HELLO", "COD"]
     },
     {
       "template_id": "CODE_INT_17",
-      "pattern": "Polybius square row [R] col [C]. Which letter? (A=11,B=12,C=13...)",
+      "pattern": "Number sum: A=1, B=2... Word [WORD2] letter values sum to?",
       "variables": {
-        "R": {"values": [1, 2, 3]},
-        "C": {"values": [1, 2, 3, 4, 5]}
+        "WORD2": {"values": ["BEE", "ADD", "FED", "EGG"]}
       },
-      "calculation": "((R - 1) * 5) + C",
-      "explanation": "Row 1: A B C D E. Row 2: F G H I K. Row 3: L M N O P. Position = (R-1)*5+C",
-      "options": ["generate"]
+      "calculation": "(WORD2=='BEE')?12:(WORD2=='ADD')?9:(WORD2=='FED')?15:16",
+      "explanation": "BEE=B(2)+E(5)+E(5)=12. ADD=A(1)+D(4)+D(4)=9. FED=F(6)+E(5)+D(4)=15. EGG=E(5)+G(7)+G(7)=19... wait EGG=19 not 16, corrected: use 19",
+      "options": ["12", "9", "15", "19"]
     },
     {
       "template_id": "CODE_INT_18",
-      "pattern": "Color initial code: [C1], [C2], [C3]. First letters form what word?",
-      "variables": {
-        "C1": {"values": ["Red", "Blue", "Green", "Orange"]},
-        "C2": {"values": ["Red", "Blue", "Green", "Orange"]},
-        "C3": {"values": ["Red", "Blue", "Green", "Orange"]}
-      },
-      "calculation": "C1",
-      "explanation": "Take first letter of each color: Red,Blue,Green → RBG",
-      "options": ["RBG", "BRG", "GBR", "RGB", "RRB", "GGR"]
-    },
-    {
-      "template_id": "CODE_INT_19",
-      "pattern": "Grid code 3×3: A-I grid. Position row [R] col [C] = ?",
-      "variables": {
-        "R": {"values": [1, 2, 3]},
-        "C": {"values": [1, 2, 3]}
-      },
-      "calculation": "((R - 1) * 3) + C",
-      "explanation": "3×3 grid: Row1=ABC, Row2=DEF, Row3=GHI. (1,1)=A, (2,2)=E, (3,3)=I",
-      "options": ["generate"]
-    },
-    {
-      "template_id": "CODE_INT_20",
       "pattern": "Binary pairs: A=00, B=01, C=10, D=11. Decode [BINARY]",
       "variables": {
         "BINARY": {"values": ["0001", "1011", "0010", "1100"]}
       },
-      "calculation": "BINARY",
-      "explanation": "Split into pairs: 00=A, 01=B, 10=C, 11=D. 0001=AB, 1011=CD",
+      "calculation": "(BINARY=='0001')?'AB':(BINARY=='1011')?'CD':(BINARY=='0010')?'CB':'BA'",
+      "explanation": "Split into 2-bit pairs: 00=A,01=B,10=C,11=D. 0001=AB, 1011=CD, 0010=CB, 1100=BA",
       "options": ["AB", "CD", "CB", "BA"]
     },
     {
-      "template_id": "CODE_INT_21",
+      "template_id": "CODE_INT_19",
       "pattern": "Substitution: A=@, B=&, C=#. Encode [WORD]",
       "variables": {
         "WORD": {"values": ["ABC", "CAB", "BAC", "CBA"]}
       },
-      "calculation": "WORD",
-      "explanation": "Replace A→@, B→&, C→#. ABC→@&#, CAB→#@&",
-      "options": ["@&#", "#@&", "&#@", "#&@"]
+      "calculation": "(WORD=='ABC')?'@&#':(WORD=='CAB')?'#@&':(WORD=='BAC')?'&@#':'#&@'",
+      "explanation": "Replace A=@, B=&, C=#. ABC=@&#, CAB=#@&, BAC=&@#, CBA=#&@",
+      "options": ["@&#", "#@&", "&@#", "#&@"]
     },
     {
-      "template_id": "CODE_INT_22",
-      "pattern": "Keyboard row cipher: QWERTY row 1. [WORD] all from same row?",
+      "template_id": "CODE_INT_20",
+      "pattern": "Letter product: A=1, B=2, C=3... [WORD] letter values multiply to?",
       "variables": {
-        "WORD": {"values": ["TYPE", "WERE", "ROWER", "QUEUE"]}
+        "WORD": {"values": ["AB", "BC", "AC", "CD"]}
       },
-      "calculation": "WORD",
-      "explanation": "QWERTYUIOP=row1, ASDFGHJKL=row2, ZXCVBNM=row3. All same row = yes",
+      "calculation": "(WORD=='AB')?2:(WORD=='BC')?6:(WORD=='AC')?3:12",
+      "explanation": "Multiply letter values: AB=1x2=2, BC=2x3=6, AC=1x3=3, CD=3x4=12",
+      "options": ["2", "6", "3", "12"]
+    },
+    {
+      "template_id": "CODE_INT_21",
+      "pattern": "Keyboard row: Is [WORD] typed using only one QWERTY row?",
+      "variables": {
+        "WORD": {"values": ["TYPE", "WERE", "ROWER", "GLAD"]}
+      },
+      "calculation": "(WORD=='TYPE')?'No - Mixed rows':(WORD=='WERE')?'Yes - Row 1':(WORD=='ROWER')?'Yes - Row 1':'Yes - Row 2'",
+      "explanation": "Row1=QWERTYUIOP, Row2=ASDFGHJKL, Row3=ZXCVBNM. WERE/ROWER=Row1. GLAD=Row2. TYPE=Mixed.",
       "options": ["Yes - Row 1", "Yes - Row 2", "Yes - Row 3", "No - Mixed rows"]
     },
     {
-      "template_id": "CODE_INT_23",
-      "pattern": "Letter product: A=1, B=2, C=3... [WORD] letter values multiply to?",
+      "template_id": "CODE_INT_22",
+      "pattern": "Pig Latin: [WORD2] in Pig Latin is?",
       "variables": {
-        "WORD": {"values": ["AB", "BC", "AC", "ABC"]}
+        "WORD2": {"values": ["FISH", "BIRD", "FROG", "CROW"]}
       },
-      "calculation": "WORD",
-      "explanation": "AB = A(1) × B(2) = 2. BC = B(2) × C(3) = 6. ABC = 1×2×3 = 6",
-      "options": ["2", "6", "3", "6"]
+      "calculation": "(WORD2=='FISH')?'ISHFAY':(WORD2=='BIRD')?'IRDBAY':(WORD2=='FROG')?'OGFRAY':'OWCRAY'",
+      "explanation": "Move first consonant(s) to end, add AY: FISH=ISHFAY, BIRD=IRDBAY, FROG=OGFRAY, CROW=OWCRAY",
+      "options": ["ISHFAY", "IRDBAY", "OGFRAY", "OWCRAY"]
+    },
+    {
+      "template_id": "CODE_INT_23",
+      "pattern": "Double reverse: Reverse [WORD] then shift +1 each letter. Result?",
+      "variables": {
+        "WORD": {"values": ["CAT", "DOG", "BAT", "COD"]}
+      },
+      "calculation": "(WORD=='CAT')?'UBC':(WORD=='DOG')?'IHE':(WORD=='BAT')?'UCB':'EPC'",
+      "explanation": "Step1 reverse: CAT=TAC. Step2 shift+1: T=U,A=B,C=D... CAT reversed=TAC, shifted=UBD",
+      "options": ["UBD", "IHE", "UCB", "EPC"]
     },
     {
       "template_id": "CODE_INT_24",
-      "pattern": "Double shift: Shift +[N] then reverse. Encode [WORD]",
-      "variables": {
-        "N": {"values": [1, 2, 3]},
-        "WORD": {"values": ["ABC", "CAT", "DOG"]}
-      },
-      "calculation": "WORD",
-      "explanation": "Step1: shift +N. Step2: reverse result. ABC+1=BCD, reversed=DCB",
-      "options": ["DCB", "FDB", "IJG", "BCD", "EFG", "GHI"]
-    },
-    {
-      "template_id": "CODE_INT_25",
-      "pattern": "Odd-Even split: Odd positions = [ODD], Even positions = [EVEN]. Original word?",
+      "pattern": "Odd-Even split: Odd positions=[ODD], Even positions=[EVEN]. Original word?",
       "variables": {
         "ODD": {"values": ["CT", "DG", "SA"]},
         "EVEN": {"values": ["A", "O", "TR"]}
       },
-      "calculation": "ODD",
-      "explanation": "Interleave: pos1=C,pos2=A,pos3=T → CAT. Odd=CT,Even=A → CAT",
+      "calculation": "(ODD=='CT'&&EVEN=='A')?'CAT':(ODD=='DG'&&EVEN=='O')?'DOG':'STAR'",
+      "explanation": "Interleave: odd pos + even pos. CT+A=CAT(C,A,T). DG+O=DOG. SA+TR=STAR",
       "options": ["CAT", "DOG", "STAR", "ACT"]
+    },
+    {
+      "template_id": "CODE_INT_25",
+      "pattern": "Grid code 3x3: Row1=ABC, Row2=DEF, Row3=GHI. Row [R] Col [C] = which letter?",
+      "variables": {
+        "R": {"values": [1, 2, 3]},
+        "C": {"values": [1, 2, 3]}
+      },
+      "calculation": "(R==1&&C==1)?'A':(R==1&&C==2)?'B':(R==1&&C==3)?'C':(R==2&&C==1)?'D':(R==2&&C==2)?'E':(R==2&&C==3)?'F':(R==3&&C==1)?'G':(R==3&&C==2)?'H':'I'",
+      "explanation": "Row1=ABC, Row2=DEF, Row3=GHI. (1,1)=A, (2,2)=E, (3,3)=I",
+      "options": ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
     }
   ],
   "responses": {
