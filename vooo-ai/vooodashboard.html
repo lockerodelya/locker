@@ -716,15 +716,6 @@
             const planStart  = document.getElementById('plan-start').textContent     || '-';
             const planExpiry = document.getElementById('plan-expiry').textContent    || '-';
 
-            // Days remaining calculation from expiry dd/mm/yyyy
-            const parts   = planExpiry.split('/');
-            let daysLeft  = '-';
-            if (parts.length === 3) {
-                const exp  = new Date(+parts[2], +parts[1] - 1, +parts[0]);
-                const diff = Math.ceil((exp - new Date()) / (1000 * 60 * 60 * 24));
-                daysLeft   = diff > 0 ? diff + ' days' : 'Expired';
-            }
-
             // Download date + time
             const now    = new Date();
             const dlDate = now.toLocaleDateString('en-GB') + '  ' +
@@ -736,45 +727,40 @@
             doc.setFillColor(...BLUE);
             doc.rect(0, 0, pageW, 40, 'F');
 
-            // Logo circle — top right
+            // Logo circle — top right, reduced size
             try {
                 doc.setFillColor(...WHITE);
-                doc.circle(pageW - margin - 12, 20, 14, 'F');
+                doc.circle(pageW - margin - 9, 20, 9, 'F');
                 doc.addImage(
                     '/vooo-ai/images/invoicelogo.jpg', 'JPEG',
-                    pageW - margin - 25, 7, 26, 26,
+                    pageW - margin - 17, 11, 17, 17,
                     undefined, 'FAST'
                 );
             } catch(e) { /* logo unavailable — skip silently */ }
 
             // Company name
             sf('bold', 17, WHITE);
-            doc.text('Odelya Management Pvt. Ltd.', margin, 15);
+            doc.text('Odelya Vooo AI Education', margin, 15);
 
             // Sub-line
             sf('normal', 8.5, [180, 210, 255]);
-            doc.text('Vooo AI Education — Service Receipt', margin, 24);
+            doc.text('Service Receipt', margin, 24);
+
+            // Address — inside header band below sub-line
+            sf('normal', 7, [180, 210, 255]);
+            doc.text(
+                '44E, 2nd Floor, Nandalal Mitra Lane, Kudghat, Ashok Nagar, Tollygunge, Kolkata, West Bengal 700040, India',
+                margin, 32
+            );
 
             // Download date — bottom-right of header
             sf('normal', 7, [180, 210, 255]);
-            doc.text('Downloaded: ' + dlDate, pageW - margin, 36, { align: 'right' });
+            doc.text('Downloaded: ' + dlDate, pageW - margin, 38, { align: 'right' });
 
             y = 46;
 
             // ════════════════════════
-            // 2. ADDRESS BAND
-            // ════════════════════════
-            doc.setFillColor(232, 236, 255);
-            doc.rect(0, y, pageW, 11, 'F');
-            sf('normal', 7.5, [50, 50, 110]);
-            doc.text(
-                '44E, 2nd Floor, Nandalal Mitra Lane, Kudghat, Ashok Nagar, Tollygunge, Kolkata, West Bengal 700040, India',
-                pageW / 2, y + 7.5, { align: 'center' }
-            );
-            y += 16;
-
-            // ════════════════════════
-            // 3. BENEFICIARY DETAILS
+            // 2. BENEFICIARY DETAILS
             // ════════════════════════
             y = sectionHead(y, 'BENEFICIARY DETAILS');
             filledBox(y, 30, LGREY, null);
@@ -815,14 +801,17 @@
             doc.text('Vooo AI Education', pageW / 2, y + 8, { align: 'center' });
             y += 15;
 
-            // Plan details box
-            filledBox(y, 44, LGREY, null);
+            // Plan details box — reduced height, no days remaining row
+            filledBox(y, 35, LGREY, null);
 
             // Plan Value | Plan Type
             sf('bold', 7.5, [100, 100, 100]);
             doc.text('Plan Value', margin + 5, y + 7);
             sf('bold', 12, GREEN);
-            doc.text(planValue, margin + 5, y + 15);
+            // Extract digits only, then write as plain ASCII "INR 200" — avoids superscript rendering bug
+            const numOnly    = planValue.replace(/[^0-9.]/g, '').trim();
+            const cleanValue = numOnly ? 'INR ' + numOnly : 'INR -';
+            doc.text(cleanValue, margin + 5, y + 15);
 
             sf('bold', 7.5, [100, 100, 100]);
             doc.text('Plan Type', margin + colW / 2 + 5, y + 7);
@@ -845,13 +834,7 @@
             sf('normal', 10, BLACK);
             doc.text(planExpiry, margin + colW / 2 + 5, y + 34);
 
-            // Days remaining — full width, no column split
-            sf('bold', 8, [100, 100, 100]);
-            doc.text('Days Remaining :', margin + 5, y + 42);
-            sf('bold', 10, daysLeft === 'Expired' ? RED : GREEN);
-            doc.text(String(daysLeft), margin + 52, y + 42);
-
-            y += 50;
+            y += 41;
 
             // ════════════════════════
             // 5. DECLARATION
