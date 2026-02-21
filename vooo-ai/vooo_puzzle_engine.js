@@ -91,6 +91,237 @@ class VOOOPuzzleEngine {
     }
 
     // ============================================
+    // MATH HELPER FUNCTIONS
+    // ============================================
+
+    factorial(n) {
+        if (n <= 1) return 1;
+        let result = 1;
+        for (let i = 2; i <= n; i++) result *= i;
+        return result;
+    }
+
+    isPrime(n) {
+        if (n < 2) return false;
+        if (n === 2) return true;
+        if (n % 2 === 0) return false;
+        for (let i = 3; i * i <= n; i += 2) {
+            if (n % i === 0) return false;
+        }
+        return true;
+    }
+
+    nextPrime(n) {
+        let candidate = n + 1;
+        while (!this.isPrime(candidate)) candidate++;
+        return candidate;
+    }
+
+    // Sum of divisors (sigma function)
+    sigma(n) {
+        let sum = 0;
+        for (let i = 1; i <= n; i++) {
+            if (n % i === 0) sum += i;
+        }
+        return sum;
+    }
+
+    // Euler's totient function
+    phi(n) {
+        let result = n;
+        let temp = n;
+        for (let p = 2; p * p <= temp; p++) {
+            if (temp % p === 0) {
+                while (temp % p === 0) temp = Math.floor(temp / p);
+                result -= Math.floor(result / p);
+            }
+        }
+        if (temp > 1) result -= Math.floor(result / temp);
+        return result;
+    }
+
+    // Partition number p(n)
+    partition(n) {
+        const p = new Array(n + 1).fill(0);
+        p[0] = 1;
+        for (let k = 1; k <= n; k++) {
+            for (let i = k; i <= n; i++) {
+                p[i] += p[i - k];
+            }
+        }
+        return p[n];
+    }
+
+    // Prime factorization
+    primeFactors(n) {
+        const factors = [];
+        let temp = n;
+        for (let p = 2; p * p <= temp; p++) {
+            if (temp % p === 0) {
+                let count = 0;
+                while (temp % p === 0) {
+                    count++;
+                    temp = Math.floor(temp / p);
+                }
+                factors.push({ prime: p, exp: count });
+            }
+        }
+        if (temp > 1) factors.push({ prime: temp, exp: 1 });
+        return factors;
+    }
+
+    // Sphenic: product of exactly 3 distinct primes
+    isSphenic(n) {
+        if (n < 2) return false;
+        const factors = this.primeFactors(n);
+        return factors.length === 3 && factors.every(f => f.exp === 1);
+    }
+
+    nextSphenic(n) {
+        let candidate = n + 1;
+        while (!this.isSphenic(candidate)) candidate++;
+        return candidate;
+    }
+
+    // Semiprime: product of exactly 2 primes (not necessarily distinct)
+    isSemiprime(n) {
+        if (n < 4) return false;
+        const factors = this.primeFactors(n);
+        const totalFactors = factors.reduce((sum, f) => sum + f.exp, 0);
+        return totalFactors === 2;
+    }
+
+    nextSemiprime(n) {
+        let candidate = n + 1;
+        while (!this.isSemiprime(candidate)) candidate++;
+        return candidate;
+    }
+
+    // Abundant: sum of proper divisors > n
+    isAbundant(n) {
+        return this.sigma(n) - n > n;
+    }
+
+    nextAbundant(n) {
+        let candidate = n + 1;
+        while (!this.isAbundant(candidate)) candidate++;
+        return candidate;
+    }
+
+    // Deficient: sum of proper divisors < n
+    isDeficient(n) {
+        return this.sigma(n) - n < n;
+    }
+
+    nextDeficient(n) {
+        let candidate = n + 1;
+        while (!this.isDeficient(candidate)) candidate++;
+        return candidate;
+    }
+
+    // Perfect: sum of proper divisors = n
+    isPerfect(n) {
+        return this.sigma(n) - n === n;
+    }
+
+    nextPerfect(n) {
+        let candidate = n + 1;
+        while (!this.isPerfect(candidate)) candidate++;
+        return candidate;
+    }
+
+    // Primorial: product of first k primes up to n
+    primorial(n) {
+        let result = 1;
+        let count = 0;
+        let candidate = 2;
+        while (count < n) {
+            if (this.isPrime(candidate)) {
+                result *= candidate;
+                count++;
+            }
+            candidate++;
+        }
+        return result;
+    }
+
+    // Highly composite: more divisors than any smaller number
+    countDivisors(n) {
+        let count = 0;
+        for (let i = 1; i <= n; i++) {
+            if (n % i === 0) count++;
+        }
+        return count;
+    }
+
+    isHighlyComposite(n) {
+        const divN = this.countDivisors(n);
+        for (let i = 1; i < n; i++) {
+            if (this.countDivisors(i) >= divN) return false;
+        }
+        return true;
+    }
+
+    nextHighlyComposite(n) {
+        let candidate = n + 1;
+        while (!this.isHighlyComposite(candidate)) candidate++;
+        return candidate;
+    }
+
+    // Sophie Germain prime: p and 2p+1 are both prime
+    isSophieGermain(n) {
+        return this.isPrime(n) && this.isPrime(2 * n + 1);
+    }
+
+    nextSophieGermain(n) {
+        let candidate = n + 1;
+        while (!this.isSophieGermain(candidate)) candidate++;
+        return candidate;
+    }
+
+    // Safe prime: p where (p-1)/2 is also prime
+    isSafePrime(n) {
+        return this.isPrime(n) && n > 2 && this.isPrime((n - 1) / 2);
+    }
+
+    nextSafePrime(n) {
+        let candidate = n + 1;
+        while (!this.isSafePrime(candidate)) candidate++;
+        return candidate;
+    }
+
+    // Next factorial prime (n! + 1 or n! - 1 is prime)
+    nextFactorialPrime(n) {
+        let k = n + 1;
+        while (true) {
+            const f = this.factorial(k);
+            if (this.isPrime(f + 1)) return f + 1;
+            if (this.isPrime(f - 1)) return f - 1;
+            k++;
+            if (k > 15) break; // safety limit
+        }
+        return this.factorial(n + 1) + 1;
+    }
+
+    // Superior highly composite (simplified)
+    nextSuperiorHighlyComposite(n) {
+        const known = [2, 6, 12, 60, 120, 360, 2520, 5040, 55440, 720720];
+        for (const v of known) {
+            if (v > n) return v;
+        }
+        return n * 2;
+    }
+
+    // Next Giuga number (known list)
+    nextGiuga(n) {
+        const known = [30, 858, 1722, 66198, 2214408306];
+        for (const v of known) {
+            if (v > n) return v;
+        }
+        return 'unknown';
+    }
+
+    // ============================================
     // VALIDATION & DUPLICATE PREVENTION
     // ============================================
 
@@ -287,6 +518,97 @@ class VOOOPuzzleEngine {
         }
         
         console.log('After variable substitution:', evaluated);
+
+        // ============================================
+        // MATH SPECIAL FUNCTIONS - resolve before eval
+        // ============================================
+
+        // factorial(n)
+        evaluated = evaluated.replace(/factorial\((\d+)\)/g, (match, n) => {
+            return this.factorial(parseInt(n));
+        });
+
+        // next_prime(n)
+        evaluated = evaluated.replace(/next_prime\((\d+)\)/g, (match, n) => {
+            return this.nextPrime(parseInt(n));
+        });
+
+        // sigma(n)
+        evaluated = evaluated.replace(/sigma\((\d+)\)/g, (match, n) => {
+            return this.sigma(parseInt(n));
+        });
+
+        // phi(n)
+        evaluated = evaluated.replace(/phi\((\d+)\)/g, (match, n) => {
+            return this.phi(parseInt(n));
+        });
+
+        // partition(n)
+        evaluated = evaluated.replace(/partition\((\d+)\)/g, (match, n) => {
+            return this.partition(parseInt(n));
+        });
+
+        // next_sphenic(n)
+        evaluated = evaluated.replace(/next_sphenic\((\d+)\)/g, (match, n) => {
+            return this.nextSphenic(parseInt(n));
+        });
+
+        // next_semiprime(n)
+        evaluated = evaluated.replace(/next_semiprime\((\d+)\)/g, (match, n) => {
+            return this.nextSemiprime(parseInt(n));
+        });
+
+        // next_abundant(n)
+        evaluated = evaluated.replace(/next_abundant\((\d+)\)/g, (match, n) => {
+            return this.nextAbundant(parseInt(n));
+        });
+
+        // next_deficient(n)
+        evaluated = evaluated.replace(/next_deficient\((\d+)\)/g, (match, n) => {
+            return this.nextDeficient(parseInt(n));
+        });
+
+        // next_perfect(n)
+        evaluated = evaluated.replace(/next_perfect\((\d+)\)/g, (match, n) => {
+            return this.nextPerfect(parseInt(n));
+        });
+
+        // primorial(n)
+        evaluated = evaluated.replace(/primorial\((\d+)\)/g, (match, n) => {
+            return this.primorial(parseInt(n));
+        });
+
+        // next_highly_composite(n)
+        evaluated = evaluated.replace(/next_highly_composite\((\d+)\)/g, (match, n) => {
+            return this.nextHighlyComposite(parseInt(n));
+        });
+
+        // next_superior_highly_composite(n)
+        evaluated = evaluated.replace(/next_superior_highly_composite\((\d+)\)/g, (match, n) => {
+            return this.nextSuperiorHighlyComposite(parseInt(n));
+        });
+
+        // next_sophie_germain(n)
+        evaluated = evaluated.replace(/next_sophie_germain\((\d+)\)/g, (match, n) => {
+            return this.nextSophieGermain(parseInt(n));
+        });
+
+        // next_safe_prime(n)
+        evaluated = evaluated.replace(/next_safe_prime\((\d+)\)/g, (match, n) => {
+            return this.nextSafePrime(parseInt(n));
+        });
+
+        // next_factorial_prime(n)
+        evaluated = evaluated.replace(/next_factorial_prime\((\d+)\)/g, (match, n) => {
+            return this.nextFactorialPrime(parseInt(n));
+        });
+
+        // next_giuga(n)
+        evaluated = evaluated.replace(/next_giuga\((\d+)\)/g, (match, n) => {
+            return this.nextGiuga(parseInt(n));
+        });
+
+        // ============================================
         
         if (evaluated.includes('repeat(')) {
             evaluated = evaluated.replace(/repeat\(([^,]+),\s*([^)]+)\)/g, (match, emoji, count) => {
@@ -483,14 +805,14 @@ generateQuestion(template, variables) {
         const correctNum = Number(correctAnswer);
         
         if (!isNaN(correctNum)) {
-            options.push(parseFloat(correctAnswer.toFixed(4)).toString());
+            options.push(parseFloat(correctAnswer.toFixed ? correctAnswer.toFixed(4) : correctAnswer).toString());
             
             for (let i = 0; i < 3; i++) {
                 let wrongAnswer;
                 const offset = (i + 1) * (Math.random() > 0.5 ? 1 : -1);
                 
                 if (Math.abs(correctNum) > 10) {
-                    wrongAnswer = correctNum + offset * Math.floor(correctNum * 0.1);
+                    wrongAnswer = correctNum + offset * Math.floor(Math.max(1, correctNum * 0.1));
                 } else if (correctNum !== 0) {
                     wrongAnswer = correctNum + offset;
                 } else {
@@ -500,18 +822,46 @@ generateQuestion(template, variables) {
                 if (wrongAnswer === correctNum || wrongAnswer <= 0) {
                     wrongAnswer = correctNum + (i + 2);
                 }
+
+                // Avoid duplicates in wrong answers
+                let wrongStr = parseFloat(wrongAnswer.toFixed(4)).toString();
+                let dupeCheck = 0;
+                while (options.includes(wrongStr) && dupeCheck < 10) {
+                    wrongAnswer = wrongAnswer + 1;
+                    wrongStr = parseFloat(wrongAnswer.toFixed(4)).toString();
+                    dupeCheck++;
+                }
                 
-                options.push(parseFloat(wrongAnswer.toFixed(4)).toString());
+                options.push(wrongStr);
             }
         } else {
-            options.push(correctAnswer);
-            const wrongOptions = ['A', 'B', 'C', 'D'];
-            for (let i = 0; i < 3; i++) {
-                let wrongOpt;
-                do {
-                    wrongOpt = wrongOptions[Math.floor(Math.random() * wrongOptions.length)];
-                } while (options.includes(wrongOpt));
-                options.push(wrongOpt);
+            // ============================================
+            // FIX: Generate numeric wrong answers based on
+            // a numeric estimate when answer is non-numeric
+            // This handles cases like next_sphenic, next_prime etc.
+            // that were already resolved to numbers above but
+            // in case a string slips through, handle gracefully.
+            // ============================================
+            const numericGuess = parseInt(correctAnswer);
+            if (!isNaN(numericGuess)) {
+                options.push(String(numericGuess));
+                const offsets = [numericGuess + 2, numericGuess + 4, numericGuess - 2].filter(v => v > 0);
+                for (let i = 0; i < 3; i++) {
+                    let wrongStr = String(offsets[i] || numericGuess + (i + 5));
+                    let dupeCheck = 0;
+                    while (options.includes(wrongStr) && dupeCheck < 10) {
+                        wrongStr = String(parseInt(wrongStr) + 1);
+                        dupeCheck++;
+                    }
+                    options.push(wrongStr);
+                }
+            } else {
+                // Last resort fallback - should rarely happen now
+                options.push(String(correctAnswer));
+                const fallbacks = ['?', '??', '???'];
+                for (let i = 0; i < 3; i++) {
+                    options.push(fallbacks[i]);
+                }
             }
         }
         
