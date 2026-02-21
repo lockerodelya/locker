@@ -2,7 +2,7 @@
 // VOOO AI Puzzle Engine - ENHANCED VERSION
 // Supports all JSON features + NEW REASONING TYPES
 // WITH VALIDATION & DUPLICATE PREVENTION
-// FIXES: solv1 + solv2 + solv3 + solv4 + solv6 + solv7
+// FIXES: solv1 + solv2 + solv3 + solv4 + solv6 + solv7 + solv8 + solv9
 // ============================================
 
 class VOOOPuzzleEngine {
@@ -308,8 +308,82 @@ class VOOOPuzzleEngine {
     }
 
     // ============================================
-    // solv2 - EXPRESSION RESOLVER FOR PATTERN TEXT
-    // solv6 - Implicit coefficient parsing 2M1 -> 2*M1
+    // solv9 - COMPUTE DERIVED VARIABLES
+    // Fills in missing B, C etc. from pattern context
+    // ============================================
+
+    computeDerivedVariables(template, variables) {
+        const derived = { ...variables };
+        const pattern = template.pattern || '';
+        const explanation = template.explanation || '';
+
+        // Find all [TOKEN] placeholders in pattern
+        const tokens = [];
+        const tokenRegex = /\[([A-Z][A-Z0-9_]*)\]/g;
+        let match;
+        while ((match = tokenRegex.exec(pattern)) !== null) {
+            const token = match[1];
+            if (!derived.hasOwnProperty(token)) {
+                tokens.push(token);
+            }
+        }
+
+        if (tokens.length === 0) return derived;
+
+        // Try to derive missing variables from explanation hints
+        // e.g. explanation: "[A], [A+1], [A+2]" → B = A+1, C = A+2
+        const explTokens = [];
+        const explRegex = /\[([^\]]+)\]/g;
+        while ((match = explRegex.exec(explanation)) !== null) {
+            explTokens.push(match[1]);
+        }
+
+        // Map pattern tokens to explanation expressions by position
+        // Find pattern tokens in order
+        const patternTokensOrdered = [];
+        const patternTokenRegex = /\[([A-Z][A-Z0-9_]*)\]/g;
+        while ((match = patternTokenRegex.exec(pattern)) !== null) {
+            patternTokensOrdered.push(match[1]);
+        }
+
+        // Find explanation expressions in order
+        const explExpressionsOrdered = [];
+        const explExprRegex = /\[([^\]]+)\]/g;
+        while ((match = explExprRegex.exec(explanation)) !== null) {
+            explExpressionsOrdered.push(match[1]);
+        }
+
+        // Match unknown pattern tokens to explanation expressions
+        for (let i = 0; i < patternTokensOrdered.length; i++) {
+            const token = patternTokensOrdered[i];
+            if (!derived.hasOwnProperty(token) && explExpressionsOrdered[i]) {
+                const expr = explExpressionsOrdered[i];
+                const val = this.evaluateBracketExpression(expr, derived);
+                if (val !== null) {
+                    derived[token] = val;
+                    console.log(`🔗 solv9: Derived ${token} = ${val} from expression [${expr}]`);
+                }
+            }
+        }
+
+        // Fallback: if still missing, try common sequential patterns
+        // B = A + STEP, C = A + STEP*2, D = A + STEP*3
+        if (derived.hasOwnProperty('A') && derived.hasOwnProperty('STEP')) {
+            if (!derived.hasOwnProperty('B')) derived['B'] = derived['A'] + derived['STEP'];
+            if (!derived.hasOwnProperty('C')) derived['C'] = derived['A'] + derived['STEP'] * 2;
+            if (!derived.hasOwnProperty('D')) derived['D'] = derived['A'] + derived['STEP'] * 3;
+        } else if (derived.hasOwnProperty('A')) {
+            // Default sequential +1 pattern
+            if (!derived.hasOwnProperty('B')) derived['B'] = derived['A'] + 1;
+            if (!derived.hasOwnProperty('C')) derived['C'] = derived['A'] + 2;
+            if (!derived.hasOwnProperty('D')) derived['D'] = derived['A'] + 3;
+        }
+
+        return derived;
+    }
+
+    // ============================================
+    // solv2 + solv6 - EXPRESSION RESOLVER
     // ============================================
 
     evaluateBracketExpression(expr, variables) {
@@ -317,21 +391,32 @@ class VOOOPuzzleEngine {
 
         // solv6: Replace × with *
         e = e.replace(/×/g, '*');
+        // solv6: Replace ÷ with /
+        e = e.replace(/÷/g, '/');
 
         // solv6: Handle implicit coefficient×variable like 2M2 → 2*M2
-        // Must do BEFORE variable substitution
-        // Matches digit(s) immediately followed by a variable name
         e = e.replace(/(\d)([A-Za-z_][A-Za-z0-9_]*)/g, '$1*$2');
 
-        // Replace variable names with values
+        // solv8: Replace string variables with quoted values FIRST
         for (const [varName, value] of Object.entries(variables)) {
-            const regex = new RegExp('\\b' + varName + '\\b', 'g');
-            e = e.replace(regex, '(' + value + ')');
+            if (typeof value === 'string' && isNaN(value)) {
+                const regex = new RegExp('\\b' + varName + '\\b', 'g');
+                e = e.replace(regex, '"' + value + '"');
+            }
+        }
+
+        // Replace numeric variables
+        for (const [varName, value] of Object.entries(variables)) {
+            if (typeof value !== 'string' || !isNaN(value)) {
+                const regex = new RegExp('\\b' + varName + '\\b', 'g');
+                e = e.replace(regex, '(' + value + ')');
+            }
         }
 
         try {
             const result = new Function('return ' + e)();
-            return (typeof result === 'number') ? result : null;
+            return (typeof result === 'number') ? result : 
+                   (typeof result === 'string') ? result : null;
         } catch (err) {
             return null;
         }
@@ -340,29 +425,23 @@ class VOOOPuzzleEngine {
     resolvePatternText(text, variables) {
         let resolved = text;
 
-        // solv6: Fix implicit number×bracket like 2[M1] → 2*[M1] BEFORE resolving
+        // solv6: Fix implicit number×bracket like 2[M1] → 2*[M1]
         resolved = resolved.replace(/(\d)\[/g, '$1*[');
-
-        // solv2: Replace × with * for display purposes
-        // (keep × visible in question text but resolve internally)
 
         // Step 1: Replace simple [VAR] tokens first
         for (const [varName, value] of Object.entries(variables)) {
             resolved = resolved.replace(new RegExp(`\\[${varName}\\]`, 'g'), value);
         }
 
-        // Step 2: Evaluate remaining [expression] blocks like [F1+F2], [F1+2×F2]
+        // Step 2: Evaluate remaining [expression] blocks
         resolved = resolved.replace(/\[([^\]]+)\]/g, (match, inner) => {
             const result = this.evaluateBracketExpression(inner, variables);
             if (result !== null) return result;
             return match;
         });
 
-        // Step 3: solv6: Fix remaining implicit coefficients outside brackets
-        // e.g. "2*12+3-4" is fine, but "212+3-4" needs fixing
-        // After variable substitution, evaluate any remaining number*variable patterns
+        // Step 3: Replace any remaining bare variable names
         for (const [varName, value] of Object.entries(variables)) {
-            // Replace patterns like 3[varName] that became 3*value
             const regex = new RegExp('\\b' + varName + '\\b', 'g');
             resolved = resolved.replace(regex, value);
         }
@@ -444,13 +523,9 @@ class VOOOPuzzleEngine {
 
     // solv7: Check if template is computable
     isTemplateComputable(template) {
-        // Skip templates with no calculation or null calculation
         if (!template.calculation) return false;
         if (template.calculation.trim() === 'null') return false;
         if (template.calculation.trim() === '') return false;
-        // Skip templates with no variables and trivial calculation
-        if (Object.keys(template.variables || {}).length === 0 && 
-            template.calculation.trim() === 'null') return false;
         return true;
     }
 
@@ -468,11 +543,9 @@ class VOOOPuzzleEngine {
         while (attempts < maxAttempts) {
             attempts++;
 
-            // Pick template sequentially
             const templateIndex = this.currentTemplateIndex % templates.length;
             this.currentTemplate = templates[templateIndex];
 
-            // Advance index for next call
             this.currentTemplateIndex++;
             if (this.currentTemplateIndex >= templates.length) {
                 this.currentTemplateIndex = 0;
@@ -484,7 +557,11 @@ class VOOOPuzzleEngine {
                 continue;
             }
 
-            const variables = this.generateVariables(this.currentTemplate.variables);
+            const rawVariables = this.generateVariables(this.currentTemplate.variables);
+
+            // solv9: Compute derived/missing variables
+            const variables = this.computeDerivedVariables(this.currentTemplate, rawVariables);
+
             const questionHash = this.createQuestionHash(this.currentTemplate, variables);
 
             if (this.isQuestionUsed(questionHash)) {
@@ -495,9 +572,9 @@ class VOOOPuzzleEngine {
             const question = this.generateQuestion(this.currentTemplate, variables);
             const answer = this.calculateAnswer(this.currentTemplate, variables);
 
-            // solv7: Skip if answer is null, undefined or not meaningful
+            // solv7: Skip null answers
             if (answer === null || answer === undefined || answer === 'null') {
-                console.log(`⏭️ Skipping null answer template: ${this.currentTemplate.template_id}`);
+                console.log(`⏭️ Skipping null answer: ${this.currentTemplate.template_id}`);
                 continue;
             }
 
@@ -525,12 +602,11 @@ class VOOOPuzzleEngine {
             return this.currentPuzzle;
         }
 
-        // If all attempts failed, clear history and restart
+        // All attempts failed — clear history and restart
         console.warn('⚠️ Max attempts reached. Clearing duplicate history...');
         this.clearUsedQuestions();
         this.currentTemplateIndex = 0;
 
-        // Find first computable template for fallback
         let fallbackTemplate = templates[0];
         for (const t of templates) {
             if (this.isTemplateComputable(t)) {
@@ -540,7 +616,8 @@ class VOOOPuzzleEngine {
         }
 
         this.currentTemplate = fallbackTemplate;
-        const variables = this.generateVariables(this.currentTemplate.variables);
+        const rawVariables = this.generateVariables(this.currentTemplate.variables);
+        const variables = this.computeDerivedVariables(this.currentTemplate, rawVariables);
         const question = this.generateQuestion(this.currentTemplate, variables);
         const answer = this.calculateAnswer(this.currentTemplate, variables);
         const options = this.generateOptions(answer, this.currentTemplate, variables);
@@ -576,7 +653,6 @@ class VOOOPuzzleEngine {
                     variables[varName] = 0;
                 }
             } else if (def.primes !== undefined) {
-                // solv4: templates that provide a primes array
                 const primes = def.primes;
                 variables[varName] = primes[Math.floor(Math.random() * (primes.length - 1))];
             } else if (def.bell_numbers !== undefined) {
@@ -702,30 +778,44 @@ class VOOOPuzzleEngine {
             try {
                 let cond = condition;
                 for (const [varName, value] of Object.entries(variables)) {
-                    cond = cond.replace(new RegExp('\\b' + varName + '\\b', 'g'), JSON.stringify(value));
+                    if (typeof value === 'string' && isNaN(value)) {
+                        cond = cond.replace(new RegExp('\\b' + varName + '\\b', 'g'), '"' + value + '"');
+                    } else {
+                        cond = cond.replace(new RegExp('\\b' + varName + '\\b', 'g'), JSON.stringify(value));
+                    }
                 }
                 const result = new Function('return ' + cond)();
                 return result ? thenVal.trim() : elseVal.trim().replace(/'/g, '');
             } catch(e) { return match; }
         });
 
-        // solv6: Replace × with * before variable substitution
+        // solv6: Replace × with * and ÷ with /
         evaluated = evaluated.replace(/×/g, '*');
+        evaluated = evaluated.replace(/÷/g, '/');
 
-        // solv6: Fix implicit coefficient×variable like 2*F1, 3*C2 BEFORE variable substitution
+        // solv6: Fix implicit coefficient×variable like 2*F1
         evaluated = evaluated.replace(/(\d)([A-Za-z_][A-Za-z0-9_]*)/g, '$1*$2');
 
-        // Replace variables with values
+        // solv8: Replace STRING variables with quoted values BEFORE numeric ones
         for (const [varName, value] of Object.entries(variables)) {
-            const regex = new RegExp('\\b' + varName + '\\b', 'g');
-            evaluated = evaluated.replace(regex, '(' + value + ')');
+            if (typeof value === 'string' && isNaN(value)) {
+                const regex = new RegExp('\\b' + varName + '\\b', 'g');
+                evaluated = evaluated.replace(regex, '"' + value + '"');
+            }
+        }
+
+        // Replace numeric variables
+        for (const [varName, value] of Object.entries(variables)) {
+            if (typeof value !== 'string' || !isNaN(value)) {
+                const regex = new RegExp('\\b' + varName + '\\b', 'g');
+                evaluated = evaluated.replace(regex, '(' + value + ')');
+            }
         }
 
         console.log('After variable substitution:', evaluated);
 
         // ============================================
         // solv1: MATH SPECIAL FUNCTIONS
-        // All use ([^)]+) to handle expressions like (A + 4)
         // ============================================
 
         evaluated = evaluated.replace(/factorial\(([^)]+)\)/g, (match, inner) => {
@@ -877,7 +967,6 @@ class VOOOPuzzleEngine {
         }
     }
 
-    // solv2 + solv6: generateQuestion resolves [expressions], ×, and implicit coefficients
     generateQuestion(template, variables) {
         if (template.pattern_builder) {
             try {
@@ -1094,7 +1183,6 @@ class VOOOPuzzleEngine {
             return `The correct answer is ${answer}.`;
         }
         
-        // solv2 + solv6: resolve expressions in explanation too
         let explanation = this.resolvePatternText(template.explanation, variables);
         
         const displayAnswer = typeof answer === 'number' ? parseFloat(answer.toFixed(4)) : answer;
