@@ -1699,10 +1699,22 @@ undergraduate learners, and serious exam aspirants aiming for <strong>government
                         return originalGenerate();
                     }
 
-                    // ---- LOGGED-IN USER (paid = unlimited) ----
-                    if (userVoooData && userVoooData.tier === 'paid') {
-                        return originalGenerate();
-                    }
+// ---- PAID USER: unlimited but COUNTED for dashboard ----
+if (userVoooData && userVoooData.tier === 'paid') {
+    const today    = new Date().toISOString().split('T')[0];
+    const usage    = userVoooData.dailyUsage || {};
+    const count    = (usage.date === today) ? (usage.count || 0) : 0;
+    const newCount = count + 1;
+
+    voooDb.collection('users').doc(currentVoooUser.uid).update({
+        'dailyUsage.date':  today,
+        'dailyUsage.count': newCount,
+        totalMCQsAttempted: firebase.firestore.FieldValue.increment(1)
+    }).catch(function(err) { console.error('Firebase update error (paid user):', err); });
+
+    userVoooData.dailyUsage = { date: today, count: newCount };
+    return originalGenerate(); // No limit — always continue
+}
 
                     // ---- FREE USER: check + update Firebase in background ----
                     if (userVoooData) {
