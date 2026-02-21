@@ -523,90 +523,107 @@ class VOOOPuzzleEngine {
         // MATH SPECIAL FUNCTIONS - resolve before eval
         // ============================================
 
-        // factorial(n)
-        evaluated = evaluated.replace(/factorial\(([^)]+)\)/g, (match, n) => {
-            return this.factorial(parseInt(n));
-        });
+// factorial(n) - handles factorial(5) AND factorial(A + 4) style
+evaluated = evaluated.replace(/factorial\(([^)]+)\)/g, (match, inner) => {
+    try { return this.factorial(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // next_prime(n)
-        evaluated = evaluated.replace(/next_prime\((\d+)\)/g, (match, n) => {
-            return this.nextPrime(parseInt(n));
-        });
+// next_prime(n)
+evaluated = evaluated.replace(/next_prime\(([^)]+)\)/g, (match, inner) => {
+    try { return this.nextPrime(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // sigma(n)
-        evaluated = evaluated.replace(/sigma\((\d+)\)/g, (match, n) => {
-            return this.sigma(parseInt(n));
-        });
+// sigma(n)
+evaluated = evaluated.replace(/sigma\(([^)]+)\)/g, (match, inner) => {
+    try { return this.sigma(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // phi(n)
-        evaluated = evaluated.replace(/phi\((\d+)\)/g, (match, n) => {
-            return this.phi(parseInt(n));
-        });
+// phi(n)
+evaluated = evaluated.replace(/phi\(([^)]+)\)/g, (match, inner) => {
+    try { return this.phi(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // partition(n)
-        evaluated = evaluated.replace(/partition\((\d+)\)/g, (match, n) => {
-            return this.partition(parseInt(n));
-        });
+// partition(n)
+evaluated = evaluated.replace(/partition\(([^)]+)\)/g, (match, inner) => {
+    try { return this.partition(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // next_sphenic(n)
-        evaluated = evaluated.replace(/next_sphenic\((\d+)\)/g, (match, n) => {
-            return this.nextSphenic(parseInt(n));
-        });
+// next_sphenic(n)
+evaluated = evaluated.replace(/next_sphenic\(([^)]+)\)/g, (match, inner) => {
+    try { return this.nextSphenic(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // next_semiprime(n)
-        evaluated = evaluated.replace(/next_semiprime\((\d+)\)/g, (match, n) => {
-            return this.nextSemiprime(parseInt(n));
-        });
+// next_semiprime(n)
+evaluated = evaluated.replace(/next_semiprime\(([^)]+)\)/g, (match, inner) => {
+    try { return this.nextSemiprime(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // next_abundant(n)
-        evaluated = evaluated.replace(/next_abundant\((\d+)\)/g, (match, n) => {
-            return this.nextAbundant(parseInt(n));
-        });
+// next_abundant(n)
+evaluated = evaluated.replace(/next_abundant\(([^)]+)\)/g, (match, inner) => {
+    try { return this.nextAbundant(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // next_deficient(n)
-        evaluated = evaluated.replace(/next_deficient\((\d+)\)/g, (match, n) => {
-            return this.nextDeficient(parseInt(n));
-        });
+// next_deficient(n)
+evaluated = evaluated.replace(/next_deficient\(([^)]+)\)/g, (match, inner) => {
+    try { return this.nextDeficient(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // next_perfect(n)
-        evaluated = evaluated.replace(/next_perfect\((\d+)\)/g, (match, n) => {
-            return this.nextPerfect(parseInt(n));
-        });
+// next_perfect(n)
+evaluated = evaluated.replace(/next_perfect\(([^)]+)\)/g, (match, inner) => {
+    try { return this.nextPerfect(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // primorial(n)
-        evaluated = evaluated.replace(/primorial\((\d+)\)/g, (match, n) => {
-            return this.primorial(parseInt(n));
-        });
+// primorial(n)
+evaluated = evaluated.replace(/primorial\(([^)]+)\)/g, (match, inner) => {
+    try { return this.primorial(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // next_highly_composite(n)
-        evaluated = evaluated.replace(/next_highly_composite\((\d+)\)/g, (match, n) => {
-            return this.nextHighlyComposite(parseInt(n));
-        });
+// next_highly_composite(n)
+evaluated = evaluated.replace(/next_highly_composite\(([^)]+)\)/g, (match, inner) => {
+    try { return this.nextHighlyComposite(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // next_superior_highly_composite(n)
-        evaluated = evaluated.replace(/next_superior_highly_composite\((\d+)\)/g, (match, n) => {
-            return this.nextSuperiorHighlyComposite(parseInt(n));
-        });
+// next_superior_highly_composite(n)
+evaluated = evaluated.replace(/next_superior_highly_composite\(([^)]+)\)/g, (match, inner) => {
+    try { return this.nextSuperiorHighlyComposite(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // next_sophie_germain(n)
-        evaluated = evaluated.replace(/next_sophie_germain\((\d+)\)/g, (match, n) => {
-            return this.nextSophieGermain(parseInt(n));
-        });
+// next_sophie_germain(n)
+evaluated = evaluated.replace(/next_sophie_germain\(([^)]+)\)/g, (match, inner) => {
+    try { return this.nextSophieGermain(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // next_safe_prime(n)
-        evaluated = evaluated.replace(/next_safe_prime\((\d+)\)/g, (match, n) => {
-            return this.nextSafePrime(parseInt(n));
-        });
+// next_safe_prime(n)
+evaluated = evaluated.replace(/next_safe_prime\(([^)]+)\)/g, (match, inner) => {
+    try { return this.nextSafePrime(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // next_factorial_prime(n)
-        evaluated = evaluated.replace(/next_factorial_prime\((\d+)\)/g, (match, n) => {
-            return this.nextFactorialPrime(parseInt(n));
-        });
+// next_factorial_prime(n)
+evaluated = evaluated.replace(/next_factorial_prime\(([^)]+)\)/g, (match, inner) => {
+    try { return this.nextFactorialPrime(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
-        // next_giuga(n)
-        evaluated = evaluated.replace(/next_giuga\((\d+)\)/g, (match, n) => {
-            return this.nextGiuga(parseInt(n));
-        });
+// next_giuga(n)
+evaluated = evaluated.replace(/next_giuga\(([^)]+)\)/g, (match, inner) => {
+    try { return this.nextGiuga(Math.round(new Function('return ' + inner)())); }
+    catch(e) { return match; }
+});
 
         // ============================================
         
