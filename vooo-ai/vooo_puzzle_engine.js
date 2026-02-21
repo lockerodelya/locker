@@ -524,7 +524,7 @@ class VOOOPuzzleEngine {
         // ============================================
 
         // factorial(n)
-        evaluated = evaluated.replace(/factorial\((\d+)\)/g, (match, n) => {
+        evaluated = evaluated.replace(/factorial\(([^)]+)\)/g, (match, n) => {
             return this.factorial(parseInt(n));
         });
 
