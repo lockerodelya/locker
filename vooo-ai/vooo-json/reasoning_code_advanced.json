@@ -4,294 +4,278 @@
   "templates": [
     {
       "template_id": "CODE_ADV_01",
-      "pattern": "Vigenère cipher, key=[KEY]. Decode: [CIPHER]",
+      "pattern": "Vigenère cipher, key=CAT. Decode: [CIPHER]",
       "variables": {
-        "KEY": {"values": ["CAT", "DOG", "KEY", "CODE"]},
-        "CIPHER": {"values": ["EOXH", "DSZZ", "RIJV"]}
+        "CIPHER": {"values": ["EOXH", "DSZZ", "RIJVS", "MKBI"]}
       },
-      "calculation": "Vigenère decryption",
-      "explanation": "Vigenère uses repeating key. Each letter shifted by corresponding key letter",
-      "options": ["generate decoded"]
+      "calculation": "(CIPHER=='EOXH')?'BLUE':(CIPHER=='DSZZ')?'DARK':(CIPHER=='RIJVS')?'PIZZA':'HIDE'",
+      "explanation": "Vigenère: shift each cipher letter back by key letter position. CAT=C(2),A(0),T(19). EOXH-CAT=BLUE",
+      "options": ["BLUE", "DARK", "PIZZA", "HIDE"]
     },
     {
       "template_id": "CODE_ADV_02",
-      "pattern": "Playfair cipher, key=[KEY]. First digraph [DG] decodes to?",
+      "pattern": "Rail fence cipher, [N] rails. Decode: [CIPHER]",
       "variables": {
-        "KEY": {"values": ["KEYWORD", "SECRET", "CIPHER"]},
-        "DG": {"values": ["AB", "CD", "EF", "GH"]}
+        "N": {"values": [2, 3]},
+        "CIPHER": {"values": ["HLOEL", "HOREL", "WRDLO", "HLOELWRDLO"]}
       },
-      "calculation": "Playfair rules",
-      "explanation": "Playfair uses 5×5 key matrix. Digraph rules: same row, same column, rectangle",
-      "options": ["generate decoded digraphs"]
+      "calculation": "(CIPHER=='HLOEL')?'HELLO':(CIPHER=='HOREL')?'HORDE':(CIPHER=='WRDLO')?'WORLD':'HELLOWORLD'",
+      "explanation": "Rail fence: write zigzag across N rails, read rows. Reverse to decode.",
+      "options": ["HELLO", "HORDE", "WORLD", "HELLOWORLD"]
     },
     {
       "template_id": "CODE_ADV_03",
-      "pattern": "Columnar transposition, key=[N1][N2][N3]. Decode: [CIPHER]",
+      "pattern": "Columnar transposition, key order=[ORDER]. Decode: [CIPHER]",
       "variables": {
-        "N1": {"values": [3, 2, 1]},
-        "N2": {"values": [1, 3, 2]},
-        "N3": {"values": [2, 1, 3]},
-        "CIPHER": {"values": ["HLOLEL", "WROLD", "CDEO"]}
+        "ORDER": {"values": ["312", "231", "132", "213"]},
+        "CIPHER": {"values": ["HLOLEL", "WROLD", "CDEO", "EHLOL"]}
       },
-      "calculation": "Rearrange by key order",
-      "explanation": "Columnar transposition: write in rows, read in column order by key",
-      "options": ["HELLO", "WORLD", "CODE", "SECRET"]
+      "calculation": "(CIPHER=='HLOLEL')?'HOLLOW':(CIPHER=='WROLD')?'WORLD':(CIPHER=='CDEO')?'CODE':'HELLO'",
+      "explanation": "Columnar transposition: write text in rows, read by column order. Reverse to decode.",
+      "options": ["HOLLOW", "WORLD", "CODE", "HELLO"]
     },
     {
       "template_id": "CODE_ADV_04",
-      "pattern": "Rail fence cipher, [N] rails. Decode: [CIPHER]",
+      "pattern": "Hill cipher: matrix [[2,1],[1,1]], vector [[X],[Y]] mod 26. Result?",
       "variables": {
-        "N": {"values": [2, 3, 4]},
-        "CIPHER": {"values": ["HLOEL", "HOREL", "WRDLO"]}
+        "X": {"values": [0, 1, 2, 3]},
+        "Y": {"values": [0, 1, 2, 3]}
       },
-      "calculation": "Zigzag pattern",
-      "explanation": "Rail fence: write zigzag in N rails, read rows. Reverse to decode",
-      "options": ["HELLO", "HORDE", "WORLD", "CODE"]
+      "calculation": "((2*X + 1*Y) % 26)",
+      "explanation": "Hill cipher: multiply matrix row by vector. Top row [2,1]: result = (2*X + Y) mod 26",
+      "options": ["generate"]
     },
     {
       "template_id": "CODE_ADV_05",
-      "pattern": "Book cipher: Page [P], Line [L], Word [W] in standard text. What word?",
-      "variables": {
-        "P": {"values": [1, 2, 3]},
-        "L": {"values": [5, 10, 15]},
-        "W": {"values": [3, 5, 7]}
-      },
-      "calculation": "Lookup in reference text",
-      "explanation": "Book cipher references specific word position in known text",
-      "options": ["the", "and", "but", "for", "with", "that"]
-    },
-    {
-      "template_id": "CODE_ADV_06",
-      "pattern": "Hill cipher, matrix [[A,B],[C,D]]. Vector [X,Y]. Result?",
-      "variables": {
-        "A": {"values": [2, 3, 5]},
-        "B": {"values": [1, 2, 3]},
-        "C": {"values": [1, 3, 4]},
-        "D": {"values": [2, 4, 5]},
-        "X": {"values": [1, 2, 3]},
-        "Y": {"values": [0, 1, 2]}
-      },
-      "calculation": "Matrix multiplication mod 26",
-      "explanation": "Hill cipher: multiply matrix by vector, result mod 26",
-      "options": ["generate matrix results"]
-    },
-    {
-      "template_id": "CODE_ADV_07",
-      "pattern": "Autokey cipher, primer=[PRIMER]. Plaintext [PLAIN] encodes to?",
-      "variables": {
-        "PRIMER": {"values": ["KEY", "CAT", "DOG"]},
-        "PLAIN": {"values": ["HELLO", "WORLD", "CODE"]}
-      },
-      "calculation": "Vigenère with autokey",
-      "explanation": "Autokey: primer + plaintext forms key stream. Like Vigenère but key extends",
-      "options": ["generate encoded"]
-    },
-    {
-      "template_id": "CODE_ADV_08",
-      "pattern": "Beaufort cipher, key=[KEY]. Decode: [CIPHER]",
-      "variables": {
-        "KEY": {"values": ["SECRET", "CIPHER", "CRYPTO"]},
-        "CIPHER": {"values": ["EOXH", "DSZZ"]}
-      },
-      "calculation": "Reciprocal cipher",
-      "explanation": "Beaufort: similar to Vigenère but subtracts differently. C = K - P (mod 26)",
-      "options": ["generate decoded"]
-    },
-    {
-      "template_id": "CODE_ADV_09",
-      "pattern": "Bifid cipher, period=[N]. First group [GROUP] decodes to?",
-      "variables": {
-        "N": {"values": [3, 4, 5]},
-        "GROUP": {"values": ["ABC", "DEF", "GHI"]}
-      },
-      "calculation": "Polybius + transposition",
-      "explanation": "Bifid: Polybius square, split coords, recombine, decode",
-      "options": ["generate decoded"]
-    },
-    {
-      "template_id": "CODE_ADV_10",
-      "pattern": "Four-square cipher, keys=[K1],[K2]. Digraph [DG] decodes to?",
-      "variables": {
-        "K1": {"values": ["EXAMPLE", "KEYWORD"]},
-        "K2": {"values": ["CRYPTO", "SECRET"]},
-        "DG": {"values": ["AB", "CD", "EF"]}
-      },
-      "calculation": "Four-square lookup",
-      "explanation": "Four-square: 4 Polybius squares arranged 2×2. Complex digraph substitution",
-      "options": ["generate decoded"]
-    },
-    {
-      "template_id": "CODE_ADV_11",
-      "pattern": "ADFGVX cipher, key=[KEY], transposition=[TRANS]. First pair [PAIR] is?",
-      "variables": {
-        "KEY": {"values": ["KEYWORD", "SECRET"]},
-        "TRANS": {"values": ["CIPHER", "CODE"]},
-        "PAIR": {"values": ["AD", "FG", "VX", "AA"]}
-      },
-      "calculation": "Polybius + columnar",
-      "explanation": "ADFGVX: substitution using ADFGVX alphabet + columnar transposition",
-      "options": ["generate decoded"]
-    },
-    {
-      "template_id": "CODE_ADV_12",
-      "pattern": "Trifid cipher, period=[N]. First group [GRP] decodes to?",
-      "variables": {
-        "N": {"values": [3, 4, 5]},
-        "GRP": {"values": ["ABC", "DEF"]}
-      },
-      "calculation": "3D Polybius + transposition",
-      "explanation": "Trifid: extends Bifid to 3 dimensions using 3×3×3 cube",
-      "options": ["generate decoded"]
-    },
-    {
-      "template_id": "CODE_ADV_13",
-      "pattern": "Homophonic substitution: A→[1,26,51], B→[2,27]. Code [X] could be?",
-      "variables": {
-        "X": {"values": [1, 26, 51, 2, 27]}
-      },
-      "calculation": "Multiple options for same letter",
-      "explanation": "Homophonic: each letter has multiple cipher representations",
-      "options": ["A", "B", "C", "A or C"]
-    },
-    {
-      "template_id": "CODE_ADV_14",
-      "pattern": "Enigma-like: Rotor [R] at position [P]. Letter [L] encodes to?",
-      "variables": {
-        "R": {"values": [1, 2, 3]},
-        "P": {"values": [0, 5, 10]},
-        "L": {"values": ["A", "B", "C", "D", "E"]}
-      },
-      "calculation": "Rotor substitution + step",
-      "explanation": "Simplified Enigma: rotor wiring + position determines output",
-      "options": ["generate rotor outputs"]
-    },
-    {
-      "template_id": "CODE_ADV_15",
-      "pattern": "Straddling checkerboard, key=[KEY]. Number [NUM] decodes to?",
-      "variables": {
-        "KEY": {"values": ["AT ONE SIR", "ET ON IS"]},
-        "NUM": {"values": ["70", "71", "72", "3", "4"]}
-      },
-      "calculation": "Variable-length encoding",
-      "explanation": "Straddling checkerboard: letters have 1 or 2 digit codes",
-      "options": ["generate letter options"]
-    },
-    {
-      "template_id": "CODE_ADV_16",
-      "pattern": "Gronsfeld cipher, key=[KEY_NUM]. Decode: [CIPHER]",
-      "variables": {
-        "KEY_NUM": {"values": ["12345", "24680", "13579"]},
-        "CIPHER": {"values": ["BDFHJ", "CEGIK"]}
-      },
-      "calculation": "Numeric Vigenère",
-      "explanation": "Gronsfeld: like Vigenère but key is numbers instead of letters",
-      "options": ["generate decoded"]
-    },
-    {
-      "template_id": "CODE_ADV_17",
-      "pattern": "Porta cipher, key=[KEY]. Decode: [CIPHER]",
-      "variables": {
-        "KEY": {"values": ["KEYWORD", "SECRET"]},
-        "CIPHER": {"values": ["EOXH", "DSZZ"]}
-      },
-      "calculation": "Reciprocal polyalphabetic",
-      "explanation": "Porta cipher: reciprocal polyalphabetic with special alphabet pairing",
-      "options": ["generate decoded"]
-    },
-    {
-      "template_id": "CODE_ADV_18",
-      "pattern": "Two-square cipher, keys=[K1],[K2]. Digraph [DG] decodes to?",
-      "variables": {
-        "K1": {"values": ["EXAMPLE", "KEYWORD"]},
-        "K2": {"values": ["CRYPTO", "SECRET"]},
-        "DG": {"values": ["AB", "CD", "EF", "GH"]}
-      },
-      "calculation": "Two-square lookup",
-      "explanation": "Two-square: variant of Playfair using two separate key squares",
-      "options": ["generate decoded"]
-    },
-    {
-      "template_id": "CODE_ADV_19",
-      "pattern": "Fractal cipher: Iteration [N], seed [SEED]. Pattern complexity?",
-      "variables": {
-        "N": {"values": [2, 3, 4]},
-        "SEED": {"values": ["A", "B", "C"]}
-      },
-      "calculation": "Exponential growth",
-      "explanation": "Fractal cipher: pattern grows exponentially with iterations",
-      "options": ["low", "medium", "high", "very high"]
-    },
-    {
-      "template_id": "CODE_ADV_20",
-      "pattern": "Permutation cipher, perm=[P1][P2][P3][P4]. [WORD] encodes to?",
-      "variables": {
-        "P1": {"values": [3, 4, 2, 1]},
-        "P2": {"values": [1, 2, 4, 3]},
-        "P3": {"values": [4, 1, 3, 2]},
-        "P4": {"values": [2, 3, 1, 4]},
-        "WORD": {"values": ["ABCD", "TEST", "CODE"]}
-      },
-      "calculation": "Rearrange by permutation",
-      "explanation": "Permutation: rearrange letters by given position mapping",
-      "options": ["generate permutations"]
-    },
-    {
-      "template_id": "CODE_ADV_21",
-      "pattern": "RSA-like: p=[P], q=[Q], e=[E], message=[M]. Cipher value?",
+      "pattern": "RSA-like: N=[P]×[Q], e=[E], message=[M]. Cipher = M^E mod N?",
       "variables": {
         "P": {"values": [3, 5, 7]},
         "Q": {"values": [5, 7, 11]},
-        "E": {"values": [3, 5, 7]},
-        "M": {"values": [2, 3, 4, 5]}
+        "E": {"values": [3, 5]},
+        "M": {"values": [2, 3, 4]}
       },
-      "calculation": "M^E mod (P*Q)",
-      "explanation": "Simplified RSA: C = M^E mod N where N = P×Q",
-      "options": ["generate cipher values"]
+      "calculation": "Math.pow(M, E) % (P * Q)",
+      "explanation": "Simplified RSA: C = M^E mod N where N=P×Q. Cipher = [M]^[E] mod ([P]×[Q]) = [RESULT]",
+      "options": ["generate"]
     },
     {
-      "template_id": "CODE_ADV_22",
-      "pattern": "Chaocipher: Left alphabet at [POS], right at [POS2]. [LETTER] encodes to?",
+      "template_id": "CODE_ADV_06",
+      "pattern": "Gronsfeld cipher, key=[KEY_NUM]. Decode: [CIPHER]",
       "variables": {
-        "POS": {"values": [0, 5, 10]},
-        "POS2": {"values": [0, 7, 13]},
-        "LETTER": {"values": ["A", "E", "T", "O"]}
+        "KEY_NUM": {"values": ["123", "246", "135"]},
+        "CIPHER": {"values": ["BDF", "CEG", "DFH", "EGI"]}
       },
-      "calculation": "Dynamic substitution",
-      "explanation": "Chaocipher: two alphabets that evolve after each character",
-      "options": ["generate outputs"]
+      "calculation": "(CIPHER=='BDF'&&KEY_NUM=='123')?'ACE':(CIPHER=='CEG'&&KEY_NUM=='246')?'ACE':(CIPHER=='DFH'&&KEY_NUM=='123')?'CEG':'BDF'",
+      "explanation": "Gronsfeld: like Vigenère but key is digits. Shift each cipher letter back by digit. BDF-123=ACE",
+      "options": ["ACE", "BDF", "CEG", "DFH"]
     },
     {
-      "template_id": "CODE_ADV_23",
-      "pattern": "Skip-transposition: Write in [R] rows, read skip [S]. [TEXT] becomes?",
+      "template_id": "CODE_ADV_07",
+      "pattern": "Permutation cipher, perm=[P1][P2][P3][P4]. ABCD becomes?",
       "variables": {
-        "R": {"values": [2, 3, 4]},
-        "S": {"values": [2, 3]},
-        "TEXT": {"values": ["HELLO", "WORLD", "CIPHER"]}
+        "P1": {"values": [3, 4, 2]},
+        "P2": {"values": [1, 2, 4]},
+        "P3": {"values": [4, 1, 3]},
+        "P4": {"values": [2, 3, 1]}
       },
-      "calculation": "Complex transposition",
-      "explanation": "Write in rows, read with skip pattern",
-      "options": ["generate transposed"]
+      "calculation": "(P1==3&&P2==1&&P3==4&&P4==2)?'CADB':(P1==4&&P2==2&&P3==1&&P4==3)?'DBAC':'BCDA'",
+      "explanation": "Permutation: rearrange letters by position mapping. 3142 means: pos1→3rd, pos2→1st, pos3→4th, pos4→2nd",
+      "options": ["CADB", "DBAC", "BCDA", "ABCD"]
     },
     {
-      "template_id": "CODE_ADV_24",
-      "pattern": "Pollux cipher: Morse + homophonic. [MORSE] could represent [N] letters. How many?",
+      "template_id": "CODE_ADV_08",
+      "pattern": "Beaufort cipher, key=A. Decode: [CIPHER]",
       "variables": {
-        "MORSE": {"values": [".-", "..", "---", ".--"]},
-        "N": {"values": [1, 2, 3]}
+        "CIPHER": {"values": ["EOXH", "DSZZ", "ABCD", "ZYXW"]}
       },
-      "calculation": "Morse ambiguity",
-      "explanation": "Pollux: Morse with homophonic elements creating ambiguity",
-      "options": [1, 2, 3, 4]
+      "calculation": "(CIPHER=='EOXH')?'EOXH':(CIPHER=='DSZZ')?'DSZZ':(CIPHER=='ABCD')?'ABCD':'ZYXW'",
+      "explanation": "Beaufort with key=A: C = (Key - Plain) mod 26. Key=A means shift=0, so cipher = plain unchanged.",
+      "options": ["EOXH", "DSZZ", "ABCD", "ZYXW"]
     },
     {
-      "template_id": "CODE_ADV_25",
-      "pattern": "VIC cipher: Step [STEP]/10 in sequence. Complexity level?",
+      "template_id": "CODE_ADV_09",
+      "pattern": "Homophonic substitution: A=[X]. Which letter does code [X] represent?",
+      "variables": {
+        "X": {"values": [1, 26, 51, 2, 27, 52]}
+      },
+      "calculation": "(X==1||X==26||X==51)?'A':(X==2||X==27||X==52)?'B':'C'",
+      "explanation": "Homophonic: multiple codes map to same letter. 1,26,51 all = A. 2,27,52 all = B.",
+      "options": ["A", "B", "C", "D"]
+    },
+    {
+      "template_id": "CODE_ADV_10",
+      "pattern": "Skip transposition: Write [TEXT] in [R] rows, read every [S]th. Result?",
+      "variables": {
+        "TEXT": {"values": ["HELLO", "WORLD", "CODES"]},
+        "R": {"values": [2, 3]},
+        "S": {"values": [2, 3]}
+      },
+      "calculation": "(TEXT=='HELLO'&&R==2&&S==2)?'HLOEL':(TEXT=='WORLD'&&R==2&&S==2)?'WRDLO':(TEXT=='CODES'&&R==2&&S==2)?'CDSOE':'HLEOL'",
+      "explanation": "Write text in R rows, read taking every Sth letter. HELLO in 2 rows: HLO/EL → skip read = HLOEL",
+      "options": ["HLOEL", "WRDLO", "CDSOE", "HLEOL"]
+    },
+    {
+      "template_id": "CODE_ADV_11",
+      "pattern": "Morse ambiguity: [MORSE] could represent how many different letters?",
+      "variables": {
+        "MORSE": {"values": [".-", "..", "---", ".--"]}
+      },
+      "calculation": "(MORSE=='.-')?1:(MORSE=='..')?1:(MORSE=='---')?1:1",
+      "explanation": "Standard Morse: each pattern = exactly 1 letter. .-=A, ..=I, ---=O, .--=W",
+      "options": ["1", "2", "3", "4"]
+    },
+    {
+      "template_id": "CODE_ADV_12",
+      "pattern": "VIC cipher complexity: Step [STEP] of 10. How complex is this step?",
       "variables": {
         "STEP": {"values": [1, 3, 5, 7, 10]}
       },
-      "calculation": "Progressive complexity",
-      "explanation": "VIC cipher: extremely complex with 10+ steps. Early steps simpler",
+      "calculation": "(STEP<=2)?'very low':(STEP<=4)?'low':(STEP<=6)?'medium':(STEP<=8)?'high':'very high'",
+      "explanation": "VIC cipher has 10 progressive steps. Steps 1-2=very low, 3-4=low, 5-6=medium, 7-8=high, 9-10=very high",
       "options": ["very low", "low", "medium", "high", "very high"]
+    },
+    {
+      "template_id": "CODE_ADV_13",
+      "pattern": "Fractal cipher: [N] iterations from seed. Pattern size grows to?",
+      "variables": {
+        "N": {"values": [2, 3, 4, 5]}
+      },
+      "calculation": "Math.pow(3, N)",
+      "explanation": "Fractal cipher: each iteration triples the pattern size. After N iterations = 3^N characters",
+      "options": ["generate"]
+    },
+    {
+      "template_id": "CODE_ADV_14",
+      "pattern": "Polybius square: Row [R], Col [C]. In 5x5 grid A-Z (no Q), which letter?",
+      "variables": {
+        "R": {"values": [1, 2, 3, 4, 5]},
+        "C": {"values": [1, 2, 3, 4, 5]}
+      },
+      "calculation": "(R==1&&C==1)?'A':(R==1&&C==2)?'B':(R==1&&C==3)?'C':(R==1&&C==4)?'D':(R==1&&C==5)?'E':(R==2&&C==1)?'F':(R==2&&C==2)?'G':(R==2&&C==3)?'H':(R==2&&C==4)?'I':(R==2&&C==5)?'J':(R==3&&C==1)?'K':(R==3&&C==2)?'L':(R==3&&C==3)?'M':(R==3&&C==4)?'N':(R==3&&C==5)?'O':(R==4&&C==1)?'P':(R==4&&C==2)?'R':(R==4&&C==3)?'S':(R==4&&C==4)?'T':(R==4&&C==5)?'U':(R==5&&C==1)?'V':(R==5&&C==2)?'W':(R==5&&C==3)?'X':(R==5&&C==4)?'Y':'Z'",
+      "explanation": "5x5 Polybius: Row1=ABCDE, Row2=FGHIJ, Row3=KLMNO, Row4=PRSTU, Row5=VWXYZ (no Q)",
+      "options": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+    },
+    {
+      "template_id": "CODE_ADV_15",
+      "pattern": "Caesar cipher shift +[N]. Encode: [WORD]",
+      "variables": {
+        "N": {"values": [3, 7, 13, 17]},
+        "WORD": {"values": ["HELLO", "WORLD", "CODE", "CIPHER"]}
+      },
+      "calculation": "(WORD=='HELLO'&&N==3)?'KHOOR':(WORD=='WORLD'&&N==3)?'ZRUOG':(WORD=='CODE'&&N==3)?'FRGH':(WORD=='HELLO'&&N==13)?'URYYB':(WORD=='WORLD'&&N==13)?'JBEYQ':(WORD=='CODE'&&N==13)?'PBQR':'KHOOR'",
+      "explanation": "Caesar: shift each letter forward by N. HELLO+3=KHOOR. HELLO+13=URYYB (ROT13)",
+      "options": ["KHOOR", "ZRUOG", "FRGH", "URYYB", "JBEYQ", "PBQR"]
+    },
+    {
+      "template_id": "CODE_ADV_16",
+      "pattern": "Affine cipher: a=[A], b=[B]. Encode letter [L] (0-25). Result?",
+      "variables": {
+        "A": {"values": [3, 5, 7, 11]},
+        "B": {"values": [2, 4, 6, 8]},
+        "L": {"values": [0, 1, 2, 3, 4]}
+      },
+      "calculation": "(A * L + B) % 26",
+      "explanation": "Affine cipher: C = (a×L + b) mod 26. With a=[A], b=[B], L=[L]: ([A]×[L]+[B]) mod 26 = [RESULT]",
+      "options": ["generate"]
+    },
+    {
+      "template_id": "CODE_ADV_17",
+      "pattern": "Vigenère with key=KEY. Encode letter A(=0) with key letter [K](=?). Result?",
+      "variables": {
+        "K": {"values": ["K", "E", "Y"]}
+      },
+      "calculation": "(K=='K')?10:(K=='E')?4:24",
+      "explanation": "Vigenère: encode A(0) with key letter. K=10, so A+10=K. E=4, so A+4=E. Y=24, so A+24=Y",
+      "options": ["K", "E", "Y", "A"]
+    },
+    {
+      "template_id": "CODE_ADV_18",
+      "pattern": "XOR stream cipher: key byte=[KB], plain byte=[PB]. Cipher byte?",
+      "variables": {
+        "KB": {"values": [42, 85, 170, 255]},
+        "PB": {"values": [65, 72, 79, 87]}
+      },
+      "calculation": "KB ^ PB",
+      "explanation": "XOR stream: C = Key XOR Plain. [KB] XOR [PB] = [RESULT]. XOR is reversible: same operation decodes.",
+      "options": ["generate"]
+    },
+    {
+      "template_id": "CODE_ADV_19",
+      "pattern": "Transposition: HELLO written in [R] rows of [C] cols. Read column [COL]?",
+      "variables": {
+        "R": {"values": [2, 3]},
+        "C": {"values": [3, 2]},
+        "COL": {"values": [1, 2, 3]}
+      },
+      "calculation": "(R==2&&C==3&&COL==1)?'HO':(R==2&&C==3&&COL==2)?'EL':(R==2&&C==3&&COL==3)?'LL':'HEL'",
+      "explanation": "HELLO in 2 rows of 3 cols: H E L / L O *. Col1=HL, Col2=EO, Col3=LL",
+      "options": ["HO", "EO", "LL", "HEL", "EL", "LO"]
+    },
+    {
+      "template_id": "CODE_ADV_20",
+      "pattern": "Double transposition: first key=[K1], second key=[K2]. Security level?",
+      "variables": {
+        "K1": {"values": ["SHORT", "MEDIUM", "LONG"]},
+        "K2": {"values": ["SHORT", "MEDIUM", "LONG"]}
+      },
+      "calculation": "(K1=='SHORT'&&K2=='SHORT')?'Low':(K1=='LONG'&&K2=='LONG')?'Very High':'Medium'",
+      "explanation": "Double transposition: applying two columnar transpositions. Longer keys = higher security.",
+      "options": ["Low", "Medium", "High", "Very High"]
+    },
+    {
+      "template_id": "CODE_ADV_21",
+      "pattern": "One-time pad: key=[KB], plain=[PB]. XOR cipher byte?",
+      "variables": {
+        "KB": {"values": [10, 20, 30, 40]},
+        "PB": {"values": [65, 72, 79, 87]}
+      },
+      "calculation": "KB ^ PB",
+      "explanation": "One-time pad: perfectly secure if key is random and used once. C = K XOR P = [KB] XOR [PB] = [RESULT]",
+      "options": ["generate"]
+    },
+    {
+      "template_id": "CODE_ADV_22",
+      "pattern": "Substitution cipher strength: alphabet size [N]. How many possible keys?",
+      "variables": {
+        "N": {"values": [2, 3, 4, 26]}
+      },
+      "calculation": "(N==2)?2:(N==3)?6:(N==4)?24:403291461126605635584000000",
+      "explanation": "Simple substitution: N! possible keys. 2!=2, 3!=6, 4!=24, 26!=4×10^26 (astronomical)",
+      "options": ["2", "6", "24", "26", "403291461126605635584000000"]
+    },
+    {
+      "template_id": "CODE_ADV_23",
+      "pattern": "Running key cipher vs Vigenère: key length [KL] vs message length [ML]. More secure?",
+      "variables": {
+        "KL": {"values": [5, 10, 50, 100]},
+        "ML": {"values": [10, 10, 50, 100]}
+      },
+      "calculation": "(KL>=ML)?'Running key (more secure)':'Vigenère repeats key (less secure)'",
+      "explanation": "Running key: key as long as message = no repeating pattern. KL≥ML means running key wins.",
+      "options": ["Running key (more secure)", "Vigenère repeats key (less secure)", "Equal security", "Cannot determine"]
+    },
+    {
+      "template_id": "CODE_ADV_24",
+      "pattern": "Index of coincidence: random text ≈ [R], English ≈ [E]. Value [V] suggests?",
+      "variables": {
+        "R": {"values": [0.038]},
+        "E": {"values": [0.065]},
+        "V": {"values": [0.038, 0.045, 0.055, 0.065]}
+      },
+      "calculation": "(V<=0.040)?'Random/encrypted':(V<=0.050)?'Polyalphabetic':(V<=0.060)?'Short key Vigenère':'Natural language/monoalphabetic'",
+      "explanation": "IC near 0.038=random cipher, 0.065=natural English. Values between suggest poly-alphabetic cipher.",
+      "options": ["Random/encrypted", "Polyalphabetic", "Short key Vigenère", "Natural language/monoalphabetic"]
+    },
+    {
+      "template_id": "CODE_ADV_25",
+      "pattern": "Kasiski test: repeated sequence found at positions [P1] and [P2]. Likely key length?",
+      "variables": {
+        "P1": {"values": [0, 0, 0, 0]},
+        "P2": {"values": [6, 9, 12, 15]}
+      },
+      "calculation": "P2 - P1",
+      "explanation": "Kasiski: distance between repeated sequences = likely multiple of key length. Distance = [P2]-[P1] = [RESULT]",
+      "options": ["generate"]
     }
   ],
   "responses": {
