@@ -46,7 +46,6 @@
         .greeting { font-size: 1.1em; color: #333; font-weight: 600; margin-bottom: 16px; }
         .greeting span { color: #0D47A1; font-weight: 800; }
 
-        /* Fee breakdown table */
         .fee-table {
             width: 100%; border-collapse: collapse;
             margin-bottom: 12px; font-size: 1em;
@@ -181,7 +180,6 @@
     <div id="error-message"   class="error"></div>
     <div id="success-message" class="success"></div>
 
-    <!-- Payment breakdown -->
     <div class="payment-card">
         <div class="greeting">Welcome, <span id="user-fullname">User</span>!</div>
         <table class="fee-table">
@@ -201,7 +199,6 @@
         <div class="plan-info" id="plan-info"></div>
     </div>
 
-    <!-- Accepted payment methods -->
     <div class="methods-bar">
         <div class="methods-label">We Accept All Payment Methods</div>
         <div class="method-badge">📱 UPI / QR</div>
@@ -240,23 +237,16 @@
 
 </div>
 
-<!-- Razorpay -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
-<!-- VOOO Config — must load before this script -->
 <script src="vooo-config.js"></script>
 
 <script>
-    // ====== FIREBASE INIT ======
     firebase.initializeApp(VOOO_CONFIG.firebase);
     const db = firebase.firestore();
 
-    // ====== READ PARAMS + LOCALSTORAGE ======
     const urlParams = new URLSearchParams(window.location.search);
     const planKey   = urlParams.get('plan')   || localStorage.getItem('vooo_plan_key');
     const planName  = urlParams.get('name')   || localStorage.getItem('vooo_plan_name');
@@ -264,25 +254,20 @@
     const uid      = localStorage.getItem('vooo_uid');
     const email    = localStorage.getItem('vooo_email');
     const fullname = localStorage.getItem('vooo_fullname');
-    // contact/phone intentionally NOT passed to Razorpay — avoids SMS charges
 
-    // ====== SAFETY CHECK ======
     if (!uid || !planKey) {
         alert('Session expired or no plan selected. Please sign up again.');
         window.location.href = 'https://odelya.online/vooo-ai';
     }
 
-    // ====== ALL CALCULATIONS FROM VOOO_CONFIG ======
-    // One place to change everything — just edit vooo-config.js
-    const payable    = VOOO_CONFIG.getTotalPayable(planKey);
-    const planAmount = payable.planAmount;
-    const gatewayFee = payable.gatewayFee;
-    const totalAmount= payable.totalAmount;
-    const totalPaise = payable.totalPaise;
+    const payable      = VOOO_CONFIG.getTotalPayable(planKey);
+    const planAmount   = payable.planAmount;
+    const gatewayFee   = payable.gatewayFee;
+    const totalAmount  = payable.totalAmount;
+    const totalPaise   = payable.totalPaise;
     const durationDays = VOOO_CONFIG.getDurationDays(planKey);
     const feePercent   = VOOO_CONFIG.gateway_fee_percent;
 
-    // ====== DISPLAY ======
     document.getElementById('user-fullname').textContent   = fullname || 'User';
     document.getElementById('fee-percent').textContent     = feePercent;
     document.getElementById('row-plan-amount').textContent = 'INR ' + planAmount;
@@ -290,7 +275,6 @@
     document.getElementById('row-total').textContent       = 'INR ' + totalAmount;
     document.getElementById('plan-info').textContent       = durationDays + ' days access · All features unlocked';
 
-    // ====== 300-SECOND COUNTDOWN ======
     let countdownInterval = null;
 
     function startCountdown() {
@@ -298,21 +282,16 @@
         const countdown = document.getElementById('countdown');
         timerBox.style.display = 'block';
         let seconds = 300;
-
         function fmt(s) {
             const m = Math.floor(s / 60);
             const sec = s % 60;
             return m + ':' + (sec < 10 ? '0' + sec : sec);
         }
-
         countdown.textContent = fmt(seconds);
         countdownInterval = setInterval(() => {
             seconds--;
             countdown.textContent = fmt(seconds);
-            if (seconds <= 0) {
-                clearInterval(countdownInterval);
-                timerBox.style.display = 'none';
-            }
+            if (seconds <= 0) { clearInterval(countdownInterval); timerBox.style.display = 'none'; }
         }, 1000);
     }
 
@@ -321,7 +300,6 @@
         document.getElementById('timer-box').style.display = 'none';
     }
 
-    // ====== RAZORPAY PAYMENT ======
     function startPayment() {
         const agreed = document.getElementById('agree-refund').checked;
         if (!agreed) {
@@ -333,8 +311,8 @@
         document.getElementById('error-message').style.display = 'none';
 
         const options = {
-            key:         VOOO_CONFIG.payment.razorpay.key_id,  // from config
-            amount:      totalPaise,                            // from config calculation
+            key:         VOOO_CONFIG.payment.razorpay.key_id,
+            amount:      totalPaise,
             currency:    'INR',
             name:        VOOO_CONFIG.business.brand_name,
             description: 'Plan INR ' + planAmount + ' (' + durationDays + ' days) + Gateway Fee INR ' + gatewayFee,
@@ -342,13 +320,10 @@
             prefill: {
                 name:  fullname || '',
                 email: email    || ''
-                // contact omitted — no SMS charges to user
             },
-            // All payment methods enabled — no restriction
             theme:   { color: '#0D47A1' },
-            timeout: 300,   // 5 minutes matches our countdown
+            timeout: 300,
 
-            // ====== PAYMENT SUCCESS HANDLER ======
             handler: async function (response) {
                 stopCountdown();
                 const payBtn = document.getElementById('pay-btn');
@@ -356,14 +331,13 @@
                 payBtn.textContent = 'Confirming payment...';
 
                 try {
-                    // Use config helper functions for dates
                     const today      = VOOO_CONFIG.getTodayDate();
                     const expiryDate = VOOO_CONFIG.getExpiryDate(planKey);
 
-                    // Update Firestore with full payment details
                     await db.collection('users').doc(uid).update({
                         tier:             'paid',
-                        planType:         'INR ' + planAmount,
+                        planType:         planKey,          // ✅ FIXED: saves "1month", "3month" etc.
+                        planValue:        'INR ' + planAmount, // ✅ NEW: saves "INR 200" etc. for dashboard
                         planStartDate:    today,
                         planExpiryDate:   expiryDate,
                         planKey:          planKey,
@@ -376,7 +350,6 @@
                         lastUpdated:      firebase.firestore.FieldValue.serverTimestamp()
                     });
 
-                    // Save summary to localStorage for dashboard
                     localStorage.setItem('vooo_payment_id',     response.razorpay_payment_id);
                     localStorage.setItem('vooo_payment_status', 'success');
                     localStorage.setItem('vooo_plan_start',     today);
@@ -399,7 +372,6 @@
 
                 } catch (err) {
                     console.error('Firestore update error:', err);
-                    // Payment successful — still redirect, admin can verify from Razorpay dashboard
                     const successDiv = document.getElementById('success-message');
                     successDiv.innerHTML =
                         '✓ Payment received!<br>' +
