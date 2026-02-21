@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Vooo AI Education</title>
+
+    <!-- jsPDF for invoice download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -59,12 +63,14 @@
         }
         .btn-header:hover { background: #e8eef7; }
 
-        /* ====== LOGO STRIP below header ====== */
+        /* ====== LOGO STRIP ====== */
         .logo-strip {
             background: #f5f7fa;
             display: flex;
             justify-content: center;
+            align-items: center;
             padding: 18px 0 10px 0;
+            gap: 20px;
         }
         .logo-circle {
             width: 55px;
@@ -78,6 +84,26 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* ====== DOWNLOAD BUTTON — paid users only, shown via JS ====== */
+        #download-invoice-btn {
+            display: none;
+            background: #0D47A1;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(13,71,161,0.25);
+        }
+        #download-invoice-btn:hover {
+            background: #0a3a8a;
+            transform: translateY(-2px);
         }
 
         /* ====== LOADING SPINNER ====== */
@@ -119,16 +145,9 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             margin-bottom: 30px;
         }
-        .welcome-top {
-            margin-bottom: 20px;
-        }
-        .welcome-top h2 {
-            font-size: 2em;
-            color: #333;
-        }
-        .welcome-top h2 span {
-            color: #0D47A1;
-        }
+        .welcome-top { margin-bottom: 20px; }
+        .welcome-top h2 { font-size: 2em; color: #333; }
+        .welcome-top h2 span { color: #0D47A1; }
         .welcome-buttons {
             display: flex;
             justify-content: space-between;
@@ -246,13 +265,7 @@
         }
         .stat-label { color: #000000; font-size: 1.2em; font-weight: 700; margin-bottom: 10px; }
         .stat-value { font-size: 2.5em; font-weight: bold; color: #0D47A1; }
-
-        /* Account type badge */
-        .account-type-value {
-            font-size: 2em;
-            font-weight: 700;
-            color: #FF0000;
-        }
+        .account-type-value { font-size: 2em; font-weight: 700; color: #FF0000; }
         .account-type-value.paid { color: #FF0000; }
 
         /* ====== PLAN INFO ====== */
@@ -262,12 +275,7 @@
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .plan-info h3 {
-            color: #0D47A1;
-            font-size: 2em;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
+        .plan-info h3 { color: #0D47A1; font-size: 2em; font-weight: 700; margin-bottom: 20px; }
         .plan-detail {
             display: flex;
             justify-content: space-between;
@@ -280,7 +288,7 @@
         .plan-detail span { font-weight: 600; }
         .plan-detail strong { color: #000000; font-weight: 700; }
 
-        /* ── Change Password Modal ── */
+        /* ====== CHANGE PASSWORD MODAL ====== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -336,8 +344,8 @@
             .stat-label { font-size: 0.85em; }
             .stat-value { font-size: 1.6em; }
             .account-type-value { font-size: 1.2em; }
+            #download-invoice-btn { font-size: 0.9em; padding: 8px 14px; }
         }
-
         @media (max-width: 400px) {
             .plan-action-btn, .start-mcq-btn { padding: 8px 12px; font-size: 1em; }
             .stat-label { font-size: 0.75em; }
@@ -346,6 +354,7 @@
     </style>
 </head>
 <body>
+
     <!-- HEADER -->
     <div class="header">
         <div class="header-left">
@@ -357,14 +366,15 @@
         </div>
     </div>
 
-    <!-- LOGO STRIP -->
+    <!-- LOGO STRIP — logo left, download button right of it, paid users only -->
     <div class="logo-strip">
         <div class="logo-circle">
             <img src="/vooo-ai/images/vooo-logo.jpg" alt="Vooo AI Logo">
         </div>
+        <button id="download-invoice-btn" onclick="downloadInvoice()">⬇ Download Details</button>
     </div>
 
-    <!-- Change Password Modal -->
+    <!-- CHANGE PASSWORD MODAL -->
     <div id="change-password-modal" class="modal-overlay">
         <div class="modal-box">
             <button class="modal-close" onclick="closeChangePasswordModal()">✕</button>
@@ -449,10 +459,9 @@
             </div>
         </div>
 
-        <!-- Plan Info (paid users only) -->
+        <!-- Plan Info — paid users only -->
         <div id="plan-info" class="plan-info" style="display:none;">
             <h3>Plan Details :</h3>
-            <!-- ✅ NEW: Plan Value row — added just above Plan Type -->
             <div class="plan-detail">
                 <span>Plan Value</span>
                 <strong id="plan-value">-</strong>
@@ -469,13 +478,9 @@
                 <span>Expiry Date</span>
                 <strong id="plan-expiry">-</strong>
             </div>
-            <div class="plan-detail">
-                <span>Days Remaining</span>
-                <strong id="days-remaining">-</strong>
-            </div>
         </div>
 
-        <!-- Basic Information Section — always visible for all users -->
+        <!-- Basic Information — always visible -->
         <div class="plan-info" style="margin-top: 25px;">
             <h3>Basic Information :</h3>
             <div class="plan-detail">
@@ -495,7 +500,8 @@
                 <strong id="basic-email">-</strong>
             </div>
         </div>
-    </div>
+
+    </div><!-- end #main-container -->
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -508,7 +514,6 @@
         const auth = firebase.auth();
         const db   = firebase.firestore();
 
-        // Plan type display names
         const PLAN_DISPLAY = {
             '1month':  '1 Month',
             '3month':  '3 Months',
@@ -516,36 +521,25 @@
             '1year':   '1 Year'
         };
 
-        // Plan value is now read directly from Firebase (userData.planValue)
-        // No hardcoding needed — payment pages save it at time of purchase
-
-        // ====== SHOW / HIDE HELPERS ======
+        // ── SHOW / HIDE ──
         function showDashboard() {
             document.getElementById('loading-screen').style.display = 'none';
             document.getElementById('main-container').style.display = 'block';
         }
-
         function showError() {
             document.getElementById('loading-screen').innerHTML =
                 '<div style="color:#C62828;font-size:1.1em;font-weight:600;text-align:center;padding:40px;">❌ Failed to load dashboard.<br>Please refresh the page.</div>';
         }
 
-        // ====== PAYMENT SUCCESS BANNER ======
+        // ── PAYMENT SUCCESS BANNER ──
         function checkPaymentSuccess() {
             const paymentStatus = localStorage.getItem('vooo_payment_status');
             if (paymentStatus === 'success') {
-                const paymentId  = localStorage.getItem('vooo_payment_id')  || '-';
-                const amountPaid = localStorage.getItem('vooo_amount_paid') || '-';
-                const planStart  = localStorage.getItem('vooo_plan_start')  || '-';
-                const planExpiry = localStorage.getItem('vooo_plan_expiry') || '-';
-
-                document.getElementById('psb-payment-id').textContent = paymentId;
-                document.getElementById('psb-amount').textContent     = 'INR ' + amountPaid;
-                document.getElementById('psb-start').textContent      = planStart;
-                document.getElementById('psb-expiry').textContent     = planExpiry;
-
+                document.getElementById('psb-payment-id').textContent = localStorage.getItem('vooo_payment_id')  || '-';
+                document.getElementById('psb-amount').textContent     = 'INR ' + (localStorage.getItem('vooo_amount_paid') || '-');
+                document.getElementById('psb-start').textContent      = localStorage.getItem('vooo_plan_start')  || '-';
+                document.getElementById('psb-expiry').textContent     = localStorage.getItem('vooo_plan_expiry') || '-';
                 document.getElementById('payment-success-banner').style.display = 'block';
-
                 localStorage.removeItem('vooo_payment_status');
                 localStorage.removeItem('vooo_payment_id');
                 localStorage.removeItem('vooo_amount_paid');
@@ -553,22 +547,20 @@
                 localStorage.removeItem('vooo_plan_expiry');
             }
         }
-
         function dismissPaymentBanner() {
             document.getElementById('payment-success-banner').style.display = 'none';
         }
 
+        // ── AUTH STATE ──
         auth.onAuthStateChanged(async (user) => {
-            if (!user) {
-                window.location.href = 'vooologin.html';
-                return;
-            }
+            if (!user) { window.location.href = 'vooologin.html'; return; }
             localStorage.setItem('vooo_uid',   user.uid);
             localStorage.setItem('vooo_email', user.email);
             checkPaymentSuccess();
             await loadDashboard(user.uid);
         });
 
+        // ── LOAD DASHBOARD ──
         async function loadDashboard(userId) {
             try {
                 const userDoc = await db.collection('users').doc(userId).get();
@@ -580,83 +572,66 @@
                 }
 
                 const userData = userDoc.data();
-
                 localStorage.setItem('vooo_fullname', userData.fullName || '');
                 document.getElementById('user-fullname').textContent = userData.fullName || 'User';
 
                 const isPaid = userData.tier === 'paid';
 
-                // ====== Plan action button ======
+                // Plan action button
                 const planBtn = document.getElementById('plan-action-btn');
-                if (isPaid) {
-                    planBtn.textContent = 'Upgrade Plan';
-                    planBtn.classList.add('upgrade');
-                } else {
-                    planBtn.textContent = 'Buy Plan';
-                }
+                if (isPaid) { planBtn.textContent = 'Upgrade Plan'; planBtn.classList.add('upgrade'); }
+                else        { planBtn.textContent = 'Buy Plan'; }
 
-                // ====== Account type display ======
+                // Account type badge
                 const accountTypeEl = document.getElementById('account-type-display');
-                if (isPaid) {
-                    accountTypeEl.textContent = 'Paid';
-                    accountTypeEl.classList.add('paid');
-                } else {
-                    accountTypeEl.textContent = 'Free';
-                }
+                accountTypeEl.textContent = isPaid ? 'Paid' : 'Free';
+                if (isPaid) accountTypeEl.classList.add('paid');
 
-                // ====== Today's MCQs ======
-                // Reads dailyUsage.count from Firestore (incremented by the MCQ app each session).
-                // Also checks dailyUsage.date — if it's not today, treat count as 0 (day has reset).
-                const todayStr   = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
-                const dailyData  = userData.dailyUsage || {};
-                const usageDate  = dailyData.date || '';
-                const todayUsed  = (usageDate === todayStr) ? (dailyData.count || 0) : 0;
-
+                // Today's MCQs
+                const todayStr  = new Date().toISOString().split('T')[0];
+                const dailyData = userData.dailyUsage || {};
+                const todayUsed = (dailyData.date === todayStr) ? (dailyData.count || 0) : 0;
                 document.getElementById('today-usage').textContent = isPaid
                     ? todayUsed + ' / ∞'
                     : todayUsed + ' / 40';
 
-                // ====== Total MCQs attempted ======
+                // Total MCQs
                 document.getElementById('total-attempted').textContent = userData.totalMCQsAttempted || 0;
 
-                // ====== Upgrade banner for free users near limit ======
+                // Upgrade banner — free users near limit
                 if (!isPaid && todayUsed >= 30) {
                     document.getElementById('upgrade-banner').style.display = 'block';
                     document.getElementById('upgrade-message').textContent  =
                         `You've used ${todayUsed}/40 MCQs today. Upgrade for unlimited access!`;
                 }
 
-                // ====== Plan info for paid users ======
+                // Plan info — paid users only
                 if (isPaid && userData.planType) {
                     document.getElementById('plan-info').style.display = 'block';
 
-                    // ✅ Plan Value — read directly from Firebase (saved by payment page)
-                    document.getElementById('plan-value').textContent = userData.planValue || '-';
+                    // ✅ Show Download button — paid users only
+                    document.getElementById('download-invoice-btn').style.display = 'inline-block';
 
-                    // Plan type — show friendly name
-                    const planDisplay = PLAN_DISPLAY[userData.planType] || userData.planType;
-                    document.getElementById('plan-type').textContent = planDisplay;
+                    document.getElementById('plan-value').textContent =
+                        userData.planValue || '-';
 
-                    // Start date
+                    document.getElementById('plan-type').textContent =
+                        PLAN_DISPLAY[userData.planType] || userData.planType;
+
                     if (userData.planStartDate) {
-                        const startDate = userData.planStartDate.seconds
+                        const sd = userData.planStartDate.seconds
                             ? new Date(userData.planStartDate.seconds * 1000)
                             : new Date(userData.planStartDate);
-                        document.getElementById('plan-start').textContent = startDate.toLocaleDateString('en-GB');
+                        document.getElementById('plan-start').textContent = sd.toLocaleDateString('en-GB');
                     }
 
-                    // Expiry date + days remaining
                     if (userData.planExpiryDate) {
-                        const expiryDate = userData.planExpiryDate.seconds
+                        const ed = userData.planExpiryDate.seconds
                             ? new Date(userData.planExpiryDate.seconds * 1000)
                             : new Date(userData.planExpiryDate);
-                        document.getElementById('plan-expiry').textContent = expiryDate.toLocaleDateString('en-GB');
+                        document.getElementById('plan-expiry').textContent = ed.toLocaleDateString('en-GB');
 
-                        const now      = new Date();
-                        const daysLeft = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
-                        document.getElementById('days-remaining').textContent =
-                            daysLeft > 0 ? daysLeft + ' days' : 'Expired';
-
+                        const daysLeft = Math.ceil((ed - new Date()) / (1000 * 60 * 60 * 24));
                         if (daysLeft > 0 && daysLeft <= 7) {
                             document.getElementById('upgrade-banner').style.display = 'block';
                             document.getElementById('upgrade-message').textContent  =
@@ -665,15 +640,12 @@
                     }
                 }
 
-                // Free users never see the plan-info section — it remains hidden
-
-                // ====== Basic Information ======
+                // Basic info — always visible
                 document.getElementById('basic-fullname').textContent = userData.fullName || '-';
                 document.getElementById('basic-dob').textContent      = userData.dob      || '-';
                 document.getElementById('basic-phone').textContent    = userData.phone    || '-';
                 document.getElementById('basic-email').textContent    = userData.email    || '-';
 
-                // All data loaded — show dashboard
                 showDashboard();
 
             } catch (error) {
@@ -682,6 +654,252 @@
             }
         }
 
+        // ══════════════════════════════════════════════════════════════
+        // DOWNLOAD INVOICE PDF
+        // Data is read from the DOM (already loaded from Firebase above)
+        // Filename: PHONE_FULLNAME.pdf
+        // ══════════════════════════════════════════════════════════════
+        function downloadInvoice() {
+            const { jsPDF } = window.jspdf;
+            const doc    = new jsPDF({ format: 'a4', unit: 'mm' });
+            const pageW  = 210;
+            const pageH  = 297;
+            const margin = 18;
+            const colW   = pageW - margin * 2;
+            let   y      = 0;
+
+            // ── Colour palette ──
+            const BLUE  = [13,  71,  161];
+            const DBLUE = [8,   45,  100];
+            const LGREY = [245, 247, 250];
+            const BLACK = [30,  30,  30];
+            const WHITE = [255, 255, 255];
+            const RED   = [198, 40,  40];
+            const GREEN = [30,  100, 30];
+            const AMBER = [180, 120, 0];
+
+            // ── Shorthand: set font style/size/colour ──
+            function sf(style, size, color) {
+                doc.setFont('helvetica', style);
+                doc.setFontSize(size);
+                doc.setTextColor(...color);
+            }
+
+            // ── Dark-blue section header bar ──
+            function sectionHead(yy, label) {
+                doc.setFillColor(...DBLUE);
+                doc.roundedRect(margin, yy, colW, 8, 2, 2, 'F');
+                sf('bold', 9, WHITE);
+                doc.text(label, margin + 4, yy + 5.5);
+                return yy + 11;  // returns next y position
+            }
+
+            // ── Rounded filled box, optional border ──
+            function filledBox(yy, h, fillRGB, borderRGB) {
+                doc.setFillColor(...fillRGB);
+                if (borderRGB) {
+                    doc.setDrawColor(...borderRGB);
+                    doc.setLineWidth(0.5);
+                    doc.roundedRect(margin, yy, colW, h, 2, 2, 'FD');
+                } else {
+                    doc.roundedRect(margin, yy, colW, h, 2, 2, 'F');
+                }
+            }
+
+            // ── Read all values from DOM ──
+            const fullName   = document.getElementById('basic-fullname').textContent || '-';
+            const dob        = document.getElementById('basic-dob').textContent      || '-';
+            const phone      = document.getElementById('basic-phone').textContent    || '-';
+            const email      = document.getElementById('basic-email').textContent    || '-';
+            const planValue  = document.getElementById('plan-value').textContent     || '-';
+            const planType   = document.getElementById('plan-type').textContent      || '-';
+            const planStart  = document.getElementById('plan-start').textContent     || '-';
+            const planExpiry = document.getElementById('plan-expiry').textContent    || '-';
+
+            // Days remaining calculation from expiry dd/mm/yyyy
+            const parts   = planExpiry.split('/');
+            let daysLeft  = '-';
+            if (parts.length === 3) {
+                const exp  = new Date(+parts[2], +parts[1] - 1, +parts[0]);
+                const diff = Math.ceil((exp - new Date()) / (1000 * 60 * 60 * 24));
+                daysLeft   = diff > 0 ? diff + ' days' : 'Expired';
+            }
+
+            // Download date + time
+            const now    = new Date();
+            const dlDate = now.toLocaleDateString('en-GB') + '  ' +
+                now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+            // ════════════════════════
+            // 1. HEADER BAND
+            // ════════════════════════
+            doc.setFillColor(...BLUE);
+            doc.rect(0, 0, pageW, 40, 'F');
+
+            // Logo circle — top right
+            try {
+                doc.setFillColor(...WHITE);
+                doc.circle(pageW - margin - 12, 20, 14, 'F');
+                doc.addImage(
+                    '/vooo-ai/images/invoicelogo.jpg', 'JPEG',
+                    pageW - margin - 25, 7, 26, 26,
+                    undefined, 'FAST'
+                );
+            } catch(e) { /* logo unavailable — skip silently */ }
+
+            // Company name
+            sf('bold', 17, WHITE);
+            doc.text('Odelya Management Pvt. Ltd.', margin, 15);
+
+            // Sub-line
+            sf('normal', 8.5, [180, 210, 255]);
+            doc.text('Vooo AI Education — Service Receipt', margin, 24);
+
+            // Download date — bottom-right of header
+            sf('normal', 7, [180, 210, 255]);
+            doc.text('Downloaded: ' + dlDate, pageW - margin, 36, { align: 'right' });
+
+            y = 46;
+
+            // ════════════════════════
+            // 2. ADDRESS BAND
+            // ════════════════════════
+            doc.setFillColor(232, 236, 255);
+            doc.rect(0, y, pageW, 11, 'F');
+            sf('normal', 7.5, [50, 50, 110]);
+            doc.text(
+                '44E, 2nd Floor, Nandalal Mitra Lane, Kudghat, Ashok Nagar, Tollygunge, Kolkata, West Bengal 700040, India',
+                pageW / 2, y + 7.5, { align: 'center' }
+            );
+            y += 16;
+
+            // ════════════════════════
+            // 3. BENEFICIARY DETAILS
+            // ════════════════════════
+            y = sectionHead(y, 'BENEFICIARY DETAILS');
+            filledBox(y, 30, LGREY, null);
+
+            // Name | DOB
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Beneficiary Name', margin + 5, y + 7);
+            sf('bold', 10, BLACK);
+            doc.text(fullName, margin + 5, y + 14);
+
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Date of Birth', margin + colW / 2 + 5, y + 7);
+            sf('normal', 10, BLACK);
+            doc.text(dob, margin + colW / 2 + 5, y + 14);
+
+            // Phone | Email
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Phone Number', margin + 5, y + 21);
+            sf('normal', 10, BLACK);
+            doc.text(phone, margin + 5, y + 27);
+
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Email ID', margin + colW / 2 + 5, y + 21);
+            sf('normal', 10, BLACK);
+            doc.text(email, margin + colW / 2 + 5, y + 27);
+
+            y += 35;
+
+            // ════════════════════════
+            // 4. SERVICE DETAILS
+            // ════════════════════════
+            y = sectionHead(y, 'SERVICE DETAILS');
+
+            // Service name — full width highlight row
+            doc.setFillColor(224, 235, 255);
+            doc.roundedRect(margin, y, colW, 11, 2, 2, 'F');
+            sf('bold', 11, BLUE);
+            doc.text('Vooo AI Education', pageW / 2, y + 8, { align: 'center' });
+            y += 15;
+
+            // Plan details box
+            filledBox(y, 44, LGREY, null);
+
+            // Plan Value | Plan Type
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Plan Value', margin + 5, y + 7);
+            sf('bold', 12, GREEN);
+            doc.text(planValue, margin + 5, y + 15);
+
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Plan Type', margin + colW / 2 + 5, y + 7);
+            sf('bold', 12, BLACK);
+            doc.text(planType, margin + colW / 2 + 5, y + 15);
+
+            // Thin divider inside box
+            doc.setDrawColor(210, 215, 230);
+            doc.setLineWidth(0.3);
+            doc.line(margin + 5, y + 20, margin + colW - 5, y + 20);
+
+            // Start Date | Expiry Date
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Start Date', margin + 5, y + 27);
+            sf('normal', 10, BLACK);
+            doc.text(planStart, margin + 5, y + 34);
+
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Expiry Date', margin + colW / 2 + 5, y + 27);
+            sf('normal', 10, BLACK);
+            doc.text(planExpiry, margin + colW / 2 + 5, y + 34);
+
+            // Days remaining — full width, no column split
+            sf('bold', 8, [100, 100, 100]);
+            doc.text('Days Remaining :', margin + 5, y + 42);
+            sf('bold', 10, daysLeft === 'Expired' ? RED : GREEN);
+            doc.text(String(daysLeft), margin + 52, y + 42);
+
+            y += 50;
+
+            // ════════════════════════
+            // 5. DECLARATION
+            // ════════════════════════
+            y = sectionHead(y, 'DECLARATION');
+
+            // Company Policy box — red tint, full page width inside margins
+            filledBox(y, 21, [255, 242, 242], RED);
+            sf('bold', 8, RED);
+            doc.text('Company Policy:', margin + 5, y + 7);
+            sf('normal', 8, [100, 30, 30]);
+            const policyLines = doc.splitTextToSize(
+                'Money cannot be refunded under any circumstances once paid. All sales are final.',
+                colW - 10
+            );
+            doc.text(policyLines, margin + 5, y + 13);
+            y += 26;
+
+            // User Acknowledgement box — amber tint, full page width inside margins
+            filledBox(y, 26, [255, 250, 230], [200, 150, 0]);
+            sf('bold', 8, AMBER);
+            doc.text('User Acknowledgement:', margin + 5, y + 7);
+            sf('normal', 8, [100, 70, 0]);
+            const ackLines = doc.splitTextToSize(
+                'I have read and agree to the no-refund policy. I understand that all sales are final and no refund will be issued under any circumstances.',
+                colW - 10
+            );
+            doc.text(ackLines, margin + 5, y + 14);
+            y += 32;
+
+            // ════════════════════════
+            // 6. FOOTER
+            // ════════════════════════
+            doc.setFillColor(...BLUE);
+            doc.rect(0, pageH - 14, pageW, 14, 'F');
+            sf('normal', 8, [180, 210, 255]);
+            doc.text(
+                'A Product of Odelya Management Private Limited',
+                pageW / 2, pageH - 5.5, { align: 'center' }
+            );
+
+            // ── Save as PHONE_FULLNAME.pdf ──
+            const safeName  = fullName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+            const safePhone = phone.replace(/[^0-9]/g, '');
+            doc.save(safePhone + '_' + safeName + '.pdf');
+        }
+
+        // ── OTHER FUNCTIONS ──
         function startMCQs() {
             window.location.href = 'https://odelya.online/vooo-ai';
         }
@@ -692,52 +910,36 @@
             clearModalError();
             document.getElementById('change-password-modal').classList.add('active');
         }
-
         function closeChangePasswordModal() {
             document.getElementById('change-password-modal').classList.remove('active');
         }
-
         function clearModalError() {
             const err = document.getElementById('modal-error');
             err.style.display = 'none';
             err.textContent   = '';
         }
-
         function showModalError(msg) {
             const err = document.getElementById('modal-error');
             err.textContent   = msg;
             err.style.display = 'block';
         }
-
         function validatePassword(password) {
-            if (password.length < 8)
-                return 'Password must be at least 8 characters.';
-            if (!/[A-Z]/.test(password))
-                return 'Password must contain at least one uppercase letter.';
-            if (!/[a-z]/.test(password))
-                return 'Password must contain at least one lowercase letter.';
-            if (!/[0-9]/.test(password))
-                return 'Password must contain at least one number.';
+            if (password.length < 8)              return 'Password must be at least 8 characters.';
+            if (!/[A-Z]/.test(password))          return 'Password must contain at least one uppercase letter.';
+            if (!/[a-z]/.test(password))          return 'Password must contain at least one lowercase letter.';
+            if (!/[0-9]/.test(password))          return 'Password must contain at least one number.';
             if (!/[!@#$%^&*()\-_=+\[\]{};':"\\|,.<>\/?]/.test(password))
-                return 'Password must contain at least one special character.';
+                                                  return 'Password must contain at least one special character.';
             return null;
         }
-
         async function submitChangePassword() {
             const newPass     = document.getElementById('new-password').value;
             const confirmPass = document.getElementById('confirm-password').value;
-
-            const validationError = validatePassword(newPass);
-            if (validationError) { showModalError(validationError); return; }
-
-            if (newPass !== confirmPass) {
-                showModalError('Passwords do not match.');
-                return;
-            }
-
+            const validErr    = validatePassword(newPass);
+            if (validErr) { showModalError(validErr); return; }
+            if (newPass !== confirmPass) { showModalError('Passwords do not match.'); return; }
             const user = auth.currentUser;
             if (!user) { showModalError('No user logged in.'); return; }
-
             try {
                 await user.updatePassword(newPass);
                 closeChangePasswordModal();
@@ -752,11 +954,9 @@
                 }
             }
         }
-
         document.getElementById('change-password-modal').addEventListener('click', function(e) {
             if (e.target === this) closeChangePasswordModal();
         });
-
         async function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 await auth.signOut();
