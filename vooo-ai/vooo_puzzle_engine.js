@@ -1,6 +1,6 @@
 // ============================================
 // VOOO AI Puzzle Engine
-// FIXES: solv1-solv4, solv6-solv13
+// FIXES: solv1-solv4, solv6-solv14
 // ============================================
 
 class VOOOPuzzleEngine {
@@ -68,7 +68,7 @@ class VOOOPuzzleEngine {
     isPrime(n) { if(n<2) return false; if(n===2) return true; if(n%2===0) return false; for(let i=3;i*i<=n;i+=2) if(n%i===0) return false; return true; }
     nextPrime(n) { let c=n+1; while(!this.isPrime(c)) c++; return c; }
     sigma(n) { let s=0; for(let i=1;i<=n;i++) if(n%i===0) s+=i; return s; }
-    phi(n) { let r=n,t=n; for(let p=2;p*p<=t;p++) { if(t%p===0){while(t%p===0)t=Math.floor(t/p);r-=Math.floor(r/p);} } if(t>1) r-=Math.floor(r/t); return r; }
+    phi(n) { let r=n,t=n; for(let p=2;p*p<=t;p++){if(t%p===0){while(t%p===0)t=Math.floor(t/p);r-=Math.floor(r/p);}} if(t>1)r-=Math.floor(r/t); return r; }
     partition(n) { const p=new Array(n+1).fill(0); p[0]=1; for(let k=1;k<=n;k++) for(let i=k;i<=n;i++) p[i]+=p[i-k]; return p[n]; }
     primeFactors(n) { const f=[]; let t=n; for(let p=2;p*p<=t;p++){if(t%p===0){let c=0;while(t%p===0){c++;t=Math.floor(t/p);}f.push({prime:p,exp:c});}} if(t>1)f.push({prime:t,exp:1}); return f; }
     isSphenic(n) { if(n<2)return false; const f=this.primeFactors(n); return f.length===3&&f.every(x=>x.exp===1); }
@@ -94,15 +94,58 @@ class VOOOPuzzleEngine {
     nextGiuga(n) { const k=[30,858,1722,66198,2214408306]; for(const v of k)if(v>n)return v; return 858; }
 
     // ============================================
+    // solv14 - APPLY MATH FUNCTIONS (MULTI-PASS)
+    // Resolves nested calls like next_prime(next_prime(next_prime(P)))
+    // ============================================
+    applyMathFunctions(ev) {
+        const mathFns = [
+            ['factorial',       x => this.factorial(Math.round(x))],
+            ['next_prime',      x => this.nextPrime(Math.round(x))],
+            ['sigma',           x => this.sigma(Math.round(x))],
+            ['phi',             x => this.phi(Math.round(x))],
+            ['partition',       x => this.partition(Math.round(x))],
+            ['next_sphenic',    x => this.nextSphenic(Math.round(x))],
+            ['next_semiprime',  x => this.nextSemiprime(Math.round(x))],
+            ['next_abundant',   x => this.nextAbundant(Math.round(x))],
+            ['next_deficient',  x => this.nextDeficient(Math.round(x))],
+            ['next_perfect',    x => this.nextPerfect(Math.round(x))],
+            ['primorial',       x => this.primorial(Math.round(x))],
+            ['next_highly_composite',           x => this.nextHighlyComposite(Math.round(x))],
+            ['next_superior_highly_composite',  x => this.nextSuperiorHighlyComposite(Math.round(x))],
+            ['next_sophie_germain',             x => this.nextSophieGermain(Math.round(x))],
+            ['next_safe_prime',                 x => this.nextSafePrime(Math.round(x))],
+            ['next_factorial_prime',            x => this.nextFactorialPrime(Math.round(x))],
+            ['next_giuga',      x => this.nextGiuga(Math.round(x))]
+        ];
+
+        // solv14: run multiple passes to resolve nested calls
+        for (let pass = 0; pass < 6; pass++) {
+            let changed = false;
+            for (const [name, fn] of mathFns) {
+                const regex = new RegExp(name + '\\(([^()]+)\\)', 'g');
+                const newEv = ev.replace(regex, (match, inner) => {
+                    try {
+                        const val = new Function('return ' + inner)();
+                        const result = fn(val);
+                        changed = true;
+                        return String(result);
+                    } catch(e) { return match; }
+                });
+                ev = newEv;
+            }
+            if (!changed) break; // no more replacements needed
+        }
+        return ev;
+    }
+
+    // ============================================
     // solv13 - DETECT PLAIN TEXT CALCULATION
     // ============================================
     isPlainTextCalculation(calc) {
         if (!calc) return true;
         const t = calc.trim();
         if (t === '' || t === 'null') return true;
-        // Plain English: only letters, spaces, hyphens, slashes, accents
         if (/^[A-Za-zÀ-ÿ\s\-\/]+$/.test(t)) return true;
-        // Keyword detection
         if (/generate|lookup|rules|decryption|transposition|multiplication|substitution|autokey|checkerboard|ambiguity|complexity|dynamic/i.test(t)) return true;
         return false;
     }
@@ -124,7 +167,7 @@ class VOOOPuzzleEngine {
         for (let i = 0; i < patArr.length; i++) {
             if (!derived.hasOwnProperty(patArr[i]) && expArr[i]) {
                 const val = this.evaluateBracketExpression(expArr[i], derived);
-                if (val !== null) { derived[patArr[i]] = val; }
+                if (val !== null) derived[patArr[i]] = val;
             }
         }
         if (derived.hasOwnProperty('A') && derived.hasOwnProperty('STEP')) {
@@ -140,33 +183,36 @@ class VOOOPuzzleEngine {
     }
 
     // ============================================
-    // solv2+solv6+solv8+solv12 - EXPRESSION RESOLVERS
+    // EXPRESSION RESOLVERS (solv2+solv6+solv8+solv12)
     // ============================================
     evaluateBracketExpression(expr, variables) {
         let e = expr;
-        e = e.replace(/×/g, '*').replace(/÷/g, '/');
-        // solv12: implicit coeff only for pure math expressions
+        e = e.replace(/×/g,'*').replace(/÷/g,'/');
         const hasMathOps = /[\+\-\*\^%]/.test(e) && !/[?:'"]/.test(e);
-        if (hasMathOps) e = e.replace(/(\d)([A-Za-z_][A-Za-z0-9_]*)/g, '$1*$2');
-        for (const [k, v] of Object.entries(variables)) {
-            if (typeof v === 'string' && isNaN(v)) e = e.replace(new RegExp('\\b'+k+'\\b','g'), '"'+v+'"');
+        if (hasMathOps) e = e.replace(/(\d)([A-Za-z_][A-Za-z0-9_]*)/g,'$1*$2');
+        for (const [k,v] of Object.entries(variables)) {
+            if (typeof v==='string'&&isNaN(v)) e=e.replace(new RegExp('\\b'+k+'\\b','g'),'"'+v+'"');
         }
-        for (const [k, v] of Object.entries(variables)) {
-            if (typeof v !== 'string' || !isNaN(v)) e = e.replace(new RegExp('\\b'+k+'\\b','g'), '('+v+')');
+        for (const [k,v] of Object.entries(variables)) {
+            if (typeof v!=='string'||!isNaN(v)) e=e.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');
         }
-        try { const r = new Function('return '+e)(); return (typeof r==='number')?r:(typeof r==='string')?r:null; }
-        catch(err) { return null; }
+        // solv14: resolve math functions before eval
+        e = this.applyMathFunctions(e);
+        try {
+            const r = new Function('return '+e)();
+            return (typeof r==='number')?r:(typeof r==='string')?r:null;
+        } catch(err) { return null; }
     }
 
     resolvePatternText(text, variables) {
         let resolved = text;
-        resolved = resolved.replace(/(\d)\[/g, '$1*[');
-        for (const [k, v] of Object.entries(variables)) resolved = resolved.replace(new RegExp(`\\[${k}\\]`,'g'), v);
-        resolved = resolved.replace(/\[([^\]]+)\]/g, (match, inner) => {
-            const r = this.evaluateBracketExpression(inner, variables);
-            return r !== null ? r : match;
+        resolved = resolved.replace(/(\d)\[/g,'$1*[');
+        for (const [k,v] of Object.entries(variables)) resolved=resolved.replace(new RegExp(`\\[${k}\\]`,'g'),v);
+        resolved = resolved.replace(/\[([^\]]+)\]/g,(match,inner)=>{
+            const r = this.evaluateBracketExpression(inner,variables);
+            return r!==null?r:match;
         });
-        for (const [k, v] of Object.entries(variables)) resolved = resolved.replace(new RegExp('\\b'+k+'\\b','g'), v);
+        for (const [k,v] of Object.entries(variables)) resolved=resolved.replace(new RegExp('\\b'+k+'\\b','g'),v);
         return resolved;
     }
 
@@ -174,300 +220,285 @@ class VOOOPuzzleEngine {
     // STORAGE & VALIDATION
     // ============================================
     initLocalStorage() {
-        const key = `vooo_used_questions_${this.currentCategory}`;
-        const stored = localStorage.getItem(key);
-        this.usedQuestions = stored ? JSON.parse(stored) : [];
+        const key=`vooo_used_questions_${this.currentCategory}`;
+        const stored=localStorage.getItem(key);
+        this.usedQuestions=stored?JSON.parse(stored):[];
     }
     saveUsedQuestion(hash) {
-        const key = `vooo_used_questions_${this.currentCategory}`;
+        const key=`vooo_used_questions_${this.currentCategory}`;
         this.usedQuestions.push(hash);
-        localStorage.setItem(key, JSON.stringify(this.usedQuestions));
+        localStorage.setItem(key,JSON.stringify(this.usedQuestions));
     }
-    createQuestionHash(template, variables) {
-        return btoa(unescape(encodeURIComponent(template.template_id+'_'+JSON.stringify(variables)))).substring(0, 20);
+    createQuestionHash(template,variables) {
+        return btoa(unescape(encodeURIComponent(template.template_id+'_'+JSON.stringify(variables)))).substring(0,20);
     }
     isQuestionUsed(hash) { return this.usedQuestions.includes(hash); }
-    validateOptions(options, correctAnswer) {
-        if (options.length !== 4) { console.warn('❌ Not 4 options', options.length); return false; }
-        if (new Set(options.map(o => String(o))).size !== 4) { console.warn('❌ Duplicate options', options); return false; }
-        if (!options.map(o => String(o)).includes(String(correctAnswer))) { console.warn('❌ Answer not in options', correctAnswer, options); return false; }
+    validateOptions(options,correctAnswer) {
+        if(options.length!==4){console.warn('❌ Not 4 options',options.length);return false;}
+        if(new Set(options.map(o=>String(o))).size!==4){console.warn('❌ Duplicate options',options);return false;}
+        if(!options.map(o=>String(o)).includes(String(correctAnswer))){console.warn('❌ Answer not in options',correctAnswer,options);return false;}
         return true;
     }
     clearUsedQuestions() {
         localStorage.removeItem(`vooo_used_questions_${this.currentCategory}`);
-        this.usedQuestions = [];
+        this.usedQuestions=[];
     }
 
     // ============================================
     // CORE ENGINE
     // ============================================
     async loadCategory(categoryName) {
-        this.currentCategory = categoryName;
+        this.currentCategory=categoryName;
+        const fileName=this.categories[categoryName];
+        if(!fileName){console.error(`❌ Unknown category: "${categoryName}"`);return false;}
         try {
-            const response = await fetch(`/vooo-ai/vooo-json/${this.categories[categoryName]}`);
-            this.categoryData = await response.json();
-            this.currentTemplateIndex = 0;
+            const response=await fetch(`/vooo-ai/vooo-json/${fileName}`);
+            this.categoryData=await response.json();
+            this.currentTemplateIndex=0;
             this.initLocalStorage();
             return true;
-        } catch (error) { console.error('Error loading category:', error); return false; }
+        } catch(error){console.error('Error loading category:',error);return false;}
     }
 
     isTemplateComputable(template) {
-        if (!template.calculation) return false;
-        const calc = template.calculation.trim();
-        if (calc === '' || calc === 'null') return false;
-        if (this.isPlainTextCalculation(calc)) { console.log(`⏭️ solv13: Plain text skipped: ${calc}`); return false; }
+        if(!template.calculation) return false;
+        const calc=template.calculation.trim();
+        if(calc===''||calc==='null') return false;
+        if(this.isPlainTextCalculation(calc)){console.log(`⏭️ solv13: Plain text skipped: ${calc}`);return false;}
         return true;
     }
 
     generateNewPuzzle() {
-        if (!this.categoryData || !this.categoryData.templates) { console.error('No templates'); return null; }
-        const templates = this.categoryData.templates;
-        let attempts = 0;
-        const maxAttempts = templates.length * 3;
+        if(!this.categoryData||!this.categoryData.templates){console.error('No templates');return null;}
+        const templates=this.categoryData.templates;
+        let attempts=0;
+        const maxAttempts=templates.length*3;
 
-        while (attempts < maxAttempts) {
+        while(attempts<maxAttempts) {
             attempts++;
-            const idx = this.currentTemplateIndex % templates.length;
-            this.currentTemplate = templates[idx];
+            const idx=this.currentTemplateIndex%templates.length;
+            this.currentTemplate=templates[idx];
             this.currentTemplateIndex++;
-            if (this.currentTemplateIndex >= templates.length) this.currentTemplateIndex = 0;
+            if(this.currentTemplateIndex>=templates.length) this.currentTemplateIndex=0;
 
-            if (!this.isTemplateComputable(this.currentTemplate)) continue;
+            if(!this.isTemplateComputable(this.currentTemplate)) continue;
 
-            const rawVars = this.generateVariables(this.currentTemplate.variables);
-            const variables = this.computeDerivedVariables(this.currentTemplate, rawVars);
-            const hash = this.createQuestionHash(this.currentTemplate, variables);
-            if (this.isQuestionUsed(hash)) continue;
+            const rawVars=this.generateVariables(this.currentTemplate.variables);
+            const variables=this.computeDerivedVariables(this.currentTemplate,rawVars);
+            const hash=this.createQuestionHash(this.currentTemplate,variables);
+            if(this.isQuestionUsed(hash)) continue;
 
-            const question = this.generateQuestion(this.currentTemplate, variables);
-            const answer = this.calculateAnswer(this.currentTemplate, variables);
-            if (answer === null || answer === undefined || answer === 'null') continue;
+            const question=this.generateQuestion(this.currentTemplate,variables);
+            const answer=this.calculateAnswer(this.currentTemplate,variables);
+            if(answer===null||answer===undefined||answer==='null') continue;
 
-            const options = this.generateOptions(answer, this.currentTemplate, variables);
-            if (!this.validateOptions(options, answer)) continue;
+            const options=this.generateOptions(answer,this.currentTemplate,variables);
+            if(!this.validateOptions(options,answer)) continue;
 
             this.saveUsedQuestion(hash);
-            this.currentPuzzle = {
-                question, options, correctAnswer: answer,
-                correctIndex: this.findCorrectIndex(options, answer, this.currentTemplate.answer_type),
-                explanation: this.generateExplanation(this.currentTemplate, variables, answer),
-                templateId: this.currentTemplate.template_id,
-                level: this.currentCategory,
-                answerType: this.currentTemplate.answer_type || 'text'
+            this.currentPuzzle={
+                question,options,correctAnswer:answer,
+                correctIndex:this.findCorrectIndex(options,answer,this.currentTemplate.answer_type),
+                explanation:this.generateExplanation(this.currentTemplate,variables,answer),
+                templateId:this.currentTemplate.template_id,
+                level:this.currentCategory,
+                answerType:this.currentTemplate.answer_type||'text'
             };
             return this.currentPuzzle;
         }
 
         this.clearUsedQuestions();
-        this.currentTemplateIndex = 0;
-        let fb = templates[0];
-        for (const t of templates) if (this.isTemplateComputable(t)) { fb = t; break; }
-        this.currentTemplate = fb;
-        const rv = this.generateVariables(this.currentTemplate.variables);
-        const vars = this.computeDerivedVariables(this.currentTemplate, rv);
-        const ans = this.calculateAnswer(this.currentTemplate, vars);
-        const opts = this.generateOptions(ans, this.currentTemplate, vars);
-        this.currentPuzzle = {
-            question: this.generateQuestion(this.currentTemplate, vars),
-            options: opts, correctAnswer: ans,
-            correctIndex: this.findCorrectIndex(opts, ans, this.currentTemplate.answer_type),
-            explanation: this.generateExplanation(this.currentTemplate, vars, ans),
-            templateId: this.currentTemplate.template_id,
-            level: this.currentCategory, answerType: this.currentTemplate.answer_type || 'text'
+        this.currentTemplateIndex=0;
+        let fb=templates[0];
+        for(const t of templates) if(this.isTemplateComputable(t)){fb=t;break;}
+        this.currentTemplate=fb;
+        const rv=this.generateVariables(this.currentTemplate.variables);
+        const vars=this.computeDerivedVariables(this.currentTemplate,rv);
+        const ans=this.calculateAnswer(this.currentTemplate,vars);
+        const opts=this.generateOptions(ans,this.currentTemplate,vars);
+        this.currentPuzzle={
+            question:this.generateQuestion(this.currentTemplate,vars),
+            options:opts,correctAnswer:ans,
+            correctIndex:this.findCorrectIndex(opts,ans,this.currentTemplate.answer_type),
+            explanation:this.generateExplanation(this.currentTemplate,vars,ans),
+            templateId:this.currentTemplate.template_id,
+            level:this.currentCategory,answerType:this.currentTemplate.answer_type||'text'
         };
         return this.currentPuzzle;
     }
 
     generateVariables(variableDefs) {
-        const variables = {};
-        if (!variableDefs) return variables;
-        const arrKeys = ['primes','bell_numbers','perrin','cake','motzkin','schroder','narayana',
+        const variables={};
+        if(!variableDefs) return variables;
+        const arrKeys=['primes','bell_numbers','perrin','cake','motzkin','schroder','narayana',
             'partitions','mersenne','fermat','carmichael','carol','kynea','thabit','sophie',
             'safe','primorial','giuga','cullen','woodall','highly_composite','superior_hc',
             'abundant','deficient','perfect','semiprime','sphenic'];
-        for (const [varName, def] of Object.entries(variableDefs)) {
-            if (def.value !== undefined) { variables[varName] = def.value; }
-            else if (def.values !== undefined) { variables[varName] = def.values[Math.floor(Math.random()*def.values.length)]; }
-            else if (def.calc !== undefined) { try{variables[varName]=this.evaluateExpression(def.calc,variables);}catch(e){variables[varName]=0;} }
-            else if (def.totients !== undefined) { variables[varName] = Math.floor(Math.random()*def.totients.length); }
+        for(const [varName,def] of Object.entries(variableDefs)) {
+            if(def.value!==undefined){variables[varName]=def.value;}
+            else if(def.values!==undefined){variables[varName]=def.values[Math.floor(Math.random()*def.values.length)];}
+            else if(def.calc!==undefined){try{variables[varName]=this.evaluateExpression(def.calc,variables);}catch(e){variables[varName]=0;}}
+            else if(def.totients!==undefined){variables[varName]=Math.floor(Math.random()*def.totients.length);}
             else {
-                let handled = false;
-                for (const k of arrKeys) {
-                    if (def[k] !== undefined) { variables[varName]=def[k][Math.floor(Math.random()*(def[k].length-1))]; handled=true; break; }
+                let handled=false;
+                for(const k of arrKeys){
+                    if(def[k]!==undefined){variables[varName]=def[k][Math.floor(Math.random()*(def[k].length-1))];handled=true;break;}
                 }
-                if (!handled) {
-                    const min = def.min !== undefined ? def.min : 1;
-                    const max = def.max !== undefined ? def.max : 10;
-                    const step = def.step || 1;
-                    variables[varName] = min + (Math.floor(Math.random()*(Math.floor((max-min)/step)+1))*step);
-                    if (def.primes_only) {
+                if(!handled){
+                    const min=def.min!==undefined?def.min:1;
+                    const max=def.max!==undefined?def.max:10;
+                    const step=def.step||1;
+                    variables[varName]=min+(Math.floor(Math.random()*(Math.floor((max-min)/step)+1))*step);
+                    if(def.primes_only){
                         let v=variables[varName],up=v,dn=v;
                         while(!this.isPrime(up)&&up<=max)up++;
                         while(!this.isPrime(dn)&&dn>=min)dn--;
                         variables[varName]=(this.isPrime(up)&&up<=max)?up:dn;
                     }
-                    if (def.perfect_only) { let v=variables[varName]; while(!this.isPerfect(v)&&v<=max*100)v++; variables[varName]=v; }
+                    if(def.perfect_only){let v=variables[varName];while(!this.isPerfect(v)&&v<=max*100)v++;variables[varName]=v;}
                 }
             }
         }
         return variables;
     }
 
-    evaluateExpression(expr, variables) {
-        let ev = expr;
-        // solv13: catch plain text
-        if (this.isPlainTextCalculation(ev)) { console.log('⏭️ solv13 plain text:', ev); return null; }
+    evaluateExpression(expr,variables) {
+        let ev=expr;
+        if(this.isPlainTextCalculation(ev)){console.log('⏭️ solv13 plain text:',ev);return null;}
+
         // solv1: if-then-else
-        ev = ev.replace(/if\s+(.+?)\s+then\s+(.+?)\s+else\s+(.+)/g, (match, cond, thenV, elseV) => {
+        ev=ev.replace(/if\s+(.+?)\s+then\s+(.+?)\s+else\s+(.+)/g,(match,cond,thenV,elseV)=>{
             try {
-                let c = cond;
-                for (const [k,v] of Object.entries(variables)) c=c.replace(new RegExp('\\b'+k+'\\b','g'),(typeof v==='string'&&isNaN(v))?'"'+v+'"':JSON.stringify(v));
-                return new Function('return '+c)() ? thenV.trim() : elseV.trim().replace(/'/g,'');
-            } catch(e) { return match; }
+                let c=cond;
+                for(const [k,v] of Object.entries(variables)) c=c.replace(new RegExp('\\b'+k+'\\b','g'),(typeof v==='string'&&isNaN(v))?'"'+v+'"':JSON.stringify(v));
+                return new Function('return '+c)()?thenV.trim():elseV.trim().replace(/'/g,'');
+            } catch(e){return match;}
         });
+
         // solv6
-        ev = ev.replace(/×/g,'*').replace(/÷/g,'/');
+        ev=ev.replace(/×/g,'*').replace(/÷/g,'/');
+
         // solv12: implicit coeff only for math
-        const hasMathOps = /[\+\-\*\^%]/.test(ev) && !/[?:'"]/.test(ev);
-        if (hasMathOps) ev = ev.replace(/(\d)([A-Za-z_][A-Za-z0-9_]*)/g,'$1*$2');
+        const hasMathOps=/[\+\-\*\^%]/.test(ev)&&!/[?:'"]/.test(ev);
+        if(hasMathOps) ev=ev.replace(/(\d)([A-Za-z_][A-Za-z0-9_]*)/g,'$1*$2');
+
         // solv8: strings first
-        for (const [k,v] of Object.entries(variables)) {
-            if (typeof v==='string'&&isNaN(v)) ev=ev.replace(new RegExp('\\b'+k+'\\b','g'),'"'+v+'"');
+        for(const [k,v] of Object.entries(variables)){
+            if(typeof v==='string'&&isNaN(v)) ev=ev.replace(new RegExp('\\b'+k+'\\b','g'),'"'+v+'"');
         }
-        for (const [k,v] of Object.entries(variables)) {
-            if (typeof v!=='string'||!isNaN(v)) ev=ev.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');
+        for(const [k,v] of Object.entries(variables)){
+            if(typeof v!=='string'||!isNaN(v)) ev=ev.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');
         }
-        // solv1: math functions
-        const mathFns = [
-            ['factorial',x=>this.factorial(Math.round(x))],
-            ['next_prime',x=>this.nextPrime(Math.round(x))],
-            ['sigma',x=>this.sigma(Math.round(x))],
-            ['phi',x=>this.phi(Math.round(x))],
-            ['partition',x=>this.partition(Math.round(x))],
-            ['next_sphenic',x=>this.nextSphenic(Math.round(x))],
-            ['next_semiprime',x=>this.nextSemiprime(Math.round(x))],
-            ['next_abundant',x=>this.nextAbundant(Math.round(x))],
-            ['next_deficient',x=>this.nextDeficient(Math.round(x))],
-            ['next_perfect',x=>this.nextPerfect(Math.round(x))],
-            ['primorial',x=>this.primorial(Math.round(x))],
-            ['next_highly_composite',x=>this.nextHighlyComposite(Math.round(x))],
-            ['next_superior_highly_composite',x=>this.nextSuperiorHighlyComposite(Math.round(x))],
-            ['next_sophie_germain',x=>this.nextSophieGermain(Math.round(x))],
-            ['next_safe_prime',x=>this.nextSafePrime(Math.round(x))],
-            ['next_factorial_prime',x=>this.nextFactorialPrime(Math.round(x))],
-            ['next_giuga',x=>this.nextGiuga(Math.round(x))]
-        ];
-        for (const [name, fn] of mathFns) {
-            ev = ev.replace(new RegExp(name+'\\(([^)]+)\\)','g'), (match, inner) => {
-                try { return fn(new Function('return '+inner)()); } catch(e) { return match; }
-            });
-        }
-        if (ev.includes('repeat(')) {
-            ev = ev.replace(/repeat\(([^,]+),\s*([^)]+)\)/g, (match, emoji, count) => {
-                const val = variables[emoji.trim().replace(/['"]/g,'')] || emoji.trim().replace(/['"]/g,'');
+
+        // solv14: multi-pass math function resolution
+        ev=this.applyMathFunctions(ev);
+
+        if(ev.includes('repeat(')){
+            ev=ev.replace(/repeat\(([^,]+),\s*([^)]+)\)/g,(match,emoji,count)=>{
+                const val=variables[emoji.trim().replace(/['"]/g,'')]||emoji.trim().replace(/['"]/g,'');
                 return JSON.stringify(val.repeat(parseInt(count)||1));
             });
         }
-        if (ev.includes('next_in_pattern(')) {
-            ev = ev.replace(/next_in_pattern\(([^)]+)\)/g, (match, p) =>
-                JSON.stringify(this.calculateNextInPattern(p.trim().replace(/['"]/g,''), variables)));
+        if(ev.includes('next_in_pattern(')){
+            ev=ev.replace(/next_in_pattern\(([^)]+)\)/g,(match,p)=>
+                JSON.stringify(this.calculateNextInPattern(p.trim().replace(/['"]/g,''),variables)));
         }
-        if (ev.includes('generate_options(')) {
-            ev = ev.replace(/generate_options\(([^)]+)\)/g, (match, params) => {
-                const [num, emoji] = params.split(',').map(p=>p.trim().replace(/['"]/g,''));
-                return JSON.stringify(this.generateVisualOptions(num, emoji, variables));
+        if(ev.includes('generate_options(')){
+            ev=ev.replace(/generate_options\(([^)]+)\)/g,(match,params)=>{
+                const [num,emoji]=params.split(',').map(p=>p.trim().replace(/['"]/g,''));
+                return JSON.stringify(this.generateVisualOptions(num,emoji,variables));
             });
         }
+
         try {
-            if (ev.startsWith('[')&&ev.endsWith(']')) try{return JSON.parse(ev);}catch(e){return [];}
-            if ((ev.startsWith('"')&&ev.endsWith('"'))||(ev.startsWith("'")&&ev.endsWith("'"))) return ev.slice(1,-1);
-            if (ev==='true') return true;
-            if (ev==='false') return false;
-            if (ev==='null') return null;
-            if (!isNaN(ev)&&ev.trim()!=='') return Number(ev);
-            if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(ev)) return ev;
-            const result = new Function('return '+ev)();
+            if(ev.startsWith('[')&&ev.endsWith(']')) try{return JSON.parse(ev);}catch(e){return [];}
+            if((ev.startsWith('"')&&ev.endsWith('"'))||(ev.startsWith("'")&&ev.endsWith("'"))) return ev.slice(1,-1);
+            if(ev==='true') return true;
+            if(ev==='false') return false;
+            if(ev==='null') return null;
+            if(!isNaN(ev)&&ev.trim()!=='') return Number(ev);
+            if(/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(ev)) return ev;
+            const result=new Function('return '+ev)();
             return result;
-        } catch(e) { console.error('Eval error:', expr, '->', ev, e); return null; }
+        } catch(e){console.error('Eval error:',expr,'->',ev,e);return null;}
     }
 
-    generateQuestion(template, variables) {
-        if (template.pattern_builder) { try { return this.evaluateExpression(template.pattern_builder, variables); } catch(e) {} }
-        return this.resolvePatternText(template.pattern, variables);
+    generateQuestion(template,variables) {
+        if(template.pattern_builder){try{return this.evaluateExpression(template.pattern_builder,variables);}catch(e){}}
+        return this.resolvePatternText(template.pattern,variables);
     }
 
-    calculateAnswer(template, variables) {
-        if (!template.calculation) return 0;
-        const calc = template.calculation.trim();
-        if (calc===''||calc==='null') return null;
-        if (this.isPlainTextCalculation(calc)) return null;
-        if (calc.includes('repeat(')) return this.evaluateExpression(calc, variables);
-        if (calc.includes('next_in_pattern(')) {
-            const pattern = this.evaluateExpression(calc, variables);
-            const opts = template.options || [];
-            if (pattern==='ABAB'||pattern==='AABB') return opts[0]||'🔴';
-            if (pattern==='ABCABC') return opts[2]||'🔵';
+    calculateAnswer(template,variables) {
+        if(!template.calculation) return 0;
+        const calc=template.calculation.trim();
+        if(calc===''||calc==='null') return null;
+        if(this.isPlainTextCalculation(calc)) return null;
+        if(calc.includes('repeat(')) return this.evaluateExpression(calc,variables);
+        if(calc.includes('next_in_pattern(')){
+            const pattern=this.evaluateExpression(calc,variables);
+            const opts=template.options||[];
+            if(pattern==='ABAB'||pattern==='AABB') return opts[0]||'🔴';
+            if(pattern==='ABCABC') return opts[2]||'🔵';
             return opts[0]||'?';
         }
-        if (variables.hasOwnProperty(calc)) {
-            const value = variables[calc];
-            if (template.answer_type==='shape_selector'&&typeof value==='string') return this.shapeMap[value]||value;
-            if (template.answer_type==='color_picker'&&typeof value==='string') return this.colorMap[value]||value;
-            if (typeof value==='number') return parseFloat(value.toFixed(4));
+        if(variables.hasOwnProperty(calc)){
+            const value=variables[calc];
+            if(template.answer_type==='shape_selector'&&typeof value==='string') return this.shapeMap[value]||value;
+            if(template.answer_type==='color_picker'&&typeof value==='string') return this.colorMap[value]||value;
+            if(typeof value==='number') return parseFloat(value.toFixed(4));
             return value;
         }
-        const result = this.evaluateExpression(calc, variables);
-        if (result===null||result===undefined) return null;
-        if (typeof result==='number') return parseFloat(result.toFixed(4));
+        const result=this.evaluateExpression(calc,variables);
+        if(result===null||result===undefined) return null;
+        if(typeof result==='number') return parseFloat(result.toFixed(4));
         return result;
     }
 
-    generateOptions(correctAnswer, template, variables) {
-        if (template.options_builder) {
-            try { const opts=this.evaluateExpression(template.options_builder,variables); if(Array.isArray(opts)) return this.shuffleArray(opts); }
-            catch(e) {}
+    generateOptions(correctAnswer,template,variables) {
+        if(template.options_builder){
+            try{const opts=this.evaluateExpression(template.options_builder,variables);if(Array.isArray(opts))return this.shuffleArray(opts);}
+            catch(e){}
         }
         // sol10 + solv11
-        if (template.options && Array.isArray(template.options)) {
-            let opts = [...template.options];
-            const correctStr = String(correctAnswer);
-            let effectiveCorrect = correctAnswer;
-            if (!opts.map(o=>String(o)).includes(correctStr)) {
-                effectiveCorrect = opts[0];
+        if(template.options&&Array.isArray(template.options)){
+            let opts=[...template.options];
+            const correctStr=String(correctAnswer);
+            let effectiveCorrect=correctAnswer;
+            if(!opts.map(o=>String(o)).includes(correctStr)){
+                effectiveCorrect=opts[0];
                 console.log(`⚠️ solv11: Fixed answer ${correctAnswer} → ${effectiveCorrect}`);
             }
-            const wrong = opts.filter(o=>String(o)!==String(effectiveCorrect));
-            const selected = this.shuffleArray(wrong).slice(0,3);
-            return this.shuffleArray([effectiveCorrect, ...selected]);
+            const wrong=opts.filter(o=>String(o)!==String(effectiveCorrect));
+            const selected=this.shuffleArray(wrong).slice(0,3);
+            return this.shuffleArray([effectiveCorrect,...selected]);
         }
-        if (template.answer_type==='shape_selector') return this.shuffleArray([...Object.values(this.shapeMap)]);
-        if (template.answer_type==='color_picker') return this.shuffleArray([...Object.values(this.colorMap)]);
-        if (template.answer_type==='comparison') return this.shuffleArray([variables.A_EMOJI, variables.B_EMOJI]);
-        const options = [];
-        const correctNum = Number(correctAnswer);
-        if (!isNaN(correctNum)) {
+        if(template.answer_type==='shape_selector') return this.shuffleArray([...Object.values(this.shapeMap)]);
+        if(template.answer_type==='color_picker') return this.shuffleArray([...Object.values(this.colorMap)]);
+        if(template.answer_type==='comparison') return this.shuffleArray([variables.A_EMOJI,variables.B_EMOJI]);
+        const options=[];
+        const correctNum=Number(correctAnswer);
+        if(!isNaN(correctNum)){
             options.push(String(parseFloat(correctNum.toFixed(4))));
-            for (let i=0; i<3; i++) {
+            for(let i=0;i<3;i++){
                 let wrong;
-                const dir = (Math.random()>0.5?1:-1);
-                const off = (i+1)*dir;
-                if (Math.abs(correctNum)>100) wrong=correctNum+off*Math.floor(Math.max(1,Math.abs(correctNum)*0.05));
-                else if (Math.abs(correctNum)>10) wrong=correctNum+off*Math.floor(Math.max(1,Math.abs(correctNum)*0.1));
-                else if (correctNum!==0) wrong=correctNum+off;
+                const dir=(Math.random()>0.5?1:-1);
+                const off=(i+1)*dir;
+                if(Math.abs(correctNum)>100) wrong=correctNum+off*Math.floor(Math.max(1,Math.abs(correctNum)*0.05));
+                else if(Math.abs(correctNum)>10) wrong=correctNum+off*Math.floor(Math.max(1,Math.abs(correctNum)*0.1));
+                else if(correctNum!==0) wrong=correctNum+off;
                 else wrong=i+1;
-                if (wrong===correctNum) wrong=correctNum+(i+2);
+                if(wrong===correctNum) wrong=correctNum+(i+2);
                 let ws=String(parseFloat(wrong.toFixed(4)));
                 let dc=0;
                 while(options.includes(ws)&&dc<20){wrong++;ws=String(parseFloat(wrong.toFixed(4)));dc++;}
                 options.push(ws);
             }
         } else {
-            const ng = parseInt(correctAnswer);
-            if (!isNaN(ng)) {
+            const ng=parseInt(correctAnswer);
+            if(!isNaN(ng)){
                 options.push(String(ng));
                 const offs=[ng+2,ng+4,ng-2].filter(v=>v>0);
-                for (let i=0;i<3;i++) {
+                for(let i=0;i<3;i++){
                     let ws=String(offs[i]||ng+(i+5));
                     let dc=0;
                     while(options.includes(ws)&&dc<10){ws=String(parseInt(ws)+1);dc++;}
@@ -481,40 +512,40 @@ class VOOOPuzzleEngine {
         return this.shuffleArray(options);
     }
 
-    generateVisualOptions(number, emojiName, variables) {
-        const emoji = variables[emojiName]||emojiName;
-        const opts = [];
-        for (let i=1;i<=5;i++) opts.push(emoji.repeat(i));
+    generateVisualOptions(number,emojiName,variables) {
+        const emoji=variables[emojiName]||emojiName;
+        const opts=[];
+        for(let i=1;i<=5;i++) opts.push(emoji.repeat(i));
         return this.shuffleArray(opts);
     }
     calculateNextInPattern(patternType) {
-        switch(patternType) { case 'ABAB':return '🔴'; case 'AABB':return '🟡'; case 'ABCABC':return '🔵'; default:return '?'; }
+        switch(patternType){case 'ABAB':return '🔴';case 'AABB':return '🟡';case 'ABCABC':return '🔵';default:return '?';}
     }
-    findCorrectIndex(options, correctAnswer, answerType) {
-        if (answerType==='comparison') return (this.sizeComparison[options[0]]==='big')?0:1;
+    findCorrectIndex(options,correctAnswer,answerType) {
+        if(answerType==='comparison') return (this.sizeComparison[options[0]]==='big')?0:1;
         return options.findIndex(opt=>String(opt)===String(correctAnswer));
     }
-    generateExplanation(template, variables, answer) {
-        if (!template.explanation) return `The correct answer is ${answer}.`;
-        let expl = this.resolvePatternText(template.explanation, variables);
-        expl = expl.replace(/\[RESULT\]/g, typeof answer==='number'?parseFloat(answer.toFixed(4)):answer);
+    generateExplanation(template,variables,answer) {
+        if(!template.explanation) return `The correct answer is ${answer}.`;
+        let expl=this.resolvePatternText(template.explanation,variables);
+        expl=expl.replace(/\[RESULT\]/g,typeof answer==='number'?parseFloat(answer.toFixed(4)):answer);
         return expl;
     }
     checkAnswer(selectedIndex) {
         this.totalAttempts++;
-        const isCorrect = selectedIndex===this.currentPuzzle.correctIndex;
-        if (isCorrect) { this.score++; return {correct:true,message:'Yes Correct Answer',explanation:this.currentPuzzle.explanation,level:this.currentPuzzle.level}; }
-        return {correct:false,message:'Please try again',explanation:this.currentPuzzle.explanation,correctAnswer:this.currentPuzzle.correctAnswer,level:this.currentPuzzle.level};
+        const isCorrect=selectedIndex===this.currentPuzzle.correctIndex;
+        if(isCorrect){this.score++;return{correct:true,message:'Yes Correct Answer',explanation:this.currentPuzzle.explanation,level:this.currentPuzzle.level};}
+        return{correct:false,message:'Please try again',explanation:this.currentPuzzle.explanation,correctAnswer:this.currentPuzzle.correctAnswer,level:this.currentPuzzle.level};
     }
-    getStats() { return {score:this.score,totalAttempts:this.totalAttempts,accuracy:this.totalAttempts>0?Math.round((this.score/this.totalAttempts)*100):0,currentCategory:this.currentCategory}; }
-    resetScore() { this.score=0; this.totalAttempts=0; }
-    shuffleArray(array) {
+    getStats(){return{score:this.score,totalAttempts:this.totalAttempts,accuracy:this.totalAttempts>0?Math.round((this.score/this.totalAttempts)*100):0,currentCategory:this.currentCategory};}
+    resetScore(){this.score=0;this.totalAttempts=0;}
+    shuffleArray(array){
         const s=[...array];
         for(let i=s.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[s[i],s[j]]=[s[j],s[i]];}
         return s;
     }
-    getCategoryDisplayName(categoryKey) { return this.categoryData?.display_name||this.formatCategoryName(categoryKey); }
-    formatCategoryName(name) {
+    getCategoryDisplayName(categoryKey){return this.categoryData?.display_name||this.formatCategoryName(categoryKey);}
+    formatCategoryName(name){
         if(this.categoryData&&this.categoryData.display_name) return this.categoryData.display_name;
         return name.split('_').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
     }
@@ -526,60 +557,60 @@ class VOOOPuzzleEngine {
 window.voooEngine = new VOOOPuzzleEngine();
 
 async function initVOOOGame() {
-    const loaded = await voooEngine.loadCategory('math_beginner');
-    if (!loaded) { document.getElementById('vooo-question').textContent='Error loading puzzles.'; return; }
-    const puzzle = voooEngine.generateNewPuzzle();
-    if (puzzle) updatePuzzleDisplay(puzzle);
+    const loaded=await voooEngine.loadCategory('math_beginner');
+    if(!loaded){document.getElementById('vooo-question').textContent='Error loading puzzles.';return;}
+    const puzzle=voooEngine.generateNewPuzzle();
+    if(puzzle) updatePuzzleDisplay(puzzle);
     else document.getElementById('vooo-question').textContent='Error generating puzzle.';
 }
 
 function updatePuzzleDisplay(puzzle) {
-    document.getElementById('vooo-question').textContent = puzzle.question;
-    const container = document.getElementById('vooo-options');
-    container.innerHTML = '';
-    puzzle.options.forEach((option, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'vooo-option';
-        btn.textContent = option;
-        if (typeof option==='string'&&option.length>2&&!option.match(/^-?[0-9]+(\.[0-9]+)?$/)) btn.style.fontSize='1.5em';
-        btn.onclick = () => selectAnswer(index);
+    document.getElementById('vooo-question').textContent=puzzle.question;
+    const container=document.getElementById('vooo-options');
+    container.innerHTML='';
+    puzzle.options.forEach((option,index)=>{
+        const btn=document.createElement('button');
+        btn.className='vooo-option';
+        btn.textContent=option;
+        if(typeof option==='string'&&option.length>2&&!option.match(/^-?[0-9]+(\.[0-9]+)?$/)) btn.style.fontSize='1.5em';
+        btn.onclick=()=>selectAnswer(index);
         container.appendChild(btn);
     });
-    const fb = document.getElementById('vooo-feedback');
-    fb.textContent=''; fb.className='vooo-feedback'; fb.style.cssText='';
+    const fb=document.getElementById('vooo-feedback');
+    fb.textContent='';fb.className='vooo-feedback';fb.style.cssText='';
     document.getElementById('vooo-explanation').textContent='';
     updateStatsDisplay();
 }
 
 function selectAnswer(selectedIndex) {
-    const result = voooEngine.checkAnswer(selectedIndex);
-    const fb = document.getElementById('vooo-feedback');
-    const expl = document.getElementById('vooo-explanation');
-    const btns = document.getElementById('vooo-options').querySelectorAll('.vooo-option');
+    const result=voooEngine.checkAnswer(selectedIndex);
+    const fb=document.getElementById('vooo-feedback');
+    const expl=document.getElementById('vooo-explanation');
+    const btns=document.getElementById('vooo-options').querySelectorAll('.vooo-option');
     btns.forEach(b=>{b.style.backgroundColor='';b.style.borderColor='';});
-    if (result.correct) {
+    if(result.correct){
         btns[selectedIndex].style.backgroundColor='#c6f6d5';
         btns[selectedIndex].style.borderColor='#9ae6b4';
-        fb.textContent='Yes Correct Answer'; fb.className='vooo-feedback correct';
+        fb.textContent='Yes Correct Answer';fb.className='vooo-feedback correct';
         expl.textContent=result.explanation;
-        setTimeout(nextPuzzle, 3000);
+        setTimeout(nextPuzzle,3000);
     } else {
         btns[selectedIndex].style.backgroundColor='#fed7d7';
         btns[selectedIndex].style.borderColor='#fc8181';
-        fb.textContent='Please try again'; fb.className='vooo-feedback incorrect';
-        fb.style.background='white'; fb.style.border='2px solid black';
-        fb.style.color='red'; fb.style.fontWeight='bold';
+        fb.textContent='Please try again';fb.className='vooo-feedback incorrect';
+        fb.style.background='white';fb.style.border='2px solid black';
+        fb.style.color='red';fb.style.fontWeight='bold';
     }
     updateStatsDisplay();
 }
 
-async function nextPuzzle() { const puzzle=voooEngine.generateNewPuzzle(); if(puzzle) updatePuzzleDisplay(puzzle); }
-async function changeLevel(levelKey) { const success=await voooEngine.loadCategory(levelKey); if(success){voooEngine.resetScore();nextPuzzle();} }
-function updateStatsDisplay() {
+async function nextPuzzle(){const puzzle=voooEngine.generateNewPuzzle();if(puzzle)updatePuzzleDisplay(puzzle);}
+async function changeLevel(levelKey){const success=await voooEngine.loadCategory(levelKey);if(success){voooEngine.resetScore();nextPuzzle();}}
+function updateStatsDisplay(){
     const stats=voooEngine.getStats();
     document.getElementById('vooo-score').textContent=`Score: ${stats.score}`;
     document.getElementById('vooo-accuracy').textContent=`Accuracy: ${stats.accuracy}%`;
 }
-function resetGame() { voooEngine.resetScore(); nextPuzzle(); }
+function resetGame(){voooEngine.resetScore();nextPuzzle();}
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initVOOOGame);
 else initVOOOGame();
