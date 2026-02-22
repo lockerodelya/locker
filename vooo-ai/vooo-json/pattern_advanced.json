@@ -16,7 +16,7 @@
       "variable_combinations": 48,
       "calculation": "A + B + Math.pow(B, 2) + Math.pow(B, 3) + Math.pow(B, 4)",
       "difficulty": "expert",
-      "explanation": "Sum of geometric series. Next adds [B]⁴. Result = [RESULT]"
+      "calculation": "A + B + B*B + B*B*B + B*B*B*B"
     },
     {
       "template_id": "ENT_PAT_012",
@@ -51,7 +51,7 @@
         "N": {"min": 1, "max": 5, "step": 1}
       },
       "variable_combinations": 5,
-      "calculation": "(function fact(x){return x<=1?1:x*fact(x-1)})(N+4)",
+      "calculation": "factorial(N + 4)"
       "difficulty": "expert",
       "explanation": "Factorial sequence. Next = ([N]+4)! = [RESULT]"
     },
@@ -62,7 +62,7 @@
         "P": {"min": 2, "max": 23, "step": 1, "primes": [2,3,5,7,11,13,17,19,23,29]}
       },
       "variable_combinations": 9,
-      "calculation": "function nextPrime(p){var primes=[2,3,5,7,11,13,17,19,23,29]; return primes[primes.indexOf(p)+1];}(P)",
+      "calculation": "next_prime(P)"
       "difficulty": "expert",
       "explanation": "Prime number sequence. Next prime after [P] = [RESULT]"
     },
@@ -86,20 +86,8 @@
   "variable_combinations": 15,
   "calculation": "3 * Math.pow(A, 2) + 2 * A",
   "difficulty": "expert",
-  "explanation": "Alternating additions of [A] and [A]². Pattern adds: A², A, A², A. Next adds A² = 3[A]²+2[A] = [RESULT]"
+  "calculation": "3 * A * A + 2 * A"
 },
-    {
-      "template_id": "ENT_PAT_018",
-      "pattern": "[A], [A]÷2+[B], [A]÷4+[B], [A]÷8+[B], ... Next?",
-      "variables": {
-        "A": {"min": 64, "max": 512, "step": 64},
-        "B": {"min": -20, "max": 50, "step": 5}
-      },
-      "variable_combinations": 112,
-      "calculation": "A / 16 + B",
-      "difficulty": "expert",
-      "explanation": "Dividing by powers of 2. Next = [A]÷16+[B] = [RESULT]"
-    },
     {
       "template_id": "ENT_PAT_018",
       "pattern": "[A], [A]÷2+[B], [A]÷4+[B], [A]÷8+[B], ... Next?",
