@@ -4,152 +4,156 @@
   "templates": [
 
     {
-      "template_id": "INT_PAT_41",
-      "pattern": "[A], [A]*[B]²+[C], ([A]*[B]²+[C])*[B]²+[C], ... Next?",
+      "template_id": "INT_PAT_51",
+      "pattern": "Lazy caterer starting at [L]: [L], [L]+1, [L]+1+2, [L]+1+2+3, ... Next?",
       "variables": {
-        "A": {
-          "min": 1,
-          "max": 10
-        },
-        "B": {
-          "min": 2,
-          "max": 5
-        },
-        "C": {
-          "min": 1,
-          "max": 8
-        }
-      },
-      "calculation": "((A * B * B + C) * B * B + C) * B * B + C",
-      "explanation": "Recursive *[B]²+[C]. Next: [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_42",
-      "pattern": "Sum of divisors of [N]: σ([N]), σ([N]+1), σ([N]+2), ... Next?",
-      "variables": {
-        "N": {
-          "min": 1,
-          "max": 30
-        }
-      },
-      "calculation": "sigma(N+3)",
-      "explanation": "Sum of divisors of [N]+3 = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_43",
-      "pattern": "Euler's totient φ([N]), φ([N]+1), φ([N]+2), ... Next?",
-      "variables": {
-        "N": {
-          "min": 1,
-          "max": 30
-        }
-      },
-      "calculation": "phi(N+3)",
-      "explanation": "φ([N]+3) = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_44",
-      "pattern": "[A]³, ([A]+1)³, ([A]+2)³, ([A]+3)³, ... Next?",
-      "variables": {
-        "A": {
-          "min": 1,
-          "max": 12
-        }
-      },
-      "calculation": "(A + 4) * (A + 4) * (A + 4)",
-      "explanation": "Cubes sequence. Next: ([A]+4)³ = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_45",
-      "pattern": "Star numbers starting at [S]: [S], [S]+12, [S]+12+24, [S]+12+24+36, ... Next?",
-      "variables": {
-        "S": {
-          "min": 1,
+        "L": {
+          "min": 0,
           "max": 20
         }
       },
-      "calculation": "S + 12 + 24 + 36 + 48",
-      "explanation": "Star numbers: Next = [S]+120 = [RESULT]"
+      "calculation": "L + 1 + 2 + 3 + 4 + 5",
+      "explanation": "Lazy caterer: Next = [L]+15 = [RESULT]"
     },
     {
-      "template_id": "INT_PAT_46",
-      "pattern": "[A], [A]²+[B], ([A]²+[B])²+[B], ... Next?",
+      "template_id": "INT_PAT_52",
+      "pattern": "Cake numbers starting at [C]: [C], [C]+1, [C]+1+2, [C]+1+2+4, ... Next?",
       "variables": {
-        "A": {
-          "min": 1,
-          "max": 8
-        },
-        "B": {
-          "min": 1,
-          "max": 12
-        }
-      },
-      "calculation": "((A * A + B) * (A * A + B)) + B",
-      "explanation": "Square then +[B]. Next: [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_47",
-      "pattern": "[J1], [J2], [J1+2*J2], [J2+2*(J1+2*J2)], ... Next? (Jacobsthal-style)",
-      "variables": {
-        "J1": {
-          "min": 0,
-          "max": 8
-        },
-        "J2": {
-          "min": 1,
-          "max": 8
-        }
-      },
-      "calculation": "5 * J2 + 2 * J1",
-      "explanation": "Jacobsthal-style: Next = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_48",
-      "pattern": "[P1], [P2], [P3], [P1+P2], [P2+P3], [P3+P4], ... Next? (Perrin-style)",
-      "variables": {
-        "P1": {
-          "min": 2,
-          "max": 6
-        },
-        "P2": {
-          "min": 0,
-          "max": 5
-        },
-        "P3": {
-          "min": 2,
-          "max": 6
-        }
-      },
-      "calculation": "P2 + P3 + P1",
-      "explanation": "Perrin-style: Next = [P2]+[P3]+[P1] = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_49",
-      "pattern": "[A], [A]+2*[B], [A]+2*[B]+3*[B], [A]+2*[B]+3*[B]+4*[B], ... Next?",
-      "variables": {
-        "A": {
-          "min": 1,
-          "max": 30
-        },
-        "B": {
-          "min": 1,
-          "max": 10
-        }
-      },
-      "calculation": "A + 2*B + 3*B + 4*B + 5*B",
-      "explanation": "Cumulative multiples. Next: [A]+14*[B] = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_50",
-      "pattern": "[R], [R]±1, [R]±3, [R]±6, ... (Recamán-style starting at [R])",
-      "variables": {
-        "R": {
+        "C": {
           "min": 0,
           "max": 15
         }
       },
-      "calculation": "R + 7",
-      "explanation": "Recamán-style: Next = [R]+7 = [RESULT]"
+      "calculation": "C + 1 + 2 + 4 + 7 + 11",
+      "explanation": "Cake numbers: Next = [C]+25 = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_53",
+      "pattern": "[A]*[B]+[C], [A]*[B]²+[C], [A]*[B]³+[C], ... Next?",
+      "variables": {
+        "A": {
+          "min": 1,
+          "max": 10
+        },
+        "B": {
+          "min": 2,
+          "max": 6
+        },
+        "C": {
+          "min": 1,
+          "max": 15
+        }
+      },
+      "calculation": "A * B * B * B * B + C",
+      "explanation": "Powers pattern +[C]. Next: [A]*[B]⁴+[C] = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_54",
+      "pattern": "[M1], [M2], [M1+M2], [M1+M2+M3], ... Next? (Motzkin-style)",
+      "variables": {
+        "M1": {
+          "min": 1,
+          "max": 6
+        },
+        "M2": {
+          "min": 1,
+          "max": 6
+        },
+        "M3": {
+          "min": 1,
+          "max": 6
+        }
+      },
+      "calculation": "M1 + 2*M2 + 2*M3",
+      "explanation": "Motzkin-style: Next = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_55",
+      "pattern": "[S1], [S2], [S1+S2], [S1+S2+S3], ... Next? (Schröder-style)",
+      "variables": {
+        "S1": {
+          "min": 1,
+          "max": 5
+        },
+        "S2": {
+          "min": 1,
+          "max": 5
+        },
+        "S3": {
+          "min": 1,
+          "max": 5
+        }
+      },
+      "calculation": "S1 + 2*S2 + 6*S3",
+      "explanation": "Schröder-style: Next = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_56",
+      "pattern": "[A]², [A]²*2, [A]²*3, [A]²*4, ... Next?",
+      "variables": {
+        "A": {
+          "min": 1,
+          "max": 12
+        }
+      },
+      "calculation": "A * A * 5",
+      "explanation": "Multiples of [A]². Next: [A]²*5 = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_57",
+      "pattern": "[N1], [N2], [N3], [N1+N3], [N2+N4], ... Next? (Narayana's cows style)",
+      "variables": {
+        "N1": {
+          "min": 1,
+          "max": 6
+        },
+        "N2": {
+          "min": 1,
+          "max": 6
+        },
+        "N3": {
+          "min": 1,
+          "max": 6
+        }
+      },
+      "calculation": "N1 + N2 + N3",
+      "explanation": "Narayana's cows: Next = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_58",
+      "pattern": "Partition numbers p([N]), p([N]+1), p([N]+2), ... Next?",
+      "variables": {
+        "N": {
+          "min": 0,
+          "max": 15
+        }
+      },
+      "calculation": "partition(N+3)",
+      "explanation": "Partition of [N]+3 = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_59",
+      "pattern": "[A]!, ([A]+1)!, ([A]+2)!, ([A]+3)!, ... Next?",
+      "variables": {
+        "A": {
+          "min": 1,
+          "max": 8
+        }
+      },
+      "calculation": "factorial(A + 4)",
+      "explanation": "Factorials. Next: ([A]+4)! = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_60",
+      "pattern": "Mersenne: [M], [M]*2+1, ([M]*2+1)*2+1, ... Next?",
+      "variables": {
+        "M": {
+          "min": 1,
+          "max": 15
+        }
+      },
+      "calculation": "M * 8 + 7",
+      "explanation": "Mersenne-style: Next = [M]*8+7 = [RESULT]"
     }
     
 
