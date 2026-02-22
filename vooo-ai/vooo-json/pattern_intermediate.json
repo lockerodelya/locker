@@ -4,77 +4,156 @@
   "templates": [
 
     {
-      "template_id": "INT_PAT_16",
-      "pattern": "[A], [A]+1², [A]+1²+2², [A]+1²+2²+3², ... Next?",
+      "template_id": "INT_PAT_21",
+      "pattern": "[A], [A]*[B]-[C], ([A]*[B]-[C])*[B]-[C], ... Next?",
+      "variables": {
+        "A": {
+          "min": 5,
+          "max": 30
+        },
+        "B": {
+          "min": 2,
+          "max": 5
+        },
+        "C": {
+          "min": 1,
+          "max": 10
+        }
+      },
+      "calculation": "((A * B - C) * B - C) * B - C",
+      "explanation": "Recursive *[B]-[C]. Next: [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_22",
+      "pattern": "Pentagonal numbers starting at [P]: [P], [P]+4, [P]+4+7, [P]+4+7+10, ... Next?",
+      "variables": {
+        "P": {
+          "min": 1,
+          "max": 20
+        }
+      },
+      "calculation": "P + 4 + 7 + 10 + 13",
+      "explanation": "Pentagonal: Next = [P]+34 = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_23",
+      "pattern": "Hexagonal numbers starting at [H]: [H], [H]+5, [H]+5+9, [H]+5+9+13, ... Next?",
+      "variables": {
+        "H": {
+          "min": 1,
+          "max": 20
+        }
+      },
+      "calculation": "H + 5 + 9 + 13 + 17",
+      "explanation": "Hexagonal: Next = [H]+44 = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_24",
+      "pattern": "[A], [A]+[B]!, [A]+[B]!+([B]+1)!, ... Next?",
       "variables": {
         "A": {
           "min": 1,
-          "max": 30
+          "max": 25
+        },
+        "B": {
+          "min": 1,
+          "max": 5
         }
       },
-      "calculation": "A + 1 + 4 + 9 + 16",
-      "explanation": "Sum of squares: [A]+1+4+9+16 = [RESULT]"
+      "calculation": "A + factorial(B) + factorial(B+1) + factorial(B+2)",
+      "explanation": "Sum of factorials. Next: [RESULT]"
     },
     {
-      "template_id": "INT_PAT_17",
-      "pattern": "[A]², [A]²+[A], [A]²+[A]+[A]², [A]²+[A]+[A]²+[A], ... Next?",
+      "template_id": "INT_PAT_25",
+      "pattern": "[A]*[B]¹, [A]*[B]², [A]*[B]³, [A]*[B]⁴, ... Next?",
+      "variables": {
+        "A": {
+          "min": 1,
+          "max": 12
+        },
+        "B": {
+          "min": 2,
+          "max": 6
+        }
+      },
+      "calculation": "A * B * B * B * B * B",
+      "explanation": "Powers of [B]. Next: [A]*[B]⁵ = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_26",
+      "pattern": "Double factorial starting at [D]: [D], [D]*2, [D]*2*4, [D]*2*4*6, ... Next?",
+      "variables": {
+        "D": {
+          "min": 1,
+          "max": 10
+        }
+      },
+      "calculation": "D * 2 * 4 * 6 * 8 * 10",
+      "explanation": "Double factorial: Next = [D]*3840 = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_27",
+      "pattern": "[A], [A]+[B]³, [A]+([B]+1)³, [A]+([B]+2)³, ... Next?",
+      "variables": {
+        "A": {
+          "min": 5,
+          "max": 40
+        },
+        "B": {
+          "min": 1,
+          "max": 7
+        }
+      },
+      "calculation": "A + (B + 3) * (B + 3) * (B + 3)",
+      "explanation": "Adding cubes. Next: [A]+([B]+3)³ = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_28",
+      "pattern": "[S]², -([S]+1)², ([S]+2)², -([S]+3)², ... Next?",
+      "variables": {
+        "S": {
+          "min": 1,
+          "max": 15
+        }
+      },
+      "calculation": "- (S + 4) * (S + 4)",
+      "explanation": "Alternating signs with squares. Next: -([S]+4)² = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_29",
+      "pattern": "[A], [A]²-[B], ([A]²-[B])²-[B], ... Next?",
       "variables": {
         "A": {
           "min": 2,
-          "max": 12
-        }
-      },
-      "calculation": "A * A + A + A * A + A + A * A",
-      "explanation": "Alternating pattern. Next: [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_18",
-      "pattern": "[A], [A]/2+[B], [A]/4+[B], [A]/8+[B], ... Next?",
-      "variables": {
-        "A": {
-          "min": 16,
-          "max": 256,
-          "step": 16
+          "max": 10
         },
         "B": {
-          "min": 5,
-          "max": 40
+          "min": 1,
+          "max": 15
         }
       },
-      "calculation": "A / 16 + B",
-      "explanation": "Pattern: /2 then +[B]. Next: [A]/16+[B] = [RESULT]"
+      "calculation": "((A * A - B) * (A * A - B)) - B",
+      "explanation": "Square then -[B] pattern. Next: [RESULT]"
     },
     {
-      "template_id": "INT_PAT_19",
-      "pattern": "[C1], [C2], [C1+C2], [C1+2*C2], 2*[C1]+3*[C2], ... Next? (Catalan-style)",
+      "template_id": "INT_PAT_30",
+      "pattern": "Bell numbers starting at [B1]: [B1], [B2], [B3], ... Next?",
       "variables": {
-        "C1": {
+        "B1": {
           "min": 1,
-          "max": 10
+          "max": 5
         },
-        "C2": {
+        "B2": {
           "min": 1,
-          "max": 10
+          "max": 5
+        },
+        "B3": {
+          "min": 1,
+          "max": 5
         }
       },
-      "calculation": "3 * C1 + 5 * C2",
-      "explanation": "Next: 3*[C1]+5*[C2] = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_20",
-      "pattern": "[L1], [L2], [L1+L2], [L1+2*L2], 2*[L1]+3*[L2], ... Next?",
-      "variables": {
-        "L1": {
-          "min": 1,
-          "max": 12
-        },
-        "L2": {
-          "min": 1,
-          "max": 12
-        }
-      },
-      "calculation": "3 * L1 + 5 * L2",
-      "explanation": "Lucas-style: Next = 3*[L1]+5*[L2] = [RESULT]"
+      "calculation": "B1 + 2*B2 + 5*B3",
+      "explanation": "Bell-style sequence. Next: [RESULT]"
     }
 
   ],
