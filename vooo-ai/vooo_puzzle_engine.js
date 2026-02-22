@@ -95,7 +95,8 @@ class VOOOPuzzleEngine {
 
     // ============================================
     // solv14 - APPLY MATH FUNCTIONS (MULTI-PASS)
-    // Resolves nested calls like next_prime(next_prime(next_prime(P)))
+    // sol1-sol6 UNIFIED FIX:
+    // Handles nested calls, (N op M) args, expression args
     // ============================================
     applyMathFunctions(ev) {
         const mathFns = [
@@ -118,9 +119,30 @@ class VOOOPuzzleEngine {
             ['next_giuga',      x => this.nextGiuga(Math.round(x))]
         ];
 
-        // solv14: multi-pass resolution
-        // First simplify all arithmetic sub-expressions like (1)+3 → 4
-        for (let pass = 0; pass < 8; pass++) {
+        // sol1-sol6 UNIFIED FIX:
+        // PRE-PASS: Resolve arithmetic expressions inside function arguments.
+        // Variable substitution wraps vars in parens e.g. factorial((4)+4) or phi((15)+3).
+        // We must evaluate these inner expressions BEFORE the main regex runs,
+        // otherwise factorial((4)+4) won't match factorial\((\d+)\).
+        // Also handles nested calls like next_prime(next_prime(next_prime((43)))).
+        const fnNames = mathFns.map(([name]) => name).join('|');
+        const argExprRegex = new RegExp(`(${fnNames})\\(([^()]+)\\)`, 'g');
+
+        // Pre-pass: evaluate arithmetic args inside function calls (up to 5 rounds)
+        for (let pre = 0; pre < 5; pre++) {
+            ev = ev.replace(argExprRegex, (m, fn, inner) => {
+                // First unwrap lone (N) inside the arg
+                let resolved = inner.replace(/\((-?\d+(?:\.\d+)?)\)/g, '$1');
+                try {
+                    const val = new Function('return ' + resolved)();
+                    if (typeof val === 'number' && isFinite(val)) return fn + '(' + val + ')';
+                } catch(e) {}
+                return m;
+            });
+        }
+
+        // MAIN PASS (increased to 20 for deeply nested calls like sol2)
+        for (let pass = 0; pass < 20; pass++) {
             let changed = false;
 
             // Step 1: collapse simple arithmetic so regex can match clean numbers
@@ -402,7 +424,7 @@ class VOOOPuzzleEngine {
             if(typeof v!=='string'||!isNaN(v)) ev=ev.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');
         }
 
-        // solv14: multi-pass math function resolution
+        // solv14: multi-pass math function resolution (now with sol1-sol6 unified fix)
         ev=this.applyMathFunctions(ev);
 
         if(ev.includes('repeat(')){
