@@ -129,8 +129,10 @@ class VOOOPuzzleEngine {
         const argExprRegex = new RegExp(`(${fnNames})\\(([^()]+)\\)`, 'g');
 
         // Pre-pass: evaluate arithmetic args inside function calls (up to 5 rounds)
-        for (let pre = 0; pre < 5; pre++) {
-            ev = ev.replace(argExprRegex, (m, fn, inner) => {
+        // Regex allows one level of inner parens e.g. factorial((2)+3)
+        const argExprRegexDeep = new RegExp(`(${fnNames})\\(([^()]*(?:\\([^()]*\\)[^()]*)*)\\)`, 'g');
+        for (let pre = 0; pre < 10; pre++) {
+            ev = ev.replace(argExprRegexDeep, (m, fn, inner) => {
                 // First unwrap lone (N) inside the arg
                 let resolved = inner.replace(/\((-?\d+(?:\.\d+)?)\)/g, '$1');
                 try {
