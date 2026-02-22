@@ -160,8 +160,8 @@ class VOOOPuzzleEngine {
             ev = ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g, (m, a, op, b) => {
                 try { const r = new Function('return '+a+op+b)(); changed=true; return String(r); } catch(e) { return m; }
             });
-            // Unwrap lone (number)
-            ev = ev.replace(/\((-?\d+(?:\.\d+)?)\)/g, (m, n) => { changed=true; return n; });
+            // Unwrap lone (number) but NOT if preceded by a function name
+            ev = ev.replace(/(?<![a-zA-Z_])\((-?\d+(?:\.\d+)?)\)/g, (m, n) => { changed=true; return n; });
 
             // Step 2: apply math functions now that inner args are plain numbers
             for (const [name, fn] of mathFns) {
