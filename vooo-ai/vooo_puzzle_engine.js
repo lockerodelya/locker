@@ -128,12 +128,15 @@ class VOOOPuzzleEngine {
         const fnNames = mathFns.map(([name]) => name).join('|');
         const argExprRegex = new RegExp(`(${fnNames})\\(([^()]+)\\)`, 'g');
 
-        // Pre-pass: evaluate arithmetic args inside function calls (up to 5 rounds)
-        // Regex allows one level of inner parens e.g. factorial((2)+3)
+        // Pre-pass: evaluate arithmetic args inside function calls (up to 10 rounds)
+        // Only resolves when inner arg is pure arithmetic (no nested function calls)
+        const fnNamesArr = mathFns.map(([name]) => name);
         const argExprRegexDeep = new RegExp(`(${fnNames})\\(([^()]*(?:\\([^()]*\\)[^()]*)*)\\)`, 'g');
         for (let pre = 0; pre < 10; pre++) {
             ev = ev.replace(argExprRegexDeep, (m, fn, inner) => {
-                // First unwrap lone (N) inside the arg
+                // Skip if inner arg contains any function name (let main loop handle nesting)
+                if (fnNamesArr.some(name => inner.includes(name))) return m;
+                // Unwrap lone (N) inside the arg
                 let resolved = inner.replace(/\((-?\d+(?:\.\d+)?)\)/g, '$1');
                 try {
                     const val = new Function('return ' + resolved)();
