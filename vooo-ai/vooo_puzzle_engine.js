@@ -119,13 +119,17 @@ class VOOOPuzzleEngine {
         ];
 
         // solv14: run multiple passes to resolve nested calls
-        for (let pass = 0; pass < 6; pass++) {
+        // Use a pattern that matches balanced single-level parens
+        for (let pass = 0; pass < 8; pass++) {
             let changed = false;
             for (const [name, fn] of mathFns) {
+                // Match function name followed by ( then any chars including nested parens )
                 const regex = new RegExp(name + '\\(([^()]+)\\)', 'g');
                 const newEv = ev.replace(regex, (match, inner) => {
                     try {
-                        const val = new Function('return ' + inner)();
+                        // Evaluate the inner expression to a number first
+                        const val = new Function('return (' + inner + ')')();
+                        if (typeof val !== 'number' || isNaN(val)) return match;
                         const result = fn(val);
                         changed = true;
                         return String(result);
@@ -133,7 +137,7 @@ class VOOOPuzzleEngine {
                 });
                 ev = newEv;
             }
-            if (!changed) break; // no more replacements needed
+            if (!changed) break;
         }
         return ev;
     }
