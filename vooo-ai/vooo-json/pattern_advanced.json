@@ -6,28 +6,38 @@
   "total_estimated_questions": 247500,
   "templates": [
 
-{
-    "template_id": "ENT_PAT_009",
-    "pattern": "[A]×2-1, [A]×4-1, [A]×8-1, ... Next?",
-    "variables": {
-        "A": {"min": 1, "max": 100, "step": 1}
-    },
-    "variable_combinations": 100,
-    "calculation": "A * 16 - 1",
-    "difficulty": "high",
-    "explanation": "Powers of 2 minus 1. Next term = [A]×16-1 = [RESULT]"
+ {
+  "template_id": "ENT_PAT_015",
+  "pattern": "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, ... Next prime after [P]?",
+"variables": {
+    "P": {"min": 2, "max": 23, "primes_only": true}
 },
-{
-    "template_id": "ENT_PAT_010",
-    "pattern": "[A]×2+[B], [A]×4+[B], [A]×8+[B], ... Next?",
-    "variables": {
-        "A": {"min": 1, "max": 50, "step": 1},
-        "B": {"min": 1, "max": 10, "step": 1}
+  "variable_combinations": 50,
+  "calculation": "next_prime(P)",
+  "difficulty": "expert",
+  "explanation": "Prime number sequence. Next prime after [P] = [RESULT]"
+},
+    {
+      "template_id": "ENT_PAT_016",
+      "pattern": "[A], [A]+1², [A]+1²+2², [A]+1²+2²+3², ... Next?",
+"variables": {
+    "A": {"min": 1, "max": 50, "step": 1}
+},
+      "variable_combinations": 50,
+      "calculation": "A + 1 + 4 + 9 + 16",
+      "difficulty": "expert",
+      "explanation": "Sum of squares 1²+2²+3²+4². Next = [A]+30 = [RESULT]"
     },
-    "variable_combinations": 500,
-    "calculation": "A * 16 + B",
-    "difficulty": "expert",
-    "explanation": "Powers of 2 plus constant. Next term = [A]×16+[B] = [RESULT]"
+{
+  "template_id": "ENT_PAT_017",
+  "pattern": "[A], [A]², [A]²+[A], 2[A]²+[A], 2[A]²+2[A], ... Next?",
+"variables": {
+    "A": {"min": 1, "max": 50, "step": 1}
+},
+  "variable_combinations": 50,
+  "calculation": "3 * A * A + 2 * A",
+  "difficulty": "expert",
+  "explanation": "Pattern: coefficients follow 0,1,1,2,2,3... Next = 3[A]²+2[A] = [RESULT]"
 }
 	  	
 	
