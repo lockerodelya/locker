@@ -4,54 +4,48 @@
   "templates": [
 
     {
-      "template_id": "INT_PAT_61",
-      "pattern": "Fermat: [F], [F]²-2, ([F]²-2)²-2, ... Next?",
-      "variables": {
-        "F": {
-          "min": 2,
-          "max": 5
-        }
-      },
-      "calculation": "((F * F - 2) * (F * F - 2)) - 2",
-      "explanation": "Fermat-style: Next = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_62",
-      "pattern": "[A], [A]³+[B], ([A]³+[B])³+[B], ... Next?",
+      "template_id": "INT_PAT_71",
+      "pattern": "[A]²*[B], [A]²*[B]², [A]²*[B]³, ... Next?",
       "variables": {
         "A": {
           "min": 1,
-          "max": 6
+          "max": 10
         },
         "B": {
-          "min": 1,
-          "max": 10
+          "min": 2,
+          "max": 6
         }
       },
-      "calculation": "((A * A * A + B) * (A * A * A + B) * (A * A * A + B)) + B",
-      "explanation": "Cube then +[B]. Next: [RESULT]"
+      "calculation": "A * A * B * B * B * B",
+      "explanation": "Square * powers. Next: [A]²*[B]⁴ = [RESULT]"
     },
     {
-      "template_id": "INT_PAT_63",
-      "pattern": "[C1], [C2], [C3], ... Next? (Carmichael-style sequence)",
+      "template_id": "INT_PAT_72",
+      "pattern": "Semiprime numbers starting at [S]: [S], next semiprime, ... Next?",
       "variables": {
-        "C1": {
-          "min": 500,
-          "max": 600,
-          "step": 5
-        },
-        "C2": {
-          "min": 1000,
-          "max": 1200,
-          "step": 10
+        "S": {
+          "min": 4,
+          "max": 50
         }
       },
-      "calculation": "C2 + 600",
-      "explanation": "Carmichael-style: Next = [C2]+600 = [RESULT]"
+      "calculation": "next_semiprime(S)",
+      "explanation": "Next semiprime after [S] = [RESULT]"
     },
     {
-      "template_id": "INT_PAT_64",
-      "pattern": "[A]*[B]!, [A]*([B]+1)!, [A]*([B]+2)!, ... Next?",
+      "template_id": "INT_PAT_73",
+      "pattern": "Sphenic numbers starting at [S]: [S], next sphenic, ... Next?",
+      "variables": {
+        "S": {
+          "min": 30,
+          "max": 100
+        }
+      },
+      "calculation": "next_sphenic(S)",
+      "explanation": "Next sphenic after [S] = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_74",
+      "pattern": "[A]³+[B]², ([A]+1)³+[B]², ([A]+2)³+[B]², ... Next?",
       "variables": {
         "A": {
           "min": 1,
@@ -59,90 +53,87 @@
         },
         "B": {
           "min": 1,
-          "max": 5
+          "max": 8
         }
       },
-      "calculation": "A * factorial(B + 3)",
-      "explanation": "Multiples of factorials. Next: [A]*([B]+3)! = [RESULT]"
+      "calculation": "(A + 3) * (A + 3) * (A + 3) + B * B",
+      "explanation": "Cubes +[B]². Next: ([A]+3)³+[B]² = [RESULT]"
     },
     {
-      "template_id": "INT_PAT_65",
-      "pattern": "Highly composite starting at [H]: [H], next highly composite, ... Next?",
-      "variables": {
-        "H": {
-          "min": 1,
-          "max": 24,
-          "step": 1
-        }
-      },
-      "calculation": "next_highly_composite(H)",
-      "explanation": "Next highly composite after [H] = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_66",
-      "pattern": "Superior highly composite starting at [S]: [S], next superior highly composite, ... Next?",
+      "template_id": "INT_PAT_75",
+      "pattern": "Square pyramidal starting at [S]: [S], [S]+4, [S]+4+9, [S]+4+9+16, ... Next?",
       "variables": {
         "S": {
-          "min": 2,
-          "max": 120,
-          "step": 2
+          "min": 0,
+          "max": 20
         }
       },
-      "calculation": "next_superior_highly_composite(S)",
-      "explanation": "Next superior highly composite after [S] = [RESULT]"
+      "calculation": "S + 4 + 9 + 16 + 25",
+      "explanation": "Square pyramidal: Next = [S]+54 = [RESULT]"
     },
     {
-      "template_id": "INT_PAT_67",
-      "pattern": "[A]+[B]¹, [A]+[B]²+[B]¹, [A]+[B]³+[B]²+[B]¹, ... Next?",
+      "template_id": "INT_PAT_76",
+      "pattern": "[A]*[B]ⁿ where n=1,2,3,4... Next?",
       "variables": {
         "A": {
           "min": 1,
-          "max": 25
+          "max": 12
         },
         "B": {
           "min": 2,
           "max": 6
         }
       },
-      "calculation": "A + B*B*B*B + B*B*B + B*B + B",
-      "explanation": "Cumulative powers. Next: [RESULT]"
+      "calculation": "A * B * B * B * B * B",
+      "explanation": "Geometric sequence. Next: [A]*[B]⁵ = [RESULT]"
     },
     {
-      "template_id": "INT_PAT_68",
-      "pattern": "Abundant numbers starting at [A]: [A], next abundant, ... Next?",
+      "template_id": "INT_PAT_77",
+      "pattern": "Centered triangular starting at [C]: [C], [C]+3, [C]+3+6, [C]+3+6+9, ... Next?",
       "variables": {
-        "A": {
-          "min": 12,
-          "max": 50
-        }
-      },
-      "calculation": "next_abundant(A)",
-      "explanation": "Next abundant after [A] = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_69",
-      "pattern": "Deficient numbers starting at [D]: [D], next deficient, ... Next?",
-      "variables": {
-        "D": {
+        "C": {
           "min": 1,
-          "max": 30
+          "max": 20
         }
       },
-      "calculation": "next_deficient(D)",
-      "explanation": "Next deficient after [D] = [RESULT]"
+      "calculation": "C + 3 + 6 + 9 + 12",
+      "explanation": "Centered triangular: Next = [C]+30 = [RESULT]"
     },
     {
-      "template_id": "INT_PAT_70",
-      "pattern": "Perfect numbers starting at [P]: [P], next perfect, ... Next?",
+      "template_id": "INT_PAT_78",
+      "pattern": "Centered pentagonal starting at [P]: [P], [P]+5, [P]+5+10, [P]+5+10+15, ... Next?",
       "variables": {
         "P": {
-          "min": 6,
-          "max": 500,
-          "perfect_only": true
+          "min": 1,
+          "max": 20
         }
       },
-      "calculation": "next_perfect(P)",
-      "explanation": "Next perfect after [P] = [RESULT]"
+      "calculation": "P + 5 + 10 + 15 + 20",
+      "explanation": "Centered pentagonal: Next = [P]+50 = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_79",
+      "pattern": "[A]², [A]³, [A]⁴, [A]⁵, ... Next?",
+      "variables": {
+        "A": {
+          "min": 2,
+          "max": 8
+        }
+      },
+      "calculation": "A * A * A * A * A * A",
+      "explanation": "Powers of [A]. Next: [A]⁶ = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_80",
+      "pattern": "Cullen: [C], 2*[C]+1, 4*[C]+3, ... Next?",
+      "variables": {
+        "C": {
+          "min": 1,
+          "max": 8
+        }
+      },
+      "calculation": "8 * C + 7",
+      "explanation": "Cullen-style: Next = 8*[C]+7 = [RESULT]"
     }
     
 
