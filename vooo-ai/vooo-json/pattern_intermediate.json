@@ -4,105 +4,128 @@
   "templates": [
 
     {
-      "template_id": "INT_PAT_31",
-      "pattern": "[A], [A]*1.5, [A]*2.25, [A]*3.375, ... Next?",
+      "template_id": "INT_PAT_41",
+      "pattern": "[A], [A]*[B]²+[C], ([A]*[B]²+[C])*[B]²+[C], ... Next?",
       "variables": {
         "A": {
+          "min": 1,
+          "max": 10
+        },
+        "B": {
           "min": 2,
-          "max": 32,
-          "step": 2
+          "max": 5
+        },
+        "C": {
+          "min": 1,
+          "max": 8
         }
       },
-      "calculation": "A * 5.0625",
-      "explanation": "Pattern: *1.5 each time. Next: [A]*5.0625 = [RESULT]"
+      "calculation": "((A * B * B + C) * B * B + C) * B * B + C",
+      "explanation": "Recursive *[B]²+[C]. Next: [RESULT]"
     },
     {
-      "template_id": "INT_PAT_32",
-      "pattern": "Tetrahedral starting at [T]: [T], [T]+3, [T]+3+6, [T]+3+6+10, ... Next?",
+      "template_id": "INT_PAT_42",
+      "pattern": "Sum of divisors of [N]: σ([N]), σ([N]+1), σ([N]+2), ... Next?",
       "variables": {
-        "T": {
+        "N": {
+          "min": 1,
+          "max": 30
+        }
+      },
+      "calculation": "sigma(N+3)",
+      "explanation": "Sum of divisors of [N]+3 = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_43",
+      "pattern": "Euler's totient φ([N]), φ([N]+1), φ([N]+2), ... Next?",
+      "variables": {
+        "N": {
+          "min": 1,
+          "max": 30
+        }
+      },
+      "calculation": "phi(N+3)",
+      "explanation": "φ([N]+3) = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_44",
+      "pattern": "[A]³, ([A]+1)³, ([A]+2)³, ([A]+3)³, ... Next?",
+      "variables": {
+        "A": {
+          "min": 1,
+          "max": 12
+        }
+      },
+      "calculation": "(A + 4) * (A + 4) * (A + 4)",
+      "explanation": "Cubes sequence. Next: ([A]+4)³ = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_45",
+      "pattern": "Star numbers starting at [S]: [S], [S]+12, [S]+12+24, [S]+12+24+36, ... Next?",
+      "variables": {
+        "S": {
           "min": 1,
           "max": 20
         }
       },
-      "calculation": "T + 3 + 6 + 10 + 15",
-      "explanation": "Tetrahedral: Next = [T]+34 = [RESULT]"
+      "calculation": "S + 12 + 24 + 36 + 48",
+      "explanation": "Star numbers: Next = [S]+120 = [RESULT]"
     },
     {
-      "template_id": "INT_PAT_33",
-      "pattern": "[A], [A]+[B]*[C], [A]+[B]*[C]², [A]+[B]*[C]³, ... Next?",
+      "template_id": "INT_PAT_46",
+      "pattern": "[A], [A]²+[B], ([A]²+[B])²+[B], ... Next?",
       "variables": {
         "A": {
           "min": 1,
-          "max": 30
+          "max": 8
         },
         "B": {
           "min": 1,
-          "max": 10
+          "max": 12
+        }
+      },
+      "calculation": "((A * A + B) * (A * A + B)) + B",
+      "explanation": "Square then +[B]. Next: [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_47",
+      "pattern": "[J1], [J2], [J1+2*J2], [J2+2*(J1+2*J2)], ... Next? (Jacobsthal-style)",
+      "variables": {
+        "J1": {
+          "min": 0,
+          "max": 8
         },
-        "C": {
+        "J2": {
+          "min": 1,
+          "max": 8
+        }
+      },
+      "calculation": "5 * J2 + 2 * J1",
+      "explanation": "Jacobsthal-style: Next = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_48",
+      "pattern": "[P1], [P2], [P3], [P1+P2], [P2+P3], [P3+P4], ... Next? (Perrin-style)",
+      "variables": {
+        "P1": {
+          "min": 2,
+          "max": 6
+        },
+        "P2": {
+          "min": 0,
+          "max": 5
+        },
+        "P3": {
           "min": 2,
           "max": 6
         }
       },
-      "calculation": "A + B * C * C * C * C",
-      "explanation": "Pattern: +[B]*powers of [C]. Next: [A]+[B]*[C]⁴ = [RESULT]"
+      "calculation": "P2 + P3 + P1",
+      "explanation": "Perrin-style: Next = [P2]+[P3]+[P1] = [RESULT]"
     },
     {
-      "template_id": "INT_PAT_34",
-      "pattern": "Centered square starting at [C]: [C], [C]+4, [C]+4+8, [C]+4+8+12, ... Next?",
-      "variables": {
-        "C": {
-          "min": 1,
-          "max": 20
-        }
-      },
-      "calculation": "C + 4 + 8 + 12 + 16",
-      "explanation": "Centered square: Next = [C]+40 = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_35",
-      "pattern": "Centered hexagonal starting at [H]: [H], [H]+6, [H]+6+12, [H]+6+12+18, ... Next?",
-      "variables": {
-        "H": {
-          "min": 1,
-          "max": 20
-        }
-      },
-      "calculation": "H + 6 + 12 + 18 + 24",
-      "explanation": "Centered hexagonal: Next = [H]+60 = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_36",
-      "pattern": "[A]², ([A]*2)², ([A]*3)², ([A]*4)², ... Next?",
-      "variables": {
-        "A": {
-          "min": 1,
-          "max": 10
-        }
-      },
-      "calculation": "(A * 5) * (A * 5)",
-      "explanation": "Squares of multiples. Next: ([A]*5)² = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_37",
-      "pattern": "[M1], [M2], [M1+M2], [M1+2*M2], 2*[M1]+3*[M2], ... Next? (Moser-de Bruijn style)",
-      "variables": {
-        "M1": {
-          "min": 0,
-          "max": 8
-        },
-        "M2": {
-          "min": 0,
-          "max": 8
-        }
-      },
-      "calculation": "3 * M1 + 5 * M2",
-      "explanation": "Next: 3*[M1]+5*[M2] = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_38",
-      "pattern": "[A], [A]+[B]², [A]+[B]²+([B]+1)², [A]+[B]²+([B]+1)²+([B]+2)², ... Next?",
+      "template_id": "INT_PAT_49",
+      "pattern": "[A], [A]+2*[B], [A]+2*[B]+3*[B], [A]+2*[B]+3*[B]+4*[B], ... Next?",
       "variables": {
         "A": {
           "min": 1,
@@ -110,47 +133,23 @@
         },
         "B": {
           "min": 1,
-          "max": 7
+          "max": 10
         }
       },
-      "calculation": "A + B*B + (B+1)*(B+1) + (B+2)*(B+2) + (B+3)*(B+3)",
-      "explanation": "Cumulative squares. Next: [RESULT]"
+      "calculation": "A + 2*B + 3*B + 4*B + 5*B",
+      "explanation": "Cumulative multiples. Next: [A]+14*[B] = [RESULT]"
     },
     {
-      "template_id": "INT_PAT_39",
-      "pattern": "[P1], [P2], [P3], [P1+P2], [P2+P3], [P3+P4], ... Next? (Padovan-style)",
+      "template_id": "INT_PAT_50",
+      "pattern": "[R], [R]±1, [R]±3, [R]±6, ... (Recamán-style starting at [R])",
       "variables": {
-        "P1": {
-          "min": 1,
-          "max": 8
-        },
-        "P2": {
-          "min": 1,
-          "max": 8
-        },
-        "P3": {
-          "min": 1,
-          "max": 8
-        }
-      },
-      "calculation": "P2 + P3 + P1",
-      "explanation": "Padovan-style: Next = [P2]+[P3]+[P1] = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_40",
-      "pattern": "[P1], [P2], 2*[P2]+[P1], 2*(2*[P2]+[P1])+[P2], ... Next? (Pell-style)",
-      "variables": {
-        "P1": {
+        "R": {
           "min": 0,
-          "max": 8
-        },
-        "P2": {
-          "min": 1,
-          "max": 8
+          "max": 15
         }
       },
-      "calculation": "5 * P2 + 2 * P1",
-      "explanation": "Pell-style: Next = 5*[P2]+2*[P1] = [RESULT]"
+      "calculation": "R + 7",
+      "explanation": "Recamán-style: Next = [R]+7 = [RESULT]"
     }
     
 
