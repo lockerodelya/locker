@@ -118,25 +118,33 @@ class VOOOPuzzleEngine {
             ['next_giuga',      x => this.nextGiuga(Math.round(x))]
         ];
 
-        // solv14: run multiple passes to resolve nested calls
-        // Use a pattern that matches balanced single-level parens
+        // solv14: multi-pass resolution
+        // First simplify all arithmetic sub-expressions like (1)+3 → 4
         for (let pass = 0; pass < 8; pass++) {
             let changed = false;
+
+            // Step 1: collapse simple arithmetic so regex can match clean numbers
+            ev = ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*(-?\d+(?:\.\d+)?)/g, (m, a, op, b) => {
+                try { const r = new Function('return '+a+op+b)(); changed=true; return String(r); } catch(e) { return m; }
+            });
+            ev = ev.replace(/(-?\d+(?:\.\d+)?)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g, (m, a, op, b) => {
+                try { const r = new Function('return '+a+op+b)(); changed=true; return String(r); } catch(e) { return m; }
+            });
+            ev = ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g, (m, a, op, b) => {
+                try { const r = new Function('return '+a+op+b)(); changed=true; return String(r); } catch(e) { return m; }
+            });
+            // Unwrap lone (number)
+            ev = ev.replace(/\((-?\d+(?:\.\d+)?)\)/g, (m, n) => { changed=true; return n; });
+
+            // Step 2: apply math functions now that inner args are plain numbers
             for (const [name, fn] of mathFns) {
-                // Match function name followed by ( then any chars including nested parens )
-                const regex = new RegExp(name + '\\(([^()]+)\\)', 'g');
-                const newEv = ev.replace(regex, (match, inner) => {
-                    try {
-                        // Evaluate the inner expression to a number first
-                        const val = new Function('return (' + inner + ')')();
-                        if (typeof val !== 'number' || isNaN(val)) return match;
-                        const result = fn(val);
-                        changed = true;
-                        return String(result);
-                    } catch(e) { return match; }
+                const regex = new RegExp(name + '\\((-?\\d+(?:\\.\\d+)?)\\)', 'g');
+                ev = ev.replace(regex, (match, inner) => {
+                    try { const result = fn(Number(inner)); changed=true; return String(result); }
+                    catch(e) { return match; }
                 });
-                ev = newEv;
             }
+
             if (!changed) break;
         }
         return ev;
