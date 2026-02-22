@@ -15,7 +15,7 @@
         "C": {"min": -10, "max": 15, "step": 5}
       },
       "variable_combinations": 50,
-      "calculation": "((A * Math.pow(B, 2) + C) * Math.pow(B, 2) + C) * Math.pow(B, 2) + C",
+      "calculation": "((A * B*B + C) * B*B + C) * B*B + C",
       "difficulty": "expert",
       "explanation": "Recursive ×[B]²+[C]. Next = [RESULT]"
     },
@@ -37,7 +37,7 @@
         "N": {"min": 1, "max": 15, "step": 1, "totients": [1,1,2,2,4,2,6,4,6,4,10,4,12,6,8]}
       },
       "variable_combinations": 15,
-      "calculation": "function nextTotient(n){var tots=[1,1,2,2,4,2,6,4,6,4,10,4,12,6,8]; return tots[n];}(N)",
+      "calculation": "phi(N + 1)",
       "difficulty": "expert",
       "explanation": "Euler totient function φ(n). φ([N]+1) = [RESULT]"
     },
@@ -48,7 +48,7 @@
         "A": {"min": -10, "max": 20, "step": 2}
       },
       "variable_combinations": 15,
-      "calculation": "Math.pow(A + 4, 2)",
+      "calculation": "(A + 4) * (A + 4)",
       "difficulty": "high",
       "explanation": "Perfect squares. Next = ([A]+4)² = [RESULT]"
     },
@@ -71,7 +71,7 @@
         "B": {"min": -8, "max": 12, "step": 2}
       },
       "variable_combinations": 80,
-      "calculation": "Math.pow(Math.pow(A, 2) + B, 2) + B",
+      "calculation": "((A*A + B) * (A*A + B)) + B",
       "difficulty": "expert",
       "explanation": "Square then add. Next = ([A]²+[B])²+[B] = [RESULT]"
     },
@@ -93,8 +93,8 @@
       "variables": {
         "P": {"min": 0, "max": 10, "step": 1, "perrin": [3,0,2,3,2,5,5,7,10,12]}
       },
-      "variable_combinations": 9,
-      "calculation": "function nextPerrin(p){var perrin=[3,0,2,3,2,5,5,7,10,12]; return perrin[perrin.indexOf(p)+1];}(P)",
+      "variable_combinations": {"N": {"min": 0, "max": 8, "step": 1}
+      "calculation": "[3,0,2,3,2,5,5,7,10,12][N+1]",
       "difficulty": "expert",
       "explanation": "Perrin sequence. Next Perrin number after [P] = [RESULT]"
     },
