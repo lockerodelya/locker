@@ -6,39 +6,51 @@
   "total_estimated_questions": 247500,
   "templates": [
 
- {
-  "template_id": "ENT_PAT_015",
-  "pattern": "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, ... Next prime after [P]?",
-"variables": {
-    "P": {"min": 2, "max": 23, "primes_only": true}
-},
-  "variable_combinations": 50,
-  "calculation": "next_prime(P)",
-  "difficulty": "expert",
-  "explanation": "Prime number sequence. Next prime after [P] = [RESULT]"
-},
     {
-      "template_id": "ENT_PAT_016",
-      "pattern": "[A], [A]+1², [A]+1²+2², [A]+1²+2²+3², ... Next?",
+      "template_id": "ENT_PAT_022",
+      "pattern": "[P], [P]+4, [P]+4+7, [P]+4+7+10, ... Next?",
+"variables": {
+    "P": {"min": 1, "max": 50, "step": 1}
+},
+      "variable_combinations": 50,
+      "calculation": "P + 4 + 7 + 10 + 13",
+      "difficulty": "high",
+      "explanation": "Pentagonal differences (+3 each). Next = [P]+34 = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_023",
+      "pattern": "[H], [H]+5, [H]+5+9, [H]+5+9+13, ... Next?",
+"variables": {
+    "H": {"min": 1, "max": 50, "step": 1}
+},
+      "variable_combinations": 50,
+      "calculation": "H + 5 + 9 + 13 + 17",
+      "difficulty": "high",
+      "explanation": "Hexagonal differences (+4 each). Next = [H]+44 = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_024",
+      "pattern": "[A], [A]+2!, [A]+2!+3!, [A]+2!+3!+4!, ... Next?",
 "variables": {
     "A": {"min": 1, "max": 50, "step": 1}
 },
       "variable_combinations": 50,
-      "calculation": "A + 1 + 4 + 9 + 16",
+      "calculation": "A + 2 + 6 + 24 + 120",
       "difficulty": "expert",
-      "explanation": "Sum of squares 1²+2²+3²+4². Next = [A]+30 = [RESULT]"
+      "explanation": "Sum of factorials 2!+3!+4!+5!. Next = [A]+152 = [RESULT]"
     },
-{
-  "template_id": "ENT_PAT_017",
-  "pattern": "[A], [A]², [A]²+[A], 2[A]²+[A], 2[A]²+2[A], ... Next?",
+    {
+      "template_id": "ENT_PAT_025",
+      "pattern": "[A]×[B]¹, [A]×[B]², [A]×[B]³, [A]×[B]⁴, ... Next?",
 "variables": {
-    "A": {"min": 1, "max": 50, "step": 1}
+    "A": {"min": 1, "max": 25, "step": 1},
+    "B": {"min": 2, "max": 3, "step": 1}
 },
-  "variable_combinations": 50,
-  "calculation": "3 * A * A + 2 * A",
-  "difficulty": "expert",
-  "explanation": "Pattern: coefficients follow 0,1,1,2,2,3... Next = 3[A]²+2[A] = [RESULT]"
-}
+      "variable_combinations": 50,
+      "calculation": "A * B * B * B * B * B",
+      "difficulty": "high",
+      "explanation": "Powers of [B]. Next = [A]×[B]⁵ = [RESULT]"
+    }
 	  	
 	
 	
