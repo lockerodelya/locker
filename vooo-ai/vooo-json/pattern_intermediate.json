@@ -158,26 +158,19 @@
       "calculation": "A + B + B*B + B*B*B + B*B*B*B",
       "explanation": "Sum of powers: [A]+[B]+[B]²+[B]³+[B]⁴ = [RESULT]"
     },
-    {
-      "template_id": "INT_PAT_12",
-      "pattern": "[T1], [T2], [T3], [T1+T2+T3], [T2+T3+T4], [T3+T4+T5], ... Next?",
-      "variables": {
-        "T1": {
-          "min": 1,
-          "max": 8
-        },
-        "T2": {
-          "min": 1,
-          "max": 8
-        },
-        "T3": {
-          "min": 1,
-          "max": 8
-        }
-      },
-      "calculation": "T1 + 2*T2 + 3*T3",
-      "explanation": "Tribonacci-style: Next = [T1]+2*[T2]+3*[T3] = [RESULT]"
+{
+    "template_id": "INT_PAT_12",
+    "pattern": "[T1], [T2], [T3], [T1+T2+T3], [T2+T3+T4], [T3+T4+T5], ... Next?",
+    "variables": {
+        "T1": { "min": 1, "max": 8 },
+        "T2": { "min": 1, "max": 8 },
+        "T3": { "min": 1, "max": 8 },
+        "T4": { "calc": "T1 + T2 + T3" },
+        "T5": { "calc": "T2 + T3 + T4" }
     },
+    "calculation": "T1 + 2*T2 + 3*T3",
+    "explanation": "Tribonacci-style: Next = [T1]+2*[T2]+3*[T3] = [RESULT]"
+},
     {
       "template_id": "INT_PAT_13",
       "pattern": "[A], [A]*[B]+[C], ([A]*[B]+[C])*[B]+[C], ... Next?",
@@ -561,26 +554,18 @@
       "calculation": "A + B*B + (B+1)*(B+1) + (B+2)*(B+2) + (B+3)*(B+3)",
       "explanation": "Cumulative squares. Next: [RESULT]"
     },
-    {
-      "template_id": "INT_PAT_39",
-      "pattern": "[P1], [P2], [P3], [P1+P2], [P2+P3], [P3+P4], ... Next? (Padovan-style)",
-      "variables": {
-        "P1": {
-          "min": 1,
-          "max": 8
-        },
-        "P2": {
-          "min": 1,
-          "max": 8
-        },
-        "P3": {
-          "min": 1,
-          "max": 8
-        }
-      },
-      "calculation": "P2 + P3 + P1",
-      "explanation": "Padovan-style: Next = [P2]+[P3]+[P1] = [RESULT]"
+{
+    "template_id": "INT_PAT_39",
+    "pattern": "[P1], [P2], [P3], [P1+P2], [P2+P3], [P3+P4], ... Next? (Padovan-style)",
+    "variables": {
+        "P1": { "min": 1, "max": 8 },
+        "P2": { "min": 1, "max": 8 },
+        "P3": { "min": 1, "max": 8 },
+        "P4": { "calc": "P1 + P2" }
     },
+    "calculation": "P2 + P3 + P1",
+    "explanation": "Padovan-style: Next = [P2]+[P3]+[P1] = [RESULT]"
+},
     {
       "template_id": "INT_PAT_40",
       "pattern": "[P1], [P2], 2*[P2]+[P1], 2*(2*[P2]+[P1])+[P2], ... Next? (Pell-style)",
@@ -697,26 +682,18 @@
       "calculation": "5 * J2 + 2 * J1",
       "explanation": "Jacobsthal-style: Next = [RESULT]"
     },
-    {
-      "template_id": "INT_PAT_48",
-      "pattern": "[P1], [P2], [P3], [P1+P2], [P2+P3], [P3+P4], ... Next? (Perrin-style)",
-      "variables": {
-        "P1": {
-          "min": 2,
-          "max": 6
-        },
-        "P2": {
-          "min": 0,
-          "max": 5
-        },
-        "P3": {
-          "min": 2,
-          "max": 6
-        }
-      },
-      "calculation": "P2 + P3 + P1",
-      "explanation": "Perrin-style: Next = [P2]+[P3]+[P1] = [RESULT]"
+{
+    "template_id": "INT_PAT_48",
+    "pattern": "[P1], [P2], [P3], [P1+P2], [P2+P3], [P3+P4], ... Next? (Perrin-style)",
+    "variables": {
+        "P1": { "min": 2, "max": 6 },
+        "P2": { "min": 0, "max": 5 },
+        "P3": { "min": 2, "max": 6 },
+        "P4": { "calc": "P1 + P2" }
     },
+    "calculation": "P2 + P3 + P1",
+    "explanation": "Perrin-style: Next = [P2]+[P3]+[P1] = [RESULT]"
+},
     {
       "template_id": "INT_PAT_49",
       "pattern": "[A], [A]+2*[B], [A]+2*[B]+3*[B], [A]+2*[B]+3*[B]+4*[B], ... Next?",
@@ -841,26 +818,18 @@
       "calculation": "A * A * 5",
       "explanation": "Multiples of [A]². Next: [A]²*5 = [RESULT]"
     },
-    {
-      "template_id": "INT_PAT_57",
-      "pattern": "[N1], [N2], [N3], [N1+N3], [N2+N4], ... Next? (Narayana's cows style)",
-      "variables": {
-        "N1": {
-          "min": 1,
-          "max": 6
-        },
-        "N2": {
-          "min": 1,
-          "max": 6
-        },
-        "N3": {
-          "min": 1,
-          "max": 6
-        }
-      },
-      "calculation": "N1 + N2 + N3",
-      "explanation": "Narayana's cows: Next = [RESULT]"
+{
+    "template_id": "INT_PAT_57",
+    "pattern": "[N1], [N2], [N3], [N1+N3], [N2+N4], ... Next? (Narayana's cows style)",
+    "variables": {
+        "N1": { "min": 1, "max": 6 },
+        "N2": { "min": 1, "max": 6 },
+        "N3": { "min": 1, "max": 6 },
+        "N4": { "calc": "N1 + N3" }
     },
+    "calculation": "N1 + N2 + N3",
+    "explanation": "Narayana's cows: Next = [RESULT]"
+},
     {
       "template_id": "INT_PAT_58",
       "pattern": "Partition numbers p([N]), p([N]+1), p([N]+2), ... Next?",
