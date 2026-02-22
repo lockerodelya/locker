@@ -4,129 +4,135 @@
   "templates": [
 
     {
-      "template_id": "INT_PAT_81",
-      "pattern": "Woodall: [W], 2*[W]-1, 4*[W]-3, ... Next?",
-      "variables": {
-        "W": {
-          "min": 1,
-          "max": 8
-        }
-      },
-      "calculation": "8 * W - 7",
-      "explanation": "Woodall-style: Next = 8*[W]-7 = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_82",
-      "pattern": "[A]²+[B]³, ([A]+1)²+[B]³, ([A]+2)²+[B]³, ... Next?",
+      "template_id": "INT_PAT_91",
+      "pattern": "[A]*(2¹), [A]*(2²), [A]*(2³), [A]*(2⁴), ... Next?",
       "variables": {
         "A": {
-          "min": 1,
-          "max": 8
-        },
-        "B": {
-          "min": 1,
-          "max": 5
-        }
-      },
-      "calculation": "(A + 3) * (A + 3) + B * B * B",
-      "explanation": "Squares +[B]³. Next: ([A]+3)²+[B]³ = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_83",
-      "pattern": "Pronic: [P]*([P]+1), ([P]+1)*([P]+2), ([P]+2)*([P]+3), ... Next?",
-      "variables": {
-        "P": {
-          "min": 0,
-          "max": 20
-        }
-      },
-      "calculation": "(P + 3) * (P + 4)",
-      "explanation": "Pronic: Next = ([P]+3)*([P]+4) = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_84",
-      "pattern": "Oblong: [O]*([O]+1), ([O]+1)*([O]+2), ([O]+2)*([O]+3), ... Next?",
-      "variables": {
-        "O": {
           "min": 1,
           "max": 20
         }
       },
-      "calculation": "(O + 3) * (O + 4)",
-      "explanation": "Oblong: Next = ([O]+3)*([O]+4) = [RESULT]"
+      "calculation": "A * 32",
+      "explanation": "Powers of 2. Next: [A]*2⁵ = [RESULT]"
     },
     {
-      "template_id": "INT_PAT_85",
-      "pattern": "[A]!, 2*[A]!, 3*[A]!, 4*[A]!, ... Next?",
-      "variables": {
-        "A": {
-          "min": 2,
-          "max": 6
-        }
-      },
-      "calculation": "5 * factorial(A)",
-      "explanation": "Multiples of [A]!. Next: 5*[A]! = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_86",
-      "pattern": "Carol: [C], 4*[C]+3, 16*[C]+15, ... Next?",
-      "variables": {
-        "C": {
-          "min": 1,
-          "max": 7
-        }
-      },
-      "calculation": "64 * C + 63",
-      "explanation": "Carol-style: Next = 64*[C]+63 = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_87",
-      "pattern": "Kynea: [K], 4*[K]-3, 16*[K]-15, ... Next?",
-      "variables": {
-        "K": {
-          "min": 1,
-          "max": 7
-        }
-      },
-      "calculation": "64 * K - 63",
-      "explanation": "Kynea-style: Next = 64*[K]-63 = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_88",
-      "pattern": "[A]+1³, [A]+2³, [A]+3³, [A]+4³, ... Next?",
-      "variables": {
-        "A": {
-          "min": 1,
-          "max": 30
-        }
-      },
-      "calculation": "A + 125",
-      "explanation": "Adding cubes. Next: [A]+5³ = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_89",
-      "pattern": "Thabit: [T], 2*[T]+1, 4*[T]+3, ... Next?",
-      "variables": {
-        "T": {
-          "min": 1,
-          "max": 10
-        }
-      },
-      "calculation": "8 * T + 7",
-      "explanation": "Thabit-style: Next = 8*[T]+7 = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_90",
-      "pattern": "Sophie Germain: [S], next Sophie Germain prime, ... Next?",
+      "template_id": "INT_PAT_92",
+      "pattern": "Safe primes: [S], next safe prime, ... Next?",
       "variables": {
         "S": {
-          "min": 2,
+          "min": 5,
           "max": 50,
           "primes_only": true
         }
       },
-      "calculation": "next_sophie_germain(S)",
-      "explanation": "Next Sophie Germain after [S] = [RESULT]"
+      "calculation": "next_safe_prime(S)",
+      "explanation": "Next safe prime after [S] = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_93",
+      "pattern": "Primorial: [P]#, next primorial, ... Next?",
+      "variables": {
+        "P": {
+          "min": 1,
+          "max": 8
+        }
+      },
+      "calculation": "primorial(P+1)",
+      "explanation": "Next primorial after [P]# = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_94",
+      "pattern": "[A]³*[B], [A]³*[B]², [A]³*[B]³, ... Next?",
+      "variables": {
+        "A": {
+          "min": 1,
+          "max": 6
+        },
+        "B": {
+          "min": 2,
+          "max": 5
+        }
+      },
+      "calculation": "A * A * A * B * B * B * B",
+      "explanation": "Cube * powers. Next: [A]³*[B]⁴ = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_95",
+      "pattern": "Factorial primes: [F]!±1, next factorial prime, ... Next?",
+      "variables": {
+        "F": {
+          "min": 1,
+          "max": 7
+        }
+      },
+      "calculation": "next_factorial_prime(F)",
+      "explanation": "Next factorial prime after [F]! = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_96",
+      "pattern": "[A]²*2, [A]²*4, [A]²*8, [A]²*16, ... Next?",
+      "variables": {
+        "A": {
+          "min": 1,
+          "max": 10
+        }
+      },
+      "calculation": "A * A * 32",
+      "explanation": "[A]²* powers of 2. Next: [A]²*32 = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_97",
+      "pattern": "Giuga: [G], next Giuga number, ... Next?",
+      "variables": {
+        "G": {
+          "min": 30,
+          "max": 1700,
+          "step": 10
+        }
+      },
+      "calculation": "next_giuga(G)",
+      "explanation": "Next Giuga after [G] = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_98",
+      "pattern": "[A]⁴, ([A]+1)⁴, ([A]+2)⁴, ... Next?",
+      "variables": {
+        "A": {
+          "min": 1,
+          "max": 8
+        }
+      },
+      "calculation": "(A + 3) * (A + 3) * (A + 3) * (A + 3)",
+      "explanation": "Fourth powers. Next: ([A]+3)⁴ = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_99",
+      "pattern": "Wieferich primes: only 1093 and 3511 known. Next from [W]?",
+      "variables": {
+        "W": {
+          "min": 1093,
+          "max": 3511,
+          "step": 1418
+        }
+      },
+      "calculation": "W == 1093 ? 3511 : 0",
+      "explanation": "Next Wieferich after [W] = [RESULT] (only 1093 and 3511 known)"
+    },
+    {
+      "template_id": "INT_PAT_100",
+      "pattern": "[A]+[B]⁰, [A]+[B]¹, [A]+[B]², [A]+[B]³, ... Next?",
+      "variables": {
+        "A": {
+          "min": 1,
+          "max": 30
+        },
+        "B": {
+          "min": 2,
+          "max": 7
+        }
+      },
+      "calculation": "A + B * B * B * B",
+      "explanation": "Powers of [B]. Next: [A]+[B]⁴ = [RESULT]"
     }
 	
 	
