@@ -4,28 +4,48 @@
   "templates": [
 
     {
-      "template_id": "INT_PAT_06",
-      "pattern": "[A]³, ([A]+1)³, ([A]+2)³, ... Next?",
+      "template_id": "INT_PAT_08",
+      "pattern": "[A], [A]+[B]², [A]+([B]+1)², [A]+([B]+2)², ... Next?",
       "variables": {
         "A": {
+          "min": 5,
+          "max": 40
+        },
+        "B": {
           "min": 1,
-          "max": 12
+          "max": 8
         }
       },
-      "calculation": "(A + 3) * (A + 3) * (A + 3)",
-      "explanation": "Cubes: ([A]+3)³ = [RESULT]"
+      "calculation": "A + (B + 3) * (B + 3)",
+      "explanation": "Adding squares. Next: [A]+([B]+3)² = [RESULT]"
     },
     {
-      "template_id": "INT_PAT_07",
-      "pattern": "[A], [A]*3, [A]*9, [A]*27, ... Next?",
+      "template_id": "INT_PAT_09",
+      "pattern": "[A]*2-1, [A]*4-1, [A]*8-1, ... Next?",
+      "variables": {
+        "A": {
+          "min": 2,
+          "max": 20
+        }
+      },
+      "calculation": "A * 16 - 1",
+      "explanation": "Pattern: *2 then -1. Next: [A]*16-1 = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_10",
+      "pattern": "[A]*2+[B], [A]*4+[B], [A]*8+[B], ... Next?",
       "variables": {
         "A": {
           "min": 1,
           "max": 15
+        },
+        "B": {
+          "min": 1,
+          "max": 20
         }
       },
-      "calculation": "A * 81",
-      "explanation": "Pattern: *3 each time. Next: [A]*81 = [RESULT]"
+      "calculation": "A * 16 + B",
+      "explanation": "Pattern: *2 then +[B]. Next: [A]*16+[B] = [RESULT]"
     },
 
   ],
