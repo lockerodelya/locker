@@ -6,30 +6,51 @@
   "total_estimated_questions": 247500,
   "templates": [
 
-    {
-      "template_id": "ENT_PAT_028",
-      "pattern": "[S], -([S]+1), ([S]+2), -([S]+3), ... Next?",
-"variables": {
-    "S": {"min": 1, "max": 50, "step": 1}
-},
-      "variable_combinations": 50,
-      "calculation": "S + 4",
-      "difficulty": "high",
-      "explanation": "Alternating signs. Next = ([S]+4) = [RESULT]"
+{
+    "template_id": "ENT_PAT_029",
+    "pattern": "[J1], [J2], [J1]+2×[J2], [J2]+2×([J1]+2×[J2]), ... Next?",
+    "variables": {
+        "J1": {"min": 1, "max": 10, "step": 1},
+        "J2": {"min": 1, "max": 10, "step": 1}
     },
-	    {
-      "template_id": "ENT_PAT_031",
-      "pattern": "[A]×[R]⁰, [A]×[R]¹, [A]×[R]², [A]×[R]³, ... Next?",
-"variables": {
-    "A": {"min": 1, "max": 25, "step": 1},
-    "R": {"min": 2, "max": 3, "step": 1}
+    "variable_combinations": 100,
+    "calculation": "5 * J1 + 12 * J2",
+    "difficulty": "expert",
+    "explanation": "Jacobsthal-style recurrence. Next = 5[J1]+12[J2] = [RESULT]"
 },
-      "variable_combinations": 50,
-      "calculation": "A * R * R * R * R",
-      "difficulty": "high",
-      "explanation": "Geometric ratio [R]. Next = [A]×[R]⁴ = [RESULT]"
-    }
-	  	
+{
+    "template_id": "ENT_PAT_032",
+    "pattern": "[T], [T]+3, [T]+3+6, [T]+3+6+10, ... Next?",
+    "variables": {
+        "T": {"min": 1, "max": 50, "step": 1}
+    },
+    "variable_combinations": 50,
+    "calculation": "T + 3 + 6 + 10 + 15",
+    "difficulty": "high",
+    "explanation": "Tetrahedral (triangular sums). Next = [T]+34 = [RESULT]"
+},
+{
+    "template_id": "ENT_PAT_034",
+    "pattern": "[C], [C]+4, [C]+4+8, [C]+4+8+12, ... Next?",
+    "variables": {
+        "C": {"min": 1, "max": 50, "step": 1}
+    },
+    "variable_combinations": 50,
+    "calculation": "C + 4 + 8 + 12 + 16",
+    "difficulty": "high",
+    "explanation": "Centered square (+4 each). Next = [C]+40 = [RESULT]"
+},
+{
+    "template_id": "ENT_PAT_035",
+    "pattern": "[H], [H]+6, [H]+6+12, [H]+6+12+18, ... Next?",
+    "variables": {
+        "H": {"min": 1, "max": 50, "step": 1}
+    },
+    "variable_combinations": 50,
+    "calculation": "H + 6 + 12 + 18 + 24",
+    "difficulty": "high",
+    "explanation": "Centered hexagonal (+6 each). Next = [H]+60 = [RESULT]"
+}	  	
 	
 	
 
