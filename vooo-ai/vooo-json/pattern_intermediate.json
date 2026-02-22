@@ -4,85 +4,77 @@
   "templates": [
 
     {
-      "template_id": "INT_PAT_11",
-      "pattern": "[A], [A]+[B], [A]+[B]+[B]², [A]+[B]+[B]²+[B]³, ... Next?",
+      "template_id": "INT_PAT_16",
+      "pattern": "[A], [A]+1², [A]+1²+2², [A]+1²+2²+3², ... Next?",
       "variables": {
         "A": {
           "min": 1,
-          "max": 25
+          "max": 30
+        }
+      },
+      "calculation": "A + 1 + 4 + 9 + 16",
+      "explanation": "Sum of squares: [A]+1+4+9+16 = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_17",
+      "pattern": "[A]², [A]²+[A], [A]²+[A]+[A]², [A]²+[A]+[A]²+[A], ... Next?",
+      "variables": {
+        "A": {
+          "min": 2,
+          "max": 12
+        }
+      },
+      "calculation": "A * A + A + A * A + A + A * A",
+      "explanation": "Alternating pattern. Next: [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_18",
+      "pattern": "[A], [A]/2+[B], [A]/4+[B], [A]/8+[B], ... Next?",
+      "variables": {
+        "A": {
+          "min": 16,
+          "max": 256,
+          "step": 16
         },
         "B": {
-          "min": 2,
-          "max": 6
+          "min": 5,
+          "max": 40
         }
       },
-      "calculation": "A + B + B*B + B*B*B + B*B*B*B",
-      "explanation": "Sum of powers: [A]+[B]+[B]²+[B]³+[B]⁴ = [RESULT]"
+      "calculation": "A / 16 + B",
+      "explanation": "Pattern: /2 then +[B]. Next: [A]/16+[B] = [RESULT]"
     },
     {
-      "template_id": "INT_PAT_12",
-      "pattern": "[T1], [T2], [T3], [T1+T2+T3], [T2+T3+T4], [T3+T4+T5], ... Next?",
+      "template_id": "INT_PAT_19",
+      "pattern": "[C1], [C2], [C1+C2], [C1+2*C2], 2*[C1]+3*[C2], ... Next? (Catalan-style)",
       "variables": {
-        "T1": {
-          "min": 1,
-          "max": 8
-        },
-        "T2": {
-          "min": 1,
-          "max": 8
-        },
-        "T3": {
-          "min": 1,
-          "max": 8
-        }
-      },
-      "calculation": "T1 + 2*T2 + 3*T3",
-      "explanation": "Tribonacci-style: Next = [T1]+2*[T2]+3*[T3] = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_13",
-      "pattern": "[A], [A]*[B]+[C], ([A]*[B]+[C])*[B]+[C], ... Next?",
-      "variables": {
-        "A": {
+        "C1": {
           "min": 1,
           "max": 10
         },
-        "B": {
-          "min": 2,
-          "max": 6
+        "C2": {
+          "min": 1,
+          "max": 10
+        }
+      },
+      "calculation": "3 * C1 + 5 * C2",
+      "explanation": "Next: 3*[C1]+5*[C2] = [RESULT]"
+    },
+    {
+      "template_id": "INT_PAT_20",
+      "pattern": "[L1], [L2], [L1+L2], [L1+2*L2], 2*[L1]+3*[L2], ... Next?",
+      "variables": {
+        "L1": {
+          "min": 1,
+          "max": 12
         },
-        "C": {
+        "L2": {
           "min": 1,
-          "max": 8
+          "max": 12
         }
       },
-      "calculation": "((A * B + C) * B + C) * B + C",
-      "explanation": "Recursive *[B]+[C]. Next: [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_14",
-      "pattern": "[A]!, ([A]+1)!, ([A]+2)!, ... Next?",
-      "variables": {
-        "A": {
-          "min": 1,
-          "max": 7
-        }
-      },
-      "calculation": "factorial(A + 3)",
-      "explanation": "Factorials: ([A]+3)! = [RESULT]"
-    },
-    {
-      "template_id": "INT_PAT_15",
-      "pattern": "Prime numbers starting from [P]: [P], next prime, next prime, ... Next?",
-      "variables": {
-        "P": {
-          "min": 2,
-          "max": 50,
-          "primes_only": true
-        }
-      },
-      "calculation": "next_prime(next_prime(next_prime(P)))",
-      "explanation": "Next prime after the 3rd prime = [RESULT]"
+      "calculation": "3 * L1 + 5 * L2",
+      "explanation": "Lucas-style: Next = 3*[L1]+5*[L2] = [RESULT]"
     }
 
   ],
