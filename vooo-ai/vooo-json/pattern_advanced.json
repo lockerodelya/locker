@@ -5,63 +5,63 @@
   "generator_strategy": "combinatorial_dynamic",
   "total_estimated_questions": 247500,
   "templates": [
+
     {
-      "template_id": "ENT_PAT_001",
-      "pattern": "[A], [A]+[B], [A]+2[B], [A]+3[B], ... Next?",
+      "template_id": "ENT_PAT_006",
+      "pattern": "[A]³, ([A]+1)³, ([A]+2)³, ... Next?",
       "variables": {
-        "A": {"min": -50, "max": 100, "step": 5},
-        "B": {"min": -25, "max": 50, "step": 5}
+        "A": {"min": -10, "max": 20, "step": 2}
       },
-      "variable_combinations": 450,
-      "calculation": "A + 4 * B",
+      "variable_combinations": 15,
+      "calculation": "Math.pow(A + 3, 3)",
       "difficulty": "high",
-      "explanation": "Arithmetic sequence: start=[A], difference=[B]. Next term = [A] + 4×[B] = [RESULT]"
+      "explanation": "Perfect cubes sequence. Next term = ([A]+3)³ = [RESULT]"
     },
     {
-      "template_id": "ENT_PAT_002",
-      "pattern": "[A]², ([A]+1)², ([A]+2)², ([A]+3)², ... Next?",
+      "template_id": "ENT_PAT_007",
+      "pattern": "[A], [A]×3, [A]×9, [A]×27, ... Next?",
       "variables": {
-        "A": {"min": -20, "max": 30, "step": 2}
+        "A": {"min": -15, "max": 30, "step": 5}
       },
-      "variable_combinations": 25,
-      "calculation": "Math.pow(A + 4, 2)",
+      "variable_combinations": 9,
+      "calculation": "A * 81",
       "difficulty": "high",
-      "explanation": "Perfect squares sequence. Next term = ([A]+4)² = [RESULT]"
+      "explanation": "Powers of 3 multiplier. Next term = [A]×81 = [RESULT]"
     },
     {
-      "template_id": "ENT_PAT_003",
-      "pattern": "[F1], [F2], [F1+F2], [F1+2×F2], ... Next?",
+      "template_id": "ENT_PAT_008",
+      "pattern": "[A], [A]+[B]², [A]+([B]+1)², [A]+([B]+2)², ... Next?",
       "variables": {
-        "F1": {"min": -10, "max": 20, "step": 2},
-        "F2": {"min": -10, "max": 20, "step": 2}
+        "A": {"min": -20, "max": 50, "step": 5},
+        "B": {"min": 1, "max": 10, "step": 1}
       },
-      "variable_combinations": 225,
-      "calculation": "2 * F1 + 3 * F2",
+      "variable_combinations": 140,
+      "calculation": "A + Math.pow(B + 3, 2)",
       "difficulty": "expert",
-      "explanation": "Fibonacci-style: each term = previous two summed. Next = 2×[F1]+3×[F2] = [RESULT]"
+      "explanation": "Adding perfect squares. Next term = [A]+([B]+3)² = [RESULT]"
     },
     {
-      "template_id": "ENT_PAT_004",
-      "pattern": "[A], [A]×[B], [A]×[B]², [A]×[B]³, ... Next?",
+      "template_id": "ENT_PAT_009",
+      "pattern": "[A]×2-1, [A]×4-1, [A]×8-1, ... Next?",
       "variables": {
-        "A": {"min": -15, "max": 25, "step": 5},
-        "B": {"min": 2, "max": 5, "step": 1}
+        "A": {"min": -15, "max": 30, "step": 5}
       },
-      "variable_combinations": 32,
-      "calculation": "A * Math.pow(B, 4)",
+      "variable_combinations": 9,
+      "calculation": "A * 16 - 1",
       "difficulty": "high",
-      "explanation": "Geometric sequence: ratio=[B]. Next term = [A]×[B]⁴ = [RESULT]"
+      "explanation": "Powers of 2 minus 1. Next term = [A]×16-1 = [RESULT]"
     },
     {
-      "template_id": "ENT_PAT_005",
-      "pattern": "[A], [A]×2, [A]×4, [A]×8, ... Next?",
+      "template_id": "ENT_PAT_010",
+      "pattern": "[A]×2+[B], [A]×4+[B], [A]×8+[B], ... Next?",
       "variables": {
-        "A": {"min": -20, "max": 40, "step": 5}
+        "A": {"min": -15, "max": 30, "step": 5},
+        "B": {"min": -20, "max": 30, "step": 5}
       },
-      "variable_combinations": 12,
-      "calculation": "A * 16",
-      "difficulty": "high",
-      "explanation": "Powers of 2 multiplier. Next term = [A]×16 = [RESULT]"
+      "variable_combinations": 90,
+      "calculation": "A * 16 + B",
+      "difficulty": "expert",
+      "explanation": "Powers of 2 plus constant. Next term = [A]×16+[B] = [RESULT]"
     }
 
 
