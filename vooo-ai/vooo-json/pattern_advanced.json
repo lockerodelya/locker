@@ -7,120 +7,124 @@
   "templates": [
 
     {
-      "template_id": "ENT_PAT_021",
-      "pattern": "[A], [A]×[B]-[C], ([A]×[B]-[C])×[B]-[C], ... Next?",
+      "template_id": "ENT_PAT_031",
+      "pattern": "[A]×[R]⁰, [A]×[R]¹, [A]×[R]², [A]×[R]³, ... Next?",
       "variables": {
-        "A": {"min": -15, "max": 30, "step": 5},
-        "B": {"min": 2, "max": 4, "step": 1},
-        "C": {"min": -10, "max": 15, "step": 5}
+        "A": {"min": -20, "max": 50, "step": 5},
+        "R": {"min": 2, "max": 4, "step": 1}
       },
-      "variable_combinations": 90,
-      "calculation": "((A * B - C) * B - C) * B - C",
-      "difficulty": "expert",
-      "explanation": "Recursive ×[B]-[C]. Next = [RESULT]"
+      "variable_combinations": 42,
+      "calculation": "A * Math.pow(R, 4)",
+      "difficulty": "high",
+      "explanation": "Geometric ratio [R]. Next = [A]×[R]⁴ = [RESULT]"
     },
     {
-      "template_id": "ENT_PAT_022",
-      "pattern": "[P], [P]+4, [P]+4+7, [P]+4+7+10, ... Next?",
+      "template_id": "ENT_PAT_032",
+      "pattern": "[T], [T]+3, [T]+3+6, [T]+3+6+10, ... Next?",
       "variables": {
-        "P": {"min": -15, "max": 30, "step": 5}
+        "T": {"min": -15, "max": 30, "step": 5}
       },
       "variable_combinations": 9,
-      "calculation": "P + 4 + 7 + 10 + 13",
+      "calculation": "T + 3 + 6 + 10 + 15",
       "difficulty": "high",
-      "explanation": "Pentagonal differences (+3 each). Next = [P]+34 = [RESULT]"
+      "explanation": "Tetrahedral (triangular sums). Next = [T]+34 = [RESULT]"
     },
     {
-      "template_id": "ENT_PAT_023",
-      "pattern": "[H], [H]+5, [H]+5+9, [H]+5+9+13, ... Next?",
+      "template_id": "ENT_PAT_033",
+      "pattern": "[A], [A]+[B]×[C], [A]+[B]×[C]², [A]+[B]×[C]³, ... Next?",
+      "variables": {
+        "A": {"min": -25, "max": 50, "step": 5},
+        "B": {"min": -10, "max": 15, "step": 5},
+        "C": {"min": 2, "max": 4, "step": 1}
+      },
+      "variable_combinations": 90,
+      "calculation": "A + B * Math.pow(C, 4)",
+      "difficulty": "expert",
+      "explanation": "Adding geometric terms. Next = [A]+[B]×[C]⁴ = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_034",
+      "pattern": "[C], [C]+4, [C]+4+8, [C]+4+8+12, ... Next?",
+      "variables": {
+        "C": {"min": -15, "max": 30, "step": 5}
+      },
+      "variable_combinations": 9,
+      "calculation": "C + 4 + 8 + 12 + 16",
+      "difficulty": "high",
+      "explanation": "Centered square (+4 each). Next = [C]+40 = [RESULT]"
+    },
+    {
+      "template_id": "ENT_PAT_035",
+      "pattern": "[H], [H]+6, [H]+6+12, [H]+6+12+18, ... Next?",
       "variables": {
         "H": {"min": -15, "max": 30, "step": 5}
       },
       "variable_combinations": 9,
-      "calculation": "H + 5 + 9 + 13 + 17",
+      "calculation": "H + 6 + 12 + 18 + 24",
       "difficulty": "high",
-      "explanation": "Hexagonal differences (+4 each). Next = [H]+44 = [RESULT]"
+      "explanation": "Centered hexagonal (+6 each). Next = [H]+60 = [RESULT]"
     },
     {
-      "template_id": "ENT_PAT_024",
-      "pattern": "[A], [A]+2!, [A]+2!+3!, [A]+2!+3!+4!, ... Next?",
+      "template_id": "ENT_PAT_036",
+      "pattern": "[A]², ([A]×[M])², ([A]×[M]²)², ... Next?",
       "variables": {
-        "A": {"min": -20, "max": 40, "step": 5}
+        "A": {"min": -8, "max": 12, "step": 2},
+        "M": {"min": 2, "max": 4, "step": 1}
       },
-      "variable_combinations": 12,
-      "calculation": "A + 2 + 6 + 24 + 120",
+      "variable_combinations": 30,
+      "calculation": "Math.pow(A * Math.pow(M, 3), 2)",
       "difficulty": "expert",
-      "explanation": "Sum of factorials 2!+3!+4!+5!. Next = [A]+152 = [RESULT]"
+      "explanation": "Squared geometric. Next = ([A]×[M]³)² = [RESULT]"
     },
     {
-      "template_id": "ENT_PAT_025",
-      "pattern": "[A]×[B]¹, [A]×[B]², [A]×[B]³, [A]×[B]⁴, ... Next?",
+      "template_id": "ENT_PAT_037",
+      "pattern": "[M1], [M2], [M1+M2], [M1+2M2], 2[M1]+3[M2], ... Next?",
       "variables": {
-        "A": {"min": -15, "max": 25, "step": 5},
-        "B": {"min": 2, "max": 4, "step": 1}
+        "M1": {"min": -8, "max": 15, "step": 2},
+        "M2": {"min": -8, "max": 15, "step": 2}
       },
-      "variable_combinations": 24,
-      "calculation": "A * B * B * B * B * B",
-      "difficulty": "high",
-      "explanation": "Powers of [B]. Next = [A]×[B]⁵ = [RESULT]"
-    },
-    {
-      "template_id": "ENT_PAT_026",
-      "pattern": "[D], [D]×2, [D]×2×4, [D]×2×4×6, ... Next?",
-      "variables": {
-        "D": {"min": 1, "max": 10, "step": 1}
-      },
-      "variable_combinations": 10,
-      "calculation": "D * 2 * 4 * 6 * 8",
+      "variable_combinations": 144,
+      "calculation": "3 * M1 + 5 * M2",
       "difficulty": "expert",
-      "explanation": "Double factorial (even). Next = [D]×384 = [RESULT]"
+      "explanation": "Fibonacci coefficients. Next = 3[M1]+5[M2] = [RESULT]"
     },
     {
-      "template_id": "ENT_PAT_027",
-      "pattern": "[A], [A]+[B]³, [A]+([B]+1)³, [A]+([B]+2)³, ... Next?",
+      "template_id": "ENT_PAT_038",
+      "pattern": "[A], [A]+[B]², [A]+[B]²+([B]+1)², ... Next?",
       "variables": {
-        "A": {"min": -20, "max": 50, "step": 5},
+        "A": {"min": -20, "max": 40, "step": 5},
         "B": {"min": 1, "max": 8, "step": 1}
       },
-      "variable_combinations": 112,
-      "calculation": "A + (B+3) * (B+3) * (B+3)",
+      "variable_combinations": 96,
+      "calculation": "A + Math.pow(B, 2) + Math.pow(B+1, 2) + Math.pow(B+2, 2) + Math.pow(B+3, 2)",
       "difficulty": "expert",
-      "explanation": "Adding cubes. Next = [A]+([B]+3)³ = [RESULT]"
+      "explanation": "Cumulative squares. Next adds ([B]+3)² = [RESULT]"
     },
     {
-      "template_id": "ENT_PAT_028",
-      "pattern": "[S], -([S]+1), ([S]+2), -([S]+3), ... Next?",
+      "template_id": "ENT_PAT_039",
+      "pattern": "[P1], [P2], [P3], [P1+P2], [P2+P3], ... Next?",
       "variables": {
-        "S": {"min": -8, "max": 15, "step": 2}
+        "P1": {"min": -6, "max": 10, "step": 2},
+        "P2": {"min": -6, "max": 10, "step": 2},
+        "P3": {"min": -6, "max": 10, "step": 2}
       },
-      "variable_combinations": 12,
-      "calculation": "S + 4",
-      "difficulty": "high",
-      "explanation": "Alternating signs. Next = ([S]+4) = [RESULT]"
-    },
-    {
-      "template_id": "ENT_PAT_029",
-      "pattern": "[A], [A]²-[B], ([A]²-[B])²-[B], ... Next?",
-      "variables": {
-        "A": {"min": 2, "max": 8, "step": 1},
-        "B": {"min": 1, "max": 10, "step": 1}
-      },
-      "variable_combinations": 70,
-      "calculation": "((A*A - B) * (A*A - B)) - B",
+      "variable_combinations": 512,
+      "calculation": "P1 + P2 + P3",
       "difficulty": "expert",
-      "explanation": "Square then subtract. Next = ([A]²-[B])²-[B] = [RESULT]"
+      "explanation": "Padovan-style: each term = sum of previous two. Next = [P3] + ([P1]+[P2]) = [RESULT]"
     },
-    {
-      "template_id": "ENT_PAT_030",
-      "pattern": "1, 1, 2, 5, 15, 52, 203, 877, 4140, ... Next Bell number after [B]?",
-      "variables": {
-        "B": {"min": 1, "max": 877, "step": 1, "bell_numbers": [1,1,2,5,15,52,203,877,4140]}
-      },
-      "variable_combinations": 8,
-      "calculation": "B == 1 ? 2 : B == 2 ? 5 : B == 5 ? 15 : B == 15 ? 52 : B == 52 ? 203 : B == 203 ? 877 : B == 877 ? 4140 : 0",
-      "difficulty": "expert",
-      "explanation": "Bell numbers. Next Bell number after [B] = [RESULT]"
-    }
+{
+  "template_id": "ENT_PAT_040",
+  "pattern": "[P1], [P2], 2×[P2]+[P1], 2×(2×[P2]+[P1])+[P2], ... Next?",
+  "variables": {
+    "P1": {"min": -8, "max": 12, "step": 2},
+    "P2": {"min": -8, "max": 12, "step": 2}
+  },
+  "variable_combinations": 100,
+  "calculation": "12 * P2 + 5 * P1",
+  "difficulty": "expert",
+  "explanation": "Pell-style recurrence: Pn = 2*P(n-1) + P(n-2). Next = 12[P2]+5[P1] = [RESULT]"
+}
 
 
   ],
