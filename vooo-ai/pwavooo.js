@@ -1,5 +1,5 @@
 // pwavooo.js - Vooo AI PWA Installer
-// Version: 4.2 - Vooo AI Customized
+// Version: 4.5 - Vooo AI Customized
 // Clean version - uses main sw.js from root
 
 class VoooPWAInstaller {
