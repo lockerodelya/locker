@@ -46,22 +46,20 @@ class VOOOPuzzleEngine {
             'problem_probability_beginner': 'problem_probability_beginner.json',
             'problem_classification_beginner': 'problem_classification_beginner.json',
             'problem_solving_beginner': 'problem_solving_beginner.json',
-            'problem_causeeffect_beginner': 'problem_causeeffect_beginner.json',
-            // SOL7: added toddler_reasoning
-            'toddler_reasoning': 'toddler_reasoning.json'
+            'problem_causeeffect_beginner': 'problem_causeeffect_beginner.json'
         };
         this.shapeMap = {
             'circle': '○', 'square': '□', 'triangle': '△',
             'star': '★', 'heart': '♥', 'diamond': '◇',
             'rectangle': '▢', 'hexagon': '⬡'
         };
-        // SOL4: extended colorMap with orange, purple, brown, pink
+        // SOL4: extended colorMap
         this.colorMap = {
             'red': '🔴', 'blue': '🔵', 'yellow': '🟡',
             'green': '🟢', 'black': '⚫', 'white': '⚪',
             'orange': '🟠', 'purple': '🟣', 'brown': '🟤', 'pink': '🩷'
         };
-        // SOL3: extended sizeComparison with all template emojis
+        // SOL3: extended sizeComparison
         this.sizeComparison = {
             '🐘': 'big', '🦒': 'big', '🐋': 'big', '🏠': 'big', '🌳': 'big',
             '🦏': 'big', '🦛': 'big', '🐪': 'big', '🦘': 'big', '🏔️': 'big',
@@ -397,7 +395,6 @@ class VOOOPuzzleEngine {
         let ev=expr;
         if(this.isPlainTextCalculation(ev)){console.log('⏭️ solv13 plain text:',ev);return null;}
 
-        // solv1: if-then-else
         ev=ev.replace(/if\s+(.+?)\s+then\s+(.+?)\s+else\s+(.+)/g,(match,cond,thenV,elseV)=>{
             try {
                 let c=cond;
@@ -423,13 +420,11 @@ class VOOOPuzzleEngine {
         // SOL1: repeat() fix
         if(ev.includes('repeat(')){
             ev=ev.replace(/repeat\(([^,]+),\s*([^)]+)\)/g,(match,emoji,count)=>{
-                const emojiKey = emoji.trim().replace(/['"()\s]/g, '');
-                const countKey = count.trim().replace(/['"()\s]/g, '');
-                const emojiVal = variables[emojiKey] !== undefined ? variables[emojiKey] : emojiKey;
-                const countVal = variables[countKey] !== undefined ? parseInt(variables[countKey]) : parseInt(countKey);
-                if (!isNaN(countVal) && countVal > 0) {
-                    return JSON.stringify(String(emojiVal).repeat(countVal));
-                }
+                const emojiKey=emoji.trim().replace(/['"()\s]/g,'');
+                const countKey=count.trim().replace(/['"()\s]/g,'');
+                const emojiVal=variables[emojiKey]!==undefined?variables[emojiKey]:emojiKey;
+                const countVal=variables[countKey]!==undefined?parseInt(variables[countKey]):parseInt(countKey);
+                if(!isNaN(countVal)&&countVal>0) return JSON.stringify(String(emojiVal).repeat(countVal));
                 return match;
             });
         }
@@ -442,11 +437,11 @@ class VOOOPuzzleEngine {
         // SOL2: generate_options() fix
         if(ev.includes('generate_options(')){
             ev=ev.replace(/generate_options\(([^,]+),\s*([^)]+)\)/g,(match,num,emoji)=>{
-                const numKey = num.trim().replace(/['"()\s]/g, '');
-                const emojiKey = emoji.trim().replace(/['"()\s]/g, '');
-                const numVal = variables[numKey] !== undefined ? parseInt(variables[numKey]) : parseInt(numKey);
-                const emojiVal = variables[emojiKey] !== undefined ? variables[emojiKey] : emojiKey;
-                return JSON.stringify(this.generateVisualOptions(numVal, emojiVal, variables));
+                const numKey=num.trim().replace(/['"()\s]/g,'');
+                const emojiKey=emoji.trim().replace(/['"()\s]/g,'');
+                const numVal=variables[numKey]!==undefined?parseInt(variables[numKey]):parseInt(numKey);
+                const emojiVal=variables[emojiKey]!==undefined?variables[emojiKey]:emojiKey;
+                return JSON.stringify(this.generateVisualOptions(numVal,emojiVal,variables));
             });
         }
 
@@ -553,13 +548,13 @@ class VOOOPuzzleEngine {
 
     // SOL2: generateVisualOptions — correct answer always included
     generateVisualOptions(number, emoji, variables) {
-        const emojiChar = typeof emoji === 'string' ? emoji : (variables[emoji] || emoji);
-        const correct = parseInt(number);
-        const opts = new Set();
+        const emojiChar=typeof emoji==='string'?emoji:(variables[emoji]||emoji);
+        const correct=parseInt(number);
+        const opts=new Set();
         opts.add(emojiChar.repeat(correct));
-        let i = 1;
-        while (opts.size < 4) {
-            if (i !== correct) opts.add(emojiChar.repeat(i));
+        let i=1;
+        while(opts.size<4){
+            if(i!==correct) opts.add(emojiChar.repeat(i));
             i++;
         }
         return this.shuffleArray([...opts]);
@@ -571,13 +566,11 @@ class VOOOPuzzleEngine {
 
     // SOL5: findCorrectIndex — detect smaller/bigger from question text
     findCorrectIndex(options, correctAnswer, answerType, question) {
-        if (answerType === 'comparison') {
-            const isSmaller = question && /smaller|least|tiny/i.test(question);
-            return options.findIndex(opt =>
-                this.sizeComparison[opt] === (isSmaller ? 'small' : 'big')
-            );
+        if(answerType==='comparison'){
+            const isSmaller=question&&/smaller|least|tiny/i.test(question);
+            return options.findIndex(opt=>this.sizeComparison[opt]===(isSmaller?'small':'big'));
         }
-        return options.findIndex(opt => String(opt) === String(correctAnswer));
+        return options.findIndex(opt=>String(opt)===String(correctAnswer));
     }
 
     generateExplanation(template,variables,answer) {
@@ -612,7 +605,7 @@ class VOOOPuzzleEngine {
 window.voooEngine = new VOOOPuzzleEngine();
 
 async function initVOOOGame() {
-    const loaded=await voooEngine.loadCategory('math_beginner');
+    const loaded=await voooEngine.loadCategory('toddler_math');
     if(!loaded){document.getElementById('vooo-question').textContent='Error loading puzzles.';return;}
     const puzzle=voooEngine.generateNewPuzzle();
     if(puzzle) updatePuzzleDisplay(puzzle);
@@ -660,18 +653,26 @@ function selectAnswer(selectedIndex) {
 }
 
 async function nextPuzzle(){const puzzle=voooEngine.generateNewPuzzle();if(puzzle)updatePuzzleDisplay(puzzle);}
-async function changeLevel(levelKey){const success=await voooEngine.loadCategory(levelKey);if(success){voooEngine.resetScore();nextPuzzle();}}
+
+async function changeLevel(levelKey){
+    const success=await voooEngine.loadCategory(levelKey);
+    if(success){voooEngine.resetScore();nextPuzzle();}
+}
+
 function updateStatsDisplay(){
     const stats=voooEngine.getStats();
     document.getElementById('vooo-score').textContent=`Score: ${stats.score}`;
     document.getElementById('vooo-accuracy').textContent=`Accuracy: ${stats.accuracy}%`;
 }
-// SOL7: resetGame — clear used questions + reset index so all questions available again
+
+// SOL7: resetGame — reloads current active category so reset works on any level
 function resetGame(){
+    const currentCat=voooEngine.currentCategory;
     voooEngine.resetScore();
     voooEngine.clearUsedQuestions();
     voooEngine.currentTemplateIndex=0;
-    nextPuzzle();
+    voooEngine.loadCategory(currentCat).then(()=>nextPuzzle());
 }
+
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initVOOOGame);
 else initVOOOGame();
