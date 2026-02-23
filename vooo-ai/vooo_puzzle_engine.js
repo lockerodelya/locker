@@ -1,7 +1,7 @@
 // ============================================
 // VOOO AI Puzzle Engine
 // FIXES: solv1-solv4, solv6-solv14
-// APPLIED: SOL1, SOL2, SOL3, SOL4, SOL5
+// APPLIED: SOL1, SOL2, SOL3, SOL4, SOL5, SOL7
 // ============================================
 
 class VOOOPuzzleEngine {
@@ -14,8 +14,7 @@ class VOOOPuzzleEngine {
         this.currentCategory = 'math_toddler';
         this.usedQuestions = [];
         this.categories = {
-            'toddler_math': 'toddler_math.json',
-            'toddler_reasoning': 'toddler_reasoning.json',
+            'math_toddler': 'math_toddler.json',
             'math_beginner': 'math_beginner.json',
             'math_elementary': 'math_elementary.json',
             'math_intermediate': 'math_intermediate.json',
@@ -46,7 +45,9 @@ class VOOOPuzzleEngine {
             'problem_probability_beginner': 'problem_probability_beginner.json',
             'problem_classification_beginner': 'problem_classification_beginner.json',
             'problem_solving_beginner': 'problem_solving_beginner.json',
-            'problem_causeeffect_beginner': 'problem_causeeffect_beginner.json'
+            'problem_causeeffect_beginner': 'problem_causeeffect_beginner.json',
+            // SOL7: added toddler_reasoning
+            'toddler_reasoning': 'toddler_reasoning.json'
         };
         this.shapeMap = {
             'circle': '○', 'square': '□', 'triangle': '△',
@@ -104,7 +105,6 @@ class VOOOPuzzleEngine {
 
     // ============================================
     // solv14 - APPLY MATH FUNCTIONS (MULTI-PASS)
-    // sol1-sol6 UNIFIED FIX
     // ============================================
     applyMathFunctions(ev) {
         const mathFns = [
@@ -291,6 +291,8 @@ class VOOOPuzzleEngine {
         if(!template.calculation) return false;
         const calc=template.calculation.trim();
         if(calc===''||calc==='null') return false;
+        // SOL7: allow single uppercase variable names like ODD, SHAPE, COLOR
+        if(/^[A-Z][A-Z0-9_]*$/.test(calc)) return true;
         if(this.isPlainTextCalculation(calc)){console.log(`⏭️ solv13: Plain text skipped: ${calc}`);return false;}
         return true;
     }
@@ -325,7 +327,6 @@ class VOOOPuzzleEngine {
             this.saveUsedQuestion(hash);
             this.currentPuzzle={
                 question,options,correctAnswer:answer,
-                // SOL5: pass question for smaller/bigger detection
                 correctIndex:this.findCorrectIndex(options,answer,this.currentTemplate.answer_type,question),
                 explanation:this.generateExplanation(this.currentTemplate,variables,answer),
                 templateId:this.currentTemplate.template_id,
@@ -348,7 +349,6 @@ class VOOOPuzzleEngine {
         this.currentPuzzle={
             question:fbQuestion,
             options:opts,correctAnswer:ans,
-            // SOL5: pass question for smaller/bigger detection
             correctIndex:this.findCorrectIndex(opts,ans,this.currentTemplate.answer_type,fbQuestion),
             explanation:this.generateExplanation(this.currentTemplate,vars,ans),
             templateId:this.currentTemplate.template_id,
@@ -405,14 +405,11 @@ class VOOOPuzzleEngine {
             } catch(e){return match;}
         });
 
-        // solv6
         ev=ev.replace(/×/g,'*').replace(/÷/g,'/');
 
-        // solv12: implicit coeff only for math
         const hasMathOps=/[\+\-\*\^%]/.test(ev)&&!/[?:'"]/.test(ev);
         if(hasMathOps) ev=ev.replace(/(\d)([A-Za-z_][A-Za-z0-9_]*)/g,'$1*$2');
 
-        // solv8: strings first
         for(const [k,v] of Object.entries(variables)){
             if(typeof v==='string'&&isNaN(v)) ev=ev.replace(new RegExp('\\b'+k+'\\b','g'),'"'+v+'"');
         }
@@ -420,20 +417,15 @@ class VOOOPuzzleEngine {
             if(typeof v!=='string'||!isNaN(v)) ev=ev.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');
         }
 
-        // solv14: multi-pass math function resolution
         ev=this.applyMathFunctions(ev);
 
-        // SOL1: repeat() fix — strip parens from args, resolve var names
+        // SOL1: repeat() fix
         if(ev.includes('repeat(')){
             ev=ev.replace(/repeat\(([^,]+),\s*([^)]+)\)/g,(match,emoji,count)=>{
                 const emojiKey = emoji.trim().replace(/['"()\s]/g, '');
                 const countKey = count.trim().replace(/['"()\s]/g, '');
-                const emojiVal = variables[emojiKey] !== undefined
-                    ? variables[emojiKey]
-                    : emojiKey;
-                const countVal = variables[countKey] !== undefined
-                    ? parseInt(variables[countKey])
-                    : parseInt(countKey);
+                const emojiVal = variables[emojiKey] !== undefined ? variables[emojiKey] : emojiKey;
+                const countVal = variables[countKey] !== undefined ? parseInt(variables[countKey]) : parseInt(countKey);
                 if (!isNaN(countVal) && countVal > 0) {
                     return JSON.stringify(String(emojiVal).repeat(countVal));
                 }
@@ -446,17 +438,13 @@ class VOOOPuzzleEngine {
                 JSON.stringify(this.calculateNextInPattern(p.trim().replace(/['"]/g,''),variables)));
         }
 
-        // SOL2: generate_options() fix — strip parens from args, resolve var names
+        // SOL2: generate_options() fix
         if(ev.includes('generate_options(')){
             ev=ev.replace(/generate_options\(([^,]+),\s*([^)]+)\)/g,(match,num,emoji)=>{
                 const numKey = num.trim().replace(/['"()\s]/g, '');
                 const emojiKey = emoji.trim().replace(/['"()\s]/g, '');
-                const numVal = variables[numKey] !== undefined
-                    ? parseInt(variables[numKey])
-                    : parseInt(numKey);
-                const emojiVal = variables[emojiKey] !== undefined
-                    ? variables[emojiKey]
-                    : emojiKey;
+                const numVal = variables[numKey] !== undefined ? parseInt(variables[numKey]) : parseInt(numKey);
+                const emojiVal = variables[emojiKey] !== undefined ? variables[emojiKey] : emojiKey;
                 return JSON.stringify(this.generateVisualOptions(numVal, emojiVal, variables));
             });
         }
@@ -510,7 +498,6 @@ class VOOOPuzzleEngine {
             try{const opts=this.evaluateExpression(template.options_builder,variables);if(Array.isArray(opts))return this.shuffleArray(opts);}
             catch(e){}
         }
-        // sol10 + solv11
         if(template.options&&Array.isArray(template.options)){
             let opts=[...template.options];
             const correctStr=String(correctAnswer);
@@ -563,7 +550,7 @@ class VOOOPuzzleEngine {
         return this.shuffleArray(options);
     }
 
-    // SOL2: generateVisualOptions — correct answer always in options, no NaN
+    // SOL2: generateVisualOptions — correct answer always included
     generateVisualOptions(number, emoji, variables) {
         const emojiChar = typeof emoji === 'string' ? emoji : (variables[emoji] || emoji);
         const correct = parseInt(number);
@@ -581,7 +568,7 @@ class VOOOPuzzleEngine {
         switch(patternType){case 'ABAB':return '🔴';case 'AABB':return '🟡';case 'ABCABC':return '🔵';default:return '?';}
     }
 
-    // SOL5: findCorrectIndex — detect "smaller/least/tiny" in question text
+    // SOL5: findCorrectIndex — detect smaller/bigger from question text
     findCorrectIndex(options, correctAnswer, answerType, question) {
         if (answerType === 'comparison') {
             const isSmaller = question && /smaller|least|tiny/i.test(question);
@@ -678,6 +665,12 @@ function updateStatsDisplay(){
     document.getElementById('vooo-score').textContent=`Score: ${stats.score}`;
     document.getElementById('vooo-accuracy').textContent=`Accuracy: ${stats.accuracy}%`;
 }
-function resetGame(){voooEngine.resetScore();nextPuzzle();}
+// SOL7: resetGame — clear used questions + reset index so all questions available again
+function resetGame(){
+    voooEngine.resetScore();
+    voooEngine.clearUsedQuestions();
+    voooEngine.currentTemplateIndex=0;
+    nextPuzzle();
+}
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initVOOOGame);
 else initVOOOGame();
