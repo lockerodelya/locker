@@ -11,10 +11,11 @@ class VOOOPuzzleEngine {
         this.currentTemplateIndex = 0;
         this.score = 0;
         this.totalAttempts = 0;
-        this.currentCategory = 'math_toddler';
+        this.currentCategory = 'toddler_math';
         this.usedQuestions = [];
         this.categories = {
-            'math_toddler': 'math_toddler.json',
+            'toddler_math': 'toddler_math.json',
+            'toddler_reasoning': 'toddler_reasoning.json',
             'math_beginner': 'math_beginner.json',
             'math_elementary': 'math_elementary.json',
             'math_intermediate': 'math_intermediate.json',
