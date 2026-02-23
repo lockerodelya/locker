@@ -1,6 +1,7 @@
 // ============================================
 // VOOO AI Puzzle Engine
 // FIXES: solv1-solv4, solv6-solv14
+// APPLIED: SOL1, SOL2, SOL3, SOL4, SOL5
 // ============================================
 
 class VOOOPuzzleEngine {
@@ -51,13 +52,20 @@ class VOOOPuzzleEngine {
             'star': '★', 'heart': '♥', 'diamond': '◇',
             'rectangle': '▢', 'hexagon': '⬡'
         };
+        // SOL4: extended colorMap with orange, purple, brown, pink
         this.colorMap = {
             'red': '🔴', 'blue': '🔵', 'yellow': '🟡',
-            'green': '🟢', 'black': '⚫', 'white': '⚪'
+            'green': '🟢', 'black': '⚫', 'white': '⚪',
+            'orange': '🟠', 'purple': '🟣', 'brown': '🟤', 'pink': '🩷'
         };
+        // SOL3: extended sizeComparison with all template emojis
         this.sizeComparison = {
             '🐘': 'big', '🦒': 'big', '🐋': 'big', '🏠': 'big', '🌳': 'big',
-            '🐭': 'small', '🐦': 'small', '🐜': 'small', '📦': 'small', '🌸': 'small'
+            '🦏': 'big', '🦛': 'big', '🐪': 'big', '🦘': 'big', '🏔️': 'big',
+            '🚂': 'big', '🚗': 'big', '🚌': 'big', '🚛': 'big', '🏢': 'big',
+            '🐭': 'small', '🐦': 'small', '🐜': 'small', '📦': 'small', '🌸': 'small',
+            '🐛': 'small', '🐌': 'small', '🐞': 'small', '🦗': 'small', '🌼': 'small',
+            '🏀': 'small', '⚽': 'small', '🎾': 'small', '🏐': 'small', '📱': 'small'
         };
     }
 
@@ -95,8 +103,7 @@ class VOOOPuzzleEngine {
 
     // ============================================
     // solv14 - APPLY MATH FUNCTIONS (MULTI-PASS)
-    // sol1-sol6 UNIFIED FIX:
-    // Handles nested calls, (N op M) args, expression args
+    // sol1-sol6 UNIFIED FIX
     // ============================================
     applyMathFunctions(ev) {
         const mathFns = [
@@ -119,24 +126,12 @@ class VOOOPuzzleEngine {
             ['next_giuga',      x => this.nextGiuga(Math.round(x))]
         ];
 
-        // sol1-sol6 UNIFIED FIX:
-        // PRE-PASS: Resolve arithmetic expressions inside function arguments.
-        // Variable substitution wraps vars in parens e.g. factorial((4)+4) or phi((15)+3).
-        // We must evaluate these inner expressions BEFORE the main regex runs,
-        // otherwise factorial((4)+4) won't match factorial\((\d+)\).
-        // Also handles nested calls like next_prime(next_prime(next_prime((43)))).
         const fnNames = mathFns.map(([name]) => name).join('|');
-        const argExprRegex = new RegExp(`(${fnNames})\\(([^()]+)\\)`, 'g');
-
-        // Pre-pass: evaluate arithmetic args inside function calls (up to 10 rounds)
-        // Only resolves when inner arg is pure arithmetic (no nested function calls)
         const fnNamesArr = mathFns.map(([name]) => name);
         const argExprRegexDeep = new RegExp(`(${fnNames})\\(([^()]*(?:\\([^()]*\\)[^()]*)*)\\)`, 'g');
         for (let pre = 0; pre < 10; pre++) {
             ev = ev.replace(argExprRegexDeep, (m, fn, inner) => {
-                // Skip if inner arg contains any function name (let main loop handle nesting)
                 if (fnNamesArr.some(name => inner.includes(name))) return m;
-                // Unwrap lone (N) inside the arg
                 let resolved = inner.replace(/\((-?\d+(?:\.\d+)?)\)/g, '$1');
                 try {
                     const val = new Function('return ' + resolved)();
@@ -146,11 +141,8 @@ class VOOOPuzzleEngine {
             });
         }
 
-        // MAIN PASS (increased to 20 for deeply nested calls like sol2)
         for (let pass = 0; pass < 20; pass++) {
             let changed = false;
-
-            // Step 1: collapse simple arithmetic so regex can match clean numbers
             ev = ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*(-?\d+(?:\.\d+)?)/g, (m, a, op, b) => {
                 try { const r = new Function('return '+a+op+b)(); changed=true; return String(r); } catch(e) { return m; }
             });
@@ -160,10 +152,7 @@ class VOOOPuzzleEngine {
             ev = ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g, (m, a, op, b) => {
                 try { const r = new Function('return '+a+op+b)(); changed=true; return String(r); } catch(e) { return m; }
             });
-            // Unwrap lone (number) but NOT if preceded by a function name
             ev = ev.replace(/(?<![a-zA-Z_])\((-?\d+(?:\.\d+)?)\)/g, (m, n) => { changed=true; return n; });
-
-            // Step 2: apply math functions now that inner args are plain numbers
             for (const [name, fn] of mathFns) {
                 const regex = new RegExp(name + '\\((-?\\d+(?:\\.\\d+)?)\\)', 'g');
                 ev = ev.replace(regex, (match, inner) => {
@@ -171,7 +160,6 @@ class VOOOPuzzleEngine {
                     catch(e) { return match; }
                 });
             }
-
             if (!changed) break;
         }
         return ev;
@@ -235,7 +223,6 @@ class VOOOPuzzleEngine {
         for (const [k,v] of Object.entries(variables)) {
             if (typeof v!=='string'||!isNaN(v)) e=e.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');
         }
-        // solv14: resolve math functions before eval
         e = this.applyMathFunctions(e);
         try {
             const r = new Function('return '+e)();
@@ -337,7 +324,8 @@ class VOOOPuzzleEngine {
             this.saveUsedQuestion(hash);
             this.currentPuzzle={
                 question,options,correctAnswer:answer,
-                correctIndex:this.findCorrectIndex(options,answer,this.currentTemplate.answer_type),
+                // SOL5: pass question for smaller/bigger detection
+                correctIndex:this.findCorrectIndex(options,answer,this.currentTemplate.answer_type,question),
                 explanation:this.generateExplanation(this.currentTemplate,variables,answer),
                 templateId:this.currentTemplate.template_id,
                 level:this.currentCategory,
@@ -355,10 +343,12 @@ class VOOOPuzzleEngine {
         const vars=this.computeDerivedVariables(this.currentTemplate,rv);
         const ans=this.calculateAnswer(this.currentTemplate,vars);
         const opts=this.generateOptions(ans,this.currentTemplate,vars);
+        const fbQuestion=this.generateQuestion(this.currentTemplate,vars);
         this.currentPuzzle={
-            question:this.generateQuestion(this.currentTemplate,vars),
+            question:fbQuestion,
             options:opts,correctAnswer:ans,
-            correctIndex:this.findCorrectIndex(opts,ans,this.currentTemplate.answer_type),
+            // SOL5: pass question for smaller/bigger detection
+            correctIndex:this.findCorrectIndex(opts,ans,this.currentTemplate.answer_type,fbQuestion),
             explanation:this.generateExplanation(this.currentTemplate,vars,ans),
             templateId:this.currentTemplate.template_id,
             level:this.currentCategory,answerType:this.currentTemplate.answer_type||'text'
@@ -429,23 +419,44 @@ class VOOOPuzzleEngine {
             if(typeof v!=='string'||!isNaN(v)) ev=ev.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');
         }
 
-        // solv14: multi-pass math function resolution (now with sol1-sol6 unified fix)
+        // solv14: multi-pass math function resolution
         ev=this.applyMathFunctions(ev);
 
+        // SOL1: repeat() fix — strip parens from args, resolve var names
         if(ev.includes('repeat(')){
             ev=ev.replace(/repeat\(([^,]+),\s*([^)]+)\)/g,(match,emoji,count)=>{
-                const val=variables[emoji.trim().replace(/['"]/g,'')]||emoji.trim().replace(/['"]/g,'');
-                return JSON.stringify(val.repeat(parseInt(count)||1));
+                const emojiKey = emoji.trim().replace(/['"()\s]/g, '');
+                const countKey = count.trim().replace(/['"()\s]/g, '');
+                const emojiVal = variables[emojiKey] !== undefined
+                    ? variables[emojiKey]
+                    : emojiKey;
+                const countVal = variables[countKey] !== undefined
+                    ? parseInt(variables[countKey])
+                    : parseInt(countKey);
+                if (!isNaN(countVal) && countVal > 0) {
+                    return JSON.stringify(String(emojiVal).repeat(countVal));
+                }
+                return match;
             });
         }
+
         if(ev.includes('next_in_pattern(')){
             ev=ev.replace(/next_in_pattern\(([^)]+)\)/g,(match,p)=>
                 JSON.stringify(this.calculateNextInPattern(p.trim().replace(/['"]/g,''),variables)));
         }
+
+        // SOL2: generate_options() fix — strip parens from args, resolve var names
         if(ev.includes('generate_options(')){
-            ev=ev.replace(/generate_options\(([^)]+)\)/g,(match,params)=>{
-                const [num,emoji]=params.split(',').map(p=>p.trim().replace(/['"]/g,''));
-                return JSON.stringify(this.generateVisualOptions(num,emoji,variables));
+            ev=ev.replace(/generate_options\(([^,]+),\s*([^)]+)\)/g,(match,num,emoji)=>{
+                const numKey = num.trim().replace(/['"()\s]/g, '');
+                const emojiKey = emoji.trim().replace(/['"()\s]/g, '');
+                const numVal = variables[numKey] !== undefined
+                    ? parseInt(variables[numKey])
+                    : parseInt(numKey);
+                const emojiVal = variables[emojiKey] !== undefined
+                    ? variables[emojiKey]
+                    : emojiKey;
+                return JSON.stringify(this.generateVisualOptions(numVal, emojiVal, variables));
             });
         }
 
@@ -551,19 +562,35 @@ class VOOOPuzzleEngine {
         return this.shuffleArray(options);
     }
 
-    generateVisualOptions(number,emojiName,variables) {
-        const emoji=variables[emojiName]||emojiName;
-        const opts=[];
-        for(let i=1;i<=5;i++) opts.push(emoji.repeat(i));
-        return this.shuffleArray(opts);
+    // SOL2: generateVisualOptions — correct answer always in options, no NaN
+    generateVisualOptions(number, emoji, variables) {
+        const emojiChar = typeof emoji === 'string' ? emoji : (variables[emoji] || emoji);
+        const correct = parseInt(number);
+        const opts = new Set();
+        opts.add(emojiChar.repeat(correct));
+        let i = 1;
+        while (opts.size < 4) {
+            if (i !== correct) opts.add(emojiChar.repeat(i));
+            i++;
+        }
+        return this.shuffleArray([...opts]);
     }
+
     calculateNextInPattern(patternType) {
         switch(patternType){case 'ABAB':return '🔴';case 'AABB':return '🟡';case 'ABCABC':return '🔵';default:return '?';}
     }
-    findCorrectIndex(options,correctAnswer,answerType) {
-        if(answerType==='comparison') return (this.sizeComparison[options[0]]==='big')?0:1;
-        return options.findIndex(opt=>String(opt)===String(correctAnswer));
+
+    // SOL5: findCorrectIndex — detect "smaller/least/tiny" in question text
+    findCorrectIndex(options, correctAnswer, answerType, question) {
+        if (answerType === 'comparison') {
+            const isSmaller = question && /smaller|least|tiny/i.test(question);
+            return options.findIndex(opt =>
+                this.sizeComparison[opt] === (isSmaller ? 'small' : 'big')
+            );
+        }
+        return options.findIndex(opt => String(opt) === String(correctAnswer));
     }
+
     generateExplanation(template,variables,answer) {
         if(!template.explanation) return `The correct answer is ${answer}.`;
         let expl=this.resolvePatternText(template.explanation,variables);
