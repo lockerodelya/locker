@@ -14,9 +14,8 @@ class VOOOPuzzleEngine {
         this.currentCategory = 'math_toddler';
         this.usedQuestions = [];
         this.categories = {
-            'toddler_math': 'math_toddler.json',
-            'toddler_reasoning': 'reasoning_toddler.json',
-            'math_toddler': 'math_toddler.json',
+            'toddler_math': 'toddler_math.json',
+            'toddler_reasoning': 'toddler_reasoning.json',
             'math_beginner': 'math_beginner.json',
             'math_elementary': 'math_elementary.json',
             'math_intermediate': 'math_intermediate.json',
