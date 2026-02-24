@@ -1,5 +1,5 @@
 // pwainstall.js - Fixed for Mobile Reliability
-// Version: 4.2 - Mobile Fix
+// Version: 5.2 - Mobile Fix
 
 class PWAInstaller {
     constructor() {
