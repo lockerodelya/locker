@@ -116,12 +116,13 @@ class VOOOPuzzleEngine {
     fibonacci(n){n=Math.floor(n);if(n<=0)return 0;if(n===1)return 1;let a=0,b=1;for(let i=2;i<=n;i++){const t=a+b;a=b;b=t;}return b;}
     binomialCoeff(n,k){n=Math.floor(n);k=Math.floor(k);if(k<0||k>n)return 0;if(k===0||k===n)return 1;k=Math.min(k,n-k);let r=1;for(let i=0;i<k;i++){r*=(n-i);r/=(i+1);}return Math.round(r);}
     permutations(n,k){n=Math.floor(n);k=Math.floor(k);if(k<0||k>n)return 0;let r=1;for(let i=0;i<k;i++)r*=(n-i);return r;}
+    slopeBetwPoints(x1,y1,x2,y2){if(x2===x1)return null;return parseFloat(((y2-y1)/(x2-x1)).toFixed(4));}
     sinDeg(a){return parseFloat(Math.sin(a*Math.PI/180).toFixed(4));}
     cosDeg(a){return parseFloat(Math.cos(a*Math.PI/180).toFixed(4));}
     tanDeg(a){const r=Math.tan(a*Math.PI/180);return Math.abs(r)>1e6?'undefined':parseFloat(r.toFixed(4));}
-    quadraticSolution(a,b,c){const d=b*b-4*a*c;if(d<0)return'No real solution';if(d===0)return parseFloat((-b/(2*a)).toFixed(4));return parseFloat(((-b+Math.sqrt(d))/(2*a)).toFixed(4));}
+    quadraticSolution(a,b,c){const d=b*b-4*a*c;if(d<0)return null;if(d===0)return parseFloat((-b/(2*a)).toFixed(4));return parseFloat(((-b+Math.sqrt(d))/(2*a)).toFixed(4));}
     diceProbability(s){const f={2:1,3:2,4:3,5:4,6:5,7:6,8:5,9:4,10:3,11:2,12:1};return parseFloat(((f[s]||0)/36).toFixed(4));}
-    modInverse(a,m){a=((a%m)+m)%m;for(let x=1;x<m;x++)if((a*x)%m===1)return x;return'No inverse';}
+    modInverse(a,m){a=((a%m)+m)%m;for(let x=1;x<m;x++)if((a*x)%m===1)return x;return null;}
 
     // ═══════════════════════════════════════════════
     // APPLY NAMED MATH FUNCTIONS IN AN EXPRESSION
@@ -153,6 +154,9 @@ class VOOOPuzzleEngine {
             ['cos_degrees',       x=>this.cosDeg(x)],
             ['tan_degrees',       x=>this.tanDeg(x)],
             ['quadratic_solution',(a,b,c)=>this.quadraticSolution(a,b,c)],
+            ['slope_between_points',(x1,y1,x2,y2)=>this.slopeBetwPoints(x1,y1,x2,y2)],
+            ['solve_system_x',(a,b,c,d,e,f)=>{const det=a*e-b*d;if(det===0)return null;return parseFloat(((c*e-b*f)/det).toFixed(4));}],
+            ['median_of_five',(a,b,c,d,e)=>parseFloat([a,b,c,d,e].sort((x,y)=>x-y)[2].toFixed(4))],
             ['dice_probability',  x=>this.diceProbability(Math.round(x))],
             ['mod_inverse',       (a,m)=>this.modInverse(Math.round(a),Math.round(m))],
             ['gcd',               (a,b)=>this.gcd(a,b)],
@@ -412,7 +416,12 @@ class VOOOPuzzleEngine {
 
         const result=this.evaluateExpression(calc,variables);
         if(result===null||result===undefined)return null;
-        if(typeof result==='number')return parseFloat(result.toFixed(4));
+        // Reject string results that are error messages (e.g. "No inverse", "undefined", "No real solution")
+        if(typeof result==='string'&&/no |undefined|error|nan/i.test(result))return null;
+        if(typeof result==='number'){
+            if(!isFinite(result)||isNaN(result))return null;
+            return parseFloat(result.toFixed(4));
+        }
         return result;
     }
 
@@ -451,20 +460,36 @@ class VOOOPuzzleEngine {
         // 4. numeric distractors
         const options=[];
         const correctNum=Number(correctAnswer);
-        if(!isNaN(correctNum)){
-            options.push(String(parseFloat(correctNum.toFixed(4))));
+        if(!isNaN(correctNum)&&isFinite(correctNum)){
+            const isInt=Number.isInteger(correctNum)||(Math.abs(correctNum-Math.round(correctNum))<0.0001);
+            const isDecimal=!isInt&&Math.abs(correctNum)<1;
+            const isSmall=Math.abs(correctNum)<=12;
+            const fmt=v=>isInt?String(Math.round(v)):String(parseFloat(v.toFixed(isDecimal?4:2)));
+            options.push(fmt(correctNum));
+            const baseOffsets=isDecimal
+                ?[0.1,-0.1,0.2,-0.2,0.25,-0.25,0.5,-0.5,0.3,-0.3]
+                :isSmall
+                    ?[1,2,3,-1,-2,-3,4,-4,5,-5,6,-6]
+                    :[5,-5,10,-10,15,-15,20,-20,25,-25];
+            for(const off of baseOffsets){
+                if(options.length>=4)break;
+                const wrong=correctNum+off;
+                if(wrong<0&&correctNum>=0)continue;
+                const ws=fmt(wrong);
+                if(!options.includes(ws))options.push(ws);
+            }
             let attempts=0;
-            while(options.length<4&&attempts<50){
+            while(options.length<4&&attempts<60){
                 attempts++;
                 const sign=Math.random()>0.5?1:-1;
                 const mag=Math.max(1,Math.abs(correctNum));
                 let offset;
                 if(mag>1000) offset=sign*Math.round(mag*0.05*(Math.floor(Math.random()*5)+1));
-                else if(mag>100) offset=sign*(Math.floor(Math.random()*20)+1)*Math.ceil(mag*0.02);
+                else if(mag>100) offset=sign*(Math.floor(Math.random()*20)+1);
                 else if(mag>10)  offset=sign*(Math.floor(Math.random()*5)+1);
-                else             offset=sign*(Math.floor(Math.random()*3)+1);
-                const wrong=parseFloat((correctNum+offset).toFixed(4));
-                const ws=String(wrong);
+                else             offset=sign*(Math.floor(Math.random()*4)+1);
+                const wrong=correctNum+offset;
+                const ws=fmt(wrong);
                 if(!options.includes(ws))options.push(ws);
             }
         }else{
