@@ -148,8 +148,8 @@ class VOOOPuzzleEngine {
             ['next_factorial_prime',x=>this.nextFactorialPrime(Math.round(x))],
             ['next_giuga',        x=>this.nextGiuga(Math.round(x))],
             ['fibonacci',         x=>this.fibonacci(Math.round(x))],
-            ['log_base_2',        x=>x<=0?'undefined':Math.log2(x)],
-            ['log_base_10',       x=>x<=0?'undefined':Math.log10(x)],
+            ['log_base_2',        x=>x<=0?null:parseFloat(Math.log2(x).toFixed(4))],
+            ['log_base_10',       x=>x<=0?null:parseFloat(Math.log10(x).toFixed(4))],
             ['sin_degrees',       x=>this.sinDeg(x)],
             ['cos_degrees',       x=>this.cosDeg(x)],
             ['tan_degrees',       x=>this.tanDeg(x)],
@@ -169,31 +169,30 @@ class VOOOPuzzleEngine {
 
     applyMathFunctions(ev){
         const fns=this._mathFnList();
-        const names=fns.map(([n])=>n);
-        // Resolve inner arithmetic in function args first (up to 10 passes)
-        const deepRe=new RegExp(`(${names.join('|')})\\(([^()]*(?:\\([^()]*\\)[^()]*)*)\\)`,'g');
-        for(let p=0;p<10;p++){
-            ev=ev.replace(deepRe,(m,fn,inner)=>{
-                if(names.some(n=>inner.includes(n)))return m;
-                try{const v=new Function('return '+inner)();if(typeof v==='number'&&isFinite(v))return fn+'('+v+')';}catch(e){}
-                return m;
-            });
-        }
-        // Iterative evaluation
+        // Multi-arg function regex: name(num, num, num, ...) — handles 1 to 6 numeric args
+        const numArg='(-?\\d+(?:\\.\\d+)?)';
+        const multiArgRe=(name)=>new RegExp(
+            name+'\\(\\s*'+numArg+'(?:\\s*,\\s*'+numArg+')*\\s*\\)','g'
+        );
+        // Run up to 20 passes to resolve nested or sequential calls
         for(let pass=0;pass<20;pass++){
             let changed=false;
-            // Simplify arithmetic sub-expressions
+            // Step 1: simplify arithmetic wrapping like (4) -> 4, (2)+(3) -> 5
             ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*(-?\d+(?:\.\d+)?)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
             ev=ev.replace(/(-?\d+(?:\.\d+)?)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
             ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
-            ev=ev.replace(/(?<![a-zA-Z_(])\((-?\d+(?:\.\d+)?)\)(?![a-zA-Z_])/g,(m,n)=>{changed=true;return n;});
-            // Apply named functions with resolved numeric args
+            ev=ev.replace(/(?<![a-zA-Z_(])\((-?\d+(?:\.\d+)?)\)(?![a-zA-Z_(\d])/g,(m,n)=>{changed=true;return n;});
+            // Step 2: apply each named function when ALL args are resolved numbers
             for(const[name,fn]of fns){
-                const re=new RegExp(name+'\\((-?\\d+(?:\\.\\d+)?(?:,\\s*-?\\d+(?:\\.\\d+)?)*)\\)','g');
-                ev=ev.replace(re,(match,args)=>{
+                const re=multiArgRe(name);
+                ev=ev.replace(re,(match)=>{
                     try{
-                        const vals=args.split(',').map(a=>Number(a.trim()));
+                        // Extract all numeric args from the match
+                        const inner=match.slice(name.length+1,-1);
+                        const vals=inner.split(',').map(a=>Number(a.trim()));
+                        if(vals.some(isNaN))return match;
                         const result=fn(...vals);
+                        if(result===null||result===undefined){changed=true;return 'null';}
                         changed=true;
                         return String(result);
                     }catch(e){return match;}
