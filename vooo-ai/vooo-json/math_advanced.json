@@ -14,21 +14,22 @@
   "explanation": "Expand: x²-[R1+R2]x+[R1*R2]=0. Roots: x=[R1] or x=[R2]"
 },
 
-    {
-      "template_id": "ADV_SIMUL_01",
-      "pattern": "[A]x + [B]y = [C], [D]x + [E]y = [F]. x = ?",
-      "variables": {
-        "A": {"min": 1, "max": 5},
-        "B": {"min": 1, "max": 5},
-        "D": {"min": 1, "max": 5},
-        "E": {"min": 1, "max": 5},
-        "X_VAL": {"min": 1, "max": 10},
-        "Y_VAL": {"min": 1, "max": 10}
-      },
-      "pattern_builder": "'(' + A + ')x + (' + B + ')y = ' + (A*X_VAL + B*Y_VAL) + ', (' + D + ')x + (' + E + ')y = ' + (D*X_VAL + E*Y_VAL) + '. x = ?'",
-      "calculation": "X_VAL",
-      "explanation": "Solving the system: x = [X_VAL], y = [Y_VAL]"
-    },
+{
+  "template_id": "ADV_SIMUL_01",
+  "pattern": "[A]x + [B]y = [C], [D]x + [E]y = [F]. x = ?",
+  "variables": {
+    "A": {"min": 1, "max": 5},
+    "B": {"min": 1, "max": 5},
+    "D": {"min": 1, "max": 5},
+    "E": {"min": 1, "max": 5},
+    "X_VAL": {"min": 1, "max": 10},
+    "Y_VAL": {"min": 1, "max": 10},
+    "C": {"calc": "A*X_VAL + B*Y_VAL"},
+    "F": {"calc": "D*X_VAL + E*Y_VAL"}
+  },
+  "calculation": "X_VAL",
+  "explanation": "Solving the system: x = [X_VAL], y = [Y_VAL]"
+},
 
     {
       "template_id": "ADV_EXP_01",
@@ -446,4 +447,5 @@
     "incorrect": ["Check the formula 📐", "Review the method 📚", "Try again 🔍", "Close! Refine your solution ✨", "Think carefully 🤔"]
   }
 }
+
 
