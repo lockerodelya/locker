@@ -1,17 +1,26 @@
 {
   "puzzle_type": "advanced_math",
-  "display_name": "Advanced Math",
+  "display_name": "🚀 Advanced Math",
   "templates": [
+
     {
-      "template_id": "ADV_EXP_01",
-      "pattern": "[A]^[B] = ?",
+      "template_id": "ADV_SIMUL_01",
+      "pattern": "[A]x + [B]y = [C], [D]x + [E]y = [F]. x = ?",
       "variables": {
-        "A": {"min": 2, "max": 8},
-        "B": {"min": 2, "max": 5}
+        "A": {"min": 1, "max": 5},
+        "B": {"min": 1, "max": 5},
+        "D": {"min": 6, "max": 10},
+        "E": {"min": 6, "max": 10},
+        "X_VAL": {"min": 1, "max": 10},
+        "Y_VAL": {"min": 1, "max": 10},
+        "C": {"calc": "A*X_VAL + B*Y_VAL"},
+        "F": {"calc": "D*X_VAL + E*Y_VAL"}
       },
-      "calculation": "A ** B",
-      "explanation": "[A] to the power [B] = [RESULT]"
+      "calculation": "X_VAL",
+      "explanation": "Solving the system: x = [X_VAL], y = [Y_VAL]"
     },
+
+
     {
       "template_id": "ADV_EXP_02",
       "pattern": "[A]^[B] × [A]^[C] = [A]^?",
@@ -23,6 +32,7 @@
       "calculation": "B + C",
       "explanation": "[A]^[B] × [A]^[C] = [A]^([B]+[C]) = [A]^[RESULT]"
     },
+
     {
       "template_id": "ADV_EXP_03",
       "pattern": "([A]^[B])^[C] = [A]^?",
@@ -32,630 +42,410 @@
         "C": {"min": 2, "max": 4}
       },
       "calculation": "B * C",
-      "explanation": "Power of a power: ([A]^[B])^[C] = [A]^([B]×[C]) = [A]^[RESULT]"
+      "explanation": "([A]^[B])^[C] = [A]^([B]×[C]) = [A]^[RESULT]"
     },
-    {
-      "template_id": "ADV_EXP_04",
-      "pattern": "[A]^[B] ÷ [A]^[C] = [A]^?",
-      "variables": {
-        "A": {"values": [2, 3, 4, 5, 6]},
-        "B": {"min": 4, "max": 8},
-        "C": {"min": 1, "max": 3}
-      },
-      "calculation": "B - C",
-      "explanation": "[A]^[B] ÷ [A]^[C] = [A]^([B]-[C]) = [A]^[RESULT]"
-    },
-    {
-      "template_id": "ADV_QUAD_01",
-      "pattern": "Solve: x² + [B]x + [C] = 0. Larger x = ?",
-      "variables": {
-        "R1": {"values": [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6]},
-        "R2": {"values": [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6]}
-      },
-      "calculation": "Math.max(R1, R2)",
-      "explanation": "Roots are [R1] and [R2]. Larger root = [RESULT]",
-      "options_note": "B = -(R1+R2), C = R1*R2 — computed in engine via pattern_builder override not needed; B and C are derived"
-    },
-    {
-      "template_id": "ADV_QUAD_02",
-      "pattern": "Discriminant of x² + [B]x + [C] = 0 is ?",
-      "variables": {
-        "B": {"values": [-8,-6,-4,-2,2,4,6,8]},
-        "C": {"values": [-12,-8,-6,-4,-3,2,4,6,8,12]}
-      },
-      "calculation": "B * B - 4 * C",
-      "explanation": "Discriminant = B²-4C = [B]²-4×[C] = [RESULT]"
-    },
-    {
-      "template_id": "ADV_QUAD_03",
-      "pattern": "Sum of roots of x² + [B]x + [C] = 0 is ?",
-      "variables": {
-        "B": {"min": -10, "max": 10},
-        "C": {"min": -20, "max": 20}
-      },
-      "calculation": "-1 * B",
-      "explanation": "Sum of roots = -B/1 = -([B]) = [RESULT]"
-    },
-    {
-      "template_id": "ADV_QUAD_04",
-      "pattern": "Product of roots of x² + [B]x + [C] = 0 is ?",
-      "variables": {
-        "B": {"min": -10, "max": 10},
-        "C": {"min": -20, "max": 20}
-      },
-      "calculation": "C",
-      "explanation": "Product of roots = C/1 = [RESULT]"
-    },
-    {
-      "template_id": "ADV_SIMUL_01",
-      "pattern": "[A]x + [B]y = [C], [D]x + [E]y = [F]. x = ?",
-      "variables": {
-        "A": {"min": 1, "max": 5},
-        "B": {"min": 1, "max": 5},
-        "D": {"min": 1, "max": 5},
-        "E": {"min": 1, "max": 5},
-        "C": {"min": 10, "max": 30},
-        "F": {"min": 10, "max": 30}
-      },
-      "calculation": "solve_system_x(A, B, C, D, E, F)",
-      "explanation": "Using elimination: x = (C×E - B×F) / (A×E - B×D) = [RESULT]"
-    },
+
     {
       "template_id": "ADV_ROOT_01",
       "pattern": "√[A] × √[B] = √?",
       "variables": {
-        "A": {"values": [4, 9, 16, 25, 36, 49, 64, 81, 100]},
-        "B": {"values": [4, 9, 16, 25, 36, 49, 64, 81, 100]}
+        "A": {"values": [4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144]},
+        "B": {"values": [4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144]}
       },
       "calculation": "A * B",
       "explanation": "√[A] × √[B] = √([A]×[B]) = √[RESULT]"
     },
+
     {
       "template_id": "ADV_ROOT_02",
-      "pattern": "√[A] + √[A] = ?√[A]",
+      "pattern": "√[A] ÷ √[B] = √?",
       "variables": {
-        "A": {"values": [4, 9, 16, 25, 36, 49, 64, 81]}
+        "M": {"values": [4, 9, 16, 25, 36]},
+        "B": {"values": [4, 9, 16, 25]},
+        "A": {"calc": "M * B"}
       },
-      "calculation": "2",
-      "explanation": "√[A] + √[A] = 2√[A], so the answer is [RESULT]"
+      "calculation": "M",
+      "explanation": "√[A] ÷ √[B] = √([A]/[B]) = √[RESULT]"
     },
-    {
-      "template_id": "ADV_ROOT_03",
-      "pattern": "√[A] = ?",
-      "variables": {
-        "A": {"values": [4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225]}
-      },
-      "calculation": "Math.sqrt(A)",
-      "explanation": "√[A] = [RESULT]"
-    },
+
     {
       "template_id": "ADV_LINEAR_01",
-      "pattern": "Slope of line through ([X1],[Y1]) and ([X2],[Y2]) = ?",
+      "pattern": "Slope through ([X1],[Y1]) and ([X2],[Y2]) = ?",
       "variables": {
-        "X1": {"min": -5, "max": 5},
-        "Y1": {"min": -5, "max": 5},
-        "X2": {"min": -5, "max": 5},
-        "Y2": {"min": -5, "max": 5}
+        "X1": {"min": 1, "max": 5},
+        "Y1": {"min": 1, "max": 5},
+        "XSTEP": {"values": [1, 2]},
+        "SLOPE": {"values": [-4, -3, -2, -1, 1, 2, 3, 4]},
+        "YSTEP": {"calc": "SLOPE * XSTEP"},
+        "X2": {"calc": "X1 + XSTEP"},
+        "Y2": {"calc": "Y1 + YSTEP"}
       },
-      "calculation": "slope_between_points(X1, Y1, X2, Y2)",
-      "explanation": "Slope = (y₂-y₁)/(x₂-x₁) = ([Y2]-[Y1])/([X2]-[X1]) = [RESULT]"
+      "calculation": "SLOPE",
+      "explanation": "Slope = (y₂-y₁)/(x₂-x₁) = [YSTEP]/[XSTEP] = [RESULT]"
     },
-    {
-      "template_id": "ADV_LINEAR_02",
-      "pattern": "Line y = [M]x + [B]. y-intercept = ?",
-      "variables": {
-        "M": {"min": -5, "max": 5},
-        "B": {"min": -10, "max": 10}
-      },
-      "calculation": "B",
-      "explanation": "y-intercept is when x=0: y = [M]×0 + [B] = [RESULT]"
-    },
-    {
-      "template_id": "ADV_LINEAR_03",
-      "pattern": "Line y = [M]x + [B]. x-intercept = ?",
-      "variables": {
-        "M": {"values": [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]},
-        "B": {"min": -10, "max": 10}
-      },
-      "calculation": "-1 * B / M",
-      "explanation": "x-intercept: 0 = [M]x + [B], so x = -[B]/[M] = [RESULT]"
-    },
+
     {
       "template_id": "ADV_INEQ_01",
       "pattern": "Solve: [A]x + [B] > [C]. x > ?",
       "variables": {
         "A": {"min": 2, "max": 10},
-        "B": {"min": -10, "max": 10},
-        "C": {"min": 5, "max": 30}
+        "X_ANS": {"min": 1, "max": 10},
+        "B": {"min": 1, "max": 10},
+        "C": {"calc": "A * X_ANS + B - 1"}
       },
-      "calculation": "(C - B) / A",
-      "explanation": "[A]x > [C] - [B] = [C-B], so x > [RESULT]"
+      "calculation": "X_ANS",
+      "explanation": "[A]x > [C]-[B], so x > ([C]-[B])/[A] = [RESULT]"
     },
+
     {
       "template_id": "ADV_INEQ_02",
-      "pattern": "Solve: [A]x - [B] ≤ [C]. x ≤ ?",
+      "pattern": "Solve: [A]x - [B] < [C]. x < ?",
       "variables": {
-        "A": {"min": 2, "max": 8},
+        "A": {"min": 2, "max": 10},
+        "X_ANS": {"min": 1, "max": 10},
         "B": {"min": 1, "max": 10},
-        "C": {"min": 5, "max": 30}
+        "C": {"calc": "A * X_ANS - B + 1"}
       },
-      "calculation": "(C + B) / A",
-      "explanation": "[A]x ≤ [C] + [B] = [C+B], so x ≤ [RESULT]"
+      "calculation": "X_ANS",
+      "explanation": "[A]x < [C]+[B], so x < ([C]+[B])/[A] = [RESULT]"
     },
+
     {
       "template_id": "ADV_PROB_01",
-      "pattern": "Probability: [F] favorable out of [T] total outcomes. P = ?",
+      "pattern": "[F] red balls out of [T] total. How many ways to pick 1 red? (out of T)",
       "variables": {
-        "F": {"min": 1, "max": 9},
-        "T": {"min": 10, "max": 20}
+        "F": {"min": 2, "max": 15},
+        "T": {"min": 20, "max": 50}
       },
-      "calculation": "F / T",
-      "explanation": "P = [F]/[T] = [RESULT]"
+      "calculation": "F",
+      "explanation": "There are [F] red balls out of [T]. Favorable outcomes = [RESULT]"
     },
+
     {
       "template_id": "ADV_PROB_02",
-      "pattern": "Two dice: P(sum = [S]) = ?",
+      "pattern": "Bag: [R] red, [B] blue, [G] green. Total balls = ?",
+      "variables": {
+        "R": {"min": 1, "max": 10},
+        "B": {"min": 1, "max": 10},
+        "G": {"min": 1, "max": 10}
+      },
+      "calculation": "R + B + G",
+      "explanation": "Total = [R]+[B]+[G] = [RESULT]"
+    },
+
+    {
+      "template_id": "ADV_PROB_03",
+      "pattern": "2 dice thrown. How many outcomes give sum = [S]?",
       "variables": {
         "S": {"values": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
       },
-      "calculation": "dice_probability(S)",
-      "explanation": "Number of ways to get sum [S] out of 36 total = [RESULT]"
+      "options": [1, 2, 3, 4, 5, 6],
+      "calculation": "S <= 7 ? S - 1 : 13 - S",
+      "explanation": "Sum [S] can occur [RESULT] ways out of 36 total outcomes."
     },
-    {
-      "template_id": "ADV_PROB_03",
-      "pattern": "P(A) = [P]. P(not A) = ?",
-      "variables": {
-        "P": {"values": [0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9]}
-      },
-      "calculation": "1 - P",
-      "explanation": "P(not A) = 1 - P(A) = 1 - [P] = [RESULT]"
-    },
-    {
-      "template_id": "ADV_PROB_04",
-      "pattern": "Independent events P(A)=[PA], P(B)=[PB]. P(A and B) = ?",
-      "variables": {
-        "PA": {"values": [0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8]},
-        "PB": {"values": [0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8]}
-      },
-      "calculation": "PA * PB",
-      "explanation": "For independent events: P(A∩B) = P(A)×P(B) = [PA]×[PB] = [RESULT]"
-    },
+
     {
       "template_id": "ADV_STATS_01",
       "pattern": "Mean of [A], [B], [C], [D], [E] = ?",
       "variables": {
-        "A": {"min": 10, "max": 50},
-        "B": {"min": 10, "max": 50},
-        "C": {"min": 10, "max": 50},
-        "D": {"min": 10, "max": 50},
-        "E": {"min": 10, "max": 50}
+        "A": {"values": [10, 15, 20, 25, 30, 35, 40, 45, 50]},
+        "B": {"values": [10, 15, 20, 25, 30, 35, 40, 45, 50]},
+        "C": {"values": [10, 15, 20, 25, 30, 35, 40, 45, 50]},
+        "D": {"values": [10, 15, 20, 25, 30, 35, 40, 45, 50]},
+        "E": {"values": [10, 15, 20, 25, 30, 35, 40, 45, 50]}
       },
       "calculation": "(A + B + C + D + E) / 5",
-      "explanation": "Mean = ([A]+[B]+[C]+[D]+[E]) / 5 = [RESULT]"
+      "explanation": "Mean = ([A]+[B]+[C]+[D]+[E])/5 = [RESULT]"
     },
+
     {
       "template_id": "ADV_STATS_02",
-      "pattern": "Median of [A], [B], [C], [D], [E] = ?",
-      "variables": {
-        "A": {"min": 10, "max": 50},
-        "B": {"min": 10, "max": 50},
-        "C": {"min": 10, "max": 50},
-        "D": {"min": 10, "max": 50},
-        "E": {"min": 10, "max": 50}
-      },
-      "calculation": "median_of_five(A, B, C, D, E)",
-      "explanation": "Sort the values and pick the middle. Median = [RESULT]"
-    },
-    {
-      "template_id": "ADV_STATS_03",
       "pattern": "Range of [A], [B], [C], [D], [E] = ?",
       "variables": {
-        "A": {"min": 5, "max": 40},
-        "B": {"min": 5, "max": 40},
-        "C": {"min": 5, "max": 40},
-        "D": {"min": 5, "max": 40},
-        "E": {"min": 5, "max": 40}
+        "A": {"min": 5, "max": 15},
+        "B": {"min": 16, "max": 30},
+        "C": {"min": 10, "max": 25},
+        "D": {"min": 20, "max": 35},
+        "E": {"min": 36, "max": 50}
       },
-      "calculation": "Math.max(A, B, C, D, E) - Math.min(A, B, C, D, E)",
-      "explanation": "Range = max - min = [RESULT]"
+      "calculation": "E - A",
+      "explanation": "Range = max - min = [E] - [A] = [RESULT]"
     },
+
     {
       "template_id": "ADV_TRIG_01",
-      "pattern": "sin([ANGLE]°) = ?",
+      "pattern": "sin([ANGLE]°) × 2 = ?",
       "variables": {
-        "ANGLE": {"values": [0, 30, 45, 60, 90, 120, 135, 150, 180]}
+        "ANGLE": {"values": [30, 90, 150]}
       },
-      "calculation": "sin_degrees(ANGLE)",
-      "explanation": "sin([ANGLE]°) = [RESULT]"
+      "options": [1, 2, 0, -1],
+      "calculation": "Math.round(Math.sin(ANGLE * Math.PI / 180) * 2)",
+      "explanation": "sin([ANGLE]°) = [RESULT]/2"
     },
+
     {
       "template_id": "ADV_TRIG_02",
       "pattern": "cos([ANGLE]°) = ?",
       "variables": {
-        "ANGLE": {"values": [0, 30, 45, 60, 90, 120, 135, 150, 180]}
+        "ANGLE": {"values": [0, 60, 90, 120, 180]}
       },
-      "calculation": "cos_degrees(ANGLE)",
+      "options": [1, 0, -1, 0.5, -0.5],
+      "calculation": "Math.round(Math.cos(ANGLE * Math.PI / 180) * 2) / 2",
       "explanation": "cos([ANGLE]°) = [RESULT]"
     },
+
     {
       "template_id": "ADV_TRIG_03",
       "pattern": "tan([ANGLE]°) = ?",
       "variables": {
-        "ANGLE": {"values": [0, 30, 45, 60, 120, 135, 150, 180]}
+        "ANGLE": {"values": [0, 45, 135, 180]}
       },
-      "calculation": "tan_degrees(ANGLE)",
+      "options": [0, 1, -1, 2],
+      "calculation": "Math.round(Math.tan(ANGLE * Math.PI / 180))",
       "explanation": "tan([ANGLE]°) = [RESULT]"
     },
+
     {
       "template_id": "ADV_TRIG_04",
-      "pattern": "Right triangle: opposite = [O], hypotenuse = [H]. sinθ = ?",
+      "pattern": "Right triangle: opposite=[O], hypotenuse=[H]. sinθ as fraction numerator = ?",
       "variables": {
-        "O": {"min": 1, "max": 12},
-        "H": {"min": 13, "max": 20}
+        "O": {"values": [3, 4, 5, 6, 8, 9, 10, 12]},
+        "H": {"values": [13, 15, 17, 20, 25]}
       },
-      "calculation": "O / H",
-      "explanation": "sinθ = opposite/hypotenuse = [O]/[H] = [RESULT]"
+      "calculation": "O",
+      "explanation": "sinθ = opposite/hypotenuse = [O]/[H]. Numerator = [RESULT]"
     },
-    {
-      "template_id": "ADV_TRIG_05",
-      "pattern": "Right triangle: adjacent = [ADJ], hypotenuse = [H]. cosθ = ?",
-      "variables": {
-        "ADJ": {"min": 1, "max": 12},
-        "H": {"min": 13, "max": 20}
-      },
-      "calculation": "ADJ / H",
-      "explanation": "cosθ = adjacent/hypotenuse = [ADJ]/[H] = [RESULT]"
-    },
-    {
-      "template_id": "ADV_TRIG_06",
-      "pattern": "sin²([ANGLE]°) + cos²([ANGLE]°) = ?",
-      "variables": {
-        "ANGLE": {"values": [0, 30, 45, 60, 90, 120, 150, 180]}
-      },
-      "calculation": "1",
-      "explanation": "Pythagorean identity: sin²θ + cos²θ = [RESULT] always",
-      "options": [1, 0, 2, 0.5]
-    },
+
     {
       "template_id": "ADV_FUNC_01",
       "pattern": "f(x) = [A]x + [B]. f([C]) = ?",
       "variables": {
-        "A": {"min": -5, "max": 5},
+        "A": {"min": 1, "max": 8},
         "B": {"min": -10, "max": 10},
-        "C": {"min": -5, "max": 5}
+        "C": {"min": 1, "max": 8}
       },
       "calculation": "A * C + B",
       "explanation": "f([C]) = [A]×[C] + [B] = [RESULT]"
     },
+
     {
       "template_id": "ADV_FUNC_02",
       "pattern": "f(x) = x² + [A]x + [B]. f([C]) = ?",
       "variables": {
-        "A": {"min": -5, "max": 5},
-        "B": {"min": -10, "max": 10},
-        "C": {"min": -5, "max": 5}
+        "A": {"min": 1, "max": 5},
+        "B": {"min": 1, "max": 10},
+        "C": {"min": 1, "max": 5}
       },
       "calculation": "C*C + A*C + B",
       "explanation": "f([C]) = [C]² + [A]×[C] + [B] = [RESULT]"
     },
+
     {
       "template_id": "ADV_FUNC_03",
-      "pattern": "f(x) = [A]x² + [B]x. f([C]) = ?",
+      "pattern": "f(x) = [A]x² + [B]. f([C]) = ?",
       "variables": {
         "A": {"min": 1, "max": 5},
-        "B": {"min": -5, "max": 5},
-        "C": {"min": -4, "max": 4}
+        "B": {"min": 1, "max": 10},
+        "C": {"min": 1, "max": 4}
       },
-      "calculation": "A * C * C + B * C",
-      "explanation": "f([C]) = [A]×[C]² + [B]×[C] = [RESULT]"
+      "calculation": "A*C*C + B",
+      "explanation": "f([C]) = [A]×[C]² + [B] = [RESULT]"
     },
-    {
-      "template_id": "ADV_FUNC_04",
-      "pattern": "f(x) = [A]x + [B], g(x) = [C]x + [D]. f(g([E])) = ?",
-      "variables": {
-        "A": {"min": 1, "max": 4},
-        "B": {"min": -5, "max": 5},
-        "C": {"min": 1, "max": 4},
-        "D": {"min": -5, "max": 5},
-        "E": {"min": -3, "max": 3}
-      },
-      "calculation": "A * (C * E + D) + B",
-      "explanation": "g([E]) = [C]×[E]+[D], then f(g([E])) = [A]×(g([E]))+[B] = [RESULT]"
-    },
+
     {
       "template_id": "ADV_COMPLEX_01",
       "pattern": "([A] + [B]i) + ([C] + [D]i). Real part = ?",
       "variables": {
-        "A": {"min": -5, "max": 5},
-        "B": {"min": -5, "max": 5},
-        "C": {"min": -5, "max": 5},
-        "D": {"min": -5, "max": 5}
+        "A": {"min": -8, "max": 8},
+        "B": {"min": -8, "max": 8},
+        "C": {"min": -8, "max": 8},
+        "D": {"min": -8, "max": 8}
       },
       "calculation": "A + C",
-      "explanation": "Real parts add: [A] + [C] = [RESULT]"
+      "explanation": "Real: [A]+[C] = [RESULT], Imaginary: [B]+[D]"
     },
+
     {
       "template_id": "ADV_COMPLEX_02",
-      "pattern": "([A] + [B]i) + ([C] + [D]i). Imaginary part = ?",
+      "pattern": "([A] + [B]i) - ([C] + [D]i). Real part = ?",
       "variables": {
-        "A": {"min": -5, "max": 5},
-        "B": {"min": -5, "max": 5},
-        "C": {"min": -5, "max": 5},
-        "D": {"min": -5, "max": 5}
+        "A": {"min": -8, "max": 8},
+        "B": {"min": -8, "max": 8},
+        "C": {"min": -8, "max": 8},
+        "D": {"min": -8, "max": 8}
       },
-      "calculation": "B + D",
-      "explanation": "Imaginary parts add: [B] + [D] = [RESULT]"
+      "calculation": "A - C",
+      "explanation": "Real: [A]-[C] = [RESULT], Imaginary: [B]-[D]"
     },
-    {
-      "template_id": "ADV_COMPLEX_03",
-      "pattern": "Modulus of ([A] + [B]i) = ?",
-      "variables": {
-        "A": {"values": [3, 4, 5, 6, 8, 12]},
-        "B": {"values": [4, 3, 12, 8, 6, 5]}
-      },
-      "calculation": "Math.sqrt(A * A + B * B)",
-      "explanation": "|[A]+[B]i| = √([A]²+[B]²) = √([A*A]+[B*B]) = [RESULT]"
-    },
+
     {
       "template_id": "ADV_LOGS_01",
       "pattern": "log₂([A]) = ?",
       "variables": {
-        "A": {"values": [2, 4, 8, 16, 32, 64, 128, 256]}
+        "A": {"values": [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]}
       },
-      "calculation": "log_base_2(A)",
-      "explanation": "2^? = [A], so log₂([A]) = [RESULT]"
+      "calculation": "Math.log2(A)",
+      "explanation": "2^[RESULT] = [A], so log₂([A]) = [RESULT]"
     },
+
     {
       "template_id": "ADV_LOGS_02",
       "pattern": "log([A]) + log([B]) = log(?)",
       "variables": {
-        "A": {"values": [2, 5, 10, 20, 50]},
-        "B": {"values": [5, 10, 20, 50, 100]}
+        "A": {"values": [10, 100, 1000]},
+        "B": {"values": [10, 100, 1000]}
       },
       "calculation": "A * B",
-      "explanation": "log([A]) + log([B]) = log([A]×[B]) = log([RESULT])"
+      "explanation": "log([A])+log([B]) = log([A]×[B]) = log([RESULT])"
     },
+
     {
       "template_id": "ADV_LOGS_03",
       "pattern": "log₁₀([A]) = ?",
       "variables": {
         "A": {"values": [10, 100, 1000, 10000, 100000]}
       },
-      "calculation": "log_base_10(A)",
-      "explanation": "10^? = [A], so log₁₀([A]) = [RESULT]"
+      "calculation": "Math.log10(A)",
+      "explanation": "10^[RESULT] = [A], so log₁₀([A]) = [RESULT]"
     },
-    {
-      "template_id": "ADV_LOGS_04",
-      "pattern": "log([A]) - log([B]) = log(?)",
-      "variables": {
-        "A": {"values": [100, 200, 500, 1000]},
-        "B": {"values": [10, 20, 50, 100]}
-      },
-      "calculation": "A / B",
-      "explanation": "log([A]) - log([B]) = log([A]/[B]) = log([RESULT])"
-    },
+
     {
       "template_id": "ADV_DERIVATIVE_01",
-      "pattern": "d/dx([A]x²) = ?",
+      "pattern": "d/dx([A]x²) = ?x",
       "variables": {
-        "A": {"min": 2, "max": 10}
+        "A": {"min": 2, "max": 15}
       },
       "calculation": "2 * A",
-      "explanation": "Power rule: d/dx([A]x²) = [A]×2×x = [RESULT]x"
+      "explanation": "Power rule: d/dx([A]x²) = [A]×2x = [RESULT]x"
     },
+
     {
       "template_id": "ADV_DERIVATIVE_02",
       "pattern": "d/dx([A]x³) = ?x²",
       "variables": {
-        "A": {"min": 1, "max": 8}
-      },
-      "calculation": "3 * A",
-      "explanation": "Power rule: d/dx([A]x³) = [A]×3×x² = [RESULT]x²"
-    },
-    {
-      "template_id": "ADV_DERIVATIVE_03",
-      "pattern": "d/dx([A]x + [B]) = ?",
-      "variables": {
-        "A": {"min": 1, "max": 10},
-        "B": {"min": -10, "max": 10}
-      },
-      "calculation": "A",
-      "explanation": "d/dx([A]x) = [A], d/dx([B]) = 0. Answer = [RESULT]"
-    },
-    {
-      "template_id": "ADV_INTEGRAL_01",
-      "pattern": "∫[A]x dx = ?x² + C",
-      "variables": {
         "A": {"min": 2, "max": 10}
       },
-      "calculation": "A / 2",
-      "explanation": "∫[A]x dx = [A]×(x²/2) + C = [RESULT]x² + C"
+      "calculation": "3 * A",
+      "explanation": "Power rule: d/dx([A]x³) = [A]×3x² = [RESULT]x²"
     },
+
+    {
+      "template_id": "ADV_DERIVATIVE_03",
+      "pattern": "d/dx([A]x² + [B]x) at x=[C] = ?",
+      "variables": {
+        "A": {"min": 1, "max": 5},
+        "B": {"min": 1, "max": 10},
+        "C": {"min": 1, "max": 5}
+      },
+      "calculation": "2*A*C + B",
+      "explanation": "d/dx = 2[A]x+[B], at x=[C]: 2×[A]×[C]+[B] = [RESULT]"
+    },
+
+    {
+      "template_id": "ADV_INTEGRAL_01",
+      "pattern": "∫[A]x dx = ?x² + C (where [A] is even)",
+      "variables": {
+        "A": {"values": [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]}
+      },
+      "calculation": "A / 2",
+      "explanation": "∫[A]x dx = [A]/2 × x² + C = [RESULT]x² + C"
+    },
+
     {
       "template_id": "ADV_INTEGRAL_02",
-      "pattern": "∫[A]x² dx = ?x³ + C",
+      "pattern": "∫[A]x² dx = ?x³ + C (where [A] is multiple of 3)",
       "variables": {
         "A": {"values": [3, 6, 9, 12, 15, 18, 21, 24]}
       },
       "calculation": "A / 3",
-      "explanation": "∫[A]x² dx = [A]×(x³/3) + C = [RESULT]x³ + C"
+      "explanation": "∫[A]x² dx = [A]/3 × x³ + C = [RESULT]x³ + C"
     },
+
     {
-      "template_id": "ADV_INTEGRAL_03",
-      "pattern": "∫[A] dx = ?",
-      "variables": {
-        "A": {"min": 2, "max": 15}
-      },
-      "calculation": "A",
-      "explanation": "∫[A] dx = [A]x + C. The coefficient is [RESULT]"
-    },
-    {
-      "template_id": "ADV_COMB_01",
-      "pattern": "C([N], [K]) = ?  (combinations)",
-      "variables": {
-        "N": {"min": 4, "max": 10},
-        "K": {"min": 1, "max": 3}
-      },
-      "calculation": "binomial_coefficient(N, K)",
-      "explanation": "C([N],[K]) = [N]!/([K]!×([N]-[K])!) = [RESULT]"
-    },
-    {
-      "template_id": "ADV_COMB_02",
-      "pattern": "P([N], [K]) = ?  (permutations)",
+      "template_id": "ADV_PERM_01",
+      "pattern": "P([N],[R]) = [N]!/([N]-[R])! = ?",
       "variables": {
         "N": {"min": 4, "max": 8},
-        "K": {"min": 2, "max": 3}
+        "R": {"min": 2, "max": 3}
       },
-      "calculation": "permutations(N, K)",
-      "explanation": "P([N],[K]) = [N]!/([N]-[K])! = [RESULT]"
+      "calculation": "factorial(N) / factorial(N - R)",
+      "explanation": "P([N],[R]) = [N]!/([N]-[R])! = [RESULT]"
     },
+
     {
-      "template_id": "ADV_MODULAR_01",
-      "pattern": "[A] mod [M] = ?",
+      "template_id": "ADV_COMB_01",
+      "pattern": "C([N],[R]) = [N]!/([R]!×([N]-[R])!) = ?",
       "variables": {
-        "A": {"min": 15, "max": 100},
-        "M": {"values": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
+        "N": {"min": 4, "max": 8},
+        "R": {"min": 2, "max": 3}
       },
-      "calculation": "A % M",
-      "explanation": "[A] ÷ [M] has remainder [RESULT]"
+      "calculation": "factorial(N) / (factorial(R) * factorial(N - R))",
+      "explanation": "C([N],[R]) = [N]!/([R]!×([N]-[R])!) = [RESULT]"
     },
+
     {
-      "template_id": "ADV_MODULAR_02",
-      "pattern": "Modular inverse of [A] (mod [M]) = ?",
-      "variables": {
-        "A": {"values": [2, 3, 4, 5, 6]},
-        "M": {"values": [7, 11, 13, 17, 19, 23]}
-      },
-      "calculation": "mod_inverse(A, M)",
-      "explanation": "Find x such that [A]×x ≡ 1 (mod [M]). x = [RESULT]"
-    },
-    {
-      "template_id": "ADV_GEOMETRY_01",
-      "pattern": "Circle: radius = [R]. Area = ?",
-      "variables": {
-        "R": {"min": 1, "max": 10}
-      },
-      "calculation": "Math.round(Math.PI * R * R * 100) / 100",
-      "explanation": "Area = π×r² = π×[R]² = [RESULT]"
-    },
-    {
-      "template_id": "ADV_GEOMETRY_02",
-      "pattern": "Circle: radius = [R]. Circumference = ?",
-      "variables": {
-        "R": {"min": 1, "max": 10}
-      },
-      "calculation": "Math.round(2 * Math.PI * R * 100) / 100",
-      "explanation": "Circumference = 2πr = 2π×[R] = [RESULT]"
-    },
-    {
-      "template_id": "ADV_GEOMETRY_03",
-      "pattern": "Sphere: radius = [R]. Volume = ?",
-      "variables": {
-        "R": {"min": 1, "max": 6}
-      },
-      "calculation": "Math.round((4/3) * Math.PI * R * R * R * 100) / 100",
-      "explanation": "Volume = (4/3)πr³ = (4/3)×π×[R]³ = [RESULT]"
-    },
-    {
-      "template_id": "ADV_GEOMETRY_04",
-      "pattern": "Triangle: base = [B], height = [H]. Area = ?",
-      "variables": {
-        "B": {"min": 2, "max": 20},
-        "H": {"min": 2, "max": 20}
-      },
-      "calculation": "0.5 * B * H",
-      "explanation": "Area = ½ × base × height = ½ × [B] × [H] = [RESULT]"
-    },
-    {
-      "template_id": "ADV_GEOMETRY_05",
-      "pattern": "Pythagorean theorem: a=[A], b=[B]. Hypotenuse c = ?",
-      "variables": {
-        "A": {"values": [3, 5, 6, 8, 12, 7, 9, 20]},
-        "B": {"values": [4, 12, 8, 15, 16, 24, 40, 21]}
-      },
-      "calculation": "Math.sqrt(A * A + B * B)",
-      "explanation": "c = √(a²+b²) = √([A]²+[B]²) = [RESULT]"
-    },
-    {
-      "template_id": "ADV_SEQUENCE_01",
-      "pattern": "Geometric: first=[A], ratio=[R]. 4th term = ?",
-      "variables": {
-        "A": {"min": 1, "max": 5},
-        "R": {"values": [2, 3, 4, 5]}
-      },
-      "calculation": "A * R * R * R",
-      "explanation": "4th term = [A] × [R]³ = [A] × [R*R*R] = [RESULT]"
-    },
-    {
-      "template_id": "ADV_SEQUENCE_02",
+      "template_id": "ADV_ARITH_SEQ_01",
       "pattern": "Arithmetic: first=[A], diff=[D]. 10th term = ?",
       "variables": {
         "A": {"min": 1, "max": 20},
-        "D": {"min": 2, "max": 10}
+        "D": {"min": 1, "max": 10}
       },
       "calculation": "A + 9 * D",
-      "explanation": "10th term = [A] + 9×[D] = [RESULT]"
+      "explanation": "nth term = a+(n-1)d = [A]+9×[D] = [RESULT]"
     },
+
     {
-      "template_id": "ADV_SEQUENCE_03",
-      "pattern": "Sum of first [N] natural numbers = ?",
+      "template_id": "ADV_ARITH_SEQ_02",
+      "pattern": "Sum of first [N] terms: a=[A], d=[D]. Sum = ?",
       "variables": {
-        "N": {"min": 5, "max": 30}
+        "A": {"min": 1, "max": 10},
+        "D": {"min": 1, "max": 5},
+        "N": {"values": [4, 6, 8, 10, 12]}
       },
-      "calculation": "N * (N + 1) / 2",
-      "explanation": "Sum = N(N+1)/2 = [N]×([N]+1)/2 = [RESULT]"
+      "calculation": "N * (2*A + (N-1)*D) / 2",
+      "explanation": "Sum = n/2×(2a+(n-1)d) = [RESULT]"
     },
+
     {
-      "template_id": "ADV_NUMTHEORY_01",
-      "pattern": "GCD([A], [B]) = ?",
+      "template_id": "ADV_GEO_SEQ_01",
+      "pattern": "Geometric: first=[A], ratio=[RR]. 5th term = ?",
       "variables": {
-        "A": {"values": [12, 18, 24, 36, 48, 60, 72, 90, 120]},
-        "B": {"values": [8, 12, 16, 24, 30, 36, 45, 60, 80]}
+        "A": {"min": 1, "max": 5},
+        "RR": {"min": 2, "max": 4}
       },
-      "calculation": "gcd(A, B)",
-      "explanation": "GCD([A],[B]) using Euclidean algorithm = [RESULT]"
+      "calculation": "A * RR ** 4",
+      "explanation": "5th term = a×r^4 = [A]×[RR]^4 = [RESULT]"
     },
+
     {
-      "template_id": "ADV_NUMTHEORY_02",
-      "pattern": "LCM([A], [B]) = ?",
+      "template_id": "ADV_QUAD_SUM",
+      "pattern": "x² - [SUM]x + [PRODUCT] = 0. Sum of roots = ?",
       "variables": {
-        "A": {"values": [4, 6, 8, 10, 12, 15]},
-        "B": {"values": [6, 9, 12, 15, 20, 25]}
+        "R1": {"min": 1, "max": 12},
+        "R2": {"min": 1, "max": 12},
+        "SUM": {"calc": "R1 + R2"},
+        "PRODUCT": {"calc": "R1 * R2"}
       },
-      "calculation": "lcm(A, B)",
-      "explanation": "LCM([A],[B]) = [A]×[B]/GCD([A],[B]) = [RESULT]"
+      "calculation": "R1 + R2",
+      "explanation": "Sum of roots = [R1]+[R2] = [RESULT]"
     },
+
     {
-      "template_id": "ADV_NUMTHEORY_03",
-      "pattern": "φ([N]) = ? (Euler's totient)",
+      "template_id": "ADV_QUAD_PROD",
+      "pattern": "x² - [SUM]x + [PRODUCT] = 0. Product of roots = ?",
       "variables": {
-        "N": {"values": [6, 8, 10, 12, 15, 18, 20, 24, 30]}
+        "R1": {"min": 1, "max": 12},
+        "R2": {"min": 1, "max": 12},
+        "SUM": {"calc": "R1 + R2"},
+        "PRODUCT": {"calc": "R1 * R2"}
       },
-      "calculation": "phi(N)",
-      "explanation": "φ([N]) = count of integers from 1 to [N] coprime to [N] = [RESULT]"
+      "calculation": "R1 * R2",
+      "explanation": "Product of roots = [R1]×[R2] = [RESULT]"
     }
+
   ],
   "responses": {
-    "correct": [
-      "Mathematical brilliance! 🌟",
-      "Perfect derivation! ✅",
-      "You've mastered it! 🏆",
-      "Flawless logic! 💎",
-      "Excellent! 🎯",
-      "Outstanding! 🚀",
-      "Genius level! 🧠",
-      "Spectacular! ✨",
-      "Absolutely correct! 🎉",
-      "Top marks! 🥇"
-    ],
-    "incorrect": [
-      "Check the formula 📐",
-      "Review the method 📚",
-      "Try again 🔍",
-      "Close! Refine your solution ✨",
-      "Think carefully 🤔",
-      "One more try! 💪",
-      "Check your calculation 🧮"
-    ]
+    "correct": ["Mathematical brilliance! 🌟", "Perfect! ✅", "You've mastered it! 🏆", "Flawless! 💎", "Excellent! 🎯", "Outstanding! 🚀"],
+    "incorrect": ["Check the formula 📐", "Review the method 📚", "Try again 🔍", "Close! ✨", "Think carefully 🤔"]
   }
 }
