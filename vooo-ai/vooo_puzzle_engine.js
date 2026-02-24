@@ -1,7 +1,6 @@
 // ============================================
 // VOOO AI Puzzle Engine
-// FIXES: solv1-solv4, solv6-solv14
-// APPLIED: SOL1, SOL2, SOL3, SOL4, SOL5, SOL7
+// APPLIED: SOL1,SOL2,SOL3,SOL4,SOL5,SOL7,SOL8
 // ============================================
 
 class VOOOPuzzleEngine {
@@ -53,13 +52,11 @@ class VOOOPuzzleEngine {
             'star': '★', 'heart': '♥', 'diamond': '◇',
             'rectangle': '▢', 'hexagon': '⬡'
         };
-        // SOL4: extended colorMap
         this.colorMap = {
             'red': '🔴', 'blue': '🔵', 'yellow': '🟡',
             'green': '🟢', 'black': '⚫', 'white': '⚪',
             'orange': '🟠', 'purple': '🟣', 'brown': '🟤', 'pink': '🩷'
         };
-        // SOL3: extended sizeComparison
         this.sizeComparison = {
             '🐘': 'big', '🦒': 'big', '🐋': 'big', '🏠': 'big', '🌳': 'big',
             '🦏': 'big', '🦛': 'big', '🐪': 'big', '🦘': 'big', '🏔️': 'big',
@@ -70,9 +67,6 @@ class VOOOPuzzleEngine {
         };
     }
 
-    // ============================================
-    // MATH HELPERS (solv1)
-    // ============================================
     factorial(n) { n=Math.round(n); if(n<=1) return 1; let r=1; for(let i=2;i<=n;i++) r*=i; return r; }
     isPrime(n) { if(n<2) return false; if(n===2) return true; if(n%2===0) return false; for(let i=3;i*i<=n;i+=2) if(n%i===0) return false; return true; }
     nextPrime(n) { let c=n+1; while(!this.isPrime(c)) c++; return c; }
@@ -102,149 +96,118 @@ class VOOOPuzzleEngine {
     nextSuperiorHighlyComposite(n) { const k=[2,6,12,60,120,360,2520,5040,55440,720720]; for(const v of k)if(v>n)return v; return n*2; }
     nextGiuga(n) { const k=[30,858,1722,66198,2214408306]; for(const v of k)if(v>n)return v; return 858; }
 
-    // ============================================
-    // solv14 - APPLY MATH FUNCTIONS (MULTI-PASS)
-    // ============================================
     applyMathFunctions(ev) {
         const mathFns = [
-            ['factorial',       x => this.factorial(Math.round(x))],
-            ['next_prime',      x => this.nextPrime(Math.round(x))],
-            ['sigma',           x => this.sigma(Math.round(x))],
-            ['phi',             x => this.phi(Math.round(x))],
-            ['partition',       x => this.partition(Math.round(x))],
-            ['next_sphenic',    x => this.nextSphenic(Math.round(x))],
-            ['next_semiprime',  x => this.nextSemiprime(Math.round(x))],
-            ['next_abundant',   x => this.nextAbundant(Math.round(x))],
-            ['next_deficient',  x => this.nextDeficient(Math.round(x))],
-            ['next_perfect',    x => this.nextPerfect(Math.round(x))],
-            ['primorial',       x => this.primorial(Math.round(x))],
-            ['next_highly_composite',           x => this.nextHighlyComposite(Math.round(x))],
-            ['next_superior_highly_composite',  x => this.nextSuperiorHighlyComposite(Math.round(x))],
-            ['next_sophie_germain',             x => this.nextSophieGermain(Math.round(x))],
-            ['next_safe_prime',                 x => this.nextSafePrime(Math.round(x))],
-            ['next_factorial_prime',            x => this.nextFactorialPrime(Math.round(x))],
-            ['next_giuga',      x => this.nextGiuga(Math.round(x))]
+            ['factorial',x=>this.factorial(Math.round(x))],
+            ['next_prime',x=>this.nextPrime(Math.round(x))],
+            ['sigma',x=>this.sigma(Math.round(x))],
+            ['phi',x=>this.phi(Math.round(x))],
+            ['partition',x=>this.partition(Math.round(x))],
+            ['next_sphenic',x=>this.nextSphenic(Math.round(x))],
+            ['next_semiprime',x=>this.nextSemiprime(Math.round(x))],
+            ['next_abundant',x=>this.nextAbundant(Math.round(x))],
+            ['next_deficient',x=>this.nextDeficient(Math.round(x))],
+            ['next_perfect',x=>this.nextPerfect(Math.round(x))],
+            ['primorial',x=>this.primorial(Math.round(x))],
+            ['next_highly_composite',x=>this.nextHighlyComposite(Math.round(x))],
+            ['next_superior_highly_composite',x=>this.nextSuperiorHighlyComposite(Math.round(x))],
+            ['next_sophie_germain',x=>this.nextSophieGermain(Math.round(x))],
+            ['next_safe_prime',x=>this.nextSafePrime(Math.round(x))],
+            ['next_factorial_prime',x=>this.nextFactorialPrime(Math.round(x))],
+            ['next_giuga',x=>this.nextGiuga(Math.round(x))]
         ];
-
-        const fnNames = mathFns.map(([name]) => name).join('|');
-        const fnNamesArr = mathFns.map(([name]) => name);
-        const argExprRegexDeep = new RegExp(`(${fnNames})\\(([^()]*(?:\\([^()]*\\)[^()]*)*)\\)`, 'g');
-        for (let pre = 0; pre < 10; pre++) {
-            ev = ev.replace(argExprRegexDeep, (m, fn, inner) => {
-                if (fnNamesArr.some(name => inner.includes(name))) return m;
-                let resolved = inner.replace(/\((-?\d+(?:\.\d+)?)\)/g, '$1');
-                try {
-                    const val = new Function('return ' + resolved)();
-                    if (typeof val === 'number' && isFinite(val)) return fn + '(' + val + ')';
-                } catch(e) {}
+        const fnNames=mathFns.map(([name])=>name).join('|');
+        const fnNamesArr=mathFns.map(([name])=>name);
+        const argExprRegexDeep=new RegExp(`(${fnNames})\\(([^()]*(?:\\([^()]*\\)[^()]*)*)\\)`,'g');
+        for(let pre=0;pre<10;pre++){
+            ev=ev.replace(argExprRegexDeep,(m,fn,inner)=>{
+                if(fnNamesArr.some(name=>inner.includes(name))) return m;
+                let resolved=inner.replace(/\((-?\d+(?:\.\d+)?)\)/g,'$1');
+                try{const val=new Function('return '+resolved)();if(typeof val==='number'&&isFinite(val))return fn+'('+val+')';}catch(e){}
                 return m;
             });
         }
-
-        for (let pass = 0; pass < 20; pass++) {
-            let changed = false;
-            ev = ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*(-?\d+(?:\.\d+)?)/g, (m, a, op, b) => {
-                try { const r = new Function('return '+a+op+b)(); changed=true; return String(r); } catch(e) { return m; }
-            });
-            ev = ev.replace(/(-?\d+(?:\.\d+)?)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g, (m, a, op, b) => {
-                try { const r = new Function('return '+a+op+b)(); changed=true; return String(r); } catch(e) { return m; }
-            });
-            ev = ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g, (m, a, op, b) => {
-                try { const r = new Function('return '+a+op+b)(); changed=true; return String(r); } catch(e) { return m; }
-            });
-            ev = ev.replace(/(?<![a-zA-Z_])\((-?\d+(?:\.\d+)?)\)/g, (m, n) => { changed=true; return n; });
-            for (const [name, fn] of mathFns) {
-                const regex = new RegExp(name + '\\((-?\\d+(?:\\.\\d+)?)\\)', 'g');
-                ev = ev.replace(regex, (match, inner) => {
-                    try { const result = fn(Number(inner)); changed=true; return String(result); }
-                    catch(e) { return match; }
-                });
+        for(let pass=0;pass<20;pass++){
+            let changed=false;
+            ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*(-?\d+(?:\.\d+)?)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
+            ev=ev.replace(/(-?\d+(?:\.\d+)?)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
+            ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
+            ev=ev.replace(/(?<![a-zA-Z_])\((-?\d+(?:\.\d+)?)\)/g,(m,n)=>{changed=true;return n;});
+            for(const [name,fn] of mathFns){
+                const regex=new RegExp(name+'\\((-?\\d+(?:\\.\\d+)?)\\)','g');
+                ev=ev.replace(regex,(match,inner)=>{try{const result=fn(Number(inner));changed=true;return String(result);}catch(e){return match;}});
             }
-            if (!changed) break;
+            if(!changed) break;
         }
         return ev;
     }
 
-    // ============================================
-    // solv13 - DETECT PLAIN TEXT CALCULATION
-    // ============================================
     isPlainTextCalculation(calc) {
-        if (!calc) return true;
-        const t = calc.trim();
-        if (t === '' || t === 'null') return true;
-        if (/^[A-Za-zÀ-ÿ\s\-\/]+$/.test(t)) return true;
-        if (/generate|lookup|rules|decryption|transposition|multiplication|substitution|autokey|checkerboard|ambiguity|complexity|dynamic/i.test(t)) return true;
+        if(!calc) return true;
+        const t=calc.trim();
+        if(t===''||t==='null') return true;
+        if(/^[A-Za-zÀ-ÿ\s\-\/]+$/.test(t)) return true;
+        if(/generate|lookup|rules|decryption|transposition|multiplication|substitution|autokey|checkerboard|ambiguity|complexity|dynamic/i.test(t)) return true;
         return false;
     }
 
-    // ============================================
-    // solv9 - DERIVED VARIABLES
-    // ============================================
-    computeDerivedVariables(template, variables) {
-        const derived = {...variables};
-        const pattern = template.pattern || '';
-        const explanation = template.explanation || '';
-        const patArr = [];
-        const ptr = /\[([A-Z][A-Z0-9_]*)\]/g;
+    computeDerivedVariables(template,variables) {
+        const derived={...variables};
+        const pattern=template.pattern||'';
+        const explanation=template.explanation||'';
+        const patArr=[];
+        const ptr=/\[([A-Z][A-Z0-9_]*)\]/g;
         let match;
-        while ((match = ptr.exec(pattern)) !== null) patArr.push(match[1]);
-        const expArr = [];
-        const etr = /\[([^\]]+)\]/g;
-        while ((match = etr.exec(explanation)) !== null) expArr.push(match[1]);
-        for (let i = 0; i < patArr.length; i++) {
-            if (!derived.hasOwnProperty(patArr[i]) && expArr[i]) {
-                const val = this.evaluateBracketExpression(expArr[i], derived);
-                if (val !== null) derived[patArr[i]] = val;
+        while((match=ptr.exec(pattern))!==null) patArr.push(match[1]);
+        const expArr=[];
+        const etr=/\[([^\]]+)\]/g;
+        while((match=etr.exec(explanation))!==null) expArr.push(match[1]);
+        for(let i=0;i<patArr.length;i++){
+            if(!derived.hasOwnProperty(patArr[i])&&expArr[i]){
+                const val=this.evaluateBracketExpression(expArr[i],derived);
+                if(val!==null) derived[patArr[i]]=val;
             }
         }
-        if (derived.hasOwnProperty('A') && derived.hasOwnProperty('STEP')) {
-            if (!derived.hasOwnProperty('B')) derived['B'] = derived['A'] + derived['STEP'];
-            if (!derived.hasOwnProperty('C')) derived['C'] = derived['A'] + derived['STEP'] * 2;
-            if (!derived.hasOwnProperty('D')) derived['D'] = derived['A'] + derived['STEP'] * 3;
-        } else if (derived.hasOwnProperty('A')) {
-            if (!derived.hasOwnProperty('B')) derived['B'] = derived['A'] + 1;
-            if (!derived.hasOwnProperty('C')) derived['C'] = derived['A'] + 2;
-            if (!derived.hasOwnProperty('D')) derived['D'] = derived['A'] + 3;
+        if(derived.hasOwnProperty('A')&&derived.hasOwnProperty('STEP')){
+            if(!derived.hasOwnProperty('B')) derived['B']=derived['A']+derived['STEP'];
+            if(!derived.hasOwnProperty('C')) derived['C']=derived['A']+derived['STEP']*2;
+            if(!derived.hasOwnProperty('D')) derived['D']=derived['A']+derived['STEP']*3;
+        } else if(derived.hasOwnProperty('A')){
+            if(!derived.hasOwnProperty('B')) derived['B']=derived['A']+1;
+            if(!derived.hasOwnProperty('C')) derived['C']=derived['A']+2;
+            if(!derived.hasOwnProperty('D')) derived['D']=derived['A']+3;
         }
         return derived;
     }
 
-    // ============================================
-    // EXPRESSION RESOLVERS (solv2+solv6+solv8+solv12)
-    // ============================================
-    evaluateBracketExpression(expr, variables) {
-        let e = expr;
-        e = e.replace(/×/g,'*').replace(/÷/g,'/');
-        const hasMathOps = /[\+\-\*\^%]/.test(e) && !/[?:'"]/.test(e);
-        if (hasMathOps) e = e.replace(/(\d)([A-Za-z_][A-Za-z0-9_]*)/g,'$1*$2');
-        for (const [k,v] of Object.entries(variables)) {
-            if (typeof v==='string'&&isNaN(v)) e=e.replace(new RegExp('\\b'+k+'\\b','g'),'"'+v+'"');
-        }
-        for (const [k,v] of Object.entries(variables)) {
-            if (typeof v!=='string'||!isNaN(v)) e=e.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');
-        }
-        e = this.applyMathFunctions(e);
-        try {
-            const r = new Function('return '+e)();
+    evaluateBracketExpression(expr,variables) {
+        let e=expr;
+        e=e.replace(/×/g,'*').replace(/÷/g,'/');
+        const hasMathOps=/[\+\-\*\^%]/.test(e)&&!/[?:'"]/.test(e);
+        if(hasMathOps) e=e.replace(/(\d)([A-Za-z_][A-Za-z0-9_]*)/g,'$1*$2');
+        for(const [k,v] of Object.entries(variables)){if(typeof v==='string'&&isNaN(v)) e=e.replace(new RegExp('\\b'+k+'\\b','g'),'"'+v+'"');}
+        for(const [k,v] of Object.entries(variables)){if(typeof v!=='string'||!isNaN(v)) e=e.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');}
+        e=this.applyMathFunctions(e);
+        try{
+            // SOL8: pass Math and factorial into eval scope
+            const factorial=(n)=>this.factorial(n);
+            const r=new Function('Math','factorial','return '+e)(Math,factorial);
             return (typeof r==='number')?r:(typeof r==='string')?r:null;
-        } catch(err) { return null; }
+        }catch(err){return null;}
     }
 
-    resolvePatternText(text, variables) {
-        let resolved = text;
-        resolved = resolved.replace(/(\d)\[/g,'$1*[');
-        for (const [k,v] of Object.entries(variables)) resolved=resolved.replace(new RegExp(`\\[${k}\\]`,'g'),v);
-        resolved = resolved.replace(/\[([^\]]+)\]/g,(match,inner)=>{
-            const r = this.evaluateBracketExpression(inner,variables);
+    resolvePatternText(text,variables) {
+        let resolved=text;
+        resolved=resolved.replace(/(\d)\[/g,'$1*[');
+        for(const [k,v] of Object.entries(variables)) resolved=resolved.replace(new RegExp(`\\[${k}\\]`,'g'),v);
+        resolved=resolved.replace(/\[([^\]]+)\]/g,(match,inner)=>{
+            const r=this.evaluateBracketExpression(inner,variables);
             return r!==null?r:match;
         });
-        for (const [k,v] of Object.entries(variables)) resolved=resolved.replace(new RegExp('\\b'+k+'\\b','g'),v);
+        for(const [k,v] of Object.entries(variables)) resolved=resolved.replace(new RegExp('\\b'+k+'\\b','g'),v);
         return resolved;
     }
 
-    // ============================================
-    // STORAGE & VALIDATION
-    // ============================================
     initLocalStorage() {
         const key=`vooo_used_questions_${this.currentCategory}`;
         const stored=localStorage.getItem(key);
@@ -258,7 +221,7 @@ class VOOOPuzzleEngine {
     createQuestionHash(template,variables) {
         return btoa(unescape(encodeURIComponent(template.template_id+'_'+JSON.stringify(variables)))).substring(0,20);
     }
-    isQuestionUsed(hash) { return this.usedQuestions.includes(hash); }
+    isQuestionUsed(hash){return this.usedQuestions.includes(hash);}
     validateOptions(options,correctAnswer) {
         if(options.length!==4){console.warn('❌ Not 4 options',options.length);return false;}
         if(new Set(options.map(o=>String(o))).size!==4){console.warn('❌ Duplicate options',options);return false;}
@@ -270,27 +233,23 @@ class VOOOPuzzleEngine {
         this.usedQuestions=[];
     }
 
-    // ============================================
-    // CORE ENGINE
-    // ============================================
     async loadCategory(categoryName) {
         this.currentCategory=categoryName;
         const fileName=this.categories[categoryName];
         if(!fileName){console.error(`❌ Unknown category: "${categoryName}"`);return false;}
-        try {
+        try{
             const response=await fetch(`/vooo-ai/vooo-json/${fileName}`);
             this.categoryData=await response.json();
             this.currentTemplateIndex=0;
             this.initLocalStorage();
             return true;
-        } catch(error){console.error('Error loading category:',error);return false;}
+        }catch(error){console.error('Error loading category:',error);return false;}
     }
 
     isTemplateComputable(template) {
         if(!template.calculation) return false;
         const calc=template.calculation.trim();
         if(calc===''||calc==='null') return false;
-        // SOL7: allow single uppercase variable names like ODD, SHAPE, COLOR
         if(/^[A-Z][A-Z0-9_]*$/.test(calc)) return true;
         if(this.isPlainTextCalculation(calc)){console.log(`⏭️ solv13: Plain text skipped: ${calc}`);return false;}
         return true;
@@ -301,28 +260,22 @@ class VOOOPuzzleEngine {
         const templates=this.categoryData.templates;
         let attempts=0;
         const maxAttempts=templates.length*3;
-
-        while(attempts<maxAttempts) {
+        while(attempts<maxAttempts){
             attempts++;
             const idx=this.currentTemplateIndex%templates.length;
             this.currentTemplate=templates[idx];
             this.currentTemplateIndex++;
             if(this.currentTemplateIndex>=templates.length) this.currentTemplateIndex=0;
-
             if(!this.isTemplateComputable(this.currentTemplate)) continue;
-
             const rawVars=this.generateVariables(this.currentTemplate.variables);
             const variables=this.computeDerivedVariables(this.currentTemplate,rawVars);
             const hash=this.createQuestionHash(this.currentTemplate,variables);
             if(this.isQuestionUsed(hash)) continue;
-
             const question=this.generateQuestion(this.currentTemplate,variables);
             const answer=this.calculateAnswer(this.currentTemplate,variables);
             if(answer===null||answer===undefined||answer==='null') continue;
-
             const options=this.generateOptions(answer,this.currentTemplate,variables);
             if(!this.validateOptions(options,answer)) continue;
-
             this.saveUsedQuestion(hash);
             this.currentPuzzle={
                 question,options,correctAnswer:answer,
@@ -334,7 +287,6 @@ class VOOOPuzzleEngine {
             };
             return this.currentPuzzle;
         }
-
         this.clearUsedQuestions();
         this.currentTemplateIndex=0;
         let fb=templates[0];
@@ -346,8 +298,7 @@ class VOOOPuzzleEngine {
         const opts=this.generateOptions(ans,this.currentTemplate,vars);
         const fbQuestion=this.generateQuestion(this.currentTemplate,vars);
         this.currentPuzzle={
-            question:fbQuestion,
-            options:opts,correctAnswer:ans,
+            question:fbQuestion,options:opts,correctAnswer:ans,
             correctIndex:this.findCorrectIndex(opts,ans,this.currentTemplate.answer_type,fbQuestion),
             explanation:this.generateExplanation(this.currentTemplate,vars,ans),
             templateId:this.currentTemplate.template_id,
@@ -363,27 +314,20 @@ class VOOOPuzzleEngine {
             'partitions','mersenne','fermat','carmichael','carol','kynea','thabit','sophie',
             'safe','primorial','giuga','cullen','woodall','highly_composite','superior_hc',
             'abundant','deficient','perfect','semiprime','sphenic'];
-        for(const [varName,def] of Object.entries(variableDefs)) {
+        for(const [varName,def] of Object.entries(variableDefs)){
             if(def.value!==undefined){variables[varName]=def.value;}
             else if(def.values!==undefined){variables[varName]=def.values[Math.floor(Math.random()*def.values.length)];}
             else if(def.calc!==undefined){try{variables[varName]=this.evaluateExpression(def.calc,variables);}catch(e){variables[varName]=0;}}
             else if(def.totients!==undefined){variables[varName]=Math.floor(Math.random()*def.totients.length);}
-            else {
+            else{
                 let handled=false;
-                for(const k of arrKeys){
-                    if(def[k]!==undefined){variables[varName]=def[k][Math.floor(Math.random()*(def[k].length-1))];handled=true;break;}
-                }
+                for(const k of arrKeys){if(def[k]!==undefined){variables[varName]=def[k][Math.floor(Math.random()*(def[k].length-1))];handled=true;break;}}
                 if(!handled){
                     const min=def.min!==undefined?def.min:1;
                     const max=def.max!==undefined?def.max:10;
                     const step=def.step||1;
                     variables[varName]=min+(Math.floor(Math.random()*(Math.floor((max-min)/step)+1))*step);
-                    if(def.primes_only){
-                        let v=variables[varName],up=v,dn=v;
-                        while(!this.isPrime(up)&&up<=max)up++;
-                        while(!this.isPrime(dn)&&dn>=min)dn--;
-                        variables[varName]=(this.isPrime(up)&&up<=max)?up:dn;
-                    }
+                    if(def.primes_only){let v=variables[varName],up=v,dn=v;while(!this.isPrime(up)&&up<=max)up++;while(!this.isPrime(dn)&&dn>=min)dn--;variables[varName]=(this.isPrime(up)&&up<=max)?up:dn;}
                     if(def.perfect_only){let v=variables[varName];while(!this.isPerfect(v)&&v<=max*100)v++;variables[varName]=v;}
                 }
             }
@@ -394,30 +338,19 @@ class VOOOPuzzleEngine {
     evaluateExpression(expr,variables) {
         let ev=expr;
         if(this.isPlainTextCalculation(ev)){console.log('⏭️ solv13 plain text:',ev);return null;}
-
         ev=ev.replace(/if\s+(.+?)\s+then\s+(.+?)\s+else\s+(.+)/g,(match,cond,thenV,elseV)=>{
-            try {
+            try{
                 let c=cond;
                 for(const [k,v] of Object.entries(variables)) c=c.replace(new RegExp('\\b'+k+'\\b','g'),(typeof v==='string'&&isNaN(v))?'"'+v+'"':JSON.stringify(v));
                 return new Function('return '+c)()?thenV.trim():elseV.trim().replace(/'/g,'');
-            } catch(e){return match;}
+            }catch(e){return match;}
         });
-
         ev=ev.replace(/×/g,'*').replace(/÷/g,'/');
-
         const hasMathOps=/[\+\-\*\^%]/.test(ev)&&!/[?:'"]/.test(ev);
         if(hasMathOps) ev=ev.replace(/(\d)([A-Za-z_][A-Za-z0-9_]*)/g,'$1*$2');
-
-        for(const [k,v] of Object.entries(variables)){
-            if(typeof v==='string'&&isNaN(v)) ev=ev.replace(new RegExp('\\b'+k+'\\b','g'),'"'+v+'"');
-        }
-        for(const [k,v] of Object.entries(variables)){
-            if(typeof v!=='string'||!isNaN(v)) ev=ev.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');
-        }
-
+        for(const [k,v] of Object.entries(variables)){if(typeof v==='string'&&isNaN(v)) ev=ev.replace(new RegExp('\\b'+k+'\\b','g'),'"'+v+'"');}
+        for(const [k,v] of Object.entries(variables)){if(typeof v!=='string'||!isNaN(v)) ev=ev.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');}
         ev=this.applyMathFunctions(ev);
-
-        // SOL1: repeat() fix
         if(ev.includes('repeat(')){
             ev=ev.replace(/repeat\(([^,]+),\s*([^)]+)\)/g,(match,emoji,count)=>{
                 const emojiKey=emoji.trim().replace(/['"()\s]/g,'');
@@ -428,13 +361,10 @@ class VOOOPuzzleEngine {
                 return match;
             });
         }
-
         if(ev.includes('next_in_pattern(')){
             ev=ev.replace(/next_in_pattern\(([^)]+)\)/g,(match,p)=>
                 JSON.stringify(this.calculateNextInPattern(p.trim().replace(/['"]/g,''),variables)));
         }
-
-        // SOL2: generate_options() fix
         if(ev.includes('generate_options(')){
             ev=ev.replace(/generate_options\(([^,]+),\s*([^)]+)\)/g,(match,num,emoji)=>{
                 const numKey=num.trim().replace(/['"()\s]/g,'');
@@ -444,8 +374,7 @@ class VOOOPuzzleEngine {
                 return JSON.stringify(this.generateVisualOptions(numVal,emojiVal,variables));
             });
         }
-
-        try {
+        try{
             if(ev.startsWith('[')&&ev.endsWith(']')) try{return JSON.parse(ev);}catch(e){return [];}
             if((ev.startsWith('"')&&ev.endsWith('"'))||(ev.startsWith("'")&&ev.endsWith("'"))) return ev.slice(1,-1);
             if(ev==='true') return true;
@@ -453,9 +382,11 @@ class VOOOPuzzleEngine {
             if(ev==='null') return null;
             if(!isNaN(ev)&&ev.trim()!=='') return Number(ev);
             if(/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(ev)) return ev;
-            const result=new Function('return '+ev)();
+            // SOL8: pass Math and factorial into eval scope
+            const factorial=(n)=>this.factorial(n);
+            const result=new Function('Math','factorial','return '+ev)(Math,factorial);
             return result;
-        } catch(e){console.error('Eval error:',expr,'->',ev,e);return null;}
+        }catch(e){console.error('Eval error:',expr,'->',ev,e);return null;}
     }
 
     generateQuestion(template,variables) {
@@ -491,17 +422,13 @@ class VOOOPuzzleEngine {
 
     generateOptions(correctAnswer,template,variables) {
         if(template.options_builder){
-            try{const opts=this.evaluateExpression(template.options_builder,variables);if(Array.isArray(opts))return this.shuffleArray(opts);}
-            catch(e){}
+            try{const opts=this.evaluateExpression(template.options_builder,variables);if(Array.isArray(opts))return this.shuffleArray(opts);}catch(e){}
         }
         if(template.options&&Array.isArray(template.options)){
             let opts=[...template.options];
             const correctStr=String(correctAnswer);
             let effectiveCorrect=correctAnswer;
-            if(!opts.map(o=>String(o)).includes(correctStr)){
-                effectiveCorrect=opts[0];
-                console.log(`⚠️ solv11: Fixed answer ${correctAnswer} → ${effectiveCorrect}`);
-            }
+            if(!opts.map(o=>String(o)).includes(correctStr)){effectiveCorrect=opts[0];console.log(`⚠️ solv11: Fixed answer ${correctAnswer} → ${effectiveCorrect}`);}
             const wrong=opts.filter(o=>String(o)!==String(effectiveCorrect));
             const selected=this.shuffleArray(wrong).slice(0,3);
             return this.shuffleArray([effectiveCorrect,...selected]);
@@ -527,7 +454,7 @@ class VOOOPuzzleEngine {
                 while(options.includes(ws)&&dc<20){wrong++;ws=String(parseFloat(wrong.toFixed(4)));dc++;}
                 options.push(ws);
             }
-        } else {
+        }else{
             const ng=parseInt(correctAnswer);
             if(!isNaN(ng)){
                 options.push(String(ng));
@@ -538,7 +465,7 @@ class VOOOPuzzleEngine {
                     while(options.includes(ws)&&dc<10){ws=String(parseInt(ws)+1);dc++;}
                     options.push(ws);
                 }
-            } else {
+            }else{
                 options.push(String(correctAnswer));
                 ['?','??','???'].forEach(f=>options.push(f));
             }
@@ -546,17 +473,13 @@ class VOOOPuzzleEngine {
         return this.shuffleArray(options);
     }
 
-    // SOL2: generateVisualOptions — correct answer always included
-    generateVisualOptions(number, emoji, variables) {
+    generateVisualOptions(number,emoji,variables) {
         const emojiChar=typeof emoji==='string'?emoji:(variables[emoji]||emoji);
         const correct=parseInt(number);
         const opts=new Set();
         opts.add(emojiChar.repeat(correct));
         let i=1;
-        while(opts.size<4){
-            if(i!==correct) opts.add(emojiChar.repeat(i));
-            i++;
-        }
+        while(opts.size<4){if(i!==correct) opts.add(emojiChar.repeat(i));i++;}
         return this.shuffleArray([...opts]);
     }
 
@@ -564,8 +487,7 @@ class VOOOPuzzleEngine {
         switch(patternType){case 'ABAB':return '🔴';case 'AABB':return '🟡';case 'ABCABC':return '🔵';default:return '?';}
     }
 
-    // SOL5: findCorrectIndex — detect smaller/bigger from question text
-    findCorrectIndex(options, correctAnswer, answerType, question) {
+    findCorrectIndex(options,correctAnswer,answerType,question) {
         if(answerType==='comparison'){
             const isSmaller=question&&/smaller|least|tiny/i.test(question);
             return options.findIndex(opt=>this.sizeComparison[opt]===(isSmaller?'small':'big'));
@@ -587,16 +509,9 @@ class VOOOPuzzleEngine {
     }
     getStats(){return{score:this.score,totalAttempts:this.totalAttempts,accuracy:this.totalAttempts>0?Math.round((this.score/this.totalAttempts)*100):0,currentCategory:this.currentCategory};}
     resetScore(){this.score=0;this.totalAttempts=0;}
-    shuffleArray(array){
-        const s=[...array];
-        for(let i=s.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[s[i],s[j]]=[s[j],s[i]];}
-        return s;
-    }
+    shuffleArray(array){const s=[...array];for(let i=s.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[s[i],s[j]]=[s[j],s[i]];}return s;}
     getCategoryDisplayName(categoryKey){return this.categoryData?.display_name||this.formatCategoryName(categoryKey);}
-    formatCategoryName(name){
-        if(this.categoryData&&this.categoryData.display_name) return this.categoryData.display_name;
-        return name.split('_').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
-    }
+    formatCategoryName(name){if(this.categoryData&&this.categoryData.display_name)return this.categoryData.display_name;return name.split('_').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');}
 }
 
 // ============================================
@@ -642,7 +557,7 @@ function selectAnswer(selectedIndex) {
         fb.textContent='Yes Correct Answer';fb.className='vooo-feedback correct';
         expl.textContent=result.explanation;
         setTimeout(nextPuzzle,3000);
-    } else {
+    }else{
         btns[selectedIndex].style.backgroundColor='#fed7d7';
         btns[selectedIndex].style.borderColor='#fc8181';
         fb.textContent='Please try again';fb.className='vooo-feedback incorrect';
@@ -653,19 +568,12 @@ function selectAnswer(selectedIndex) {
 }
 
 async function nextPuzzle(){const puzzle=voooEngine.generateNewPuzzle();if(puzzle)updatePuzzleDisplay(puzzle);}
-
-async function changeLevel(levelKey){
-    const success=await voooEngine.loadCategory(levelKey);
-    if(success){voooEngine.resetScore();nextPuzzle();}
-}
-
+async function changeLevel(levelKey){const success=await voooEngine.loadCategory(levelKey);if(success){voooEngine.resetScore();nextPuzzle();}}
 function updateStatsDisplay(){
     const stats=voooEngine.getStats();
     document.getElementById('vooo-score').textContent=`Score: ${stats.score}`;
     document.getElementById('vooo-accuracy').textContent=`Accuracy: ${stats.accuracy}%`;
 }
-
-// SOL7: resetGame — reloads current active category so reset works on any level
 function resetGame(){
     const currentCat=voooEngine.currentCategory;
     voooEngine.resetScore();
@@ -673,6 +581,5 @@ function resetGame(){
     voooEngine.currentTemplateIndex=0;
     voooEngine.loadCategory(currentCat).then(()=>nextPuzzle());
 }
-
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initVOOOGame);
 else initVOOOGame();
