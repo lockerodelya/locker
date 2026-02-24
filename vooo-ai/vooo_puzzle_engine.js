@@ -10,7 +10,7 @@ class VOOOPuzzleEngine {
         this.currentTemplateIndex = 0;
         this.score = 0;
         this.totalAttempts = 0;
-        this.currentCategory = 'math_beginner';
+        this.currentCategory = 'foundation_math';
         this.usedQuestions = [];
         this.categories = {
             'toddler_math': 'toddler_math.json',
@@ -30,16 +30,16 @@ class VOOOPuzzleEngine {
             'advanced_sudoku': 'advanced_sudoku.json',
             'intermediate_grid': 'intermediate_grid.json',
             'advanced_grid': 'advanced_grid.json',
-            'sequence_intermediate': 'sequence_intermediate.json',
-            'sequence_advanced': 'sequence_advanced.json',
-            'code_intermediate': 'code_intermediate.json',
-            'code_advanced': 'code_advanced.json',
-            'lateral_intermediate': 'lateral_intermediate.json',
-            'lateral_advanced': 'lateral_advanced.json',
-            'pattern_beginner': 'pattern_beginner.json',
-            'pattern_intermediate': 'pattern_intermediate.json',
-            'pattern_advanced': 'pattern_advanced.json',
-            'mathops_beginner': 'mathops_beginner.json',
+            'intermediate_sequence': 'intermediate_sequence.json',
+            'advanced_sequence': 'advanced_sequence.json',
+            'intermediate_code': 'intermediate_code.json',
+            'advanced_code': 'advanced_code.json',
+            'intermediate_lateral': 'intermediate_lateral.json',
+            'advanced_lateral': 'advanced_lateral.json',
+            'foundation_pattern': 'foundation_pattern.json',
+            'intermediate_pattern': 'intermediate_pattern.json',
+            'advanced_pattern': 'advanced_pattern.json',
+            'general_math': 'general_math.json',
             'problem_comparison_beginner': 'problem_comparison_beginner.json',
             'problem_time_beginner': 'problem_time_beginner.json',
             'problem_probability_beginner': 'problem_probability_beginner.json',
