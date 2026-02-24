@@ -3,23 +3,22 @@
   "display_name": "🚀 Advanced Math",
   "templates": [
 
-
-{
-  "template_id": "ADV_SIMUL_01",
-  "pattern": "[A]x + [B]y = [C], [D]x + [E]y = [F]. x = ?",
-  "variables": {
-    "A": {"min": 1, "max": 5},
-    "B": {"min": 1, "max": 5},
-    "D": {"min": 1, "max": 5},
-    "E": {"min": 1, "max": 5},
-    "X_VAL": {"min": 1, "max": 10},
-    "Y_VAL": {"min": 1, "max": 10},
-    "C": {"calc": "A*X_VAL + B*Y_VAL"},
-    "F": {"calc": "D*X_VAL + E*Y_VAL"}
-  },
-  "calculation": "X_VAL",
-  "explanation": "Solving the system: x = [X_VAL], y = [Y_VAL]"
-},
+    {
+      "template_id": "ADV_SIMUL_01",
+      "pattern": "[A]x + [B]y = [C], [D]x + [E]y = [F]. x = ?",
+      "variables": {
+        "A": {"min": 1, "max": 5},
+        "B": {"min": 1, "max": 5},
+        "D": {"min": 6, "max": 10},
+        "E": {"min": 6, "max": 10},
+        "X_VAL": {"min": 1, "max": 10},
+        "Y_VAL": {"min": 1, "max": 10},
+        "C": {"calc": "A*X_VAL + B*Y_VAL"},
+        "F": {"calc": "D*X_VAL + E*Y_VAL"}
+      },
+      "calculation": "X_VAL",
+      "explanation": "Solving the system: x = [X_VAL], y = [Y_VAL]"
+    },
 
     {
       "template_id": "ADV_EXP_01",
@@ -71,24 +70,23 @@
       "template_id": "ADV_ROOT_02",
       "pattern": "√[A] ÷ √[B] = √?",
       "variables": {
+        "M": {"values": [4, 9, 16, 25, 36]},
         "B": {"values": [4, 9, 16, 25]},
-        "M": {"values": [4, 9, 16, 25, 36]}
+        "A": {"calc": "M * B"}
       },
-      "pattern_builder": "'√' + (B*M) + ' ÷ √' + B + ' = √?'",
       "calculation": "M",
-      "explanation": "√[B*M] ÷ √[B] = √([B*M]/[B]) = √[RESULT]"
+      "explanation": "√[A] ÷ √[B] = √([A]/[B]) = √[RESULT]"
     },
 
     {
       "template_id": "ADV_LINEAR_01",
-      "pattern": "Slope of line through ([X1],[Y1]) and ([X2],[Y2]) = ?",
+      "pattern": "Slope through ([X1],[Y1]) and ([X2],[Y2]) = ?",
       "variables": {
         "X1": {"min": -5, "max": 4},
         "Y1": {"min": -5, "max": 5},
         "XSTEP": {"min": 1, "max": 6},
         "YSTEP": {"min": -6, "max": 6}
       },
-      "pattern_builder": "'Slope through (' + X1 + ',' + Y1 + ') and (' + (X1+XSTEP) + ',' + (Y1+YSTEP) + ') = ?'",
       "calculation": "YSTEP / XSTEP",
       "explanation": "Slope = (y₂-y₁)/(x₂-x₁) = [YSTEP]/[XSTEP] = [RESULT]"
     },
@@ -102,7 +100,7 @@
         "C": {"min": 5, "max": 30}
       },
       "calculation": "(C - B) / A",
-      "explanation": "[A]x > [C] - [B], so x > ([C]-[B])/[A] = [RESULT]"
+      "explanation": "[A]x > [C]-[B], so x > ([C]-[B])/[A] = [RESULT]"
     },
 
     {
@@ -114,7 +112,7 @@
         "C": {"min": 5, "max": 30}
       },
       "calculation": "(C + B) / A",
-      "explanation": "[A]x < [C] + [B], so x < ([C]+[B])/[A] = [RESULT]"
+      "explanation": "[A]x < [C]+[B], so x < ([C]+[B])/[A] = [RESULT]"
     },
 
     {
@@ -125,12 +123,12 @@
         "T": {"min": 20, "max": 50}
       },
       "calculation": "F / T",
-      "explanation": "P = favorable/total = [F]/[T] = [RESULT]"
+      "explanation": "P = [F]/[T] = [RESULT]"
     },
 
     {
       "template_id": "ADV_PROB_02",
-      "pattern": "Bag has [R] red, [B] blue, [G] green balls. P(red) = ?",
+      "pattern": "Bag has [R] red, [B] blue, [G] green. P(red) = ?",
       "variables": {
         "R": {"min": 1, "max": 10},
         "B": {"min": 1, "max": 10},
@@ -147,7 +145,7 @@
         "N": {"min": 1, "max": 5}
       },
       "calculation": "1 / (2 ** N)",
-      "explanation": "P(all heads) = (1/2)^[N] = 1/[2**N] = [RESULT]"
+      "explanation": "P(all heads) = (1/2)^[N] = [RESULT]"
     },
 
     {
@@ -210,7 +208,7 @@
 
     {
       "template_id": "ADV_TRIG_04",
-      "pattern": "Right triangle: opposite = [O], hypotenuse = [H]. sinθ = ?",
+      "pattern": "Right triangle: opposite=[O], hypotenuse=[H]. sinθ = ?",
       "variables": {
         "O": {"min": 1, "max": 12},
         "H": {"min": 13, "max": 20}
@@ -221,7 +219,7 @@
 
     {
       "template_id": "ADV_TRIG_05",
-      "pattern": "Right triangle: adjacent = [ADJ], hypotenuse = [H]. cosθ = ?",
+      "pattern": "Right triangle: adjacent=[ADJ], hypotenuse=[H]. cosθ = ?",
       "variables": {
         "ADJ": {"min": 1, "max": 12},
         "H": {"min": 13, "max": 20}
@@ -276,7 +274,7 @@
         "D": {"min": -5, "max": 5}
       },
       "calculation": "A + C",
-      "explanation": "Real: [A]+[C]=[RESULT], Imaginary: [B]+[D]=[B+D]"
+      "explanation": "Real: [A]+[C]=[RESULT], Imaginary: [B]+[D]"
     },
 
     {
@@ -289,7 +287,7 @@
         "D": {"min": -5, "max": 5}
       },
       "calculation": "A - C",
-      "explanation": "Real: [A]-[C]=[RESULT], Imaginary: [B]-[D]=[B-D]"
+      "explanation": "Real: [A]-[C]=[RESULT], Imaginary: [B]-[D]"
     },
 
     {
@@ -352,7 +350,7 @@
         "C": {"min": 1, "max": 5}
       },
       "calculation": "2*A*C + B",
-      "explanation": "d/dx = [2*A]x + [B], at x=[C]: [2*A]×[C]+[B] = [RESULT]"
+      "explanation": "d/dx = 2[A]x+[B], at x=[C]: 2×[A]×[C]+[B] = [RESULT]"
     },
 
     {
@@ -399,13 +397,13 @@
 
     {
       "template_id": "ADV_ARITH_SEQ_01",
-      "pattern": "Arithmetic sequence: first=[A], diff=[D]. 10th term = ?",
+      "pattern": "Arithmetic: first=[A], diff=[D]. 10th term = ?",
       "variables": {
         "A": {"min": 1, "max": 20},
         "D": {"min": 1, "max": 10}
       },
       "calculation": "A + 9 * D",
-      "explanation": "nth term = a + (n-1)d = [A] + 9×[D] = [RESULT]"
+      "explanation": "nth term = a+(n-1)d = [A]+9×[D] = [RESULT]"
     },
 
     {
@@ -417,27 +415,23 @@
         "N": {"min": 4, "max": 10}
       },
       "calculation": "N * (2*A + (N-1)*D) / 2",
-      "explanation": "Sum = n/2 × (2a+(n-1)d) = [N]/2×(2×[A]+([N]-1)×[D]) = [RESULT]"
+      "explanation": "Sum = n/2×(2a+(n-1)d) = [RESULT]"
     },
 
     {
       "template_id": "ADV_GEO_SEQ_01",
-      "pattern": "Geometric sequence: first=[A], ratio=[R]. 5th term = ?",
+      "pattern": "Geometric: first=[A], ratio=[RR]. 5th term = ?",
       "variables": {
         "A": {"min": 1, "max": 5},
-        "R": {"min": 2, "max": 4}
+        "RR": {"min": 2, "max": 4}
       },
-      "calculation": "A * R ** 4",
-      "explanation": "nth term = a×r^(n-1) = [A]×[R]^4 = [RESULT]"
+      "calculation": "A * RR ** 4",
+      "explanation": "nth term = a×r^(n-1) = [A]×[RR]^4 = [RESULT]"
     }
 
   ],
   "responses": {
-    "correct": ["Mathematical brilliance! 🌟", "Perfect! ✅", "You've mastered it! 🏆", "Flawless! 💎", "Excellent work! 🎯", "Outstanding! 🚀"],
-    "incorrect": ["Check the formula 📐", "Review the method 📚", "Try again 🔍", "Close! Refine your solution ✨", "Think carefully 🤔"]
+    "correct": ["Mathematical brilliance! 🌟", "Perfect! ✅", "You've mastered it! 🏆", "Flawless! 💎", "Excellent! 🎯", "Outstanding! 🚀"],
+    "incorrect": ["Check the formula 📐", "Review the method 📚", "Try again 🔍", "Close! ✨", "Think carefully 🤔"]
   }
 }
-
-
-
-
