@@ -1349,10 +1349,13 @@ undergraduate learners, and serious exam aspirants aiming for <strong>government
         <div id="gap-auth-section" class="gap-auth-buttons">
             <a href="/vooo-ai/vooosignup.html" class="gap-btn-signup" id="gap-signup-btn">Sign Up</a>
             <a href="/vooo-ai/vooologin.html" class="gap-btn-login" id="gap-login-btn">Login</a>
-            <span id="gap-username-text" class="gap-username"></span>
-            <a href="/vooo-ai/vooodashboard.html" id="gap-dashboard-icon" class="gap-dashboard-icon" title="My Dashboard">
-                <i class="fas fa-user-circle"></i>
-            </a>
+<span id="gap-username-text" class="gap-username"></span>
+<a href="https://odelya.online/vooo-ai/vooodashboard.html" id="gap-dashboard-icon" class="gap-dashboard-icon" title="My Dashboard">
+    Dashboard
+</a>
+<button onclick="logoutFromVooo()" id="gap-logout-btn" class="gap-logout-btn" title="Logout" style="display:none; background:none; border:none; cursor:pointer; color:#D32F2F; font-size:2em;">
+    <i class="fas fa-sign-out-alt"></i>
+</button>
         </div>
     </div>
 
@@ -1644,13 +1647,12 @@ undergraduate learners, and serious exam aspirants aiming for <strong>government
     // ====== UI: LOGGED IN ======
     function showLoggedInUI(data) {
         const displayName = data.fullName || data.username || 'User';
-        document.getElementById('vooo-header-username').textContent = displayName;
-        document.getElementById('vooo-user-section').style.display  = 'flex';
         document.getElementById('gap-signup-btn').style.display     = 'none';
         document.getElementById('gap-login-btn').style.display      = 'none';
         document.getElementById('gap-username-text').style.display  = 'inline';
         document.getElementById('gap-username-text').textContent    = displayName;
         document.getElementById('gap-dashboard-icon').style.display = 'inline-flex';
+		document.getElementById('gap-logout-btn').style.display = 'inline-flex';
         const planBtn = document.getElementById('gap-plan-btn');
         planBtn.textContent = (data.tier === 'paid') ? 'Upgrade Plan' : 'Buy Plan';
     }
@@ -1662,6 +1664,7 @@ undergraduate learners, and serious exam aspirants aiming for <strong>government
         document.getElementById('gap-login-btn').style.display      = 'inline-block';
         document.getElementById('gap-username-text').style.display  = 'none';
         document.getElementById('gap-dashboard-icon').style.display = 'none';
+		document.getElementById('gap-logout-btn').style.display = 'none';
         document.getElementById('gap-plan-btn').textContent         = 'Buy Plan';
     }
 
@@ -1696,14 +1699,11 @@ undergraduate learners, and serious exam aspirants aiming for <strong>government
     }
 
     // ====== LOGOUT ======
-    function logoutFromVooo() {
-        if (confirm('Logout from Vooo AI?')) {
-            voooAuth.signOut().then(() => {
-                alert('✅ Logged out successfully!');
-                location.reload();
-            });
-        }
-    }
+function logoutFromVooo() {
+    voooAuth.signOut().then(() => {
+        location.reload();
+    });
+}
 
     // ====== WRAP generateNewPuzzle AFTER engine finishes its own initVOOOGame ======
     // Use 1000ms delay (same as old working code) so engine is fully ready
