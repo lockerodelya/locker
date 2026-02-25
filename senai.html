@@ -426,92 +426,6 @@
         opacity: 0.9;
     }
     
-    /* Search Demo Section */
-    .search-demo {
-        background: white;
-        border-radius: 20px;
-        padding: 40px;
-        box-shadow: none;
-        margin-top: 40px;
-        width: 100%;
-        max-width: 800px;
-    }
-    
-    .search-tabs {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 30px;
-        border-bottom: 2px solid #eef2f6;
-        padding-bottom: 15px;
-    }
-    
-    .search-tab {
-        padding: 10px 25px;
-        border-radius: 30px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        color: #666;
-    }
-    
-    .search-tab.active {
-        background: #0D47A1;
-        color: white;
-    }
-    
-    .search-box {
-        display: flex;
-        gap: 15px;
-        flex-wrap: wrap;
-    }
-    
-    .search-input {
-        flex: 1;
-        min-width: 250px;
-        padding: 15px 20px;
-        border: 2px solid #eef2f6;
-        border-radius: 12px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-    
-    .search-input:focus {
-        outline: none;
-        border-color: #0D47A1;
-        box-shadow: none;
-    }
-    
-    .search-button {
-        background: #0D47A1;
-        color: white;
-        border: none;
-        padding: 15px 35px;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .search-button:hover {
-        background: #1565C0;
-        transform: translateY(-2px);
-        box-shadow: none;
-    }
-    
-    .search-button i {
-        font-size: 1.2rem;
-    }
-    
-    .search-note {
-        margin-top: 15px;
-        color: #666;
-        font-size: 0.9rem;
-        text-align: left;
-    }
     
     /* Features Grid */
 .features-grid {
@@ -1081,36 +995,7 @@
             });
         }
 
-        // Search tab switching functionality only (no alert)
-        const tabs = document.querySelectorAll('.search-tab');
-        const searchInput = document.getElementById('searchInput');
-        const searchPlaceholder = document.getElementById('searchPlaceholder');
-        
-        if (tabs.length > 0) {
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    const tabType = this.getAttribute('data-tab');
-                    if (searchInput && searchPlaceholder) {
-                        if (tabType === 'face') {
-                            searchInput.placeholder = 'Enter face image URL or description...';
-                            searchPlaceholder.textContent = 'Try: Upload a face photo to search among millions';
-                        } else if (tabType === 'plate') {
-                            searchInput.placeholder = 'Enter license plate number...';
-                            searchPlaceholder.textContent = 'Try: WB 12 AB 1234, DL 8C XY 5678';
-                        } else if (tabType === 'object') {
-                            searchInput.placeholder = 'Enter object or description...';
-                            searchPlaceholder.textContent = 'Try: Red car, black backpack, specific logo';
-                        }
-                    }
-                });
-            });
-        }
-
-        // Note: Search button functionality removed as requested
-    });
+});
 </script>
 
 <!-- Fix Home link scrolling issue -->
