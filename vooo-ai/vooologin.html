@@ -274,19 +274,8 @@
             } catch (error) {
                 console.error('Login error:', error);
 
-                let errorMessage = 'Login failed. ';
-                if (error.code === 'auth/wrong-password') {
-                    errorMessage += 'Incorrect password.';
-                } else if (error.code === 'auth/user-not-found' || error.message === 'Username not found') {
-                    errorMessage += 'Username not found.';
-                } else if (error.code === 'auth/invalid-email') {
-                    errorMessage += 'Invalid format.';
-                } else if (error.code === 'auth/too-many-requests') {
-                    errorMessage += 'Too many failed attempts. Try again later.';
-                } else {
-                    errorMessage += error.message;
-                }
-
+                let errorMessage = 'Wrong Credentials';
+                
                 errorDiv.textContent   = errorMessage;
                 errorDiv.style.display = 'block';
                 loginBtn.disabled      = false;
