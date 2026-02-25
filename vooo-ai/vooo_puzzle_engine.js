@@ -721,7 +721,7 @@ class VOOOPuzzleEngine {
 window.voooEngine = new VOOOPuzzleEngine();
 
 async function initVOOOGame(){
-    const loaded=await voooEngine.loadCategory('toddler_math');
+    const loaded=await voooEngine.loadCategory('foundation_math');
     if(!loaded){document.getElementById('vooo-question').textContent='Error loading puzzles.';return;}
     const puzzle=voooEngine.generateNewPuzzle();
     if(puzzle)updatePuzzleDisplay(puzzle);
