@@ -2,7 +2,6 @@
   "puzzle_type": "advanced_math",
   "display_name": "🚀 Advanced Math",
   "templates": [
-
 {
   "template_id": "ADV_ROOT_02",
   "pattern": "√[A] ÷ √[B] = √?",
@@ -360,12 +359,73 @@
   },
   "calculation": "R1 * R2",
   "explanation": "Product of roots = [R1]×[R2] = [RESULT]"
-}
-   
+},
+    {
+      "template_id": "ADV_SIMUL_01",
+      "pattern": "[A]x + [B]y = [C], [D]x + [E]y = [F]. x = ?",
+      "variables": {
+        "A": {"min": 1, "max": 5},
+        "B": {"min": 1, "max": 5},
+        "D": {"min": 6, "max": 10},
+        "E": {"min": 6, "max": 10},
+        "X_VAL": {"min": 1, "max": 10},
+        "Y_VAL": {"min": 1, "max": 10},
+        "C": {"calc": "A*X_VAL + B*Y_VAL"},
+        "F": {"calc": "D*X_VAL + E*Y_VAL"}
+      },
+      "calculation": "X_VAL",
+      "explanation": "Solving the system: x = [X_VAL], y = [Y_VAL]"
+    },
+    {
+      "template_id": "ADV_EXP_02",
+      "pattern": "[A]^[B] × [A]^[C] = [A]^?",
+      "variables": {
+        "A": {"values": [2, 3, 4, 5, 6, 7]},
+        "B": {"min": 2, "max": 6},
+        "C": {"min": 2, "max": 6}
+      },
+      "calculation": "B + C",
+      "explanation": "[A]^[B] × [A]^[C] = [A]^([B]+[C]) = [A]^[RESULT]"
+    },
+        {
+      "template_id": "ADV_EXP_03",
+      "pattern": "([A]^[B])^[C] = [A]^?",
+      "variables": {
+        "A": {"values": [2, 3, 4, 5]},
+        "B": {"min": 2, "max": 4},
+        "C": {"min": 2, "max": 4}
+      },
+      "calculation": "B * C",
+      "explanation": "([A]^[B])^[C] = [A]^([B]×[C]) = [A]^[RESULT]"
+    },
+
+    {
+      "template_id": "ADV_ROOT_01",
+      "pattern": "√[A] × √[B] = √?",
+      "variables": {
+        "A": {"values": [4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144]},
+        "B": {"values": [4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144]}
+      },
+      "calculation": "A * B",
+      "explanation": "√[A] × √[B] = √([A]×[B]) = √[RESULT]"
+    },
+    {
+      "template_id": "ADV_STATS_01",
+      "pattern": "Mean of [A], [B], [C], [D], [E] = ?",
+      "variables": {
+        "A": {"values": [10, 15, 20, 25, 30, 35, 40, 45, 50]},
+        "B": {"values": [10, 15, 20, 25, 30, 35, 40, 45, 50]},
+        "C": {"values": [10, 15, 20, 25, 30, 35, 40, 45, 50]},
+        "D": {"values": [10, 15, 20, 25, 30, 35, 40, 45, 50]},
+        "E": {"values": [10, 15, 20, 25, 30, 35, 40, 45, 50]}
+      },
+      "calculation": "(A + B + C + D + E) / 5",
+      "explanation": "Mean = ([A]+[B]+[C]+[D]+[E])/5 = [RESULT]"
+    }
+  
  ],
   "responses": {
     "correct": ["Mathematical brilliance! 🌟", "Perfect! ✅", "You've mastered it! 🏆", "Flawless! 💎", "Excellent! 🎯", "Outstanding! 🚀"],
     "incorrect": ["Check the formula 📐", "Review the method 📚", "Try again 🔍", "Close! ✨", "Think carefully 🤔"]
   }
 }
-
