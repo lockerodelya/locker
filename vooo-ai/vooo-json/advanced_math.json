@@ -52,16 +52,20 @@
       "calculation": "A * B",
       "explanation": "√[A] × √[B] = √([A]×[B]) = √[RESULT]"
     },
-    {
-      "template_id": "ADV_ROOT_02",
-      "pattern": "√[A] ÷ √[B] = √?",
+        {
+      "template_id": "ADV_LINEAR_01",
+      "pattern": "Slope through ([X1],[Y1]) and ([X2],[Y2]) = ?",
       "variables": {
-        "M": {"values": [4, 9, 16, 25, 36]},
-        "B": {"values": [4, 9, 16, 25]},
-        "A": {"calc": "M * B"}
+        "X1": {"min": 1, "max": 5},
+        "Y1": {"min": 1, "max": 5},
+        "XSTEP": {"values": [1, 2]},
+        "SLOPE": {"values": [-4, -3, -2, -1, 1, 2, 3, 4]},
+        "YSTEP": {"calc": "SLOPE * XSTEP"},
+        "X2": {"calc": "X1 + XSTEP"},
+        "Y2": {"calc": "Y1 + YSTEP"}
       },
-      "calculation": "M",
-      "explanation": "√[A] ÷ √[B] = √([A]/[B]) = √[RESULT]"
+      "calculation": "SLOPE",
+      "explanation": "Slope = (y₂-y₁)/(x₂-x₁) = [YSTEP]/[XSTEP] = [RESULT]"
     }
 
 
@@ -71,5 +75,6 @@
     "incorrect": ["Check the formula 📐", "Review the method 📚", "Try again 🔍", "Close! ✨", "Think carefully 🤔"]
   }
 }
+
 
 
