@@ -1244,12 +1244,22 @@
         });
     </script>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="/vooo-ai/vooo-config.js"></script>
-	<script src="/vooo-ai/voooai-tracker.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="/vooo-ai/vooo-config.js"></script>
+
+<!-- FIREBASE INITIALIZATION - MOVED HERE -->
+<script>
+if (!firebase.apps.length) {
+    firebase.initializeApp(VOOO_CONFIG.firebase);
+    console.log('✅ Firebase initialized');
+}
+</script>
+
+<!-- NOW load tracker - Firebase is ready -->
+<script src="/vooo-ai/voooai-tracker.js"></script>
 	
 </head>
     
