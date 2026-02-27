@@ -3,182 +3,363 @@
   "display_name": "Toddler Math",
   "templates": [
 
-    {
-      "template_id": "TOD_COUNT_01",
-      "pattern": "🐱🐱🐱 = ?",
-      "variables": {
-"EMOJI": {"values": ["🐱","🐶","🐰","🐻","🐯","🐸","🐙","🦋","🐝","🐢","🦊","🐼","🐨","🦁","🐷","🐮","🐵","🐔","🦆","🐧","🐺","🦉","🦅","🐍","🦎","🐛","🐌","🦗","🕷️","🦂","🌸","🌺","🍎","🍊","🍋","🍇","🍓","🌈","⭐","🎈"]},
-"COUNT": {"min": 1, "max": 8}
-      },
-      "pattern_builder": "repeat(EMOJI, COUNT) + ' = ?'",
-      "calculation": "COUNT",
-      "explanation": "There are [COUNT] [EMOJI]s."
-    },
-	    {
-      "template_id": "TOD_ADD_PIC_01",
-      "pattern": "[A_EMOJI] + [B_EMOJI] = ?",
-      "variables": {
-"A_EMOJI": {"values": ["🍎","🍌","🍪","🍇","🍊","🍋","🍉","🍓","🍒","🍑","🥝","🍍","🥥","🧁","🍩","🍰","🎂","🍬","🍭","🌸"]},
-"B_EMOJI": {"values": ["🐱","🐶","🐰","🐻","🐯","🐸","⭐","🎈","🌺","🌻","🔵","🔺","🎁","🎀","🦄","🐲","🌵","🎃","🦕","🍄"]},
-"A_COUNT": {"min": 1, "max": 5},
-"B_COUNT": {"min": 1, "max": 5}
-      },
-      "pattern_builder": "repeat(A_EMOJI, A_COUNT) + ' + ' + repeat(B_EMOJI, B_COUNT) + ' = ?'",
-      "calculation": "A_COUNT + B_COUNT",
-      "explanation": "[A_COUNT] + [B_COUNT] = [RESULT]"
-    },
-    {
-      "template_id": "TOD_SHAPE_01",
-      "pattern": "Find the [SHAPE]:",
-      "variables": {
-        "SHAPE": {"values": ["circle", "square", "triangle", "star", "heart", "diamond", "rectangle", "hexagon"]}
-      },
-      "options": ["○", "□", "△", "★", "♥", "◇", "▢", "⬡"],
-      "calculation": "SHAPE",
-      "answer_type": "shape_selector"
-    },
-    {
-      "template_id": "TOD_SIZE_01",
-      "pattern": "Which is bigger? [A_EMOJI] or [B_EMOJI]?",
-      "variables": {
-"A_EMOJI": {"values": ["🐘","🦒","🐋","🏠","🌳","🦏","🦛","🐪","🦘","🏔️","🚂","🚗","🚌","🚛","🏢"]},
-"B_EMOJI": {"values": ["🐭","🐦","🐜","📦","🌸","🐛","🐌","🐞","🦗","🌼","🏀","⚽","🎾","🏐","📱"]}
-      },
-      "calculation": "A_EMOJI",
-      "answer_type": "comparison"
-    },
 {
-  "template_id": "TOD_COLOR_01",
-  "pattern": "Find the [COLOR] one:",
-  "variables": {
-    "COLOR": {"values": ["red","blue","yellow","green","black","white","orange","purple","brown","pink"]}
+    "template_id": "TOD_COUNT_01",
+    "pattern": "Count the animals: There are [COUNT] [ANIMAL]. How many total?",
+    "variables": {
+      "COUNT": {"min": 1, "max": 12},
+      "ANIMAL": {"values": ["cats", "dogs", "rabbits", "bears", "tigers", "frogs", "turtles", "butterflies", "bees", "ducks", "penguins", "fish"]}
+    },
+    "constraints": [],
+    "calculation": "COUNT",
+    "explanation": "There are [COUNT] [ANIMAL] in total."
   },
-  "options": ["🔴","🔵","🟡","🟢","⚫","⚪","🟠","🟣","🟤","🩷"],
-  "calculation": "COLOR",
-  "answer_type": "color_picker"
-},
-    {
-      "template_id": "TOD_SEQ_01",
-      "pattern": "[A], [B], ?, [D]",
-      "variables": {
-"A": {"min": 1, "max": 20},
-"STEP": {"values": [1, 2, 3, 4, 5]}
-      },
-      "pattern_builder": "A + ', ' + (A + STEP) + ', ?, ' + (A + 3*STEP)",
-      "calculation": "A + (2 * STEP)",
-      "explanation": "Counting by [STEP]: [A], [A+STEP], [A+2*STEP], [A+3*STEP]"
+  {
+    "template_id": "TOD_COUNT_02",
+    "pattern": "How many [OBJECT] are there? Count: [COUNT]",
+    "variables": {
+      "COUNT": {"min": 1, "max": 15},
+      "OBJECT": {"values": ["stars", "moons", "suns", "rainbows", "clouds", "balloons", "flowers", "hearts", "circles", "squares", "triangles", "balls", "cars", "trains", "boats"]}
     },
-    {
-      "template_id": "TOD_PATTERN_01",
-      "pattern": "🔴🟡🔴🟡?",
-      "variables": {
-        "PATTERN": {"values": ["ABAB", "AABB", "ABCABC"]}
-      },
-      "options": ["🔴", "🟡", "🔵", "🟢"],
-      "calculation": "next_in_pattern(PATTERN)",
-      "answer_type": "pattern_completion"
+    "constraints": [],
+    "calculation": "COUNT",
+    "explanation": "The total number of [OBJECT] is [COUNT]."
+  },
+  {
+    "template_id": "TOD_COUNT_03",
+    "pattern": "Look at the [ITEM]. If you see [COUNT] of them, how many do you have?",
+    "variables": {
+      "COUNT": {"min": 1, "max": 10},
+      "ITEM": {"values": ["apples", "bananas", "cookies", "grapes", "oranges", "strawberries", "cherries", "peaches", "cupcakes", "donuts", "candies", "popsicles"]}
     },
-    {
-      "template_id": "TOD_COUNT_02",
-      "pattern": "🌟🌟🌟🌟 = ?",
-      "variables": {
-"EMOJI": {"values": ["⭐","🌟","✨","💫","🌙","☀️","🌈","☁️","⛅","🌤️","⛈️","🌧️","⚡","❄️","☃️","🌊","🌪️","🌞","🌝","🌛"]},
-"COUNT": {"min": 1, "max": 8}
-      },
-      "pattern_builder": "repeat(EMOJI, COUNT) + ' = ?'",
-      "calculation": "COUNT",
-      "explanation": "There are [COUNT] [EMOJI]s."
+    "constraints": [],
+    "calculation": "COUNT",
+    "explanation": "You have [COUNT] [ITEM]."
+  },
+  {
+    "template_id": "TOD_COUNT_04",
+    "pattern": "In the picture there are [COUNT] [VEHICLE]. How many vehicles?",
+    "variables": {
+      "COUNT": {"min": 1, "max": 12},
+      "VEHICLE": {"values": ["cars", "trucks", "buses", "trains", "airplanes", "helicopters", "boats", "bicycles", "motorcycles", "scooters", "rockets", "ambulances"]}
     },
-    {
-      "template_id": "TOD_COUNT_03",
-      "pattern": "🚗🚗🚗 = ?",
-      "variables": {
-"EMOJI": {"values": ["🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","🏍️","🚲","🛴","🚁","✈️","🚀","🛸"]},
-"COUNT": {"min": 1, "max": 8}
-      },
-      "pattern_builder": "repeat(EMOJI, COUNT) + ' = ?'",
-      "calculation": "COUNT",
-      "explanation": "There are [COUNT] [EMOJI]s."
+    "constraints": [],
+    "calculation": "COUNT",
+    "explanation": "There are [COUNT] [VEHICLE] in the picture."
+  },
+  {
+    "template_id": "TOD_COUNT_05",
+    "pattern": "Count the [ITEM] in the garden: [COUNT]. How many total?",
+    "variables": {
+      "COUNT": {"min": 1, "max": 15},
+      "ITEM": {"values": ["flowers", "butterflies", "ladybugs", "bees", "birds", "worms", "snails", "ants", "grasshoppers", "caterpillars", "dragonflies", "fireflies"]}
     },
-    {
-      "template_id": "TOD_COUNT_04",
-      "pattern": "⚽⚽⚽ = ?",
-      "variables": {
-"EMOJI": {"values": ["⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎱","🪀","🏓","🏸","🏒","🏑","🥍","🏏","🪃","🎿","🛷"]},
-"COUNT": {"min": 1, "max": 8}
-      },
-      "pattern_builder": "repeat(EMOJI, COUNT) + ' = ?'",
-      "calculation": "COUNT",
-      "explanation": "There are [COUNT] [EMOJI]s."
+    "constraints": [],
+    "calculation": "COUNT",
+    "explanation": "The garden has [COUNT] [ITEM]."
+  },
+  {
+    "template_id": "TOD_ADD_01",
+    "pattern": "You have [A] [ITEM1] and [B] [ITEM2]. How many items total?",
+    "variables": {
+      "A": {"min": 1, "max": 10},
+      "B": {"min": 1, "max": 10},
+      "ITEM1": {"values": ["apples", "bananas", "oranges", "grapes", "cookies", "candies", "cupcakes", "donuts"]},
+      "ITEM2": {"values": ["pears", "strawberries", "blueberries", "cherries", "muffins", "lollipops", "ice creams", "chocolates"]}
     },
-
-    {
-      "template_id": "TOD_ADD_PIC_02",
-      "pattern": "[A_EMOJI] + [B_EMOJI] = ?",
-      "variables": {
-"A_EMOJI": {"values": ["⭐","🌟","✨","💫","🌙","☀️","🌈","☁️","⛅","🌤️","⛈️","🌧️","⚡","❄️","☃️","🌊","🌪️","🌞","🌝","🌛"]},
-"B_EMOJI": {"values": ["🚗","🚕","🚙","🚌","🏎️","🚓","🚑","🚒","🚲","🛴","🚁","✈️","🚀","🛸","🏍️","🚐","🚚","🚛","🚜","⛵"]},
-"A_COUNT": {"min": 1, "max": 5},
-"B_COUNT": {"min": 1, "max": 5}
-      },
-      "pattern_builder": "repeat(A_EMOJI, A_COUNT) + ' + ' + repeat(B_EMOJI, B_COUNT) + ' = ?'",
-      "calculation": "A_COUNT + B_COUNT",
-      "explanation": "[A_COUNT] + [B_COUNT] = [RESULT]"
+    "constraints": [],
+    "calculation": "A + B",
+    "explanation": "Total items = [A] + [B] = [RESULT]"
+  },
+  {
+    "template_id": "TOD_ADD_02",
+    "pattern": "There are [A] [ANIMAL1] and [B] [ANIMAL2] at the farm. How many animals in total?",
+    "variables": {
+      "A": {"min": 1, "max": 12},
+      "B": {"min": 1, "max": 12},
+      "ANIMAL1": {"values": ["cows", "horses", "pigs", "sheep", "goats", "chickens", "ducks", "turkeys"]},
+      "ANIMAL2": {"values": ["rabbits", "dogs", "cats", "mice", "geese", "donkeys", "llamas", "bees"]}
     },
-    {
-      "template_id": "TOD_ADD_PIC_03",
-      "pattern": "[A_EMOJI] + [B_EMOJI] = ?",
-      "variables": {
-"A_EMOJI": {"values": ["🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼","🐨","🦁","🐯","🐸","🐙","🦋","🐝","🐢","🦊","🐺","🦉","🦅"]},
-"B_EMOJI": {"values": ["🍎","🍌","🍪","🍇","🍊","🍋","🍉","🍓","🍒","🍑","🥝","🍍","🥥","🧁","🍩","🍰","🎂","🍬","🍭","🌸"]},
-"A_COUNT": {"min": 1, "max": 5},
-"B_COUNT": {"min": 1, "max": 5}
-      },
-      "pattern_builder": "repeat(A_EMOJI, A_COUNT) + ' + ' + repeat(B_EMOJI, B_COUNT) + ' = ?'",
-      "calculation": "A_COUNT + B_COUNT",
-      "explanation": "[A_COUNT] + [B_COUNT] = [RESULT]"
+    "constraints": [],
+    "calculation": "A + B",
+    "explanation": "Total farm animals = [A] + [B] = [RESULT]"
+  },
+  {
+    "template_id": "TOD_ADD_03",
+    "pattern": "[A] red [BALL] plus [C] blue [BALL]. How many balls total?",
+    "variables": {
+      "A": {"min": 1, "max": 8},
+      "C": {"min": 1, "max": 8},
+      "BALL": {"values": ["balls", "marbles", "balloons", "bubbles", "beads", "buttons", "coins", "blocks"]}
     },
-    {
-      "template_id": "TOD_PATTERN_02",
-      "pattern": "🔵🟢🔵🟢?",
-      "variables": {
-        "PATTERN": {"values": ["ABAB", "AABB", "ABCABC"]}
-      },
-      "options": ["🔵", "🟢", "🟡", "🔴"],
-      "calculation": "next_in_pattern(PATTERN)",
-      "answer_type": "pattern_completion"
+    "constraints": [],
+    "calculation": "A + C",
+    "explanation": "Total balls = [A] + [C] = [RESULT]"
+  },
+  {
+    "template_id": "TOD_ADD_04",
+    "pattern": "Mom gave you [A] [TREAT1]. Dad gave you [B] [TREAT2]. How many treats do you have?",
+    "variables": {
+      "A": {"min": 1, "max": 10},
+      "B": {"min": 1, "max": 10},
+      "TREAT1": {"values": ["cookies", "candies", "chocolates", "gummies", "lollipops", "cupcakes", "donuts", "muffins"]},
+      "TREAT2": {"values": ["ice creams", "popsicles", "brownies", "candy bars", "jelly beans", "marshmallows", "caramels", "toffees"]}
     },
-    {
-      "template_id": "TOD_PATTERN_03",
-      "pattern": "⭐💫⭐💫?",
-      "variables": {
-        "PATTERN": {"values": ["ABAB", "AABB", "ABCABC"]}
-      },
-      "options": ["⭐", "💫", "✨", "🌟"],
-      "calculation": "next_in_pattern(PATTERN)",
-      "answer_type": "pattern_completion"
+    "constraints": [],
+    "calculation": "A + B",
+    "explanation": "Total treats = [A] + [B] = [RESULT]"
+  },
+  {
+    "template_id": "TOD_ADD_05",
+    "pattern": "You see [A] [BIRD1] in the sky and [B] [BIRD2] on the ground. How many birds total?",
+    "variables": {
+      "A": {"min": 1, "max": 10},
+      "B": {"min": 1, "max": 10},
+      "BIRD1": {"values": ["sparrows", "robins", "blue jays", "cardinals", "finches", "swallows", "pigeons", "doves"]},
+      "BIRD2": {"values": ["crows", "ravens", "magpies", "starlings", "blackbirds", "grackles", "cuckoos", "woodpeckers"]}
     },
-    {
-      "template_id": "TOD_SIZE_02",
-      "pattern": "Which is smaller? [A_EMOJI] or [B_EMOJI]?",
-      "variables": {
-"A_EMOJI": {"values": ["🐭","🐦","🐜","📦","🌸","🐛","🐌","🐞","🦗","🌼","🏀","⚽","🎾","🏐","📱"]},
-"B_EMOJI": {"values": ["🐘","🦒","🐋","🏠","🌳","🦏","🦛","🐪","🦘","🏔️","🚂","🚗","🚌","🚛","🏢"]}
-      },
-      "calculation": "A_EMOJI",
-      "answer_type": "comparison"
-    }
-	
-
-  ],
+    "constraints": [],
+    "calculation": "A + B",
+    "explanation": "Total birds = [A] + [B] = [RESULT]"
+  },
+  {
+    "template_id": "TOD_SEQ_01",
+    "pattern": "What number comes next? [A], [B], [C], ?",
+    "variables": {
+      "START": {"min": 1, "max": 20},
+      "STEP": {"values": [1, 2, 3, 4, 5]}
+    },
+    "constraints": ["START + (3*STEP) <= 50"],
+    "calculation": "START + (3 * STEP)",
+    "explanation": "The pattern is adding [STEP] each time: [START], [START+STEP], [START+2*STEP], next is [RESULT]"
+  },
+  {
+    "template_id": "TOD_SEQ_02",
+    "pattern": "Fill in the missing number: [A], ?, [C], [D]",
+    "variables": {
+      "START": {"min": 2, "max": 30},
+      "STEP": {"values": [2, 3, 4, 5, 6, 7, 8, 9, 10]}
+    },
+    "constraints": ["START + (3*STEP) <= 100"],
+    "calculation": "START + STEP",
+    "explanation": "The pattern is adding [STEP] each time: [START], [START+STEP], [START+2*STEP], [START+3*STEP]"
+  },
+  {
+    "template_id": "TOD_SEQ_03",
+    "pattern": "Complete the counting by [STEP]: [A], [B], [C], ?",
+    "variables": {
+      "START": {"min": 1, "max": 25},
+      "STEP": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+    },
+    "constraints": ["START + (3*STEP) <= 100"],
+    "calculation": "START + (3 * STEP)",
+    "explanation": "Count by [STEP]: [A]=[START], [B]=[START+STEP], [C]=[START+2*STEP], [D]=[RESULT]"
+  },
+  {
+    "template_id": "TOD_SEQ_04",
+    "pattern": "What is the next number? [X], [Y], ?",
+    "variables": {
+      "FIRST": {"min": 1, "max": 15},
+      "SECOND": {"min": 2, "max": 20}
+    },
+    "constraints": ["SECOND > FIRST", "SECOND - FIRST <= 10"],
+    "calculation": "SECOND + (SECOND - FIRST)",
+    "explanation": "The pattern increases by [SECOND-FIRST] each time: [FIRST], [SECOND], next is [RESULT]"
+  },
+  {
+    "template_id": "TOD_SEQ_05",
+    "pattern": "Find the pattern: [A], [B], [C], ?",
+    "variables": {
+      "FIRST": {"min": 5, "max": 50},
+      "DIFF": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+    },
+    "constraints": ["FIRST + (3*DIFF) <= 100"],
+    "calculation": "FIRST + (3 * DIFF)",
+    "explanation": "Each number increases by [DIFF]: [FIRST], [FIRST+DIFF], [FIRST+2*DIFF], next is [RESULT]"
+  },
+  {
+    "template_id": "TOD_COMPARE_01",
+    "pattern": "Which is more: [A] [ITEM1] or [B] [ITEM2]?",
+    "variables": {
+      "A": {"min": 1, "max": 15},
+      "B": {"min": 1, "max": 15},
+      "ITEM1": {"values": ["apples", "cookies", "candies", "balloons", "stars", "hearts", "flowers", "bubbles"]},
+      "ITEM2": {"values": ["bananas", "cupcakes", "chocolates", "kites", "moons", "clouds", "butterflies", "raindrops"]}
+    },
+    "constraints": ["A != B"],
+    "calculation": "max(A, B)",
+    "explanation": "[A] [ITEM1] and [B] [ITEM2]. [max(A,B)] is the larger quantity."
+  },
+  {
+    "template_id": "TOD_COMPARE_02",
+    "pattern": "You have [A] [TOY1]. Your friend has [B] [TOY2]. Who has more?",
+    "variables": {
+      "A": {"min": 1, "max": 12},
+      "B": {"min": 1, "max": 12},
+      "TOY1": {"values": ["cars", "blocks", "dolls", "balls", "robots", "puzzles", "books", "crayons"]},
+      "TOY2": {"values": ["trains", "legos", "stuffed animals", "marbles", "action figures", "board games", "coloring books", "stickers"]}
+    },
+    "constraints": ["A != B"],
+    "calculation": "max(A, B)",
+    "explanation": "You have [A] [TOY1], friend has [B] [TOY2]. [max(A,B)] is more."
+  },
+  {
+    "template_id": "TOD_COMPARE_03",
+    "pattern": "Which number is bigger: [A] or [B]?",
+    "variables": {
+      "A": {"min": 1, "max": 50},
+      "B": {"min": 1, "max": 50}
+    },
+    "constraints": ["A != B"],
+    "calculation": "max(A, B)",
+    "explanation": "Comparing [A] and [B], [RESULT] is bigger."
+  },
+  {
+    "template_id": "TOD_COMPARE_04",
+    "pattern": "There are [A] [FRUIT1] and [B] [FRUIT2]. Which fruit do we have less of?",
+    "variables": {
+      "A": {"min": 1, "max": 15},
+      "B": {"min": 1, "max": 15},
+      "FRUIT1": {"values": ["apples", "oranges", "bananas", "grapes", "pears", "peaches", "plums", "lemons"]},
+      "FRUIT2": {"values": ["strawberries", "blueberries", "raspberries", "cherries", "kiwis", "mangoes", "pineapples", "watermelons"]}
+    },
+    "constraints": ["A != B"],
+    "calculation": "min(A, B)",
+    "explanation": "We have [A] [FRUIT1] and [B] [FRUIT2]. [min(A,B)] is the smaller amount."
+  },
+  {
+    "template_id": "TOD_COMPARE_05",
+    "pattern": "Which is smaller: [A] [ANIMAL1] or [B] [ANIMAL2]?",
+    "variables": {
+      "A": {"min": 1, "max": 12},
+      "B": {"min": 1, "max": 12},
+      "ANIMAL1": {"values": ["puppies", "kittens", "bunnies", "hamsters", "mice", "birds", "fish", "turtles"]},
+      "ANIMAL2": {"values": ["dogs", "cats", "rabbits", "guinea pigs", "rats", "parrots", "goldfish", "frogs"]}
+    },
+    "constraints": ["A != B"],
+    "calculation": "min(A, B)",
+    "explanation": "[A] [ANIMAL1] and [B] [ANIMAL2]. [min(A,B)] is the smaller number."
+  },
+  {
+    "template_id": "TOD_SUBTRACT_01",
+    "pattern": "You have [A] [ITEM]. You give away [B]. How many left?",
+    "variables": {
+      "A": {"min": 3, "max": 20},
+      "B": {"min": 1, "max": 10},
+      "ITEM": {"values": ["cookies", "candies", "balloons", "stickers", "pencils", "crayons", "marbles", "blocks"]}
+    },
+    "constraints": ["A > B"],
+    "calculation": "A - B",
+    "explanation": "[A] - [B] = [RESULT] [ITEM] left"
+  },
+  {
+    "template_id": "TOD_SUBTRACT_02",
+    "pattern": "There were [A] [BIRD] on a tree. [B] flew away. How many remain?",
+    "variables": {
+      "A": {"min": 3, "max": 25},
+      "B": {"min": 1, "max": 12},
+      "BIRD": {"values": ["sparrows", "robins", "pigeons", "crows", "finches", "swallows", "blue jays", "cardinals"]}
+    },
+    "constraints": ["A > B"],
+    "calculation": "A - B",
+    "explanation": "[A] - [B] = [RESULT] [BIRD] remain"
+  },
+  {
+    "template_id": "TOD_SUBTRACT_03",
+    "pattern": "You ate [B] of [A] [FOOD]. How many [FOOD] are left?",
+    "variables": {
+      "A": {"min": 4, "max": 30},
+      "B": {"min": 1, "max": 15},
+      "FOOD": {"values": ["grapes", "cherries", "strawberries", "blueberries", "cookies", "cupcakes", "donuts", "muffins"]}
+    },
+    "constraints": ["A > B"],
+    "calculation": "A - B",
+    "explanation": "[A] - [B] = [RESULT] [FOOD] left"
+  },
+  {
+    "template_id": "TOD_SUBTRACT_04",
+    "pattern": "[A] children were playing. [B] went home. How many children still playing?",
+    "variables": {
+      "A": {"min": 3, "max": 20},
+      "B": {"min": 1, "max": 10}
+    },
+    "constraints": ["A > B"],
+    "calculation": "A - B",
+    "explanation": "[A] - [B] = [RESULT] children still playing"
+  },
+  {
+    "template_id": "TOD_SUBTRACT_05",
+    "pattern": "You had [A] [TOY]. You lost [B]. How many [TOY] do you have now?",
+    "variables": {
+      "A": {"min": 3, "max": 18},
+      "B": {"min": 1, "max": 8},
+      "TOY": {"values": ["cars", "balls", "dolls", "robots", "puzzles", "blocks", "books", "crayons"]}
+    },
+    "constraints": ["A > B"],
+    "calculation": "A - B",
+    "explanation": "[A] - [B] = [RESULT] [TOY] remaining"
+  },
+  {
+    "template_id": "TOD_MULTIPLY_01",
+    "pattern": "There are [A] boxes. Each box has [B] [ITEM]. How many [ITEM] total?",
+    "variables": {
+      "A": {"min": 2, "max": 10},
+      "B": {"min": 2, "max": 8},
+      "ITEM": {"values": ["apples", "cookies", "candies", "balls", "blocks", "crayons", "stickers", "marbles"]}
+    },
+    "constraints": ["A * B <= 50"],
+    "calculation": "A * B",
+    "explanation": "Total = [A] × [B] = [RESULT] [ITEM]"
+  },
+  {
+    "template_id": "TOD_MULTIPLY_02",
+    "pattern": "[A] children each have [B] [ITEM]. How many [ITEM] in total?",
+    "variables": {
+      "A": {"min": 2, "max": 12},
+      "B": {"min": 2, "max": 6},
+      "ITEM": {"values": ["balloons", "pencils", "books", "stickers", "crayons", "marbles", "coins", "buttons"]}
+    },
+    "constraints": ["A * B <= 50"],
+    "calculation": "A * B",
+    "explanation": "Total = [A] × [B] = [RESULT] [ITEM]"
+  },
+  {
+    "template_id": "TOD_MULTIPLY_03",
+    "pattern": "A [ANIMAL] has [B] legs. How many legs do [A] [ANIMAL] have?",
+    "variables": {
+      "A": {"min": 2, "max": 10},
+      "ANIMAL": {"values": ["dog", "cat", "horse", "cow", "sheep", "goat", "rabbit", "fox"]}
+    },
+    "constraints": [],
+    "calculation": "A * 4",
+    "explanation": "Each [ANIMAL] has 4 legs. [A] × 4 = [RESULT] legs total"
+  },
+  {
+    "template_id": "TOD_MULTIPLY_04",
+    "pattern": "A [BUG] has [B] legs. How many legs on [A] [BUG]?",
+    "variables": {
+      "A": {"min": 2, "max": 8},
+      "BUG": {"values": ["ladybug", "beetle", "ant", "spider", "butterfly", "bee", "grasshopper", "cricket"]}
+    },
+    "constraints": [],
+    "calculation": "A * 6",
+    "explanation": "Most [BUG] have 6 legs. [A] × 6 = [RESULT] legs total"
+  },
+  {
+    "template_id": "TOD_MULTIPLY_05",
+    "pattern": "You have [A] bags. Each bag has [B] [TREAT]. How many [TREAT] altogether?",
+    "variables": {
+      "A": {"min": 2, "max": 10},
+      "B": {"min": 2, "max": 8},
+      "TREAT": {"values": ["candies", "chocolates", "gummies", "lollipops", "marshmallows", "jelly beans", "caramels", "mints"]}
+    },
+    "constraints": ["A * B <= 50"],
+    "calculation": "A * B",
+    "explanation": "Total = [A] × [B] = [RESULT] [TREAT]"
+  }
+],
   "responses": {
     "correct": ["Good job! 👍", "You're smart! 🧠", "Perfect! ⭐", "Wow! 🎉", "Amazing! 🌟", "Excellent! 🎊", "Fantastic! 🎈", "Wonderful! 💫", "Brilliant! ✨", "Super! 🚀"],
     "incorrect": ["Try again! 💪", "Look carefully 👀", "Almost! 😊", "You can do it! 🌟", "Keep trying! 🎯", "Think again! 🤔", "So close! 💝", "One more try! 🌈"]
   }
 }
-
-
-
-
-
-
