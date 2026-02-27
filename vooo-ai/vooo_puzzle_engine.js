@@ -18,7 +18,8 @@ class VOOOPuzzleEngine {
 
         this.categories = {
 			'basic-math-level-1'            : 'basic-math-level-1.json',
-			'basic-math-level-2'            : 'basic-math-level-2.json',			
+			'basic-math-level-2'            : 'basic-math-level-2.json',
+			'basic-math-level-3'            : 'basic-math-level-3.json',
 			'toddler_math'                  : 'toddler_math.json',
             'toddler_reasoning'             : 'toddler_reasoning.json',
             'foundation_math'               : 'foundation_math.json',
