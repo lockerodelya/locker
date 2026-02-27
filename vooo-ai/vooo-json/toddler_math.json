@@ -356,8 +356,265 @@
     "constraints": ["A * B <= 50"],
     "calculation": "A * B",
     "explanation": "Total = [A] × [B] = [RESULT] [TREAT]"
+  },
+  {
+    "template_id": "TOD_PATTERN_NUM_01",
+    "pattern": "What comes next? [A], [B], [C], ?",
+    "variables": {
+      "START": {"min": 2, "max": 30},
+      "STEP": {"values": [2, 3, 4, 5, 6, 7, 8, 9, 10]}
+    },
+    "constraints": ["START + (3*STEP) <= 100"],
+    "calculation": "START + (3 * STEP)",
+    "explanation": "Add [STEP] each time: [START], [START+STEP], [START+2*STEP], next is [RESULT]"
+  },
+  {
+    "template_id": "TOD_PATTERN_NUM_02",
+    "pattern": "Find the missing number: [A], ?, [C], [D]",
+    "variables": {
+      "START": {"min": 1, "max": 20},
+      "STEP": {"values": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
+    },
+    "constraints": ["START + (3*STEP) <= 100"],
+    "calculation": "START + STEP",
+    "explanation": "The pattern increases by [STEP]: [START], [RESULT], [START+2*STEP], [START+3*STEP]"
+  },
+  {
+    "template_id": "TOD_PATTERN_NUM_03",
+    "pattern": "Complete the pattern: [X], [Y], ?, ...",
+    "variables": {
+      "FIRST": {"min": 1, "max": 25},
+      "SECOND": {"min": 2, "max": 30}
+    },
+    "constraints": ["SECOND > FIRST", "SECOND - FIRST <= 15", "SECOND + (SECOND-FIRST) <= 100"],
+    "calculation": "SECOND + (SECOND - FIRST)",
+    "explanation": "The difference is [SECOND-FIRST], so next is [RESULT]"
+  },
+  {
+    "template_id": "TOD_PATTERN_NUM_04",
+    "pattern": "Skip counting by [STEP]: [A], [B], [C], ?",
+    "variables": {
+      "START": {"min": 1, "max": 30},
+      "STEP": {"values": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
+    },
+    "constraints": ["START + (3*STEP) <= 120"],
+    "calculation": "START + (3 * STEP)",
+    "explanation": "Skip counting by [STEP]: [START], [START+STEP], [START+2*STEP], next is [RESULT]"
+  },
+  {
+    "template_id": "TOD_PATTERN_NUM_05",
+    "pattern": "What number is missing? [P], [Q], ?, [S]",
+    "variables": {
+      "FIRST": {"min": 1, "max": 30},
+      "DIFF": {"values": [2, 3, 4, 5, 6, 7, 8, 9, 10]}
+    },
+    "constraints": ["FIRST + (3*DIFF) <= 120"],
+    "calculation": "FIRST + (2 * DIFF)",
+    "explanation": "Add [DIFF] each time: [FIRST], [FIRST+DIFF], [RESULT], [FIRST+3*DIFF]"
+  },
+  {
+    "template_id": "TOD_ADD_ADV_01",
+    "pattern": "[A] [ITEM1] + [B] [ITEM1] + [C] [ITEM1] = ? total [ITEM1]",
+    "variables": {
+      "A": {"min": 1, "max": 8},
+      "B": {"min": 1, "max": 8},
+      "C": {"min": 1, "max": 8},
+      "ITEM1": {"values": ["apples", "bananas", "oranges", "grapes", "strawberries", "cookies", "candies", "balloons"]}
+    },
+    "constraints": ["A + B + C <= 20"],
+    "calculation": "A + B + C",
+    "explanation": "Total = [A] + [B] + [C] = [RESULT] [ITEM1]"
+  },
+  {
+    "template_id": "TOD_ADD_ADV_02",
+    "pattern": "You have [A] red [ITEM], [B] blue [ITEM], and [C] yellow [ITEM]. How many total?",
+    "variables": {
+      "A": {"min": 1, "max": 7},
+      "B": {"min": 1, "max": 7},
+      "C": {"min": 1, "max": 7},
+      "ITEM": {"values": ["balls", "blocks", "marbles", "buttons", "beads", "crayons", "stickers", "pencils"]}
+    },
+    "constraints": ["A + B + C <= 20"],
+    "calculation": "A + B + C",
+    "explanation": "Total = [A] + [B] + [C] = [RESULT] [ITEM]"
+  },
+  {
+    "template_id": "TOD_ADD_ADV_03",
+    "pattern": "Mom gave you [A] [FOOD1]. Dad gave you [B] [FOOD2]. Grandma gave you [C] [FOOD3]. How many treats?",
+    "variables": {
+      "A": {"min": 1, "max": 6},
+      "B": {"min": 1, "max": 6},
+      "C": {"min": 1, "max": 6},
+      "FOOD1": {"values": ["cookies", "candies", "cupcakes", "donuts", "muffins", "lollipops", "chocolates", "gummies"]},
+      "FOOD2": {"values": ["ice creams", "popsicles", "brownies", "candy bars", "jelly beans", "marshmallows", "caramels", "toffees"]},
+      "FOOD3": {"values": ["cake", "pie", "pudding", "jello", "fruit snacks", "granola bars", "cereal bars", "yogurt"]}
+    },
+    "constraints": ["A + B + C <= 15"],
+    "calculation": "A + B + C",
+    "explanation": "Total treats = [A] + [B] + [C] = [RESULT]"
+  },
+  {
+    "template_id": "TOD_ADD_ADV_04",
+    "pattern": "In the pond: [A] [FISH1], [B] [FISH2], and [C] [FISH3]. How many fish total?",
+    "variables": {
+      "A": {"min": 1, "max": 8},
+      "B": {"min": 1, "max": 8},
+      "C": {"min": 1, "max": 8},
+      "FISH1": {"values": ["goldfish", "guppies", "tetras", "mollies", "swordtails", "platys", "corydoras", "loaches"]},
+      "FISH2": {"values": ["angelfish", "betta", "gourami", "ram cichlids", "discus", "kribensis", "keyhole cichlids", "apistogramma"]},
+      "FISH3": {"values": ["catfish", "plecos", "loaches", "eels", "ropefish", "bichirs", "gar", "arowana"]}
+    },
+    "constraints": ["A + B + C <= 20"],
+    "calculation": "A + B + C",
+    "explanation": "Total fish = [A] + [B] + [C] = [RESULT]"
+  },
+  {
+    "template_id": "TOD_ADD_ADV_05",
+    "pattern": "You collected [A] [INSECT1], [B] [INSECT2], and [C] [INSECT3]. How many insects?",
+    "variables": {
+      "A": {"min": 1, "max": 7},
+      "B": {"min": 1, "max": 7},
+      "C": {"min": 1, "max": 7},
+      "INSECT1": {"values": ["butterflies", "ladybugs", "bees", "dragonflies", "grasshoppers", "crickets", "caterpillars", "ants"]},
+      "INSECT2": {"values": ["beetles", "fireflies", "mosquitoes", "flies", "moths", "cicadas", "stick insects", "leaf insects"]},
+      "INSECT3": {"values": ["spiders", "scorpions", "ticks", "mites", "centipedes", "millipedes", "woodlice", "silverfish"]}
+    },
+    "constraints": ["A + B + C <= 18"],
+    "calculation": "A + B + C",
+    "explanation": "Total insects = [A] + [B] + [C] = [RESULT]"
+  },
+  {
+    "template_id": "TOD_SUBTRACT_ADV_01",
+    "pattern": "You had [A] [ITEM]. You gave [B] to your friend and ate [C]. How many left?",
+    "variables": {
+      "A": {"min": 5, "max": 30},
+      "B": {"min": 1, "max": 8},
+      "C": {"min": 1, "max": 8},
+      "ITEM": {"values": ["cookies", "candies", "grapes", "cherries", "strawberries", "blueberries", "marbles", "stickers"]}
+    },
+    "constraints": ["A > B + C"],
+    "calculation": "A - B - C",
+    "explanation": "[A] - [B] - [C] = [RESULT] [ITEM] left"
+  },
+  {
+    "template_id": "TOD_SUBTRACT_ADV_02",
+    "pattern": "There were [A] [BIRD] on a tree. [B] flew away. [C] more flew away. How many remain?",
+    "variables": {
+      "A": {"min": 5, "max": 30},
+      "B": {"min": 1, "max": 8},
+      "C": {"min": 1, "max": 8},
+      "BIRD": {"values": ["sparrows", "robins", "pigeons", "crows", "finches", "swallows", "blue jays", "cardinals"]}
+    },
+    "constraints": ["A > B + C"],
+    "calculation": "A - B - C",
+    "explanation": "[A] - [B] - [C] = [RESULT] [BIRD] remain"
+  },
+  {
+    "template_id": "TOD_SUBTRACT_ADV_03",
+    "pattern": "You bought [A] [BALLOON]. [B] popped. [C] floated away. How many left?",
+    "variables": {
+      "A": {"min": 5, "max": 25},
+      "B": {"min": 1, "max": 6},
+      "C": {"min": 1, "max": 6},
+      "BALLOON": {"values": ["balloons", "bubbles", "kites", "clouds", "stars", "moons", "hearts", "flowers"]}
+    },
+    "constraints": ["A > B + C"],
+    "calculation": "A - B - C",
+    "explanation": "[A] - [B] - [C] = [RESULT] [BALLOON] left"
+  },
+  {
+    "template_id": "TOD_MULTIPLY_ADV_01",
+    "pattern": "There are [A] [CONTAINER]. Each [CONTAINER] has [B] [ITEM]. How many [ITEM] total?",
+    "variables": {
+      "A": {"min": 2, "max": 12},
+      "B": {"min": 2, "max": 8},
+      "CONTAINER": {"values": ["boxes", "bags", "baskets", "buckets", "jars", "bowls", "plates", "trays"]},
+      "ITEM": {"values": ["apples", "cookies", "candies", "balls", "blocks", "marbles", "shells", "pebbles"]}
+    },
+    "constraints": ["A * B <= 60"],
+    "calculation": "A * B",
+    "explanation": "Total = [A] × [B] = [RESULT] [ITEM]"
+  },
+  {
+    "template_id": "TOD_MULTIPLY_ADV_02",
+    "pattern": "[A] [VEHICLE] each have [B] wheels. How many wheels total?",
+    "variables": {
+      "A": {"min": 2, "max": 15},
+      "VEHICLE": {"values": ["cars", "trucks", "buses", "motorcycles", "bicycles", "tricycles", "trains", "airplanes"]}
+    },
+    "constraints": [],
+    "calculation": "A * 4",
+    "explanation": "Each [VEHICLE] has 4 wheels. [A] × 4 = [RESULT] wheels"
+  },
+  {
+    "template_id": "TOD_MULTIPLY_ADV_03",
+    "pattern": "A [BUG] has [B] legs. How many legs on [A] [BUG]?",
+    "variables": {
+      "A": {"min": 2, "max": 10},
+      "BUG": {"values": ["centipede", "millipede", "spider", "scorpion", "crab", "lobster", "crayfish", "tarantula"]}
+    },
+    "constraints": [],
+    "calculation": "A * 8",
+    "explanation": "Each [BUG] has 8 legs. [A] × 8 = [RESULT] legs"
+  },
+  {
+    "template_id": "TOD_MULTIPLY_ADV_04",
+    "pattern": "You have [A] [ROWS] of [ITEM]. Each row has [B] [ITEM]. Total [ITEM]?",
+    "variables": {
+      "A": {"min": 2, "max": 10},
+      "B": {"min": 2, "max": 10},
+      "ROWS": {"values": ["rows", "lines", "groups", "sets", "teams", "piles", "stacks", "bundles"]},
+      "ITEM": {"values": ["flowers", "trees", "candles", "pencils", "books", "toys", "blocks", "crayons"]}
+    },
+    "constraints": ["A * B <= 60"],
+    "calculation": "A * B",
+    "explanation": "Total = [A] × [B] = [RESULT] [ITEM]"
+  },
+  {
+    "template_id": "TOD_COMPARE_ADV_01",
+    "pattern": "Compare: [A] [ITEM1] vs [B] [ITEM2] vs [C] [ITEM3]. Which is the most?",
+    "variables": {
+      "A": {"min": 1, "max": 15},
+      "B": {"min": 1, "max": 15},
+      "C": {"min": 1, "max": 15},
+      "ITEM1": {"values": ["apples", "bananas", "cherries", "grapes", "oranges", "pears", "peaches", "plums"]},
+      "ITEM2": {"values": ["dogs", "cats", "birds", "fish", "rabbits", "hamsters", "turtles", "lizards"]},
+      "ITEM3": {"values": ["cars", "trains", "boats", "planes", "bikes", "buses", "trucks", "rockets"]}
+    },
+    "constraints": ["A != B", "A != C", "B != C"],
+    "calculation": "max(A, B, C)",
+    "explanation": "The largest number is [RESULT]"
+  },
+  {
+    "template_id": "TOD_COMPARE_ADV_02",
+    "pattern": "Which is the smallest? [A] [FRUIT], [B] [VEGGIE], or [C] [ANIMAL]?",
+    "variables": {
+      "A": {"min": 1, "max": 12},
+      "B": {"min": 1, "max": 12},
+      "C": {"min": 1, "max": 12},
+      "FRUIT": {"values": ["apples", "oranges", "bananas", "grapes", "strawberries", "blueberries", "raspberries", "blackberries"]},
+      "VEGGIE": {"values": ["carrots", "broccoli", "peas", "corn", "potatoes", "tomatoes", "cucumbers", "lettuce"]},
+      "ANIMAL": {"values": ["dogs", "cats", "rabbits", "hamsters", "guinea pigs", "mice", "birds", "fish"]}
+    },
+    "constraints": ["A != B", "A != C", "B != C"],
+    "calculation": "min(A, B, C)",
+    "explanation": "The smallest number is [RESULT]"
+  },
+  {
+    "template_id": "TOD_COMPARE_ADV_03",
+    "pattern": "Order from smallest to largest: [A], [B], [C]",
+    "variables": {
+      "A": {"min": 1, "max": 20},
+      "B": {"min": 1, "max": 20},
+      "C": {"min": 1, "max": 20}
+    },
+    "constraints": ["A != B", "A != C", "B != C"],
+    "calculation": "sorted([A, B, C])",
+    "explanation": "Smallest to largest: [min(A,B,C)], [median], [max(A,B,C)]"
   }
-],
+  
+  
+  ],
   "responses": {
     "correct": ["Good job! 👍", "You're smart! 🧠", "Perfect! ⭐", "Wow! 🎉", "Amazing! 🌟", "Excellent! 🎊", "Fantastic! 🎈", "Wonderful! 💫", "Brilliant! ✨", "Super! 🚀"],
     "incorrect": ["Try again! 💪", "Look carefully 👀", "Almost! 😊", "You can do it! 🌟", "Keep trying! 🎯", "Think again! 🤔", "So close! 💝", "One more try! 🌈"]
