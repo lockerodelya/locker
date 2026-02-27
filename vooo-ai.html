@@ -1615,32 +1615,206 @@ undergraduate learners, and serious exam aspirants aiming for <strong>government
     </footer>
 
     <!-- ====== PUZZLE ENGINE SCRIPTS ====== -->
-    <script src="/vooo-ai/vooo_puzzle_engine.js"></script>
-
-	<!-- Patch createQuestionHash immediately after engine loads, before DOMContentLoaded -->
     <script>
-    VOOOPuzzleEngine.prototype.createQuestionHash = function(template, variables) {
-        const key = template.template_id + '_' + JSON.stringify(variables);
-        try {
-            return btoa(unescape(encodeURIComponent(key))).substring(0, 20);
-        } catch(e) {
-            let hash = 0;
-            for (let i = 0; i < key.length; i++) {
-                hash = ((hash << 5) - hash) + key.charCodeAt(i);
-                hash |= 0;
-            }
-            return String(Math.abs(hash)).substring(0, 20);
+// ============================================================
+// ⭐ ENGINE REGISTRY — ADD ONE LINE PER NEW ENGINE HERE
+// Format: 'category-key': '/vooo-ai/your-engine-filename.js'
+// category-key MUST exactly match the value in your dropdown
+// ============================================================
+const VOOO_ENGINE_REGISTRY = {
+    'basic-math-level-1' : '/vooo-ai/vooo-ai-engine-math1.js',
+    'basic-math-level-2' : '/vooo-ai/vooo-ai-engine-math2.js',
+    'basic-math-level-3' : '/vooo-ai/vooo-ai-engine-math3.js',
+    'basic-math-level-4' : '/vooo-ai/vooo-ai-engine-math4.js',
+    'basic-math-level-5' : '/vooo-ai/vooo-ai-engine-math5.js',
+    'basic-math-level-6' : '/vooo-ai/vooo-ai-engine-math6.js',
+    'basic-math-level-7' : '/vooo-ai/vooo-ai-engine-math7.js',
+    // --- ADD NEW ENGINES BELOW THIS LINE ---
+    // 'your-new-category' : '/vooo-ai/vooo-ai-engine-xxxx.js',
+};
+
+// ============================================================
+// ⭐ ENGINE INSTANCE NAMES — ADD ONE LINE PER NEW ENGINE HERE
+// Format: 'category-key': 'windowVariableNameFromEngineTop'
+// This must match _ENGINE_INSTANCE_NAME inside the engine file
+// ============================================================
+const VOOO_ENGINE_INSTANCES = {
+    'basic-math-level-1' : 'voooEngineMath1',
+    'basic-math-level-2' : 'voooEngineMath2',
+    'basic-math-level-3' : 'voooEngineMath3',
+    'basic-math-level-4' : 'voooEngineMath4',
+    'basic-math-level-5' : 'voooEngineMath5',
+    'basic-math-level-6' : 'voooEngineMath6',
+    'basic-math-level-7' : 'voooEngineMath7',
+    // --- ADD NEW ENGINES BELOW THIS LINE ---
+    // 'your-new-category' : 'voooEngineXxxx',
+};
+
+// ============================================================
+// DYNAMIC LOADER — DO NOT EDIT BELOW THIS LINE
+// ============================================================
+
+// Tracks which engine JS files are already loaded in browser
+const _loadedEngineScripts = {};
+
+// Holds the currently active engine instance
+window.voooEngine = null;
+
+// Load an engine script dynamically if not already loaded
+function _loadEngineScript(scriptUrl) {
+    return new Promise((resolve, reject) => {
+        if (_loadedEngineScripts[scriptUrl]) {
+            resolve(); // Already loaded, skip
+            return;
         }
-    };
-    </script>
+        const script = document.createElement('script');
+        script.src = scriptUrl;
+        script.onload = () => {
+            _loadedEngineScripts[scriptUrl] = true;
+            resolve();
+        };
+        script.onerror = () => reject(new Error('Failed to load engine: ' + scriptUrl));
+        document.head.appendChild(script);
+    });
+}
+
+// Switch active engine to match selected category
+// Called by changeLevel() and initVOOOGame()
+async function _activateEngine(categoryKey) {
+    const scriptUrl    = VOOO_ENGINE_REGISTRY[categoryKey];
+    const instanceName = VOOO_ENGINE_INSTANCES[categoryKey];
+
+    if (!scriptUrl || !instanceName) {
+        console.error('❌ No engine registered for category: ' + categoryKey);
+        return false;
+    }
+
+    try {
+        await _loadEngineScript(scriptUrl);
+        const engineInstance = window[instanceName];
+        if (!engineInstance) {
+            console.error('❌ Engine instance not found on window: ' + instanceName);
+            return false;
+        }
+        window.voooEngine = engineInstance;
+        const loaded = await window.voooEngine.loadCategory();
+        if (!loaded) {
+            console.error('❌ Engine failed to load JSON for: ' + categoryKey);
+            return false;
+        }
+        console.log('✅ Active engine switched to: ' + instanceName + ' for: ' + categoryKey);
+        return true;
+    } catch (err) {
+        console.error('❌ Engine load error:', err);
+        return false;
+    }
+}
+
+// ============================================================
+// GAME FUNCTIONS — SAME AS BEFORE, NOW ENGINE-AWARE
+// ============================================================
+
+async function initVOOOGame() {
+    const defaultCategory = 'basic-math-level-1';
+    const success = await _activateEngine(defaultCategory);
+    if (!success) {
+        document.getElementById('vooo-question').textContent = 'Error loading puzzles.';
+        return;
+    }
+    const puzzle = window.voooEngine.generateNewPuzzle();
+    if (puzzle) updatePuzzleDisplay(puzzle);
+    else document.getElementById('vooo-question').textContent = 'Error generating puzzle.';
+}
+
+async function changeLevel(categoryKey) {
+    console.log('🔄 Changing category to:', categoryKey);
+    document.getElementById('vooo-question').textContent = 'Loading...';
+    document.getElementById('vooo-options').innerHTML = '';
+    document.getElementById('vooo-feedback').textContent = '';
+    document.getElementById('vooo-explanation').textContent = '';
+    const success = await _activateEngine(categoryKey);
+    if (!success) {
+        document.getElementById('vooo-question').textContent = 'Error loading this category.';
+        return;
+    }
+    window.voooEngine.resetScore();
+    nextPuzzle();
+}
+
+function updatePuzzleDisplay(puzzle) {
+    document.getElementById('vooo-question').textContent = puzzle.question;
+    const container = document.getElementById('vooo-options');
+    container.innerHTML = '';
+    puzzle.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'vooo-option';
+        btn.textContent = option;
+        if (typeof option === 'string' && option.length > 2 && !option.match(/^-?[0-9]+(\.[0-9]+)?$/))
+            btn.style.fontSize = '1.5em';
+        btn.onclick = () => selectAnswer(index);
+        container.appendChild(btn);
+    });
+    const fb = document.getElementById('vooo-feedback');
+    fb.textContent = ''; fb.className = 'vooo-feedback'; fb.style.cssText = '';
+    document.getElementById('vooo-explanation').textContent = '';
+    updateStatsDisplay();
+}
+
+function selectAnswer(selectedIndex) {
+    const result = window.voooEngine.checkAnswer(selectedIndex);
+    const fb     = document.getElementById('vooo-feedback');
+    const expl   = document.getElementById('vooo-explanation');
+    const btns   = document.getElementById('vooo-options').querySelectorAll('.vooo-option');
+    btns.forEach(b => { b.style.backgroundColor = ''; b.style.borderColor = ''; });
+    if (result.correct) {
+        btns[selectedIndex].style.backgroundColor = '#c6f6d5';
+        btns[selectedIndex].style.borderColor     = '#9ae6b4';
+        fb.textContent  = result.message;
+        fb.className    = 'vooo-feedback correct';
+        expl.textContent = result.explanation;
+        setTimeout(nextPuzzle, 3000);
+    } else {
+        btns[selectedIndex].style.backgroundColor = '#fed7d7';
+        btns[selectedIndex].style.borderColor     = '#fc8181';
+        fb.textContent     = result.message;
+        fb.className       = 'vooo-feedback incorrect';
+        fb.style.background = 'white';
+        fb.style.border    = '2px solid black';
+        fb.style.color     = 'red';
+        fb.style.fontWeight = 'bold';
+    }
+    updateStatsDisplay();
+}
+
+async function nextPuzzle() {
+    const puzzle = window.voooEngine.generateNewPuzzle();
+    if (puzzle) updatePuzzleDisplay(puzzle);
+}
+
+function updateStatsDisplay() {
+    const stats = window.voooEngine.getStats();
+    document.getElementById('vooo-score').textContent    = `Score: ${stats.score}`;
+    document.getElementById('vooo-accuracy').textContent = `Accuracy: ${stats.accuracy}%`;
+}
+
+function resetGame() {
+    window.voooEngine.resetScore();
+    window.voooEngine.clearUsedQuestions();
+    window.voooEngine.loadCategory().then(() => nextPuzzle());
+}
+
+// Start game on page load
+if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', initVOOOGame);
+else
+    initVOOOGame();
+</script>
+
 
     <!-- ====== FIREBASE AUTH + MCQ LIMIT LOGIC ====== -->
     <script>
-    const GUEST_MCQ_LIMIT     = 1;
-    const FREE_USER_MCQ_LIMIT = 30;
-    const LS_GUEST_KEY        = 'vooo_guest_mcq_count';
-    const LS_GUEST_DATE_KEY   = 'vooo_guest_mcq_date';
-
+	const FREE_USER_MCQ_LIMIT = 30;
+    
     if (!firebase.apps.length) {
         firebase.initializeApp(VOOO_CONFIG.firebase);
     }
@@ -1695,21 +1869,6 @@ undergraduate learners, and serious exam aspirants aiming for <strong>government
         document.getElementById('vooo-limit-overlay').classList.remove('active');
     }
 
-    // ====== GUEST LIMIT (localStorage) ======
-    function getGuestCount() {
-        const today = new Date().toISOString().split('T')[0];
-        if (localStorage.getItem(LS_GUEST_DATE_KEY) !== today) {
-            localStorage.setItem(LS_GUEST_DATE_KEY, today);
-            localStorage.setItem(LS_GUEST_KEY, '0');
-        }
-        return parseInt(localStorage.getItem(LS_GUEST_KEY) || '0', 10);
-    }
-
-    function incrementGuestCount() {
-        const count = getGuestCount() + 1;
-        localStorage.setItem(LS_GUEST_KEY, String(count));
-    }
-
     // ====== LOGOUT ======
 function logoutFromVooo() {
     voooAuth.signOut().then(() => {
@@ -1726,18 +1885,13 @@ function logoutFromVooo() {
 
                 voooEngine.generateNewPuzzle = function() {
                     // ---- GUEST CHECK (synchronous) ----
-                    if (!currentVoooUser) {
-                        const guestCount = getGuestCount();
-                        if (guestCount >= GUEST_MCQ_LIMIT) {
-                            showLimitModal(
-                                'Free Sign Up',
-                                'Get free 30 MCQs per day, or buy a plan to get Guaranteed Unlimited Unique MCQs!'
-                            );
-                            return null;
-                        }
-                        incrementGuestCount();
-                        return originalGenerate();
-                    }
+if (!currentVoooUser) {
+    showLimitModal(
+        'Free Sign Up',
+        'Get free 30 MCQs per day, or buy a plan to get Guaranteed Unlimited Unique MCQs!'
+    );
+    return null;
+}
 
 // ---- PAID USER: unlimited but COUNTED for dashboard ----
 if (userVoooData && userVoooData.tier === 'paid') {
@@ -1793,16 +1947,7 @@ if (userVoooData && userVoooData.tier === 'paid') {
         }, 100);
     });
 
-    // ====== changeLevel: reload category then nextPuzzle ======
-    async function changeLevel(levelKey) {
-        console.log('🔄 Changing level to:', levelKey);
-        const success = await voooEngine.loadCategory(levelKey);
-        if (success) {
-            voooEngine.resetScore();
-            nextPuzzle();
-        }
-    }
-    </script>
+</script>
 
     <div id="vooo-level-up-prompt"></div>
 
