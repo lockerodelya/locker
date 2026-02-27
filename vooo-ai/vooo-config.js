@@ -97,17 +97,6 @@ const VOOO_CONFIG = {
 
 
     // ============================================
-    // USAGE LIMITS
-    // ============================================
-    limits: {
-        free_user_daily_mcq: 30,    // MCQs per day for free users
-        paid_user_daily_mcq: -1,    // -1 = unlimited
-        max_devices_free: 1,        // Free users: 1 device
-        max_devices_paid: 2         // Paid users: 2 devices
-    },
-
-
-    // ============================================
     // FIREBASE CONFIGURATION
     // ============================================
     firebase: {
