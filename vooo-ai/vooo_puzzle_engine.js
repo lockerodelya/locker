@@ -95,6 +95,7 @@ class VOOOPuzzleEngine {
             log10: x => Math.log10(x),
             sign:  x => Math.sign(x),
             trunc: x => Math.trunc(x),
+			sorted: arr => [...arr].sort((a,b) => a - b),
         };
     }
 
@@ -252,7 +253,9 @@ class VOOOPuzzleEngine {
     // ═══════════════════════════════════════════════
     // VARIABLE GENERATION
     // ═══════════════════════════════════════════════
-    generateVariables(defs){
+generateVariables(defs, constraints=[]){
+    const MAX_RETRIES=50;
+    for(let attempt=0;attempt<MAX_RETRIES;attempt++){
         const v={};
         if(!defs)return v;
         for(const[name,def]of Object.entries(defs)){
@@ -272,8 +275,30 @@ class VOOOPuzzleEngine {
                 }
             }
         }
-        return v;
+        if(this._checkConstraints(constraints,v))return v;
     }
+    // Fallback: return safe defaults if constraints never satisfied
+    const v={};
+    if(defs)for(const[name,def]of Object.entries(defs)){
+        if(def.value!==undefined)v[name]=def.value;
+        else if(def.values!==undefined)v[name]=def.values[0];
+        else v[name]=def.min??1;
+    }
+    return v;
+}
+
+_checkConstraints(constraints,variables){
+    if(!constraints||constraints.length===0)return true;
+    for(const constraint of constraints){
+        try{
+            let expr=constraint;
+            for(const[k,v]of Object.entries(variables))
+                expr=expr.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');
+            if(!new Function('return '+expr)())return false;
+        }catch(e){return true;}
+    }
+    return true;
+}
 
     // ═══════════════════════════════════════════════
     // DERIVED VARIABLES
@@ -643,7 +668,7 @@ class VOOOPuzzleEngine {
 
             if(!this.isTemplateComputable(template))continue;
 
-            const rawVars=this.generateVariables(template.variables);
+            const rawVars=this.generateVariables(template.variables, template.constraints||[]);
             const variables=this.computeDerivedVariables(template,rawVars);
             const hash=this._hash(template.template_id,variables);
             if(usedList.includes(hash))continue;
@@ -675,7 +700,7 @@ class VOOOPuzzleEngine {
         this.clearUsedQuestions();
         for(const template of templates){
             if(!this.isTemplateComputable(template))continue;
-            const rawVars=this.generateVariables(template.variables);
+            const rawVars=this.generateVariables(template.variables, template.constraints||[]);
             const variables=this.computeDerivedVariables(template,rawVars);
             const answer=this.calculateAnswer(template,variables);
             if(answer===null||answer===undefined)continue;
