@@ -11,7 +11,7 @@ class VOOOPuzzleEngine {
         this.categoryData     = null;
         this.score            = 0;
         this.totalAttempts    = 0;
-        this.currentCategory  = 'foundation_math';
+        this.currentCategory  = 'basic-math-level-1';
 
         // ── Template-rotation state (per category, persisted) ──
         this._tmProgress = {};   // { [cat]: { shuffled:[], idx:0 } }
