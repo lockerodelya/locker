@@ -78,6 +78,36 @@ class VOOOPuzzleEngine {
             'sophie','safe','primorial','giuga','cullen','woodall','highly_composite',
             'superior_hc','abundant','deficient','perfect','semiprime','sphenic'
         ];
+
+        // ── Shared math helpers injected into every eval context ──
+        // This is the FIX: expose min, max, abs, floor, ceil, round, sqrt, pow, log
+        this._evalHelpers = {
+            min:   (...a) => Math.min(...a),
+            max:   (...a) => Math.max(...a),
+            abs:   x => Math.abs(x),
+            floor: x => Math.floor(x),
+            ceil:  x => Math.ceil(x),
+            round: x => Math.round(x),
+            sqrt:  x => Math.sqrt(x),
+            pow:   (x,y) => Math.pow(x,y),
+            log:   x => Math.log(x),
+            log2:  x => Math.log2(x),
+            log10: x => Math.log10(x),
+            sign:  x => Math.sign(x),
+            trunc: x => Math.trunc(x),
+        };
+    }
+
+    // ── Helper: build the arg list and body for eval Functions ──
+    // Returns { argNames, argValues } so callers can do:
+    //   new Function(...argNames, 'return ' + expr)(...argValues)
+    _evalContext(extraVars = {}) {
+        const helpers = this._evalHelpers;
+        const helperNames  = Object.keys(helpers);
+        const helperValues = Object.values(helpers);
+        const argNames  = ['Math', 'factorial', ...helperNames];
+        const argValues = [Math,   n => this.factorial(n), ...helperValues];
+        return { argNames, argValues };
     }
 
     // ═══════════════════════════════════════════════
@@ -169,25 +199,20 @@ class VOOOPuzzleEngine {
 
     applyMathFunctions(ev){
         const fns=this._mathFnList();
-        // Multi-arg function regex: name(num, num, num, ...) — handles 1 to 6 numeric args
         const numArg='(-?\\d+(?:\\.\\d+)?)';
         const multiArgRe=(name)=>new RegExp(
             name+'\\(\\s*'+numArg+'(?:\\s*,\\s*'+numArg+')*\\s*\\)','g'
         );
-        // Run up to 20 passes to resolve nested or sequential calls
         for(let pass=0;pass<20;pass++){
             let changed=false;
-            // Step 1: simplify arithmetic wrapping like (4) -> 4, (2)+(3) -> 5
             ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*(-?\d+(?:\.\d+)?)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
             ev=ev.replace(/(-?\d+(?:\.\d+)?)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
             ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
             ev=ev.replace(/(?<![a-zA-Z_(])\((-?\d+(?:\.\d+)?)\)(?![a-zA-Z_(\d])/g,(m,n)=>{changed=true;return n;});
-            // Step 2: apply each named function when ALL args are resolved numbers
             for(const[name,fn]of fns){
                 const re=multiArgRe(name);
                 ev=ev.replace(re,(match)=>{
                     try{
-                        // Extract all numeric args from the match
                         const inner=match.slice(name.length+1,-1);
                         const vals=inner.split(',').map(a=>Number(a.trim()));
                         if(vals.some(isNaN))return match;
@@ -204,13 +229,13 @@ class VOOOPuzzleEngine {
     }
 
     // ═══════════════════════════════════════════════
-    // PLAIN-TEXT GUARD  (skip non-calculable strings)
+    // PLAIN-TEXT GUARD
     // ═══════════════════════════════════════════════
     isPlainText(calc){
         if(!calc)return true;
         const t=calc.trim();
         if(t===''||t==='null')return true;
-        if(/^[A-Za-zÀ-ÿ\s\-\/]+$/.test(t))return true;  // pure words
+        if(/^[A-Za-zÀ-ÿ\s\-\/]+$/.test(t))return true;
         if(/generate|lookup|rules|decryption|transposition|multiplication|substitution|autokey|checkerboard|ambiguity|complexity|dynamic/i.test(t))return true;
         return false;
     }
@@ -219,7 +244,7 @@ class VOOOPuzzleEngine {
         if(!template.calculation)return false;
         const c=template.calculation.trim();
         if(c===''||c==='null')return false;
-        if(/^[A-Z][A-Z0-9_]*$/.test(c))return true;   // single variable ref → valid
+        if(/^[A-Z][A-Z0-9_]*$/.test(c))return true;
         if(this.isPlainText(c))return false;
         return true;
     }
@@ -251,7 +276,7 @@ class VOOOPuzzleEngine {
     }
 
     // ═══════════════════════════════════════════════
-    // DERIVED VARIABLES  (fill gaps A/B/C/D from STEP)
+    // DERIVED VARIABLES
     // ═══════════════════════════════════════════════
     computeDerivedVariables(template,variables){
         const d={...variables};
@@ -293,8 +318,9 @@ class VOOOPuzzleEngine {
             if(typeof v!=='string'||!isNaN(v))e=e.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');
         e=this.applyMathFunctions(e);
         try{
-            const factorial=n=>this.factorial(n);
-            const r=new Function('Math','factorial','return '+e)(Math,factorial);
+            // ✅ FIX: inject min, max, and other Math helpers into eval scope
+            const {argNames, argValues} = this._evalContext();
+            const r=new Function(...argNames,'return '+e)(...argValues);
             return(typeof r==='number')?r:(typeof r==='string')?r:null;
         }catch(err){return null;}
     }
@@ -361,8 +387,9 @@ class VOOOPuzzleEngine {
             if(ev==='null')return null;
             if(!isNaN(ev)&&ev.trim()!=='')return Number(ev);
             if(/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(ev))return ev;
-            const factorial=n=>this.factorial(n);
-            const result=new Function('Math','factorial','return '+ev)(Math,factorial);
+            // ✅ FIX: inject min, max, and other Math helpers into eval scope
+            const {argNames, argValues} = this._evalContext();
+            const result=new Function(...argNames,'return '+ev)(...argValues);
             return result;
         }catch(e){console.error('Eval error:',expr,'->',ev,e);return null;}
     }
@@ -393,7 +420,6 @@ class VOOOPuzzleEngine {
         if(calc===''||calc==='null')return null;
         if(this.isPlainText(calc))return null;
 
-        // Single variable reference (e.g. calculation: "TRAIT")
         if(/^[A-Z][A-Z0-9_]*$/.test(calc)){
             if(variables.hasOwnProperty(calc)){
                 const val=variables[calc];
@@ -415,7 +441,6 @@ class VOOOPuzzleEngine {
 
         const result=this.evaluateExpression(calc,variables);
         if(result===null||result===undefined)return null;
-        // Reject string results that are error messages (e.g. "No inverse", "undefined", "No real solution")
         if(typeof result==='string'&&/no |undefined|error|nan/i.test(result))return null;
         if(typeof result==='number'){
             if(!isFinite(result)||isNaN(result))return null;
@@ -428,7 +453,6 @@ class VOOOPuzzleEngine {
     // OPTIONS GENERATION
     // ═══════════════════════════════════════════════
     generateOptions(correctAnswer,template,variables){
-        // 1. options_builder
         if(template.options_builder){
             try{
                 const opts=this.evaluateExpression(template.options_builder,variables);
@@ -436,27 +460,22 @@ class VOOOPuzzleEngine {
             }catch(e){}
         }
 
-        // 2. static options array in template
         if(template.options&&Array.isArray(template.options)){
             const opts=[...template.options];
             const correctStr=String(correctAnswer);
-            // If correct answer exists in options → use as-is
             if(opts.map(o=>String(o)).includes(correctStr)){
                 const wrong=opts.filter(o=>String(o)!==correctStr);
                 return this._shuffleArray([correctAnswer,...this._shuffleArray(wrong).slice(0,3)]);
             }
-            // Otherwise treat first option as fallback correct
             const fallback=opts[0];
             const wrong=opts.filter(o=>String(o)!==String(fallback));
             return this._shuffleArray([fallback,...this._shuffleArray(wrong).slice(0,3)]);
         }
 
-        // 3. special answer types
         if(template.answer_type==='shape_selector')return this._shuffleArray([...Object.values(this.shapeMap)]).slice(0,4);
         if(template.answer_type==='color_picker')return this._shuffleArray([...Object.values(this.colorMap)]).slice(0,4);
         if(template.answer_type==='comparison')return this._shuffleArray([variables.A_EMOJI,variables.B_EMOJI]);
 
-        // 4. numeric distractors
         const options=[];
         const correctNum=Number(correctAnswer);
         if(!isNaN(correctNum)&&isFinite(correctNum)){
@@ -492,7 +511,6 @@ class VOOOPuzzleEngine {
                 if(!options.includes(ws))options.push(ws);
             }
         }else{
-            // String answer fallback
             options.push(String(correctAnswer));
             const fillers=['Option A','Option B','Option C'];
             for(let i=0;i<3;i++){
@@ -585,7 +603,7 @@ class VOOOPuzzleEngine {
     }
 
     // ═══════════════════════════════════════════════
-    // RANDOM RESPONSE MESSAGE  (from JSON responses)
+    // RANDOM RESPONSE MESSAGE
     // ═══════════════════════════════════════════════
     _getResponseMsg(isCorrect){
         const r=this.categoryData?.responses;
@@ -618,7 +636,6 @@ class VOOOPuzzleEngine {
         const total=templates.length;
         let usedList=this._loadUsed();
 
-        // Try up to total*3 times to get a fresh, valid puzzle
         const maxAttempts=total*3;
         for(let attempt=0;attempt<maxAttempts;attempt++){
             const idx=this._tmGetNext(total);
@@ -638,7 +655,6 @@ class VOOOPuzzleEngine {
             const options=this.generateOptions(answer,template,variables);
             if(!this._validateOptions(options,answer))continue;
 
-            // ✅ Valid puzzle found
             usedList.push(hash);
             this._saveUsed(usedList);
             this.currentTemplate=template;
@@ -656,7 +672,6 @@ class VOOOPuzzleEngine {
             return this.currentPuzzle;
         }
 
-        // All used or nothing valid — reset and try once more
         this.clearUsedQuestions();
         for(const template of templates){
             if(!this.isTemplateComputable(template))continue;
@@ -716,7 +731,7 @@ class VOOOPuzzleEngine {
 }
 
 // ============================================
-// UI INTEGRATION  (unchanged API — safe drop-in)
+// UI INTEGRATION
 // ============================================
 window.voooEngine = new VOOOPuzzleEngine();
 
