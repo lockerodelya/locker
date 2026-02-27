@@ -17,8 +17,10 @@ class VOOOPuzzleEngine {
         this._tmProgress = {};   // { [cat]: { shuffled:[], idx:0 } }
 
         this.categories = {
-            'toddler_math'                   : 'toddler_math.json',
-            'toddler_reasoning'              : 'toddler_reasoning.json',
+			'basic-math-level-1'            : 'basic-math-level-1.json',
+			'basic-math-level-2'            : 'basic-math-level-2.json',			
+			'toddler_math'                  : 'toddler_math.json',
+            'toddler_reasoning'             : 'toddler_reasoning.json',
             'foundation_math'               : 'foundation_math.json',
             'elementary_math'               : 'elementary_math.json',
             'intermediate_math'             : 'intermediate_math.json',
