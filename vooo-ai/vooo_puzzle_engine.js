@@ -45,7 +45,6 @@ class VOOOPuzzleEngine {
             'foundation_pattern'            : 'foundation_pattern.json',
             'intermediate_pattern'          : 'intermediate_pattern.json',
             'advanced_pattern'              : 'advanced_pattern.json',
-            'general_math'                  : 'general_math.json',
             'problem_comparison_beginner'   : 'problem_comparison_beginner.json',
             'problem_time_beginner'         : 'problem_time_beginner.json',
             'problem_probability_beginner'  : 'problem_probability_beginner.json',
