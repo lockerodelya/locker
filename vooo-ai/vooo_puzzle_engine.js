@@ -27,7 +27,6 @@ class VOOOPuzzleEngine {
             'intermediate_math'             : 'intermediate_math.json',
             'advanced_math'                 : 'advanced_math.json',
             'scholar_math'                  : 'scholar_math.json',
-            'foundation_reasoning'          : 'foundation_reasoning.json',
             'syllogistic_reasoning'         : 'syllogistic_reasoning.json',
             'analogical_reasoning'          : 'analogical_reasoning.json',
             'ifthen_reasoning'              : 'ifthen_reasoning.json',
