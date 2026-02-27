@@ -1,6 +1,7 @@
 // ============================================
 // VOOO AI — DEDICATED SINGLE-JSON ENGINE
 // ============================================
+(function () {
 // ⭐⭐⭐ EDIT ONLY THESE 3 LINES FOR A NEW ENGINE ⭐⭐⭐
 // ============================================
 
@@ -12,7 +13,6 @@ const _ENGINE_INSTANCE_NAME = 'voooEngineMath1';               // ⭐ Line 3: Un
 // ✋ DO NOT EDIT ANYTHING BELOW THIS LINE
 // ============================================
 
-(function () {
 
     // ── JSON base path — same for all engines ──
     const _JSON_BASE_PATH = '/vooo-ai/vooo-json/';
