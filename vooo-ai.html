@@ -1718,7 +1718,59 @@ if (document.readyState === 'loading')
 else
     initVOOOGame();
 </script>
+<!-- ====== FIREBASE AUTH + MCQ LIMIT VARIABLES ====== -->
+<script>
+const voooAuth = firebase.auth();
+const voooDb   = firebase.firestore();
 
+let currentVoooUser = null;
+let userVoooData    = null;
+
+voooAuth.onAuthStateChanged(async (user) => {
+    if (user) {
+        currentVoooUser = user;
+        try {
+            const userDoc = await voooDb.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+                userVoooData = userDoc.data();
+                showLoggedInUI(userVoooData);
+            }
+        } catch (err) {
+            console.error('Error loading user data:', err);
+        }
+    } else {
+        currentVoooUser = null;
+        userVoooData    = null;
+    }
+});
+
+function showLoggedInUI(data) {
+    document.getElementById('gap-signup-btn').style.display     = 'none';
+    document.getElementById('gap-login-btn').style.display      = 'none';
+    document.getElementById('gap-dashboard-icon').style.display = 'inline-flex';
+    document.getElementById('gap-logout-btn').style.display     = 'inline-flex';
+    const planBtn = document.getElementById('gap-plan-btn');
+    planBtn.textContent = (data.tier === 'paid') ? 'Upgrade Plan' : 'Buy Plan';
+}
+
+function showLimitModal(title, message) {
+    document.getElementById('limit-modal-title').textContent   = title;
+    document.getElementById('limit-modal-message').textContent = message;
+    document.getElementById('vooo-limit-overlay').classList.add('active');
+    document.getElementById('vooo-question').textContent       = '—';
+    document.getElementById('vooo-options').innerHTML          = '';
+    document.getElementById('vooo-feedback').textContent       = '';
+    document.getElementById('vooo-explanation').textContent    = '';
+}
+
+function closeLimitModal() {
+    document.getElementById('vooo-limit-overlay').classList.remove('active');
+}
+
+function logoutFromVooo() {
+    voooAuth.signOut().then(() => { location.reload(); });
+}
+</script>
 <script src="/vooo-ai/vooo-ai-control.js"></script>
 
 </body>
