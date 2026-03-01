@@ -53,14 +53,14 @@ const VOOO_ENGINE_REGISTRY = {
 	'basic-gk-level-25' : '/vooo-ai/vooo-ai-engine-basic-gkl25.js',
 	'basic-gk-level-26' : '/vooo-ai/vooo-ai-engine-basic-gkl26.js',
 	'basic-gk-level-27' : '/vooo-ai/vooo-ai-engine-basic-gkl27.js',
-	'numeracy-ratios-level-1' : '/vooo-ai/vooo-ai-engine-ratiosl1.js',
-	'numeracy-compound-level-1' : '/vooo-ai/vooo-ai-engine.js',
-	'numeracy-timespeed-level-1' : '/vooo-ai/vooo-ai-engine.js',
-	'numeracy-numbersys-level-1' : '/vooo-ai/vooo-ai-engine.js',
-	'interpretation-tabledata-level-1' : '/vooo-ai/vooo-ai-engine.js',
-	'interpretation-bargraph-level-1' : '/vooo-ai/vooo-ai-engine.js',
-	'interpretation-linegraph-level-1' : '/vooo-ai/vooo-ai-engine-linegraphl1.js',
-	'numeracy-percentage-level-1' : '/vooo-ai/vooo-ai-engine.js',
+	'num-timespeed-level-1' : '/vooo-ai/vooo-ai-engine-num-timespeedl1.js',
+	'num-ratios-level-1' : '/vooo-ai/vooo-ai-engine-num-ratiosl1.js',
+	'num-percentage-level-1' : '/vooo-ai/vooo-ai-engine-num-percentagel1.js',
+	'num-numbersys-level-1' : '/vooo-ai/vooo-ai-engine-num-numbersysl1.js',
+	'num-compound-level-1' : '/vooo-ai/vooo-ai-engine-num-compoundl1.js',
+	'num-tabledata-level-1' : '/vooo-ai/vooo-ai-engine-num-tabledatal1.js',
+	'num-linegraph-level-1' : '/vooo-ai/vooo-ai-engine-num-linegraphl1.js',
+	'num-bargraph-level-1' : '/vooo-ai/vooo-ai-engine-num-bargraphl1.js',
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -114,14 +114,14 @@ const VOOO_ENGINE_INSTANCES = {
 	'basic-gk-level-25' : 'voooEngineBasicGKL25',
 	'basic-gk-level-26' : 'voooEngineBasicGKL26',
 	'basic-gk-level-27' : 'voooEngineBasicGKL27',
-	'numeracy-ratios-level-1' : 'voooEngineRatiosl1',
-	'numeracy-compound-level-1' : 'voooEngineCompoundl1',
-	'numeracy-timespeed-level-1' : 'voooEngineTimespeedl1',
-	'numeracy-numbersys-level-1' : 'voooEngineNumbersysl1',
-	'interpretation-tabledata-level-1' : 'voooEngineTabledatal1',
-	'interpretation-bargraph-level-1' : 'voooEngineBargraphl1',
-	'interpretation-linegraph-level-1' : 'voooEngineLinegraphl1',
-	'numeracy-percentage-level-1' : 'voooEnginePercentagel1',
+	'num-timespeed-level-1' : 'voooEngineTimespeedl1',
+	'num-ratios-level-1' : 'voooEngineRatiosl1',
+	'num-percentage-level-1' : 'voooEnginePercentagel1',
+	'num-numbersys-level-1' : 'voooEngineNumbersysl1',
+	'num-compound-level-1' : 'voooEngineCompoundl1',
+	'num-tabledata-level-1' : 'voooEngineTabledatal1',
+	'num-linegraph-level-1' : 'voooEngineLinegraphl1',
+	'num-bargraph-level-1' : 'voooEngineBargraphl1',
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -198,14 +198,14 @@ const VOOO_ENGINE_INSTANCES = {
             {
                 label: 'Numeracy (Class X) Level 1',
                 options: [
-                    { value: 'numeracy-ratios-level-1', text: '• Ratios Level 1' },
-                    { value: 'numeracy-compound-level-1', text: '• Compound Level 1' },
-                    { value: 'numeracy-timespeed-level-1', text: '• Time Speed Level 1' },
-                    { value: 'numeracy-numbersys-level-1', text: '• Number System Level 1' },
-                    { value: 'interpretation-tabledata-level-1', text: '• Table Data Level 1' },
-                    { value: 'interpretation-bargraph-level-1', text: '• Bar Graph Level 1' },
-                    { value: 'interpretation-linegraph-level-1', text: '• Line Graph Level 1' },
-					{ value: 'numeracy-percentage-level-1', text: '• Percentae Level 1' },
+                    { value: 'num-timespeed-level-1', text: '• Time Speed Level 1' },
+					{ value: 'num-ratios-level-1', text: '• Ratios Level 1' },
+                    { value: 'num-percentage-level-1', text: '• Percentae Level 1' },
+					{ value: 'num-numbersys-level-1', text: '• Number System Level 1' },
+					{ value: 'num-compound-level-1', text: '• Compound Level 1' },
+                    { value: 'num-tabledata-level-1', text: '• Table Data Level 1' },
+                    { value: 'num-linegraph-level-1', text: '• Line Graph Level 1' },
+                    { value: 'num-bargraph-level-1', text: '• Bar Graph Level 1' },
                 ]
             },
 			
