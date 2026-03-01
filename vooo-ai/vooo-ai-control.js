@@ -221,7 +221,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'UPSC CSAT : Analytical Reasoning',
+                label: 'UPSC : Analytical Reasoning',
                 options: [
                     { value: 'seat-arrange-level-1', text: '• Seating Arrangement Level 1' },
 					{ value: 'seat-arrange-level-2', text: '• Seating Arrangement Level 2' },
