@@ -128,12 +128,12 @@ const VOOO_ENGINE_INSTANCES = {
 	'num-tabledata-level-1' : 'voooEngineTabledatal1',
 	'num-linegraph-level-1' : 'voooEngineLinegraphl1',
 	'num-bargraph-level-1' : 'voooEngineBargraphl1',
-	'seat-arrange-level-1' : 'voooEngineSeatL1.js',
-	'seat-arrange-level-2' : 'voooEngineSeatL2.js',
-	'seat-arrange-level-3' : 'voooEngineSeatL3.js',
-	'com-arrange-level-1' : 'voooEngineCompL1.js',
-	'com-arrange-level-2' : 'voooEngineCompL2.js',
-	'com-arrange-level-3' : 'voooEngineCompL3.js',
+	'seat-arrange-level-1' : 'voooEngineSeatL1',
+	'seat-arrange-level-2' : 'voooEngineSeatL2',
+	'seat-arrange-level-3' : 'voooEngineSeatL3',
+	'com-arrange-level-1' : 'voooEngineCompL1',
+	'com-arrange-level-2' : 'voooEngineCompL2',
+	'com-arrange-level-3' : 'voooEngineCompL3',
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
