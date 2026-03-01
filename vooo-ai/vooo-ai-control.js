@@ -200,7 +200,7 @@ const VOOO_ENGINE_INSTANCES = {
                 options: [
                     { value: 'num-timespeed-level-1', text: '• Time Speed Level 1' },
 					{ value: 'num-ratios-level-1', text: '• Ratios Level 1' },
-                    { value: 'num-percentage-level-1', text: '• Percentae Level 1' },
+                    { value: 'num-percentage-level-1', text: '• Percentage Level 1' },
 					{ value: 'num-numbersys-level-1', text: '• Number System Level 1' },
 					{ value: 'num-compound-level-1', text: '• Compound Level 1' },
                     { value: 'num-tabledata-level-1', text: '• Table Data Level 1' },
