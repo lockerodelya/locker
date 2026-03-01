@@ -6,8 +6,8 @@
 // ⭐⭐⭐ EDIT ONLY THESE 3 LINES FOR A NEW ENGINE ⭐⭐⭐
 // ============================================
 
-const _ENGINE_JSON_FILE     = 'interpretation-bargraph-level-1.json';       // ⭐ Line 1: Your JSON filename
-const _ENGINE_CATEGORY_KEY  = 'interpretation-bargraph-level-1';            // ⭐ Line 2: Category key (must match dropdown value in HTML)
+const _ENGINE_JSON_FILE     = 'num-bargraph-level-1.json';       // ⭐ Line 1: Your JSON filename
+const _ENGINE_CATEGORY_KEY  = 'num-bargraph-level-1';            // ⭐ Line 2: Category key (must match dropdown value in HTML)
 const _ENGINE_INSTANCE_NAME = 'voooEngineBargraphl1';               // ⭐ Line 3: Unique global variable name for this engine
 
 // ============================================
