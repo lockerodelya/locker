@@ -275,7 +275,7 @@ function applyVoooLimitGuard() {
         if (!currentVoooUser) {
             showLimitModal(
                 'Free Sign Up',
-                'Get free 30 MCQs per day, or buy a plan.!'
+                'Get free 30 MCQs per day !'
             );
             return null;
         }
