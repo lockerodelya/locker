@@ -350,3 +350,20 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }, 200);
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(function () {
+        // Guard on first page load
+        if (window.voooEngine) {
+            applyVoooLimitGuard();
+
+            // If no user logged in, clear the puzzle area
+            if (!currentVoooUser) {
+                showLimitModal(
+                    'Free Sign Up',
+                    'Get free 30 MCQs per day, or buy a plan!'
+                );
+            }
+        }
+    }, 800);
+});
