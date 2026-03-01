@@ -61,6 +61,12 @@ const VOOO_ENGINE_REGISTRY = {
 	'num-tabledata-level-1' : '/vooo-ai/vooo-ai-engine-num-tabledatal1.js',
 	'num-linegraph-level-1' : '/vooo-ai/vooo-ai-engine-num-linegraphl1.js',
 	'num-bargraph-level-1' : '/vooo-ai/vooo-ai-engine-num-bargraphl1.js',
+	'seat-arrange-level-1' : '/vooo-ai/vooo-ai-engine-seatl1.js',
+	'seat-arrange-level-2' : '/vooo-ai/vooo-ai-engine-seatl2.js',
+	'seat-arrange-level-3' : '/vooo-ai/vooo-ai-engine-seatl3.js',
+	'com-arrange-level-1' : '/vooo-ai/vooo-ai-engine-compl1.js',
+	'com-arrange-level-2' : '/vooo-ai/vooo-ai-engine-compl2.js',
+	'com-arrange-level-3' : '/vooo-ai/vooo-ai-engine-compl3.js',
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -122,6 +128,12 @@ const VOOO_ENGINE_INSTANCES = {
 	'num-tabledata-level-1' : 'voooEngineTabledatal1',
 	'num-linegraph-level-1' : 'voooEngineLinegraphl1',
 	'num-bargraph-level-1' : 'voooEngineBargraphl1',
+	'seat-arrange-level-1' : 'voooEngineSeatL1.js',
+	'seat-arrange-level-2' : 'voooEngineSeatL2.js',
+	'seat-arrange-level-3' : 'voooEngineSeatL3.js',
+	'com-arrange-level-1' : 'voooEngineCompL1.js',
+	'com-arrange-level-2' : 'voooEngineCompL2.js',
+	'com-arrange-level-3' : 'voooEngineCompL3.js',
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -164,35 +176,35 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
             {
-                label: 'Basic General Knowledge',
+                label: 'General Knowledge',
                 options: [
-                    { value: 'basic-gk-level-1',  text: '• Basic General Knowledge Level 1' },
-                    { value: 'basic-gk-level-2',  text: '• Basic General Knowledge Level 2' },
-                    { value: 'basic-gk-level-3',  text: '• Basic General Knowledge Level 3' },
-                    { value: 'basic-gk-level-4',  text: '• Basic General Knowledge Level 4' },
-                    { value: 'basic-gk-level-5',  text: '• Basic General Knowledge Level 5' },
-                    { value: 'basic-gk-level-6',  text: '• Basic General Knowledge Level 6' },
-                    { value: 'basic-gk-level-7',  text: '• Basic General Knowledge Level 7' },
-                    { value: 'basic-gk-level-8',  text: '• Basic General Knowledge Level 8' },
-                    { value: 'basic-gk-level-9',  text: '• Basic General Knowledge Level 9' },
-                    { value: 'basic-gk-level-10', text: '• Basic General Knowledge Level 10' },
-					{ value: 'basic-gk-level-11', text: '• Basic General Knowledge Level 11' },
-					{ value: 'basic-gk-level-12', text: '• Basic General Knowledge Level 12' },
-					{ value: 'basic-gk-level-13', text: '• Basic General Knowledge Level 13' },
-					{ value: 'basic-gk-level-14', text: '• Basic General Knowledge Level 14' },
-					{ value: 'basic-gk-level-15', text: '• Basic General Knowledge Level 15' },
-					{ value: 'basic-gk-level-16', text: '• Basic General Knowledge Level 16' },
-					{ value: 'basic-gk-level-17', text: '• Basic General Knowledge Level 17' },
-					{ value: 'basic-gk-level-18', text: '• Basic General Knowledge Level 18' },
-					{ value: 'basic-gk-level-19', text: '• Basic General Knowledge Level 19' },
-					{ value: 'basic-gk-level-20', text: '• Basic General Knowledge Level 20' },
-					{ value: 'basic-gk-level-21', text: '• Basic General Knowledge Level 21' },
-					{ value: 'basic-gk-level-22', text: '• Basic General Knowledge Level 22' },
-					{ value: 'basic-gk-level-23', text: '• Basic General Knowledge Level 23' },
-					{ value: 'basic-gk-level-24', text: '• Basic General Knowledge Level 24' },
-					{ value: 'basic-gk-level-25', text: '• Basic General Knowledge Level 25' },
-					{ value: 'basic-gk-level-26', text: '• Basic General Knowledge Level 26' },
-					{ value: 'basic-gk-level-27', text: '• Basic General Knowledge Level 27' },
+                    { value: 'basic-gk-level-1',  text: '• General Knowledge Level 1' },
+                    { value: 'basic-gk-level-2',  text: '• General Knowledge Level 2' },
+                    { value: 'basic-gk-level-3',  text: '• General Knowledge Level 3' },
+                    { value: 'basic-gk-level-4',  text: '• General Knowledge Level 4' },
+                    { value: 'basic-gk-level-5',  text: '• General Knowledge Level 5' },
+                    { value: 'basic-gk-level-6',  text: '• General Knowledge Level 6' },
+                    { value: 'basic-gk-level-7',  text: '• General Knowledge Level 7' },
+                    { value: 'basic-gk-level-8',  text: '• General Knowledge Level 8' },
+                    { value: 'basic-gk-level-9',  text: '• General Knowledge Level 9' },
+                    { value: 'basic-gk-level-10', text: '• General Knowledge Level 10' },
+					{ value: 'basic-gk-level-11', text: '• General Knowledge Level 11' },
+					{ value: 'basic-gk-level-12', text: '• General Knowledge Level 12' },
+					{ value: 'basic-gk-level-13', text: '• General Knowledge Level 13' },
+					{ value: 'basic-gk-level-14', text: '• General Knowledge Level 14' },
+					{ value: 'basic-gk-level-15', text: '• General Knowledge Level 15' },
+					{ value: 'basic-gk-level-16', text: '• General Knowledge Level 16' },
+					{ value: 'basic-gk-level-17', text: '• General Knowledge Level 17' },
+					{ value: 'basic-gk-level-18', text: '• General Knowledge Level 18' },
+					{ value: 'basic-gk-level-19', text: '• General Knowledge Level 19' },
+					{ value: 'basic-gk-level-20', text: '• General Knowledge Level 20' },
+					{ value: 'basic-gk-level-21', text: '• General Knowledge Level 21' },
+					{ value: 'basic-gk-level-22', text: '• General Knowledge Level 22' },
+					{ value: 'basic-gk-level-23', text: '• General Knowledge Level 23' },
+					{ value: 'basic-gk-level-24', text: '• General Knowledge Level 24' },
+					{ value: 'basic-gk-level-25', text: '• General Knowledge Level 25' },
+					{ value: 'basic-gk-level-26', text: '• General Knowledge Level 26' },
+					{ value: 'basic-gk-level-27', text: '• General Knowledge Level 27' },
                 ]
             },
             {
@@ -206,6 +218,19 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'num-tabledata-level-1', text: '• Table Data Level 1' },
                     { value: 'num-linegraph-level-1', text: '• Line Graph Level 1' },
                     { value: 'num-bargraph-level-1', text: '• Bar Graph Level 1' },
+                ]
+            },
+			{
+                label: 'UPSC CSAT : Analytical Reasoning',
+                options: [
+                    { value: 'seat-arrange-level-1', text: '• Seating Arrangement Level 1' },
+					{ value: 'seat-arrange-level-2', text: '• Seating Arrangement Level 2' },
+                    { value: 'seat-arrange-level-3', text: '• Seating Arrangement Level 3' },
+					{ value: 'com-arrange-level-1', text: '• Complex Arrangement Level 1' },
+					{ value: 'com-arrange-level-2', text: '• Complex Arrangement Level 2' },
+                    { value: 'com-arrange-level-3', text: '• Complex Arrangement Level 3' },
+
+
                 ]
             },
 			
