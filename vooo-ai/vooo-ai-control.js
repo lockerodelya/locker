@@ -36,6 +36,23 @@ const VOOO_ENGINE_REGISTRY = {
     'basic-gk-level-8'  : '/vooo-ai/vooo-ai-engine-basic-gkl8.js',
     'basic-gk-level-9'  : '/vooo-ai/vooo-ai-engine-basic-gkl9.js',
     'basic-gk-level-10' : '/vooo-ai/vooo-ai-engine-basic-gkl10.js',
+	'basic-gk-level-11' : '/vooo-ai/vooo-ai-engine-basic-gkl11.js',
+	'basic-gk-level-12' : '/vooo-ai/vooo-ai-engine-basic-gkl12.js',
+	'basic-gk-level-13' : '/vooo-ai/vooo-ai-engine-basic-gkl13.js',
+	'basic-gk-level-14' : '/vooo-ai/vooo-ai-engine-basic-gkl14.js',
+	'basic-gk-level-15' : '/vooo-ai/vooo-ai-engine-basic-gkl15.js',
+	'basic-gk-level-16' : '/vooo-ai/vooo-ai-engine-basic-gkl16.js',
+	'basic-gk-level-17' : '/vooo-ai/vooo-ai-engine-basic-gkl17.js',
+	'basic-gk-level-18' : '/vooo-ai/vooo-ai-engine-basic-gkl18.js',
+	'basic-gk-level-19' : '/vooo-ai/vooo-ai-engine-basic-gkl19.js',
+	'basic-gk-level-20' : '/vooo-ai/vooo-ai-engine-basic-gkl20.js',
+	'basic-gk-level-21' : '/vooo-ai/vooo-ai-engine-basic-gkl21.js',
+	'basic-gk-level-22' : '/vooo-ai/vooo-ai-engine-basic-gkl22.js',
+	'basic-gk-level-23' : '/vooo-ai/vooo-ai-engine-basic-gkl23.js',
+	'basic-gk-level-24' : '/vooo-ai/vooo-ai-engine-basic-gkl24.js',
+	'basic-gk-level-25' : '/vooo-ai/vooo-ai-engine-basic-gkl25.js',
+	'basic-gk-level-26' : '/vooo-ai/vooo-ai-engine-basic-gkl26.js',
+	'basic-gk-level-27' : '/vooo-ai/vooo-ai-engine-basic-gkl27.js',
     'numeracy-percentage-level-1' : '/vooo-ai/vooo-ai-engine-numeracy-percentage-l1.js',
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -72,6 +89,24 @@ const VOOO_ENGINE_INSTANCES = {
     'basic-gk-level-8'  : 'voooEngineBasicGKL8',
     'basic-gk-level-9'  : 'voooEngineBasicGKL9',
     'basic-gk-level-10' : 'voooEngineBasicGKL10',
+	'basic-gk-level-11' : 'voooEngineBasicGKL11',
+	'basic-gk-level-12' : 'voooEngineBasicGKL12',
+	'basic-gk-level-13' : 'voooEngineBasicGKL13',
+	'basic-gk-level-14' : 'voooEngineBasicGKL14',
+	'basic-gk-level-15' : 'voooEngineBasicGKL15',
+	'basic-gk-level-16' : 'voooEngineBasicGKL16',
+	'basic-gk-level-17' : 'voooEngineBasicGKL17',
+	'basic-gk-level-18' : 'voooEngineBasicGKL18',
+	'basic-gk-level-19' : 'voooEngineBasicGKL19',
+	'basic-gk-level-20' : 'voooEngineBasicGKL20',
+	'basic-gk-level-21' : 'voooEngineBasicGKL21',
+	'basic-gk-level-22' : 'voooEngineBasicGKL22',
+	'basic-gk-level-23' : 'voooEngineBasicGKL23',
+	'basic-gk-level-24' : 'voooEngineBasicGKL24',
+	'basic-gk-level-25' : 'voooEngineBasicGKL25',
+	'basic-gk-level-26' : 'voooEngineBasicGKL26',
+	'basic-gk-level-27' : 'voooEngineBasicGKL27',
+	
     'numeracy-percentage-level-1' : 'voooEnginenumeracyPerL1',
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -88,7 +123,7 @@ const VOOO_ENGINE_INSTANCES = {
 
         const groups = [
             {
-                label: '🔴 Basic Math',
+                label: '&#128308; Basic Math',
                 options: [
                     { value: 'basic-math-level-1', text: '• Basic Math Level 1' },
                     { value: 'basic-math-level-2', text: '• Basic Math Level 2' },
@@ -100,7 +135,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
             {
-                label: '🔴 Basic Reasoning',
+                label: '&#128308; Basic Reasoning',
                 options: [
                     { value: 'basic-reason-level-1', text: '• Basic Reasoning Level 1' },
                     { value: 'basic-reason-level-2', text: '• Basic Reasoning Level 2' },
@@ -114,7 +149,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
             {
-                label: '🔴 Basic General Knowledge',
+                label: '&#128308; Basic General Knowledge',
                 options: [
                     { value: 'basic-gk-level-1',  text: '• Basic General Knowledge Level 1' },
                     { value: 'basic-gk-level-2',  text: '• Basic General Knowledge Level 2' },
@@ -126,6 +161,23 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'basic-gk-level-8',  text: '• Basic General Knowledge Level 8' },
                     { value: 'basic-gk-level-9',  text: '• Basic General Knowledge Level 9' },
                     { value: 'basic-gk-level-10', text: '• Basic General Knowledge Level 10' },
+					{ value: 'basic-gk-level-11', text: '• Basic General Knowledge Level 11' },
+					{ value: 'basic-gk-level-12', text: '• Basic General Knowledge Level 12' },
+					{ value: 'basic-gk-level-13', text: '• Basic General Knowledge Level 13' },
+					{ value: 'basic-gk-level-14', text: '• Basic General Knowledge Level 14' },
+					{ value: 'basic-gk-level-15', text: '• Basic General Knowledge Level 15' },
+					{ value: 'basic-gk-level-16', text: '• Basic General Knowledge Level 16' },
+					{ value: 'basic-gk-level-17', text: '• Basic General Knowledge Level 17' },
+					{ value: 'basic-gk-level-18', text: '• Basic General Knowledge Level 18' },
+					{ value: 'basic-gk-level-19', text: '• Basic General Knowledge Level 19' },
+					{ value: 'basic-gk-level-20', text: '• Basic General Knowledge Level 20' },
+					{ value: 'basic-gk-level-21', text: '• Basic General Knowledge Level 21' },
+					{ value: 'basic-gk-level-22', text: '• Basic General Knowledge Level 22' },
+					{ value: 'basic-gk-level-23', text: '• Basic General Knowledge Level 23' },
+					{ value: 'basic-gk-level-24', text: '• Basic General Knowledge Level 24' },
+					{ value: 'basic-gk-level-25', text: '• Basic General Knowledge Level 25' },
+					{ value: 'basic-gk-level-26', text: '• Basic General Knowledge Level 26' },
+					{ value: 'basic-gk-level-27', text: '• Basic General Knowledge Level 27' },
                 ]
             },
             // --- ADD NEW OPTGROUP BELOW THIS LINE ---
