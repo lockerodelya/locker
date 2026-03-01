@@ -123,7 +123,7 @@ const VOOO_ENGINE_INSTANCES = {
 
         const groups = [
             {
-                label: '&#128308; Basic Math',
+                label: 'Basic Math',
                 options: [
                     { value: 'basic-math-level-1', text: '• Basic Math Level 1' },
                     { value: 'basic-math-level-2', text: '• Basic Math Level 2' },
@@ -135,7 +135,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
             {
-                label: '&#128308; Basic Reasoning',
+                label: 'Basic Reasoning',
                 options: [
                     { value: 'basic-reason-level-1', text: '• Basic Reasoning Level 1' },
                     { value: 'basic-reason-level-2', text: '• Basic Reasoning Level 2' },
@@ -149,7 +149,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
             {
-                label: '&#128308; Basic General Knowledge',
+                label: 'Basic General Knowledge',
                 options: [
                     { value: 'basic-gk-level-1',  text: '• Basic General Knowledge Level 1' },
                     { value: 'basic-gk-level-2',  text: '• Basic General Knowledge Level 2' },
