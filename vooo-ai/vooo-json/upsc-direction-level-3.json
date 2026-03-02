@@ -1,0 +1,387 @@
+{
+  "puzzle_type": "upsc-direction-level-3",
+  "display_name": "Direction Sense L3",
+  "templates": [
+    {
+      "template_id": "DS_L3_01",
+      "pattern": "[P1] starts from O, walks [D1] km North to A, then [D2] km East to B, then [D3] km South to C, then [D4] km West to D, then [D5] km North to E. What is the straight-line distance from O to E?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [10,12,8,15,10,12]},
+        "D2": {"values": [6,8,5,10,6,8]},
+        "D3": {"values": [4,5,3,6,4,5]},
+        "D4": {"values": [2,3,1,4,2,3]},
+        "D5": {"values": [2,3,2,4,2,3]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.sqrt((D1-D3+D5)*(D1-D3+D5)+(D2-D4)*(D2-D4))",
+      "explanation": "Net North=[D1]-[D3]+[D5]. Net East=[D2]-[D4]. Distance=√(Net_N²+Net_E²)",
+      "answer_values": [9.43,11.66,8.54,14.42,9.43,11.66]
+    },
+    {
+      "template_id": "DS_L3_02",
+      "pattern": "Four persons [P1],[P2],[P3],[P4] stand at four corners of a square with side [D1] km. [P1] is at NW, [P2] at NE, [P3] at SE, [P4] at SW. Each walks towards the centre. How far does each walk?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "D1": {"values": [10,8,6,12,10,8]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.round(D1*Math.sqrt(2)/2*10)/10",
+      "explanation": "Distance from corner to centre of square with side [D1] = ([D1]×√2)/2 = [D1]/√2",
+      "answer_values": [7.1,5.7,4.2,8.5,7.1,5.7]
+    },
+    {
+      "template_id": "DS_L3_03",
+      "pattern": "[P1] goes [D1] km East, turns left, goes [D2] km, turns left, goes [D3] km, turns right, goes [D4] km, turns right, goes [D5] km. In which direction is [P1] from start?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [4,5,3,6,3,4]},
+        "D3": {"values": [2,3,2,4,2,3]},
+        "D4": {"values": [3,4,2,5,2,3]},
+        "D5": {"values": [4,5,3,6,3,4]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "E[D1]→N[D2]→W[D3]→N[D4]→E[D5]. Net E=[D1-D3+D5], Net N=[D2+D4]. Both positive → North-East.",
+      "answer_label": ["North-East","North-East","North-East","North-East","North-East","North-East"]
+    },
+    {
+      "template_id": "DS_L3_04",
+      "pattern": "[P1] starts from village A and walks [D1] km South to B, [D2] km West to C, [D3] km North to D, [D4] km East to E, [D5] km North to F. What is the direction of F from A and distance?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [6,8,5,10,4,6]},
+        "D3": {"values": [8,12,9,14,7,10]},
+        "D4": {"values": [3,4,2,5,2,3]},
+        "D5": {"values": [3,4,3,5,3,4]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.sqrt((D3-D1+D5)*(D3-D1+D5)+(D4-D2)*(D4-D2))",
+      "explanation": "Net N=[D3-D1+D5], Net E=[D4-D2]. If both positive → NE. Distance=√(Net_N²+Net_E²)",
+      "answer_values": [7.21,9.43,7.81,10.0,7.81,8.06]
+    },
+    {
+      "template_id": "DS_L3_05",
+      "pattern": "In a town, roads run only North-South and East-West. [P1] is at intersection O. Post office is [D1] km North and [D2] km East. Bank is [D3] km South and [D4] km West of O. What is the road distance from post office to bank?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [3,4,5,6,3,4]},
+        "D2": {"values": [4,3,6,5,4,3]},
+        "D3": {"values": [5,6,7,8,5,6]},
+        "D4": {"values": [6,5,8,7,6,5]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "(D1+D3)+(D2+D4)",
+      "explanation": "Road distance (Manhattan) = (N-S distance) + (E-W distance) = ([D1]+[D3]) + ([D2]+[D4])",
+      "answer_values": [18,18,26,26,18,18]
+    },
+    {
+      "template_id": "DS_L3_06",
+      "pattern": "[P1] starts from O. Goes [D1] km North. Turns 135 degrees clockwise. Walks [D2] km. Turns 135 degrees clockwise. Walks [D3] km. In which direction is [P1] from O?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [4,5,3,6,3,4]},
+        "D3": {"values": [4,5,3,6,3,4]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "North + 135° CW = South-East. SE + 135° CW = North-East direction roughly. But D2=D3 and turns are symmetric. Net effect: moving North initially, then SE then back NE. Final direction from O is North.",
+      "answer_label": ["North","North","North","North","North","North"]
+    },
+    {
+      "template_id": "DS_L3_07",
+      "pattern": "[P1],[P2],[P3] start from point O at the same time. [P1] goes [D1] km North. [P2] goes [D1] km East. [P3] goes [D1] km South-West (45°). After reaching their points, [P1] turns and walks to [P2]'s position. How far does [P1] walk?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "D1": {"values": [3,4,6,8,5,12]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.round(Math.sqrt(2)*D1*10)/10",
+      "explanation": "[P1] at N[D1], [P2] at E[D1]. Distance between them = √([D1]²+[D1]²) = [D1]√2",
+      "answer_values": [4.2,5.7,8.5,11.3,7.1,17.0]
+    },
+    {
+      "template_id": "DS_L3_08",
+      "pattern": "A man walks [D1] km North-East, then [D2] km South-East, then [D3] km South-West, then [D4] km North-West. If [D1]=[D2]=[D3]=[D4], where does he end up?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [5,8,6,10,4,7]},
+        "D3": {"values": [5,8,6,10,4,7]},
+        "D4": {"values": [5,8,6,10,4,7]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "NE+SE+SW+NW with equal distances forms a rhombus. All N/S/E/W components cancel. Back at starting point.",
+      "answer_label": ["Starting point","Starting point","Starting point","Starting point","Starting point","Starting point"]
+    },
+    {
+      "template_id": "DS_L3_09",
+      "pattern": "[P1] is at the centre of a circular park. He walks [D1] m North, [D1] m East, [D1] m South, [D1] m West, [D1] m North, [D1] m East. What is his final displacement from centre?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.round(Math.sqrt(2)*D1*10)/10",
+      "explanation": "N[D1]+E[D1]+S[D1]+W[D1] cancel each other. Then N[D1]+E[D1] remain. Net = √([D1]²+[D1]²) = [D1]√2 in NE direction.",
+      "answer_values": [7.1,11.3,8.5,14.1,5.7,9.9]
+    },
+    {
+      "template_id": "DS_L3_10",
+      "pattern": "Town X is [D1] km North of town Y. Town Z is [D2] km East of Y. Town W is [D3] km South of Z. Town V is [D4] km West of W. What is the direction of V from X?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [10,12,8,15,10,12]},
+        "D2": {"values": [6,8,5,10,6,8]},
+        "D3": {"values": [4,5,3,6,4,5]},
+        "D4": {"values": [2,3,1,4,2,3]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Y at origin. X at N[D1]. Z at E[D2]. W at E[D2]+S[D3]. V at E[D2-D4]+S[D3]. V relative to X: E[D2-D4] and S[D1+D3]. Direction from X to V is South-East.",
+      "answer_label": ["South-East","South-East","South-East","South-East","South-East","South-East"]
+    },
+    {
+      "template_id": "DS_L3_11",
+      "pattern": "[P1] walks from A: [D1] km East, [D2] km North, [D3] km East, [D4] km South, [D5] km West. What is the shortest distance from the final point back to A?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [4,5,3,6,4,5]},
+        "D2": {"values": [5,8,6,10,4,7]},
+        "D3": {"values": [3,4,2,5,3,4]},
+        "D4": {"values": [2,3,1,4,2,3]},
+        "D5": {"values": [2,3,1,4,2,3]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.sqrt((D1+D3-D5)*(D1+D3-D5)+(D2-D4)*(D2-D4))",
+      "explanation": "Net E=[D1+D3-D5], Net N=[D2-D4]. Distance=√(Net_E²+Net_N²)",
+      "answer_values": [5.83,8.06,5.0,9.22,5.83,8.06]
+    },
+    {
+      "template_id": "DS_L3_12",
+      "pattern": "[P1] is facing North-East. [P2] is facing the direction which is 135° clockwise from [P1]'s direction. [P3] faces the direction that is 90° anticlockwise from [P2]. What direction does [P3] face?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "[P1] = NE. [P2] = NE + 135° CW = SW+45° = South. [P3] = South - 90° (ACW) = East.",
+      "answer_label": ["East","East","East","East","East","East"]
+    },
+    {
+      "template_id": "DS_L3_13",
+      "pattern": "Five friends stand in a row facing North. [P1] is to the left of [P2]. [P3] is to the right of [P2]. [P4] is between [P1] and [P2]. [P5] is to the right of [P3]. What is the order from left to right?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "[P1] left of [P2]. [P4] between [P1] and [P2]. [P3] right of [P2]. [P5] right of [P3]. Order: P1-P4-P2-P3-P5.",
+      "answer_label": ["P1-P4-P2-P3-P5","P1-P4-P2-P3-P5","P1-P4-P2-P3-P5","P1-P4-P2-P3-P5","P1-P4-P2-P3-P5","P1-P4-P2-P3-P5"]
+    },
+    {
+      "template_id": "DS_L3_14",
+      "pattern": "[P1] starts at O facing East. Walks [D1] km, turns left, walks [D2] km, turns left, walks [D3] km, turns left, walks [D4] km, turns left, walks [D5] km. What is the final direction [P1] faces?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [4,5,3,6,3,4]},
+        "D3": {"values": [3,4,2,5,2,3]},
+        "D4": {"values": [2,3,1,4,1,2]},
+        "D5": {"values": [4,5,3,6,3,4]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Start East. 4 left turns = back to East (4×90°=360°). After 4 turns facing East. Then walks [D5] km East. Still facing East.",
+      "answer_label": ["East","East","East","East","East","East"]
+    },
+    {
+      "template_id": "DS_L3_15",
+      "pattern": "[P1] walks from home: [D1] km West to A, [D2] km North to B, [D3] km East to C, [D2] km South to D, [D4] km East to E. How far is E from home and in which direction?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [4,5,3,6,3,4]},
+        "D3": {"values": [3,4,2,5,2,3]},
+        "D4": {"values": [4,5,3,6,3,4]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "D3+D4-D1",
+      "explanation": "W[D1]+N[D2]+E[D3]+S[D2]+E[D4]. N-S cancel. Net E=[D3+D4-D1]. East of home.",
+      "answer_values": [2,1,"-1",1,1,0]
+    },
+    {
+      "template_id": "DS_L3_16",
+      "pattern": "[P1] and [P2] start from O. [P1] goes [D1] km North and [D2] km East. [P2] goes [D3] km West and [D4] km North. [P3] is at the midpoint of [P1] and [P2]. What is [P3]'s distance from O?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "D1": {"values": [4,6,4,8,6,4]},
+        "D2": {"values": [6,8,6,10,8,6]},
+        "D3": {"values": [6,8,6,10,8,6]},
+        "D4": {"values": [4,6,4,8,6,4]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.sqrt(((D1+D4)/2)*((D1+D4)/2)+((D2-D3)/2)*((D2-D3)/2))",
+      "explanation": "[P1]=(E[D2],N[D1]). [P2]=(W[D3],N[D4])=(-[D3],[D4]). Midpoint [P3]=(([D2-D3])/2,([D1+D4])/2). Distance=√(midpoint components²)",
+      "answer_values": [4.0,6.0,4.0,8.0,6.0,4.0]
+    },
+    {
+      "template_id": "DS_L3_17",
+      "pattern": "A ship sails [D1] km North, then [D2] km East, then [D3] km South-East (45°). What is the total Eastward displacement from start? (SE East component = [D3]/√2)",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [10,12,8,15,10,12]},
+        "D2": {"values": [5,6,4,8,5,6]},
+        "D3": {"values": [10,14,10,14,10,14]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "D2+Math.round(D3/Math.sqrt(2))",
+      "explanation": "Eastward = [D2] + SE_East = [D2] + [D3]/√2",
+      "answer_values": [12,16,11,18,12,16]
+    },
+    {
+      "template_id": "DS_L3_18",
+      "pattern": "[P1] is at the origin. Walks to point A([D1] km East). Walks to B([D2] km North of A). Walks to C([D1] km West of B). Walks to D([D2] km South of C, which brings [P1] back to O). [P2] starts at O and walks directly to B. In what direction does [P2] walk?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "D1": {"values": [3,4,6,8,5,12]},
+        "D2": {"values": [4,3,8,6,12,5]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "B is at E[D1]+N[D2] from O. Direction from O to B is North-East.",
+      "answer_label": ["North-East","North-East","North-East","North-East","North-East","North-East"]
+    },
+    {
+      "template_id": "DS_L3_19",
+      "pattern": "A train goes [D1] km East, [D2] km North-East (45°), [D3] km North. What is the total displacement from start? (NE components: N=[D2]/√2, E=[D2]/√2)",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,6,4,8,5,6]},
+        "D2": {"values": [10,14,10,14,10,14]},
+        "D3": {"values": [5,6,4,8,5,6]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.round(Math.sqrt((D1+D2/Math.sqrt(2))*(D1+D2/Math.sqrt(2))+(D3+D2/Math.sqrt(2))*(D3+D2/Math.sqrt(2)))*10)/10",
+      "explanation": "Net E=[D1]+[D2]/√2. Net N=[D3]+[D2]/√2. Displacement=√(Net_E²+Net_N²)",
+      "answer_values": [18.4,22.9,15.3,27.1,18.4,22.9]
+    },
+    {
+      "template_id": "DS_L3_20",
+      "pattern": "[P1] starts from O. Goes [D1] km in direction 30° East of North (N30°E). What are the approximate North and East components? (sin30°=0.5, cos30°=0.87)",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [10,20,10,20,10,20]},
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "N30°E means 30° from North towards East. North component=[D1]×cos30°=[D1]×0.87. East component=[D1]×sin30°=[D1]×0.5.",
+      "answer_label": ["N=8.7 km, E=5 km","N=17.4 km, E=10 km","N=8.7 km, E=5 km","N=17.4 km, E=10 km","N=8.7 km, E=5 km","N=17.4 km, E=10 km"]
+    },
+    {
+      "template_id": "DS_L3_21",
+      "pattern": "[P1] is standing at junction J. Going [D1] km North leads to school S. Going [D2] km East from S leads to hospital H. Going [D3] km South from H leads to market M. [P2] goes directly from J to M. In which direction does [P2] go and how far?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "D1": {"values": [3,4,6,8,5,12]},
+        "D2": {"values": [4,3,8,6,12,5]},
+        "D3": {"values": [6,7,9,11,8,15]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.sqrt((D3-D1)*(D3-D1)+D2*D2)",
+      "explanation": "M is at E[D2]+S[D3-D1] from J (since D3>D1). Direction = South-East. Distance=√([D2]²+([D3-D1])²)",
+      "answer_values": [5.0,5.0,10.0,10.0,13.0,13.0]
+    },
+    {
+      "template_id": "DS_L3_22",
+      "pattern": "[P1] walks in a pattern: 1 km East, 2 km North, 3 km West, 4 km South, 5 km East, 6 km North, 7 km West, 8 km South. What is [P1]'s displacement from start?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Net E: 1-3+5-7=-4 (West). Net N: 2-4+6-8=-4 (South). Displacement = √(16+16)=4√2 km in South-West direction.",
+      "answer_label": ["4√2 km South-West","4√2 km South-West","4√2 km South-West","4√2 km South-West","4√2 km South-West","4√2 km South-West"]
+    },
+    {
+      "template_id": "DS_L3_23",
+      "pattern": "[P1] goes [D1] km North from O. [P2] goes [D1] km East from O. [P3] is exactly midway between [P1] and [P2]. What is [P3]'s distance from O?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "D1": {"values": [6,8,4,10,6,8]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.round(D1/Math.sqrt(2)*10)/10",
+      "explanation": "[P1] at (0,[D1]). [P2] at ([D1],0). Midpoint [P3] = ([D1]/2,[D1]/2). Distance from O = √(([D1]/2)²+([D1]/2)²) = [D1]/√2",
+      "answer_values": [4.2,5.7,2.8,7.1,4.2,5.7]
+    },
+    {
+      "template_id": "DS_L3_24",
+      "pattern": "A UPSC candidate travels from home: [D1] km East to bus stop, [D2] km North to railway station, [D3] km West to exam centre, [D4] km North to college (after exam). At the end, how far is the college from home and in which direction?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [4,6,3,8,4,6]},
+        "D2": {"values": [3,4,5,6,3,4]},
+        "D3": {"values": [7,9,6,11,7,9]},
+        "D4": {"values": [4,5,3,6,4,5]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.sqrt((D3-D1)*(D3-D1)+(D2+D4)*(D2+D4))",
+      "explanation": "Net W=[D3-D1]. Net N=[D2+D4]. Direction=North-West. Distance=√(([D3-D1])²+([D2+D4])²)",
+      "answer_values": [7.62,9.22,6.71,12.53,7.62,9.22]
+    },
+    {
+      "template_id": "DS_L3_25",
+      "pattern": "[P1] walks [D1] km South, [D2] km West, [D3] km North, [D4] km East, [D5] km South, [D6] km West. What is the final displacement and direction from start?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [8,10,6,12,8,10]},
+        "D2": {"values": [6,8,4,10,6,8]},
+        "D3": {"values": [5,6,4,8,5,6]},
+        "D4": {"values": [3,4,2,6,3,4]},
+        "D5": {"values": [3,4,2,5,3,4]},
+        "D6": {"values": [2,3,1,4,2,3]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.sqrt((D1+D5-D3)*(D1+D5-D3)+(D2+D6-D4)*(D2+D6-D4))",
+      "explanation": "Net S=[D1+D5-D3]. Net W=[D2+D6-D4]. Direction=South-West. Distance=√(Net_S²+Net_W²)",
+      "answer_values": [8.49,10.0,5.66,12.37,8.49,10.0]
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Draw a diagram 📐","Almost! 😊",
+      "Think carefully! 🤔","Use compass directions 🧭","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
