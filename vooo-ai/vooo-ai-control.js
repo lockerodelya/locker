@@ -241,7 +241,15 @@ const VOOO_ENGINE_INSTANCES = {
 
                 ]
             },
-			
+			{
+                label: 'UPSC : Clock & Calendar',
+                options: [
+                    { value: 'upsc-clock-level-1', text: '• Clock & Calendar L1' },
+					{ value: 'upsc-clock-level-2', text: '• Clock & Calendar L2' },
+                    { value: 'upsc-clock-level-3', text: '• Clock & Calendar L3' },
+                ]
+            },
+
             // --- ADD NEW OPTGROUP BELOW THIS LINE ---
         ];
 
