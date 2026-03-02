@@ -76,6 +76,9 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-clock-level-2' : '/vooo-ai/vae-upsc-clock-level-2.js',
 	'upsc-clock-level-3' : '/vooo-ai/vae-upsc-clock-level-3.js',
 	
+	'upsc-decision-level-1' : '/vooo-ai/vae-upscdecision-level-1.js',
+	'upsc-decision-level-1' : '/vooo-ai/vae-upscdecision-level-2.js',
+	'upsc-decision-level-1' : '/vooo-ai/vae-upscdecision-level-3.js',
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -151,6 +154,11 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-clock-level-1' : 'vaeupscclockl1',
 	'upsc-clock-level-2' : 'vaeupscclockl2',
 	'upsc-clock-level-3' : 'vaeupscclockl3',
+	
+	'upsc-decision-level-1' : 'vaeupscdecisionl1.js',
+	'upsc-decision-level-1' : 'vaeupscdecisionl2.js',
+	'upsc-decision-level-1' : 'vaeupscdecisionl3.js',
+
 
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -256,6 +264,14 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'upsc-clock-level-1', text: '• Clock & Calendar L1' },
 					{ value: 'upsc-clock-level-2', text: '• Clock & Calendar L2' },
                     { value: 'upsc-clock-level-3', text: '• Clock & Calendar L3' },
+                ]
+            },
+			{
+                label: 'UPSC : Decision Making',
+                options: [
+                    { value: 'upsc-decision-level-1', text: '• Decision Making L1' },
+					{ value: 'upsc-decision-level-1', text: '• Decision Making L2' },
+                    { value: 'upsc-decision-level-1', text: '• Decision Making L3' },
                 ]
             },
 
