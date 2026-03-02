@@ -209,7 +209,7 @@ const VOOO_ENGINE_INSTANCES = {
 
 	'upsc-statement-level-1' : 'vaeupscstatementl1',
 	'upsc-statement-level-2' : 'vaeupscstatementl2',
-	'upsc-statement-level-2' : 'vaeupscstatementl3',
+	'upsc-statement-level-3' : 'vaeupscstatementl3',
 
 	'upsc-syllogisms-level-1' : 'vaeupscsyllogismsl1',
 	'upsc-syllogisms-level-2' : 'vaeupscsyllogismsl2',
