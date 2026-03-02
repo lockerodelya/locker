@@ -155,9 +155,9 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-clock-level-2' : 'vaeupscclockl2',
 	'upsc-clock-level-3' : 'vaeupscclockl3',
 	
-	'upsc-decision-level-1' : 'vaeupscdecisionl1.js',
-	'upsc-decision-level-1' : 'vaeupscdecisionl2.js',
-	'upsc-decision-level-1' : 'vaeupscdecisionl3.js',
+	'upsc-decision-level-1' : 'vaeupscdecisionl1',
+	'upsc-decision-level-1' : 'vaeupscdecisionl2',
+	'upsc-decision-level-1' : 'vaeupscdecisionl3',
 
 
     // --- ADD NEW ENGINES BELOW THIS LINE ---
