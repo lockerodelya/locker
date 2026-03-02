@@ -1,0 +1,301 @@
+{
+  "puzzle_type": "upsc-clock-level-1",
+  "display_name": "Clock & Calendar L1",
+  "templates": [
+    {
+      "template_id": "CC_L1_01",
+      "pattern": "What is the angle between the hour hand and minute hand of a clock at [H]:[M]?",
+      "variables": {
+        "H": {"values": [3, 6, 9, 12, 4, 8]},
+        "M": {"values": [0, 0, 0, 0, 0, 0]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "At [H]:00 — Hour hand at [H]×30°. Minute hand at 0°. Angle = |[H]×30 - 0|. Min of that and 360 minus that.",
+      "answer_label": ["90°","180°","270° (reflex) or 90°","0°","120°","240° or 120°"]
+    },
+    {
+      "template_id": "CC_L1_02",
+      "pattern": "What is the angle between the hour and minute hands at [H]:[M]?",
+      "variables": {
+        "H": {"values": [3, 6, 4, 9, 2, 7]},
+        "M": {"values": [30, 30, 30, 30, 30, 30]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Minute hand at 30×30/60=... Formula: |30H - 5.5M|. At [H]:30 = |30×[H] - 5.5×30| = |30[H] - 165|. Take min of result and 360-result.",
+      "answer_label": ["75°","90°","45°","135°","105°","15°"]
+    },
+    {
+      "template_id": "CC_L1_03",
+      "pattern": "How many times do the hour and minute hands of a clock coincide in 12 hours?",
+      "variables": {
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "The hands coincide 11 times in every 12 hours (not 12, because at 12:00 it counts once). They meet at roughly 12:00, 1:05, 2:10, 3:16, 4:21, 5:27, 6:32, 7:38, 8:43, 9:49, 10:54.",
+      "answer_label": ["11 times","11 times","11 times","11 times","11 times","11 times"]
+    },
+    {
+      "template_id": "CC_L1_04",
+      "pattern": "A clock shows 3:15. What is the angle between the hour and minute hands?",
+      "variables": {
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Formula: |30H - 5.5M| = |30×3 - 5.5×15| = |90 - 82.5| = 7.5°.",
+      "answer_label": ["7.5°","7.5°","7.5°","7.5°","7.5°","7.5°"]
+    },
+    {
+      "template_id": "CC_L1_05",
+      "pattern": "If today is [DAY], what day will it be after [N] days?",
+      "variables": {
+        "DAY": {"values": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},
+        "N": {"values": [10, 15, 20, 25, 30, 14]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "[N] mod 7 = remainder. Add remainder to [DAY] to find the answer day.",
+      "answer_label": ["Thursday","Wednesday","Friday","Tuesday","Sunday","Saturday"]
+    },
+    {
+      "template_id": "CC_L1_06",
+      "pattern": "January 1, 2023 was a Sunday. What day was January 1, 2024?",
+      "variables": {
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "2023 is not a leap year, so it has 365 days. 365 = 52×7 + 1. So 1 odd day. Sunday + 1 = Monday.",
+      "answer_label": ["Monday","Monday","Monday","Monday","Monday","Monday"]
+    },
+    {
+      "template_id": "CC_L1_07",
+      "pattern": "How many odd days are in [Y] years (ordinary)?",
+      "variables": {
+        "Y": {"values": [1, 2, 3, 4, 100, 200]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "1 ordinary year = 1 odd day. 2 years = 2 odd days. 3 years = 3 odd days. 4 years (with 1 leap) = 4+1=5 odd days = 0 odd days net (5 mod 7). 100 years = 5 odd days (24 leap years in 100 = 124 odd days = 5 mod 7... precise answer is 5). 200 years = 3 odd days.",
+      "answer_label": ["1","2","3","2 (5 mod 7 = 5, but standard table: 4 years = 5 odd days)","5","3"]
+    },
+    {
+      "template_id": "CC_L1_08",
+      "pattern": "A clock gains [G] minutes every hour. If it shows the correct time at 12:00 noon, what time will it show at 6:00 PM the same day?",
+      "variables": {
+        "G": {"values": [2, 3, 1, 4, 2, 3]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "6 hours pass. Clock gains [G] minutes/hour × 6 hours = [G×6] minutes extra. So clock shows 6:00 PM + [G×6] minutes.",
+      "answer_label": ["6:12 PM","6:18 PM","6:06 PM","6:24 PM","6:12 PM","6:18 PM"]
+    },
+    {
+      "template_id": "CC_L1_09",
+      "pattern": "What day of the week was 1st January 2000?",
+      "variables": {
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "1st January 2000 was a Saturday. This is a standard reference date in calendar problems.",
+      "answer_label": ["Saturday","Saturday","Saturday","Saturday","Saturday","Saturday"]
+    },
+    {
+      "template_id": "CC_L1_10",
+      "pattern": "At what time between [H]:00 and [H1]:00 do the hour and minute hands coincide?",
+      "variables": {
+        "H": {"values": [1, 2, 3, 4, 5, 6]},
+        "H1": {"values": [2, 3, 4, 5, 6, 7]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Formula: (60×H)/11 minutes past [H]:00. For H=1: 60/11 = 5.45 min → 1:05:27. H=2: 120/11 = 10.9 → 2:10:54. H=3: 180/11 = 16.36 → 3:16:21. H=4: 240/11 = 21.8 → 4:21:49. H=5: 300/11 = 27.27 → 5:27:16. H=6: 360/11 = 32.7 → 6:32:43.",
+      "answer_label": ["1 hr 5 5/11 min","2 hr 10 10/11 min","3 hr 16 4/11 min","4 hr 21 9/11 min","5 hr 27 3/11 min","6 hr 32 8/11 min"]
+    },
+    {
+      "template_id": "CC_L1_11",
+      "pattern": "Today is [DAY]. What day was it [N] days ago?",
+      "variables": {
+        "DAY": {"values": ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"]},
+        "N": {"values": [3, 5, 7, 10, 14, 20]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "[N] mod 7 = remainder. Subtract remainder from [DAY] (going back).",
+      "answer_label": ["Thursday","Wednesday","Tuesday","Sunday","Thursday","Friday"]
+    },
+    {
+      "template_id": "CC_L1_12",
+      "pattern": "How many times in a day do the hands of a clock form a right angle (90°)?",
+      "variables": {
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "The hands form a right angle 44 times in 24 hours (22 times in 12 hours × 2).",
+      "answer_label": ["44 times","44 times","44 times","44 times","44 times","44 times"]
+    },
+    {
+      "template_id": "CC_L1_13",
+      "pattern": "A clock is set right at 10 AM. The clock loses [L] minutes every hour. What will the clock show at 10 PM the same day?",
+      "variables": {
+        "L": {"values": [1, 2, 3, 4, 5, 6]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "12 hours pass. Clock loses [L] min/hour × 12 = [L×12] minutes. Shows 10:00 PM - [L×12] minutes.",
+      "answer_label": ["9:48 PM","9:36 PM","9:24 PM","9:12 PM","9:00 PM","8:48 PM"]
+    },
+    {
+      "template_id": "CC_L1_14",
+      "pattern": "If 15th August 1947 (India's Independence Day) was a Friday, what day of the week was 15th August 1948?",
+      "variables": {
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "1948 is a leap year. From 15 Aug 1947 to 15 Aug 1948 = 366 days = 52 weeks + 2 days. Friday + 2 = Sunday.",
+      "answer_label": ["Sunday","Sunday","Sunday","Sunday","Sunday","Sunday"]
+    },
+    {
+      "template_id": "CC_L1_15",
+      "pattern": "What is the angle traced by the minute hand in [M] minutes?",
+      "variables": {
+        "M": {"values": [15, 20, 30, 45, 60, 10]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Minute hand moves 6° per minute. In [M] minutes = [M] × 6°.",
+      "answer_label": ["90°","120°","180°","270°","360°","60°"]
+    },
+    {
+      "template_id": "CC_L1_16",
+      "pattern": "What is the angle traced by the hour hand in [H] hours?",
+      "variables": {
+        "H": {"values": [1, 2, 3, 4, 6, 12]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Hour hand moves 0.5° per minute = 30° per hour. In [H] hours = [H] × 30°.",
+      "answer_label": ["30°","60°","90°","120°","180°","360°"]
+    },
+    {
+      "template_id": "CC_L1_17",
+      "pattern": "What day of the week will it be on [D] [MONTH] if 1st of that month is [DAY]?",
+      "variables": {
+        "D": {"values": [15, 20, 25, 10, 31, 28]},
+        "MONTH": {"values": ["January","March","June","October","July","February"]},
+        "DAY": {"values": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Day = 1st day + (D-1) mod 7. [D-1] mod 7 added to [DAY].",
+      "answer_label": ["Sunday","Sunday","Tuesday","Sunday","Sunday","Friday"]
+    },
+    {
+      "template_id": "CC_L1_18",
+      "pattern": "A watch shows 4:30. The minute hand points East. In which direction does the hour hand point?",
+      "variables": {
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "At 4:30, angle between hands = |30×4 - 5.5×30| = |120 - 165| = 45°. Minute hand points East. Hour hand is 45° behind (clockwise). East - 45° clockwise = North-East direction.",
+      "answer_label": ["North-East","North-East","North-East","North-East","North-East","North-East"]
+    },
+    {
+      "template_id": "CC_L1_19",
+      "pattern": "How many days are there from [D1] January to [D2] March of the same ordinary year (both dates inclusive)?",
+      "variables": {
+        "D1": {"values": [1, 5, 10, 15, 20, 25]},
+        "D2": {"values": [31, 28, 20, 15, 10, 5]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "January has 31 days, February has 28 (ordinary year), March has [D2] days included. Count = (31-D1+1) + 28 + D2.",
+      "answer_label": ["90","78","70","59","48","37"]
+    },
+    {
+      "template_id": "CC_L1_20",
+      "pattern": "If the day after tomorrow is [DAY], what day is today?",
+      "variables": {
+        "DAY": {"values": ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Day after tomorrow = today + 2. So today = [DAY] - 2 days.",
+      "answer_label": ["Friday","Saturday","Sunday","Monday","Tuesday","Wednesday"]
+    },
+    {
+      "template_id": "CC_L1_21",
+      "pattern": "How many times in a 12-hour period are the hour and minute hands exactly opposite (180° apart)?",
+      "variables": {
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "The hands are exactly opposite 11 times in 12 hours.",
+      "answer_label": ["11 times","11 times","11 times","11 times","11 times","11 times"]
+    },
+    {
+      "template_id": "CC_L1_22",
+      "pattern": "If [MONTH] [D], [Y] is a [DAY1], what day will [MONTH] [D1], [Y] be?",
+      "variables": {
+        "MONTH": {"values": ["March","April","May","June","July","August"]},
+        "D": {"values": [1,1,1,1,1,1]},
+        "Y": {"values": [2024,2024,2024,2024,2024,2024]},
+        "DAY1": {"values": ["Friday","Monday","Wednesday","Saturday","Monday","Thursday"]},
+        "D1": {"values": [15,20,25,10,31,28]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "(D1-D) mod 7 gives extra days. Add to [DAY1] to find the answer.",
+      "answer_label": ["Friday","Sunday","Sunday","Thursday","Wednesday","Wednesday"]
+    },
+    {
+      "template_id": "CC_L1_23",
+      "pattern": "How many leap years are there between [Y1] and [Y2] (both inclusive)?",
+      "variables": {
+        "Y1": {"values": [2000, 2001, 2004, 2010, 2020, 2000]},
+        "Y2": {"values": [2024, 2024, 2024, 2024, 2024, 2100]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Leap year: divisible by 4, except century years must be divisible by 400. Count leap years in range [Y1] to [Y2].",
+      "answer_label": ["7","6","6","4","2","25"]
+    },
+    {
+      "template_id": "CC_L1_24",
+      "pattern": "A clock shows 8:20. What is the angle between the hour and minute hands?",
+      "variables": {
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Formula: |30H - 5.5M| = |30×8 - 5.5×20| = |240 - 110| = 130°.",
+      "answer_label": ["130°","130°","130°","130°","130°","130°"]
+    },
+    {
+      "template_id": "CC_L1_25",
+      "pattern": "What will be the day of the week on [D] [MONTH] [Y] if you know 1 Jan [Y] is [DAY]?",
+      "variables": {
+        "D": {"values": [26, 15, 10, 5, 20, 25]},
+        "MONTH": {"values": ["January","February","March","April","May","June"]},
+        "Y": {"values": [2025,2025,2025,2025,2025,2025]},
+        "DAY": {"values": ["Wednesday","Wednesday","Wednesday","Wednesday","Wednesday","Wednesday"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Count total days from Jan 1 to the given date, subtract 1, find mod 7, add to Wednesday.",
+      "answer_label": ["Sunday","Saturday","Sunday","Saturday","Tuesday","Wednesday"]
+    }
+  ],
+  "responses": {
+    "correct": ["Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍","Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊","Spot on! ✨","Fantastic! 🎈"],
+    "incorrect": ["Try again! 💪","Use the angle formula 🕐","Almost! 😊","Think step by step! 🤔","Review clock formulas 📚","So close! 💝","One more try! 🎯","Keep going! 🌈"]
+  }
+}

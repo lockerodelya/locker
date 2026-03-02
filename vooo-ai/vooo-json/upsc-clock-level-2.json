@@ -1,0 +1,320 @@
+{
+  "puzzle_type": "upsc-clock-level-2",
+  "display_name": "Clock & Calendar L2",
+  "templates": [
+    {
+      "template_id": "CC_L2_01",
+      "pattern": "A clock is set correctly at 12:00 noon on Monday. It gains [G] seconds every minute. What will be the correct time when the clock shows [H]:00 PM on the same day?",
+      "variables": {
+        "G": {"values": [2, 3, 4, 5, 6, 1]},
+        "H": {"values": [6, 6, 6, 6, 6, 6]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Clock gains [G] seconds per minute. In 6 hours = 360 minutes, it gains 360×[G] seconds = [360*G] seconds = [360*G/60] minutes. When clock shows 6 PM, real time = 6 PM minus [360*G/60] minutes.",
+      "answer_label": ["5:48 PM","5:42 PM","5:36 PM","5:30 PM","5:24 PM","5:54 PM"]
+    },
+    {
+      "template_id": "CC_L2_02",
+      "pattern": "Two clocks are set correctly at 8:00 AM. Clock A gains [GA] minutes per hour. Clock B loses [LB] minutes per hour. How many minutes apart will they be after [N] hours?",
+      "variables": {
+        "GA": {"values": [2, 3, 1, 4, 2, 3]},
+        "LB": {"values": [1, 2, 2, 1, 3, 2]},
+        "N": {"values": [5, 4, 6, 3, 4, 5]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Clock A is ahead by [GA×N] minutes. Clock B is behind by [LB×N] minutes. Total gap = [GA×N] + [LB×N] = ([GA]+[LB])×[N] minutes.",
+      "answer_label": ["15 min","20 min","18 min","15 min","20 min","25 min"]
+    },
+    {
+      "template_id": "CC_L2_03",
+      "pattern": "At what time between [H]:00 and [H1]:00 are the hands of a clock at right angles?",
+      "variables": {
+        "H": {"values": [3, 4, 5, 6, 7, 8]},
+        "H1": {"values": [4, 5, 6, 7, 8, 9]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Formula for right angle: (60H ± 15) × 2/11 minutes past H. Two positions exist in most hours. For H=3: (180+15)×2/11 = 32.7 min and (180-15)×2/11 = 30 min past 3.",
+      "answer_label": ["3:32 8/11 and 3:00","4:21 9/11 and 4:54 6/11","5:27 3/11 and 5:0","6:00 and 6:32 8/11","7:05 5/11 and 7:38 2/11","8:10 10/11 and 8:43 7/11"]
+    },
+    {
+      "template_id": "CC_L2_04",
+      "pattern": "On what day of the week does [D] [MONTH] [Y] fall?",
+      "variables": {
+        "D": {"values": [26, 15, 2, 4, 14, 30]},
+        "MONTH": {"values": ["January","August","October","July","February","November"]},
+        "Y": {"values": [2024, 2023, 2023, 2024, 2024, 2023]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Use Zeller's or odd-days method. Count odd days from a reference date to the given date.",
+      "answer_label": ["Friday","Tuesday","Monday","Thursday","Wednesday","Thursday"]
+    },
+    {
+      "template_id": "CC_L2_05",
+      "pattern": "A faulty clock loses [L] minutes every [N] hours. If it shows correct time at 6:00 AM, what time will it show when the correct time is 6:00 PM?",
+      "variables": {
+        "L": {"values": [5, 10, 3, 6, 4, 8]},
+        "N": {"values": [1, 2, 1, 2, 1, 2]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "In 12 hours, clock loses ([L]/[N])×12 minutes. Shows 6 PM minus that many minutes.",
+      "answer_label": ["5:00 PM","5:30 PM","5:24 PM","5:24 PM","5:12 PM","5:12 PM"]
+    },
+    {
+      "template_id": "CC_L2_06",
+      "pattern": "The minute hand of a clock overtakes the hour hand every [X] minutes (of correct time). How much does the clock gain or lose per day?",
+      "variables": {
+        "X": {"values": [65, 66, 64, 63, 67, 65]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Minute hand should overtake hour hand every 720/11 = 65.45 minutes. If it overtakes every [X] minutes: if [X] < 65.45, clock gains; if [X] > 65.45, clock loses. Daily gain/loss = (65.45-[X])/65.45 × 1440 minutes.",
+      "answer_label": ["Gains ~9.8 min/day","Gains ~0 (normal)","Loses ~21.8 min/day","Loses ~54.9 min/day","Gains ~32.7 min/day","Gains ~9.8 min/day"]
+    },
+    {
+      "template_id": "CC_L2_07",
+      "pattern": "What is the day of the week on 1st January [Y]?",
+      "variables": {
+        "Y": {"values": [2020, 2021, 2022, 2023, 2024, 2025]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Starting from a known reference. 1 Jan 2020 = Wednesday. 2020 is leap: +2 days → 2021 = Friday. 2021 ordinary: +1 → 2022 = Saturday. +1 → 2023 = Sunday. +1 → 2024 = Monday. 2024 leap: +2 → 2025 = Wednesday.",
+      "answer_label": ["Wednesday","Friday","Saturday","Sunday","Monday","Wednesday"]
+    },
+    {
+      "template_id": "CC_L2_08",
+      "pattern": "How many Sundays are there in [MONTH] [Y]?",
+      "variables": {
+        "MONTH": {"values": ["January","February","March","April","May","June"]},
+        "Y": {"values": [2023, 2024, 2023, 2024, 2023, 2024]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Find the day of 1st of the month, count how many Sundays fall in the month given its length.",
+      "answer_label": ["5","4","5","4","5","5"]
+    },
+    {
+      "template_id": "CC_L2_09",
+      "pattern": "If [D1] [MONTH1] is [DAY1], what day is [D2] [MONTH2] of the same year?",
+      "variables": {
+        "D1": {"values": [1,1,1,1,1,1]},
+        "MONTH1": {"values": ["January","March","May","July","September","November"]},
+        "DAY1": {"values": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},
+        "D2": {"values": [1,1,1,1,1,1]},
+        "MONTH2": {"values": ["April","June","August","October","December","February"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Count days between the two dates (accounting for month lengths and leap year), find mod 7, add to [DAY1].",
+      "answer_label": ["Thursday","Friday","Thursday","Thursday","Wednesday","Tuesday"]
+    },
+    {
+      "template_id": "CC_L2_10",
+      "pattern": "A clock shows 6:00. After how many minutes will the minute and hour hands form an angle of [A]° for the first time?",
+      "variables": {
+        "A": {"values": [90, 60, 120, 30, 45, 180]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "At 6:00, angle = 180°. Minute hand gains 5.5° per minute on hour hand. Time = (180-[A])/5.5 minutes (for angles less than 180) or solve |180 - 5.5t| = [A].",
+      "answer_label": ["~16.36 min","~21.82 min","~10.91 min","~27.27 min","~24.55 min","~0 min (already 180°)"]
+    },
+    {
+      "template_id": "CC_L2_11",
+      "pattern": "[P] tells [Q] that the day before yesterday was [DAY]. If [Q] meets [P] two days later and asks what day it is, what does [P] say?",
+      "variables": {
+        "P": {"values": ["Ram","Sita","Raj","Anu","Dev","Mia"]},
+        "Q": {"values": ["Shyam","Rita","Priya","Bina","Kiran","Jay"]},
+        "DAY": {"values": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Day before yesterday was [DAY] → today = [DAY] + 2. [Q] meets [P] 2 days later = today + 2 = [DAY] + 4.",
+      "answer_label": ["Friday","Saturday","Sunday","Monday","Tuesday","Wednesday"]
+    },
+    {
+      "template_id": "CC_L2_12",
+      "pattern": "At what time between 7 and 8 o'clock will the hands of a clock be in a straight line but not together?",
+      "variables": {
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Straight line but not together = 180° apart. Formula: (60H - 30) × 2/11 = (420-30)/11 × 2 = 780/11 = 5 5/11 minutes past 7. Answer: 7:05 5/11.",
+      "answer_label": ["7:05 5/11","7:05 5/11","7:05 5/11","7:05 5/11","7:05 5/11","7:05 5/11"]
+    },
+    {
+      "template_id": "CC_L2_13",
+      "pattern": "A person was born on [D] [MONTH] [Y]. How old will he be on [D] [MONTH] [Y2]?",
+      "variables": {
+        "D": {"values": [15, 20, 10, 25, 5, 30]},
+        "MONTH": {"values": ["March","June","September","December","February","August"]},
+        "Y": {"values": [1990, 1985, 1995, 1980, 2000, 1975]},
+        "Y2": {"values": [2025, 2025, 2025, 2025, 2025, 2025]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Age = [Y2] - [Y] years (since birthday falls on same date).",
+      "answer_label": ["35","40","30","45","25","50"]
+    },
+    {
+      "template_id": "CC_L2_14",
+      "pattern": "The angle between the hands of a clock is [A]°. The time is between [H]:00 and [H1]:00. What is the exact time?",
+      "variables": {
+        "A": {"values": [60, 90, 120, 45, 30, 75]},
+        "H": {"values": [2, 3, 4, 5, 6, 7]},
+        "H1": {"values": [3, 4, 5, 6, 7, 8]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Use |30H - 5.5M| = [A]. Solve for M between [H]:00 and [H1]:00.",
+      "answer_label": ["2:21 9/11","3:16 4/11 or 3:49 1/11","4:21 9/11 or 4:43 7/11","5:16 4/11 or 5:38 2/11","6:10 10/11 or 6:54 6/11","7:5 5/11 or 7:49 1/11"]
+    },
+    {
+      "template_id": "CC_L2_15",
+      "pattern": "If the [N]th day of a month is [DAY], what day is the last day of that month if the month has [DAYS] days?",
+      "variables": {
+        "N": {"values": [5, 10, 15, 20, 3, 8]},
+        "DAY": {"values": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},
+        "DAYS": {"values": [31, 30, 31, 28, 31, 30]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Last day = [DAYS]. Days from [N] to [DAYS] = [DAYS]-[N]. ([DAYS]-[N]) mod 7 added to [DAY].",
+      "answer_label": ["Wednesday","Friday","Thursday","Sunday","Thursday","Saturday"]
+    },
+    {
+      "template_id": "CC_L2_16",
+      "pattern": "A and B start a job. A works every [A_DAYS] days and B works every [B_DAYS] days. If both start together on [DAY], on what day will they next work together?",
+      "variables": {
+        "A_DAYS": {"values": [2, 3, 4, 2, 3, 6]},
+        "B_DAYS": {"values": [3, 4, 6, 5, 6, 4]},
+        "DAY": {"values": ["Monday","Monday","Monday","Monday","Monday","Monday"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Next time together = LCM([A_DAYS],[B_DAYS]) days later from [DAY].",
+      "answer_label": ["Monday (6 days later)","Monday (12 days later)","Monday (12 days later)","Monday (10 days later)","Monday (6 days later)","Monday (12 days later)"]
+    },
+    {
+      "template_id": "CC_L2_17",
+      "pattern": "A clock which gains uniformly was [M1] minutes slow at 3 PM on Tuesday and [M2] minutes fast at 3 PM on Thursday. When did it show correct time?",
+      "variables": {
+        "M1": {"values": [4, 6, 8, 2, 10, 5]},
+        "M2": {"values": [4, 6, 8, 2, 10, 5]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "From 3 PM Tuesday to 3 PM Thursday = 48 hours. Clock goes from -[M1] to +[M2] minutes = gains [M1]+[M2] minutes in 48 hours. Correct time was when gain = 0, i.e. [M1]/([M1]+[M2]) × 48 hours after 3 PM Tuesday = 24 hours after = 3 PM Wednesday.",
+      "answer_label": ["3 PM Wednesday","3 PM Wednesday","3 PM Wednesday","3 PM Wednesday","3 PM Wednesday","3 PM Wednesday"]
+    },
+    {
+      "template_id": "CC_L2_18",
+      "pattern": "In [Y] years, what is the total number of odd days? (Y = [Y])",
+      "variables": {
+        "Y": {"values": [100, 200, 300, 400, 700, 800]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "100 years: 76 ordinary + 24 leap = 76 + 24×2 = 124 odd days = 124 mod 7 = 5. 200 years: 2×5=10=3 mod 7. 300 years: 3×5=15=1 mod 7. 400 years: 400/4 - 400/100 + 400/400 = 97 leap = 97×2 + 303×1 = 497 = 0 mod 7. 700 = 100×7 = 0 mod 7. 800 = 400×2 = 0 mod 7.",
+      "answer_label": ["5","3","1","0","0","0"]
+    },
+    {
+      "template_id": "CC_L2_19",
+      "pattern": "The time in a mirror image of a clock shows [H]:[M]. What is the actual time?",
+      "variables": {
+        "H": {"values": [6, 7, 8, 9, 10, 4]},
+        "M": {"values": [30, 25, 15, 45, 10, 50]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Mirror time + actual time = 11:60 (or 12:00 for some conventions). Actual time = 11:60 - [H]:[M] (subtract minutes and hours).",
+      "answer_label": ["5:30","4:35","3:45","2:15","1:50","7:10"]
+    },
+    {
+      "template_id": "CC_L2_20",
+      "pattern": "Two trains depart from the same station at [T1] and [T2]. Train 1 runs daily and Train 2 runs every [N] days. If both depart together on [DAY], after how many days will they depart together again?",
+      "variables": {
+        "T1": {"values": ["8:00 AM","9:00 AM","7:00 AM","10:00 AM","6:00 AM","8:00 AM"]},
+        "T2": {"values": ["8:00 AM","9:00 AM","7:00 AM","10:00 AM","6:00 AM","8:00 AM"]},
+        "N": {"values": [3, 4, 5, 6, 7, 8]},
+        "DAY": {"values": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Train 1 runs every 1 day. Train 2 runs every [N] days. LCM(1,[N]) = [N] days.",
+      "answer_label": ["3 days","4 days","5 days","6 days","7 days","8 days"]
+    },
+    {
+      "template_id": "CC_L2_21",
+      "pattern": "If a year starts on [DAY], on which day does it end (ordinary year)?",
+      "variables": {
+        "DAY": {"values": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Ordinary year = 365 days = 52 weeks + 1 day. End day = start day + 1 (since 365 mod 7 = 1).",
+      "answer_label": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+    },
+    {
+      "template_id": "CC_L2_22",
+      "pattern": "A clock gains [G] minutes per day. It is set correctly at 12:00 noon on [DAY1]. What time does it show exactly [N] days later at noon?",
+      "variables": {
+        "G": {"values": [5, 10, 3, 6, 4, 8]},
+        "DAY1": {"values": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},
+        "N": {"values": [3, 2, 4, 3, 5, 2]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Total gain = [G] × [N] minutes. Clock shows 12:[G×N] PM (if gain < 60 min).",
+      "answer_label": ["12:15 PM","12:20 PM","12:12 PM","12:18 PM","12:20 PM","12:16 PM"]
+    },
+    {
+      "template_id": "CC_L2_23",
+      "pattern": "In which year between [Y1] and [Y2] does the calendar repeat for the first time from [Y1]?",
+      "variables": {
+        "Y1": {"values": [2023, 2024, 2019, 2020, 2021, 2022]},
+        "Y2": {"values": [2040, 2040, 2040, 2040, 2040, 2040]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "A calendar repeats after 6, 11, or 28 years depending on leap year cycles. For ordinary year 2023 (starts Sunday): same calendar in 2034 (11 years). 2024 (leap, Monday): repeats in 2052 (28 years). 2019 (Tuesday): 2030. 2020 (leap, Wed): 2048. 2021 (Friday): 2027. 2022 (Saturday): 2033.",
+      "answer_label": ["2034","2052 (outside range - next same type 2052)","2030","2048 (outside range)","2027","2033"]
+    },
+    {
+      "template_id": "CC_L2_24",
+      "pattern": "A clock strikes once at 1 o'clock, twice at 2 o'clock... How many times will it strike in [N] hours starting from 1 o'clock?",
+      "variables": {
+        "N": {"values": [12, 6, 3, 9, 4, 8]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "In 12 hours, total strikes = 1+2+3+...+12 = 78. In [N] hours from 1 o'clock: sum 1 to [N] for N≤12.",
+      "answer_label": ["78","21","6","45","10","36"]
+    },
+    {
+      "template_id": "CC_L2_25",
+      "pattern": "Ram remembers his friend's birthday is between [D1] and [D2] [MONTH]. Shyam remembers it is between [D3] and [D4] [MONTH]. On which date is the birthday?",
+      "variables": {
+        "D1": {"values": [10, 12, 5, 15, 8, 20]},
+        "D2": {"values": [16, 18, 11, 21, 14, 26]},
+        "D3": {"values": [13, 15, 8, 18, 11, 23]},
+        "D4": {"values": [18, 20, 13, 23, 16, 28]},
+        "MONTH": {"values": ["July","August","September","October","November","December"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Birthday must fall in the intersection of both ranges: between max([D1],[D3]) and min([D2],[D4]) = between [D3] and [D2]. The overlapping date(s) narrow down to a single answer.",
+      "answer_label": ["13th to 16th July","15th to 18th August","8th to 11th September","18th to 21st October","11th to 14th November","23rd to 26th December"]
+    }
+  ],
+  "responses": {
+    "correct": ["Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍","Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊","Spot on! ✨","Fantastic! 🎈"],
+    "incorrect": ["Try again! 💪","Use the angle formula 🕐","Almost! 😊","Think step by step! 🤔","Review clock formulas 📚","So close! 💝","One more try! 🎯","Keep going! 🌈"]
+  }
+}
