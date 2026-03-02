@@ -72,6 +72,11 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-compar-level-2' : '/vooo-ai/vae-upsccompar-level-2.js',
 	'upsc-compar-level-3' : '/vooo-ai/vae-upsccompar-level-3.js',
 	
+	'upsc-clock-level-1' : '/vooo-ai/vae-upsc-clock-level-1.js',
+	'upsc-clock-level-2' : '/vooo-ai/vae-upsc-clock-level-2.js',
+	'upsc-clock-level-3' : '/vooo-ai/vae-upsc-clock-level-3.js',
+	
+	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
 
@@ -143,6 +148,10 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-compar-level-2' : 'vaeupsccomparl2',
 	'upsc-compar-level-3' : 'vaeupsccomparl3',
 	
+	'upsc-clock-level-1' : 'vaeupscclockl1',
+	'upsc-clock-level-2' : 'vaeupscclockl2',
+	'upsc-clock-level-3' : 'vaeupscclockl3',
+
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
 
