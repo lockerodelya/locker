@@ -2,7 +2,23 @@
   "puzzle_type": "upsc-seatar-level-1",
   "display_name": "Analytical Seating Arrangement L1",
   "templates": [
-   {
+    {
+      "template_id": "SA_L1_01",
+      "pattern": "[N] people [P1], [P2], [P3], [P4], [P5] sit in a row. [P1] sits at the leftmost end. [P5] sits at the rightmost end. [P3] sits exactly in the middle. Who sits to the immediate right of [P3]?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
+        "N": {"values": [5,5,5,5,5,5]}
+      },
+      "calculation": "P4",
+      "options": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin","Amit","Ram","Bina","Sita"],
+      "explanation": "Order: [P1]-[P2]-[P3]-[P4]-[P5]. [P3] is in middle (pos 3), so immediate right is pos 4 = [P4]",
+      "options_type": "person"
+    },
+    {
       "template_id": "SA_L1_02",
       "pattern": "[N] persons sit in a straight row facing north. [P1] is at position [POS1] from left. [P2] is at position [POS2] from left. How many persons sit between [P1] and [P2]?",
       "variables": {
@@ -13,16 +29,331 @@
         "N": {"values": [7,6,9,8,10,7]}
       },
       "calculation": "Math.abs(POS2-POS1)-1",
+      "options": [1,2,3,4,5,6,7]
       "explanation": "Persons between = |POS2 - POS1| - 1 = |[POS2]-[POS1]| - 1",
-      "options": [
-        [1,2,3,4,5],
-        [1,2,3,4,5],
-        [1,2,3,4,5],
-        [1,2,3,4,5],
-        [1,2,3,4,5],
-        [1,2,3,4,5]
-      ],
-      "answer_values": [2,2,3,3,3,3]
+
+    },
+    {
+      "template_id": "SA_L1_03",
+      "pattern": "[N] people sit in a row. [P1] is [K] places to the left of [P2]. [P2] is at position [POS] from the right end. What is [P1]'s position from the left end?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "K": {"values": [2,3,2,3,2,3]},
+        "POS": {"values": [3,4,3,4,3,4]},
+        "N": {"values": [8,9,8,9,8,9]}
+      },
+      "calculation": "N-POS+1-K",
+      "options": [1,2,3,4,5,6,7]
+      "explanation": "[P2] position from left = N-POS+1 = [N]-[POS]+1. [P1] is [K] left of [P2], so [P1] pos from left = [N]-[POS]+1-[K]",
+
+    },
+    {
+      "template_id": "SA_L1_04",
+      "pattern": "In a row of [N] students, [P1] is [A]th from left and [P2] is [B]th from right. If they interchange positions, [P1] becomes [C]th from left. How many students are between them originally?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "A": {"values": [5,6,4,7,5,6]},
+        "B": {"values": [4,5,6,4,6,5]},
+        "C": {"values": [8,9,7,10,8,9]},
+        "N": {"values": [12,14,12,14,13,14]}
+      },
+      "calculation": "Math.abs((N-B+1)-A)-1",
+      "options": [1,2,3,4,5,6]
+      "explanation": "[P2] from left = N-B+1. Between them = |[P2]_left - [P1]_left| - 1",
+    },
+    {
+      "template_id": "SA_L1_05",
+      "pattern": "[N] friends [P1],[P2],[P3],[P4],[P5] sit around a circular table. [P1] sits opposite [P3]. [P2] sits to the immediate right of [P1]. Who sits to the immediate left of [P3]?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
+        "N": {"values": [5,5,5,5,5,5]}
+      },
+      "calculation": "P2",
+	  "options": ["Dev","Uday","Rohit","Bina","Sita","Priya","Charu","Tara","Elan","Vinay"]
+      "explanation": "In circular arrangement, if [P2] is immediate right of [P1], and [P1] is opposite [P3], then [P2] is immediate left of [P3]",
+    },
+    {
+      "template_id": "SA_L1_06",
+      "pattern": "[N] persons sit in a row. [P1] is at position [A] from left. What is [P1]'s position from the right end?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "A": {"values": [3,5,4,6,2,7]},
+        "N": {"values": [10,12,11,13,9,14]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "N-A+1",
+      "options": [6,7,8,9,10,11,12],
+      "explanation": "Position from right = N - Position from left + 1 = [N]-[A]+1",
+    },
+    {
+      "template_id": "SA_L1_07",
+      "pattern": "In a row of [N] children, [P1] is [A]th from the left and [P2] is [B]th from the left. [P3] sits exactly between [P1] and [P2]. What is [P3]'s position from the left?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "A": {"values": [2,4,2,4,2,4]},
+        "B": {"values": [8,10,8,10,8,10]},
+        "N": {"values": [10,12,10,12,10,12]}
+      },
+      "calculation": "(A+B)/2",
+      "options": [3,4,5,6,7,8,9]
+      "explanation": "Middle position = (A+B)/2 = ([A]+[B])/2",
+    },
+    {
+      "template_id": "SA_L1_08",
+      "pattern": "[N] people [P1],[P2],[P3],[P4],[P5],[P6] sit in two rows of 3 each, facing each other. [P1],[P2],[P3] face south. [P4],[P5],[P6] face north. [P1] faces [P4]. [P2] is to the right of [P1]. Who faces [P2]?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
+        "P6": {"values": ["Faiz","Wasim","Tejas","Harish","Manoj","Rakesh"]},
+        "N": {"values": [6,6,6,6,6,6]}
+      },
+		"calculation": "P5",
+		"options": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan","Dev","Uday","Faiz","Wasim"]
+		"explanation": "Row 1(south): [P1]-[P2]-[P3]. Row 2(north): [P4]-[P5]-[P6]. [P1] faces [P4], so [P2] faces [P5]",
+      },
+    {
+      "template_id": "SA_L1_09",
+      "pattern": "In a row of [N] persons, if [P1] is shifted [K] places to the right, he occupies the middle position. What is [P1]'s original position from the left?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "K": {"values": [3,2,4,3,2,4]},
+        "N": {"values": [11,11,13,13,11,13]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.round((N+1)/2)-K",
+      "options": [2,3,4,5,6,7]
+      "explanation": "Middle position = (N+1)/2. Original position = middle - K = [N+1]/2 - [K]",
+    },
+    {
+      "template_id": "SA_L1_10",
+      "pattern": "[N] people sit in a circle. [P1] is [A] places to the right of [P2]. How many people are between them going from [P2] to [P1] in the longer (left) direction?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "A": {"values": [3,4,3,4,3,4]},
+        "N": {"values": [10,10,12,12,10,12]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "N-A-1",
+      "options": [4,5,6,7,8,9]
+      "explanation": "Longer direction count = N - shorter direction - 2 = [N]-[A]-1",
+    },
+    {
+      "template_id": "SA_L1_11",
+      "pattern": "Five people [P1],[P2],[P3],[P4],[P5] sit in a row. [P1] is not at ends. [P3] is at the rightmost end. [P2] is to the immediate left of [P3]. [P4] is at leftmost end. Who is at the second position from left?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
+        "N": {"values": [5,5,5,5,5,5]}
+      },
+		"calculation": "P5",
+		"options": ["Amit","Ram","Bina","Sita","Charu","Tara","Dev","Uday","Elan","Vinay"]
+		"explanation": "Order: [P4]-?-[P1]-[P2]-[P3]. Position 2 must be [P5]",
+    },
+    {
+      "template_id": "SA_L1_12",
+      "pattern": "In a row of [N] students, [P1] is [A]th from left and [P2] is [B]th from right. Total number of students between them?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "A": {"values": [4,5,3,6,4,5]},
+        "B": {"values": [5,6,4,5,6,4]},
+        "N": {"values": [15,16,14,16,15,14]}
+      },
+      "calculation": "N-A-B",
+      "options": [4,5,6,7,8,9]
+      "explanation": "Students between = N - A - B = [N]-[A]-[B]",
+    },
+    
+    {
+      "template_id": "SA_L1_14",
+      "pattern": "In a row of [N] people, [P1] is [A]th from left. If [K] more people join the row to the left of [P1], what is [P1]'s new position from left?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "A": {"values": [5,6,4,7,5,6]},
+        "K": {"values": [3,4,2,3,4,2]},
+        "N": {"values": [10,12,10,12,11,12]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "A+K",
+      "options": [6,7,8,9,10,11]
+      "explanation": "New position from left = original position + people added to left = [A]+[K]",
+    },
+    {
+      "template_id": "SA_L1_15",
+      "pattern": "[N] athletes sit in a row. [P1] is [A]th from left and [B]th from right. How many athletes are in the row?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "A": {"values": [6,7,5,8,6,7]},
+        "B": {"values": [7,6,8,5,7,6]},
+        "N": {"values": [12,12,12,12,12,12]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "A+B-1",
+      "options": [10,11,12,13,14]
+      "explanation": "Total = Position from left + Position from right - 1 = [A]+[B]-1",
+    },
+    {
+      "template_id": "SA_L1_16",
+      "pattern": "In a row of [N] students, [P1] ranks [A]th from top and [P2] ranks [B]th from bottom. If [C] students are between them, what is the total number of students?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "A": {"values": [10,12,8,14,10,12]},
+        "B": {"values": [8,10,6,12,8,10]},
+        "C": {"values": [5,6,4,7,5,6]},
+        "N": {"values": [22,27,17,32,22,27]}
+      },
+      "calculation": "A+B+C",
+      "options": [18,20,23,25,28,33]
+      "explanation": "Total = Rank from top + Rank from bottom + Between them - ... use: A+B-1-C gives overlap. Here total = A+B+C (when they don't overlap)",
+    },
+    {
+      "template_id": "SA_L1_17",
+      "pattern": "Four people [P1],[P2],[P3],[P4] sit around a square table, one on each side. [P1] faces north. [P2] faces [P1]. [P3] is to the right of [P1]. Who faces [P3]?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "N": {"values": [4,4,4,4,4,4]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+		"calculation": "P4",
+		"options": ["Amit","Ram","Bina","Sita","Charu","Tara","Dev","Uday"]
+      "explanation": "[P1] faces north (south side), [P2] faces [P1] (north side). [P3] is right of [P1] (east side). Facing [P3] from west side = [P4]",
+    },
+    {
+      "template_id": "SA_L1_18",
+      "pattern": "In a row of [N] persons, [P1] is exactly in the middle. [P1] is [A]th from the right. How many persons are to the left of [P1]?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "A": {"values": [6,7,8,9,6,7]},
+        "N": {"values": [11,13,15,17,11,13]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "A-1",
+      "options": [4,5,6,7,8,9]
+      "explanation": "Since [P1] is in the middle, position from right = position from left. Left of [P1] = A-1 = [A]-1",
+    },
+    {
+      "template_id": "SA_L1_19",
+      "pattern": "[N] players sit in a row. [P1] is [A] places to the right of [P2]. [P2] is at position [B] from left. What is [P1]'s position from right?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "A": {"values": [3,4,3,4,3,4]},
+        "B": {"values": [2,3,2,3,2,3]},
+        "N": {"values": [10,12,10,12,10,12]}
+      },
+      "calculation": "N-(A+B)+1",
+      "options": [4,5,6,7,8,9]
+      "explanation": "[P1] position from left = A+B = [A]+[B]. From right = N-(A+B)+1 = [N]-([A]+[B])+1",
+    },
+    {
+      "template_id": "SA_L1_20",
+      "pattern": "In a linear row of [N] people facing north, [P1] is [A]th from left. [P2] is [B] places to the right of [P1]. What is [P2]'s position from the right?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "A": {"values": [3,4,2,5,3,4]},
+        "B": {"values": [4,3,5,4,5,3]},
+        "N": {"values": [12,12,12,14,13,12]}
+      },
+      "calculation": "N-(A+B)+1",
+      "options":  [4,5,6,7,8,9]     
+	  "explanation": "[P2] from left = A+B. [P2] from right = N-(A+B)+1 = [N]-([A]+[B])+1",
+    },
+    {
+      "template_id": "SA_L1_21",
+      "pattern": "Eight people sit in two rows of 4. Row 1: [P1],[P2],[P3],[P4] face south. Row 2: [P5],[P6],[P7],[P8] face north. [P2] faces [P7]. [P1] is to the immediate left of [P2]. Who faces [P1]?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
+        "P6": {"values": ["Faiz","Wasim","Tejas","Harish","Manoj","Rakesh"]},
+        "P7": {"values": ["Gita","Xena","Urvi","Ishaan","Naina","Seema"]},
+        "P8": {"values": ["Hari","Yash","Vimal","Jatin","Omar","Tanya"]},
+        "N": {"values": [8,8,8,8,8,8]}
+      },
+		"calculation": "P8",
+		"options": ["Elan","Vinay","Faiz","Wasim","Gita","Xena","Hari","Yash"]
+      "explanation": "Row 1: [P1]-[P2]-[P3]-[P4]. Row 2: [P8]-[P7]-[P6]-[P5] (mirror). [P2] faces [P7]. [P1] is left of [P2], so [P1] faces [P8]",
+    },
+    {
+      "template_id": "SA_L1_22",
+      "pattern": "In a row of [N] persons, [P1] is [A]th from left. How many minimum persons need to be added to make [P1]'s position [B]th from right?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "A": {"values": [5,6,4,7,5,6]},
+        "B": {"values": [4,5,3,4,6,5]},
+        "N": {"values": [10,12,9,13,11,12]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.max(0,(A+B-1)-N)",
+      "options": [0,1,2,3,4]
+      "explanation": "Required total = A+B-1. Extra needed = max(0, (A+B-1)-N) = max(0,([A]+[B]-1)-[N])",
+    },
+    {
+      "template_id": "SA_L1_23",
+      "pattern": "Five friends [P1],[P2],[P3],[P4],[P5] sit in a row. [P3] is to the right of [P1] but left of [P5]. [P2] is at the leftmost end. [P4] is between [P3] and [P5]. Who sits at the rightmost end?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
+        "N": {"values": [5,5,5,5,5,5]}
+      },
+		"calculation": "P5",
+		"options": ["Amit","Ram","Bina","Sita","Charu","Tara","Dev","Uday","Elan","Vinay"]
+      "explanation": "Order: [P2]-[P1]-[P3]-[P4]-[P5]. Rightmost = [P5]",
+    },
+    {
+      "template_id": "SA_L1_24",
+      "pattern": "In a row of [N] students, [P1] is [A]th from right and [P2] is [B]th from left. If [P1] and [P2] are the same person, how many students are in the row?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "A": {"values": [8,9,7,10,8,9]},
+        "B": {"values": [5,6,4,7,5,6]},
+        "N": {"values": [12,14,10,16,12,14]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "A+B-1",
+      "options": [10,12,14,16,18]
+      "explanation": "Total students = Position from right + Position from left - 1 = [A]+[B]-1",
+    },
+    {
+      "template_id": "SA_L1_25",
+      "pattern": "[N] people sit in a row. [P1] is [A]th from left. [P2] is [B]th from left. They swap positions. Now [P1] is [C]th from right. What is the total number of people in the row?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "A": {"values": [4,5,3,6,4,5]},
+        "B": {"values": [9,11,8,12,10,11]},
+        "C": {"values": [4,4,5,4,4,4]},
+        "N": {"values": [12,14,12,15,13,14]}
+      },
+      "calculation": "B+C-1",
+      "options": [11,12,13,14,15]
+      "explanation": "After swap, [P1] is at [P2]'s original position ([B] from left) and [C]th from right. Total = B+C-1 = [B]+[C]-1",
     }
   ],
   "responses": {
