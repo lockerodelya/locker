@@ -3,22 +3,6 @@
   "display_name": "Analytical Complex Arrangement L2",
   "templates": [
     {
-      "template_id": "CA_L2_01",
-      "pattern": "Six persons [P1]-[P6] live on 6 floors (1-6). Each likes a fruit: Apple, Mango, Orange, Banana, Grape, Guava. [P1] lives on floor 4 and likes Mango. [P3] lives on an even floor below [P1]. [P5] lives on floor 6 and likes Apple. [P2] likes Banana and lives just above [P3]. [P4] lives on floor 5. [P6] lives on floor 1 and likes Guava. Who lives on floor 2 and what fruit do they like?",
-      "variables": {
-        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
-        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
-        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
-        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
-        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
-        "P6": {"values": ["Faiz","Wasim","Tejas","Harish","Manoj","Rakesh"]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
-      },
-      "calculation": "0",
-      "explanation": "Floors: 1=[P6/Guava], 2=[P3], 3=[P2/Banana], 4=[P1/Mango], 5=[P4], 6=[P5/Apple]. [P3] on floor 2 likes Orange",
-      "answer_label": ["[P3] - Orange","[P3] - Orange","[P3] - Orange","[P3] - Orange","[P3] - Orange","[P3] - Orange"]
-    },
-    {
       "template_id": "CA_L2_02",
       "pattern": "Five persons [P1]-[P5] each have a different job and salary. Jobs: Manager=Rs.[JM]K, Engineer=Rs.[JE]K, Doctor=Rs.[JD]K, Teacher=Rs.[JT]K, Clerk=Rs.[JC]K. [P1] is a Doctor. [P3] earns more than [P2] but [P3] is not Manager. [P5] is a Clerk. [P4] is a Manager. [P2] is an Engineer. What is [P3]'s salary?",
       "variables": {
@@ -33,25 +17,9 @@
         "JT": {"values": [50,55,45,60,50,55]},
         "JC": {"values": [30,35,25,40,30,35]}
       },
-      "calculation": "0",
-      "explanation": "[P1]=Doctor, [P2]=Engineer, [P4]=Manager, [P5]=Clerk → [P3]=Teacher. [P3] salary = JT",
-      "answer_values": [50,55,45,60,50,55]
-    },
-    {
-      "template_id": "CA_L2_03",
-      "pattern": "Six students [P1]-[P6] sit in a row and each studies a different subject: Maths, Physics, Chemistry, Biology, History, English. [P1] studies Maths and sits at position [A] from left. [P3] sits to the immediate right of [P1] and studies Physics. [P5] is at extreme right and studies English. [P2] studies History and is 2nd from left. [P4] studies Chemistry. What subject does [P6] study and what is [P6]'s position?",
-      "variables": {
-        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
-        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
-        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
-        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
-        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
-        "P6": {"values": ["Faiz","Wasim","Tejas","Harish","Manoj","Rakesh"]},
-        "A": {"values": [3,3,3,3,3,3]}
-      },
-      "calculation": "0",
-      "explanation": "Row: [P2(Hist)]-?-[P1(Maths)]-[P3(Phys)]-?-[P5(Eng)]. [P4]=Chemistry, [P6]=Biology at pos 4 (or 5).",
-      "answer_label": ["Biology - Position 5","Biology - Position 5","Biology - Position 5","Biology - Position 5","Biology - Position 5","Biology - Position 5"]
+      "calculation": "JT",
+		"options": [25,30,35,40,45,50,55,60],
+      "explanation": "[P1]=Doctor, [P2]=Engineer, [P4]=Manager, [P5]=Clerk → [P3]=Teacher. [P3] salary = JT"
     },
     {
       "template_id": "CA_L2_04",
@@ -66,8 +34,8 @@
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
       "calculation": "R3-3",
-      "explanation": "[P3]=R3. [P1] 3 places above = R3-3 = [R3]-3",
-      "answer_values": [1,1,1,1,1,1]
+		"options": [1,2,3,4,5],
+      "explanation": "[P3]=R3. [P1] 3 places above = R3-3 = [R3]-3"
     },
     {
       "template_id": "CA_L2_05",
@@ -80,9 +48,9 @@
         "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
         "F1": {"values": [2,2,2,2,2,2]}
       },
-      "calculation": "0",
-      "explanation": "Floors: 1=[P2/Scooter], 2=[P1/Car], 4=[P3/Bike], 5=[P5/Truck]. [P4]=floor3=Van (the remaining vehicle)",
-      "answer_label": ["Van","Van","Van","Van","Van","Van"]
+      "calculation": "Van",
+	  "options": ["Car","Bike","Scooter","Truck","Van"],
+      "explanation": "Floors: 1=[P2/Scooter], 2=[P1/Car], 4=[P3/Bike], 5=[P5/Truck]. [P4]=floor3=Van (the remaining vehicle)"
     },
     {
       "template_id": "CA_L2_06",
@@ -96,9 +64,9 @@
         "P6": {"values": ["Faiz","Wasim","Tejas","Harish","Manoj","Rakesh"]},
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
-      "calculation": "0",
-      "explanation": "[P1]=Jan, [P6]=Feb, [P3]=Apr, [P5]=Mar, [P2]=Jun. Remaining=May → [P4]=May",
-      "answer_label": ["May","May","May","May","May","May"]
+      "calculation": "May",
+	  "options": ["Jan","Feb","Mar","Apr","May","Jun"],
+      "explanation": "[P1]=Jan, [P6]=Feb, [P3]=Apr, [P5]=Mar, [P2]=Jun. Remaining=May → [P4]=May"
     },
     {
       "template_id": "CA_L2_07",
@@ -113,8 +81,8 @@
         "B": {"values": [6,4,8,2,6,4]}
       },
       "calculation": "(H1+A+(H1+A-B))/2",
-      "explanation": "[P2]=H1+A. [P3]=H1+A-B. [P4]=([P2]+[P3])/2=([H1]+[A]+[H1]+[A]-[B])/2",
-      "answer_values": [167,168,166,167,167,168]
+		"options": [164,165,166,167,168,169],
+      "explanation": "[P2]=H1+A. [P3]=H1+A-B. [P4]=([P2]+[P3])/2=([H1]+[A]+[H1]+[A]-[B])/2"
     },
     {
       "template_id": "CA_L2_08",
@@ -131,9 +99,9 @@
         "S4": {"values": [60,65,55,70,60,65]},
         "S5": {"values": [30,35,25,40,30,35]}
       },
-      "calculation": "0",
-      "explanation": "Order: [P3]>[P4]>[P2]>[P1]>[P5]. [P1]=S1. So [P4]=S4 (3rd highest = 2nd from top after [P3])",
-      "answer_values": [60,65,55,70,60,65]
+      "calculation": "S4",
+		"options": [50,55,60,65,70,75],
+      "explanation": "Order: [P3]>[P4]>[P2]>[P1]>[P5]. [P1]=S1. So [P4]=S4 (3rd highest = 2nd from top after [P3])"
     },
     {
       "template_id": "CA_L2_09",
@@ -148,8 +116,8 @@
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
       "calculation": "2",
-      "explanation": "Stack bottom to top: [B1]-[B3]-[B2]-[B5]-[B4]-[B6]. [B3] is at position 2",
-      "answer_values": [2,2,2,2,2,2]
+		"options": [1,2,3,4,5],
+      "explanation": "Stack bottom to top: [B1]-[B3]-[B2]-[B5]-[B4]-[B6]. [B3] is at position 2"
     },
     {
       "template_id": "CA_L2_10",
@@ -166,8 +134,8 @@
         "D": {"values": [3,2,4,1,3,2]}
       },
       "calculation": "Y1+K-M",
-      "explanation": "[P3]=Y1+K. [P5]=[P3]-M=Y1+K-M=[Y1]+[K]-[M]",
-      "answer_values": [1992,1994,1990,1996,1992,1994]
+		"options": [1988,1990,1992,1994,1996],
+      "explanation": "[P3]=Y1+K. [P5]=[P3]-M=Y1+K-M=[Y1]+[K]-[M]"
     },
     {
       "template_id": "CA_L2_11",
@@ -184,8 +152,8 @@
         "N": {"values": [10,10,10,10,10,10]}
       },
       "calculation": "3*W1+D1",
-      "explanation": "[T1] points=3*W1+D1=[3*W1+D1]. [T2] points=3*W2+D2=[3*W2+D2]. Compare.",
-      "answer_values": [14,12,16,10,14,12]
+		"options": [10,12,14,16,18],
+      "explanation": "[T1] points=3*W1+D1=[3*W1+D1]. [T2] points=3*W2+D2=[3*W2+D2]. Compare."
     },
     {
       "template_id": "CA_L2_12",
@@ -199,9 +167,9 @@
         "P6": {"values": ["Faiz","Wasim","Tejas","Harish","Manoj","Rakesh"]},
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
-      "calculation": "0",
-      "explanation": "Circle: [P1(Classical)]-[P2(Jazz)]-[P3(Rock)]-[P4(Pop)]-[P5]-[P6]. [P5]=Folk. [P6]=Blues",
-      "answer_label": ["Folk","Folk","Folk","Folk","Folk","Folk"]
+      "calculation": "Folk",
+	  "options": ["Classical","Jazz","Pop","Rock","Folk","Blues"],
+      "explanation": "Circle: [P1(Classical)]-[P2(Jazz)]-[P3(Rock)]-[P4(Pop)]-[P5]-[P6]. [P5]=Folk. [P6]=Blues"
     },
     {
       "template_id": "CA_L2_13",
@@ -214,8 +182,8 @@
         "K": {"values": [3,4,2,3,3,4]}
       },
       "calculation": "A1+4*K",
-      "explanation": "[P5] = A1 + (5-1)*K = A1 + 4K = [A1]+4*[K]",
-      "answer_values": [32,38,26,36,32,38]
+		"options": [28,30,32,36,38,40],
+      "explanation": "[P5] = A1 + (5-1)*K = A1 + 4K = [A1]+4*[K]"
     },
     {
       "template_id": "CA_L2_14",
@@ -231,8 +199,8 @@
         "H5": {"values": [30,32,28,32,30,32]}
       },
       "calculation": "(H3+K)+(2*(H3+K-M))",
-      "explanation": "[B1]=H3+K. [B2]=H3+K-M. [B4]=2*(H3+K-M). Total=[B1]+[B4]=(H3+K)+2*(H3+K-M)",
-      "answer_values": [51,56,44,52,51,56]
+		"options": [44,48,51,52,56,60],
+      "explanation": "[B1]=H3+K. [B2]=H3+K-M. [B4]=2*(H3+K-M). Total=[B1]+[B4]=(H3+K)+2*(H3+K-M)"
     },
     {
       "template_id": "CA_L2_15",
@@ -246,9 +214,9 @@
         "P6": {"values": ["Faiz","Wasim","Tejas","Harish","Manoj","Rakesh"]},
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
-      "calculation": "0",
-      "explanation": "[P1]=Mon, [P6]=Tue, [P2]=Wed, [P3]=Wed+2=Fri, [P4]=Fri, [P5]=Sat. [P3]=Fri",
-      "answer_label": ["Fri","Fri","Fri","Fri","Fri","Fri"]
+      "calculation": "Fri",
+	  "options": ["Mon","Tue","Wed","Thu","Fri","Sat"],
+      "explanation": "[P1]=Mon, [P6]=Tue, [P2]=Wed, [P3]=Wed+2=Fri, [P4]=Fri, [P5]=Sat. [P3]=Fri"
     },
     {
       "template_id": "CA_L2_16",
@@ -263,8 +231,8 @@
         "M": {"values": [25,10,25,25,25,10]}
       },
       "calculation": "I1+(I1*(1+K/100)*(1-M/100))",
-      "explanation": "[P2]=I1*(1+K/100). [P3]=[P2]*(1-M/100). [P4]=[P1]+[P3]=I1+I1*(1+K/100)*(1-M/100)",
-      "answer_values": [19000,40000,28500,47500,19000,40000]
+		"options": [19000,28500,40000,47500,55000],
+      "explanation": "[P2]=I1*(1+K/100). [P3]=[P2]*(1-M/100). [P4]=[P1]+[P3]=I1+I1*(1+K/100)*(1-M/100)"
     },
     {
       "template_id": "CA_L2_17",
@@ -278,8 +246,8 @@
         "M": {"values": [10,5,5,10,10,5]}
       },
       "calculation": "C1+K+M",
-      "explanation": "[P3]=C1+K. [P5]=[P3]+M=C1+K+M=[C1]+[K]+[M]",
-      "answer_values": [25,25,25,30,25,25]
+		"options": [20,25,30,35,40],
+      "explanation": "[P3]=C1+K. [P5]=[P3]+M=C1+K+M=[C1]+[K]+[M]"
     },
     {
       "template_id": "CA_L2_18",
@@ -294,8 +262,8 @@
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
       "calculation": "B-",
-      "explanation": "[P1]=A+, [P3]=B+, [P4]=O-, [P5]=O+. Remaining: A-, B-. [P2] not A-/B-... Wait [P2] not A- → [P2]=B-. [P6]=A-",
-      "answer_label": ["B-","B-","B-","B-","B-","B-"]
+	  "options": ["A+","A-","B+","B-","O+","O-"],
+      "explanation": "[P1]=A+, [P3]=B+, [P4]=O-, [P5]=O+. Remaining: A-, B-. [P2] not A-/B-... Wait [P2] not A- → [P2]=B-. [P6]=A-"
     },
     {
       "template_id": "CA_L2_19",
@@ -307,8 +275,8 @@
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
       "calculation": "5*N1+K*(0+1+2+3+4)",
-      "explanation": "Sales: Mon=N1, Tue=N1+K, Wed=N1+2K, Thu=N1+3K, Fri=N1+4K. Total=5*N1+10K",
-      "answer_values": [150,175,125,200,150,175]
+		"options": [125,150,175,200,225],
+      "explanation": "Sales: Mon=N1, Tue=N1+K, Wed=N1+2K, Thu=N1+3K, Fri=N1+4K. Total=5*N1+10K"
     },
     {
       "template_id": "CA_L2_20",
@@ -324,9 +292,9 @@
         "P8": {"values": ["Hari","Yash","Vimal","Jatin","Omar","Tanya"]},
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
-      "calculation": "0",
-      "explanation": "Overall order: [P1]>[P5]>[P2]>[P6]>[P3]... and [P7] between [P5] and [P6]. Full: [P1]>[P5]>[P2]>[P7]>[P6]>[P3]>[P4]>[P8]. 5th = [P6]",
-      "answer_index": [5,5,5,5,5,5]
+      "calculation": "P6",
+	  "options": ["Elan","Vinay","Faiz","Wasim","Amit","Ram","Bina","Sita","Charu","Tara"],
+      "explanation": "Overall order: [P1]>[P5]>[P2]>[P6]>[P3]... and [P7] between [P5] and [P6]. Full: [P1]>[P5]>[P2]>[P7]>[P6]>[P3]>[P4]>[P8]. 5th = [P6]"
     },
     {
       "template_id": "CA_L2_21",
@@ -341,23 +309,8 @@
         "M": {"values": [10,5,15,5,10,5]}
       },
       "calculation": "(T1+K+(T1+K-M))/2",
-      "explanation": "[P2]=T1+K. [P3]=T1+K-M. [P4]=([P2]+[P3])/2=([T1]+[K]+[T1]+[K]-[M])/2",
-      "answer_values": [215,227,202,227,215,227]
-    },
-    {
-      "template_id": "CA_L2_22",
-      "pattern": "Five persons [P1]-[P5] each represent a different state and a different sport. States: UP, MP, MH, TN, KA. Sports: Cricket, Football, Tennis, Hockey, Badminton. [P1] is from UP and plays Cricket. [P3] is from MH. [P5] plays Badminton and is from KA. [P2] is from TN and plays Hockey. [P4] plays Football. What state is [P3] from and what sport does [P3] play?",
-      "variables": {
-        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
-        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
-        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
-        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
-        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
-      },
-      "calculation": "0",
-      "explanation": "[P1]=UP/Cricket, [P2]=TN/Hockey, [P5]=KA/Badminton, [P4]=MP/Football. [P3]=MH/Tennis",
-      "answer_label": ["MH - Tennis","MH - Tennis","MH - Tennis","MH - Tennis","MH - Tennis","MH - Tennis"]
+		"options": [200,210,215,220,225,227],
+      "explanation": "[P2]=T1+K. [P3]=T1+K-M. [P4]=([P2]+[P3])/2=([T1]+[K]+[T1]+[K]-[M])/2"
     },
     {
       "template_id": "CA_L2_23",
@@ -372,8 +325,8 @@
         "M": {"values": [20,15,10,25,20,15]}
       },
       "calculation": "(SC+K)+(SC-M)",
-      "explanation": "[P1]=SC+K. [P5]=SC-M. Sum=[P1]+[P5]=(SC+K)+(SC-M)=2*SC+K-M",
-      "answer_values": [115,125,110,120,115,125]
+		"options": [105,110,115,120,125],
+      "explanation": "[P1]=SC+K. [P5]=SC-M. Sum=[P1]+[P5]=(SC+K)+(SC-M)=2*SC+K-M"
     },
     {
       "template_id": "CA_L2_24",
@@ -389,8 +342,8 @@
         "N": {"values": [2,2,3,2,2,2]}
       },
       "calculation": "Y1+K-M+N",
-      "explanation": "[I2]=Y1+K. [I3]=Y1+K-M. [I4]=[I3]+N=Y1+K-M+N=[Y1]+[K]-[M]+[N]",
-      "answer_values": [2029,2030,2028,2031,2029,2030]
+		"options": [2027,2028,2029,2030,2031],
+      "explanation": "[I2]=Y1+K. [I3]=Y1+K-M. [I4]=[I3]+N=Y1+K-M+N=[Y1]+[K]-[M]+[N]"
     },
     {
       "template_id": "CA_L2_25",
@@ -406,8 +359,8 @@
         "TOT": {"values": [40,40,40,40,40,40]}
       },
       "calculation": "(C1+(C1+K)+(C1+K-M))/3",
-      "explanation": "[P2]=C1+K. [P3]=C1+K-M. [P4]=(C1+(C1+K)+(C1+K-M))/3=(3*C1+2K-M)/3",
-      "answer_values": [24,27,22,29,24,27]
+		"options": [22,24,25,27,29,30],
+      "explanation": "[P2]=C1+K. [P3]=C1+K-M. [P4]=(C1+(C1+K)+(C1+K-M))/3=(3*C1+2K-M)/3"
     }
   ],
   "responses": {
