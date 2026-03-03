@@ -3,20 +3,26 @@
   "display_name": "Analytical Seating Arrangement L1",
   "templates": [
    {
-      "template_id": "SA_L1_01",
-      "pattern": "[N] people [P1], [P2], [P3], [P4], [P5] sit in a row. [P1] sits at the leftmost end. [P5] sits at the rightmost end. [P3] sits exactly in the middle. Who sits to the immediate right of [P3]?",
+      "template_id": "SA_L1_02",
+      "pattern": "[N] persons sit in a straight row facing north. [P1] is at position [POS1] from left. [P2] is at position [POS2] from left. How many persons sit between [P1] and [P2]?",
       "variables": {
         "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
         "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
-        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
-        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
-        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
-        "N": {"values": [5,5,5,5,5,5]}
+        "POS1": {"values": [2,1,3,2,4,1]},
+        "POS2": {"values": [5,4,7,6,8,5]},
+        "N": {"values": [7,6,9,8,10,7]}
       },
-      "calculation": "P4",
-      "options": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin","Amit","Ram","Bina","Sita"],
-      "explanation": "Order: [P1]-[P2]-[P3]-[P4]-[P5]. [P3] is in middle (pos 3), so immediate right is pos 4 = [P4]",
-      "options_type": "person"
+      "calculation": "Math.abs(POS2-POS1)-1",
+      "explanation": "Persons between = |POS2 - POS1| - 1 = |[POS2]-[POS1]| - 1",
+      "options": [
+        [1,2,3,4,5],
+        [1,2,3,4,5],
+        [1,2,3,4,5],
+        [1,2,3,4,5],
+        [1,2,3,4,5],
+        [1,2,3,4,5]
+      ],
+      "answer_values": [2,2,3,3,3,3]
     }
   ],
   "responses": {
