@@ -303,12 +303,12 @@ const VOOO_ENGINE_INSTANCES = {
 			{
                 label: 'UPSC : Analytical Reasoning',
                 options: [
-                    { value: 'upsc-seatar-level-1', text: '• Analytical Seating Arrangement L1' },
-					{ value: 'upsc-seatar-level-1', text: '• Analytical Seating Arrangement L2' },
-                    { value: 'upsc-seatar-level-1', text: '• Analytical Seating Arrangement L3' },
-					{ value: 'upsc-compar-level-1', text: '• Analytical Complex Arrangement L1' },
-					{ value: 'upsc-compar-level-1', text: '• Analytical Complex Arrangement L2' },
-                    { value: 'upsc-compar-level-1', text: '• Analytical Complex Arrangement L3' },
+                    { value: 'upsc-seatar-level-1', text: '• Seating Arrangement L1' },
+					{ value: 'upsc-seatar-level-1', text: '• Seating Arrangement L2' },
+                    { value: 'upsc-seatar-level-1', text: '• Seating Arrangement L3' },
+					{ value: 'upsc-compar-level-1', text: '• Complex Arrangement L1' },
+					{ value: 'upsc-compar-level-1', text: '• Complex Arrangement L2' },
+                    { value: 'upsc-compar-level-1', text: '• Complex Arrangement L3' },
 
 
                 ]
