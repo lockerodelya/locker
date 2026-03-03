@@ -4,329 +4,278 @@
   "templates": [
     {
       "template_id": "CC_L3_01",
-      "pattern": "A clock loses [L] minutes every [N] hours. It was set correctly at 8:00 AM on Monday. What is the correct time when the clock shows 8:00 AM on Wednesday?",
+      "pattern": "A clock loses [L] minutes every [N] hours. How many minutes will it lose in [D] days?",
       "variables": {
         "L": {"values": [4, 6, 8, 10, 5, 12]},
         "N": {"values": [2, 3, 4, 5, 1, 6]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
+        "D": {"values": [2, 3, 1, 2, 3, 1]}
       },
-      "calculation": "0",
-      "explanation": "From Mon 8AM to Wed 8AM = 48 hours. Clock loses ([L]/[N]) min/hr × 48 = [L*48/N] minutes. Correct time = 8:00 AM + [L*48/N] minutes.",
-      "answer_label": ["9:36 AM","9:36 AM","9:36 AM","9:36 AM","12:20 PM","9:36 AM"]
+      "calculation": "(L/N)*24*D",
+      "options": [24, 36, 48, 60, 72, 96, 120, 144],
+      "explanation": "Loss per hour = L/N. In [D] days = [D]*24 hours. Total = (L/N)*24*[D] minutes."
     },
     {
       "template_id": "CC_L3_02",
-      "pattern": "Two clocks show the same time at 12:00 noon. Clock X gains [GX] seconds per minute. Clock Y loses [LY] seconds per minute. After how many hours will they show times exactly [DIFF] minutes apart?",
+      "pattern": "Clock X gains [GX] seconds per minute. Clock Y loses [LY] seconds per minute. How many seconds apart after [H] hours?",
       "variables": {
         "GX": {"values": [1, 2, 3, 4, 5, 6]},
         "LY": {"values": [1, 2, 3, 4, 5, 6]},
-        "DIFF": {"values": [20, 40, 60, 80, 100, 120]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
+        "H": {"values": [1, 2, 3, 4, 5, 6]}
       },
-      "calculation": "0",
-      "explanation": "Per minute, X gains [GX]s and Y loses [LY]s → total divergence = ([GX]+[LY]) sec/min = ([GX]+[LY])/60 min/min. Time to diverge [DIFF] min = [DIFF] / (([GX]+[LY])/60) minutes = [DIFF]*60/([GX]+[LY]) minutes = [DIFF*60/(GX+LY)] min = [DIFF*60/(GX+LY)/60] hours.",
-      "answer_label": ["10 hours","10 hours","10 hours","10 hours","10 hours","10 hours"]
+      "calculation": "(GX+LY)*60*H",
+      "options": [60, 120, 180, 240, 300, 360, 480, 600, 720],
+      "explanation": "Combined divergence = (GX+LY) sec/min. In [H] hours = [H]*60 minutes. Total = ([GX]+[LY])*60*[H] seconds."
     },
     {
       "template_id": "CC_L3_03",
-      "pattern": "At what times between [H]:00 and [H1]:00 are the hour and minute hands of a clock perpendicular to each other?",
+      "pattern": "At [H]:[M], what is the angle between the clock hands?",
       "variables": {
         "H": {"values": [1, 2, 4, 7, 9, 11]},
-        "H1": {"values": [2, 3, 5, 8, 10, 12]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
+        "M": {"values": [0, 30, 40, 20, 45, 55]}
       },
-      "calculation": "0",
-      "explanation": "Right angle positions: M = (60H ± 15) × 2/11. For H=[H]: M1 = (60[H]+15)×2/11 and M2 = (60[H]-15)×2/11. Check if both fall between [H]:00 and [H1]:00.",
-      "answer_label": ["1:21 9/11 and 1:54 6/11","2:27 3/11 and 2:54 6/11 (only 2:27 3/11 is valid in some interpretations)","4:21 9/11 and 4:54 6/11","7:38 2/11 and 7:5 5/11","9:49 1/11 and 9:16 4/11","11:0 and 11:32 8/11"]
+      "calculation": "Math.abs(30*H-5.5*M)",
+      "options": [0, 22, 30, 44, 60, 82, 90, 110, 120, 150, 180],
+      "explanation": "Angle = |30H - 5.5M| = |30*[H] - 5.5*[M]| degrees."
     },
     {
       "template_id": "CC_L3_04",
-      "pattern": "A watch which gains [G] seconds per minute was set right at 6:00 AM. What time will the watch show when the correct time is 12:00 noon?",
+      "pattern": "A watch gains [G] seconds per minute. How many minutes does it gain in [H] hours?",
       "variables": {
         "G": {"values": [1, 2, 3, 4, 5, 6]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
+        "H": {"values": [6, 3, 2, 1, 4, 5]}
       },
-      "calculation": "0",
-      "explanation": "6 hours = 360 minutes. Watch gains [G] sec/min × 360 min = [G*360] sec = [G*6] minutes. Watch shows 12:00 + [G*6] min = 12:[G*6] PM.",
-      "answer_label": ["12:06 PM","12:12 PM","12:18 PM","12:24 PM","12:30 PM","12:36 PM"]
+      "calculation": "G*H",
+      "options": [2, 3, 4, 5, 6, 8, 10, 12, 18, 20, 24, 30],
+      "explanation": "Gain per minute = [G] seconds = [G]/60 minutes. In [H]*60 minutes, total gain = [G]*[H] minutes."
     },
     {
       "template_id": "CC_L3_05",
-      "pattern": "What day of the week was [D] [MONTH] [Y]? (Use: 1 Jan 1900 = Monday)",
+      "pattern": "A clock lost [L] min on day 1, [L]*2 on day 2... How many minutes slow after [N] days?",
       "variables": {
-        "D": {"values": [15, 26, 4, 2, 30, 14]},
-        "MONTH": {"values": ["August","January","June","October","April","February"]},
-        "Y": {"values": [1947, 1950, 1984, 1869, 1981, 1946]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
+        "L": {"values": [1, 2, 3, 1, 2, 3]},
+        "N": {"values": [5, 4, 3, 6, 5, 4]}
       },
-      "calculation": "0",
-      "explanation": "Count odd days from 1 Jan 1900 to the given date. Add to Monday. Account for leap years in the range.",
-      "answer_label": ["Friday","Thursday","Tuesday","Saturday","Thursday","Thursday"]
+      "calculation": "L*N*(N+1)/2",
+      "options": [6, 10, 15, 18, 20, 21, 24, 30],
+      "explanation": "AP sum: Loss = L * N*(N+1)/2 = [L]*[N]*([N]+1)/2 minutes."
     },
     {
       "template_id": "CC_L3_06",
-      "pattern": "A clock is set to show correct time at 10:00 AM. It gains [G] min per hour. After how many hours will it show correct time again (12-hour clock)?",
+      "pattern": "A clock gains [G] min per hour. How many hours to gain exactly 720 minutes?",
       "variables": {
         "G": {"values": [1, 2, 3, 4, 5, 6]},
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
-      "calculation": "0",
-      "explanation": "Clock needs to gain exactly 12 hours (720 minutes) to show correct time again on 12-hr clock. Time = 720/[G] hours.",
-      "answer_label": ["720 hours","360 hours","240 hours","180 hours","144 hours","120 hours"]
+      "calculation": "720/G",
+      "options": [120, 144, 180, 240, 360, 720],
+      "explanation": "Time = 720/G = 720/[G] hours."
     },
     {
       "template_id": "CC_L3_07",
-      "pattern": "If [D1] [M1] [Y1] is [DAY1], and [D2] [M2] [Y2] must be determined, what day is it? ([Y2]-[Y1] = [DIFF_Y] years, not crossing century)",
+      "pattern": "How many odd days from year [Y1] to [Y2] (non-inclusive)? (mod 7)",
       "variables": {
-        "D1": {"values": [1, 1, 1, 1, 1, 1]},
-        "M1": {"values": ["January","January","January","January","January","January"]},
         "Y1": {"values": [2010, 2015, 2012, 2016, 2014, 2018]},
-        "DAY1": {"values": ["Friday","Thursday","Sunday","Sunday","Wednesday","Monday"]},
-        "D2": {"values": [1, 1, 1, 1, 1, 1]},
-        "M2": {"values": ["January","January","January","January","January","January"]},
-        "Y2": {"values": [2015, 2020, 2017, 2021, 2019, 2023]},
-        "DIFF_Y": {"values": [5, 5, 5, 5, 5, 5]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
+        "Y2": {"values": [2015, 2020, 2017, 2021, 2019, 2023]}
       },
-      "calculation": "0",
-      "explanation": "Count odd days in [DIFF_Y] years (including leap years in range). Add to [DAY1]. Each ordinary year = 1 odd day, each leap year = 2 odd days.",
-      "answer_label": ["Thursday","Wednesday","Friday","Friday","Monday","Saturday"]
+      "calculation": "((Y2-Y1)+Math.floor((Y2-1)/4)-Math.floor((Y1-1)/4))%7",
+      "options": [0, 1, 2, 3, 4, 5, 6],
+      "explanation": "Odd days = (years + leap years in range) mod 7."
     },
     {
       "template_id": "CC_L3_08",
-      "pattern": "A clock showed the correct time on 1st March. It lost [L] minutes on the first day, [2L] minutes on the second day, [3L] on the third... (increasing by [L] each day). How many minutes slow will it be at the end of [N] days?",
-      "variables": {
-        "L": {"values": [1, 2, 3, 1, 2, 3]},
-        "N": {"values": [5, 4, 3, 6, 5, 4]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
-      },
-      "calculation": "0",
-      "explanation": "Total loss = [L] + 2[L] + 3[L] + ... + N[L] = [L] × N(N+1)/2 = [L] × [N]([N]+1)/2.",
-      "answer_label": ["15 min","20 min","18 min","21 min","30 min","30 min"]
-    },
-    {
-      "template_id": "CC_L3_09",
-      "pattern": "How many times do the hands of a clock coincide between [T1] AM and [T2] PM on the same day?",
-      "variables": {
-        "T1": {"values": [6, 8, 4, 2, 10, 6]},
-        "T2": {"values": [6, 8, 4, 2, 10, 12]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
-      },
-      "calculation": "0",
-      "explanation": "Hands coincide 11 times every 12 hours. From [T1] AM to [T2] PM: count 12-hour blocks and partial. Each 12-hr period = 11 coincidences. 24-hr period = 22.",
-      "answer_label": ["11 (in 12 hrs 6AM-6PM)","11 (in 12 hrs 8AM-8PM)","11 (in 12 hrs 4AM-4PM)","11 (in 12 hrs 2AM-2PM)","11 (in 12 hrs 10AM-10PM)","22 (full day 6AM-12PM next day=18hrs → ~16.5 ≈ 16)"]
-    },
-    {
-      "template_id": "CC_L3_10",
-      "pattern": "If the date [D1] [MONTH1] falls on [DAY1], what date in [MONTH2] of the same year falls on [DAY2]? (Same year, no leap year complication)",
-      "variables": {
-        "D1": {"values": [10, 5, 15, 20, 1, 25]},
-        "MONTH1": {"values": ["January","March","May","July","September","November"]},
-        "DAY1": {"values": ["Monday","Wednesday","Friday","Sunday","Tuesday","Thursday"]},
-        "DAY2": {"values": ["Saturday","Saturday","Saturday","Saturday","Saturday","Saturday"]},
-        "MONTH2": {"values": ["March","May","July","September","November","January (next)"]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
-      },
-      "calculation": "0",
-      "explanation": "Count days from [D1] [MONTH1] to [MONTH2], find the day of 1st of [MONTH2], then count to next [DAY2].",
-      "answer_label": ["7th March","7th May","5th July","7th September","4th November","4th January"]
-    },
-    {
-      "template_id": "CC_L3_11",
-      "pattern": "A wall clock and a table clock both show correct time at 12:00 noon. The wall clock gains [GW] sec per minute and the table clock loses [LT] sec per minute. After how many minutes will the wall clock be exactly [D] minutes ahead of the table clock?",
+      "pattern": "Clock A gains [GW] sec/min, Clock B loses [LT] sec/min. After how many real minutes will A be [D] minutes ahead of B?",
       "variables": {
         "GW": {"values": [1, 2, 3, 4, 5, 6]},
         "LT": {"values": [1, 2, 3, 4, 5, 6]},
-        "D": {"values": [10, 20, 15, 8, 25, 12]},
+        "D": {"values": [10, 20, 15, 8, 25, 12]}
+      },
+      "calculation": "Math.round(D*60/(GW+LT))",
+      "options": [60, 100, 120, 150, 200, 250, 300],
+      "explanation": "Divergence = (GW+LT) sec/min. Time = D*60/(GW+LT) real minutes."
+    },
+    {
+      "template_id": "CC_L3_09",
+      "pattern": "How many times do clock hands coincide in [N] hours?",
+      "variables": {
+        "N": {"values": [12, 24, 6, 18, 9, 3]},
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
-      "calculation": "0",
-      "explanation": "Wall gains [GW]/60 min per min. Table loses [LT]/60 min per min. Combined divergence = ([GW]+[LT])/60 min per real minute. Time for [D] min gap = [D] × 60/([GW]+[LT]) real minutes.",
-      "answer_label": ["300 real min","300 real min","150 real min","60 real min","150 real min","60 real min"]
+      "calculation": "Math.floor(N*11/12)",
+      "options": [2, 3, 5, 8, 11, 16, 22],
+      "explanation": "Hands coincide 11 times every 12 hours. In [N] hours = floor([N]*11/12)."
+    },
+    {
+      "template_id": "CC_L3_10",
+      "pattern": "How many Feb 29ths between [Y_BIRTH] and [Y_NOW] (excluding birth year)?",
+      "variables": {
+        "Y_BIRTH": {"values": [1960, 1964, 1968, 1972, 1976, 1980]},
+        "Y_NOW": {"values": [2024, 2024, 2024, 2024, 2024, 2024]}
+      },
+      "calculation": "Math.floor((Y_NOW-Y_BIRTH)/4)",
+      "options": [14, 15, 16, 17, 18, 20],
+      "explanation": "Leap years every 4 years. Count = floor((Y_NOW - Y_BIRTH)/4)."
+    },
+    {
+      "template_id": "CC_L3_11",
+      "pattern": "The minute hand is [M_LEN] cm. How far does its tip travel in [N] hours? (Use π = 22/7)",
+      "variables": {
+        "M_LEN": {"values": [7, 10, 14, 7, 10, 14]},
+        "N": {"values": [1, 2, 3, 6, 12, 1]}
+      },
+      "calculation": "Math.round(2*(22/7)*M_LEN*N)",
+      "options": [44, 88, 132, 176, 264, 528, 754, 1056],
+      "explanation": "Distance = N * 2πr = [N] * 2 * (22/7) * [M_LEN] cm."
     },
     {
       "template_id": "CC_L3_12",
-      "pattern": "In which years between [Y1] and [Y2] does [D] [MONTH] fall on a Sunday?",
+      "pattern": "Today is day number [DAY_N] (Mon=1). What day number is it [K] days later?",
       "variables": {
-        "D": {"values": [15, 26, 1, 2, 25, 14]},
-        "MONTH": {"values": ["August","January","May","October","December","February"]},
-        "Y1": {"values": [2020, 2020, 2020, 2020, 2020, 2020]},
-        "Y2": {"values": [2030, 2030, 2030, 2030, 2030, 2030]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
+        "DAY_N": {"values": [1, 2, 3, 4, 5, 6]},
+        "K": {"values": [10, 20, 15, 25, 30, 18]}
       },
-      "calculation": "0",
-      "explanation": "Find the day for each year in range. Day advances by 1 for ordinary years and 2 for leap years. Identify years where the result is Sunday.",
-      "answer_label": ["2021, 2027","2025","2022, 2033","2022, 2028","2022, 2033","2021, 2027"]
+      "calculation": "((DAY_N+K-1)%7)+1",
+      "options": [1, 2, 3, 4, 5, 6, 7],
+      "explanation": "Day = ((DAY_N + K - 1) mod 7) + 1."
     },
     {
       "template_id": "CC_L3_13",
-      "pattern": "The minute hand of a clock is [M_LEN] cm long and the hour hand is [H_LEN] cm long. How far does the tip of the minute hand travel in [N] hours?",
+      "pattern": "Clock loses [L] seconds every [N] minutes. How many hours to lose 720 minutes?",
       "variables": {
-        "M_LEN": {"values": [7, 10, 14, 7, 10, 14]},
-        "H_LEN": {"values": [5, 7, 10, 5, 7, 10]},
-        "N": {"values": [1, 2, 3, 6, 12, 1]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
+        "L": {"values": [1, 2, 3, 4, 5, 6]},
+        "N": {"values": [1, 2, 3, 4, 5, 6]}
       },
-      "calculation": "0",
-      "explanation": "Minute hand makes 1 full revolution per hour. Distance per hour = 2π × [M_LEN]. In [N] hours = 2π × [M_LEN] × [N] cm.",
-      "answer_label": ["44 cm (approx)","125.7 cm","264 cm","264 cm","754 cm","88 cm"]
-    },
-    {
-      "template_id": "CC_L3_14",
-      "pattern": "A person was born on February 29, [Y_BIRTH] (leap year). How many actual birthdays (Feb 29) will he celebrate by [Y_NOW]?",
-      "variables": {
-        "Y_BIRTH": {"values": [1960, 1964, 1968, 1972, 1976, 1980]},
-        "Y_NOW": {"values": [2024, 2024, 2024, 2024, 2024, 2024]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
-      },
-      "calculation": "0",
-      "explanation": "Count leap years from [Y_BIRTH] to [Y_NOW] inclusive (excluding birth year itself since that's not a birthday yet). Each leap year = 1 birthday. Note 1900 not a leap year; 2000 is.",
-      "answer_label": ["16","15","14","13","12","11"]
+      "calculation": "Math.round((720*60*N/L)/60)",
+      "options": [720, 1080, 1440, 2160, 2880, 4320],
+      "explanation": "Time = 720*60*N/L minutes = [720*60*N/L]/60 hours."
     },
     {
       "template_id": "CC_L3_15",
-      "pattern": "Clock A strikes every [A] hours, Clock B strikes every [B] hours, and Clock C strikes every [C] hours. All three strike together at 12:00 noon. When will they next all strike together?",
+      "pattern": "Net day shift = (M - N - P) mod 7. Today is day [D] (Mon=1). M=[M_VAL], N=[N_VAL], P=[P_VAL]. What day number is the result?",
       "variables": {
-        "A": {"values": [2, 3, 4, 2, 3, 6]},
-        "B": {"values": [3, 4, 6, 3, 4, 8]},
-        "C": {"values": [4, 6, 8, 4, 6, 12]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
+        "D": {"values": [1, 2, 3, 4, 5, 6]},
+        "M_VAL": {"values": [10, 15, 8, 12, 20, 9]},
+        "N_VAL": {"values": [5, 8, 3, 6, 10, 4]},
+        "P_VAL": {"values": [3, 6, 2, 5, 8, 3]}
       },
-      "calculation": "0",
-      "explanation": "Next time all strike together = LCM([A],[B],[C]) hours after 12:00 noon.",
-      "answer_label": ["12 hours = Midnight","12 hours = Midnight","24 hours = Next noon","12 hours = Midnight","12 hours = Midnight","24 hours = Next noon"]
+      "calculation": "((D+(M_VAL-N_VAL-P_VAL)%7+7-1)%7)+1",
+      "options": [1, 2, 3, 4, 5, 6, 7],
+      "explanation": "Net shift = (M-N-P) mod 7. Result = (D + shift - 1) mod 7 + 1."
     },
     {
       "template_id": "CC_L3_16",
-      "pattern": "The angle between the hands of a clock is [A]° at [H]:[M]. Find all possible times in the same hour if the angle is the same.",
+      "pattern": "A clock gains [G] min/hour. After [T] hours, how many minutes fast is it?",
       "variables": {
-        "A": {"values": [30, 60, 90, 120, 45, 150]},
-        "H": {"values": [2, 3, 4, 5, 6, 7]},
-        "M": {"values": [0, 0, 0, 0, 0, 0]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
+        "G": {"values": [2, 3, 4, 5, 6, 1]},
+        "T": {"values": [6, 4, 3, 2, 5, 12]}
       },
-      "calculation": "0",
-      "explanation": "|30H - 5.5M| = [A]. Solve: 30H - 5.5M = [A] and 30H - 5.5M = -[A]. Two solutions per hour if both fall within the hour. M = (30H ∓ [A]) / 5.5.",
-      "answer_label": ["2:10 10/11 and 2:00","3:0 and 3:21 9/11","4:10 10/11 and 4:43 7/11 (only one is in hour)","5:27 3/11 and 5:0","6:38 2/11 and 6:0","7:43 7/11 and 7:16 4/11"]
+      "calculation": "G*T",
+      "options": [6, 8, 10, 12, 16, 18, 20, 24, 30],
+      "explanation": "Total gain = G*T = [G]*[T] minutes."
     },
     {
       "template_id": "CC_L3_17",
-      "pattern": "Today is [DAY]. What was the day [N] days before [M] days after [P] days before today?",
+      "pattern": "In [Y] years starting from a leap year, how many Feb 29ths? (Ignore century exceptions)",
       "variables": {
-        "DAY": {"values": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},
-        "N": {"values": [5, 8, 3, 6, 10, 4]},
-        "M": {"values": [10, 15, 8, 12, 20, 9]},
-        "P": {"values": [3, 6, 2, 5, 8, 3]},
+        "Y": {"values": [4, 8, 12, 20, 40, 100]},
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
-      "calculation": "0",
-      "explanation": "Net days = -[P] + [M] - [N] = [M]-[N]-[P] from today. Result mod 7 gives net offset.",
-      "answer_label": ["Wednesday","Thursday","Wednesday","Friday","Wednesday","Saturday"]
+      "calculation": "Math.floor(Y/4)",
+      "options": [1, 2, 3, 5, 10, 25],
+      "explanation": "Leap years = floor(Y/4) = floor([Y]/4)."
     },
     {
       "template_id": "CC_L3_18",
-      "pattern": "A clock is correct at [H]:00 AM. It loses [L] seconds every [N] minutes. At what time will it next show the exact correct time? (12-hour clock)",
+      "pattern": "A clock strikes once at 1, twice at 2... How many total strikes in [N] hours from 1 o'clock?",
       "variables": {
-        "L": {"values": [1, 2, 3, 4, 5, 6]},
-        "N": {"values": [1, 2, 3, 4, 5, 6]},
-        "H": {"values": [8, 9, 10, 6, 7, 8]},
+        "N": {"values": [12, 6, 3, 9, 4, 8]},
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
-      "calculation": "0",
-      "explanation": "Clock loses [L]/[N] seconds per minute = [L]/([N]×60) minutes per minute. To fall back 12 hours (720 min), takes 720/([L]/([N]×60)) = 720×[N]×60/[L] real minutes.",
-      "answer_label": ["432000 min (~300 days)","216000 min (~150 days)","144000 min (~100 days)","108000 min (~75 days)","86400 min (~60 days)","72000 min (~50 days)"]
+      "calculation": "N*(N+1)/2",
+      "options": [6, 10, 21, 36, 45, 55, 66, 78],
+      "explanation": "Total = 1+2+...+N = N*(N+1)/2."
     },
     {
       "template_id": "CC_L3_19",
-      "pattern": "In a [Y]-year span starting from [Y1] (a leap year), how many times does Feb 29 occur?",
+      "pattern": "Mirror image of clock shows [H]:[M]. What is actual time in minutes from 12:00?",
       "variables": {
-        "Y": {"values": [100, 200, 400, 10, 50, 28]},
-        "Y1": {"values": [2000, 2000, 2000, 2000, 2000, 2000]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
+        "H": {"values": [7, 3, 9, 5, 8, 2]},
+        "M": {"values": [40, 55, 20, 45, 5, 30]}
       },
-      "calculation": "0",
-      "explanation": "In 100 years: 24 leap years (not 25 because century year 2100 not leap). In 200 years: 48. In 400 years: 97. In 10 years (2000-2009): 3 (2000,2004,2008). In 50 years: 12. In 28 years: 7.",
-      "answer_label": ["24","48","97","3","12","7"]
+      "calculation": "((11-H)*60+(60-M))%720",
+      "options": [30, 95, 130, 215, 330, 430, 510],
+      "explanation": "Actual time = 11:60 - mirror. In minutes from 12:00 = ((11-H)*60+(60-M)) mod 720."
     },
     {
       "template_id": "CC_L3_20",
-      "pattern": "A digital clock uses segments to display time HH:MM. At [H]:[M], how many total segments are lit if each digit uses 7-segment display?",
+      "pattern": "If Jan 1 of a leap year is day [D] (Mon=1), what day number is Dec 31?",
       "variables": {
-        "H": {"values": [12, 10, 11, 8, 3, 7]},
-        "M": {"values": [0, 10, 11, 8, 3, 7]},
+        "D": {"values": [1, 3, 5, 7, 2, 4]},
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
-      "calculation": "0",
-      "explanation": "7-segment counts: 0=6,1=2,2=5,3=5,4=4,5=5,6=6,7=3,8=7,9=6. Add segments for each digit in HH:MM. 12:00 = 1(2)+2(5)+0(6)+0(6)=19. 10:10=1+6+2+6=15. 11:11=2+2+2+2=8... add for each.",
-      "answer_label": ["19","15 (segments for 1,0,1,0)","10 (1,1,1,1)","28 (8,8,8+colon)","20 (0,3,0,3+colon check)","18 (7,7 = 3+3, and 0+7 = 6+3)"]
+      "calculation": "(D%7)+1",
+      "options": [1, 2, 3, 4, 5, 6, 7],
+      "explanation": "Leap year = 366 days. 366 mod 7 = 2. Dec 31 day = (D+1) mod 7 adjusted = (D mod 7)+1."
     },
     {
       "template_id": "CC_L3_21",
-      "pattern": "What is the day on [D] [MONTH] [Y]? Use the formula: Day = (d + m + y + y/4 - 2×C + C/4) mod 7, where January and February are treated as months 11 and 12 of previous year.",
-      "variables": {
-        "D": {"values": [1, 26, 15, 4, 2, 14]},
-        "MONTH": {"values": ["January","January","August","July","October","February"]},
-        "Y": {"values": [2023, 1950, 1947, 1776, 1869, 2000]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
-      },
-      "calculation": "0",
-      "explanation": "Apply Zeller's congruence or Doomsday algorithm for the given date.",
-      "answer_label": ["Sunday","Thursday","Friday","Thursday","Saturday","Monday"]
-    },
-    {
-      "template_id": "CC_L3_22",
-      "pattern": "The time on a clock is [H]:[M]. What time did the clock show [T] minutes ago, and what will it show [T] minutes later?",
+      "pattern": "Time is [H]:[M]. What will it be [T] minutes later? (Answer in total minutes from 12:00)",
       "variables": {
         "H": {"values": [3, 6, 9, 11, 1, 10]},
         "M": {"values": [40, 50, 10, 55, 5, 30]},
-        "T": {"values": [50, 70, 80, 70, 65, 90]},
-        "DUMMY": {"values": [1,1,1,1,1,1]}
+        "T": {"values": [50, 70, 80, 70, 65, 90]}
       },
-      "calculation": "0",
-      "explanation": "[T] min ago: subtract [T] from [H]:[M], borrow hours as needed. [T] min later: add [T] to [H]:[M], carry hours as needed.",
-      "answer_label": ["2:50 ago / 4:30 later","5:40 ago / 8:00 later","7:50 ago / 10:30 later","10:45 ago / 1:05 later","11:60 (midnight) ago / 2:10 later","9:00 ago / 12:00 later"]
+      "calculation": "(H*60+M+T)%720",
+      "options": [30, 95, 150, 210, 270, 330, 390, 430, 510, 600],
+      "explanation": "Total minutes from 12:00 = (H*60 + M + T) mod 720."
+    },
+    {
+      "template_id": "CC_L3_22",
+      "pattern": "Ravi says 'Day before yesterday was day [D1] (Mon=1).' Suresh hears this [N] days later. What day number is it for Suresh?",
+      "variables": {
+        "D1": {"values": [1, 2, 3, 4, 5, 6]},
+        "N": {"values": [3, 4, 5, 6, 7, 8]}
+      },
+      "calculation": "((D1+1+N-1)%7)+1",
+      "options": [1, 2, 3, 4, 5, 6, 7],
+      "explanation": "Ravi's today = D1+2. Suresh's today = D1+2+N. Day = ((D1+N+1) mod 7)+1."
     },
     {
       "template_id": "CC_L3_23",
-      "pattern": "If Jan 1 of year [Y] is [DAY], and the year is a leap year, what day is Dec 31 of year [Y]?",
+      "pattern": "At what angle (degrees) are clock hands at [H]:00?",
       "variables": {
-        "Y": {"values": [2024, 2020, 2016, 2012, 2008, 2004]},
-        "DAY": {"values": ["Monday","Wednesday","Friday","Sunday","Tuesday","Thursday"]},
+        "H": {"values": [1, 2, 3, 4, 5, 6]},
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
-      "calculation": "0",
-      "explanation": "Leap year = 366 days = 52 weeks + 2 days. Dec 31 = Jan 1 + 365 days into the year = Jan 1 + (366-1) days = Jan 1 + 365 mod 7 = Jan 1 + 1 day. Wait — Dec 31 is day 366. From Jan 1 (day 1) to Dec 31 (day 366) = 365 days later. 365 mod 7 = 1. So Dec 31 = [DAY] + 1.",
-      "answer_label": ["Tuesday","Thursday","Saturday","Monday","Wednesday","Friday"]
+      "calculation": "30*H",
+      "options": [30, 60, 90, 120, 150, 180],
+      "explanation": "At [H]:00, angle = 30*H = 30*[H] degrees."
     },
     {
       "template_id": "CC_L3_24",
-      "pattern": "A clock is placed facing a mirror. The mirror image shows [H]:[M]. If the time is between [T1] and [T2], what is the actual time?",
+      "pattern": "A clock was [M1] min slow at 3 PM Tuesday and [M2] min fast at 3 PM Thursday (48 hrs later). How many hours after 3 PM Tuesday was it correct?",
       "variables": {
-        "H": {"values": [7, 3, 9, 5, 8, 2]},
-        "M": {"values": [40, 55, 20, 45, 5, 30]},
-        "T1": {"values": [4, 8, 2, 6, 3, 9]},
-        "T2": {"values": [5, 9, 3, 7, 4, 10]},
+        "M1": {"values": [4, 6, 8, 2, 10, 5]},
+        "M2": {"values": [4, 6, 8, 2, 10, 5]},
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
-      "calculation": "0",
-      "explanation": "Mirror time formula: Actual = 11:60 - mirror reading (if result ≥ 12, subtract 12). 11:60 - [H]:[M].",
-      "answer_label": ["4:20","8:05","2:40","6:15","3:55","9:30"]
+      "calculation": "48*M1/(M1+M2)",
+      "options": [12, 16, 20, 24, 28, 32, 36],
+      "explanation": "Correct at M1/(M1+M2)*48 = [M1]/([M1]+[M2])*48 hours after 3 PM Tuesday."
     },
     {
       "template_id": "CC_L3_25",
-      "pattern": "Ravi says: 'The day before yesterday was [DAY1].' Suresh heard this [N] days later. According to Suresh, what day was the day before yesterday when Ravi spoke, from Suresh's current perspective?",
+      "pattern": "How many times does the minute hand gain 360° over the hour hand in [N] hours?",
       "variables": {
-        "DAY1": {"values": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},
-        "N": {"values": [3, 4, 5, 6, 7, 8]},
+        "N": {"values": [12, 24, 6, 18, 9, 3]},
         "DUMMY": {"values": [1,1,1,1,1,1]}
       },
-      "calculation": "0",
-      "explanation": "Ravi spoke on [DAY1]+2. Suresh is now [N] days after Ravi spoke. Suresh's 'day before yesterday' = Suresh's today - 2 = ([DAY1]+2+[N]) - 2 = [DAY1]+[N].",
-      "answer_label": ["Thursday","Saturday","Monday","Wednesday","Friday","Sunday"]
+      "calculation": "Math.floor(N*11/12)",
+      "options": [2, 3, 5, 8, 11, 16, 22],
+      "explanation": "Minute hand laps hour hand 11 times in 12 hours. In [N] hours = floor([N]*11/12) times."
     }
   ],
   "responses": {
-    "correct": ["Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍","Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊","Spot on! ✨","Fantastic! 🎈"],
-    "incorrect": ["Try again! 💪","Use the angle formula 🕐","Almost! 😊","Think step by step! 🤔","Review clock formulas 📚","So close! 💝","One more try! 🎯","Keep going! 🌈"]
+    "correct": ["Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍","Amazing! 🌟"],
+    "incorrect": ["Try again! 💪","Review clock formulas 📚","Almost! 😊","Think step by step! 🤔"]
   }
 }
