@@ -454,20 +454,20 @@ calculateAnswer(template,variables){
         // ════════════════════════════════════════════
 generateOptions(correctAnswer,template,variables){
     // ✅ answer_label: use unique labels as options
-    if(template.answer_label&&Array.isArray(template.answer_label)){
-        const unique=[...new Set(template.answer_label)];
-        // pad if fewer than 4 unique options
-        const pool=['Valid','Not Valid','Both I and II','Only Conclusion I','Only Conclusion II','Only Conclusion III','Neither I nor II','Only Assumption I','Only Assumption II','I and II only','I and III only','I and IV only','II and III only','II and IV only','III and IV only','I, II and III','I, II and IV','I, III and IV','II, III and IV','I, II, III and IV','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday','Statements are contradictory'];
-        let opts=[...unique];
-        for(const p of pool){if(opts.length>=4)break;if(!opts.includes(p))opts.push(p);}
-        return this._shuffleArray(opts.slice(0,4));
-    }
     if(template.options_builder){
                 try{
                     const opts=this.evaluateExpression(template.options_builder,variables);
                     if(Array.isArray(opts)&&opts.length>=4)return this._shuffleArray(opts);
                 }catch(e){}
             }
+    if(template.answer_label&&Array.isArray(template.answer_label)){
+        const unique=[...new Set(template.answer_label)];
+        // pad if fewer than 4 unique options
+        const pool=['Valid','Not Valid','Both I and II','Only Conclusion I','Only Conclusion II','Neither I nor II'];
+        let opts=[...unique];
+        for(const p of pool){if(opts.length>=4)break;if(!opts.includes(p))opts.push(p);}
+        return this._shuffleArray(opts.slice(0,4));
+    }
 
             if(template.options&&Array.isArray(template.options)){
                 const opts=[...template.options];
