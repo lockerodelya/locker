@@ -321,7 +321,15 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'UPSC : Statement & Assumptions L1',
+                label: 'UPSC : Ranking & Time Secquence',
+                options: [
+                    { value: 'upsc-ranktime-level-1', text: '• Ranking & Time Seq. L1' },
+					{ value: 'upsc-ranktime-level-2', text: '• Ranking & Time Seq. L2' },
+                    { value: 'upsc-ranktime-level-3', text: '• Ranking & Time Seq. L3' },
+                ]
+            },
+			{
+                label: 'UPSC : Statement & Assumptions',
                 options: [
                     { value: 'upsc-statement-level-1', text: '• Statement & Assumptions L1' },
 					{ value: 'upsc-statement-level-2', text: '• Statement & Assumptions L2' },
