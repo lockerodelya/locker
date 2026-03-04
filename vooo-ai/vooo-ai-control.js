@@ -321,6 +321,14 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
+                label: 'UPSC : Statement & Assumptions L1',
+                options: [
+                    { value: 'upsc-statement-level-1', text: '• Statement & Assumptions L1' },
+					{ value: 'upsc-statement-level-2', text: '• Statement & Assumptions L2' },
+                    { value: 'upsc-statement-level-3', text: '• Statement & Assumptions L3' },
+                ]
+            },
+			{
                 label: 'UPSC : Syllogisms',
                 options: [
                     { value: 'upsc-syllogisms-level-1', text: '• Syllogisms L1' },
