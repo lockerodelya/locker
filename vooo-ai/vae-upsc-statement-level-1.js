@@ -457,7 +457,7 @@ generateOptions(correctAnswer,template,variables){
     if(template.answer_label&&Array.isArray(template.answer_label)){
         const unique=[...new Set(template.answer_label)];
         // pad if fewer than 4 unique options
-        const pool=['Valid','Not Valid','Both I and II','Only Conclusion I','Only Conclusion II','Neither I nor II'];
+        const pool=['Valid','Not Valid','Both I and II','Only Conclusion I','Only Conclusion II','Neither I nor II','Only Assumption I','Only Assumption II'];
         let opts=[...unique];
         for(const p of pool){if(opts.length>=4)break;if(!opts.includes(p))opts.push(p);}
         return this._shuffleArray(opts.slice(0,4));
