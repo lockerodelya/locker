@@ -320,6 +320,14 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'upsc-clock-level-3', text: '• Clock & Calendar L3' },
                 ]
             },
+			{
+                label: 'UPSC : Syllogisms',
+                options: [
+                    { value: 'upsc-syllogisms-level-1', text: '• Syllogisms L1' },
+					{ value: 'upsc-syllogisms-level-2', text: '• Syllogisms L2' },
+                    { value: 'upsc-syllogisms-level-3', text: '• Syllogisms L3' },
+                ]
+            },
 
 
             // --- ADD NEW OPTGROUP BELOW THIS LINE ---
