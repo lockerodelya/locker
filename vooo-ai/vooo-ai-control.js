@@ -76,9 +76,9 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-clock-level-2' : '/vooo-ai/vae-upsc-clock-level-2.js',
 	'upsc-clock-level-3' : '/vooo-ai/vae-upsc-clock-level-3.js',
 	
-//	'upsc-decision-level-1' : '/vooo-ai/vae-upscdecision-level-1.js',
-//	'upsc-decision-level-2' : '/vooo-ai/vae-upscdecision-level-2.js',
-//	'upsc-decision-level-3' : '/vooo-ai/vae-upscdecision-level-3.js',
+'upsc-decision-level-1' : 
+'upsc-decision-level-2' : 
+'upsc-decision-level-3' : 
 
 	'upsc-arguments-level-1' : '/vooo-ai/vae-upsc-arguments-level-1.js',
 	'upsc-arguments-level-2' : '/vooo-ai/vae-upsc-arguments-level-2.js',
