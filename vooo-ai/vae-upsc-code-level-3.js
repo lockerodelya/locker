@@ -214,14 +214,16 @@ const _ENGINE_INSTANCE_NAME = 'vaeupsccodel3';               // ⭐ Line 3: Uniq
             return false;
         }
 
-        isTemplateComputable(template){
-            if(!template.calculation)return false;
-            const c=template.calculation.trim();
-            if(c===''||c==='null')return false;
-            if(/^[A-Z][A-Z0-9_]*$/.test(c))return true;
-            if(this.isPlainText(c))return false;
-            return true;
-        }
+isTemplateComputable(template){
+    // ✅ answer_label templates are always computable
+    if(template.answer_label&&Array.isArray(template.answer_label))return true;
+    if(!template.calculation)return false;
+    const c=template.calculation.trim();
+    if(c===''||c==='null')return false;
+    if(/^[A-Z][A-Z0-9_]*$/.test(c))return true;
+    if(this.isPlainText(c))return false;
+    return true;
+}
 
         // ════════════════════════════════════════════
         // VARIABLE GENERATION
@@ -405,9 +407,16 @@ const _ENGINE_INSTANCE_NAME = 'vaeupsccodel3';               // ⭐ Line 3: Uniq
             return this.resolvePatternText(template.pattern,variables);
         }
 
-        calculateAnswer(template,variables){
-            if(!template.calculation)return null;
-            const calc=template.calculation.trim();
+calculateAnswer(template,variables){
+    // ✅ answer_label: pick answer by variable index
+    if(template.answer_label&&Array.isArray(template.answer_label)){
+        const varVals=template.variables?Object.values(template.variables):[];
+        const listLen=varVals.length>0&&varVals[0].values?varVals[0].values.length:template.answer_label.length;
+        const idx=Math.floor(Math.random()*Math.min(template.answer_label.length,listLen));
+        return template.answer_label[idx];
+    }
+    if(!template.calculation)return null;
+    const calc=template.calculation.trim();
             if(calc===''||calc==='null')return null;
             if(this.isPlainText(calc))return null;
 
@@ -443,13 +452,22 @@ const _ENGINE_INSTANCE_NAME = 'vaeupsccodel3';               // ⭐ Line 3: Uniq
         // ════════════════════════════════════════════
         // OPTIONS GENERATION
         // ════════════════════════════════════════════
-        generateOptions(correctAnswer,template,variables){
-            if(template.options_builder){
+generateOptions(correctAnswer,template,variables){
+    // ✅ answer_label: use unique labels as options
+    if(template.options_builder){
                 try{
                     const opts=this.evaluateExpression(template.options_builder,variables);
                     if(Array.isArray(opts)&&opts.length>=4)return this._shuffleArray(opts);
                 }catch(e){}
             }
+    if(template.answer_label&&Array.isArray(template.answer_label)){
+        const unique=[...new Set(template.answer_label)];
+        // pad if fewer than 4 unique options
+        const pool=['Valid','Not Valid','Both I and II','Only Conclusion I','Only Conclusion II','Only Conclusion III','Neither I nor II','Only Assumption I','Only Assumption II','I and II only','I and III only','I and IV only','II and III only','II and IV only','III and IV only','I, II and III','I, II and IV','I, III and IV','II, III and IV','I, II, III and IV','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday','Statements are contradictory','North','South','East','West','North-East','North-West','South-East','South-West','At starting point','Starting point','0 km (same point)','Yes, both face West','49','40','27','36','52','RACE','FACE','PACE','LACE','8','5','11','3','rain','flood','crops','se','pe','qe','re','IBSE','JCTF','HBRD','BRU','CST','ARU','needs','brings','drives','YNV','ZOW','XMU','OHNF','PING','RJMG','PENCIL','ERASER','MARKER','saves','gives','takes','DHWHM','CHOIR','CRANE','MIN','MAX','MAN','July','June','August','May','74','64','84','54','48','72','and','but','or','for','1-1-8-8','2-2-7-7','1-2-8-7','◆','▲','●','■'];
+        let opts=[...unique];
+        for(const p of pool){if(opts.length>=4)break;if(!opts.includes(p))opts.push(p);}
+        return this._shuffleArray(opts.slice(0,4));
+    }
 
             if(template.options&&Array.isArray(template.options)){
                 const opts=[...template.options];

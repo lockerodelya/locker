@@ -321,6 +321,14 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
+                label: 'UPSC : Code-Decode',
+                options: [
+                    { value: 'upsc-code-level-1', text: '• Code-Decode L1' },
+					{ value: 'upsc-code-level-2', text: '• Code-Decode L2' },
+                    { value: 'upsc-code-level-3', text: '• Code-Decode L3' },
+                ]
+            },
+			{
                 label: 'UPSC : Direction Sense',
                 options: [
                     { value: 'upsc-direction-level-1', text: '• Direction Sense L1' },
