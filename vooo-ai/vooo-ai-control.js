@@ -75,7 +75,40 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-clock-level-1' : '/vooo-ai/vae-upsc-clock-level-1.js',
 	'upsc-clock-level-2' : '/vooo-ai/vae-upsc-clock-level-2.js',
 	'upsc-clock-level-3' : '/vooo-ai/vae-upsc-clock-level-3.js',
-	
+
+	'upsc-decision-level-1' : '/vooo-ai/vae-upscdecision-level-1.js',
+	'upsc-decision-level-2' : '/vooo-ai/vae-upscdecision-level-2.js',
+	'upsc-decision-level-3' : '/vooo-ai/vae-upscdecision-level-3.js',
+
+	'upsc-arguments-level-1' : '/vooo-ai/vae-upsc-arguments-level-1.js',
+	'upsc-arguments-level-2' : '/vooo-ai/vae-upsc-arguments-level-2.js',
+	'upsc-arguments-level-3' : '/vooo-ai/vae-upsc-arguments-level-3.js',
+
+	'upsc-blood-level-1' : '/vooo-ai/vae-upsc-blood-level-1.js',
+	'upsc-blood-level-2' : '/vooo-ai/vae-upsc-blood-level-2.js',
+	'upsc-blood-level-3' : '/vooo-ai/vae-upsc-blood-level-3.js',
+
+	'upsc-code-level-1' : '/vooo-ai/vae-upsc-code-level-1.js',
+	'upsc-code-level-2' : '/vooo-ai/vae-upsc-code-level-2.js',
+	'upsc-code-level-3' : '/vooo-ai/vae-upsc-code-level-3.js',
+
+	'upsc-direction-level-1' : '/vooo-ai/vae-upsc-direction-level-1.js',
+	'upsc-direction-level-2' : '/vooo-ai/vae-upsc-direction-level-2.js',
+	'upsc-direction-level-3' : '/vooo-ai/vae-upsc-direction-level-3.js',
+
+	'upsc-ranktime-level-1' : '/vooo-ai/vae-upsc-ranktime-level-1.js',
+	'upsc-ranktime-level-2' : '/vooo-ai/vae-upsc-ranktime-level-2.js',
+	'upsc-ranktime-level-3' : '/vooo-ai/vae-upsc-ranktime-level-3.js',
+
+	'upsc-statement-level-1' : '/vooo-ai/vae-upsc-statement-level-1.js',
+	'upsc-statement-level-2' : '/vooo-ai/vae-upsc-statement-level-2.js',
+	'upsc-statement-level-3' : '/vooo-ai/vae-upsc-statement-level-3.js',
+
+	'upsc-syllogisms-level-1' : '/vooo-ai/vae-upsc-syllogisms-level-1.js',
+	'upsc-syllogisms-level-2' : '/vooo-ai/vae-upsc-syllogisms-level-2.js',
+	'upsc-syllogisms-level-3' : '/vooo-ai/vae-upsc-syllogisms-level-3.js',
+
+		
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
 
@@ -277,9 +310,7 @@ const VOOO_ENGINE_INSTANCES = {
 					{ value: 'upsc-compar-level-1', text: '• Complex Arrangement L1' },
 					{ value: 'upsc-compar-level-1', text: '• Complex Arrangement L2' },
                     { value: 'upsc-compar-level-1', text: '• Complex Arrangement L3' },
-
-
-                ]
+                		]
             },
 			{
                 label: 'UPSC : Clock & Calendar',
@@ -289,70 +320,7 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'upsc-clock-level-3', text: '• Clock & Calendar L3' },
                 ]
             },
-			{
-                label: 'UPSC : Decision Making',
-                options: [
-                    { value: 'upsc-decision-level-1', text: '• Decision Making L1' },
-					{ value: 'upsc-decision-level-2', text: '• Decision Making L2' },
-                    { value: 'upsc-decision-level-3', text: '• Decision Making L3' },
-                ]
-            },
-			{
-                label: 'UPSC : Arguments & Conclusions',
-                options: [
-                    { value: 'upsc-arguments-level-1', text: '• Arguments & Conclusions L1' },
-					{ value: 'upsc-arguments-level-2', text: '• Arguments & Conclusions L2' },
-                    { value: 'upsc-arguments-level-3', text: '• Arguments & Conclusions L3' },
-                ]
-            },
-			{
-                label: 'UPSC : Blood Relations',
-                options: [
-                    { value: 'upsc-blood-level-1', text: '• Blood Relations L1' },
-					{ value: 'upsc-blood-level-2', text: '• Blood Relations L2' },
-                    { value: 'upsc-blood-level-3', text: '• Blood Relations L3' },
-                ]
-            },
-			{
-                label: 'UPSC : Code-Decode',
-                options: [
-                    { value: 'upsc-code-level-1', text: '• Code-Decode L1' },
-					{ value: 'upsc-code-level-2', text: '• Code-Decode L2' },
-                    { value: 'upsc-code-level-3', text: '• Code-Decode L3' },
-                ]
-            },
-			{
-                label: 'UPSC : Direction Sense',
-                options: [
-                    { value: 'upsc-direction-level-1', text: '• Direction Sense L1' },
-					{ value: 'upsc-direction-level-2', text: '• Direction Sense L2' },
-                    { value: 'upsc-direction-level-3', text: '• Direction Sense L3' },
-                ]
-            },
-			{
-                label: 'UPSC : Ranking & Time Sequence',
-                options: [
-                    { value: 'upsc-ranktime-level-1', text: '• Ranking & Time Seq. L1' },
-					{ value: 'upsc-ranktime-level-2', text: '• Ranking & Time Seq. L2' },
-                    { value: 'upsc-ranktime-level-3', text: '• Ranking & Time Seq. L3' },
-                ]
-            },
-			{
-                label: 'UPSC : Statement & Assumptions',
-                options: [
-                    { value: 'upsc-statement-level-1', text: '• Statement & Assumptions L1' },
-					{ value: 'upsc-statement-level-2', text: '• Statement & Assumptions L2' },
-                    { value: 'upsc-statement-level-3', text: '• Statement & Assumptions L3' },
-                ]
-            },
-			{
-                label: 'UPSC : Syllogisms',
-                options: [
-                    { value: 'upsc-syllogisms-level-1', text: '• Syllogisms L1' },
-					{ value: 'upsc-syllogisms-level-2', text: '• Syllogisms L2' },
-                    { value: 'upsc-syllogisms-level-3', text: '• Syllogisms L3' },
-                ]
-            },
+
 
             // --- ADD NEW OPTGROUP BELOW THIS LINE ---
         ];
