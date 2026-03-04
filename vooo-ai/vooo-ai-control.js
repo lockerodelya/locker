@@ -76,38 +76,6 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-clock-level-2' : '/vooo-ai/vae-upsc-clock-level-2.js',
 	'upsc-clock-level-3' : '/vooo-ai/vae-upsc-clock-level-3.js',
 	
-'upsc-decision-level-1' : 
-'upsc-decision-level-2' : 
-'upsc-decision-level-3' : 
-
-	'upsc-arguments-level-1' : '/vooo-ai/vae-upsc-arguments-level-1.js',
-	'upsc-arguments-level-2' : '/vooo-ai/vae-upsc-arguments-level-2.js',
-	'upsc-arguments-level-3' : '/vooo-ai/vae-upsc-arguments-level-3.js',
-
-	'upsc-blood-level-1' : '/vooo-ai/vae-upsc-blood-level-1.js',
-	'upsc-blood-level-2' : '/vooo-ai/vae-upsc-blood-level-2.js',
-	'upsc-blood-level-3' : '/vooo-ai/vae-upsc-blood-level-3.js',
-
-	'upsc-code-level-1' : '/vooo-ai/vae-upsc-code-level-1.js',
-	'upsc-code-level-2' : '/vooo-ai/vae-upsc-code-level-2.js',
-	'upsc-code-level-3' : '/vooo-ai/vae-upsc-code-level-3.js',
-
-	'upsc-direction-level-1' : '/vooo-ai/vae-upsc-direction-level-1.js',
-	'upsc-direction-level-2' : '/vooo-ai/vae-upsc-direction-level-2.js',
-	'upsc-direction-level-3' : '/vooo-ai/vae-upsc-direction-level-3.js',
-
-	'upsc-ranktime-level-1' : '/vooo-ai/vae-upsc-ranktime-level-1.js',
-	'upsc-ranktime-level-2' : '/vooo-ai/vae-upsc-ranktime-level-2.js',
-	'upsc-ranktime-level-3' : '/vooo-ai/vae-upsc-ranktime-level-3.js',
-
-	'upsc-statement-level-1' : '/vooo-ai/vae-upsc-statement-level-1.js',
-	'upsc-statement-level-2' : '/vooo-ai/vae-upsc-statement-level-2.js',
-	'upsc-statement-level-3' : '/vooo-ai/vae-upsc-statement-level-3.js',
-
-	'upsc-syllogisms-level-1' : '/vooo-ai/vae-upsc-syllogisms-level-1.js',
-	'upsc-syllogisms-level-2' : '/vooo-ai/vae-upsc-syllogisms-level-2.js',
-	'upsc-syllogisms-level-3' : '/vooo-ai/vae-upsc-syllogisms-level-3.js',
-	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
 
