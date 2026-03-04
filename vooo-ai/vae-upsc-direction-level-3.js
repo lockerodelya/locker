@@ -6,9 +6,9 @@
 // ⭐⭐⭐ EDIT ONLY THESE 3 LINES FOR A NEW ENGINE ⭐⭐⭐
 // ============================================
 
-const _ENGINE_JSON_FILE     = 'upsc-code-level-3.json';       // ⭐ Line 1: Your JSON filename
-const _ENGINE_CATEGORY_KEY  = 'upsc-code-level-3';            // ⭐ Line 2: Category key (must match dropdown value in HTML)
-const _ENGINE_INSTANCE_NAME = 'vaeupsccodel3';               // ⭐ Line 3: Unique global variable name for this engine
+const _ENGINE_JSON_FILE     = 'upsc-direction-level-3.json';       // ⭐ Line 1: Your JSON filename
+const _ENGINE_CATEGORY_KEY  = 'upsc-direction-level-3';            // ⭐ Line 2: Category key (must match dropdown value in HTML)
+const _ENGINE_INSTANCE_NAME = 'vaeupscdirectionl3';               // ⭐ Line 3: Unique global variable name for this engine
 
 // ============================================
 // ✋ DO NOT EDIT ANYTHING BELOW THIS LINE
