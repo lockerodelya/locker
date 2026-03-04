@@ -321,6 +321,14 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
+                label: 'UPSC : Direction Sense',
+                options: [
+                    { value: 'upsc-direction-level-1', text: '• Direction Sense L1' },
+					{ value: 'upsc-direction-level-2', text: '• Direction Sense L2' },
+                    { value: 'upsc-direction-level-3', text: '• Direction Sense L3' },
+                ]
+            },
+			{
                 label: 'UPSC : Ranking & Time Secquence',
                 options: [
                     { value: 'upsc-ranktime-level-1', text: '• Ranking & Time Seq. L1' },
