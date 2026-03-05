@@ -1671,6 +1671,8 @@ function selectAnswer(selectedIndex) {
 }
 
 async function nextPuzzle() {
+    if (!window.voooEngine) return;
+
     // Allow first puzzle on page load (no user check), block subsequent ones
     if (window._voooFirstLoad) {
         window._voooFirstLoad = false;
@@ -1680,7 +1682,7 @@ async function nextPuzzle() {
     }
     // Gate: must be logged in
     if (!currentVoooUser) {
-        showLimitModal('Get Free 30 MCQs Per Day!', 'Sign up or login to practice unlimited MCQs daily.');
+        showLimitModal('Get Free 30 MCQs Per Day!');
         return;
     }
     const puzzle = window.voooEngine.generateNewPuzzle();
