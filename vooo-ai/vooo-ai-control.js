@@ -399,8 +399,12 @@ function applyVoooLimitGuard() {
 
     window.voooEngine.generateNewPuzzle = function () {
 
-        // ---- GUEST CHECK ----
+// ---- GUEST CHECK ----
         if (!currentVoooUser) {
+            if (window._voooFirstLoad) {
+                window._voooFirstLoad = false;
+                return originalGenerate();
+            }
             showLimitModal(
                 'Free Sign Up',
                 'Get free 30 MCQs per day !'
@@ -485,13 +489,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (window.voooEngine) {
             applyVoooLimitGuard();
 
-            // If no user logged in, clear the puzzle area
-            if (!currentVoooUser) {
-                showLimitModal(
-                    'Free Sign Up',
-                    'Get free 30 MCQs per day !'
-                );
-            }
+
         }
     }, 800);
 });
