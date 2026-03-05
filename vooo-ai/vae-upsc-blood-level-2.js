@@ -457,7 +457,12 @@ calculateAnswer(template, variables) {
         // OPTIONS GENERATION
         // ════════════════════════════════════════════
 generateOptions(correctAnswer,template,variables){
-    // ✅ answer_label: use unique labels as options
+    if(template.options && Array.isArray(template.options)){
+        const opts = [...template.options];
+        const correctStr = String(correctAnswer);
+        if(!opts.map(o=>String(o)).includes(correctStr)) opts[0] = correctAnswer;
+        return this._shuffleArray(opts);
+    }
     if(template.options_builder){
                 try{
                     const opts=this.evaluateExpression(template.options_builder,variables);
