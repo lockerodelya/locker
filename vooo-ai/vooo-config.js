@@ -65,19 +65,7 @@ const VOOO_CONFIG = {
     // ============================================
     payment: {
         // 'razorpay'  = Razorpay live payments (current mode)
-        // 'qr_manual' = Manual QR code payments
-        // 'cashfree'  = Cashfree gateway
         mode: 'razorpay',   // ⭐ CURRENT MODE
-
-        // QR Code Payment Settings (backup / manual mode)
-        qr_manual: {
-            enabled: false,
-            qr_image_path: '/vooo-ai/assets/sbiqr.jpg',
-            upi_id: '9874295005@sbi',
-            contact_phone: '+91-9674130001',
-            contact_whatsapp: '+91-9674130001',
-            payment_instructions: 'Scan QR code, pay exact amount, then call/WhatsApp us with screenshot'
-        },
 
         // Razorpay Settings — LIVE MODE
         razorpay: {
@@ -86,14 +74,7 @@ const VOOO_CONFIG = {
             key_secret: '',                        // Never put secret in frontend
             webhook_secret: ''
         },
-
-        // Cashfree Settings (backup gateway)
-        cashfree: {
-            enabled: false,
-            app_id: '',
-            secret_key: ''
-        }
-    },
+     },
 
 
     // ============================================
@@ -124,17 +105,6 @@ const VOOO_CONFIG = {
         business_hours: '9 AM - 8 PM IST',
         timezone:       'Asia/Kolkata'
     },
-
-
-    // ============================================
-    // SECURITY QUESTIONS
-    // ============================================
-    securityQuestions: [
-        'In which city were you born?',
-        'What is your favourite subject?',
-        'Which color do you like most?'
-    ],
-
 
     // ============================================
     // GAMIFICATION SETTINGS
