@@ -483,13 +483,3 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 200);
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    setTimeout(function () {
-        // Guard on first page load
-        if (window.voooEngine) {
-            applyVoooLimitGuard();
-
-
-        }
-    }, 800);
-});
