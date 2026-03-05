@@ -1598,6 +1598,7 @@ async function _activateEngine(categoryKey) {
 // ============================================================
 
 async function initVOOOGame() {
+    window._voooFirstLoad = true;
     const defaultCategory = 'basic-math-level-1';
     const success = await _activateEngine(defaultCategory);
     if (!success) {
@@ -1670,6 +1671,18 @@ function selectAnswer(selectedIndex) {
 }
 
 async function nextPuzzle() {
+    // Allow first puzzle on page load (no user check), block subsequent ones
+    if (window._voooFirstLoad) {
+        window._voooFirstLoad = false;
+        const puzzle = window.voooEngine.generateNewPuzzle();
+        if (puzzle) updatePuzzleDisplay(puzzle);
+        return;
+    }
+    // Gate: must be logged in
+    if (!currentVoooUser) {
+        showLimitModal('Get Free 30 MCQs Per Day!', 'Sign up or login to practice unlimited MCQs daily.');
+        return;
+    }
     const puzzle = window.voooEngine.generateNewPuzzle();
     if (puzzle) updatePuzzleDisplay(puzzle);
 }
