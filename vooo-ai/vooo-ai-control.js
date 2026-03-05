@@ -321,6 +321,14 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
+                label: 'UPSC : Blood Relations',
+                options: [
+                    { value: 'upsc-blood-level-1', text: '• Blood Relations L1' },
+					{ value: 'upsc-blood-level-2', text: '• Blood Relations L2' },
+                    { value: 'upsc-blood-level-3', text: '• Blood Relations L3' },
+                ]
+            },
+			{
                 label: 'UPSC : Code-Decode',
                 options: [
                     { value: 'upsc-code-level-1', text: '• Code-Decode L1' },
