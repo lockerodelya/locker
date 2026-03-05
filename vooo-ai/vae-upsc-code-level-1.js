@@ -689,6 +689,7 @@ generateOptions(correctAnswer,template,variables){
             for(const template of templates){
                 if(!this.isTemplateComputable(template))continue;
                 const rawVars=this.generateVariables(template.variables,template.constraints||[]);
+				if(template.rows)Object.assign(rawVars,this._pickRow(template));
                 const variables=this.computeDerivedVariables(template,rawVars);
                 const answer=this.calculateAnswer(template,variables);
                 if(answer===null||answer===undefined)continue;
@@ -731,16 +732,18 @@ generateOptions(correctAnswer,template,variables){
         getStats(){
             return{score:this.score,totalAttempts:this.totalAttempts,accuracy:this.totalAttempts>0?Math.round((this.score/this.totalAttempts)*100):0,currentCategory:this.categoryKey};
         }
-        resetScore(){this.score=0;this.totalAttempts=0;}
-        _shuffleArray(array){const s=[...array];for(let i=s.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[s[i],s[j]]=[s[j],s[i]];}return s;}
-    }
-	
 _pickRow(template) {
     const rows = template.rows;
     if (!rows || !rows.length) return {};
     const idx = Math.floor(Math.random() * rows.length);
     return { ...rows[idx] };
-}	
+}
+
+        resetScore(){this.score=0;this.totalAttempts=0;}
+        _shuffleArray(array){const s=[...array];for(let i=s.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[s[i],s[j]]=[s[j],s[i]];}return s;}
+    }
+	
+	
 
     // ════════════════════════════════════════════
     // REGISTER ENGINE ON WINDOW
