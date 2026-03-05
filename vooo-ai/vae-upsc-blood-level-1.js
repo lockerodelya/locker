@@ -216,12 +216,16 @@ const _ENGINE_INSTANCE_NAME = 'vaeupscbloodl1';               // ⭐ Line 3: Uni
 
 isTemplateComputable(template){
     // ✅ answer_label templates are always computable
-    if(template.answer_label&&Array.isArray(template.answer_label))return true;
-    if(!template.calculation)return false;
-    const c=template.calculation.trim();
-    if(c===''||c==='null')return false;
-    if(/^[A-Z][A-Z0-9_]*$/.test(c))return true;
-    if(this.isPlainText(c))return false;
+    if(template.answer_label && Array.isArray(template.answer_label)) return true;
+    
+    // ✅ templates with rows are always computable (ANS is injected)
+    if(template.rows && Array.isArray(template.rows)) return true;
+    
+    if(!template.calculation) return false;
+    const c = template.calculation.trim();
+    if(c === '' || c === 'null') return false;
+    if(/^[A-Z][A-Z0-9_]*$/.test(c)) return true;
+    if(this.isPlainText(c)) return false;
     return true;
 }
 
