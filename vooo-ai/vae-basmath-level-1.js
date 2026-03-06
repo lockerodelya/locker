@@ -304,14 +304,14 @@ const _ENGINE_INSTANCE_NAME = 'vaebasmathl1';               // ⭐ Line 3: Uniqu
         // ════════════════════════════════════════════
         // EXPRESSION EVALUATOR
         // ════════════════════════════════════════════
-        evaluateBracketExpression(expr,variables){
+evaluateBracketExpression(expr,variables){
             let e=expr;
             e=e.replace(/×/g,'*').replace(/÷/g,'/');
             if(/[\+\-\*\^%]/.test(e)&&!/[?:'"]/.test(e))
                 e=e.replace(/(\d)([A-Za-z_][A-Za-z0-9_]*)/g,'$1*$2');
-            for(const[k,v]of Object.entries(variables))
+            for(const[k,v]of Object.entries(variables).sort((a,b)=>b[0].length-a[0].length))
                 if(typeof v==='string'&&isNaN(v))e=e.replace(new RegExp('\\b'+k+'\\b','g'),'"'+v+'"');
-            for(const[k,v]of Object.entries(variables))
+            for(const[k,v]of Object.entries(variables).sort((a,b)=>b[0].length-a[0].length))
                 if(typeof v!=='string'||!isNaN(v))e=e.replace(new RegExp('\\b'+k+'\\b','g'),'('+v+')');
             e=this.applyMathFunctions(e);
             try{
