@@ -26,27 +26,27 @@ const VOOO_CONFIG = {
     pricing: {
         plans: {
             '1month': {
-                amount:       200,          // ⭐ Change plan price here
+                amount:       120,          // ⭐ Change plan price here
                 duration_days: 30,          // ⭐ Change plan duration here
                 display_name: '1 Month'
             },
             '3month': {
-                amount:       550,          // ⭐ Change plan price here
+                amount:       350,          // ⭐ Change plan price here
                 duration_days: 90,          // ⭐ Change plan duration here
                 display_name: '3 Months',
                 badge: 'MOST POPULAR'
             },
             '6month': {
-                amount:       1000,         // ⭐ Change plan price here
+                amount:       700,         // ⭐ Change plan price here
                 duration_days: 180,         // ⭐ Change plan duration here
                 display_name: '6 Months',
                 badge: 'BEST VALUE'
             },
             '1year': {
-                amount:       1800,         // ⭐ Change plan price here
+                amount:       1200,         // ⭐ Change plan price here
                 duration_days: 365,         // ⭐ Change plan duration here
                 display_name: '1 Year',
-                savings: 'Save ₹600!'
+                savings: 'Save ₹240!'
             }
         },
 
