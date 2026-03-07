@@ -247,7 +247,17 @@
         </div>
     </div>
 
-    <script src="vooo-config.js"></script>
+    <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="/vooo-ai/vooo-config.js"></script>
+<script>
+    if (!firebase.apps.length) {
+        firebase.initializeApp(VOOO_CONFIG.firebase);
+    }
+</script>
+
+<script src="/vooo-ai/vooo-pagetracker.js"></script>
     <script>
         // ====== DETECT EXISTING USER (coming from dashboard Buy Plan button) ======
         const urlParams  = new URLSearchParams(window.location.search);
@@ -314,7 +324,5 @@
         });
     </script>
     
-    <script src="/vooo-ai/vooo-pagetracker.js"></script>
-
 </body>
 </html>
