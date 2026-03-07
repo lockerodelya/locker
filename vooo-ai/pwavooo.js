@@ -1,699 +1,350 @@
-// pwavooo.js - Vooo AI PWA Installer
-// Version: 5.7 - Vooo AI Customized
-// Clean version - uses main sw.js from root
+// ============================================
+// VOOO AI PWA INSTALLER — Clean & Reliable
+// Version: 6.0
+// ============================================
 
-class VoooPWAInstaller {
-    constructor() {
-        this.deferredPrompt = null;
-        this.installButton = null;
-        this.hasShownPrompt = false;
-        this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        this.isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-        this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        this.initialDelay = 6000; // 6 seconds for first time
-        this.reminderInterval = 5 * 60 * 1000; // 5 minutes
-        this.reminderTimer = null;
-        this.maxAttempts = 10; // Max reminders per session
-        this.attemptCount = 0;
-        this.init();
+(function () {
+
+    // ── Config ──
+    const SHOW_DELAY_MS      = 6000;   // Show button 6 seconds after page load
+    const AUTO_HIDE_MS       = 30000;  // Auto-hide button after 30 seconds
+    const DECLINED_WAIT_MS   = 5 * 60 * 1000; // Wait 5 min after user closes
+
+    // ── State ──
+    let deferredPrompt  = null;  // Holds the browser install event
+    let buttonVisible   = false; // Is the install button currently showing?
+    let installButton   = null;  // Reference to the DOM button
+
+    const isIOS    = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+    // ── Already installed? Do nothing ──
+    function isInstalled() {
+        return window.matchMedia('(display-mode: standalone)').matches ||
+               navigator.standalone === true ||
+               localStorage.getItem('vooo_pwa_installed') === 'true';
     }
 
-    init() {
-        // Check if PWA is already installed
-        if (this.isPWAInstalled()) return;
-        
-        // Listen for beforeinstallprompt event
-        window.addEventListener('beforeinstallprompt', (e) => {
-            console.log('Vooo AI PWA: Install prompt available');
-            e.preventDefault();
-            this.deferredPrompt = e;
-            
-            // Show button after delay
-            this.scheduleInitialPrompt();
-        });
+    // ── Can we show the button right now? ──
+    function canShow() {
+        if (isInstalled()) return false;
+        if (buttonVisible)  return false;
 
-        // Listen for app installed
-        window.addEventListener('appinstalled', () => {
-            console.log('Vooo AI PWA: App installed successfully');
-            localStorage.setItem('pwa_installed', 'true');
-            this.clearReminderTimer();
-            this.hideInstallButton();
-        });
+        const lastDeclined = localStorage.getItem('vooo_pwa_declined');
+        if (lastDeclined) {
+            const elapsed = Date.now() - parseInt(lastDeclined);
+            if (elapsed < DECLINED_WAIT_MS) return false;
+        }
+        return true;
+    }
 
-        // Check if already standalone
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            localStorage.setItem('pwa_installed', 'true');
-            this.clearReminderTimer();
+    // ════════════════════════════════════════
+    // CAPTURE THE INSTALL PROMPT
+    // This is the KEY event — must be captured before calling prompt()
+    // ════════════════════════════════════════
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();                // Stop browser's default mini-infobar
+        deferredPrompt = e;                // Save it — this is what makes Install work
+        console.log('✅ Vooo PWA: Install prompt captured');
+
+        // Schedule showing the button
+        setTimeout(() => {
+            if (canShow()) showInstallButton();
+        }, SHOW_DELAY_MS);
+    });
+
+    // ── App installed successfully ──
+    window.addEventListener('appinstalled', () => {
+        console.log('✅ Vooo PWA: Installed successfully');
+        localStorage.setItem('vooo_pwa_installed', 'true');
+        hideInstallButton();
+    });
+
+    // ── Standalone check on load ──
+    window.addEventListener('load', () => {
+        if (isInstalled()) {
+            console.log('✅ Vooo PWA: Already installed');
             return;
         }
-        
-        // Check if we should show reminder based on last declined time
-        this.checkReminderStatus();
-        
-        // For mobile devices, show custom prompt
-        if (this.isMobile && !this.deferredPrompt) {
-            console.log('Vooo AI PWA: Mobile device detected');
-            this.scheduleMobileReminder();
-        }
-    }
 
-    scheduleInitialPrompt() {
-        // Check if user has declined before
-        const lastDeclined = localStorage.getItem('vooo_pwa_declined');
-        
-        if (lastDeclined) {
-            // User declined before - check if 5 minutes have passed
-            const timeSinceDecline = Date.now() - parseInt(lastDeclined);
-            
-            if (timeSinceDecline >= this.reminderInterval) {
-                // 5 minutes have passed, show after 6 seconds
-                setTimeout(() => {
-                    if (!this.hasShownPrompt && !this.isPWAInstalled()) {
-                        this.showInstallButton();
-                    }
-                }, this.initialDelay);
-            } else {
-                // Wait for remaining time
-                const remainingTime = this.reminderInterval - timeSinceDecline;
-                console.log(`Vooo AI PWA: Remaining time until next reminder: ${Math.round(remainingTime/1000)} seconds`);
-                
-                this.reminderTimer = setTimeout(() => {
-                    if (!this.isPWAInstalled() && !this.hasShownPrompt) {
-                        this.showInstallButton();
-                    }
-                }, remainingTime);
-            }
-        } else {
-            // First time - show after 6 seconds
+        // iOS Safari — show manual instructions after delay (no beforeinstallprompt on iOS)
+        if (isIOS && isSafari && canShow()) {
             setTimeout(() => {
-                if (!this.hasShownPrompt && !this.isPWAInstalled()) {
-                    this.showInstallButton();
-                }
-            }, this.initialDelay);
+                if (canShow()) showIOSHint();
+            }, SHOW_DELAY_MS);
         }
-    }
+    });
 
-    scheduleMobileReminder() {
-        // For mobile devices that don't fire beforeinstallprompt reliably
-        const lastDeclined = localStorage.getItem('vooo_pwa_declined');
-        
-        if (lastDeclined) {
-            const timeSinceDecline = Date.now() - parseInt(lastDeclined);
-            
-            if (timeSinceDecline >= this.reminderInterval) {
-                // Show after 6 seconds
-                setTimeout(() => {
-                    if (!this.isPWAInstalled() && this.attemptCount < this.maxAttempts) {
-                        console.log('Vooo AI PWA: Mobile fallback reminder');
-                        this.showMobileInstallPrompt();
-                        this.attemptCount++;
-                    }
-                }, this.initialDelay);
-            }
-        } else {
-            // First time - show after 6 seconds
-            setTimeout(() => {
-                if (!this.isPWAInstalled() && this.attemptCount < this.maxAttempts) {
-                    console.log('Vooo AI PWA: Mobile fallback reminder');
-                    this.showMobileInstallPrompt();
-                    this.attemptCount++;
-                }
-            }, this.initialDelay);
-        }
-    }
+    // ════════════════════════════════════════
+    // SHOW INSTALL BUTTON
+    // ════════════════════════════════════════
+    function showInstallButton() {
+        if (!canShow()) return;
+        if (buttonVisible)  return;
 
-    isPWAInstalled() {
-        // Check multiple indicators
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-        const isInstalled = localStorage.getItem('pwa_installed') === 'true';
-        
-        if (isStandalone || isInstalled) {
-            console.log('Vooo AI PWA: Already installed or in standalone mode');
-            this.clearReminderTimer();
-            return true;
-        }
-        
-        return false;
-    }
+        buttonVisible   = true;
+        installButton   = document.createElement('div');
 
-    checkReminderStatus() {
-        const lastDeclined = localStorage.getItem('vooo_pwa_declined');
-        if (lastDeclined) {
-            const timeSince = Date.now() - parseInt(lastDeclined);
-            
-            // If 5 minutes have passed since last decline, show reminder
-            if (timeSince >= this.reminderInterval) {
-                console.log('Vooo AI PWA: 5 minutes passed, showing reminder');
-                this.scheduleReminder();
-            } else {
-                // Schedule reminder for when 5 minutes are complete
-                const timeRemaining = this.reminderInterval - timeSince;
-                console.log(`Vooo AI PWA: Remaining time until next reminder: ${Math.round(timeRemaining/1000)} seconds`);
-                
-                this.reminderTimer = setTimeout(() => {
-                    this.showReminder();
-                }, timeRemaining);
-            }
-        } else {
-            // No previous decline, schedule first reminder after 6 seconds
-            this.scheduleReminder();
-        }
-    }
-
-    scheduleReminder() {
-        // Clear any existing timer
-        this.clearReminderTimer();
-        
-        // Schedule reminder after 5 minutes
-        this.reminderTimer = setTimeout(() => {
-            this.showReminder();
-        }, this.reminderInterval);
-        
-        console.log('Vooo AI PWA: Next reminder scheduled in 5 minutes');
-    }
-
-    showReminder() {
-        if (this.isPWAInstalled() || this.hasShownPrompt) return;
-        
-        console.log('Vooo AI PWA: Showing reminder');
-        
-        // For Android/Chrome, show install button
-        if (!this.isIOS && !this.isSafari && this.deferredPrompt) {
-            this.showInstallButton();
-        }
-        // For iOS Safari, show custom hint
-        else if (this.isIOS && this.isSafari) {
-            this.showIOSInstallHint();
-        }
-        // For other browsers
-        else {
-            this.showInstallButton();
-        }
-        
-        // Schedule next reminder
-        this.scheduleReminder();
-    }
-
-    clearReminderTimer() {
-        if (this.reminderTimer) {
-            clearTimeout(this.reminderTimer);
-            this.reminderTimer = null;
-        }
-    }
-
-    showInstallButton() {
-        if (this.isPWAInstalled() || this.hasShownPrompt || this.installButton) return;
-        
-        // Create the button - VOOO AI VERSION
-        this.installButton = document.createElement('button');
-        this.installButton.id = 'vooo-pwa-install-btn';
-        this.installButton.innerHTML = `
-            <i class="fas fa-download" style="margin-right: 8px;"></i> 
-            Install Vooo AI
+        installButton.id        = 'vooo-pwa-btn-wrapper';
+        installButton.innerHTML = `
+            <button id="vooo-pwa-install" title="Install Vooo AI App">
+                ⬇ Install Vooo AI
+            </button>
+            <button id="vooo-pwa-close" title="Close">✕</button>
         `;
-        
-        // Common styling for both mobile and desktop - CENTERED
-        let styles = `
+
+        // Styles
+        installButton.style.cssText = `
             position: fixed;
-            background: linear-gradient(135deg, #0D47A1, #4361ee);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            padding: 16px 30px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(13, 71, 161, 0.4);
-            z-index: 9998;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            animation: voooSlideIn 0.5s ease;
-            /* ALWAYS CENTERED */
-            top: 50%;
+            bottom: 30px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            min-width: 250px;
-            text-align: center;
-            white-space: nowrap;
-            /* Add some responsive adjustments */
-            max-width: 90%;
-        `;
-        
-        // Add responsive font size
-        if (this.isMobile) {
-            styles += `
-                font-size: 1.1rem;
-                padding: 18px 32px;
-            `;
-        } else {
-            styles += `
-                font-size: 1.2rem;
-                padding: 20px 36px;
-            `;
-        }
-        
-        this.installButton.style.cssText = styles;
-        
-        // Add click handler
-        this.installButton.addEventListener('click', () => {
-            this.installPWA();
-        });
-        
-        // Add close button (small X in top-right corner)
-        const closeBtn = document.createElement('button');
-        closeBtn.innerHTML = '×';
-        closeBtn.style.cssText = `
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #ff4444;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 1.2rem;
-            cursor: pointer;
+            transform: translateX(-50%);
+            z-index: 99999;
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 0;
-            line-height: 1;
+            gap: 6px;
+            animation: voooFadeUp 0.4s ease;
         `;
-        
-        closeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.hideInstallButton();
-            localStorage.setItem('vooo_pwa_declined', Date.now());
-            this.scheduleReminder();
-        });
-        
-        this.installButton.appendChild(closeBtn);
-        
-        // Add to page
-        document.body.appendChild(this.installButton);
-        this.hasShownPrompt = true;
-        
-        // Auto-hide after 30 seconds
-        setTimeout(() => {
-            this.hideInstallButton();
-        }, 30000);
-    }
 
-    showMobileInstallPrompt() {
-        if (this.isPWAInstalled() || this.hasShownPrompt || this.installButton) return;
-        
-        this.installButton = document.createElement('button');
-        this.installButton.id = 'vooo-pwa-install-btn';
-        this.installButton.innerHTML = `
-            <i class="fas fa-download" style="margin-right: 8px;"></i> 
-            Install Vooo AI
-        `;
-        
-        let styles = `
-            position: fixed;
-            background: linear-gradient(135deg, #0D47A1, #4361ee);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            padding: 18px 32px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(13, 71, 161, 0.4);
-            z-index: 9998;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            animation: voooSlideIn 0.5s ease;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            min-width: 250px;
-            text-align: center;
-            white-space: nowrap;
-            max-width: 90%;
-        `;
-        
-        this.installButton.style.cssText = styles;
-        
-        // Different click handler for mobile fallback
-        this.installButton.addEventListener('click', () => {
-            if (this.deferredPrompt) {
-                this.installPWA();
-            } else {
-                // Show platform-specific instructions
-                if (this.isIOS) {
-                    this.showIOSInstallHint();
-                } else {
-                    this.showAndroidInstructions();
+        // Inject CSS once
+        if (!document.getElementById('vooo-pwa-style')) {
+            const style       = document.createElement('style');
+            style.id          = 'vooo-pwa-style';
+            style.textContent = `
+                @keyframes voooFadeUp {
+                    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                    to   { opacity: 1; transform: translateX(-50%) translateY(0);    }
                 }
-                this.hideInstallButton();
-            }
-        });
-        
-        // Add close button
-        const closeBtn = document.createElement('button');
-        closeBtn.innerHTML = '×';
-        closeBtn.style.cssText = `
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #ff4444;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            line-height: 1;
-        `;
-        
-        closeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.hideInstallButton();
-            localStorage.setItem('vooo_pwa_declined', Date.now());
-            this.scheduleReminder();
-        });
-        
-        this.installButton.appendChild(closeBtn);
-        document.body.appendChild(this.installButton);
-        this.hasShownPrompt = true;
-        
-        // Auto-hide after 30 seconds
-        setTimeout(() => {
-            this.hideInstallButton();
-        }, 30000);
-    }
-
-    hideInstallButton() {
-        if (this.installButton) {
-            this.installButton.style.opacity = '0';
-            setTimeout(() => {
-                if (this.installButton && this.installButton.parentNode) {
-                    this.installButton.parentNode.removeChild(this.installButton);
-                    this.installButton = null;
-                    this.hasShownPrompt = false;
+                #vooo-pwa-install {
+                    background: linear-gradient(135deg, #0D47A1, #4361ee);
+                    color: white;
+                    border: none;
+                    border-radius: 25px;
+                    padding: 14px 28px;
+                    font-size: 1rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                    box-shadow: 0 4px 20px rgba(13,71,161,0.45);
+                    white-space: nowrap;
+                    transition: transform 0.2s, box-shadow 0.2s;
                 }
-            }, 300);
+                #vooo-pwa-install:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 24px rgba(13,71,161,0.55);
+                }
+                #vooo-pwa-close {
+                    background: #c62828;
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    width: 28px;
+                    height: 28px;
+                    font-size: 0.9rem;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                    transition: background 0.2s;
+                }
+                #vooo-pwa-close:hover { background: #b71c1c; }
+            `;
+            document.head.appendChild(style);
         }
+
+        document.body.appendChild(installButton);
+
+        // ── Install click ──
+        document.getElementById('vooo-pwa-install').addEventListener('click', triggerInstall);
+
+        // ── Close click ──
+        document.getElementById('vooo-pwa-close').addEventListener('click', () => {
+            localStorage.setItem('vooo_pwa_declined', Date.now().toString());
+            hideInstallButton();
+        });
+
+        // ── Auto-hide after 30 seconds ──
+        setTimeout(() => {
+            if (buttonVisible) {
+                localStorage.setItem('vooo_pwa_declined', Date.now().toString());
+                hideInstallButton();
+            }
+        }, AUTO_HIDE_MS);
+
+        console.log('✅ Vooo PWA: Install button shown');
     }
 
-    async installPWA() {
-        if (!this.deferredPrompt) {
-            console.log('Vooo AI PWA: No install prompt available');
-            
-            // Show platform-specific instructions
-            if (this.isIOS && this.isSafari) {
-                this.showIOSInstallHint();
-            } else if (!this.isIOS) {
-                this.showAndroidInstructions();
-            } else {
-                this.showManualInstructions();
-            }
-            
-            this.hideInstallButton();
+    // ════════════════════════════════════════
+    // TRIGGER INSTALL
+    // ════════════════════════════════════════
+    async function triggerInstall() {
+        if (!deferredPrompt) {
+            // No prompt available — show manual instructions
+            console.warn('⚠️ Vooo PWA: No deferred prompt — showing manual instructions');
+            hideInstallButton();
+            showManualInstructions();
             return;
         }
 
         try {
-            this.deferredPrompt.prompt();
-            const { outcome } = await this.deferredPrompt.userChoice;
-            console.log(`Vooo AI PWA: User choice: ${outcome}`);
+            // Show browser's native install dialog
+            deferredPrompt.prompt();
+
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log('Vooo PWA: User choice:', outcome);
 
             if (outcome === 'accepted') {
-                console.log('Vooo AI PWA: User accepted the install prompt');
-                localStorage.setItem('pwa_installed', 'true');
-                this.clearReminderTimer();
+                localStorage.setItem('vooo_pwa_installed', 'true');
+                console.log('✅ Vooo PWA: User accepted install');
             } else {
-                console.log('Vooo AI PWA: User dismissed the install prompt');
-                localStorage.setItem('vooo_pwa_declined', Date.now());
-                this.scheduleReminder();
+                localStorage.setItem('vooo_pwa_declined', Date.now().toString());
+                console.log('ℹ️ Vooo PWA: User dismissed install');
             }
-
-            this.deferredPrompt = null;
-            this.hideInstallButton();
-        } catch (error) {
-            console.error('Vooo AI PWA: Error showing install prompt', error);
-            this.hideInstallButton();
+        } catch (err) {
+            console.error('❌ Vooo PWA: prompt() error:', err);
+            showManualInstructions();
+        } finally {
+            deferredPrompt = null; // Can only be used once
+            hideInstallButton();
         }
     }
 
-    showIOSInstallHint() {
-        const hint = document.createElement('div');
-        hint.id = 'vooo-ios-hint';
+    // ════════════════════════════════════════
+    // HIDE BUTTON
+    // ════════════════════════════════════════
+    function hideInstallButton() {
+        if (installButton && installButton.parentNode) {
+            installButton.style.opacity    = '0';
+            installButton.style.transition = 'opacity 0.3s';
+            setTimeout(() => {
+                if (installButton && installButton.parentNode) {
+                    installButton.parentNode.removeChild(installButton);
+                }
+                installButton = null;
+                buttonVisible = false;
+            }, 300);
+        } else {
+            installButton = null;
+            buttonVisible = false;
+        }
+    }
+
+    // ════════════════════════════════════════
+    // iOS HINT (Safari doesn't support beforeinstallprompt)
+    // ════════════════════════════════════════
+    function showIOSHint() {
+        if (!canShow()) return;
+
+        const hint    = document.createElement('div');
+        hint.id       = 'vooo-ios-hint';
         hint.innerHTML = `
             <div style="
-                background: linear-gradient(135deg, #0D47A1, #4361ee);
+                background: linear-gradient(135deg,#0D47A1,#4361ee);
                 color: white;
-                padding: 20px;
-                border-radius: 15px;
-                width: 280px;
+                padding: 22px 24px;
+                border-radius: 16px;
+                max-width: 300px;
                 text-align: center;
                 position: relative;
+                box-shadow: 0 8px 30px rgba(0,0,0,0.3);
             ">
-                <button id="close-vooo-ios-hint" style="
-                    position: absolute;
-                    top: -8px;
-                    right: -8px;
-                    background: #ff4444;
-                    color: white;
-                    border: none;
-                    border-radius: 50%;
-                    width: 24px;
-                    height: 24px;
-                    font-size: 1.2rem;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 0;
-                    line-height: 1;
-                ">×</button>
-                
-                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px;">
-                    <i class="fas fa-brain" style="font-size: 1.5rem;"></i>
-                    <strong style="font-size: 1.1rem;">Install Vooo AI</strong>
-                </div>
-                <div style="font-size: 0.9rem; margin-bottom: 15px;">
-                    <p style="margin: 0 0 10px 0;">1. Tap <i class="fas fa-share"></i> Share button</p>
-                    <p style="margin: 0 0 10px 0;">2. Select "Add to Home Screen"</p>
-                    <p style="margin: 0;">3. Tap "Add" to install</p>
-                </div>
+                <button id="vooo-ios-close" style="
+                    position:absolute; top:-8px; right:-8px;
+                    background:#c62828; color:white; border:none;
+                    border-radius:50%; width:26px; height:26px;
+                    font-size:1rem; cursor:pointer; line-height:1;
+                ">✕</button>
+                <div style="font-size:1.6rem; margin-bottom:10px;">📲</div>
+                <strong style="font-size:1.05rem; display:block; margin-bottom:12px;">Install Vooo AI</strong>
+                <p style="font-size:0.88rem; margin:0 0 8px; text-align:left;">1. Tap the <strong>Share</strong> button (↑) at the bottom</p>
+                <p style="font-size:0.88rem; margin:0 0 8px; text-align:left;">2. Scroll and tap <strong>"Add to Home Screen"</strong></p>
+                <p style="font-size:0.88rem; margin:0; text-align:left;">3. Tap <strong>"Add"</strong> to install</p>
             </div>
         `;
-        
+
         hint.style.cssText = `
             position: fixed;
-            top: 50%;
+            bottom: 30px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9997;
-            animation: voooSlideIn 0.5s ease;
+            transform: translateX(-50%);
+            z-index: 99999;
+            animation: voooFadeUp 0.4s ease;
         `;
-        
+
         document.body.appendChild(hint);
-        
-        document.getElementById('close-vooo-ios-hint').addEventListener('click', () => {
+
+        document.getElementById('vooo-ios-close').addEventListener('click', () => {
+            localStorage.setItem('vooo_pwa_declined', Date.now().toString());
             hint.style.opacity = '0';
-            setTimeout(() => {
-                if (hint.parentNode) hint.parentNode.removeChild(hint);
-            }, 300);
-            
-            localStorage.setItem('vooo_pwa_declined', Date.now());
-            this.scheduleReminder();
+            setTimeout(() => { if (hint.parentNode) hint.parentNode.removeChild(hint); }, 300);
         });
-        
+
+        // Auto-hide after 30 seconds
         setTimeout(() => {
             if (hint.parentNode) {
                 hint.style.opacity = '0';
-                setTimeout(() => {
-                    if (hint.parentNode) hint.parentNode.removeChild(hint);
-                    localStorage.setItem('vooo_pwa_declined', Date.now());
-                    this.scheduleReminder();
-                }, 300);
+                setTimeout(() => { if (hint.parentNode) hint.parentNode.removeChild(hint); }, 300);
+                localStorage.setItem('vooo_pwa_declined', Date.now().toString());
             }
-        }, 30000);
+        }, AUTO_HIDE_MS);
     }
 
-    showAndroidInstructions() {
-        const message = document.createElement('div');
-        message.innerHTML = `
+    // ════════════════════════════════════════
+    // MANUAL INSTRUCTIONS (Android Chrome fallback)
+    // ════════════════════════════════════════
+    function showManualInstructions() {
+        const box    = document.createElement('div');
+        box.id       = 'vooo-manual-hint';
+        box.innerHTML = `
             <div style="
-                background: linear-gradient(135deg, #0D47A1, #4361ee);
+                background: linear-gradient(135deg,#0D47A1,#4361ee);
                 color: white;
-                padding: 20px;
-                border-radius: 15px;
-                width: 280px;
+                padding: 22px 24px;
+                border-radius: 16px;
+                max-width: 300px;
                 text-align: center;
                 position: relative;
+                box-shadow: 0 8px 30px rgba(0,0,0,0.3);
             ">
-                <button id="close-vooo-android-hint" style="
-                    position: absolute;
-                    top: -8px;
-                    right: -8px;
-                    background: #ff4444;
-                    color: white;
-                    border: none;
-                    border-radius: 50%;
-                    width: 24px;
-                    height: 24px;
-                    font-size: 1.2rem;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 0;
-                    line-height: 1;
-                ">×</button>
-                
-                <i class="fas fa-brain" style="font-size: 1.5rem; margin-bottom: 10px;"></i>
-                <strong style="display: block; margin-bottom: 10px;">Install Vooo AI</strong>
-                <p style="margin: 0 0 10px 0; font-size: 0.9rem; text-align: left;">
-                    1. Tap Chrome menu (⋮) in top-right
-                </p>
-                <p style="margin: 0 0 10px 0; font-size: 0.9rem; text-align: left;">
-                    2. Select "Install app" or "Add to Home screen"
-                </p>
-                <p style="margin: 0; font-size: 0.9rem; text-align: left;">
-                    3. Follow the prompts to install
-                </p>
+                <button id="vooo-manual-close" style="
+                    position:absolute; top:-8px; right:-8px;
+                    background:#c62828; color:white; border:none;
+                    border-radius:50%; width:26px; height:26px;
+                    font-size:1rem; cursor:pointer; line-height:1;
+                ">✕</button>
+                <div style="font-size:1.6rem; margin-bottom:10px;">📲</div>
+                <strong style="font-size:1.05rem; display:block; margin-bottom:12px;">Install Vooo AI</strong>
+                <p style="font-size:0.88rem; margin:0 0 8px; text-align:left;">1. Tap the browser menu <strong>(⋮)</strong> top-right</p>
+                <p style="font-size:0.88rem; margin:0 0 8px; text-align:left;">2. Tap <strong>"Install App"</strong> or <strong>"Add to Home Screen"</strong></p>
+                <p style="font-size:0.88rem; margin:0; text-align:left;">3. Follow the prompts to install</p>
             </div>
         `;
-        
-        message.style.cssText = `
+
+        box.style.cssText = `
             position: fixed;
-            top: 50%;
+            bottom: 30px;
             left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            animation: voooSlideIn 0.3s ease;
+            transform: translateX(-50%);
+            z-index: 99999;
+            animation: voooFadeUp 0.4s ease;
         `;
-        
-        document.body.appendChild(message);
-        
-        document.getElementById('close-vooo-android-hint').addEventListener('click', () => {
-            message.style.opacity = '0';
-            setTimeout(() => {
-                if (message.parentNode) message.parentNode.removeChild(message);
-            }, 300);
+
+        document.body.appendChild(box);
+
+        document.getElementById('vooo-manual-close').addEventListener('click', () => {
+            box.style.opacity = '0';
+            setTimeout(() => { if (box.parentNode) box.parentNode.removeChild(box); }, 300);
         });
-        
+
         setTimeout(() => {
-            if (message.parentNode) {
-                message.style.opacity = '0';
-                setTimeout(() => {
-                    if (message.parentNode) message.parentNode.removeChild(message);
-                }, 300);
+            if (box.parentNode) {
+                box.style.opacity = '0';
+                setTimeout(() => { if (box.parentNode) box.parentNode.removeChild(box); }, 300);
             }
-        }, 10000);
+        }, 15000);
     }
 
-    showManualInstructions() {
-        const message = document.createElement('div');
-        message.innerHTML = `
-            <div style="
-                background: linear-gradient(135deg, #0D47A1, #4361ee);
-                color: white;
-                padding: 20px;
-                border-radius: 15px;
-                width: 250px;
-                text-align: center;
-                position: relative;
-            ">
-                <button id="close-vooo-manual-hint" style="
-                    position: absolute;
-                    top: -8px;
-                    right: -8px;
-                    background: #ff4444;
-                    color: white;
-                    border: none;
-                    border-radius: 50%;
-                    width: 24px;
-                    height: 24px;
-                    font-size: 1.2rem;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 0;
-                    line-height: 1;
-                ">×</button>
-                
-                <i class="fas fa-brain" style="font-size: 1.5rem; margin-bottom: 10px;"></i>
-                <p style="margin: 0; font-size: 0.9rem;">
-                    Use browser menu → "Install App"<br>or "Add to Home Screen"
-                </p>
-            </div>
-        `;
-        
-        message.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            animation: voooSlideIn 0.3s ease;
-        `;
-        
-        document.body.appendChild(message);
-        
-        document.getElementById('close-vooo-manual-hint').addEventListener('click', () => {
-            message.style.opacity = '0';
-            setTimeout(() => {
-                if (message.parentNode) message.parentNode.removeChild(message);
-                localStorage.setItem('vooo_pwa_declined', Date.now());
-                this.scheduleReminder();
-            }, 300);
-        });
-        
-        setTimeout(() => {
-            if (message.parentNode) {
-                message.style.opacity = '0';
-                setTimeout(() => {
-                    if (message.parentNode) message.parentNode.removeChild(message);
-                    localStorage.setItem('vooo_pwa_declined', Date.now());
-                    this.scheduleReminder();
-                }, 300);
-            }
-        }, 5000);
-    }
-}
+    console.log('✅ Vooo PWA installer ready');
 
-// Add Vooo AI specific CSS animations
-if (!document.querySelector('#vooo-pwa-styles')) {
-    const style = document.createElement('style');
-    style.id = 'vooo-pwa-styles';
-    style.textContent = `
-        @keyframes voooSlideIn {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -40%);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
-        }
-        
-        #vooo-pwa-install-btn:hover {
-            transform: translate(-50%, -50%) scale(1.05) !important;
-            box-shadow: 0 6px 25px rgba(13, 71, 161, 0.5) !important;
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-// Initialize Vooo AI PWA
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Vooo AI PWA installer initialized');
-    new VoooPWAInstaller();
-});
+})();
