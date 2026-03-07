@@ -13,6 +13,7 @@ const VOOO_CONFIG = {
     // Example: 2 means 2%, 2.5 means 2.5%, 1.8 means 1.8%
     // ============================================
     gateway_fee_percent: 2,   // ⭐ CHANGE THIS IF RAZORPAY RATE CHANGES
+	free_daily_limit: 30,     // ⭐ CHANGE THIS TO SET FREE USER DAILY MCQ LIMIT
 
 
     // ============================================
@@ -137,7 +138,7 @@ const VOOO_CONFIG = {
             message: 'You\'re dedicated! Students like you improve 3x faster with unlimited practice. Try 1 month for ₹200?'
         },
         limit_reached: {
-            trigger: (stats) => stats.daily_usage >= 30,
+            trigger: (stats) => stats.daily_usage >= VOOO_CONFIG.free_daily_limit,
             message: 'You\'re on fire today! 🔥 Don\'t let daily limits slow you down. Continue learning?'
         },
         category_explorer: {
