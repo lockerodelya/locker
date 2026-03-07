@@ -290,12 +290,19 @@
         const planName   = urlParams.get('name');
         const planAmount = urlParams.get('amount');
 
-        // Show plan banner if coming from pricing page
+        // FIX: Always clear old plan data from localStorage on page load.
+        // This prevents leftover plan data from a previous session
+        // from accidentally redirecting free-signup users to payment.
+        localStorage.removeItem('vooo_plan_key');
+        localStorage.removeItem('vooo_plan_name');
+        localStorage.removeItem('vooo_plan_amount');
+
+        // Only show plan banner AND save plan info if URL params are present in THIS session
         if (planKey && planAmount) {
             document.getElementById('plan-banner').style.display = 'block';
             document.getElementById('banner-amount').textContent = 'INR ' + planAmount;
 
-            // Save plan info to localStorage immediately
+            // Save plan info to localStorage for use after signup
             localStorage.setItem('vooo_plan_key',    planKey);
             localStorage.setItem('vooo_plan_name',   planName);
             localStorage.setItem('vooo_plan_amount', planAmount);
@@ -446,7 +453,7 @@
                     }
                 });
 
-                // ====== SAVE USER INFO TO LOCALSTORAGE FOR PAYMENT PAGE ======
+                // Save user info to localStorage for payment page (if needed)
                 localStorage.setItem('vooo_uid',       user.uid);
                 localStorage.setItem('vooo_email',     email);
                 localStorage.setItem('vooo_fullname',  fullname);
@@ -454,25 +461,26 @@
                 // Sign out immediately (prevents browser password prompts)
                 await auth.signOut();
 
-                // Show success
-                successDiv.textContent   = '✓ User created successfully! Redirecting to payment...';
-                successDiv.style.display = 'block';
-                form.reset();
-
-                // ====== REDIRECT ======
-                setTimeout(() => {
-                    const storedPlan   = localStorage.getItem('vooo_plan_key');
-                    const storedAmount = localStorage.getItem('vooo_plan_amount');
-                    const storedName   = localStorage.getItem('vooo_plan_name');
-
-                    if (storedPlan && storedAmount) {
-                        // Go to payment page
-                        window.location.href = 'https://odelya.online/vooo-ai/vooonusrpy.html?plan=' + storedPlan + '&name=' + encodeURIComponent(storedName) + '&amount=' + storedAmount;
-                    } else {
-                        // No plan selected — go to main site
-                        window.location.href = 'https://odelya.online/vooo-ai';
-                    }
-                }, 1800);
+                // ====== REDIRECT LOGIC ======
+                // FIX: Use planKey from URL params (captured at page load), NOT from localStorage.
+                // This guarantees only users who arrived from the pricing page go to payment.
+                if (planKey && planAmount) {
+                    // Came from pricing page — go to payment
+                    successDiv.textContent   = '✓ Account created successfully! Redirecting to payment...';
+                    successDiv.style.display = 'block';
+                    form.reset();
+                    setTimeout(() => {
+                        window.location.href = 'https://odelya.online/vooo-ai/vooonusrpy.html?plan=' + planKey + '&name=' + encodeURIComponent(planName) + '&amount=' + planAmount;
+                    }, 1800);
+                } else {
+                    // Free signup — go to login page
+                    successDiv.textContent   = '✓ Account created successfully! Please login to continue.';
+                    successDiv.style.display = 'block';
+                    form.reset();
+                    setTimeout(() => {
+                        window.location.href = 'vooologin.html';
+                    }, 1800);
+                }
 
             } catch (error) {
                 console.error('Signup error:', error);
