@@ -1634,11 +1634,14 @@ async function nextPuzzle() {
         // - Returns true if allowed, false if limit reached
         // ============================================================
 // Check if user is allowed to see next MCQ (free limit check only)
+// ── Debounce flag — prevents rapid Next clicks firing multiple counts ──
+let _mcqWriteInProgress = false;
+
 async function checkMCQLimit() {
     try {
         if (!currentVoooUser) return false;
         const isPaid = userVoooData && userVoooData.tier === 'paid';
-        if (isPaid) return true; // paid users always allowed
+        if (isPaid) return true;
 
         const todayStr   = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
         const dailyData  = userVoooData ? (userVoooData.dailyUsage || {}) : {};
@@ -1656,35 +1659,53 @@ async function checkMCQLimit() {
         return true;
     } catch (err) {
         console.error('Limit check error:', err);
-        return true; // fail open
+        return true;
     }
 }
 
 // Write the count to Firestore (called from updatePuzzleDisplay)
 async function incrementMCQCount() {
     try {
+        if (!currentVoooUser) return;
+
+        // ── Block if a write is already in progress ──
+        if (_mcqWriteInProgress) return;
+        _mcqWriteInProgress = true;
+
         const uid      = currentVoooUser.uid;
         const userRef  = voooDb.collection('users').doc(uid);
         const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 
-        const dailyData  = userVoooData ? (userVoooData.dailyUsage || {}) : {};
-        const savedDate  = dailyData.date || '';
-        const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
+        // ── Firestore transaction — atomic read + write ──
+        await voooDb.runTransaction(async (transaction) => {
+            const userDoc    = await transaction.get(userRef);
+            if (!userDoc.exists) return;
 
-        await userRef.update({
-            'dailyUsage.date':    todayStr,
-            'dailyUsage.count':   savedCount + 1,
-            'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
+            const data       = userDoc.data();
+            const dailyData  = data.dailyUsage || {};
+            const savedDate  = dailyData.date  || '';
+            // If it's a new day, reset count to 0
+            const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
+            const newCount   = savedCount + 1;
+
+            transaction.update(userRef, {
+                'dailyUsage.date':    todayStr,
+                'dailyUsage.count':   newCount,
+                'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
+            });
+
+            // ── Keep local cache in sync with what was actually written ──
+            if (userVoooData) {
+                userVoooData.dailyUsage         = { date: todayStr, count: newCount };
+                userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
+            }
         });
 
-        // Keep local cache in sync
-        if (userVoooData) {
-            userVoooData.dailyUsage        = { date: todayStr, count: savedCount + 1 };
-            userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
-        }
     } catch (err) {
         console.error('MCQ count write error:', err);
-        // fail silently — don't block user
+    } finally {
+        // ── Always release the lock ──
+        _mcqWriteInProgress = false;
     }
 }
 
