@@ -1546,24 +1546,29 @@ if (!firebase.apps.length) {
             nextPuzzle();
         }
 
-        function updatePuzzleDisplay(puzzle) {
-            document.getElementById('vooo-question').textContent = puzzle.question;
-            const container = document.getElementById('vooo-options');
-            container.innerHTML = '';
-            puzzle.options.forEach((option, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'vooo-option';
-                btn.textContent = option;
-                if (typeof option === 'string' && option.length > 2 && !option.match(/^-?[0-9]+(\.[0-9]+)?$/))
-                    btn.style.fontSize = '1.5em';
-                btn.onclick = () => selectAnswer(index);
-                container.appendChild(btn);
-            });
-            const fb = document.getElementById('vooo-feedback');
-            fb.textContent = ''; fb.className = 'vooo-feedback'; fb.style.cssText = '';
-            document.getElementById('vooo-explanation').textContent = '';
-            updateStatsDisplay();
-        }
+async function updatePuzzleDisplay(puzzle) {
+    document.getElementById('vooo-question').textContent = puzzle.question;
+    const container = document.getElementById('vooo-options');
+    container.innerHTML = '';
+    puzzle.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'vooo-option';
+        btn.textContent = option;
+        if (typeof option === 'string' && option.length > 2 && !option.match(/^-?[0-9]+(\.[0-9]+)?$/))
+            btn.style.fontSize = '1.5em';
+        btn.onclick = () => selectAnswer(index);
+        container.appendChild(btn);
+    });
+    const fb = document.getElementById('vooo-feedback');
+    fb.textContent = ''; fb.className = 'vooo-feedback'; fb.style.cssText = '';
+    document.getElementById('vooo-explanation').textContent = '';
+    updateStatsDisplay();
+
+    // ── COUNT THIS MCQ (for all logged-in users, free and paid) ──
+    if (currentVoooUser) {
+        await incrementMCQCount();
+    }
+}
 
         function selectAnswer(selectedIndex) {
             const result = window.voooEngine.checkAnswer(selectedIndex);
@@ -1593,34 +1598,33 @@ if (!firebase.apps.length) {
         // ============================================================
         // nextPuzzle — generates new MCQ + increments count for logged-in users
         // ============================================================
-        async function nextPuzzle() {
-            if (!window.voooEngine) return;
+async function nextPuzzle() {
+    if (!window.voooEngine) return;
 
-            // First puzzle on page load — show freely, no count, no login check
-            if (window._voooFirstLoad) {
-                window._voooFirstLoad = false;
-                const puzzle = window.voooEngine.generateNewPuzzle();
-                if (puzzle) updatePuzzleDisplay(puzzle);
-                return;
-            }
+    // First puzzle on page load — show freely, no login check
+    if (window._voooFirstLoad) {
+        window._voooFirstLoad = false;
+        const puzzle = window.voooEngine.generateNewPuzzle();
+        if (puzzle) updatePuzzleDisplay(puzzle);
+        return;
+    }
 
-            // Not logged in — show sign-up modal
-            if (!currentVoooUser) {
-                showLimitModal(
-                    'Get Free 30 MCQs Per Day!',
-                    'Sign up for free to practice 30 MCQs every day.'
-                );
-                return;
-            }
+    // Not logged in — show sign-up modal
+    if (!currentVoooUser) {
+        showLimitModal(
+            'Get Free 30 MCQs Per Day!',
+            'Sign up for free to practice 30 MCQs every day.'
+        );
+        return;
+    }
 
-            // ── CHECK AND INCREMENT MCQ COUNT ──
-            const allowed = await incrementMCQCount();
-            if (!allowed) return; // limit modal already shown inside incrementMCQCount
+    // Check limit BEFORE generating puzzle
+    const allowed = await checkMCQLimit();
+    if (!allowed) return;
 
-            // Generate and show puzzle
-            const puzzle = window.voooEngine.generateNewPuzzle();
-            if (puzzle) updatePuzzleDisplay(puzzle);
-        }
+    const puzzle = window.voooEngine.generateNewPuzzle();
+    if (puzzle) updatePuzzleDisplay(puzzle);
+}
 
         // ============================================================
         // incrementMCQCount
@@ -1629,55 +1633,60 @@ if (!firebase.apps.length) {
         // - Increments dailyUsage.count and totalMCQsAttempted
         // - Returns true if allowed, false if limit reached
         // ============================================================
-        async function incrementMCQCount() {
-            try {
-                const uid     = currentVoooUser.uid;
-                const userRef = voooDb.collection('users').doc(uid);
+// Check if user is allowed to see next MCQ (free limit check only)
+async function checkMCQLimit() {
+    try {
+        if (!currentVoooUser) return false;
+        const isPaid = userVoooData && userVoooData.tier === 'paid';
+        if (isPaid) return true; // paid users always allowed
 
-                // Get fresh data from Firestore
-                const userDoc  = await userRef.get();
-                if (!userDoc.exists) return true; // safety fallback
+        const todayStr   = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+        const dailyData  = userVoooData ? (userVoooData.dailyUsage || {}) : {};
+        const savedDate  = dailyData.date || '';
+        const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
 
-                const data     = userDoc.data();
-                const isPaid   = data.tier === 'paid';
-
-                // Today's date string in IST
-                const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-
-                const dailyData  = data.dailyUsage || {};
-                const savedDate  = dailyData.date  || '';
-                const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
-
-                // Free user daily limit
-                const FREE_LIMIT = VOOO_CONFIG.free_daily_limit;
-                if (!isPaid && savedCount >= FREE_LIMIT) {
-                    showLimitModal(
-                        'Daily Limit Reached!',
-                        `You've used all ${FREE_LIMIT} free MCQs for today. Upgrade for unlimited access!`
-                    );
-                    return false;
-                }
-
-                // Increment counts in Firestore
-                await userRef.update({
-                    'dailyUsage.date':        todayStr,
-                    'dailyUsage.count':       savedCount + 1,
-                    'totalMCQsAttempted':     firebase.firestore.FieldValue.increment(1)
-                });
-
-                // Keep local userVoooData in sync so UI stays accurate this session
-                if (userVoooData) {
-                    userVoooData.dailyUsage = { date: todayStr, count: savedCount + 1 };
-                    userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
-                }
-
-                return true;
-
-            } catch (err) {
-                console.error('MCQ count error:', err);
-                return true; // fail open — don't block user on Firestore errors
-            }
+        const FREE_LIMIT = VOOO_CONFIG.free_daily_limit;
+        if (savedCount >= FREE_LIMIT) {
+            showLimitModal(
+                'Daily Limit Reached!',
+                `You've used all ${FREE_LIMIT} free MCQs for today. Upgrade for unlimited access!`
+            );
+            return false;
         }
+        return true;
+    } catch (err) {
+        console.error('Limit check error:', err);
+        return true; // fail open
+    }
+}
+
+// Write the count to Firestore (called from updatePuzzleDisplay)
+async function incrementMCQCount() {
+    try {
+        const uid      = currentVoooUser.uid;
+        const userRef  = voooDb.collection('users').doc(uid);
+        const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+
+        const dailyData  = userVoooData ? (userVoooData.dailyUsage || {}) : {};
+        const savedDate  = dailyData.date || '';
+        const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
+
+        await userRef.update({
+            'dailyUsage.date':    todayStr,
+            'dailyUsage.count':   savedCount + 1,
+            'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
+        });
+
+        // Keep local cache in sync
+        if (userVoooData) {
+            userVoooData.dailyUsage        = { date: todayStr, count: savedCount + 1 };
+            userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
+        }
+    } catch (err) {
+        console.error('MCQ count write error:', err);
+        // fail silently — don't block user
+    }
+}
 
         function updateStatsDisplay() {
             const stats = window.voooEngine.getStats();
