@@ -214,14 +214,16 @@ const _ENGINE_INSTANCE_NAME = 'vaeupscargumentsl2';               // ⭐ Line 3:
             return false;
         }
 
-        isTemplateComputable(template){
-            if(!template.calculation)return false;
-            const c=template.calculation.trim();
-            if(c===''||c==='null')return false;
-            if(/^[A-Z][A-Z0-9_]*$/.test(c))return true;
-            if(this.isPlainText(c))return false;
-            return true;
-        }
+isTemplateComputable(template){
+    // ✅ answer_label templates are always computable
+    if(template.answer_label&&Array.isArray(template.answer_label))return true;
+    if(!template.calculation)return false;
+    const c=template.calculation.trim();
+    if(c===''||c==='null')return false;
+    if(/^[A-Z][A-Z0-9_]*$/.test(c))return true;
+    if(this.isPlainText(c))return false;
+    return true;
+}
 
         // ════════════════════════════════════════════
         // VARIABLE GENERATION
@@ -405,51 +407,79 @@ const _ENGINE_INSTANCE_NAME = 'vaeupscargumentsl2';               // ⭐ Line 3:
             return this.resolvePatternText(template.pattern,variables);
         }
 
-        calculateAnswer(template,variables){
-            if(!template.calculation)return null;
-            const calc=template.calculation.trim();
-            if(calc===''||calc==='null')return null;
-            if(this.isPlainText(calc))return null;
+calculateAnswer(template, variables) {
+    // ROWS MODE: ANS injected into variables by _pickRow
+    if (template.rows && variables.ANS !== undefined) {
+        return variables.ANS;
+    }
 
-            if(/^[A-Z][A-Z0-9_]*$/.test(calc)){
-                if(variables.hasOwnProperty(calc)){
-                    const val=variables[calc];
-                    if(template.answer_type==='shape_selector'&&typeof val==='string')return this.shapeMap[val]||val;
-                    if(template.answer_type==='color_picker'&&typeof val==='string')return this.colorMap[val]||val;
-                    if(typeof val==='number')return parseFloat(val.toFixed(4));
-                    return val;
-                }
-            }
+    // ANSWER_LABEL only (fixed templates like CD_L1_07, 10, 15, 21, 24)
+    if (template.answer_label && Array.isArray(template.answer_label)) {
+        return template.answer_label[0];
+    }
 
-            if(calc.includes('repeat('))return this.evaluateExpression(calc,variables);
-            if(calc.includes('next_in_pattern(')){
-                const pt=this.evaluateExpression(calc,variables);
-                const opts=template.options||[];
-                if(pt==='ABAB'||pt==='AABB')return opts[0]||'🔴';
-                if(pt==='ABCABC')return opts[2]||'🔵';
-                return opts[0]||'?';
-            }
+    // ── Original logic below (untouched) ──
+    if (!template.calculation) return null;
+    const calc = template.calculation.trim();
+    if (calc === '' || calc === 'null') return null;
+    if (this.isPlainText(calc)) return null;
 
-            const result=this.evaluateExpression(calc,variables);
-            if(result===null||result===undefined)return null;
-            if(typeof result==='string'&&/no |undefined|error|nan/i.test(result))return null;
-            if(typeof result==='number'){
-                if(!isFinite(result)||isNaN(result))return null;
-                return parseFloat(result.toFixed(4));
-            }
-            return result;
+    if (/^[A-Z][A-Z0-9_]*$/.test(calc)) {
+        if (variables.hasOwnProperty(calc)) {
+            const val = variables[calc];
+            if (template.answer_type === 'shape_selector' && typeof val === 'string') return this.shapeMap[val] || val;
+            if (template.answer_type === 'color_picker'   && typeof val === 'string') return this.colorMap[val] || val;
+            if (typeof val === 'number') return parseFloat(val.toFixed(4));
+            return val;
         }
+    }
+
+    if (calc.includes('repeat('))          return this.evaluateExpression(calc, variables);
+    if (calc.includes('next_in_pattern(')) {
+        const pt   = this.evaluateExpression(calc, variables);
+        const opts = template.options || [];
+        if (pt === 'ABAB' || pt === 'AABB') return opts[0] || '🔴';
+        if (pt === 'ABCABC')                return opts[2] || '🔵';
+        return opts[0] || '?';
+    }
+
+    const result = this.evaluateExpression(calc, variables);
+    if (result === null || result === undefined) return null;
+    if (typeof result === 'string' && /no |undefined|error|nan/i.test(result)) return null;
+    if (typeof result === 'number') {
+        if (!isFinite(result) || isNaN(result)) return null;
+        return parseFloat(result.toFixed(4));
+    }
+    return result;
+}
 
         // ════════════════════════════════════════════
         // OPTIONS GENERATION
         // ════════════════════════════════════════════
-        generateOptions(correctAnswer,template,variables){
-            if(template.options_builder){
+generateOptions(correctAnswer,template,variables){
+    if(template.options && Array.isArray(template.options)){
+        const opts = [...template.options];
+        const correctStr = String(correctAnswer);
+        if(!opts.map(o=>String(o)).includes(correctStr)) opts[0] = correctAnswer;
+        return this._shuffleArray(opts);
+    }
+    if(template.options_builder){
                 try{
                     const opts=this.evaluateExpression(template.options_builder,variables);
                     if(Array.isArray(opts)&&opts.length>=4)return this._shuffleArray(opts);
                 }catch(e){}
             }
+if(template.answer_label&&Array.isArray(template.answer_label)){
+    const correct=template.answer_label[0];
+    const allOptions=[
+        "I and II are strong","I and III are strong","II and III are strong",
+        "All three are strong","Only I is strong","Only II is strong","Only III is strong"
+    ];
+    const wrong=allOptions.filter(o=>o!==correct);
+    const picked=this._shuffleArray(wrong).slice(0,3);
+    return this._shuffleArray([correct,...picked]);
+}
+
 
             if(template.options&&Array.isArray(template.options)){
                 const opts=[...template.options];
@@ -635,7 +665,9 @@ const _ENGINE_INSTANCE_NAME = 'vaeupscargumentsl2';               // ⭐ Line 3:
                 const idx=this._tmGetNext(total);
                 const template=templates[idx];
                 if(!this.isTemplateComputable(template))continue;
-                const rawVars=this.generateVariables(template.variables,template.constraints||[]);
+                const rawVars = this.generateVariables(template.variables, template.constraints || []);
+				if (template.rows) Object.assign(rawVars, this._pickRow(template));
+
                 const variables=this.computeDerivedVariables(template,rawVars);
                 const hash=this.createQuestionHash(template,variables);
                 if(usedList.includes(hash))continue;
@@ -664,6 +696,7 @@ const _ENGINE_INSTANCE_NAME = 'vaeupscargumentsl2';               // ⭐ Line 3:
             for(const template of templates){
                 if(!this.isTemplateComputable(template))continue;
                 const rawVars=this.generateVariables(template.variables,template.constraints||[]);
+				if(template.rows)Object.assign(rawVars,this._pickRow(template));
                 const variables=this.computeDerivedVariables(template,rawVars);
                 const answer=this.calculateAnswer(template,variables);
                 if(answer===null||answer===undefined)continue;
@@ -706,9 +739,18 @@ const _ENGINE_INSTANCE_NAME = 'vaeupscargumentsl2';               // ⭐ Line 3:
         getStats(){
             return{score:this.score,totalAttempts:this.totalAttempts,accuracy:this.totalAttempts>0?Math.round((this.score/this.totalAttempts)*100):0,currentCategory:this.categoryKey};
         }
+_pickRow(template) {
+    const rows = template.rows;
+    if (!rows || !rows.length) return {};
+    const idx = Math.floor(Math.random() * rows.length);
+    return { ...rows[idx] };
+}
+
         resetScore(){this.score=0;this.totalAttempts=0;}
         _shuffleArray(array){const s=[...array];for(let i=s.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[s[i],s[j]]=[s[j],s[i]];}return s;}
     }
+	
+	
 
     // ════════════════════════════════════════════
     // REGISTER ENGINE ON WINDOW
