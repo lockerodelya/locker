@@ -321,6 +321,14 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
+                label: 'UPSC : Arguments & Conclusions',
+                options: [
+                    { value: 'upsc-arguments-level-1', text: '• Arguments & Conclusions L1' },
+					{ value: 'upsc-arguments-level-2', text: '• Arguments & Conclusions L2' },
+                    { value: 'upsc-arguments-level-3', text: '• Arguments & Conclusions L3' },
+                ]
+            },
+			{
                 label: 'UPSC : Blood Relations',
                 options: [
                     { value: 'upsc-blood-level-1', text: '• Blood Relations L1' },
