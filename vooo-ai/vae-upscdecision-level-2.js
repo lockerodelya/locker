@@ -425,6 +425,10 @@ calculateAnswer(template, variables) {
     if (calc === '' || calc === 'null') return null;
     if (this.isPlainText(calc)) return null;
 
+	if(/^Option\s[A-D]$/.test(calc)){
+    return calc;
+	}
+
     if (/^[A-Z][A-Z0-9_]*$/.test(calc)) {
         if (variables.hasOwnProperty(calc)) {
             const val = variables[calc];
