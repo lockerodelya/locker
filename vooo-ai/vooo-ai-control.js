@@ -112,6 +112,9 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-geometry-level-2' : '/vooo-ai/vae-upscgeometry-level-2.js',
 	'upsc-geometry-level-3' : '/vooo-ai/vae-upscgeometry-level-3.js',
 	
+	'upsc-profitloss-level-1' : '/vooo-ai/vae-upscprofitloss-level-1.js',
+	'upsc-profitloss-level-2' : '/vooo-ai/vae-upscprofitloss-level-2.js',
+	'upsc-profitloss-level-3' : '/vooo-ai/vae-upscprofitloss-level-3.js',
 
 		
     // --- ADD NEW ENGINES BELOW THIS LINE ---
@@ -221,6 +224,10 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-syllogisms-level-2' : 'vaeupscsyllogismsl2',
 	'upsc-syllogisms-level-3' : 'vaeupscsyllogismsl3',
 	
+	'upsc-geometry-level-1' : 'vaeupscgeometryl1',
+	'upsc-geometry-level-2' : 'vaeupscgeometryl2',
+	'upsc-geometry-level-3' : 'vaeupscgeometryl3',
+
 	'upsc-geometry-level-1' : 'vaeupscgeometryl1',
 	'upsc-geometry-level-2' : 'vaeupscgeometryl2',
 	'upsc-geometry-level-3' : 'vaeupscgeometryl3',
@@ -399,6 +406,14 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'upsc-geometry-level-1', text: '• Geometry L1' },
 					{ value: 'upsc-geometry-level-2', text: '• Geometry L2' },
 					{ value: 'upsc-geometry-level-3', text: '• Geometry L3' },
+                ]
+            },
+			{
+                label: 'UPSC : Data Sufficiency: Profit & Loss',
+                options: [
+                    { value: 'upsc-profitloss-level-1', text: '• Profit & Loss L1' },
+					{ value: 'upsc-profitloss-level-2', text: '• Profit & Loss L2' },
+					{ value: 'upsc-profitloss-level-3', text: '• Profit & Loss L3' },
                 ]
             },
 
