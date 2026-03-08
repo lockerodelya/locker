@@ -228,9 +228,9 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-geometry-level-2' : 'vaeupscgeometryl2',
 	'upsc-geometry-level-3' : 'vaeupscgeometryl3',
 
-	'upsc-geometry-level-1' : 'vaeupscgeometryl1',
-	'upsc-geometry-level-2' : 'vaeupscgeometryl2',
-	'upsc-geometry-level-3' : 'vaeupscgeometryl3',
+	'upsc-profitloss-level-1' : 'vaeupsprofitlossl1',
+	'upsc-profitloss-level-2' : 'vaeupsprofitlossl2',
+	'upsc-profitloss-level-3' : 'vaeupsprofitlossl3',
 
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
