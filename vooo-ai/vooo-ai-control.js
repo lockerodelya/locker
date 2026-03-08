@@ -108,9 +108,9 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-syllogisms-level-2' : '/vooo-ai/vae-upsc-syllogisms-level-2.js',
 	'upsc-syllogisms-level-3' : '/vooo-ai/vae-upsc-syllogisms-level-3.js',
 	
-	'upsc-datasuff-level-1' : '/vooo-ai/vae-upscdatasuff-level-1.js',
-	'upsc-datasuff-level-2' : '/vooo-ai/vae-upscdatasuff-level-2.js',
-	'upsc-datasuff-level-3' : '/vooo-ai/vae-upscdatasuff-level-3.js',
+	'upsc-geometry-level-1' : '/vooo-ai/vae-upscgeometry-level-1.js',
+	'upsc-geometry-level-2' : '/vooo-ai/vae-upscgeometry-level-2.js',
+	'upsc-geometry-level-3' : '/vooo-ai/vae-upscgeometry-level-3.js',
 	
 
 		
@@ -221,9 +221,9 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-syllogisms-level-2' : 'vaeupscsyllogismsl2',
 	'upsc-syllogisms-level-3' : 'vaeupscsyllogismsl3',
 	
-	'upsc-datasuff-level-1' : 'vaeupscdatasuffl1',
-	'upsc-datasuff-level-2' : 'vaeupscdatasuffl2',
-	'upsc-datasuff-level-3' : 'vaeupscdatasuffl3',
+	'upsc-geometry-level-1' : 'vaeupscgeometryl1',
+	'upsc-geometry-level-2' : 'vaeupscgeometryl2',
+	'upsc-geometry-level-3' : 'vaeupscgeometryl3',
 
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -396,9 +396,9 @@ const VOOO_ENGINE_INSTANCES = {
 			{
                 label: 'UPSC : Data Sufficiency: Geometry',
                 options: [
-                    { value: 'upsc-datasuff-level-1', text: '• Geometry L1' },
-					{ value: 'upsc-datasuff-level-2', text: '• Geometry L2' },
-					{ value: 'upsc-datasuff-level-3', text: '• Geometry L3' },
+                    { value: 'upsc-geometry-level-1', text: '• Geometry L1' },
+					{ value: 'upsc-geometry-level-2', text: '• Geometry L2' },
+					{ value: 'upsc-geometry-level-3', text: '• Geometry L3' },
                 ]
             },
 
