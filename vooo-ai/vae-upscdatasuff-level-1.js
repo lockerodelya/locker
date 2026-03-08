@@ -481,17 +481,13 @@ if(template.answer_label&&Array.isArray(template.answer_label)){
 }
 
 
-            if(template.options&&Array.isArray(template.options)){
-                const opts=[...template.options];
-                const correctStr=String(correctAnswer);
-                if(opts.map(o=>String(o)).includes(correctStr)){
-                    const wrong=opts.filter(o=>String(o)!==correctStr);
-                    return this._shuffleArray([correctAnswer,...this._shuffleArray(wrong).slice(0,3)]);
-                }
-                const fallback=opts[0];
-                const wrong=opts.filter(o=>String(o)!==String(fallback));
-                return this._shuffleArray([fallback,...this._shuffleArray(wrong).slice(0,3)]);
-            }
+if(template.options&&Array.isArray(template.options)){
+    const opts=[...template.options];
+    const correctStr=String(correctAnswer);
+    const found=opts.some(o=>String(o).startsWith(correctStr));
+    if(!found) opts[0]=correctAnswer;
+    return this._shuffleArray(opts);
+}
 
             if(template.answer_type==='shape_selector')return this._shuffleArray([...Object.values(this.shapeMap)]).slice(0,4);
             if(template.answer_type==='color_picker')return this._shuffleArray([...Object.values(this.colorMap)]).slice(0,4);
@@ -611,7 +607,7 @@ if(template.answer_label&&Array.isArray(template.answer_label)){
                 const isSmaller=question&&/smaller|least|tiny/i.test(question);
                 return options.findIndex(opt=>this.sizeComparison[opt]===(isSmaller?'small':'big'));
             }
-            return options.findIndex(opt=>String(opt)===String(correctAnswer));
+            return options.findIndex(opt=>String(opt)===String(correctAnswer)||String(opt).startsWith(String(correctAnswer)));
         }
 
         // ════════════════════════════════════════════
