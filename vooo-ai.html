@@ -1669,10 +1669,7 @@ async function incrementMCQCount() {
         if (!currentVoooUser) return;
 
         // ── Block if a write is already in progress ──
-        if (_mcqWriteInProgress) { 
-    setTimeout(() => incrementMCQCount(), 1500);
-    return; 
-}
+        if (_mcqWriteInProgress) return;
         _mcqWriteInProgress = true;
 
         const uid      = currentVoooUser.uid;
@@ -1705,11 +1702,7 @@ async function incrementMCQCount() {
         });
 
     } catch (err) {
-        if (err.code === 'failed-precondition') {
-    setTimeout(() => incrementMCQCount(), 1500);
-} else {
-    console.error('MCQ count write error:', err);
-}
+        console.error('MCQ count write error:', err);
     } finally {
         // ── Always release the lock ──
         _mcqWriteInProgress = false;
