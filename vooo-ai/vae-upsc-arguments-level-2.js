@@ -471,11 +471,8 @@ generateOptions(correctAnswer,template,variables){
             }
 if(template.answer_label&&Array.isArray(template.answer_label)){
     const correct=template.answer_label[0];
-    const allOptions=[
-        "I and II are strong","I and III are strong","II and III are strong",
-        "All three are strong","Only I is strong","Only II is strong","Only III is strong"
-    ];
-    const wrong=allOptions.filter(o=>o!==correct);
+    const pool=["I and II are strong","I and III are strong","II and III are strong","All three are strong","Only II is strong","Only I is strong"];
+    const wrong=pool.filter(o=>o!==correct);
     const picked=this._shuffleArray(wrong).slice(0,3);
     return this._shuffleArray([correct,...picked]);
 }

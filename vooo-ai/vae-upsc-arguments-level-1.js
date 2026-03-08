@@ -471,14 +471,10 @@ generateOptions(correctAnswer,template,variables){
             }
 if(template.answer_label&&Array.isArray(template.answer_label)){
     const correct=template.answer_label[0];
-    const allOptions=[
-        "Only Argument I is strong",
-        "Only Argument II is strong",
-        "Both arguments are strong",
-        "Neither argument is strong"
-    ];
-    const opts=[correct,...allOptions.filter(o=>o!==correct)];
-    return this._shuffleArray(opts.slice(0,4));
+    const pool=["Only Argument I is strong","Only Argument II is strong","Both arguments are strong","Neither argument is strong","Argument I is weak","Argument II is weak"];
+    const wrong=pool.filter(o=>o!==correct);
+    const picked=this._shuffleArray(wrong).slice(0,3);
+    return this._shuffleArray([correct,...picked]);
 }
 
 
