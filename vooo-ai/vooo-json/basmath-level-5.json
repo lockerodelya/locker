@@ -41,6 +41,7 @@
         "B": {"values": [2, 3, 4, 5, 6, 7, 8, 9, 10]}
       },
       "calculation": "A / B",
+      "constraints": ["A % B === 0"],
       "explanation": "[A] divided by [B] equals [RESULT]."
     },
     {
@@ -150,13 +151,6 @@
     },
     {
       "template_id": "BAS_MATH_L5_16",
-      "pattern": "I = ?",
-      "variables": {},
-      "calculation": "1",
-      "explanation": "Roman numeral I equals 1"
-    },
-    {
-      "template_id": "BAS_MATH_L5_17",
       "pattern": "[A] + [B] × [C] = ?",
       "variables": {
         "A": {"min": 1, "max": 20},
@@ -167,14 +161,7 @@
       "explanation": "First multiply: [B] × [C] = [B*C], then add [A]: [A] + [B*C] = [RESULT]"
     },
     {
-      "template_id": "BAS_MATH_L5_18",
-      "pattern": "V = ?",
-      "variables": {},
-      "calculation": "5",
-      "explanation": "Roman numeral V equals 5"
-    },
-    {
-      "template_id": "BAS_MATH_L5_19",
+      "template_id": "BAS_MATH_L5_17",
       "pattern": "Rule: Add [STEP]. Sequence: [A], ?, [C]",
       "variables": {
         "A": {"min": 1, "max": 20},
@@ -184,32 +171,26 @@
       "explanation": "[A] + [STEP] = [RESULT]"
     },
     {
-      "template_id": "BAS_MATH_L5_20",
-      "pattern": "X = ?",
-      "variables": {},
-      "calculation": "10",
-      "explanation": "Roman numeral X equals 10"
-    },
-    {
-      "template_id": "BAS_MATH_L5_21",
+      "template_id": "BAS_MATH_L5_18",
       "pattern": "Pattern: [A], [B], [C], ?",
       "variables": {
-        "A": {"min": 2, "max": 10}
+        "A": {"min": 2, "max": 10},
+        "STEP": {"min": 1, "max": 3}
       },
-      "calculation": "A + 3",
-      "explanation": "Each number increases by 1: [A], [A+1], [A+2], [RESULT]"
+      "calculation": "A + (STEP * 3)",
+      "explanation": "Each number increases by [STEP]: [A], [A+STEP], [A+STEP*2], [RESULT]"
     },
     {
-      "template_id": "BAS_MATH_L5_22",
+      "template_id": "BAS_MATH_L5_19",
       "pattern": "[ROMAN] = ?",
       "variables": {
-        "ROMAN": {"values": ["II", "III", "IV", "VI", "VII", "VIII", "IX"]}
+        "ROMAN": {"values": ["I", "V", "X", "II", "III", "IV", "VI", "VII", "VIII", "IX"]}
       },
-      "calculation": "(ROMAN == 'II') ? 2 : (ROMAN == 'III') ? 3 : (ROMAN == 'IV') ? 4 : (ROMAN == 'VI') ? 6 : (ROMAN == 'VII') ? 7 : (ROMAN == 'VIII') ? 8 : 9",
+      "calculation": "(ROMAN == 'I') ? 1 : (ROMAN == 'V') ? 5 : (ROMAN == 'X') ? 10 : (ROMAN == 'II') ? 2 : (ROMAN == 'III') ? 3 : (ROMAN == 'IV') ? 4 : (ROMAN == 'VI') ? 6 : (ROMAN == 'VII') ? 7 : (ROMAN == 'VIII') ? 8 : 9",
       "explanation": "[ROMAN] in Roman numerals equals [RESULT]"
     },
     {
-      "template_id": "BAS_MATH_L5_23",
+      "template_id": "BAS_MATH_L5_20",
       "pattern": "Count by [STEP]: [A], [B], ?",
       "variables": {
         "A": {"min": 2, "max": 20},
@@ -219,17 +200,18 @@
       "explanation": "Counting by [STEP]: [A], [A+STEP], [RESULT]"
     },
     {
-      "template_id": "BAS_MATH_L5_24",
+      "template_id": "BAS_MATH_L5_21",
       "pattern": "It's [H]:00. What time is it in [M] minutes?",
       "variables": {
         "H": {"min": 1, "max": 11},
         "M": {"values": [15, 30, 45, 60]}
       },
       "calculation": "(M == 60) ? (H + 1) : H",
+      "explanation": "[H]:00 + [M] minutes = [RESULT]:00",
       "explanation": "[H]:00 + [M] minutes = [RESULT]:00 (or [RESULT]:30)"
     },
     {
-      "template_id": "BAS_MATH_L5_25",
+      "template_id": "BAS_MATH_L5_22",
       "pattern": "Which is greater: [A] × [B] or [C] + [D]?",
       "variables": {
         "A": {"min": 3, "max": 8},
@@ -238,6 +220,7 @@
         "D": {"min": 10, "max": 40}
       },
       "calculation": "(A * B) > (C + D) ? (A * B) : (C + D)",
+      "constraints": ["A * B !== C + D"],
       "explanation": "[A] × [B] = [A*B] and [C] + [D] = [C+D]. Greater value is [RESULT]"
     }
 
@@ -274,3 +257,4 @@
     ]
   }
 }
+
