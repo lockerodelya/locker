@@ -321,6 +321,14 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
+                label: 'UPSC : Decision Making',
+                options: [
+                    { value: 'upsc-decision-level-1', text: '• Decision Making L1' },
+					{ value: 'upsc-decision-level-2', text: '• Decision Making L2' },
+                    { value: 'upsc-decision-level-3', text: '• Decision Making L3' },
+                ]
+            },
+			{
                 label: 'UPSC : Arguments & Conclusions',
                 options: [
                     { value: 'upsc-arguments-level-1', text: '• Arguments & Conclusions L1' },
