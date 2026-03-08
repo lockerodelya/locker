@@ -107,6 +107,11 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-syllogisms-level-1' : '/vooo-ai/vae-upsc-syllogisms-level-1.js',
 	'upsc-syllogisms-level-2' : '/vooo-ai/vae-upsc-syllogisms-level-2.js',
 	'upsc-syllogisms-level-3' : '/vooo-ai/vae-upsc-syllogisms-level-3.js',
+	
+	'upsc-datasuff-level-1' : '/vooo-ai/vae-upscdatasuff-level-1.js',
+	'upsc-datasuff-level-2' : '/vooo-ai/vae-upscdatasuff-level-2.js',
+	'upsc-datasuff-level-3' : '/vooo-ai/vae-upscdatasuff-level-3.js',
+	
 
 		
     // --- ADD NEW ENGINES BELOW THIS LINE ---
@@ -215,6 +220,10 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-syllogisms-level-1' : 'vaeupscsyllogismsl1',
 	'upsc-syllogisms-level-2' : 'vaeupscsyllogismsl2',
 	'upsc-syllogisms-level-3' : 'vaeupscsyllogismsl3',
+	
+	'upsc-datasuff-level-1' : 'vaeupscsyllogismsl1',
+	'upsc-datasuff-level-2' : 'vaeupscsyllogismsl2',
+	'upsc-datasuff-level-3' : 'vaeupscsyllogismsl3',
 
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -382,6 +391,13 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'upsc-syllogisms-level-1', text: '• Syllogisms L1' },
 					{ value: 'upsc-syllogisms-level-2', text: '• Syllogisms L2' },
                     { value: 'upsc-syllogisms-level-3', text: '• Syllogisms L3' },
+                ]
+            },
+			{
+                label: 'UPSC : Data Sufficiency:',
+                options: [
+                    { value: 'upsc-datasuff-level-1', text: '• Geometry L1' },
+
                 ]
             },
 
