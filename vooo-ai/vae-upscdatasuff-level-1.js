@@ -221,7 +221,8 @@ isTemplateComputable(template){
     const c=template.calculation.trim();
     if(c===''||c==='null')return false;
     if(/^[A-Z][A-Z0-9_]*$/.test(c))return true;
-    if(this.isPlainText(c))return false;
+    if(/^Option\s[A-D]$/.test(c))return true;
+	if(this.isPlainText(c))return false;
     return true;
 }
 
