@@ -397,7 +397,8 @@ const VOOO_ENGINE_INSTANCES = {
                 label: 'UPSC : Data Sufficiency:',
                 options: [
                     { value: 'upsc-datasuff-level-1', text: '• Geometry L1' },
-
+					{ value: 'upsc-datasuff-level-2', text: '• Geometry L2' },
+					{ value: 'upsc-datasuff-level-3', text: '• Geometry L3' },
                 ]
             },
 
