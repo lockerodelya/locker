@@ -1678,13 +1678,14 @@ async function incrementMCQCount() {
         const newCount = savedCount + 1;
 
         // ── Direct write — no transaction, no conflict ever ──
-        await userRef.update({
+        await userRef.set({
             'dailyUsage.date':    todayStr,
             'dailyUsage.count':   newCount,
             'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
-        });
+}, { merge: true });
 
         // ── Keep local cache in sync ──
+		
         if (userVoooData) {
             userVoooData.dailyUsage = { date: todayStr, count: newCount };
             userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
