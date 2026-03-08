@@ -501,13 +501,14 @@
         };
 
         // ====== TAB SWITCHING ======
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + tab).classList.add('active');
-            event.target.classList.add('active');
-            if (tab === 'analytics') loadAnalytics();
-        }
+function switchTab(tab) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    event.target.classList.add('active');
+    localStorage.setItem('vooo_admin_tab', tab); // ← save active tab
+    if (tab === 'analytics') loadAnalytics();
+}
 
         // ====== AUTH CHECK (unchanged) ======
         auth.onAuthStateChanged(async (user) => {
@@ -519,8 +520,17 @@
                 window.location.href = 'voooadmin.html';
                 return;
             }
-            loadUsers();
-        });
+         loadUsers();
+// ← Restore last active tab after page load
+const savedTab = localStorage.getItem('vooo_admin_tab');
+if (savedTab === 'analytics') {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-analytics').classList.add('active');
+    document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+    loadAnalytics();
+}
+});
 
         // ====== LOAD USERS (unchanged) ======
         async function loadUsers() {
