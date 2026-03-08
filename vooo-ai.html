@@ -1667,45 +1667,30 @@ async function checkMCQLimit() {
 async function incrementMCQCount() {
     try {
         if (!currentVoooUser) return;
-
-        // ── Block if a write is already in progress ──
-        if (_mcqWriteInProgress) return;
-        _mcqWriteInProgress = true;
-
-        const uid      = currentVoooUser.uid;
-        const userRef  = voooDb.collection('users').doc(uid);
+        const uid = currentVoooUser.uid;
+        const userRef = voooDb.collection('users').doc(uid);
         const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 
-        // ── Firestore transaction — atomic read + write ──
-        await voooDb.runTransaction(async (transaction) => {
-            const userDoc    = await transaction.get(userRef);
-            if (!userDoc.exists) return;
+        // ── Check if date has changed ──
+        const dailyData = userVoooData?.dailyUsage || {};
+        const savedDate = dailyData.date || '';
+        const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
+        const newCount = savedCount + 1;
 
-            const data       = userDoc.data();
-            const dailyData  = data.dailyUsage || {};
-            const savedDate  = dailyData.date  || '';
-            // If it's a new day, reset count to 0
-            const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
-            const newCount   = savedCount + 1;
-
-            transaction.update(userRef, {
-                'dailyUsage.date':    todayStr,
-                'dailyUsage.count':   newCount,
-                'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
-            });
-
-            // ── Keep local cache in sync with what was actually written ──
-            if (userVoooData) {
-                userVoooData.dailyUsage         = { date: todayStr, count: newCount };
-                userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
-            }
+        // ── Direct write — no transaction, no conflict ever ──
+        await userRef.update({
+            'dailyUsage.date':    todayStr,
+            'dailyUsage.count':   newCount,
+            'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
         });
 
+        // ── Keep local cache in sync ──
+        if (userVoooData) {
+            userVoooData.dailyUsage = { date: todayStr, count: newCount };
+            userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
+        }
     } catch (err) {
         console.error('MCQ count write error:', err);
-    } finally {
-        // ── Always release the lock ──
-        _mcqWriteInProgress = false;
     }
 }
 
