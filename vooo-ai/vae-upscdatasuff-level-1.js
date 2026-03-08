@@ -460,12 +460,13 @@ calculateAnswer(template, variables) {
         // OPTIONS GENERATION
         // ════════════════════════════════════════════
 generateOptions(correctAnswer,template,variables){
-    if(template.options && Array.isArray(template.options)){
-        const opts = [...template.options];
-        const correctStr = String(correctAnswer);
-        if(!opts.map(o=>String(o)).includes(correctStr)) opts[0] = correctAnswer;
-        return this._shuffleArray(opts);
-    }
+if(template.options && Array.isArray(template.options)){
+    const opts = [...template.options];
+    const correctStr = String(correctAnswer);
+    const found = opts.some(o=>String(o).startsWith(correctStr));
+    if(!found) opts[0] = correctAnswer;
+    return this._shuffleArray(opts);
+}
     if(template.options_builder){
                 try{
                     const opts=this.evaluateExpression(template.options_builder,variables);
@@ -598,7 +599,7 @@ if(template.options&&Array.isArray(template.options)){
         _validateOptions(options,correct){
             if(!options||options.length!==4)return false;
             if(new Set(options.map(o=>String(o))).size!==4)return false;
-            if(!options.map(o=>String(o)).includes(String(correct)))return false;
+            if(!options.some(o=>String(o)===String(correct)||String(o).startsWith(String(correct))))return false;
             return true;
         }
 
