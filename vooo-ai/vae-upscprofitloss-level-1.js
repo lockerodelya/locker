@@ -8,7 +8,7 @@
 
 const _ENGINE_JSON_FILE     = 'upsc-profitloss-level-1.json';       // ⭐ Line 1: Your JSON filename
 const _ENGINE_CATEGORY_KEY  = 'upsc-profitloss-level-1';            // ⭐ Line 2: Category key (must match dropdown value in HTML)
-const _ENGINE_INSTANCE_NAME = 'vaeupscprofitlossl1';               // ⭐ Line 3: Unique global variable name for this engine
+const _ENGINE_INSTANCE_NAME = 'vaeupsprofitlossl1';               // ⭐ Line 3: Unique global variable name for this engine
 
 // ============================================
 // ✋ DO NOT EDIT ANYTHING BELOW THIS LINE
