@@ -221,9 +221,9 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-syllogisms-level-2' : 'vaeupscsyllogismsl2',
 	'upsc-syllogisms-level-3' : 'vaeupscsyllogismsl3',
 	
-	'upsc-datasuff-level-1' : 'vaeupscsyllogismsl1',
-	'upsc-datasuff-level-2' : 'vaeupscsyllogismsl2',
-	'upsc-datasuff-level-3' : 'vaeupscsyllogismsl3',
+	'upsc-datasuff-level-1' : 'vaeupscdatasuffl1',
+	'upsc-datasuff-level-2' : 'vaeupscdatasuffl2',
+	'upsc-datasuff-level-3' : 'vaeupscdatasuffl3',
 
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
