@@ -765,20 +765,25 @@
             gap: 25px;
         }
         
-        .vooo-option {
-            padding: 25px;
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 2.5em;
-            color: #4a5568;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100px;
-        }
+.vooo-option {
+    padding: 15px;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1em;
+    color: #000000;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+    width: 100%;
+    overflow: hidden;
+    word-break: break-word;
+    text-align: center;
+    line-height: 1.3;
+}
         
         .vooo-option:hover { border-color: #667eea; background: #f0f4ff; }
         .vooo-option:active { transform: scale(0.98); }
@@ -1551,14 +1556,19 @@ async function updatePuzzleDisplay(puzzle) {
     const container = document.getElementById('vooo-options');
     container.innerHTML = '';
     puzzle.options.forEach((option, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'vooo-option';
-        btn.textContent = option;
-        if (typeof option === 'string' && option.length > 2 && !option.match(/^-?[0-9]+(\.[0-9]+)?$/))
-            btn.style.fontSize = '1.5em';
-        btn.onclick = () => selectAnswer(index);
-        container.appendChild(btn);
-    });
+    const btn = document.createElement('button');
+    btn.className = 'vooo-option';
+    btn.textContent = option;
+    const len = String(option).length;
+    if (len <= 3)       btn.style.fontSize = '2.2em';
+    else if (len <= 6)  btn.style.fontSize = '1.8em';
+    else if (len <= 15) btn.style.fontSize = '1.4em';
+    else if (len <= 30) btn.style.fontSize = '1.1em';
+    else                btn.style.fontSize = '0.95em';
+    btn.style.color = '#000000';
+    btn.onclick = () => selectAnswer(index);
+    container.appendChild(btn);
+	});
     const fb = document.getElementById('vooo-feedback');
     fb.textContent = ''; fb.className = 'vooo-feedback'; fb.style.cssText = '';
     document.getElementById('vooo-explanation').textContent = '';
