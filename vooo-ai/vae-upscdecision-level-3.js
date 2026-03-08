@@ -209,7 +209,8 @@ const _ENGINE_INSTANCE_NAME = 'vaeupscdecisionl3';               // ⭐ Line 3: 
             if(!calc)return true;
             const t=calc.trim();
             if(t===''||t==='null')return true;
-            if(/^[A-Za-zÀ-ÿ\s\-\/]+$/.test(t))return true;
+            if(/^Option\s[A-D]$/.test(t))return false;
+			if(/^[A-Za-zÀ-ÿ\s\-\/]+$/.test(t))return true;
             if(/generate|lookup|rules|decryption|transposition|multiplication|substitution|autokey|checkerboard|ambiguity|complexity|dynamic/i.test(t))return true;
             return false;
         }
@@ -423,6 +424,10 @@ calculateAnswer(template, variables) {
     const calc = template.calculation.trim();
     if (calc === '' || calc === 'null') return null;
     if (this.isPlainText(calc)) return null;
+
+	if(/^Option\s[A-D]$/.test(calc)){
+    return calc;
+	}
 
     if (/^[A-Z][A-Z0-9_]*$/.test(calc)) {
         if (variables.hasOwnProperty(calc)) {
