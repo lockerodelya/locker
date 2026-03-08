@@ -65,13 +65,16 @@
     },
     {
       "template_id": "BAS_MATH_L5_07",
-      "pattern": "[A] ÷ [B] = ?",
+      "pattern": "Which is greater: [A] × [B] or [C] + [D]?",
       "variables": {
-        "A": {"min": 10, "max": 50},
-        "B": {"min": 3, "max": 9}
+        "A": {"min": 3, "max": 8},
+        "B": {"min": 3, "max": 8},
+        "C": {"min": 10, "max": 40},
+        "D": {"min": 10, "max": 40}
       },
-      "calculation": "(A - (A % B)) / B",
-      "explanation": "[A] ÷ [B] = [RESULT] (with remainder [A % B])"
+      "calculation": "(A * B) > (C + D) ? (A * B) : (C + D)",
+      "constraints": ["A * B !== C + D"],
+      "explanation": "[A] × [B] = [A*B] and [C] + [D] = [C+D]. Greater value is [RESULT]"
     },
     {
       "template_id": "BAS_MATH_L5_08",
@@ -209,19 +212,6 @@
       "calculation": "(M == 60) ? (H + 1) : H",
       "explanation": "[H]:00 + [M] minutes = [RESULT]:00",
       "explanation": "[H]:00 + [M] minutes = [RESULT]:00 (or [RESULT]:30)"
-    },
-    {
-      "template_id": "BAS_MATH_L5_22",
-      "pattern": "Which is greater: [A] × [B] or [C] + [D]?",
-      "variables": {
-        "A": {"min": 3, "max": 8},
-        "B": {"min": 3, "max": 8},
-        "C": {"min": 10, "max": 40},
-        "D": {"min": 10, "max": 40}
-      },
-      "calculation": "(A * B) > (C + D) ? (A * B) : (C + D)",
-      "constraints": ["A * B !== C + D"],
-      "explanation": "[A] × [B] = [A*B] and [C] + [D] = [C+D]. Greater value is [RESULT]"
     }
 
   ],
@@ -257,4 +247,3 @@
     ]
   }
 }
-
