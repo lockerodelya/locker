@@ -2,26 +2,29 @@
 <html lang="en">
 <head>
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9SWTR9V32R"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9SWTR9V32R"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9SWTR9V32R');
+    </script>
 
-  gtag('config', 'G-9SWTR9V32R');
-</script> 
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pricing - Vooo AI Education</title>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #0D47A1;
             min-height: 100vh;
             padding: 20px;
         }
+
+        /* ── Back button ── */
         .back-btn {
             position: fixed;
             top: 20px; left: 20px;
@@ -42,12 +45,16 @@
         }
         .back-btn:hover { background: #1565C0; }
         .back-btn svg { width: 18px; height: 18px; }
+
+        /* ── Layout ── */
         .pricing-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 40px 20px;
             padding-top: 80px;
         }
+
+        /* ── Header ── */
         .header { text-align: center; color: white; margin-bottom: 50px; }
         .logo-circle {
             width: 110px; height: 110px;
@@ -61,6 +68,25 @@
         .logo-circle img { width: 100%; height: 100%; object-fit: cover; }
         .header h1 { font-size: 3em; margin-bottom: 10px; }
         .header p  { font-size: 1.2em; opacity: 0.9; }
+
+        /* ── Currency badge ── */
+        .currency-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-size: 0.95em;
+            margin-top: 15px;
+            backdrop-filter: blur(6px);
+        }
+        .currency-badge .flag { font-size: 1.3em; }
+        .currency-badge.loading { opacity: 0.6; font-style: italic; }
+
+        /* ── Pricing grid ── */
         .pricing-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -68,6 +94,8 @@
             margin-bottom: 50px;
             align-items: stretch;
         }
+
+        /* ── Card ── */
         .pricing-card {
             background: white;
             border-radius: 20px;
@@ -83,10 +111,53 @@
             transform: translateY(-10px);
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        .price-highlight { font-size: 2em; color: #cc0000; font-weight: bold; margin-bottom: 20px; }
-        .features { list-style: none; margin: 30px 0; text-align: left; flex-grow: 1; }
+
+        /* badge on card */
+        .card-badge {
+            position: absolute;
+            top: -12px; left: 50%;
+            transform: translateX(-50%);
+            background: #f59e0b;
+            color: white;
+            font-size: 0.75em;
+            font-weight: bold;
+            padding: 4px 16px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .plan-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            margin-top: 10px;
+        }
+
+        /* price display */
+        .price-wrap { margin-bottom: 10px; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+        .price-highlight { font-size: 2em; color: #cc0000; font-weight: bold; }
+        .price-skeleton {
+            width: 100px; height: 36px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.2s infinite;
+            border-radius: 8px;
+            margin: 0 auto;
+        }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+        .savings-tag {
+            font-size: 0.85em;
+            color: #22c55e;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .features { list-style: none; margin: 20px 0; text-align: left; flex-grow: 1; }
         .features li { padding: 10px 0; color: #666; border-bottom: 1px solid #f0f0f0; }
         .features li:before { content: "✓ "; color: #22c55e; font-weight: bold; margin-right: 10px; }
+
         .btn {
             width: 100%; padding: 15px;
             background: #0D47A1; color: white;
@@ -96,15 +167,34 @@
             margin-top: auto;
         }
         .btn:hover { background: #1565C0; }
+        .btn:disabled { background: #aaa; cursor: not-allowed; }
+
+        /* ── Info sections ── */
         .info-section { background: white; border-radius: 20px; padding: 30px; margin-bottom: 30px; }
         .info-section h2 { color: #0D47A1; margin-bottom: 20px; }
-        .info-section p  { color: #666; line-height: 1.8; margin-bottom: 15px; }
+        .info-section p  { color: #666; line-height: 1.8; margin-bottom: 10px; }
         .no-refund {
             background: white; border: none;
             padding: 15px; border-radius: 10px;
             color: #cc0000; font-weight: bold;
             font-size: 1.05em; text-align: center; margin-top: 20px;
         }
+
+        /* ── International notice ── */
+        .intl-notice {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 12px;
+            padding: 14px 20px;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        .intl-notice strong { color: #fbbf24; }
+
+        /* ── Modal ── */
         .modal {
             display: none; position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -150,6 +240,8 @@
             color: #333; font-size: 1.1em;
             font-weight: 500; line-height: 1.5; cursor: pointer;
         }
+
+        /* ── Responsive ── */
         @media (max-width: 900px) {
             .header h1 { font-size: 2em; }
             .pricing-grid { grid-template-columns: 1fr; gap: 20px; }
@@ -170,12 +262,23 @@
     </a>
 
     <div class="pricing-container">
+
         <div class="header">
             <div class="logo-circle">
                 <img src="/vooo-ai/images/vooo-logo.jpg" alt="Vooo Logo">
             </div>
             <h1>Vooo AI Education Pricing</h1>
             <p>Guaranteed Unlimited Unique MCQs</p>
+            <!-- Currency badge — updated dynamically -->
+            <div class="currency-badge loading" id="currency-badge">
+                <span class="flag">🌐</span>
+                <span id="currency-badge-text">Detecting your location...</span>
+            </div>
+        </div>
+
+        <!-- International notice — shown only to non-India users -->
+        <div class="intl-notice" id="intl-notice" style="display:none;">
+            💳 <strong>International payments accepted</strong> — Pay securely in your local currency via card, PayPal, or UPI. Powered by Razorpay.
         </div>
 
         <div class="pricing-grid" id="pricing-grid"></div>
@@ -197,8 +300,9 @@
 
         <div class="info-section">
             <h2>Prices and Taxes</h2>
-            <p>• All prices are inclusive of all Taxes</p>
+            <p>• All prices are inclusive of all applicable taxes</p>
             <p>• No hidden charges</p>
+            <p id="intl-tax-note" style="display:none;">• International prices are charged in your local currency. Currency conversion is handled securely by Razorpay.</p>
         </div>
 
         <div class="info-section">
@@ -209,7 +313,7 @@
         </div>
     </div>
 
-    <!-- Payment Modal (kept exactly as original for qr_manual mode) -->
+    <!-- Payment Modal (India/QR manual mode) -->
     <div id="payment-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -248,81 +352,199 @@
     </div>
 
     <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="/vooo-ai/vooo-config.js"></script>
-<script>
-    if (!firebase.apps.length) {
-        firebase.initializeApp(VOOO_CONFIG.firebase);
-    }
-</script>
-
-<script src="/vooo-ai/vooo-pagetracker.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="/vooo-ai/vooo-config.js"></script>
     <script>
-        // ====== DETECT EXISTING USER (coming from dashboard Buy Plan button) ======
-        const urlParams  = new URLSearchParams(window.location.search);
-        const isExisting = urlParams.get('existing') === 'true';
-
-        function generatePricingCards() {
-            const grid = document.getElementById('pricing-grid');
-            grid.innerHTML = '';
-
-            for (const [planKey, planData] of Object.entries(VOOO_CONFIG.pricing.plans)) {
-                const card       = document.createElement('div');
-                card.className   = 'pricing-card';
-                const priceLabel = 'INR ' + planData.amount;
-                const btnLabel   = 'Buy Plan ' + priceLabel;
-
-                card.innerHTML = `
-                    <div class="price-highlight">${priceLabel}</div>
-                    <ul class="features">
-                        <li>Unlimited MCQs daily</li>
-                        <li>All categories unlocked</li>
-                        <li>1 device login</li>
-                        <li>${planData.duration_days} days access</li>
-                        <li>Whatsapp Support</li>
-                    </ul>
-                    <button class="btn" onclick="openPaymentModal('${planKey}', '${planData.display_name}', ${planData.amount})">
-                        ${btnLabel}
-                    </button>
-                `;
-                grid.appendChild(card);
-            }
+        if (!firebase.apps.length) {
+            firebase.initializeApp(VOOO_CONFIG.firebase);
         }
-
-        function openPaymentModal(planKey, planName, amount) {
-            if (isExisting) {
-                // ⭐ Existing registered user — save plan to localStorage then go to voooexusrpy.html
-                localStorage.setItem('vooo_plan_key',    planKey);
-                localStorage.setItem('vooo_plan_name',   planName);
-                localStorage.setItem('vooo_plan_amount', amount);
-                window.location.href = 'https://odelya.online/vooo-ai/voooexusrpy.html?plan=' + planKey + '&name=' + encodeURIComponent(planName) + '&amount=' + amount;
-            } else {
-                // ⭐ New user — go to signup page as before (unchanged)
-                window.location.href = 'https://odelya.online/vooo-ai/vooosignup.html?plan=' + planKey + '&name=' + encodeURIComponent(planName) + '&amount=' + amount;
-            }
-        }
-
-        function closePaymentModal() {
-            const agreed = document.getElementById('agree-refund').checked;
-            if (!agreed) {
-                alert('Please agree to the no-refund policy to proceed');
-                return;
-            }
-            document.getElementById('payment-modal').classList.remove('active');
-        }
-
-        generatePricingCards();
-
-        const p = new URLSearchParams(window.location.search);
-        if (p.get('plan') && p.get('amount')) {
-            openPaymentModal(p.get('plan'), p.get('name'), p.get('amount'));
-        }
-
-        document.getElementById('payment-modal').addEventListener('click', function(e) {
-            if (e.target === this) closePaymentModal();
-        });
     </script>
-    
+    <script src="/vooo-ai/vooo-pagetracker.js"></script>
+
+    <script>
+    // ============================================================
+    // GLOBALS
+    // ============================================================
+    const urlParams  = new URLSearchParams(window.location.search);
+    const isExisting = urlParams.get('existing') === 'true';
+
+    // Will be filled after currency detection
+    let userCurrencyInfo = null;
+    // Cache of { planKey -> priceResult } so we don't re-fetch
+    let priceCache = {};
+
+    // Country code → flag emoji helper
+    function countryFlag(countryCode) {
+        if (!countryCode || countryCode.length !== 2) return '🌐';
+        return String.fromCodePoint(
+            ...countryCode.toUpperCase().split('').map(c => 0x1F1E0 - 65 + c.charCodeAt(0))
+        );
+    }
+
+    // ============================================================
+    // STEP 1: Detect user currency, then build page
+    // ============================================================
+    async function initPricingPage() {
+        try {
+            userCurrencyInfo = await VOOO_CONFIG.detectUserCurrency();
+        } catch(e) {
+            userCurrencyInfo = { countryCode: 'IN', currencyCode: 'INR', isIndia: true, countryName: 'India' };
+        }
+
+        // Update currency badge
+        const badge     = document.getElementById('currency-badge');
+        const badgeText = document.getElementById('currency-badge-text');
+        badge.classList.remove('loading');
+        const flag = countryFlag(userCurrencyInfo.countryCode);
+        badgeText.textContent = userCurrencyInfo.isIndia
+            ? `🇮🇳 India — Prices in INR (₹)`
+            : `${flag} ${userCurrencyInfo.countryName} — Prices in ${userCurrencyInfo.currencyCode}`;
+
+        // Show international notice for non-India users
+        if (!userCurrencyInfo.isIndia) {
+            document.getElementById('intl-notice').style.display = 'block';
+            document.getElementById('intl-tax-note').style.display = 'block';
+        }
+
+        // Build skeleton cards first (instant UI)
+        buildSkeletonCards();
+
+        // Then fill in prices asynchronously
+        await fillPrices();
+    }
+
+    // ============================================================
+    // STEP 2: Build cards with skeleton price loaders
+    // ============================================================
+    function buildSkeletonCards() {
+        const grid = document.getElementById('pricing-grid');
+        grid.innerHTML = '';
+
+        for (const [planKey, planData] of Object.entries(VOOO_CONFIG.pricing.plans)) {
+            const card     = document.createElement('div');
+            card.className = 'pricing-card';
+            card.id        = 'card-' + planKey;
+
+            let badgeHTML    = planData.badge   ? `<div class="card-badge">${planData.badge}</div>` : '';
+            let savingsHTML  = planData.savings  ? `<div class="savings-tag">${planData.savings}</div>` : '';
+
+            card.innerHTML = `
+                ${badgeHTML}
+                <div class="plan-name">${planData.display_name}</div>
+                <div class="price-wrap">
+                    <div class="price-skeleton" id="price-skeleton-${planKey}"></div>
+                    <div class="price-highlight" id="price-display-${planKey}" style="display:none;"></div>
+                </div>
+                ${savingsHTML}
+                <ul class="features">
+                    <li>Unlimited MCQs daily</li>
+                    <li>All categories unlocked</li>
+                    <li>1 device login</li>
+                    <li>${planData.duration_days} days access</li>
+                    <li>Whatsapp Support</li>
+                </ul>
+                <button class="btn" id="btn-${planKey}" disabled onclick="handleBuyClick('${planKey}')">
+                    Loading...
+                </button>
+            `;
+            grid.appendChild(card);
+        }
+    }
+
+    // ============================================================
+    // STEP 3: Fetch prices and fill cards
+    // ============================================================
+    async function fillPrices() {
+        const planKeys = Object.keys(VOOO_CONFIG.pricing.plans);
+
+        // Fetch all plan prices in parallel
+        const pricePromises = planKeys.map(planKey =>
+            VOOO_CONFIG.getPlanPriceForUser(planKey, userCurrencyInfo)
+                .then(result => ({ planKey, result }))
+        );
+
+        const results = await Promise.all(pricePromises);
+
+        results.forEach(({ planKey, result }) => {
+            if (!result) return;
+
+            // Cache it
+            priceCache[planKey] = result;
+
+            // Hide skeleton, show price
+            const skeleton = document.getElementById('price-skeleton-' + planKey);
+            const display  = document.getElementById('price-display-' + planKey);
+            const btn      = document.getElementById('btn-' + planKey);
+
+            if (skeleton) skeleton.style.display = 'none';
+            if (display)  { display.style.display = 'block'; display.textContent = result.display; }
+            if (btn)      { btn.disabled = false; btn.textContent = 'Buy Plan — ' + result.display; }
+        });
+    }
+
+    // ============================================================
+    // STEP 4: Handle Buy Click
+    // ============================================================
+    function handleBuyClick(planKey) {
+        const planData  = VOOO_CONFIG.pricing.plans[planKey];
+        const priceInfo = priceCache[planKey];
+
+        if (!planData || !priceInfo) return;
+
+        if (isExisting) {
+            // Existing user — save to localStorage then redirect
+            localStorage.setItem('vooo_plan_key',    planKey);
+            localStorage.setItem('vooo_plan_name',   planData.display_name);
+            localStorage.setItem('vooo_plan_amount', planData.amount);
+            localStorage.setItem('vooo_intl_currency', priceInfo.currency);
+            localStorage.setItem('vooo_intl_amount',   priceInfo.amount);
+            window.location.href = 'https://odelya.online/vooo-ai/voooexusrpy.html?plan=' + planKey
+                + '&name='     + encodeURIComponent(planData.display_name)
+                + '&amount='   + planData.amount
+                + '&currency=' + priceInfo.currency
+                + '&intlamt='  + priceInfo.amount;
+        } else {
+            // New user — go to signup
+            window.location.href = 'https://odelya.online/vooo-ai/vooosignup.html?plan=' + planKey
+                + '&name='     + encodeURIComponent(planData.display_name)
+                + '&amount='   + planData.amount
+                + '&currency=' + priceInfo.currency
+                + '&intlamt='  + priceInfo.amount;
+        }
+    }
+
+    // ============================================================
+    // Modal helpers (kept for fallback / India QR flow)
+    // ============================================================
+    function openPaymentModal(planKey, planName, amount) {
+        document.getElementById('modal-price').textContent  = planName;
+        document.getElementById('amount-to-pay').textContent = 'INR ' + amount;
+        document.getElementById('payment-modal').classList.add('active');
+    }
+
+    function closePaymentModal() {
+        const agreed = document.getElementById('agree-refund').checked;
+        if (!agreed) { alert('Please agree to the no-refund policy to proceed'); return; }
+        document.getElementById('payment-modal').classList.remove('active');
+    }
+
+    document.getElementById('payment-modal').addEventListener('click', function(e) {
+        if (e.target === this) closePaymentModal();
+    });
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    initPricingPage();
+
+    // Handle deep-link ?plan=xxx&amount=xxx
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('plan') && p.get('amount')) {
+        // Wait for prices to load then trigger buy
+        setTimeout(() => handleBuyClick(p.get('plan')), 2000);
+    }
+    </script>
+
 </body>
 </html>
