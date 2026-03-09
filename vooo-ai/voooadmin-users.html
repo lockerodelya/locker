@@ -43,10 +43,7 @@
             transition: all 0.2s;
             margin-right: 4px;
         }
-        .tab-btn.active {
-            background: #1e40af;
-            color: white;
-        }
+        .tab-btn.active { background: #1e40af; color: white; }
         .tab-btn:hover:not(.active) { background: #c7d4f0; }
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
@@ -103,62 +100,24 @@
         .analytics-card.purple .analytics-val { color: #7c3aed; }
         .analytics-lbl   { color: #666; font-size: 0.88em; margin-top: 6px; font-weight: 600; }
 
-        /* Analytics table */
         .analytics-table-wrap { overflow-x: auto; margin-top: 10px; }
         .analytics-table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        .analytics-table th {
-            background: #1e40af;
-            color: white;
-            padding: 11px 14px;
-            text-align: left;
-            font-size: 0.92em;
-        }
-        .analytics-table td {
-            padding: 10px 14px;
-            border-bottom: 1px solid #e0e0e0;
-            font-size: 0.92em;
-            color: #333;
-        }
+        .analytics-table th { background: #1e40af; color: white; padding: 11px 14px; text-align: left; font-size: 0.92em; }
+        .analytics-table td { padding: 10px 14px; border-bottom: 1px solid #e0e0e0; font-size: 0.92em; color: #333; }
         .analytics-table tr:hover td { background: #f0f4ff; }
         .analytics-table tr:nth-child(even) td { background: #f8f9ff; }
         .analytics-table tr:nth-child(even):hover td { background: #e8eeff; }
 
-        /* Bar chart */
-        .bar-wrap {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .bar-bg {
-            flex: 1;
-            background: #e8eef7;
-            border-radius: 4px;
-            height: 14px;
-            overflow: hidden;
-        }
-        .bar-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.4s ease;
-        }
+        .bar-wrap { display: flex; align-items: center; gap: 8px; }
+        .bar-bg { flex: 1; background: #e8eef7; border-radius: 4px; height: 14px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
         .bar-main    { background: #1e40af; }
         .bar-pricing { background: #10b981; }
         .bar-pwa     { background: #7c3aed; }
         .bar-num { font-weight: 700; font-size: 0.9em; min-width: 28px; text-align: right; }
 
-        .analytics-refresh {
-            background: #1e40af;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 9px 20px;
-            font-size: 0.95em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+        .analytics-refresh { background: #1e40af; color: white; border: none; border-radius: 8px; padding: 9px 20px; font-size: 0.95em; font-weight: 700; cursor: pointer; transition: background 0.2s; }
         .analytics-refresh:hover { background: #1d4ed8; }
-
         .no-data { text-align: center; color: #999; padding: 30px; font-size: 1em; }
 
         /* ====== MODAL ====== */
@@ -203,16 +162,14 @@
             <button class="tab-btn" onclick="switchTab('analytics')">📊 Analytics</button>
         </div>
 
-        <!-- ====================================================== -->
-        <!-- TAB 1: USERS (all original code — zero changes)        -->
-        <!-- ====================================================== -->
+        <!-- ====== TAB 1: USERS ====== -->
         <div id="tab-users" class="tab-panel active">
 
+            <!-- ⭐ Revenue card removed — only 3 stat cards now -->
             <div class="stats-grid">
                 <div class="stat-card"><div class="stat-value" id="total-users">0</div><div class="stat-label">Total Users</div></div>
                 <div class="stat-card"><div class="stat-value" id="free-users">0</div><div class="stat-label">Free Users</div></div>
                 <div class="stat-card"><div class="stat-value" id="paid-users">0</div><div class="stat-label">Paid Users</div></div>
-                <div class="stat-card"><div class="stat-value" id="revenue">₹0</div><div class="stat-label">Total Revenue</div></div>
             </div>
 
             <div class="section">
@@ -247,12 +204,9 @@
 
         </div><!-- end tab-users -->
 
-        <!-- ====================================================== -->
-        <!-- TAB 2: ANALYTICS                                        -->
-        <!-- ====================================================== -->
+        <!-- ====== TAB 2: ANALYTICS ====== -->
         <div id="tab-analytics" class="tab-panel">
 
-            <!-- Summary cards -->
             <div class="analytics-summary">
                 <div class="analytics-card">
                     <div class="analytics-val" id="an-total-main">—</div>
@@ -272,7 +226,6 @@
                 </div>
             </div>
 
-            <!-- Date-wise table -->
             <div class="section">
                 <div class="section-header">
                     <h2>📅 Day-wise Breakdown — Last 60 Days</h2>
@@ -304,7 +257,7 @@
     </div><!-- end container -->
 
 
-    <!-- ====== EDIT USER MODAL (unchanged) ====== -->
+    <!-- ====== EDIT USER MODAL ====== -->
     <div id="edit-modal" class="modal">
         <div class="modal-content">
             <h3>✏️ Edit User</h3>
@@ -351,10 +304,10 @@
                     <div class="form-group">
                         <label>Plan Type</label>
                         <select id="edit-plan" onchange="calcExpiry('edit')">
-                            <option value="1month">1 Month — ₹200</option>
-                            <option value="3month">3 Months — ₹550</option>
-                            <option value="6month">6 Months — ₹1000</option>
-                            <option value="1year">1 Year — ₹1800</option>
+                            <option value="1month">1 Month</option>
+                            <option value="3month">3 Months</option>
+                            <option value="6month">6 Months</option>
+                            <option value="1year">1 Year</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -384,7 +337,7 @@
         </div>
     </div>
 
-    <!-- ====== CREATE USER MODAL (unchanged) ====== -->
+    <!-- ====== CREATE USER MODAL ====== -->
     <div id="create-modal" class="modal">
         <div class="modal-content">
             <h3>➕ Create New User</h3>
@@ -431,10 +384,10 @@
                     <div class="form-group">
                         <label>Plan Type</label>
                         <select id="create-plan" onchange="calcExpiry('create')">
-                            <option value="1month">1 Month — ₹200</option>
-                            <option value="3month">3 Months — ₹550</option>
-                            <option value="6month">6 Months — ₹1000</option>
-                            <option value="1year">1 Year — ₹1800</option>
+                            <option value="1month">1 Month</option>
+                            <option value="3month">3 Months</option>
+                            <option value="6month">6 Months</option>
+                            <option value="1year">1 Year</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -480,13 +433,8 @@
         let allUsers        = [];
         let currentEditUser = null;
 
-        // ====== PLAN LOOKUP TABLES (unchanged) ======
-        const PLAN_VALUES = {
-            '1month': '₹200',
-            '3month': '₹550',
-            '6month': '₹1000',
-            '1year':  '₹1800'
-        };
+        // ====== PLAN LOOKUP TABLES ======
+        // ⭐ Plan values removed from display — no INR amounts shown
         const PLAN_DURATION = {
             '1month': '1 Month (30 days)',
             '3month': '3 Months (90 days)',
@@ -501,16 +449,16 @@
         };
 
         // ====== TAB SWITCHING ======
-function switchTab(tab) {
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + tab).classList.add('active');
-    event.target.classList.add('active');
-    localStorage.setItem('vooo_admin_tab', tab); // ← save active tab
-    if (tab === 'analytics') loadAnalytics();
-}
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            event.target.classList.add('active');
+            localStorage.setItem('vooo_admin_tab', tab);
+            if (tab === 'analytics') loadAnalytics();
+        }
 
-        // ====== AUTH CHECK (unchanged) ======
+        // ====== AUTH CHECK ======
         auth.onAuthStateChanged(async (user) => {
             if (!user) { window.location.href = 'voooadmin.html'; return; }
             const adminDoc = await db.collection('vooo_admins').doc(user.uid).get();
@@ -520,50 +468,54 @@ function switchTab(tab) {
                 window.location.href = 'voooadmin.html';
                 return;
             }
-         loadUsers();
-// ← Restore last active tab after page load
-const savedTab = localStorage.getItem('vooo_admin_tab');
-if (savedTab === 'analytics') {
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-analytics').classList.add('active');
-    document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
-    loadAnalytics();
-}
-});
+            loadUsers();
+            const savedTab = localStorage.getItem('vooo_admin_tab');
+            if (savedTab === 'analytics') {
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.getElementById('tab-analytics').classList.add('active');
+                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+                loadAnalytics();
+            }
+        });
 
-        // ====== LOAD USERS (unchanged) ======
+        // ====== LOAD USERS ======
+        // ⭐ Counts ALL users — India + international
+        // ⭐ Revenue calculation completely removed
         async function loadUsers() {
             try {
                 const snapshot = await db.collection('users').get();
                 allUsers = [];
-                let freeCount = 0, paidCount = 0, totalRevenue = 0;
+                let freeCount = 0, paidCount = 0;
+
                 snapshot.forEach(doc => {
                     const data = doc.data();
+                    // ⭐ Count ALL vooo users regardless of country
                     if (data.vooo_user === true) {
                         allUsers.push({ id: doc.id, ...data });
                         if (data.tier === 'paid') {
                             paidCount++;
-                            if (data.planType === '1month') totalRevenue += 200;
-                            else if (data.planType === '3month') totalRevenue += 550;
-                            else if (data.planType === '6month') totalRevenue += 1000;
-                            else if (data.planType === '1year') totalRevenue += 1800;
-                        } else { freeCount++; }
+                        } else {
+                            freeCount++;
+                        }
                     }
                 });
+
+                // ⭐ Update only 3 stat cards — revenue removed
                 document.getElementById('total-users').textContent = allUsers.length;
                 document.getElementById('free-users').textContent  = freeCount;
                 document.getElementById('paid-users').textContent  = paidCount;
-                document.getElementById('revenue').textContent     = '₹' + totalRevenue.toLocaleString();
+
                 displayUsers(allUsers);
-                document.getElementById('loading').style.display           = 'none';
+                document.getElementById('loading').style.display              = 'none';
                 document.getElementById('user-table-container').style.display = 'block';
+
             } catch (err) {
                 document.getElementById('loading').textContent = 'Error: ' + err.message;
             }
         }
 
-        // ====== DISPLAY USERS (unchanged) ======
+        // ====== DISPLAY USERS ======
         function displayUsers(users) {
             const tbody = document.getElementById('user-tbody');
             tbody.innerHTML = '';
@@ -592,7 +544,7 @@ if (savedTab === 'analytics') {
             });
         }
 
-        // ====== SEARCH (unchanged) ======
+        // ====== SEARCH ======
         document.getElementById('search-box').addEventListener('input', function() {
             const s = this.value.toLowerCase();
             const filtered = allUsers.filter(u =>
@@ -604,11 +556,12 @@ if (savedTab === 'analytics') {
             displayUsers(filtered);
         });
 
-        // ====== CALC EXPIRY (unchanged) ======
+        // ====== CALC EXPIRY ======
         function calcExpiry(prefix) {
             const plan     = document.getElementById(prefix + '-plan').value;
             const startVal = document.getElementById(prefix + '-start-date').value;
-            document.getElementById(prefix + '-plan-value').textContent = PLAN_VALUES[plan]   || '—';
+            // ⭐ Show plan duration only — no price
+            document.getElementById(prefix + '-plan-value').textContent = PLAN_DURATION[plan] || '—';
             document.getElementById(prefix + '-duration').value         = PLAN_DURATION[plan] || '';
             if (!startVal) { document.getElementById(prefix + '-expiry').value = ''; return; }
             const exp = new Date(startVal);
@@ -619,7 +572,7 @@ if (savedTab === 'analytics') {
             document.getElementById(prefix + '-expiry').value = exp.toLocaleDateString('en-GB');
         }
 
-        // ====== TIER CHANGE HANDLERS (unchanged) ======
+        // ====== TIER CHANGE HANDLERS ======
         document.getElementById('edit-tier').addEventListener('change', function() {
             const show = this.value === 'paid';
             document.getElementById('edit-plan-fields').style.display = show ? 'block' : 'none';
@@ -631,7 +584,7 @@ if (savedTab === 'analytics') {
             if (show) calcExpiry('create');
         });
 
-        // ====== OPEN EDIT MODAL (unchanged) ======
+        // ====== OPEN EDIT MODAL ======
         function openEditModal(userId) {
             currentEditUser = allUsers.find(u => u.id === userId);
             const u = currentEditUser;
@@ -659,7 +612,7 @@ if (savedTab === 'analytics') {
                         document.getElementById('edit-expiry').value = expiryDate.toLocaleDateString('en-GB');
                     } else { document.getElementById('edit-expiry').value = ''; }
                 } else { document.getElementById('edit-expiry').value = ''; }
-                document.getElementById('edit-plan-value').textContent = PLAN_VALUES[u.planType]   || u.planValue || '—';
+                document.getElementById('edit-plan-value').textContent = PLAN_DURATION[u.planType] || '—';
                 document.getElementById('edit-duration').value         = PLAN_DURATION[u.planType] || '';
             } else {
                 document.getElementById('edit-start-date').value       = '';
@@ -670,7 +623,7 @@ if (savedTab === 'analytics') {
             document.getElementById('edit-modal').classList.add('active');
         }
 
-        // ====== SAVE EDIT (unchanged) ======
+        // ====== SAVE EDIT ======
         document.getElementById('edit-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const tier        = document.getElementById('edit-tier').value;
@@ -694,7 +647,6 @@ if (savedTab === 'analytics') {
                 else if (plan === '6month') exp.setMonth(exp.getMonth() + 6);
                 else if (plan === '1year')  exp.setFullYear(exp.getFullYear() + 1);
                 updateData.planType       = plan;
-                updateData.planValue      = PLAN_VALUES[plan];
                 updateData.planStartDate  = firebase.firestore.Timestamp.fromDate(start);
                 updateData.planExpiryDate = firebase.firestore.Timestamp.fromDate(exp);
             } else {
@@ -709,7 +661,7 @@ if (savedTab === 'analytics') {
             } catch (err) { alert('❌ Error updating user: ' + err.message); }
         });
 
-        // ====== OPEN CREATE MODAL (unchanged) ======
+        // ====== OPEN CREATE MODAL ======
         function openCreateModal() {
             document.getElementById('create-form').reset();
             document.getElementById('create-plan-fields').style.display = 'none';
@@ -717,7 +669,7 @@ if (savedTab === 'analytics') {
             document.getElementById('create-modal').classList.add('active');
         }
 
-        // ====== CREATE USER (unchanged) ======
+        // ====== CREATE USER ======
         document.getElementById('create-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const fullname = document.getElementById('create-fullname').value.trim();
@@ -752,7 +704,7 @@ if (savedTab === 'analytics') {
                     else if (plan === '3month') exp.setMonth(exp.getMonth() + 3);
                     else if (plan === '6month') exp.setMonth(exp.getMonth() + 6);
                     else if (plan === '1year')  exp.setFullYear(exp.getFullYear() + 1);
-                    userData.planType = plan; userData.planValue = PLAN_VALUES[plan];
+                    userData.planType       = plan;
                     userData.planStartDate  = firebase.firestore.Timestamp.fromDate(start);
                     userData.planExpiryDate = firebase.firestore.Timestamp.fromDate(exp);
                 }
@@ -763,7 +715,7 @@ if (savedTab === 'analytics') {
             } catch (err) { alert('❌ Error creating user: ' + err.message); }
         });
 
-        // ====== DELETE USER (unchanged) ======
+        // ====== DELETE USER ======
         async function deleteUser(userId, username) {
             if (!confirm('⚠️ Delete user "' + username + '"?\n\nThis removes them from Firestore. They will no longer be able to log in.\n\nContinue?')) return;
             try {
@@ -773,18 +725,18 @@ if (savedTab === 'analytics') {
             } catch (err) { alert('❌ Error deleting user: ' + err.message); }
         }
 
-        // ====== CLOSE MODAL (unchanged) ======
+        // ====== CLOSE MODAL ======
         function closeModal(id) {
             document.getElementById(id).classList.remove('active');
             currentEditUser = null;
         }
 
-        // ====== LOGOUT (unchanged) ======
+        // ====== LOGOUT ======
         function logout() {
             auth.signOut().then(() => { window.location.href = 'voooadmin.html'; });
         }
 
-        // ====== CHANGE PASSWORD (unchanged) ======
+        // ====== CHANGE PASSWORD ======
         function changePassword() {
             const user = auth.currentUser;
             if (user && user.email) {
@@ -794,15 +746,12 @@ if (savedTab === 'analytics') {
             }
         }
 
-        // ══════════════════════════════════════════════════════
-        // ANALYTICS — reads from vooo_analytics collection
-        // ══════════════════════════════════════════════════════
+        // ====== ANALYTICS ======
         async function loadAnalytics() {
-            document.getElementById('analytics-loading').style.display          = 'block';
-            document.getElementById('analytics-table-container').style.display  = 'none';
+            document.getElementById('analytics-loading').style.display         = 'block';
+            document.getElementById('analytics-table-container').style.display = 'none';
 
             try {
-                // Generate last 60 date strings
                 const dates = [];
                 for (let i = 0; i < 60; i++) {
                     const d = new Date();
@@ -810,21 +759,13 @@ if (savedTab === 'analytics') {
                     dates.push(d.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }));
                 }
 
-                // Fetch all 60 docs in one batch
-                const snapshot = await db.collection('vooo_analytics')
-                    .where('date', 'in', dates.slice(0, 30)) // Firestore 'in' limit = 30
-                    .get();
+                const snapshot  = await db.collection('vooo_analytics').where('date', 'in', dates.slice(0, 30)).get();
+                const snapshot2 = await db.collection('vooo_analytics').where('date', 'in', dates.slice(30, 60)).get();
 
-                const snapshot2 = await db.collection('vooo_analytics')
-                    .where('date', 'in', dates.slice(30, 60))
-                    .get();
-
-                // Build map: date → data
                 const dataMap = {};
                 snapshot.forEach(doc  => { dataMap[doc.id] = doc.data(); });
                 snapshot2.forEach(doc => { dataMap[doc.id] = doc.data(); });
 
-                // Compute totals
                 let totalMain = 0, totalPricing = 0, totalPWA = 0, todayMain = 0;
                 const today = dates[0];
 
@@ -836,18 +777,15 @@ if (savedTab === 'analytics') {
                     if (date === today) todayMain = d.views_main || 0;
                 });
 
-                // Update summary cards
                 document.getElementById('an-total-main').textContent    = totalMain.toLocaleString();
                 document.getElementById('an-total-pricing').textContent = totalPricing.toLocaleString();
                 document.getElementById('an-today-main').textContent    = todayMain.toLocaleString();
                 document.getElementById('an-total-pwa').textContent     = totalPWA.toLocaleString();
 
-                // Max values for bar scaling
                 const maxMain    = Math.max(...dates.map(d => (dataMap[d] || {}).views_main    || 0), 1);
                 const maxPricing = Math.max(...dates.map(d => (dataMap[d] || {}).views_pricing || 0), 1);
                 const maxPWA     = Math.max(...dates.map(d => (dataMap[d] || {}).pwa_installs  || 0), 1);
 
-                // Build table rows — newest first
                 const tbody = document.getElementById('analytics-tbody');
                 tbody.innerHTML = '';
                 let hasAnyData = false;
@@ -857,42 +795,26 @@ if (savedTab === 'analytics') {
                     const main    = d.views_main    || 0;
                     const pricing = d.views_pricing || 0;
                     const pwa     = d.pwa_installs  || 0;
-                    if (main === 0 && pricing === 0 && pwa === 0) return; // skip empty days
+                    if (main === 0 && pricing === 0 && pwa === 0) return;
                     hasAnyData = true;
 
-                    // Format date nicely: DD Mon YYYY
-                    const dateObj    = new Date(date + 'T00:00:00');
+                    const dateObj       = new Date(date + 'T00:00:00');
                     const dateFormatted = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-                    const isToday    = date === today;
+                    const isToday       = date === today;
 
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td><strong>${dateFormatted}</strong>${isToday ? ' <span style="background:#fef3c7;color:#92400e;padding:2px 7px;border-radius:10px;font-size:0.78em;font-weight:700;">TODAY</span>' : ''}</td>
-                        <td>
-                            <div class="bar-wrap">
-                                <div class="bar-bg"><div class="bar-fill bar-main" style="width:${Math.round((main/maxMain)*100)}%"></div></div>
-                                <span class="bar-num">${main}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="bar-wrap">
-                                <div class="bar-bg"><div class="bar-fill bar-pricing" style="width:${Math.round((pricing/maxPricing)*100)}%"></div></div>
-                                <span class="bar-num">${pricing}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="bar-wrap">
-                                <div class="bar-bg"><div class="bar-fill bar-pwa" style="width:${Math.round((pwa/maxPWA)*100)}%"></div></div>
-                                <span class="bar-num">${pwa}</span>
-                            </div>
-                        </td>
+                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-main" style="width:${Math.round((main/maxMain)*100)}%"></div></div><span class="bar-num">${main}</span></div></td>
+                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-pricing" style="width:${Math.round((pricing/maxPricing)*100)}%"></div></div><span class="bar-num">${pricing}</span></div></td>
+                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-pwa" style="width:${Math.round((pwa/maxPWA)*100)}%"></div></div><span class="bar-num">${pwa}</span></div></td>
                     `;
                     tbody.appendChild(row);
                 });
 
-                document.getElementById('analytics-no-data').style.display      = hasAnyData ? 'none' : 'block';
-                document.getElementById('analytics-loading').style.display       = 'none';
-                document.getElementById('analytics-table-container').style.display = 'block';
+                document.getElementById('analytics-no-data').style.display         = hasAnyData ? 'none' : 'block';
+                document.getElementById('analytics-loading').style.display          = 'none';
+                document.getElementById('analytics-table-container').style.display  = 'block';
 
             } catch (err) {
                 document.getElementById('analytics-loading').textContent = '❌ Error loading analytics: ' + err.message;
