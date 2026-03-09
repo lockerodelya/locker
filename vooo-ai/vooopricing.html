@@ -194,52 +194,7 @@
         }
         .intl-notice strong { color: #fbbf24; }
 
-        /* ── Modal ── */
-        .modal {
-            display: none; position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 10000;
-            justify-content: center; align-items: center; padding: 20px;
-        }
-        .modal.active { display: flex; }
-        .modal-content {
-            background: white; border-radius: 20px;
-            padding: 40px; max-width: 600px; width: 100%;
-            max-height: 90vh; overflow-y: auto;
-        }
-        .modal-header { text-align: center; margin-bottom: 30px; }
-        .modal-header h2 { color: #0D47A1; margin-bottom: 10px; }
-        .modal-price { font-size: 2em; font-weight: bold; color: #cc0000; margin-top: 8px; }
-        .qr-container { text-align: center; margin: 30px 0; }
-        .qr-container img { max-width: 300px; width: 100%; border: 5px solid #0D47A1; border-radius: 15px; }
-        .payment-details { background: #f9fafb; padding: 20px; border-radius: 10px; margin: 20px 0; }
-        .payment-details p { margin: 10px 0; color: #333; }
-        .payment-details strong { color: #0D47A1; }
-        .instructions { background: #eff6ff; border-left: 4px solid #0D47A1; padding: 15px; margin: 20px 0; }
-        .instructions ol { margin-left: 20px; }
-        .instructions li { margin: 10px 0; color: #333; }
-        .instructions .sub-list { margin-top: 8px; margin-left: 24px; list-style: disc; }
-        .instructions .sub-list li { margin: 6px 0; color: #333; }
-        .close-btn {
-            background: #e5e7eb; color: #333;
-            padding: 12px 30px; border: none;
-            border-radius: 8px; cursor: pointer;
-            font-weight: bold; width: 100%; margin-top: 20px;
-        }
-        .close-btn:hover { background: #d1d5db; }
-        .checkbox-container {
-            margin: 20px 0; text-align: left;
-            display: flex; align-items: flex-start; gap: 12px;
-        }
-        .checkbox-container input[type="checkbox"] {
-            width: 22px; height: 22px; min-width: 22px;
-            cursor: pointer; margin-top: 2px;
-        }
-        .checkbox-container label {
-            color: #333; font-size: 1.1em;
-            font-weight: 500; line-height: 1.5; cursor: pointer;
-        }
+
 
         /* ── Responsive ── */
         @media (max-width: 900px) {
@@ -309,50 +264,14 @@
             <h2>Contact and Support</h2>
             <p>• Phone : +91-96741 30001</p>
             <p>• Whatsapp : +91-96741 30001</p>
-            <p>• Email : care.ompl@gmail.com</p>
+            <p>• Email : <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="45262437206b2a283529052228242c296b262a28">[email&#160;protected]</a></p>
         </div>
     </div>
 
-    <!-- Payment Modal (India/QR manual mode) -->
-    <div id="payment-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Complete Your Payment</h2>
-                <p id="modal-price" class="modal-price"></p>
-            </div>
-            <div class="qr-container">
-                <img src="assets/sbiqr.jpg" alt="Payment QR Code">
-            </div>
-            <div class="payment-details">
-                <p><strong>Amount to Pay:</strong> <span id="amount-to-pay" style="font-size:1.5em;color:#22c55e;">INR 0</span></p>
-                <p><strong>UPI ID:</strong> 9874295005@sbi</p>
-                <p><strong>Beneficiary:</strong> Odelya Management Pvt. Ltd.</p>
-            </div>
-            <div class="instructions">
-                <h3 style="margin-bottom:15px;">Payment Instructions:</h3>
-                <ol>
-                    <li>Scan the QR code above using any UPI app (Google Pay, PhonePe, Paytm, etc.)</li>
-                    <li>Pay the <strong>EXACT</strong> amount shown above</li>
-                    <li>Take a screenshot of successful payment</li>
-                    <li>Share through Whatsapp: <strong>+91-96741 30001</strong>
-                        <ul class="sub-list">
-                            <li>The transaction details</li>
-                            <li>Registered email id</li>
-                            <li>Registered phone no</li>
-                        </ul>
-                    </li>
-                </ol>
-            </div>
-            <div class="checkbox-container">
-                <input type="checkbox" id="agree-refund" required>
-                <label for="agree-refund">I agree to the no-refund policy. All sales are final.</label>
-            </div>
-            <button class="close-btn" onclick="closePaymentModal()">Close</button>
-        </div>
-    </div>
+
 
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="/vooo-ai/vooo-config.js"></script>
     <script>
@@ -514,24 +433,7 @@
         }
     }
 
-    // ============================================================
-    // Modal helpers (kept for fallback / India QR flow)
-    // ============================================================
-    function openPaymentModal(planKey, planName, amount) {
-        document.getElementById('modal-price').textContent  = planName;
-        document.getElementById('amount-to-pay').textContent = 'INR ' + amount;
-        document.getElementById('payment-modal').classList.add('active');
-    }
 
-    function closePaymentModal() {
-        const agreed = document.getElementById('agree-refund').checked;
-        if (!agreed) { alert('Please agree to the no-refund policy to proceed'); return; }
-        document.getElementById('payment-modal').classList.remove('active');
-    }
-
-    document.getElementById('payment-modal').addEventListener('click', function(e) {
-        if (e.target === this) closePaymentModal();
-    });
 
     // ============================================================
     // INIT
@@ -539,12 +441,4 @@
     initPricingPage();
 
     // Handle deep-link ?plan=xxx&amount=xxx
-    const p = new URLSearchParams(window.location.search);
-    if (p.get('plan') && p.get('amount')) {
-        // Wait for prices to load then trigger buy
-        setTimeout(() => handleBuyClick(p.get('plan')), 2000);
-    }
-    </script>
-
-</body>
-</html>
+    const p = new URLSear
