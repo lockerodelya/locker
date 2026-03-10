@@ -286,7 +286,7 @@
     }
 
     // ── INR amounts ──
-    const payable      = VOOO_CONFIG.getTotalPayable(planKey);
+    const payable      = VOOO_CONFIG.getTotalPayable(planKey, !isIndia);  // ⭐ pass international flag
     const planAmt      = payable.planAmount;
     const gatewayFee   = payable.gatewayFee;
     const totalAmount  = payable.totalAmount;
@@ -300,7 +300,11 @@
 
     // ── Populate UI ──
     document.getElementById('user-fullname').textContent   = fullname || 'User';
-    document.getElementById('fee-percent').textContent     = feePercent;
+    // ⭐ Show correct fee % based on India or international
+    const feePercent   = isIndia
+        ? VOOO_CONFIG.gateway_fee_percent_india
+        : VOOO_CONFIG.gateway_fee_percent_international;
+    document.getElementById('fee-percent').textContent = feePercent;
     document.getElementById('row-plan-amount').textContent = 'INR ' + planAmt;
     document.getElementById('row-gateway-fee').textContent = 'INR ' + gatewayFee;
     document.getElementById('plan-info').textContent       = durationDays + ' days access · All features unlocked';

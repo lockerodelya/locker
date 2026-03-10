@@ -8,11 +8,13 @@ const VOOO_CONFIG = {
 
     // ============================================
     // ⭐ RAZORPAY GATEWAY FEE % — EDIT HERE
-    // Current: 2% (Razorpay standard UPI/Card rate)
-    // If Razorpay changes your rate, update ONLY this number
-    // Example: 2 means 2%, 2.5 means 2.5%, 1.8 means 1.8%
+    // gateway_fee_percent_india         = fee for Indian payments (UPI, cards, netbanking)
+    // gateway_fee_percent_international = fee for international card payments
+    // If Razorpay changes your rate, update ONLY these numbers
+    // Example: 2 means 2%, 3 means 3%, 2.5 means 2.5%
     // ============================================
-    gateway_fee_percent: 2,   // ⭐ CHANGE THIS IF RAZORPAY RATE CHANGES
+    gateway_fee_percent_india:         2,   // ⭐ CHANGE THIS IF RAZORPAY INDIA RATE CHANGES
+    gateway_fee_percent_international: 3,   // ⭐ CHANGE THIS IF RAZORPAY INTERNATIONAL RATE CHANGES
     free_daily_limit: 30,     // ⭐ CHANGE THIS TO SET FREE USER DAILY MCQ LIMIT
 
 
@@ -89,17 +91,17 @@ const VOOO_CONFIG = {
             '3month': {
                 amount:       350,
                 duration_days: 90,
-                display_name: '3 Months',
+                display_name: '3 Months'
             },
             '6month': {
                 amount:       700,
                 duration_days: 180,
-                display_name: '6 Months',
+                display_name: '6 Months'
             },
             '1year': {
                 amount:       1200,
                 duration_days: 365,
-                display_name: '1 Year',
+                display_name: '1 Year'
             }
         },
 
@@ -233,14 +235,20 @@ VOOO_CONFIG.calculateGST = function(totalAmount) {
     };
 };
 
-// Calculate gateway fee using gateway_fee_percent set at top
-VOOO_CONFIG.calculateGatewayFee = function(amount) {
-    const feePercent = this.gateway_fee_percent / 100;
+// Calculate gateway fee
+// isInternational = true  → uses gateway_fee_percent_international (3%)
+// isInternational = false → uses gateway_fee_percent_india (2%)
+VOOO_CONFIG.calculateGatewayFee = function(amount, isInternational) {
+    const feePercent = isInternational
+        ? this.gateway_fee_percent_international / 100
+        : this.gateway_fee_percent_india / 100;
     return Math.ceil(amount * feePercent);
 };
 
 // Get total amount user needs to pay (plan amount + gateway fee)
-VOOO_CONFIG.getTotalPayable = function(planKey) {
+// isInternational = true  → uses international fee rate (3%)
+// isInternational = false → uses India fee rate (2%) — default
+VOOO_CONFIG.getTotalPayable = function(planKey, isInternational) {
     const plan = this.pricing.plans[planKey];
     if (!plan) return { planAmount: 0, gatewayFee: 0, totalAmount: 0, totalPaise: 0 };
 
@@ -248,7 +256,7 @@ VOOO_CONFIG.getTotalPayable = function(planKey) {
     let   gatewayFee  = 0;
 
     if (this.payment.mode === 'razorpay' || this.payment.mode === 'cashfree') {
-        gatewayFee = this.calculateGatewayFee(planAmount);
+        gatewayFee = this.calculateGatewayFee(planAmount, isInternational || false);
     }
 
     const totalAmount = planAmount + gatewayFee;
@@ -468,7 +476,8 @@ if (typeof module !== 'undefined' && module.exports) {
 // Startup confirmation in browser console
 console.log('✅ VOOO Configuration loaded');
 console.log('Payment Mode:',        VOOO_CONFIG.payment.mode);
-console.log('Gateway Fee:',         VOOO_CONFIG.gateway_fee_percent + '%');
+console.log('Gateway Fee India:',         VOOO_CONFIG.gateway_fee_percent_india         + '%');
+console.log('Gateway Fee International:',  VOOO_CONFIG.gateway_fee_percent_international + '%');
 console.log('Higher Currency Factor:', VOOO_CONFIG.international_factor_higher_currencies + 'x (USD, GBP, EUR etc)');
 console.log('Lower Currency Factor:',  VOOO_CONFIG.international_factor_lower_currencies  + 'x (BDT, NPR, LKR etc)');
 console.log('Plans:',               Object.keys(VOOO_CONFIG.pricing.plans));
