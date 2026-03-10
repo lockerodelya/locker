@@ -18,12 +18,22 @@ const VOOO_CONFIG = {
 
     // ============================================
     // ⭐⭐ INTERNATIONAL PRICING SETTINGS — EDIT HERE
-    // international_factor = multiplier for STRONG currencies (USD, GBP, EUR, AUD etc)
-    // Example: 10 means $1.44 becomes $14, £1.13 becomes £11
-    // Change ONE number here = ALL international strong currency prices update automatically
-    // Weak currencies (BDT, NPR, LKR, PKR etc) = direct conversion, no factor, whole number only
+    //
+    // international_factor_higher_currencies
+    //   → STRONG currencies higher in value than INR (USD, GBP, EUR, AUD, CAD etc)
+    //   → Formula: INR → convert → multiply by this factor → whole number
+    //   → Example: 10 means ₹120 → $1.44 × 10 = $14
+    //
+    // international_factor_lower_currencies
+    //   → WEAK currencies lower in value than INR (BDT, NPR, LKR, PKR etc)
+    //   → Formula: INR → convert → multiply by this factor → whole number
+    //   → Example: 2 means ₹120 → ৳160 × 2 = ৳320
+    //
+    // Change ONLY these two numbers = ALL prices update automatically
+    // INR prices stay unchanged for Indian users
     // ============================================
-    international_factor: 10,  // ⭐ CHANGE THIS TO CONTROL INTERNATIONAL PRICING
+    international_factor_higher_currencies: 10,  // ⭐ CHANGE THIS FOR USD, GBP, EUR etc
+    international_factor_lower_currencies:   2,  // ⭐ CHANGE THIS FOR BDT, NPR, LKR etc
 
     // ============================================
     // SUPPORTED INTERNATIONAL CURRENCIES
@@ -79,17 +89,20 @@ const VOOO_CONFIG = {
             '3month': {
                 amount:       350,
                 duration_days: 90,
-                display_name: '3 Months'
+                display_name: '3 Months',
+                badge: 'MOST POPULAR'
             },
             '6month': {
                 amount:       700,
                 duration_days: 180,
-                display_name: '6 Months'
+                display_name: '6 Months',
+                badge: 'BEST VALUE'
             },
             '1year': {
                 amount:       1200,
                 duration_days: 365,
-                display_name: '1 Year'
+                display_name: '1 Year',
+                savings: 'Save ₹240!'
             }
         },
 
@@ -264,8 +277,8 @@ VOOO_CONFIG.getTotalPayable = function(planKey) {
 // How it works:
 //   - Detects user country via IP
 //   - Fetches live exchange rate from free API
-//   - Strong currency → convert to foreign → multiply by international_factor → round to whole number
-//   - Weak currency   → convert to foreign directly → round to whole number
+//   - Strong currency (USD/GBP/EUR etc) → convert → multiply by international_factor_higher_currencies → whole number
+//   - Weak currency (BDT/NPR/LKR etc)   → convert → multiply by international_factor_lower_currencies → whole number
 //   - India (INR)     → return INR amount as-is
 // ============================================
 VOOO_CONFIG.getInternationalPrice = async function(inrAmount, currencyCode) {
@@ -286,11 +299,11 @@ VOOO_CONFIG.getInternationalPrice = async function(inrAmount, currencyCode) {
         let convertedAmount;
 
         if (currencyInfo.strong) {
-            // Strong currency: convert then multiply by factor
-            convertedAmount = Math.round(inrAmount * rate * this.international_factor);
+            // Strong currency (higher than INR): convert then multiply by higher factor
+            convertedAmount = Math.round(inrAmount * rate * this.international_factor_higher_currencies);
         } else {
-            // Weak currency: direct conversion, whole number only
-            convertedAmount = Math.round(inrAmount * rate);
+            // Weak currency (lower than INR): convert then multiply by lower factor
+            convertedAmount = Math.round(inrAmount * rate * this.international_factor_lower_currencies);
         }
 
         return {
@@ -459,6 +472,7 @@ if (typeof module !== 'undefined' && module.exports) {
 console.log('✅ VOOO Configuration loaded');
 console.log('Payment Mode:',        VOOO_CONFIG.payment.mode);
 console.log('Gateway Fee:',         VOOO_CONFIG.gateway_fee_percent + '%');
-console.log('International Factor:',VOOO_CONFIG.international_factor + 'x (strong currencies)');
+console.log('Higher Currency Factor:', VOOO_CONFIG.international_factor_higher_currencies + 'x (USD, GBP, EUR etc)');
+console.log('Lower Currency Factor:',  VOOO_CONFIG.international_factor_lower_currencies  + 'x (BDT, NPR, LKR etc)');
 console.log('Plans:',               Object.keys(VOOO_CONFIG.pricing.plans));
 console.log('Plan Amounts (INR):',  Object.values(VOOO_CONFIG.pricing.plans).map(p => p.amount));
