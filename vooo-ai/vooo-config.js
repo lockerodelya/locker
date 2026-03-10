@@ -90,19 +90,16 @@ const VOOO_CONFIG = {
                 amount:       350,
                 duration_days: 90,
                 display_name: '3 Months',
-                badge: 'MOST POPULAR'
             },
             '6month': {
                 amount:       700,
                 duration_days: 180,
                 display_name: '6 Months',
-                badge: 'BEST VALUE'
             },
             '1year': {
                 amount:       1200,
                 duration_days: 365,
                 display_name: '1 Year',
-                savings: 'Save ₹240!'
             }
         },
 
