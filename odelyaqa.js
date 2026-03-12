@@ -5,17 +5,6 @@ const qaDatabase = [
     
     // ====== PRICING TABLE SPECIFIC Q&A ======
     // 10GB Plan
-    {
-        question: "10GB storage plan price",
-        answer: "10GB Storage Plan Details:<br><br>• Storage: 10GB<br>• Users: 1 user<br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• GST: Included (18%)",
-        category: "pricing"
-    },
-    {
-        question: "How much for 10GB storage?",
-        answer: "10GB storage costs:<br><br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• Users: 1 user<br>• All prices include 18% GST",
-        category: "pricing"
-    },
-            // 10GB Plan
         {
             question: "10GB storage plan price",
             answer: "10GB Storage Plan Details:<br><br>• Storage: 10GB<br>• Users: 1 user<br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• GST: Included (18%)",
