@@ -4,17 +4,7 @@
 const qaDatabase = [
     
     // ====== PRICING TABLE SPECIFIC Q&A ======
-            // 10GB Plan
-        {
-            question: "10GB storage plan price",
-            answer: "10GB Storage Plan Details:<br><br>• Storage: 10GB<br>• Users: 1 user<br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• GST: Included (18%)",
-            category: "pricing"
-        },
-        {
-            question: "How much for 10GB storage?",
-            answer: "10GB storage costs:<br><br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• Users: 1 user<br>• All prices include 18% GST",
-            category: "pricing"
-        },
+         // 10GB Plan
         {
             question: "What is the price of 10GB plan?",
             answer: "10GB Plan Pricing:<br><br>📦 Storage: 10GB<br>👥 Users: 1<br>💰 Monthly: Rs. 18<br>💰 Yearly: Rs. 202<br>📋 GST: Included",
@@ -23,32 +13,12 @@ const qaDatabase = [
 
         // 30GB Plan
         {
-            question: "30GB storage plan price",
-            answer: "30GB Storage Plan Details:<br><br>• Storage: 30GB<br>• Users: 2 users<br>• Monthly: Rs. 53<br>• Yearly: Rs. 605<br>• GST: Included (18%)",
-            category: "pricing"
-        },
-        {
-            question: "How much for 30GB storage?",
-            answer: "30GB storage costs:<br><br>• Monthly: Rs. 53<br>• Yearly: Rs. 605<br>• Users: 2 users<br>• All prices include 18% GST",
-            category: "pricing"
-        },
-        {
             question: "What is the price of 30GB plan?",
             answer: "30GB Plan Pricing:<br><br>📦 Storage: 30GB<br>👥 Users: 2<br>💰 Monthly: Rs. 53<br>💰 Yearly: Rs. 605<br>📋 GST: Included",
             category: "pricing"
         },
 
         // 50GB Plan
-        {
-            question: "50GB storage plan price",
-            answer: "50GB Storage Plan Details:<br><br>• Storage: 50GB<br>• Users: 2 users<br>• Monthly: Rs. 89<br>• Yearly: Rs. 956<br>• GST: Included (18%)",
-            category: "pricing"
-        },
-        {
-            question: "How much for 50GB storage?",
-            answer: "50GB storage costs:<br><br>• Monthly: Rs. 89<br>• Yearly: Rs. 956<br>• Users: 2 users<br>• All prices include 18% GST",
-            category: "pricing"
-        },
         {
             question: "What is the price of 50GB plan?",
             answer: "50GB Plan Pricing:<br><br>📦 Storage: 50GB<br>👥 Users: 2<br>💰 Monthly: Rs. 89<br>💰 Yearly: Rs. 956<br>📋 GST: Included",
@@ -57,32 +27,12 @@ const qaDatabase = [
 
         // 70GB Plan
         {
-            question: "70GB storage plan price",
-            answer: "70GB Storage Plan Details:<br><br>• Storage: 70GB<br>• Users: 3 users<br>• Monthly: Rs. 124<br>• Yearly: Rs. 1,338<br>• GST: Included (18%)",
-            category: "pricing"
-        },
-        {
-            question: "How much for 70GB storage?",
-            answer: "70GB storage costs:<br><br>• Monthly: Rs. 124<br>• Yearly: Rs. 1,338<br>• Users: 3 users<br>• All prices include 18% GST",
-            category: "pricing"
-        },
-        {
             question: "What is the price of 70GB plan?",
             answer: "70GB Plan Pricing:<br><br>📦 Storage: 70GB<br>👥 Users: 3<br>💰 Monthly: Rs. 124<br>💰 Yearly: Rs. 1,338<br>📋 GST: Included",
             category: "pricing"
         },
 
         // 100GB Plan
-        {
-            question: "100GB storage plan price",
-            answer: "100GB Storage Plan Details:<br><br>• Storage: 100GB<br>• Users: 3 users<br>• Monthly: Rs. 177<br>• Yearly: Rs. 1,805<br>• GST: Included (18%)",
-            category: "pricing"
-        },
-        {
-            question: "How much for 100GB storage?",
-            answer: "100GB storage costs:<br><br>• Monthly: Rs. 177<br>• Yearly: Rs. 1,805<br>• Users: 3 users<br>• All prices include 18% GST",
-            category: "pricing"
-        },
         {
             question: "What is the price of 100GB plan?",
             answer: "100GB Plan Pricing:<br><br>📦 Storage: 100GB<br>👥 Users: 3<br>💰 Monthly: Rs. 177<br>💰 Yearly: Rs. 1,805<br>📋 GST: Included",
@@ -91,32 +41,12 @@ const qaDatabase = [
 
         // 150GB Plan
         {
-            question: "150GB storage plan price",
-            answer: "150GB Storage Plan Details:<br><br>• Storage: 150GB<br>• Users: 3 users<br>• Monthly: Rs. 266<br>• Yearly: Rs. 2,708<br>• GST: Included (18%)",
-            category: "pricing"
-        },
-        {
-            question: "How much for 150GB storage?",
-            answer: "150GB storage costs:<br><br>• Monthly: Rs. 266<br>• Yearly: Rs. 2,708<br>• Users: 3 users<br>• All prices include 18% GST",
-            category: "pricing"
-        },
-        {
             question: "What is the price of 150GB plan?",
             answer: "150GB Plan Pricing:<br><br>📦 Storage: 150GB<br>👥 Users: 3<br>💰 Monthly: Rs. 266<br>💰 Yearly: Rs. 2,708<br>📋 GST: Included",
             category: "pricing"
         },
 
         // 200GB Plan
-        {
-            question: "200GB storage plan price",
-            answer: "200GB Storage Plan Details:<br><br>• Storage: 200GB<br>• Users: 4 users<br>• Monthly: Rs. 354<br>• Yearly: Rs. 3,611<br>• GST: Included (18%)",
-            category: "pricing"
-        },
-        {
-            question: "How much for 200GB storage?",
-            answer: "200GB storage costs:<br><br>• Monthly: Rs. 354<br>• Yearly: Rs. 3,611<br>• Users: 4 users<br>• All prices include 18% GST",
-            category: "pricing"
-        },
         {
             question: "What is the price of 200GB plan?",
             answer: "200GB Plan Pricing:<br><br>📦 Storage: 200GB<br>👥 Users: 4<br>💰 Monthly: Rs. 354<br>💰 Yearly: Rs. 3,611<br>📋 GST: Included",
@@ -125,16 +55,6 @@ const qaDatabase = [
 
         // 300GB Plan
         {
-            question: "300GB storage plan price",
-            answer: "300GB Storage Plan Details:<br><br>• Storage: 300GB<br>• Users: 4 users<br>• Monthly: Rs. 531<br>• Yearly: Rs. 5,098<br>• GST: Included (18%)",
-            category: "pricing"
-        },
-        {
-            question: "How much for 300GB storage?",
-            answer: "300GB storage costs:<br><br>• Monthly: Rs. 531<br>• Yearly: Rs. 5,098<br>• Users: 4 users<br>• All prices include 18% GST",
-            category: "pricing"
-        },
-        {
             question: "What is the price of 300GB plan?",
             answer: "300GB Plan Pricing:<br><br>📦 Storage: 300GB<br>👥 Users: 4<br>💰 Monthly: Rs. 531<br>💰 Yearly: Rs. 5,098<br>📋 GST: Included",
             category: "pricing"
@@ -142,32 +62,12 @@ const qaDatabase = [
 
         // 400GB Plan
         {
-            question: "400GB storage plan price",
-            answer: "400GB Storage Plan Details:<br><br>• Storage: 400GB<br>• Users: 4 users<br>• Monthly: Rs. 708<br>• Yearly: Rs. 6,797<br>• GST: Included (18%)",
-            category: "pricing"
-        },
-        {
-            question: "How much for 400GB storage?",
-            answer: "400GB storage costs:<br><br>• Monthly: Rs. 708<br>• Yearly: Rs. 6,797<br>• Users: 4 users<br>• All prices include 18% GST",
-            category: "pricing"
-        },
-        {
             question: "What is the price of 400GB plan?",
             answer: "400GB Plan Pricing:<br><br>📦 Storage: 400GB<br>👥 Users: 4<br>💰 Monthly: Rs. 708<br>💰 Yearly: Rs. 6,797<br>📋 GST: Included",
             category: "pricing"
         },
 
         // 500GB Plan
-        {
-            question: "500GB storage plan price",
-            answer: "500GB Storage Plan Details:<br><br>• Storage: 500GB<br>• Users: 5 users<br>• Monthly: Rs. 885<br>• Yearly: Rs. 7,965<br>• GST: Included (18%)",
-            category: "pricing"
-        },
-        {
-            question: "How much for 500GB storage?",
-            answer: "500GB storage costs:<br><br>• Monthly: Rs. 885<br>• Yearly: Rs. 7,965<br>• Users: 5 users<br>• All prices include 18% GST",
-            category: "pricing"
-        },
         {
             question: "What is the price of 500GB plan?",
             answer: "500GB Plan Pricing:<br><br>📦 Storage: 500GB<br>👥 Users: 5<br>💰 Monthly: Rs. 885<br>💰 Yearly: Rs. 7,965<br>📋 GST: Included",
@@ -391,11 +291,6 @@ const qaDatabase = [
         
         // Contact Information
         {
-            question: "How can I contact you?",
-            answer: "You can reach us through:<br><br>📞 <strong>Phone:</strong> +91-96741 30001<br>✉️ <strong>Email:</strong> care.ompl@gmail.com<br>📍 <strong>Office:</strong> 44E, 2nd Floor, Nandalalmitra Lane, Kolkata-700040<br>⏰ <strong>Hours:</strong> Monday to Saturday, 9 AM - 8 PM",
-            category: "contact"
-        },
-        {
             question: "What are your business hours?",
             answer: "Our business hours are:<br><br><strong>Monday to Saturday:</strong> 10:00 AM - 7:00 PM<br><strong>Sunday:</strong> Closed<br><br>We are available for calls and emails during these hours.",
             category: "contact"
@@ -484,19 +379,10 @@ const qaDatabase = [
             category: "general"
         },
         {
-            question: "Do you offer technical support?",
-            answer: "Yes, we provide technical support during our business hours (Mon-Sat, 9 AM - 8 PM). Contact us at +91-96741 30001 or care.ompl@gmail.com for assistance.",
-            category: "general"
-        },
-        {
             question: "What makes you different from other cloud storage?",
             answer: "We stand out because:<br>1. <strong>True end-to-end encryption</strong> - Your data is 100% private<br>2. <strong>Transparent pricing</strong> - All-inclusive with no hidden charges<br>3. <strong>Indian company</strong> - Local support and understanding<br>4. <strong>Event photo storage</strong> - Unique service for special occasions",
             category: "general"
         },
-        {
-    question: "What is the name of the cloud storage service?",
-    answer: "Odelya Cloud Digital Locker."
-},
 {
     question: "What is the main service offered by Odelya?",
     answer: "Secure cloud data storage with end-to-end encryption."
@@ -514,10 +400,6 @@ const qaDatabase = [
     answer: "Secure Cloud Storage for Files and Media."
 },
 {
-    question: "What company produces Odelya Cloud?",
-    answer: "Odelya Management private Limited (OMPL)."
-},
-{
     question: "What are the three main services listed on the site?",
     answer: "Secure Cloud Storage, Event Photo Storage, and Odelya IT Services."
 },
@@ -528,22 +410,6 @@ const qaDatabase = [
 {
     question: "What is described as 'IT Services for Personal & Businesses'?",
     answer: "Odelya IT Services."
-},
-{
-    question: "What is the phone number for customer service?",
-    answer: "+91-96741-30001."
-},
-{
-    question: "What is the customer service email address?",
-    answer: "care.ompl@gmail.com."
-},
-{
-    question: "What is the street address of Odelya Management Pvt Ltd?",
-    answer: "44E, 2nd Floor, Nandalalmitra Lane, Kolkata."
-},
-{
-    question: "What are the opening hours for customer service?",
-    answer: "Monday to Friday, from 10:00 to 19:00."
 },
 {
     question: "What languages are available for customer service?",
@@ -566,10 +432,6 @@ const qaDatabase = [
     answer: "Secure Cloud Storage."
 },
 {
-    question: "What options are available in the dropdown menu?",
-    answer: "User, Cloud Storage, IT Services, Contact, and About."
-},
-{
     question: "What does the logo next to the word 'Locker' represent?",
     answer: "The Odelya Locker Logo."
 },
@@ -580,10 +442,6 @@ const qaDatabase = [
 {
     question: "What does the FAQ say about accessing the digital locker?",
     answer: "Through a secure web portal or mobile app."
-},
-{
-    question: "What is the main title of this cloud storage page?",
-    answer: "Odelya Secure Cloud Storage."
 },
 {
     question: "What is the main offering described on this page?",
@@ -614,48 +472,8 @@ const qaDatabase = [
     answer: "5 Devices."
 },
 {
-    question: "What is the monthly price for the 10GB plan?",
-    answer: "INR 18 per month."
-},
-{
-    question: "What is the yearly price for the 10GB plan?",
-    answer: "INR 195 per year."
-},
-{
-    question: "What is the monthly price for the 50GB plan?",
-    answer: "INR 89 per month."
-},
-{
-    question: "What is the yearly price for the 50GB plan?",
-    answer: "INR 915 per year."
-},
-{
-    question: "What is the monthly price for the 100GB plan?",
-    answer: "INR 177 per month."
-},
-{
-    question: "What is the yearly price for the 100GB plan?",
-    answer: "INR 1,726 per year."
-},
-{
-    question: "What is the monthly price for the 500GB plan?",
-    answer: "INR 885 per month."
-},
-{
-    question: "What is the yearly price for the 500GB plan?",
-    answer: "INR 8,343 per year."
-},
-{
-    question: "Where are Odelya's servers located?",
-    answer: "Kolkata, West Bengal, India"
-},
-{
     question: "What feature allows access from any device?",
     answer: "Multi-device access."
-},
-{
-    question: "What is the starting price mentioned for data storage in Kolkata?",
-    answer: "Just INR 18/month."
 },
 {
     question: "When can users access their files?",
@@ -668,10 +486,6 @@ const qaDatabase = [
 {
     question: "What is the Odelya Digital Locker perfect for?",
     answer: "Individuals needing secure storage in Kolkata for documents, photos, and files."
-},
-{
-    question: "What company produces Odelya Cloud Storage?",
-    answer: "Odelya Management Pvt Ltd (OMPL)."
 },
 {
     question: "What is the first IT service listed?",
@@ -700,10 +514,6 @@ const qaDatabase = [
 {
     question: "What does AMC Accounting Support stand for?",
     answer: "Annual Maintenance Contracts for comprehensive accounting support."
-},
-{
-    question: "What is the service 'Cloud Storage for Accounting'?",
-    answer: "Secure cloud storage facility for accounting data and records."
 },
 {
     question: "What type of support does 'Audit Support' provide?",
@@ -760,10 +570,6 @@ const qaDatabase = [
 {
     question: "What page is this HTML code for?",
     answer: "The About Us page for Odelya Cloud Digital Locker."
-},
-{
-    question: "What is the title of the About page?",
-    answer: "About Us - Odelya Cloud Digital Locker | Leadership & Mission."
 },
 {
     question: "What is the main description of the About page?",
@@ -862,16 +668,8 @@ const qaDatabase = [
     answer: "Administrative Office and Registered Office."
 },
 {
-    question: "What is the address of the Administrative Office?",
-    answer: "44E, 2nd Floor, Nandalalmitra Lane, Kolkata - 700040, West Bengal, India."
-},
-{
     question: "What are the business hours for the Administrative Office?",
     answer: "Monday to Saturday: 10:00 AM - 7:00 PM, Sunday: Closed."
-},
-{
-    question: "What is the address of the Registered Office?",
-    answer: "Molina Apartment, 1st Floor, 32/10 Chandi Ghosh Road, Kolkata - 700040, West Bengal, India."
 },
 {
     question: "What does Odelya Cloud Digital Locker provide?",
@@ -888,14 +686,6 @@ const qaDatabase = [
 {
     question: "What information is required in the contact form?",
     answer: "Your Name, Email Address, Phone Number, Subject, and Message."
-},
-{
-    question: "What is the maximum character limit for the subject field?",
-    answer: "30 characters."
-},
-{
-    question: "What is the maximum character limit for the message field?",
-    answer: "200 characters."
 },
 {
     question: "What is the success message that appears after submitting the form?",
@@ -974,14 +764,6 @@ const qaDatabase = [
     answer: "Multi-factor authentication, Role-based access control, Session management, and Login attempt monitoring."
 },
 {
-    question: "What does Odelya say about system monitoring?",
-    answer: "Our systems are monitored 24X7 to prevent unauthorized access & data breaches."
-},
-{
-    question: "What security features are listed?",
-    answer: "24/7 security monitoring, Regular security audits, DDoS protection, and Secure data centers."
-},
-{
     question: "What advice does Odelya give about user credentials?",
     answer: "Users are advised to keep their login credentials secure and avoid sharing details with others."
 },
@@ -1000,10 +782,6 @@ const qaDatabase = [
 {
     question: "What does the Defense principle mean?",
     answer: "Multiple layers of security protecting your data at every level."
-},
-{
-    question: "What does the Monitoring principle mean?",
-    answer: "Data under 24/7 security monitoring per global standards."
 },
 {
     question: "What does the Improvement principle mean?",
@@ -1062,10 +840,6 @@ const qaDatabase = [
     answer: "The Service Provider."
 },
 {
-    question: "How soon must Data Breach be notified?",
-    answer: "Within 24 working hours."
-},
-{
     question: "Where are primary data centers located?",
     answer: "Kolkata, West Bengal, India."
 },
@@ -1086,20 +860,12 @@ const qaDatabase = [
     answer: "User Terms and Conditions."
 },
 {
-    question: "How many user terms are listed?",
-    answer: "Eleven terms."
-},
-{
     question: "What is term 1 about?",
     answer: "Acceptance of Terms."
 },
 {
     question: "What is term 2 about?",
     answer: "Service Description."
-},
-{
-    question: "What does the service provide?",
-    answer: "Secure cloud storage with end-to-end encryption."
 },
 {
     question: "What is term 3 about?",
@@ -1168,10 +934,6 @@ const qaDatabase = [
 {
     question: "Which laws govern the terms?",
     answer: "Laws of India."
-},
-{
-    question: "Which jurisdiction applies?",
-    answer: "Kolkata jurisdiction."
 },
 {
     question: "What is term 11 about?",
