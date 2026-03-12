@@ -236,11 +236,6 @@ const qaDatabase = [
             category: "services"
         },
         {
-            question: "What is secure cloud storage?",
-            answer: "Secure cloud storage is our flagship service that provides end-to-end encrypted storage for your important files and media. Your data is protected with military-grade encryption, ensuring complete privacy and security.",
-            category: "services"
-        },
-        {
             question: "What is event guest photo storage?",
             answer: "This service allows photos captured by specific guests at events to be automatically and simultaneously stored in our secure cloud. It's perfect for weddings, corporate events, and special occasions.",
             category: "services"
@@ -384,10 +379,6 @@ const qaDatabase = [
             category: "general"
         },
 {
-    question: "What is the main service offered by Odelya?",
-    answer: "Secure cloud data storage with end-to-end encryption."
-},
-{
     question: "Where is Odelya Cloud based?",
     answer: "Kolkata, India."
 },
@@ -440,10 +431,6 @@ const qaDatabase = [
     answer: "2025."
 },
 {
-    question: "What does the FAQ say about accessing the digital locker?",
-    answer: "Through a secure web portal or mobile app."
-},
-{
     question: "What is the main offering described on this page?",
     answer: "Encrypted cloud storage with end-to-end protection."
 },
@@ -478,10 +465,6 @@ const qaDatabase = [
 {
     question: "When can users access their files?",
     answer: "Anytime, anywhere with 24/7 accessibility."
-},
-{
-    question: "What type of solutions does Odelya provide for businesses?",
-    answer: "Enterprise-grade cloud storage solutions."
 },
 {
     question: "What is the Odelya Digital Locker perfect for?",
@@ -672,20 +655,12 @@ const qaDatabase = [
     answer: "Monday to Saturday: 10:00 AM - 7:00 PM, Sunday: Closed."
 },
 {
-    question: "What does Odelya Cloud Digital Locker provide?",
-    answer: "End-to-end encrypted cloud storage solutions with military-grade security for personal and business data."
-},
-{
     question: "What encryption does Odelya's secure digital locker use?",
     answer: "256-bit encryption."
 },
 {
     question: "What does Odelya offer for a free consultation?",
     answer: "Cloud storage pricing plans, IT services, or income tax support."
-},
-{
-    question: "What information is required in the contact form?",
-    answer: "Your Name, Email Address, Phone Number, Subject, and Message."
 },
 {
     question: "What is the success message that appears after submitting the form?",
@@ -796,10 +771,6 @@ const qaDatabase = [
     answer: "Cloud Storage Services Agreement."
 },
 {
-    question: "Who is the Service Provider?",
-    answer: "Odelya Management Pvt. Ltd."
-},
-{
     question: "What does 'Applicable Law' include?",
     answer: "Information Technology Act, 2000, Digital Personal Data Protection Act, 2023."
 },
@@ -838,10 +809,6 @@ const qaDatabase = [
 {
     question: "Who is the Data Processor?",
     answer: "The Service Provider."
-},
-{
-    question: "Where are primary data centers located?",
-    answer: "Kolkata, West Bengal, India."
 },
 {
     question: "What is section 5 about?",
@@ -939,7 +906,6 @@ const qaDatabase = [
     question: "What is term 11 about?",
     answer: "Contact Information."
 },
-
 
 
 ];
