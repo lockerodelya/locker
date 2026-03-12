@@ -4,7 +4,7 @@
 const qaDatabase = [
     
     // ====== PRICING TABLE SPECIFIC Q&A ======
-    // 10GB Plan
+            // 10GB Plan
         {
             question: "10GB storage plan price",
             answer: "10GB Storage Plan Details:<br><br>• Storage: 10GB<br>• Users: 1 user<br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• GST: Included (18%)",
@@ -193,11 +193,6 @@ const qaDatabase = [
         {
             question: "Which plan has 5 users?",
             answer: "Plan with 5 users:<br><br>1. 500GB Plan - Rs. 885/month, Rs. 7,965/year",
-            category: "pricing"
-        },
-        {
-            question: "What is your cheapest plan?",
-            answer: "Cheapest Plan:<br><br>• 10GB Storage<br>• 1 User<br>• Monthly: Rs. 18<br>• Yearly: Rs. 202<br>• All inclusive of 18% GST",
             category: "pricing"
         },
         {
@@ -497,10 +492,6 @@ const qaDatabase = [
             question: "What makes you different from other cloud storage?",
             answer: "We stand out because:<br>1. <strong>True end-to-end encryption</strong> - Your data is 100% private<br>2. <strong>Transparent pricing</strong> - All-inclusive with no hidden charges<br>3. <strong>Indian company</strong> - Local support and understanding<br>4. <strong>Event photo storage</strong> - Unique service for special occasions",
             category: "general"
-        },
-        {
-            question: "Which jurisdiction applies?",
-            answer: "Kolkata jurisdiction."
         },
         {
     question: "What is the name of the cloud storage service?",
