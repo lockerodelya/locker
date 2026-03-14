@@ -291,51 +291,46 @@ VOOO_CONFIG.getInternationalPrice = async function(inrAmount, currencyCode) {
     const currencyInfo = this.international_currencies[currencyCode];
     if (!currencyInfo) return null;
 
-    // Try 3 exchange rate APIs in order
     const rateApis = [
-        `https://api.exchangerate-api.com/v4/latest/INR`,
-        `https://open.er-api.com/v6/latest/INR`,
-        `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/inr.json`
+        {
+            url: `https://api.exchangerate-api.com/v4/latest/INR`,
+            extract: (data) => data.rates && data.rates[currencyCode] ? data.rates[currencyCode] : null
+        },
+        {
+            url: `https://open.er-api.com/v6/latest/INR`,
+            extract: (data) => data.rates && data.rates[currencyCode] ? data.rates[currencyCode] : null
+        },
+        {
+            url: `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/inr.json`,
+            extract: (data) => data.inr && data.inr[currencyCode.toLowerCase()] ? data.inr[currencyCode.toLowerCase()] : null
+        }
     ];
 
     let rate = null;
 
-    for (const apiUrl of rateApis) {
+    for (const api of rateApis) {
         try {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 5000);
-            const res = await fetch(apiUrl, { signal: controller.signal });
+            const res = await fetch(api.url, { signal: controller.signal });
             clearTimeout(timeout);
+            if (!res.ok) continue;
             const data = await res.json();
-
-            // Handle different API response formats
-            if (data.rates && data.rates[currencyCode]) {
-                rate = data.rates[currencyCode];
-                break;
-            } else if (data[currencyCode]) {
-                rate = data[currencyCode];
-                break;
-            } else if (data.inr && data.inr[currencyCode.toLowerCase()]) {
-                // fawazahmed0 format: { inr: { usd: 0.012, ... } }
-                rate = data.inr[currencyCode.toLowerCase()];
-                break;
-            }
+            rate = api.extract(data);
+            if (rate) { console.log('✅ Rate fetched from:', api.url, currencyCode, rate); break; }
         } catch (err) {
-            console.warn('Exchange rate API failed, trying next...', apiUrl, err.message);
+            console.warn('Rate API failed:', api.url, err.message);
         }
     }
 
     if (!rate) {
-        console.error('All exchange rate APIs failed for', currencyCode);
+        console.error('❌ All rate APIs failed for currency:', currencyCode);
         return null;
     }
 
-    let convertedAmount;
-    if (currencyInfo.strong) {
-        convertedAmount = Math.round(inrAmount * rate * this.international_factor_higher_currencies);
-    } else {
-        convertedAmount = Math.round(inrAmount * rate * this.international_factor_lower_currencies);
-    }
+    const convertedAmount = currencyInfo.strong
+        ? Math.round(inrAmount * rate * this.international_factor_higher_currencies)
+        : Math.round(inrAmount * rate * this.international_factor_lower_currencies);
 
     return {
         amount:   convertedAmount,
@@ -354,61 +349,67 @@ VOOO_CONFIG.getInternationalPrice = async function(inrAmount, currencyCode) {
 // ============================================
 VOOO_CONFIG.detectUserCurrency = async function() {
 
+    // Country code → currency code map (used when API doesn't return currency)
+    const countryCurrencyMap = {
+        'IN':'INR','US':'USD','GB':'GBP','DE':'EUR','FR':'EUR','IT':'EUR','ES':'EUR',
+        'NL':'EUR','PT':'EUR','BE':'EUR','AT':'EUR','IE':'EUR','FI':'EUR','GR':'EUR',
+        'AU':'AUD','CA':'CAD','SG':'SGD','CH':'CHF','NZ':'NZD','HK':'HKD','JP':'JPY',
+        'MY':'MYR','AE':'AED','SA':'SAR','BD':'BDT','NP':'NPR','LK':'LKR','PK':'PKR',
+        'ID':'IDR','VN':'VND','MM':'MMK','KH':'KHR','PH':'PHP'
+    };
+
     // ── API 1: ipapi.co ──
     try {
         const controller = new AbortController();
-        const timeout    = setTimeout(() => controller.abort(), 4000); // 4 sec timeout
-        const res        = await fetch('https://ipapi.co/json/', { signal: controller.signal });
+        const timeout = setTimeout(() => controller.abort(), 4000);
+        const res = await fetch('https://ipapi.co/json/', { signal: controller.signal });
         clearTimeout(timeout);
         const data = await res.json();
-
         if (data && data.country_code && !data.error) {
-            console.log('✅ Location detected via ipapi.co:', data.country_code);
+            const currency = data.currency || countryCurrencyMap[data.country_code] || 'USD';
+            console.log('✅ ipapi.co:', data.country_code, currency);
             return {
-                countryCode:  data.country_code  || 'IN',
-                currencyCode: data.currency       || 'INR',
-                isIndia:      data.country_code   === 'IN',
-                countryName:  data.country_name   || 'India'
+                countryCode:  data.country_code,
+                currencyCode: currency,
+                isIndia:      data.country_code === 'IN',
+                countryName:  data.country_name || 'Unknown'
             };
         }
-    } catch (err) {
-        console.warn('ipapi.co failed, trying next API...', err.message);
-    }
+    } catch (err) { console.warn('ipapi.co failed:', err.message); }
 
-    // ── API 2: ip-api.com (free, no key needed) ──
+    // ── API 2: ip-api.com ──
     try {
         const controller = new AbortController();
-        const timeout    = setTimeout(() => controller.abort(), 4000);
-        const res        = await fetch('https://ip-api.com/json/?fields=status,country,countryCode,currency', { signal: controller.signal });
+        const timeout = setTimeout(() => controller.abort(), 4000);
+        // Request currency field explicitly
+        const res = await fetch('https://ip-api.com/json/?fields=status,country,countryCode,currency', { signal: controller.signal });
         clearTimeout(timeout);
         const data = await res.json();
-
         if (data && data.status === 'success' && data.countryCode) {
-            console.log('✅ Location detected via ip-api.com:', data.countryCode);
+            // ip-api sometimes returns blank currency — use map as backup
+            const currency = (data.currency && data.currency.length === 3)
+                ? data.currency
+                : (countryCurrencyMap[data.countryCode] || 'USD');
+            console.log('✅ ip-api.com:', data.countryCode, currency);
             return {
-                countryCode:  data.countryCode || 'IN',
-                currencyCode: data.currency    || 'INR',
+                countryCode:  data.countryCode,
+                currencyCode: currency,
                 isIndia:      data.countryCode === 'IN',
-                countryName:  data.country     || 'India'
+                countryName:  data.country || 'Unknown'
             };
         }
-    } catch (err) {
-        console.warn('ip-api.com failed, trying next API...', err.message);
-    }
+    } catch (err) { console.warn('ip-api.com failed:', err.message); }
 
     // ── API 3: freeipapi.com ──
     try {
         const controller = new AbortController();
-        const timeout    = setTimeout(() => controller.abort(), 4000);
-        const res        = await fetch('https://freeipapi.com/api/json', { signal: controller.signal });
+        const timeout = setTimeout(() => controller.abort(), 4000);
+        const res = await fetch('https://freeipapi.com/api/json', { signal: controller.signal });
         clearTimeout(timeout);
         const data = await res.json();
-
         if (data && data.countryCode) {
-            console.log('✅ Location detected via freeipapi.com:', data.countryCode);
-            // freeipapi doesn't return currency — map from country
-            const currencyMap = { IN:'INR', US:'USD', GB:'GBP', EU:'EUR', BD:'BDT', NP:'NPR', AU:'AUD', CA:'CAD', SG:'SGD' };
-            const currency    = currencyMap[data.countryCode] || 'USD';
+            const currency = countryCurrencyMap[data.countryCode] || 'USD';
+            console.log('✅ freeipapi.com:', data.countryCode, currency);
             return {
                 countryCode:  data.countryCode,
                 currencyCode: currency,
@@ -416,18 +417,11 @@ VOOO_CONFIG.detectUserCurrency = async function() {
                 countryName:  data.countryName || 'Unknown'
             };
         }
-    } catch (err) {
-        console.warn('freeipapi.com failed too.', err.message);
-    }
+    } catch (err) { console.warn('freeipapi.com failed:', err.message); }
 
-    // ── All APIs failed — default to India ──
+    // ── All failed — default India ──
     console.error('⚠️ All location APIs failed. Defaulting to India/INR.');
-    return {
-        countryCode:  'IN',
-        currencyCode: 'INR',
-        isIndia:      true,
-        countryName:  'India'
-    };
+    return { countryCode: 'IN', currencyCode: 'INR', isIndia: true, countryName: 'India' };
 };
 
 // ============================================
