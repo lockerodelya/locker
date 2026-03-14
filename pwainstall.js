@@ -20,11 +20,11 @@ class PWAInstaller {
         // Check if PWA is already installed
         if (this.isPWAInstalled()) return;
         
-        // Listen for beforeinstallprompt event
+// Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
-            console.log('PWA: Install prompt available');
             e.preventDefault();
             this.deferredPrompt = e;
+            console.log('PWA: Install prompt captured ✅');
             
             // Show button after delay
             this.scheduleInitialPrompt();
@@ -125,9 +125,25 @@ class PWAInstaller {
         console.log('PWA: Next reminder scheduled in 5 minutes');
     }
 
-    showReminder() {
-        if (this.isPWAInstalled() || this.hasShownPrompt) return;
-        
+showReminder() {
+    if (this.isPWAInstalled() || this.hasShownPrompt) return;
+
+    // Don't show anything if prompt isn't ready yet
+    if (!this.deferredPrompt && !this.isIOS) {
+        this.scheduleReminder();
+        return;
+    }
+
+    if (!this.isIOS && !this.isSafari && this.deferredPrompt) {
+        this.showInstallButton();
+    } else if (this.isIOS && this.isSafari) {
+        this.showIOSInstallHint();
+    } else {
+        this.showInstallButton();
+    }
+
+    this.scheduleReminder();
+}
         console.log('PWA: Showing reminder');
         
         // For Android/Chrome, show install button
