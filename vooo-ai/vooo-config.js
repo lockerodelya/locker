@@ -47,7 +47,7 @@ const VOOO_CONFIG = {
 international_currencies: {
 
     // --- STRONG CURRENCIES (factor applied) ---
-    'USD': { symbol: '$',   name: 'US Dollar',            strong: true  },
+    'USD': { symbol: '$',   name: 'US Dollar',             strong: true  },
     'GBP': { symbol: '£',   name: 'British Pound',         strong: true  },
     'EUR': { symbol: '€',   name: 'Euro',                  strong: true  },
     'AUD': { symbol: 'A$',  name: 'Australian Dollar',     strong: true  },
@@ -98,7 +98,7 @@ international_currencies: {
     'VND': { symbol: '₫',   name: 'Vietnamese Dong',       strong: false },
     'MMK': { symbol: 'K',   name: 'Myanmar Kyat',          strong: false },
     'KHR': { symbol: '៛',   name: 'Cambodian Riel',        strong: false },
-    'PHP': { symbol: '₱',   name: 'Philippine Peso',       strong: false },
+    'PHP': { symbol: '₱',   name: 'Philippine Peso',       strong: false }
 },
 
 
