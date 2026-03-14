@@ -144,24 +144,6 @@ showReminder() {
 
     this.scheduleReminder();
 }
-        console.log('PWA: Showing reminder');
-        
-        // For Android/Chrome, show install button
-        if (!this.isIOS && !this.isSafari && this.deferredPrompt) {
-            this.showInstallButton();
-        }
-        // For iOS Safari, show custom hint
-        else if (this.isIOS && this.isSafari) {
-            this.showIOSInstallHint();
-        }
-        // For other browsers
-        else {
-            this.showInstallButton();
-        }
-        
-        // Schedule next reminder
-        this.scheduleReminder();
-    }
 
     clearReminderTimer() {
         if (this.reminderTimer) {
