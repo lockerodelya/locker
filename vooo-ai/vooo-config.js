@@ -44,33 +44,62 @@ const VOOO_CONFIG = {
     // symbol = currency symbol shown on pricing page
     // name   = full currency name
     // ============================================
-    international_currencies: {
-        // --- STRONG CURRENCIES (factor applied) ---
-        'USD': { symbol: '$',   name: 'US Dollar',           strong: true  },
-        'GBP': { symbol: '£',   name: 'British Pound',        strong: true  },
-        'EUR': { symbol: '€',   name: 'Euro',                 strong: true  },
-        'AUD': { symbol: 'A$',  name: 'Australian Dollar',    strong: true  },
-        'CAD': { symbol: 'C$',  name: 'Canadian Dollar',      strong: true  },
-        'SGD': { symbol: 'S$',  name: 'Singapore Dollar',     strong: true  },
-        'CHF': { symbol: 'CHF', name: 'Swiss Franc',          strong: true  },
-        'NZD': { symbol: 'NZ$', name: 'New Zealand Dollar',   strong: true  },
-        'HKD': { symbol: 'HK$', name: 'Hong Kong Dollar',     strong: true  },
-        'JPY': { symbol: '¥',   name: 'Japanese Yen',         strong: false },  // weaker per unit
-        'MYR': { symbol: 'RM',  name: 'Malaysian Ringgit',    strong: true  },
-        'AED': { symbol: 'AED', name: 'UAE Dirham',           strong: true  },
-        'SAR': { symbol: 'SAR', name: 'Saudi Riyal',          strong: true  },
+international_currencies: {
 
-        // --- WEAK CURRENCIES (direct conversion, no factor) ---
-        'BDT': { symbol: '৳',   name: 'Bangladeshi Taka',     strong: false },
-        'NPR': { symbol: 'Rs',  name: 'Nepali Rupee',         strong: false },
-        'LKR': { symbol: 'Rs',  name: 'Sri Lankan Rupee',     strong: false },
-        'PKR': { symbol: 'Rs',  name: 'Pakistani Rupee',      strong: false },
-        'IDR': { symbol: 'Rp',  name: 'Indonesian Rupiah',    strong: false },
-        'VND': { symbol: '₫',   name: 'Vietnamese Dong',      strong: false },
-        'MMK': { symbol: 'K',   name: 'Myanmar Kyat',         strong: false },
-        'KHR': { symbol: '៛',   name: 'Cambodian Riel',       strong: false },
-        'PHP': { symbol: '₱',   name: 'Philippine Peso',      strong: false },
-    },
+    // --- STRONG CURRENCIES (factor applied) ---
+    'USD': { symbol: '$',   name: 'US Dollar',            strong: true  },
+    'GBP': { symbol: '£',   name: 'British Pound',         strong: true  },
+    'EUR': { symbol: '€',   name: 'Euro',                  strong: true  },
+    'AUD': { symbol: 'A$',  name: 'Australian Dollar',     strong: true  },
+    'CAD': { symbol: 'C$',  name: 'Canadian Dollar',       strong: true  },
+    'SGD': { symbol: 'S$',  name: 'Singapore Dollar',      strong: true  },
+    'CHF': { symbol: 'CHF', name: 'Swiss Franc',           strong: true  },
+    'NZD': { symbol: 'NZ$', name: 'New Zealand Dollar',    strong: true  },
+    'HKD': { symbol: 'HK$', name: 'Hong Kong Dollar',      strong: true  },
+    'MYR': { symbol: 'RM',  name: 'Malaysian Ringgit',     strong: true  },
+    'AED': { symbol: 'AED', name: 'UAE Dirham',            strong: true  },
+    'SAR': { symbol: 'SAR', name: 'Saudi Riyal',           strong: true  },
+    'QAR': { symbol: 'QAR', name: 'Qatari Riyal',          strong: true  },
+    'KWD': { symbol: 'KD',  name: 'Kuwaiti Dinar',         strong: true  },
+    'BHD': { symbol: 'BD',  name: 'Bahraini Dinar',        strong: true  },
+    'OMR': { symbol: 'OMR', name: 'Omani Rial',            strong: true  },
+    'PLN': { symbol: 'zł',  name: 'Polish Złoty',          strong: true  },
+    'CZK': { symbol: 'Kč',  name: 'Czech Koruna',          strong: true  },
+    'HUF': { symbol: 'Ft',  name: 'Hungarian Forint',      strong: true  },
+    'SEK': { symbol: 'kr',  name: 'Swedish Krona',         strong: true  },
+    'NOK': { symbol: 'kr',  name: 'Norwegian Krone',       strong: true  },
+    'DKK': { symbol: 'kr',  name: 'Danish Krone',          strong: true  },
+    'ZAR': { symbol: 'R',   name: 'South African Rand',    strong: true  },
+    'BRL': { symbol: 'R$',  name: 'Brazilian Real',        strong: true  },
+    'MXN': { symbol: 'MX$', name: 'Mexican Peso',          strong: true  },
+    'ARS': { symbol: 'AR$', name: 'Argentine Peso',        strong: true  },
+    'COP': { symbol: 'CO$', name: 'Colombian Peso',        strong: true  },
+    'CLP': { symbol: 'CL$', name: 'Chilean Peso',          strong: true  },
+    'PEN': { symbol: 'S/',  name: 'Peruvian Sol',          strong: true  },
+    'TRY': { symbol: '₺',   name: 'Turkish Lira',          strong: true  },
+    'ILS': { symbol: '₪',   name: 'Israeli Shekel',        strong: true  },
+    'THB': { symbol: '฿',   name: 'Thai Baht',             strong: true  },
+    'TWD': { symbol: 'NT$', name: 'Taiwan Dollar',         strong: true  },
+    'KRW': { symbol: '₩',   name: 'South Korean Won',      strong: false },
+    'JPY': { symbol: '¥',   name: 'Japanese Yen',          strong: false },
+    'EGP': { symbol: 'E£',  name: 'Egyptian Pound',        strong: true  },
+    'GHS': { symbol: 'GH₵', name: 'Ghanaian Cedi',         strong: true  },
+    'KES': { symbol: 'KSh', name: 'Kenyan Shilling',       strong: true  },
+    'NGN': { symbol: '₦',   name: 'Nigerian Naira',        strong: true  },
+    'TZS': { symbol: 'TSh', name: 'Tanzanian Shilling',    strong: true  },
+    'UGX': { symbol: 'USh', name: 'Ugandan Shilling',      strong: true  },
+
+    // --- WEAK CURRENCIES (direct conversion, no factor) ---
+    'BDT': { symbol: '৳',   name: 'Bangladeshi Taka',      strong: false },
+    'NPR': { symbol: 'Rs',  name: 'Nepali Rupee',          strong: false },
+    'LKR': { symbol: 'Rs',  name: 'Sri Lankan Rupee',      strong: false },
+    'PKR': { symbol: 'Rs',  name: 'Pakistani Rupee',       strong: false },
+    'IDR': { symbol: 'Rp',  name: 'Indonesian Rupiah',     strong: false },
+    'VND': { symbol: '₫',   name: 'Vietnamese Dong',       strong: false },
+    'MMK': { symbol: 'K',   name: 'Myanmar Kyat',          strong: false },
+    'KHR': { symbol: '៛',   name: 'Cambodian Riel',        strong: false },
+    'PHP': { symbol: '₱',   name: 'Philippine Peso',       strong: false },
+},
 
 
     // ============================================
@@ -356,6 +385,11 @@ VOOO_CONFIG.detectUserCurrency = async function() {
         'AU':'AUD','CA':'CAD','SG':'SGD','CH':'CHF','NZ':'NZD','HK':'HKD','JP':'JPY',
         'MY':'MYR','AE':'AED','SA':'SAR','BD':'BDT','NP':'NPR','LK':'LKR','PK':'PKR',
         'ID':'IDR','VN':'VND','MM':'MMK','KH':'KHR','PH':'PHP'
+        'QA':'QAR','KW':'KWD','BH':'BHD','OM':'OMR',
+        'PL':'PLN','CZ':'CZK','HU':'HUF','SE':'SEK','NO':'NOK','DK':'DKK',
+        'ZA':'ZAR','BR':'BRL','MX':'MXN','AR':'ARS','CO':'COP','CL':'CLP','PE':'PEN',
+        'TR':'TRY','IL':'ILS','TH':'THB','TW':'TWD','KR':'KRW',
+        'EG':'EGP','GH':'GHS','KE':'KES','NG':'NGN','TZ':'TZS','UG':'UGX',        
     };
 
     // ── API 1: ipapi.co ──
