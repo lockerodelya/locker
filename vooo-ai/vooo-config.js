@@ -384,7 +384,7 @@ VOOO_CONFIG.detectUserCurrency = async function() {
         'NL':'EUR','PT':'EUR','BE':'EUR','AT':'EUR','IE':'EUR','FI':'EUR','GR':'EUR',
         'AU':'AUD','CA':'CAD','SG':'SGD','CH':'CHF','NZ':'NZD','HK':'HKD','JP':'JPY',
         'MY':'MYR','AE':'AED','SA':'SAR','BD':'BDT','NP':'NPR','LK':'LKR','PK':'PKR',
-        'ID':'IDR','VN':'VND','MM':'MMK','KH':'KHR','PH':'PHP'
+        'ID':'IDR','VN':'VND','MM':'MMK','KH':'KHR','PH':'PHP',
         'QA':'QAR','KW':'KWD','BH':'BHD','OM':'OMR',
         'PL':'PLN','CZ':'CZK','HU':'HUF','SE':'SEK','NO':'NOK','DK':'DKK',
         'ZA':'ZAR','BR':'BRL','MX':'MXN','AR':'ARS','CO':'COP','CL':'CLP','PE':'PEN',
