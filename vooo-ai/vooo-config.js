@@ -389,7 +389,7 @@ VOOO_CONFIG.detectUserCurrency = async function() {
         'PL':'PLN','CZ':'CZK','HU':'HUF','SE':'SEK','NO':'NOK','DK':'DKK',
         'ZA':'ZAR','BR':'BRL','MX':'MXN','AR':'ARS','CO':'COP','CL':'CLP','PE':'PEN',
         'TR':'TRY','IL':'ILS','TH':'THB','TW':'TWD','KR':'KRW',
-        'EG':'EGP','GH':'GHS','KE':'KES','NG':'NGN','TZ':'TZS','UG':'UGX',        
+        'EG':'EGP','GH':'GHS','KE':'KES','NG':'NGN','TZ':'TZS','UG':'UGX'
     };
 
     // ── API 1: ipapi.co ──
