@@ -306,34 +306,49 @@
     // ============================================================
     // STEP 1: Detect user currency, then build page
     // ============================================================
-    async function initPricingPage() {
-        try {
-            userCurrencyInfo = await VOOO_CONFIG.detectUserCurrency();
-        } catch(e) {
+async function initPricingPage() {
+    // Hard timeout — if everything takes >10s, show INR prices anyway
+    const locationTimeout = setTimeout(() => {
+        if (!userCurrencyInfo) {
             userCurrencyInfo = { countryCode: 'IN', currencyCode: 'INR', isIndia: true, countryName: 'India' };
+            const badge     = document.getElementById('currency-badge');
+            const badgeText = document.getElementById('currency-badge-text');
+            badge.classList.remove('loading');
+            badgeText.textContent = '🇮🇳 India — Prices in INR (₹)';
+            buildSkeletonCards();
+            fillPrices();
         }
+    }, 10000);
 
-        // Update currency badge
-        const badge     = document.getElementById('currency-badge');
-        const badgeText = document.getElementById('currency-badge-text');
-        badge.classList.remove('loading');
-        const flag = countryFlag(userCurrencyInfo.countryCode);
-        badgeText.textContent = userCurrencyInfo.isIndia
-            ? `🇮🇳 India — Prices in INR (₹)`
-            : `${flag} ${userCurrencyInfo.countryName} — Prices in ${userCurrencyInfo.currencyCode}`;
-
-        // Show international notice for non-India users
-        if (!userCurrencyInfo.isIndia) {
-            document.getElementById('intl-notice').style.display = 'block';
-            document.getElementById('intl-tax-note').style.display = 'block';
-        }
-
-        // Build skeleton cards first (instant UI)
-        buildSkeletonCards();
-
-        // Then fill in prices asynchronously
-        await fillPrices();
+    try {
+        userCurrencyInfo = await VOOO_CONFIG.detectUserCurrency();
+    } catch(e) {
+        userCurrencyInfo = { countryCode: 'IN', currencyCode: 'INR', isIndia: true, countryName: 'India' };
     }
+
+    clearTimeout(locationTimeout);
+
+    // Update currency badge
+    const badge     = document.getElementById('currency-badge');
+    const badgeText = document.getElementById('currency-badge-text');
+    badge.classList.remove('loading');
+    const flag = countryFlag(userCurrencyInfo.countryCode);
+    badgeText.textContent = userCurrencyInfo.isIndia
+        ? `🇮🇳 India — Prices in INR (₹)`
+        : `${flag} ${userCurrencyInfo.countryName} — Prices in ${userCurrencyInfo.currencyCode}`;
+
+    // Show international notice for non-India users
+    if (!userCurrencyInfo.isIndia) {
+        document.getElementById('intl-notice').style.display = 'block';
+        document.getElementById('intl-tax-note').style.display = 'block';
+    }
+
+    // Build skeleton cards first (instant UI)
+    buildSkeletonCards();
+
+    // Then fill in prices asynchronously
+    await fillPrices();
+}
 
     // ============================================================
     // STEP 2: Build cards with skeleton price loaders
@@ -376,33 +391,39 @@
     // ============================================================
     // STEP 3: Fetch prices and fill cards
     // ============================================================
-    async function fillPrices() {
-        const planKeys = Object.keys(VOOO_CONFIG.pricing.plans);
+async function fillPrices() {
+    const planKeys = Object.keys(VOOO_CONFIG.pricing.plans);
 
-        // Fetch all plan prices in parallel
-        const pricePromises = planKeys.map(planKey =>
-            VOOO_CONFIG.getPlanPriceForUser(planKey, userCurrencyInfo)
-                .then(result => ({ planKey, result }))
-        );
+    const pricePromises = planKeys.map(planKey =>
+        VOOO_CONFIG.getPlanPriceForUser(planKey, userCurrencyInfo)
+            .then(result => ({ planKey, result }))
+            .catch(() => ({ planKey, result: null }))
+    );
 
-        const results = await Promise.all(pricePromises);
+    const results = await Promise.all(pricePromises);
 
-        results.forEach(({ planKey, result }) => {
-            if (!result) return;
+    results.forEach(({ planKey, result }) => {
+        const skeleton = document.getElementById('price-skeleton-' + planKey);
+        const display  = document.getElementById('price-display-' + planKey);
+        const btn      = document.getElementById('btn-' + planKey);
+        const planData = VOOO_CONFIG.pricing.plans[planKey];
 
-            // Cache it
-            priceCache[planKey] = result;
+        // If international price failed for any reason, fall back to INR
+        const finalResult = result || {
+            amount:   planData.amount,
+            symbol:   '₹',
+            currency: 'INR',
+            display:  '₹' + planData.amount,
+            isIndia:  true
+        };
 
-            // Hide skeleton, show price
-            const skeleton = document.getElementById('price-skeleton-' + planKey);
-            const display  = document.getElementById('price-display-' + planKey);
-            const btn      = document.getElementById('btn-' + planKey);
+        priceCache[planKey] = finalResult;
 
-            if (skeleton) skeleton.style.display = 'none';
-            if (display)  { display.style.display = 'block'; display.textContent = result.display; }
-            if (btn)      { btn.disabled = false; btn.textContent = 'Buy Plan — ' + result.display; }
-        });
-    }
+        if (skeleton) skeleton.style.display = 'none';
+        if (display)  { display.style.display = 'block'; display.textContent = finalResult.display; }
+        if (btn)      { btn.disabled = false; btn.textContent = 'Buy Plan — ' + finalResult.display; }
+    });
+}
 
     // ============================================================
     // STEP 4: Handle Buy Click

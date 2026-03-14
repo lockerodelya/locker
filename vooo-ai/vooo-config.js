@@ -286,42 +286,64 @@ VOOO_CONFIG.getTotalPayable = function(planKey, isInternational) {
 //   - Weak currency (BDT/NPR/LKR etc)   → convert → multiply by international_factor_lower_currencies → whole number
 //   - India (INR)     → return INR amount as-is
 // ============================================
+
 VOOO_CONFIG.getInternationalPrice = async function(inrAmount, currencyCode) {
-    try {
-        // Fetch live exchange rate: INR → target currency (5 sec timeout)
-        const rateController = new AbortController();
-        const rateTimeout    = setTimeout(() => rateController.abort(), 5000);
-        const rateRes        = await fetch('https://api.exchangerate-api.com/v4/latest/INR', { signal: rateController.signal });
-        clearTimeout(rateTimeout);
-        const rateData = await rateRes.json();
-        const rate     = rateData.rates[currencyCode];
+    const currencyInfo = this.international_currencies[currencyCode];
+    if (!currencyInfo) return null;
 
-        if (!rate) return null;
+    // Try 3 exchange rate APIs in order
+    const rateApis = [
+        `https://api.exchangerate-api.com/v4/latest/INR`,
+        `https://open.er-api.com/v6/latest/INR`,
+        `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/inr.json`
+    ];
 
-        const currencyInfo = this.international_currencies[currencyCode];
-        if (!currencyInfo) return null;
+    let rate = null;
 
-        let convertedAmount;
+    for (const apiUrl of rateApis) {
+        try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 5000);
+            const res = await fetch(apiUrl, { signal: controller.signal });
+            clearTimeout(timeout);
+            const data = await res.json();
 
-        if (currencyInfo.strong) {
-            // Strong currency (higher than INR): convert then multiply by higher factor
-            convertedAmount = Math.round(inrAmount * rate * this.international_factor_higher_currencies);
-        } else {
-            // Weak currency (lower than INR): convert then multiply by lower factor
-            convertedAmount = Math.round(inrAmount * rate * this.international_factor_lower_currencies);
+            // Handle different API response formats
+            if (data.rates && data.rates[currencyCode]) {
+                rate = data.rates[currencyCode];
+                break;
+            } else if (data[currencyCode]) {
+                rate = data[currencyCode];
+                break;
+            } else if (data.inr && data.inr[currencyCode.toLowerCase()]) {
+                // fawazahmed0 format: { inr: { usd: 0.012, ... } }
+                rate = data.inr[currencyCode.toLowerCase()];
+                break;
+            }
+        } catch (err) {
+            console.warn('Exchange rate API failed, trying next...', apiUrl, err.message);
         }
+    }
 
-        return {
-            amount:   convertedAmount,
-            symbol:   currencyInfo.symbol,
-            currency: currencyCode,
-            display:  currencyInfo.symbol + convertedAmount,
-            strong:   currencyInfo.strong
-        };
-    } catch (err) {
-        console.error('International price fetch failed:', err);
+    if (!rate) {
+        console.error('All exchange rate APIs failed for', currencyCode);
         return null;
     }
+
+    let convertedAmount;
+    if (currencyInfo.strong) {
+        convertedAmount = Math.round(inrAmount * rate * this.international_factor_higher_currencies);
+    } else {
+        convertedAmount = Math.round(inrAmount * rate * this.international_factor_lower_currencies);
+    }
+
+    return {
+        amount:   convertedAmount,
+        symbol:   currencyInfo.symbol,
+        currency: currencyCode,
+        display:  currencyInfo.symbol + convertedAmount,
+        strong:   currencyInfo.strong
+    };
 };
 
 // ============================================
