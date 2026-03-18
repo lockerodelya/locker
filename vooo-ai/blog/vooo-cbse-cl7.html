@@ -1,8 +1,29 @@
 <!DOCTYPE html>
 <html lang="en-IN">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9SWTR9V32R"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-9SWTR9V32R');</script>
+
+<script>
+    window.dataLayer=window.dataLayer||[];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js',new Date());
+    gtag('config','G-9SWTR9V32R');
+
+    function loadGtag(){
+        if(window._gtagLoaded) return;
+        window._gtagLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-9SWTR9V32R';
+        s.async = true;
+        document.head.appendChild(s);
+    }
+
+    // Load after user first interacts or after 4 seconds — whichever comes first
+    ['scroll','click','keydown','touchstart','mousemove'].forEach(function(e){
+        window.addEventListener(e, loadGtag, {once:true, passive:true});
+    });
+    setTimeout(loadGtag, 4000);
+</script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CBSE Class 7 Science MCQ 2026 — Free Practice | Vooo AI Education</title>
@@ -98,7 +119,7 @@
 <header class="header">
     <div class="header-inner">
         <a class="logo-area" href="/vooo-ai">
-            <div class="logo-circle"><img src="/vooo-ai/images/vooo-logo.jpg" alt="Vooo AI"></div>
+            <div class="logo-circle"><img src="/vooo-ai/images/vooo-logo.webp" width="50" height="50" alt="Vooo AI"></div>
             <div class="logo-text"><span>Vooo AI</span><small>MCQ Practice Blog</small></div>
         </a>
         <a class="header-cta" href="/vooo-ai/vooosignup">Free Sign Up</a>
@@ -260,5 +281,28 @@
 function selectOption(el,isCorrect){const card=el.closest('.mcq-card');card.querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(isCorrect){el.style.background='#e8f5e9';el.style.borderColor='#2e7d32';el.style.color='#1B5E20';el.style.fontWeight='700';}else{el.style.background='#ffebee';el.style.borderColor='#c62828';el.style.color='#b71c1c';card.querySelector('.answer-box').classList.add('show');}}
 function toggleAnswer(btn){const box=btn.closest('.mcq-card').querySelector('.answer-box');box.classList.toggle('show');btn.textContent=box.classList.contains('show')?'Hide Answer':'Show Answer';}
 </script>
+
+<script>
+  // Lazy reveal cards as user scrolls
+  if('IntersectionObserver' in window){
+    const cards = document.querySelectorAll('.blog-card');
+    const observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.style.opacity='1';
+          entry.target.style.transform='translateY(0)';
+          observer.unobserve(entry.target);
+        }
+      });
+    },{rootMargin:'100px'});
+    cards.forEach(function(card){
+      card.style.opacity='0';
+      card.style.transform='translateY(16px)';
+      card.style.transition='opacity 0.3s ease, transform 0.3s ease';
+      observer.observe(card);
+    });
+  }
+</script>
+
 </body>
 </html>
