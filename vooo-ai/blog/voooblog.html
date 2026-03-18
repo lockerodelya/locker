@@ -287,6 +287,14 @@
 
 <script>
     document.getElementById('copyright-year').textContent = new Date().getFullYear();
+
+    // Fix blank page on back navigation (bfcache restore)
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
 </script>
+    
 </body>
 </html>
