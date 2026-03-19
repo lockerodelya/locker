@@ -92,16 +92,18 @@
             border-top: 4px solid #1e40af;
         }
         .analytics-card.green  { border-top-color: #10b981; }
-        .analytics-card.orange { border-top-color: #f97316; }
         .analytics-card.purple { border-top-color: #7c3aed; }
+        .analytics-card.orange { border-top-color: #f97316; }
+        .analytics-card.teal   { border-top-color: #0d9488; }
         .analytics-val   { font-size: 2.4em; font-weight: bold; color: #1e40af; }
         .analytics-card.green  .analytics-val { color: #059669; }
-        .analytics-card.orange .analytics-val { color: #ea580c; }
         .analytics-card.purple .analytics-val { color: #7c3aed; }
+        .analytics-card.orange .analytics-val { color: #ea580c; }
+        .analytics-card.teal   .analytics-val { color: #0d9488; }
         .analytics-lbl   { color: #666; font-size: 0.88em; margin-top: 6px; font-weight: 600; }
 
         .analytics-table-wrap { overflow-x: auto; margin-top: 10px; }
-        .analytics-table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        .analytics-table { width: 100%; border-collapse: collapse; min-width: 700px; }
         .analytics-table th { background: #1e40af; color: white; padding: 11px 14px; text-align: left; font-size: 0.92em; }
         .analytics-table td { padding: 10px 14px; border-bottom: 1px solid #e0e0e0; font-size: 0.92em; color: #333; }
         .analytics-table tr:hover td { background: #f0f4ff; }
@@ -111,9 +113,11 @@
         .bar-wrap { display: flex; align-items: center; gap: 8px; }
         .bar-bg { flex: 1; background: #e8eef7; border-radius: 4px; height: 14px; overflow: hidden; }
         .bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
-        .bar-main    { background: #1e40af; }
-        .bar-pricing { background: #10b981; }
-        .bar-pwa     { background: #7c3aed; }
+        .bar-main     { background: #1e40af; }
+        .bar-pricing  { background: #10b981; }
+        .bar-pwa      { background: #7c3aed; }
+        .bar-bloghome { background: #f97316; }
+        .bar-blogtot  { background: #0d9488; }
         .bar-num { font-weight: 700; font-size: 0.9em; min-width: 28px; text-align: right; }
 
         .analytics-refresh { background: #1e40af; color: white; border: none; border-radius: 8px; padding: 9px 20px; font-size: 0.95em; font-weight: 700; cursor: pointer; transition: background 0.2s; }
@@ -146,7 +150,7 @@
 <body>
     <div class="header">
         <div class="header-content">
-            <h1>🔐 Vooo AI Admin — User Management</h1>
+            <h1>🔐 Vooo AI - Admin Console</h1>
             <div class="header-btns">
                 <button class="logout-btn" onclick="changePassword()">Change Password</button>
                 <button class="logout-btn" onclick="logout()">Logout</button>
@@ -165,7 +169,6 @@
         <!-- ====== TAB 1: USERS ====== -->
         <div id="tab-users" class="tab-panel active">
 
-            <!-- ⭐ Revenue card removed — only 3 stat cards now -->
             <div class="stats-grid">
                 <div class="stat-card"><div class="stat-value" id="total-users">0</div><div class="stat-label">Total Users</div></div>
                 <div class="stat-card"><div class="stat-value" id="free-users">0</div><div class="stat-label">Free Users</div></div>
@@ -210,25 +213,29 @@
             <div class="analytics-summary">
                 <div class="analytics-card">
                     <div class="analytics-val" id="an-total-main">—</div>
-                    <div class="analytics-lbl">Total Main Page Views<br><small>(last 60 days)</small></div>
+                    <div class="analytics-lbl">Vooo Home Page Views<br><small id="an-main-month-lbl">(this month)</small></div>
                 </div>
                 <div class="analytics-card green">
                     <div class="analytics-val" id="an-total-pricing">—</div>
-                    <div class="analytics-lbl">Total Pricing Page Views<br><small>(last 60 days)</small></div>
-                </div>
-                <div class="analytics-card orange">
-                    <div class="analytics-val" id="an-today-main">—</div>
-                    <div class="analytics-lbl">Main Page Views Today</div>
+                    <div class="analytics-lbl">Total Pricing Page Views<br><small id="an-pricing-month-lbl">(this month)</small></div>
                 </div>
                 <div class="analytics-card purple">
                     <div class="analytics-val" id="an-total-pwa">—</div>
-                    <div class="analytics-lbl">Total PWA Installs<br><small>(last 60 days)</small></div>
+                    <div class="analytics-lbl">Total PWA Installs<br><small id="an-pwa-month-lbl">(this month)</small></div>
+                </div>
+                <div class="analytics-card orange">
+                    <div class="analytics-val" id="an-total-bloghome">—</div>
+                    <div class="analytics-lbl">Vooo Blog Home Views<br><small id="an-bloghome-month-lbl">(this month)</small></div>
+                </div>
+                <div class="analytics-card teal">
+                    <div class="analytics-val" id="an-total-blogtot">—</div>
+                    <div class="analytics-lbl">Vooo Blog Posts Total<br><small id="an-blogtot-month-lbl">(this month)</small></div>
                 </div>
             </div>
 
             <div class="section">
                 <div class="section-header">
-                    <h2>📅 Day-wise Breakdown — Last 60 Days</h2>
+                    <h2 id="analytics-section-title">📅 Day-wise Breakdown</h2>
                     <button class="analytics-refresh" onclick="loadAnalytics()">🔄 Refresh</button>
                 </div>
                 <div id="analytics-loading" class="loading">Loading analytics...</div>
@@ -238,9 +245,11 @@
                             <thead>
                                 <tr>
                                     <th>Date</th>
-                                    <th>Main Page Views</th>
-                                    <th>Pricing Page Views</th>
+                                    <th>Vooo Home Page</th>
+                                    <th>Vooo Pricing Page</th>
                                     <th>PWA Installs</th>
+                                    <th>Blog Home</th>
+                                    <th>Blog Posts Total</th>
                                 </tr>
                             </thead>
                             <tbody id="analytics-tbody"></tbody>
@@ -434,7 +443,6 @@
         let currentEditUser = null;
 
         // ====== PLAN LOOKUP TABLES ======
-        // ⭐ Plan values removed from display — no INR amounts shown
         const PLAN_DURATION = {
             '1month': '1 Month (30 days)',
             '3month': '3 Months (90 days)',
@@ -480,8 +488,6 @@
         });
 
         // ====== LOAD USERS ======
-        // ⭐ Counts ALL users — India + international
-        // ⭐ Revenue calculation completely removed
         async function loadUsers() {
             try {
                 const snapshot = await db.collection('users').get();
@@ -490,7 +496,6 @@
 
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    // ⭐ Count ALL vooo users regardless of country
                     if (data.vooo_user === true) {
                         allUsers.push({ id: doc.id, ...data });
                         if (data.tier === 'paid') {
@@ -501,7 +506,6 @@
                     }
                 });
 
-                // ⭐ Update only 3 stat cards — revenue removed
                 document.getElementById('total-users').textContent = allUsers.length;
                 document.getElementById('free-users').textContent  = freeCount;
                 document.getElementById('paid-users').textContent  = paidCount;
@@ -560,7 +564,6 @@
         function calcExpiry(prefix) {
             const plan     = document.getElementById(prefix + '-plan').value;
             const startVal = document.getElementById(prefix + '-start-date').value;
-            // ⭐ Show plan duration only — no price
             document.getElementById(prefix + '-plan-value').textContent = PLAN_DURATION[plan] || '—';
             document.getElementById(prefix + '-duration').value         = PLAN_DURATION[plan] || '';
             if (!startVal) { document.getElementById(prefix + '-expiry').value = ''; return; }
@@ -746,75 +749,107 @@
             }
         }
 
-        // ====== ANALYTICS ======
+        // ====== ANALYTICS — CURRENT MONTH ONLY ======
         async function loadAnalytics() {
             document.getElementById('analytics-loading').style.display         = 'block';
             document.getElementById('analytics-table-container').style.display = 'none';
 
+            // Always use current month
+            const now   = new Date();
+            const year  = now.getFullYear();
+            const month = now.getMonth() + 1;
+
+            // Build month label e.g. "March 2026"
+            const monthLabel = now.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+
+            // Update section title and card subtitles
+            document.getElementById('analytics-section-title').textContent  = '📅 Day-wise Breakdown — ' + monthLabel;
+            document.getElementById('an-main-month-lbl').textContent        = '(' + monthLabel + ')';
+            document.getElementById('an-pricing-month-lbl').textContent     = '(' + monthLabel + ')';
+            document.getElementById('an-pwa-month-lbl').textContent         = '(' + monthLabel + ')';
+            document.getElementById('an-bloghome-month-lbl').textContent    = '(' + monthLabel + ')';
+            document.getElementById('an-blogtot-month-lbl').textContent     = '(' + monthLabel + ')';
+
+            // Build all dates in current month
+            const daysInMonth = new Date(year, month, 0).getDate();
+            const dates = [];
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dd = String(d).padStart(2, '0');
+                const mm = String(month).padStart(2, '0');
+                dates.push(year + '-' + mm + '-' + dd);
+            }
+
             try {
-                const dates = [];
-                for (let i = 0; i < 60; i++) {
-                    const d = new Date();
-                    d.setDate(d.getDate() - i);
-                    dates.push(d.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }));
+                const dataMap = {};
+                const chunk1  = dates.slice(0, 30);
+                const chunk2  = dates.slice(30);
+
+                const snap1 = await db.collection('vooo_analytics').where('date', 'in', chunk1).get();
+                snap1.forEach(doc => { dataMap[doc.id] = doc.data(); });
+
+                if (chunk2.length > 0) {
+                    const snap2 = await db.collection('vooo_analytics').where('date', 'in', chunk2).get();
+                    snap2.forEach(doc => { dataMap[doc.id] = doc.data(); });
                 }
 
-                const snapshot  = await db.collection('vooo_analytics').where('date', 'in', dates.slice(0, 30)).get();
-                const snapshot2 = await db.collection('vooo_analytics').where('date', 'in', dates.slice(30, 60)).get();
-
-                const dataMap = {};
-                snapshot.forEach(doc  => { dataMap[doc.id] = doc.data(); });
-                snapshot2.forEach(doc => { dataMap[doc.id] = doc.data(); });
-
-                let totalMain = 0, totalPricing = 0, totalPWA = 0, todayMain = 0;
-                const today = dates[0];
+                let totalMain = 0, totalPricing = 0, totalPWA = 0, totalBlogHome = 0, totalBlogTot = 0;
 
                 dates.forEach(date => {
                     const d = dataMap[date] || {};
-                    totalMain    += d.views_main    || 0;
-                    totalPricing += d.views_pricing || 0;
-                    totalPWA     += d.pwa_installs  || 0;
-                    if (date === today) todayMain = d.views_main || 0;
+                    totalMain     += d.views_main      || 0;
+                    totalPricing  += d.views_pricing   || 0;
+                    totalPWA      += d.pwa_installs    || 0;
+                    totalBlogHome += d.views_blog_home || 0;
+                    totalBlogTot  += d.views_blog_total|| 0;
                 });
 
-                document.getElementById('an-total-main').textContent    = totalMain.toLocaleString();
-                document.getElementById('an-total-pricing').textContent = totalPricing.toLocaleString();
-                document.getElementById('an-today-main').textContent    = todayMain.toLocaleString();
-                document.getElementById('an-total-pwa').textContent     = totalPWA.toLocaleString();
+                document.getElementById('an-total-main').textContent     = totalMain.toLocaleString();
+                document.getElementById('an-total-pricing').textContent  = totalPricing.toLocaleString();
+                document.getElementById('an-total-pwa').textContent      = totalPWA.toLocaleString();
+                document.getElementById('an-total-bloghome').textContent = totalBlogHome.toLocaleString();
+                document.getElementById('an-total-blogtot').textContent  = totalBlogTot.toLocaleString();
 
-                const maxMain    = Math.max(...dates.map(d => (dataMap[d] || {}).views_main    || 0), 1);
-                const maxPricing = Math.max(...dates.map(d => (dataMap[d] || {}).views_pricing || 0), 1);
-                const maxPWA     = Math.max(...dates.map(d => (dataMap[d] || {}).pwa_installs  || 0), 1);
+                const maxMain     = Math.max(...dates.map(d => (dataMap[d] || {}).views_main       || 0), 1);
+                const maxPricing  = Math.max(...dates.map(d => (dataMap[d] || {}).views_pricing    || 0), 1);
+                const maxPWA      = Math.max(...dates.map(d => (dataMap[d] || {}).pwa_installs     || 0), 1);
+                const maxBlogHome = Math.max(...dates.map(d => (dataMap[d] || {}).views_blog_home  || 0), 1);
+                const maxBlogTot  = Math.max(...dates.map(d => (dataMap[d] || {}).views_blog_total || 0), 1);
 
                 const tbody = document.getElementById('analytics-tbody');
                 tbody.innerHTML = '';
                 let hasAnyData = false;
 
+                const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+
                 dates.forEach(date => {
-                    const d       = dataMap[date] || {};
-                    const main    = d.views_main    || 0;
-                    const pricing = d.views_pricing || 0;
-                    const pwa     = d.pwa_installs  || 0;
-                    if (main === 0 && pricing === 0 && pwa === 0) return;
+                    const d        = dataMap[date] || {};
+                    const main     = d.views_main       || 0;
+                    const pricing  = d.views_pricing    || 0;
+                    const pwa      = d.pwa_installs     || 0;
+                    const blogHome = d.views_blog_home  || 0;
+                    const blogTot  = d.views_blog_total || 0;
+                    if (main === 0 && pricing === 0 && pwa === 0 && blogHome === 0 && blogTot === 0) return;
                     hasAnyData = true;
 
                     const dateObj       = new Date(date + 'T00:00:00');
                     const dateFormatted = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-                    const isToday       = date === today;
+                    const isToday       = date === todayStr;
 
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td><strong>${dateFormatted}</strong>${isToday ? ' <span style="background:#fef3c7;color:#92400e;padding:2px 7px;border-radius:10px;font-size:0.78em;font-weight:700;">TODAY</span>' : ''}</td>
-                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-main" style="width:${Math.round((main/maxMain)*100)}%"></div></div><span class="bar-num">${main}</span></div></td>
-                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-pricing" style="width:${Math.round((pricing/maxPricing)*100)}%"></div></div><span class="bar-num">${pricing}</span></div></td>
-                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-pwa" style="width:${Math.round((pwa/maxPWA)*100)}%"></div></div><span class="bar-num">${pwa}</span></div></td>
+                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-main"     style="width:${Math.round((main    /maxMain    )*100)}%"></div></div><span class="bar-num">${main    }</span></div></td>
+                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-pricing"  style="width:${Math.round((pricing /maxPricing )*100)}%"></div></div><span class="bar-num">${pricing }</span></div></td>
+                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-pwa"      style="width:${Math.round((pwa     /maxPWA     )*100)}%"></div></div><span class="bar-num">${pwa     }</span></div></td>
+                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-bloghome" style="width:${Math.round((blogHome/maxBlogHome)*100)}%"></div></div><span class="bar-num">${blogHome}</span></div></td>
+                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-blogtot"  style="width:${Math.round((blogTot /maxBlogTot )*100)}%"></div></div><span class="bar-num">${blogTot }</span></div></td>
                     `;
                     tbody.appendChild(row);
                 });
 
-                document.getElementById('analytics-no-data').style.display         = hasAnyData ? 'none' : 'block';
-                document.getElementById('analytics-loading').style.display          = 'none';
-                document.getElementById('analytics-table-container').style.display  = 'block';
+                document.getElementById('analytics-no-data').style.display        = hasAnyData ? 'none' : 'block';
+                document.getElementById('analytics-loading').style.display         = 'none';
+                document.getElementById('analytics-table-container').style.display = 'block';
 
             } catch (err) {
                 document.getElementById('analytics-loading').textContent = '❌ Error loading analytics: ' + err.message;
