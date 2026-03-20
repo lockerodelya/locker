@@ -860,47 +860,41 @@
         // ====== RENDER COUNTRY SUMMARY ======
         function renderCountrySummary(dataMap, dates, monthLabel) {
             // Aggregate country data across all days in month
+            // Firestore stores flat dot notation fields like:
+            // "countries_main.India": 2, "countries_main.Germany": 1
             const totals = {
-                main:      {},
-                pricing:   {},
-                pwa:       {},
-                blog_home: {},
-                blog_total:{}
+                main:       {},
+                pricing:    {},
+                pwa:        {},
+                blog_home:  {},
+                blog_total: {}
             };
 
             dates.forEach(date => {
                 const d = dataMap[date] || {};
 
-                // Main
-                if (d.countries_main) {
-                    Object.entries(d.countries_main).forEach(([c, v]) => {
-                        totals.main[c] = (totals.main[c] || 0) + v;
-                    });
-                }
-                // Pricing
-                if (d.countries_pricing) {
-                    Object.entries(d.countries_pricing).forEach(([c, v]) => {
-                        totals.pricing[c] = (totals.pricing[c] || 0) + v;
-                    });
-                }
-                // PWA
-                if (d.countries_pwa) {
-                    Object.entries(d.countries_pwa).forEach(([c, v]) => {
-                        totals.pwa[c] = (totals.pwa[c] || 0) + v;
-                    });
-                }
-                // Blog Home
-                if (d.countries_blog_home) {
-                    Object.entries(d.countries_blog_home).forEach(([c, v]) => {
-                        totals.blog_home[c] = (totals.blog_home[c] || 0) + v;
-                    });
-                }
-                // Blog Total
-                if (d.countries_blog_total) {
-                    Object.entries(d.countries_blog_total).forEach(([c, v]) => {
-                        totals.blog_total[c] = (totals.blog_total[c] || 0) + v;
-                    });
-                }
+                // Loop through ALL fields in the document
+                // and find ones that start with our country prefixes
+                Object.entries(d).forEach(([key, value]) => {
+                    if (typeof value !== 'number') return;
+
+                    if (key.startsWith('countries_main.')) {
+                        const country = key.replace('countries_main.', '');
+                        totals.main[country] = (totals.main[country] || 0) + value;
+                    } else if (key.startsWith('countries_pricing.')) {
+                        const country = key.replace('countries_pricing.', '');
+                        totals.pricing[country] = (totals.pricing[country] || 0) + value;
+                    } else if (key.startsWith('countries_pwa.')) {
+                        const country = key.replace('countries_pwa.', '');
+                        totals.pwa[country] = (totals.pwa[country] || 0) + value;
+                    } else if (key.startsWith('countries_blog_home.')) {
+                        const country = key.replace('countries_blog_home.', '');
+                        totals.blog_home[country] = (totals.blog_home[country] || 0) + value;
+                    } else if (key.startsWith('countries_blog_total.')) {
+                        const country = key.replace('countries_blog_total.', '');
+                        totals.blog_total[country] = (totals.blog_total[country] || 0) + value;
+                    }
+                });
             });
 
             // Helper — render tags sorted by count descending
