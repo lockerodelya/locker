@@ -981,17 +981,29 @@
                 document.getElementById('an-total-bloghome').textContent = totalBlogHome.toLocaleString();
                 document.getElementById('an-total-blogtot').textContent  = totalBlogTot.toLocaleString();
 
-                const maxMain     = Math.max(...dates.map(d => (dataMap[d] || {}).views_main       || 0), 1);
-                const maxPricing  = Math.max(...dates.map(d => (dataMap[d] || {}).views_pricing    || 0), 1);
-                const maxPWA      = Math.max(...dates.map(d => (dataMap[d] || {}).pwa_installs     || 0), 1);
-                const maxBlogHome = Math.max(...dates.map(d => (dataMap[d] || {}).views_blog_home  || 0), 1);
-                const maxBlogTot  = Math.max(...dates.map(d => (dataMap[d] || {}).views_blog_total || 0), 1);
-
                 const tbody = document.getElementById('analytics-tbody');
                 tbody.innerHTML = '';
                 let hasAnyData = false;
 
                 const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+
+                // Helper — extract country tags from flat Firestore fields for one day
+                function getDayCountryTags(d, prefix) {
+                    const countries = {};
+                    Object.entries(d).forEach(([key, value]) => {
+                        if (typeof value === 'number' && key.startsWith(prefix + '.')) {
+                            const country = key.replace(prefix + '.', '');
+                            countries[country] = (countries[country] || 0) + value;
+                        }
+                    });
+                    const sorted = Object.entries(countries).sort((a, b) => b[1] - a[1]);
+                    if (sorted.length === 0) return '';
+                    return '<div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:4px;">' +
+                        sorted.map(([c, v]) =>
+                            `<span style="background:#e8eef7;border-radius:10px;padding:2px 8px;font-size:0.78em;font-weight:600;color:#1e40af;white-space:nowrap;">${c}-${v}</span>`
+                        ).join('') +
+                    '</div>';
+                }
 
                 dates.slice().reverse().forEach(date => {
                     const d        = dataMap[date] || {};
@@ -1007,14 +1019,21 @@
                     const dateFormatted = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
                     const isToday       = date === todayStr;
 
+                    // Get country tags for each column
+                    const cMain     = getDayCountryTags(d, 'countries_main');
+                    const cPricing  = getDayCountryTags(d, 'countries_pricing');
+                    const cPwa      = getDayCountryTags(d, 'countries_pwa');
+                    const cBlogHome = getDayCountryTags(d, 'countries_blog_home');
+                    const cBlogTot  = getDayCountryTags(d, 'countries_blog_total');
+
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td><strong>${dateFormatted}</strong>${isToday ? ' <span style="background:#fef3c7;color:#92400e;padding:2px 7px;border-radius:10px;font-size:0.78em;font-weight:700;">TODAY</span>' : ''}</td>
-                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-main"     style="width:${Math.round((main    /maxMain    )*100)}%"></div></div><span class="bar-num">${main    }</span></div></td>
-                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-pricing"  style="width:${Math.round((pricing /maxPricing )*100)}%"></div></div><span class="bar-num">${pricing }</span></div></td>
-                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-pwa"      style="width:${Math.round((pwa     /maxPWA     )*100)}%"></div></div><span class="bar-num">${pwa     }</span></div></td>
-                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-bloghome" style="width:${Math.round((blogHome/maxBlogHome)*100)}%"></div></div><span class="bar-num">${blogHome}</span></div></td>
-                        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill bar-blogtot"  style="width:${Math.round((blogTot /maxBlogTot )*100)}%"></div></div><span class="bar-num">${blogTot }</span></div></td>
+                        <td><strong>${main    }</strong>${cMain    }</td>
+                        <td><strong>${pricing }</strong>${cPricing }</td>
+                        <td><strong>${pwa     }</strong>${cPwa     }</td>
+                        <td><strong>${blogHome}</strong>${cBlogHome}</td>
+                        <td><strong>${blogTot }</strong>${cBlogTot }</td>
                     `;
                     tbody.appendChild(row);
                 });
