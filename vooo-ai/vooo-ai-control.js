@@ -127,7 +127,11 @@ const VOOO_ENGINE_REGISTRY = {
 	'physics-waves-sound-level-1' : '/vooo-ai/subjects/waves-sound/engine-code/physics-waves-sound-level-1.js',
 	'physics-waves-sound-level-2' : '/vooo-ai/subjects/waves-sound/engine-code/physics-waves-sound-level-2.js',
 	'physics-waves-sound-level-3' : '/vooo-ai/subjects/waves-sound/engine-code/physics-waves-sound-level-3.js',
-		
+
+	'physics-light-optics-level-1' : '/vooo-ai/subjects/light-optics/engine-code/physics-light-optics-level-1.js',
+	'physics-light-optics-level-2' : '/vooo-ai/subjects/light-optics/engine-code/physics-light-optics-level-2.js',
+	'physics-light-optics-level-3' : '/vooo-ai/subjects/light-optics/engine-code/physics-light-optics-level-3.js',
+	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
 
@@ -255,6 +259,10 @@ const VOOO_ENGINE_INSTANCES = {
 	'physics-waves-sound-level-2' : 'physicswavessoundl2',
 	'physics-waves-sound-level-3' : 'physicswavessoundl3',
 
+	'physics-light-optics-level-1' : 'physicslightopticsl1',
+	'physics-light-optics-level-2' : 'physicslightopticsl2',
+	'physics-light-optics-level-3' : 'physicslightopticsl3',
+	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
 
@@ -461,6 +469,14 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'physics-waves-sound-level-1', text: '• Waves & Sound L1' },
 					{ value: 'physics-waves-sound-level-2', text: '• Waves & Sound L2' },
 					{ value: 'physics-waves-sound-level-3', text: '• Waves & Sound L3' },
+                ]
+            },
+			{
+                label: 'Physics : Light & Optics',
+                options: [
+                    { value: 'physics-light-optics-level-1', text: '• Light & Optics L1' },
+					{ value: 'physics-light-optics-level-2', text: '• Light & Optics L2' },
+					{ value: 'physics-light-optics-level-3', text: '• Light & Optics L3' },
                 ]
             },
 
