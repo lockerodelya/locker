@@ -123,6 +123,10 @@ const VOOO_ENGINE_REGISTRY = {
 	'physics-energy-power-level-1' : '/vooo-ai/subjects/energy-power/engine-code/physics-energy-power-level-1.js',
 	'physics-energy-power-level-2' : '/vooo-ai/subjects/energy-power/engine-code/physics-energy-power-level-2.js',
 	'physics-energy-power-level-3' : '/vooo-ai/subjects/energy-power/engine-code/physics-energy-power-level-3.js',	
+
+	'physics-waves-sound-level-1' : '/vooo-ai/subjects/waves-sound/engine-code/physics-waves-sound-level-1.js',
+	'physics-waves-sound-level-2' : '/vooo-ai/subjects/waves-sound/engine-code/physics-waves-sound-level-2.js',
+	'physics-waves-sound-level-3' : '/vooo-ai/subjects/waves-sound/engine-code/physics-waves-sound-level-3.js',
 		
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -246,6 +250,10 @@ const VOOO_ENGINE_INSTANCES = {
 	'physics-energy-power-level-1' : 'physicsenergypowerl1',
 	'physics-energy-power-level-2' : 'physicsenergypowerl2',
 	'physics-energy-power-level-3' : 'physicsenergypowerl3',
+
+	'physics-waves-sound-level-1' : 'physicswavessoundl1',
+	'physics-waves-sound-level-2' : 'physicswavessoundl2',
+	'physics-waves-sound-level-3' : 'physicswavessoundl3',
 
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -445,6 +453,14 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'physics-energy-power-level-1', text: '• Energy & Power L1' },
 					{ value: 'physics-energy-power-level-2', text: '• Energy & Power L2' },
 					{ value: 'physics-energy-power-level-3', text: '• Energy & Power L3' },
+                ]
+            },
+			{
+                label: 'Physics : Waves & Sound',
+                options: [
+                    { value: 'physics-waves-sound-level-1', text: '• Waves & Sound L1' },
+					{ value: 'physics-waves-sound-level-2', text: '• Waves & Sound L2' },
+					{ value: 'physics-waves-sound-level-3', text: '• Waves & Sound L3' },
                 ]
             },
 
