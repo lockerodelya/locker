@@ -1,0 +1,139 @@
+{
+  "puzzle_type": "physics-forces-motion-level-2",
+  "display_name": "Forces & Motion L2",
+  "templates": [
+
+    {
+      "template_id": "FM_L2_01",
+      "pattern": "An object has initial velocity [U] m/s and accelerates at [A] m/s² for [T] seconds. What is its final velocity?",
+      "variables": {
+        "U": {"min": 0,  "max": 20, "step": 2},
+        "A": {"min": 1,  "max": 10, "step": 1},
+        "T": {"min": 2,  "max": 15, "step": 1}
+      },
+      "calculation": "U + A * T",
+      "explanation": "Using v = u + at: v = [U] + [A] × [T] = [U] + [A*T] = [RESULT] m/s"
+    },
+
+    {
+      "template_id": "FM_L2_02",
+      "pattern": "An object starts from rest and accelerates at [A] m/s² for [T] seconds. How far does it travel?",
+      "variables": {
+        "A": {"min": 1,  "max": 10, "step": 1},
+        "T": {"min": 2,  "max": 15, "step": 1}
+      },
+      "calculation": "0.5 * A * T * T",
+      "explanation": "Using s = ut + ½at² with u=0: s = 0 + 0.5 × [A] × [T]² = 0.5 × [A] × [T*T] = [RESULT] m"
+    },
+
+    {
+      "template_id": "FM_L2_03",
+      "pattern": "An object with initial velocity [U] m/s accelerates at [A] m/s² for [T] seconds. What distance does it cover?",
+      "variables": {
+        "U": {"min": 2,  "max": 20, "step": 2},
+        "A": {"min": 1,  "max": 8,  "step": 1},
+        "T": {"min": 2,  "max": 10, "step": 1}
+      },
+      "calculation": "U * T + 0.5 * A * T * T",
+      "explanation": "Using s = ut + ½at²: s = [U]×[T] + 0.5×[A]×[T]² = [U*T] + [0.5*A*T*T] = [RESULT] m"
+    },
+
+    {
+      "template_id": "FM_L2_04",
+      "pattern": "An object accelerates from [U] m/s to [V] m/s over a distance of [S] m. What is its acceleration?",
+      "variables": {
+        "U": {"min": 0,  "max": 10, "step": 2},
+        "V": {"min": 10, "max": 40, "step": 2},
+        "S": {"min": 10, "max": 100,"step": 5}
+      },
+      "constraints": ["V > U", "(V*V - U*U) % (2*S) === 0"],
+      "calculation": "(V * V - U * U) / (2 * S)",
+      "explanation": "Using v² = u² + 2as: a = (v²−u²) ÷ 2s = ([V*V]−[U*U]) ÷ (2×[S]) = [RESULT] m/s²"
+    },
+
+    {
+      "template_id": "FM_L2_05",
+      "pattern": "A [M] kg object moving at [U] m/s is brought to rest by a braking force of [F] N. How far does it travel before stopping?",
+      "variables": {
+        "M": {"min": 500,  "max": 2000, "step": 100},
+        "U": {"min": 10,   "max": 40,   "step": 5},
+        "F": {"min": 1000, "max": 8000, "step": 500}
+      },
+      "calculation": "(M * U * U) / (2 * F)",
+      "explanation": "Using work-energy theorem: F×s = ½mv² → s = mv² ÷ 2F = [M]×[U*U] ÷ (2×[F]) = [RESULT] m"
+    },
+
+    {
+      "template_id": "FM_L2_06",
+      "pattern": "An object of mass [M] kg falls freely from rest for [T] seconds. What is its velocity just before hitting the ground? (g = 10 m/s²)",
+      "variables": {
+        "M": {"min": 1,  "max": 20, "step": 1},
+        "T": {"min": 1,  "max": 10, "step": 1}
+      },
+      "calculation": "10 * T",
+      "explanation": "Using v = u + gt with u=0: v = 0 + 10 × [T] = [RESULT] m/s. Note: mass does not affect free fall velocity."
+    },
+
+    {
+      "template_id": "FM_L2_07",
+      "pattern": "A [M] kg object moving at [U] m/s collides with a stationary [M2] kg object. They stick together. What is their combined velocity after collision?",
+      "variables": {
+        "M":  {"min": 2,  "max": 20, "step": 2},
+        "M2": {"min": 2,  "max": 20, "step": 2},
+        "U":  {"min": 4,  "max": 30, "step": 2}
+      },
+      "constraints": ["(M * U) % (M + M2) === 0"],
+      "calculation": "(M * U) / (M + M2)",
+      "explanation": "Conservation of momentum: m₁u₁ = (m₁+m₂)v → v = [M]×[U] ÷ ([M]+[M2]) = [M*U] ÷ [M+M2] = [RESULT] m/s"
+    },
+
+    {
+      "template_id": "FM_L2_08",
+      "pattern": "A resultant force of [F] N acts on a [M] kg object for [T] seconds from rest. What is the impulse delivered to the object?",
+      "variables": {
+        "F": {"min": 5,  "max": 100, "step": 5},
+        "M": {"min": 1,  "max": 30,  "step": 1},
+        "T": {"min": 2,  "max": 20,  "step": 2}
+      },
+      "calculation": "F * T",
+      "explanation": "Impulse = Force × Time = [F] × [T] = [RESULT] N·s. Impulse equals the change in momentum."
+    },
+
+    {
+      "template_id": "FM_L2_09",
+      "pattern": "An object of mass [M] kg is dropped from a height of [H] m. What is its speed just before impact? (g = 10 m/s²)",
+      "variables": {
+        "M": {"min": 1,  "max": 30, "step": 1},
+        "H": {"min": 5,  "max": 80, "step": 5}
+      },
+      "calculation": "sqrt(2 * 10 * H)",
+      "explanation": "Using v² = u² + 2gh with u=0: v = √(2×10×[H]) = √[2*10*H] = [RESULT] m/s"
+    },
+
+    {
+      "template_id": "FM_L2_10",
+      "pattern": "A vehicle of mass [M] kg travelling at [V] m/s brakes uniformly to rest in [T] seconds. What is the braking force?",
+      "variables": {
+        "M": {"min": 500,  "max": 2000, "step": 100},
+        "V": {"min": 10,   "max": 40,   "step": 5},
+        "T": {"min": 2,    "max": 20,   "step": 2}
+      },
+      "constraints": ["(M * V) % T === 0"],
+      "calculation": "(M * V) / T",
+      "explanation": "Braking force = change in momentum ÷ time = (m×v) ÷ t = ([M]×[V]) ÷ [T] = [M*V] ÷ [T] = [RESULT] N"
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
