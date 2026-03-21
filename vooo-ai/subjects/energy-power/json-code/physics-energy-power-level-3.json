@@ -1,0 +1,141 @@
+{
+  "puzzle_type": "physics-energy-power-level-3",
+  "display_name": "Energy & Power L3",
+  "templates": [
+
+    {
+      "template_id": "EP_L3_01",
+      "pattern": "A [M] kg object is heated using a [P] W heater for [T] seconds. Its temperature rises by [DT]°C. What is the specific heat capacity of the material?",
+      "variables": {
+        "M":  {"min": 1,  "max": 10,  "step": 1},
+        "P":  {"min": 50, "max": 500, "step": 50},
+        "T":  {"min": 60, "max": 600, "step": 60},
+        "DT": {"min": 5,  "max": 50,  "step": 5}
+      },
+      "constraints": ["(P * T) % (M * DT) === 0"],
+      "calculation": "(P * T) / (M * DT)",
+      "explanation": "Energy supplied = P×t = [P]×[T] = [P*T] J. c = E ÷ mΔT = [P*T] ÷ ([M]×[DT]) = [P*T] ÷ [M*DT] = [RESULT] J/kg°C"
+    },
+
+    {
+      "template_id": "EP_L3_02",
+      "pattern": "A fuel has an energy density of [ED] MJ/kg. A [M] kg sample is completely burned with [EFF]% efficiency. How much useful energy is released in MJ?",
+      "variables": {
+        "ED":  {"min": 10, "max": 50,  "step": 5},
+        "M":   {"min": 1,  "max": 20,  "step": 1},
+        "EFF": {"min": 20, "max": 80,  "step": 10}
+      },
+      "calculation": "ED * M * EFF / 100",
+      "explanation": "Useful energy = energy density × mass × efficiency = [ED] × [M] × [EFF]/100 = [RESULT] MJ"
+    },
+
+    {
+      "template_id": "EP_L3_03",
+      "pattern": "A [V] V supply is connected across a [R] Ω resistor. What is the power dissipated?",
+      "variables": {
+        "V": {"min": 10, "max": 240, "step": 10},
+        "R": {"min": 4,  "max": 120, "step": 4}
+      },
+      "constraints": ["(V * V) % R === 0"],
+      "calculation": "(V * V) / R",
+      "explanation": "Power = V² ÷ R = [V]² ÷ [R] = [V*V] ÷ [R] = [RESULT] W"
+    },
+
+    {
+      "template_id": "EP_L3_04",
+      "pattern": "A Carnot engine operates between a hot reservoir at [TH] K and a cold reservoir at [TC] K. What is its maximum theoretical efficiency as a percentage?",
+      "variables": {
+        "TH": {"min": 400, "max": 1000, "step": 50},
+        "TC": {"min": 200, "max": 350,  "step": 25}
+      },
+      "constraints": ["TH > TC", "(TH - TC) * 100 % TH === 0"],
+      "calculation": "((TH - TC) / TH) * 100",
+      "explanation": "Carnot efficiency = (1 − Tc/Th) × 100 = (([TH]−[TC]) ÷ [TH]) × 100 = [RESULT]%"
+    },
+
+    {
+      "template_id": "EP_L3_05",
+      "pattern": "An efficiency chain has three stages with efficiencies of [E1]%, [E2]% and [E3]%. What is the overall efficiency of the system as a percentage?",
+      "variables": {
+        "E1": {"min": 40, "max": 90, "step": 10},
+        "E2": {"min": 40, "max": 90, "step": 10},
+        "E3": {"min": 40, "max": 90, "step": 10}
+      },
+      "calculation": "E1 * E2 * E3 / 10000",
+      "explanation": "Overall efficiency = (E1÷100) × (E2÷100) × (E3÷100) × 100 = [E1]×[E2]×[E3] ÷ 10000 = [RESULT]%"
+    },
+
+    {
+      "template_id": "EP_L3_06",
+      "pattern": "A transformer has [N1] turns on the primary coil and [N2] turns on the secondary coil. If the primary voltage is [V1] V, what is the secondary voltage?",
+      "variables": {
+        "N1": {"min": 100, "max": 2000, "step": 100},
+        "N2": {"min": 100, "max": 2000, "step": 100},
+        "V1": {"min": 10,  "max": 240,  "step": 10}
+      },
+      "constraints": ["(N2 * V1) % N1 === 0"],
+      "calculation": "(N2 * V1) / N1",
+      "explanation": "Transformer equation: V2/V1 = N2/N1 → V2 = V1 × N2 ÷ N1 = [V1] × [N2] ÷ [N1] = [RESULT] V"
+    },
+
+    {
+      "template_id": "EP_L3_07",
+      "pattern": "A power line transmits [P] kW of power at [V] kV. What is the current flowing through the line?",
+      "variables": {
+        "P": {"min": 100, "max": 2000, "step": 100},
+        "V": {"min": 11,  "max": 132,  "step": 11}
+      },
+      "constraints": ["(P * 1000) % (V * 1000) === 0"],
+      "calculation": "(P * 1000) / (V * 1000)",
+      "explanation": "Current = Power ÷ Voltage = ([P]×1000) ÷ ([V]×1000) = [P] ÷ [V] = [RESULT] A"
+    },
+
+    {
+      "template_id": "EP_L3_08",
+      "pattern": "A power line has resistance [R] Ω and carries a current of [I] A. How much power is wasted as heat in the line?",
+      "variables": {
+        "R": {"min": 1,  "max": 20, "step": 1},
+        "I": {"min": 2,  "max": 30, "step": 2}
+      },
+      "calculation": "I * I * R",
+      "explanation": "Power lost = I²R = [I]² × [R] = [I*I] × [R] = [RESULT] W. This is why high voltage transmission reduces energy losses."
+    },
+
+    {
+      "template_id": "EP_L3_09",
+      "pattern": "A photovoltaic solar panel of area [A] m² receives solar irradiance of [G] W/m² and has an efficiency of [EFF]%. What is its electrical power output?",
+      "variables": {
+        "A":   {"min": 1,  "max": 20,  "step": 1},
+        "G":   {"min": 200,"max": 1000,"step": 100},
+        "EFF": {"min": 10, "max": 25,  "step": 5}
+      },
+      "calculation": "A * G * EFF / 100",
+      "explanation": "Power output = A × G × (efficiency÷100) = [A] × [G] × [EFF]/100 = [RESULT] W"
+    },
+
+    {
+      "template_id": "EP_L3_10",
+      "pattern": "A [M] kg object is launched vertically upward at [V] m/s. What maximum height does it reach? (g = 10 m/s², assume no air resistance)",
+      "variables": {
+        "M": {"min": 1,  "max": 20, "step": 1},
+        "V": {"min": 10, "max": 50, "step": 5}
+      },
+      "constraints": ["(V * V) % (2 * 10) === 0"],
+      "calculation": "(V * V) / (2 * 10)",
+      "explanation": "Using energy conservation: KE = GPE → ½mv² = mgh → h = v² ÷ 2g = [V]² ÷ 20 = [V*V] ÷ 20 = [RESULT] m"
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

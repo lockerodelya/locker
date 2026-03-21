@@ -1,0 +1,140 @@
+{
+  "puzzle_type": "physics-energy-power-level-2",
+  "display_name": "Energy & Power L2",
+  "templates": [
+
+    {
+      "template_id": "EP_L2_01",
+      "pattern": "[M] kg of water is heated from [T1]°C to [T2]°C. How much energy is required? (Specific heat capacity of water = 4200 J/kg°C)",
+      "variables": {
+        "M":  {"min": 1,  "max": 20, "step": 1},
+        "T1": {"min": 10, "max": 40, "step": 5},
+        "T2": {"min": 50, "max": 100,"step": 5}
+      },
+      "constraints": ["T2 > T1"],
+      "calculation": "M * 4200 * (T2 - T1)",
+      "explanation": "Energy = mcΔT = [M] × 4200 × ([T2] − [T1]) = [M] × 4200 × [T2-T1] = [RESULT] J"
+    },
+
+    {
+      "template_id": "EP_L2_02",
+      "pattern": "[M] kg of an unknown metal absorbs [E] J of energy and its temperature rises by [DT]°C. What is its specific heat capacity?",
+      "variables": {
+        "M":  {"min": 1,  "max": 10,   "step": 1},
+        "E":  {"min": 500,"max": 10000,"step": 500},
+        "DT": {"min": 5,  "max": 50,   "step": 5}
+      },
+      "constraints": ["E % (M * DT) === 0"],
+      "calculation": "E / (M * DT)",
+      "explanation": "Specific Heat Capacity c = E ÷ (mΔT) = [E] ÷ ([M] × [DT]) = [E] ÷ [M*DT] = [RESULT] J/kg°C"
+    },
+
+    {
+      "template_id": "EP_L2_03",
+      "pattern": "A [V] V supply drives a current of [I] A through a resistor for [T] seconds. How much electrical energy is transferred?",
+      "variables": {
+        "V": {"min": 2,  "max": 240, "step": 2},
+        "I": {"min": 1,  "max": 20,  "step": 1},
+        "T": {"min": 10, "max": 120, "step": 10}
+      },
+      "calculation": "V * I * T",
+      "explanation": "Electrical Energy = V × I × t = [V] × [I] × [T] = [RESULT] J"
+    },
+
+    {
+      "template_id": "EP_L2_04",
+      "pattern": "A [V] V appliance draws [I] A of current. What is its power consumption?",
+      "variables": {
+        "V": {"min": 12, "max": 240, "step": 12},
+        "I": {"min": 1,  "max": 20,  "step": 1}
+      },
+      "calculation": "V * I",
+      "explanation": "Power = Voltage × Current = [V] × [I] = [RESULT] W"
+    },
+
+    {
+      "template_id": "EP_L2_05",
+      "pattern": "A [R] Ω resistor carries a current of [I] A. What is its power dissipation?",
+      "variables": {
+        "R": {"min": 2,  "max": 100, "step": 2},
+        "I": {"min": 1,  "max": 10,  "step": 1}
+      },
+      "calculation": "I * I * R",
+      "explanation": "Power = I²R = [I]² × [R] = [I*I] × [R] = [RESULT] W"
+    },
+
+    {
+      "template_id": "EP_L2_06",
+      "pattern": "A pump with [EFF]% efficiency raises [M] kg of water to a height of [H] m in [T] seconds. What is the electrical power input to the pump? (g = 10 m/s²)",
+      "variables": {
+        "EFF": {"min": 40, "max": 90,   "step": 10},
+        "M":   {"min": 10, "max": 200,  "step": 10},
+        "H":   {"min": 5,  "max": 30,   "step": 5},
+        "T":   {"min": 5,  "max": 60,   "step": 5}
+      },
+      "constraints": ["(M * 10 * H * 100) % (T * EFF) === 0"],
+      "calculation": "(M * 10 * H * 100) / (T * EFF)",
+      "explanation": "Useful power = mgh÷t = [M]×10×[H]÷[T] = [M*10*H/T] W. Input power = useful power × 100 ÷ efficiency = [M*10*H*100/T/EFF] = [RESULT] W"
+    },
+
+    {
+      "template_id": "EP_L2_07",
+      "pattern": "An object of mass [M] kg slides down a slope from height [H] m and reaches the bottom at [V] m/s. How much energy was lost to friction? (g = 10 m/s²)",
+      "variables": {
+        "M": {"min": 2,  "max": 20, "step": 2},
+        "H": {"min": 5,  "max": 30, "step": 5},
+        "V": {"min": 4,  "max": 20, "step": 2}
+      },
+      "constraints": ["M * 10 * H > 0.5 * M * V * V"],
+      "calculation": "M * 10 * H - 0.5 * M * V * V",
+      "explanation": "Energy lost = GPE − KE = mgh − ½mv² = [M]×10×[H] − 0.5×[M]×[V]² = [M*10*H] − [0.5*M*V*V] = [RESULT] J"
+    },
+
+    {
+      "template_id": "EP_L2_08",
+      "pattern": "A household uses [KWH] kWh of electricity. If the cost per kWh is [COST] pence, what is the total cost in pence?",
+      "variables": {
+        "KWH":  {"min": 5,  "max": 50,  "step": 5},
+        "COST": {"min": 10, "max": 30,  "step": 2}
+      },
+      "calculation": "KWH * COST",
+      "explanation": "Total cost = energy used × cost per unit = [KWH] × [COST] = [RESULT] pence"
+    },
+
+    {
+      "template_id": "EP_L2_09",
+      "pattern": "A spring with spring constant [K] N/m is compressed by [X] m. How much elastic potential energy is stored?",
+      "variables": {
+        "K": {"min": 100, "max": 2000, "step": 100},
+        "X": {"min": 1,   "max": 10,   "step": 1}
+      },
+      "calculation": "0.5 * K * X * X",
+      "explanation": "Elastic PE = ½kx² = 0.5 × [K] × [X]² = 0.5 × [K] × [X*X] = [RESULT] J"
+    },
+
+    {
+      "template_id": "EP_L2_10",
+      "pattern": "A power station generates [PO] MW of useful power from [PI] MW of input power. What is its efficiency as a percentage?",
+      "variables": {
+        "PI": {"min": 100, "max": 1000, "step": 100},
+        "PO": {"min": 20,  "max": 80,   "step": 10}
+      },
+      "constraints": ["PO < PI", "(PO * 100) % PI === 0"],
+      "calculation": "(PO * 100) / PI",
+      "explanation": "Efficiency = (Useful Power Output ÷ Total Power Input) × 100 = ([PO] ÷ [PI]) × 100 = [RESULT]%"
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

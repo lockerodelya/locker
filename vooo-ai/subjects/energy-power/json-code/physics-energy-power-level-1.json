@@ -1,0 +1,135 @@
+{
+  "puzzle_type": "physics-energy-power-level-1",
+  "display_name": "Energy & Power L1",
+  "templates": [
+
+    {
+      "template_id": "EP_L1_01",
+      "pattern": "A machine does [W] J of work in [T] seconds. What is its power output?",
+      "variables": {
+        "W": {"min": 100, "max": 3000, "step": 100},
+        "T": {"min": 2,   "max": 30,   "step": 2}
+      },
+      "constraints": ["W % T === 0"],
+      "calculation": "W / T",
+      "explanation": "Power = Work Done ÷ Time = [W] ÷ [T] = [RESULT] W (watts)"
+    },
+
+    {
+      "template_id": "EP_L1_02",
+      "pattern": "A [P] W motor runs for [T] seconds. How much energy does it transfer?",
+      "variables": {
+        "P": {"min": 100, "max": 3000, "step": 100},
+        "T": {"min": 10,  "max": 120,  "step": 10}
+      },
+      "calculation": "P * T",
+      "explanation": "Energy = Power × Time = [P] × [T] = [RESULT] J"
+    },
+
+    {
+      "template_id": "EP_L1_03",
+      "pattern": "A device transfers [EU] J of useful energy from [ET] J of total input energy. What is its efficiency as a percentage?",
+      "variables": {
+        "EU": {"min": 10, "max": 90,  "step": 10},
+        "ET": {"min": 100,"max": 100, "step": 1}
+      },
+      "constraints": ["EU < ET"],
+      "calculation": "(EU / ET) * 100",
+      "explanation": "Efficiency = (Useful Energy Output ÷ Total Energy Input) × 100 = ([EU] ÷ [ET]) × 100 = [RESULT]%"
+    },
+
+    {
+      "template_id": "EP_L1_04",
+      "pattern": "An object of mass [M] kg is lifted [H] m vertically. How much gravitational potential energy does it gain? (g = 10 m/s²)",
+      "variables": {
+        "M": {"min": 1,  "max": 50, "step": 1},
+        "H": {"min": 2,  "max": 40, "step": 2}
+      },
+      "calculation": "M * 10 * H",
+      "explanation": "GPE = mgh = [M] × 10 × [H] = [RESULT] J"
+    },
+
+    {
+      "template_id": "EP_L1_05",
+      "pattern": "An object of mass [M] kg moves at [V] m/s. What is its kinetic energy?",
+      "variables": {
+        "M": {"min": 1,  "max": 40, "step": 1},
+        "V": {"min": 2,  "max": 30, "step": 2}
+      },
+      "calculation": "0.5 * M * V * V",
+      "explanation": "KE = ½mv² = 0.5 × [M] × [V]² = 0.5 × [M] × [V*V] = [RESULT] J"
+    },
+
+    {
+      "template_id": "EP_L1_06",
+      "pattern": "A [P] W appliance is used for [H] hours. How many kilowatt-hours (kWh) of energy does it use?",
+      "variables": {
+        "P": {"min": 500,  "max": 3000, "step": 500},
+        "H": {"min": 1,    "max": 10,   "step": 1}
+      },
+      "calculation": "(P / 1000) * H",
+      "explanation": "Energy (kWh) = Power (kW) × Time (h) = ([P] ÷ 1000) × [H] = [P/1000] × [H] = [RESULT] kWh"
+    },
+
+    {
+      "template_id": "EP_L1_07",
+      "pattern": "A ball of mass [M] kg is dropped from a height of [H] m. Assuming no energy loss, what is its kinetic energy just before hitting the ground? (g = 10 m/s²)",
+      "variables": {
+        "M": {"min": 1,  "max": 20, "step": 1},
+        "H": {"min": 2,  "max": 30, "step": 2}
+      },
+      "calculation": "M * 10 * H",
+      "explanation": "By conservation of energy, KE at bottom = GPE at top = mgh = [M] × 10 × [H] = [RESULT] J"
+    },
+
+    {
+      "template_id": "EP_L1_08",
+      "pattern": "A machine has a power output of [P] W and an efficiency of [EFF]%. What is its power input?",
+      "variables": {
+        "P":   {"min": 100, "max": 2000, "step": 100},
+        "EFF": {"min": 20,  "max": 80,   "step": 10}
+      },
+      "constraints": ["(P * 100) % EFF === 0"],
+      "calculation": "(P * 100) / EFF",
+      "explanation": "Efficiency = Power Output ÷ Power Input × 100 → Power Input = Power Output × 100 ÷ Efficiency = [P] × 100 ÷ [EFF] = [RESULT] W"
+    },
+
+    {
+      "template_id": "EP_L1_09",
+      "pattern": "A [P] W light bulb is left on for [T] seconds. How much energy is wasted as heat if it is only [EFF]% efficient?",
+      "variables": {
+        "P":   {"min": 40,  "max": 200, "step": 20},
+        "T":   {"min": 60,  "max": 600, "step": 60},
+        "EFF": {"min": 10,  "max": 50,  "step": 10}
+      },
+      "calculation": "P * T * (1 - EFF / 100)",
+      "explanation": "Total energy = [P] × [T] = [P*T] J. Wasted energy = Total × (1 − efficiency) = [P*T] × (1 − [EFF]/100) = [RESULT] J"
+    },
+
+    {
+      "template_id": "EP_L1_10",
+      "pattern": "A crane lifts a [M] kg load to a height of [H] m in [T] seconds. What is the useful power output of the crane? (g = 10 m/s²)",
+      "variables": {
+        "M": {"min": 100, "max": 2000, "step": 100},
+        "H": {"min": 5,   "max": 40,   "step": 5},
+        "T": {"min": 5,   "max": 50,   "step": 5}
+      },
+      "constraints": ["(M * 10 * H) % T === 0"],
+      "calculation": "(M * 10 * H) / T",
+      "explanation": "Useful Power = mgh ÷ t = [M] × 10 × [H] ÷ [T] = [M*10*H] ÷ [T] = [RESULT] W"
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
