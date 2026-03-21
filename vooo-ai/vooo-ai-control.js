@@ -117,6 +117,8 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-profitloss-level-3' : '/vooo-ai/vae-upscprofitloss-level-3.js',
 
 	'physics-forces-motion-level-1' : '/vooo-ai/subjects/number-arithmetic/engine-code/physics-forces-motion-level-1.js',
+	'physics-forces-motion-level-2' : '/vooo-ai/subjects/number-arithmetic/engine-code/physics-forces-motion-level-2.js',
+	'physics-forces-motion-level-3' : '/vooo-ai/subjects/number-arithmetic/engine-code/physics-forces-motion-level-3.js',
 		
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -234,6 +236,8 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-profitloss-level-3' : 'vaeupscprofitlossl3',
 
 	'physics-forces-motion-level-1' : 'physicsforcesmotionl1',
+	'physics-forces-motion-level-2' : 'physicsforcesmotionl2',
+	'physics-forces-motion-level-3' : 'physicsforcesmotionl3',
 
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
