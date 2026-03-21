@@ -121,8 +121,8 @@ const VOOO_ENGINE_REGISTRY = {
 	'physics-forces-motion-level-3' : '/vooo-ai/subjects/forces-motion/engine-code/physics-forces-motion-level-3.js',
 
 	'physics-energy-power-level-1' : '/vooo-ai/subjects/energy-power/engine-code/physics-energy-power-level-1.js',
-	'physics-energy-power-level-2' : '/vooo-ai/subjects/energy-power/engine-code/physics-energy-power-level-1.js',
-	'physics-energy-power-level-3' : '/vooo-ai/subjects/energy-power/engine-code/physics-energy-power-level-1.js',	
+	'physics-energy-power-level-2' : '/vooo-ai/subjects/energy-power/engine-code/physics-energy-power-level-2.js',
+	'physics-energy-power-level-3' : '/vooo-ai/subjects/energy-power/engine-code/physics-energy-power-level-3.js',	
 		
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
