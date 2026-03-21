@@ -1,0 +1,140 @@
+{
+  "puzzle_type": "physics-waves-sound-level-2",
+  "display_name": "Waves & Sound L2",
+  "templates": [
+
+    {
+      "template_id": "WS_L2_01",
+      "pattern": "A wave has a time period of [T] ms. What is its frequency in Hz?",
+      "variables": {
+        "T": {"min": 2, "max": 100, "step": 2}
+      },
+      "calculation": "1000 / T",
+      "explanation": "Frequency = 1 ÷ period = 1 ÷ ([T] ÷ 1000) = 1000 ÷ [T] = [RESULT] Hz"
+    },
+
+    {
+      "template_id": "WS_L2_02",
+      "pattern": "A source emits sound at [F] Hz and moves toward a stationary observer at [VS] m/s. The speed of sound is [V] m/s. What is the observed frequency?",
+      "variables": {
+        "F":  {"min": 200, "max": 1000, "step": 50},
+        "VS": {"min": 10,  "max": 50,   "step": 5},
+        "V":  {"min": 330, "max": 340,  "step": 5}
+      },
+      "constraints": ["V > VS", "((F * V) % (V - VS)) === 0"],
+      "calculation": "(F * V) / (V - VS)",
+      "explanation": "Doppler effect (source approaching): f' = f × v ÷ (v − vs) = [F] × [V] ÷ ([V] − [VS]) = [F*V] ÷ [V-VS] = [RESULT] Hz"
+    },
+
+    {
+      "template_id": "WS_L2_03",
+      "pattern": "A source emits sound at [F] Hz and moves away from a stationary observer at [VS] m/s. The speed of sound is [V] m/s. What is the observed frequency?",
+      "variables": {
+        "F":  {"min": 200, "max": 1000, "step": 50},
+        "VS": {"min": 10,  "max": 50,   "step": 5},
+        "V":  {"min": 330, "max": 340,  "step": 5}
+      },
+      "constraints": ["((F * V) % (V + VS)) === 0"],
+      "calculation": "(F * V) / (V + VS)",
+      "explanation": "Doppler effect (source receding): f' = f × v ÷ (v + vs) = [F] × [V] ÷ ([V] + [VS]) = [F*V] ÷ [V+VS] = [RESULT] Hz"
+    },
+
+    {
+      "template_id": "WS_L2_04",
+      "pattern": "A standing wave is set up on a string of length [L] m. What is the wavelength of the fundamental frequency (first harmonic)?",
+      "variables": {
+        "L": {"min": 1, "max": 20, "step": 1}
+      },
+      "calculation": "2 * L",
+      "explanation": "For the fundamental frequency on a string fixed at both ends, wavelength = 2 × length = 2 × [L] = [RESULT] m"
+    },
+
+    {
+      "template_id": "WS_L2_05",
+      "pattern": "A string of length [L] m has a wave speed of [V] m/s. What is its fundamental frequency?",
+      "variables": {
+        "L": {"min": 1,   "max": 10,  "step": 1},
+        "V": {"min": 20,  "max": 400, "step": 20}
+      },
+      "constraints": ["V % (2 * L) === 0"],
+      "calculation": "V / (2 * L)",
+      "explanation": "Fundamental frequency f = v ÷ 2L = [V] ÷ (2 × [L]) = [V] ÷ [2*L] = [RESULT] Hz"
+    },
+
+    {
+      "template_id": "WS_L2_06",
+      "pattern": "Sound intensity at distance [D1] m from a source is [I] W/m². What is the intensity at distance [D2] m? (inverse square law)",
+      "variables": {
+        "D1": {"min": 1,  "max": 10, "step": 1},
+        "D2": {"min": 2,  "max": 20, "step": 2},
+        "I":  {"min": 10, "max": 100,"step": 10}
+      },
+      "constraints": ["D2 > D1", "(I * D1 * D1) % (D2 * D2) === 0"],
+      "calculation": "(I * D1 * D1) / (D2 * D2)",
+      "explanation": "Inverse square law: I₁d₁² = I₂d₂² → I₂ = I₁×d₁² ÷ d₂² = [I]×[D1]² ÷ [D2]² = [I*D1*D1] ÷ [D2*D2] = [RESULT] W/m²"
+    },
+
+    {
+      "template_id": "WS_L2_07",
+      "pattern": "A wave refracts as it crosses a boundary. Its speed changes from [V1] m/s to [V2] m/s. If the original wavelength was [L1] m, what is the new wavelength?",
+      "variables": {
+        "V1": {"min": 100, "max": 400, "step": 50},
+        "V2": {"min": 50,  "max": 200, "step": 50},
+        "L1": {"min": 2,   "max": 20,  "step": 2}
+      },
+      "constraints": ["(V2 * L1) % V1 === 0"],
+      "calculation": "(V2 * L1) / V1",
+      "explanation": "Frequency stays constant at a boundary. λ₂ = λ₁ × v₂ ÷ v₁ = [L1] × [V2] ÷ [V1] = [RESULT] m"
+    },
+
+    {
+      "template_id": "WS_L2_08",
+      "pattern": "Two speakers emit the same frequency of [F] Hz in phase. At a certain point the path difference is [PD] m. The speed of sound is 340 m/s. Is it constructive or destructive interference?",
+      "variables": {
+        "F":  {"min": 170, "max": 680, "step": 170},
+        "PD": {"min": 1,   "max": 4,   "step": 1},
+        "DUMMY": {"values": [1,1,1,1]}
+      },
+      "calculation": "0",
+      "answer_label": [
+        "Constructive","Destructive","Constructive","Destructive"
+      ],
+      "explanation": "Wavelength = 340 ÷ [F] m. If path difference = whole number of wavelengths → constructive. If half wavelength → destructive."
+    },
+
+    {
+      "template_id": "WS_L2_09",
+      "pattern": "A pipe open at both ends has a length of [L] m. The speed of sound is 340 m/s. What is the fundamental frequency of the pipe?",
+      "variables": {
+        "L": {"min": 1, "max": 10, "step": 1}
+      },
+      "constraints": ["340 % (2 * L) === 0"],
+      "calculation": "340 / (2 * L)",
+      "explanation": "For an open pipe, fundamental frequency f = v ÷ 2L = 340 ÷ (2 × [L]) = 340 ÷ [2*L] = [RESULT] Hz"
+    },
+
+    {
+      "template_id": "WS_L2_10",
+      "pattern": "A pipe closed at one end has a length of [L] m. The speed of sound is 340 m/s. What is the fundamental frequency?",
+      "variables": {
+        "L": {"min": 1, "max": 10, "step": 1}
+      },
+      "constraints": ["340 % (4 * L) === 0"],
+      "calculation": "340 / (4 * L)",
+      "explanation": "For a closed pipe, fundamental frequency f = v ÷ 4L = 340 ÷ (4 × [L]) = 340 ÷ [4*L] = [RESULT] Hz"
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

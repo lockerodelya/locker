@@ -1,0 +1,135 @@
+{
+  "puzzle_type": "physics-waves-sound-level-1",
+  "display_name": "Waves & Sound L1",
+  "templates": [
+
+    {
+      "template_id": "WS_L1_01",
+      "pattern": "A wave has a frequency of [F] Hz and a wavelength of [L] m. What is its wave speed?",
+      "variables": {
+        "F": {"min": 2,  "max": 100, "step": 2},
+        "L": {"min": 2,  "max": 50,  "step": 2}
+      },
+      "calculation": "F * L",
+      "explanation": "Wave speed = frequency × wavelength = [F] × [L] = [RESULT] m/s"
+    },
+
+    {
+      "template_id": "WS_L1_02",
+      "pattern": "A wave travels at [V] m/s and has a wavelength of [L] m. What is its frequency?",
+      "variables": {
+        "V": {"min": 10, "max": 400, "step": 10},
+        "L": {"min": 2,  "max": 40,  "step": 2}
+      },
+      "constraints": ["V % L === 0"],
+      "calculation": "V / L",
+      "explanation": "Frequency = wave speed ÷ wavelength = [V] ÷ [L] = [RESULT] Hz"
+    },
+
+    {
+      "template_id": "WS_L1_03",
+      "pattern": "A wave has a speed of [V] m/s and a frequency of [F] Hz. What is its wavelength?",
+      "variables": {
+        "V": {"min": 20, "max": 400, "step": 20},
+        "F": {"min": 2,  "max": 40,  "step": 2}
+      },
+      "constraints": ["V % F === 0"],
+      "calculation": "V / F",
+      "explanation": "Wavelength = wave speed ÷ frequency = [V] ÷ [F] = [RESULT] m"
+    },
+
+    {
+      "template_id": "WS_L1_04",
+      "pattern": "A sound wave travels [D] m in [T] seconds through air. What is the speed of sound in this medium?",
+      "variables": {
+        "D": {"min": 100, "max": 3400, "step": 100},
+        "T": {"min": 1,   "max": 10,   "step": 1}
+      },
+      "constraints": ["D % T === 0"],
+      "calculation": "D / T",
+      "explanation": "Speed = Distance ÷ Time = [D] ÷ [T] = [RESULT] m/s"
+    },
+
+    {
+      "template_id": "WS_L1_05",
+      "pattern": "A wave completes [N] full oscillations in [T] seconds. What is its frequency?",
+      "variables": {
+        "N": {"min": 10, "max": 500, "step": 10},
+        "T": {"min": 1,  "max": 10,  "step": 1}
+      },
+      "constraints": ["N % T === 0"],
+      "calculation": "N / T",
+      "explanation": "Frequency = number of oscillations ÷ time = [N] ÷ [T] = [RESULT] Hz"
+    },
+
+    {
+      "template_id": "WS_L1_06",
+      "pattern": "A wave has a frequency of [F] Hz. What is its time period?",
+      "variables": {
+        "F": {"min": 2, "max": 50, "step": 2}
+      },
+      "calculation": "1 / F",
+      "explanation": "Time period T = 1 ÷ frequency = 1 ÷ [F] = [RESULT] s"
+    },
+
+    {
+      "template_id": "WS_L1_07",
+      "pattern": "A person shouts near a cliff and hears the echo after [T] seconds. The speed of sound is [V] m/s. How far away is the cliff?",
+      "variables": {
+        "T": {"min": 1,   "max": 10,  "step": 1},
+        "V": {"min": 300, "max": 360, "step": 10}
+      },
+      "calculation": "(V * T) / 2",
+      "explanation": "Sound travels to the cliff and back. Distance = (speed × time) ÷ 2 = ([V] × [T]) ÷ 2 = [V*T] ÷ 2 = [RESULT] m"
+    },
+
+    {
+      "template_id": "WS_L1_08",
+      "pattern": "A wave has an amplitude of [A] cm and a wavelength of [L] m. If the frequency doubles, what happens to the wave speed? Choose the correct statement.",
+      "variables": {
+        "A": {"min": 1, "max": 20, "step": 1},
+        "L": {"min": 2, "max": 20, "step": 2},
+        "DUMMY": {"values": [1,1,1,1]}
+      },
+      "calculation": "0",
+      "answer_label": ["It stays the same","It stays the same","It stays the same","It stays the same"],
+      "explanation": "Wave speed depends on the medium, not on frequency or amplitude. Doubling the frequency halves the wavelength but wave speed stays the same."
+    },
+
+    {
+      "template_id": "WS_L1_09",
+      "pattern": "Ultrasound of frequency [F] kHz travels at [V] m/s in soft tissue. What is its wavelength in millimetres?",
+      "variables": {
+        "F": {"min": 1,   "max": 10,  "step": 1},
+        "V": {"min": 1400,"max": 1600,"step": 100}
+      },
+      "constraints": ["(V * 1000) % (F * 1000) === 0"],
+      "calculation": "(V / (F * 1000)) * 1000",
+      "explanation": "Wavelength = speed ÷ frequency = [V] ÷ ([F]×1000) = [V/(F*1000)] m = [RESULT] mm"
+    },
+
+    {
+      "template_id": "WS_L1_10",
+      "pattern": "The distance between two successive crests of a water wave is [L] m. The wave passes a fixed point every [T] seconds. What is the wave speed?",
+      "variables": {
+        "L": {"min": 2,  "max": 20, "step": 2},
+        "T": {"min": 1,  "max": 10, "step": 1}
+      },
+      "calculation": "L / T",
+      "explanation": "The distance between successive crests is the wavelength. Wave speed = wavelength ÷ period = [L] ÷ [T] = [RESULT] m/s"
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "puzzle_type": "physics-waves-sound-level-3",
+  "display_name": "Waves & Sound L3",
+  "templates": [
+
+    {
+      "template_id": "WS_L3_01",
+      "pattern": "Light of wavelength [L] nm passes through a single slit of width [A] micrometres. What is the angle (in degrees) to the first minimum? (sin θ = λ/a)",
+      "variables": {
+        "L": {"min": 400, "max": 700, "step": 50},
+        "A": {"min": 2,   "max": 20,  "step": 2}
+      },
+      "calculation": "sin_degrees(asin_approx)",
+      "explanation": "For single slit diffraction: sin θ = λ ÷ a = ([L]×10⁻⁹) ÷ ([A]×10⁻⁶). This gives the angle to the first dark fringe."
+    },
+
+    {
+      "template_id": "WS_L3_02",
+      "pattern": "In a double slit experiment, the slit separation is [D] mm and the screen is [L] m away. The fringe spacing is [W] mm. What is the wavelength of light used in nm?",
+      "variables": {
+        "D": {"min": 1,   "max": 5,  "step": 1},
+        "L": {"min": 1,   "max": 5,  "step": 1},
+        "W": {"min": 200, "max": 700,"step": 50}
+      },
+      "constraints": ["(W * D) % (L * 1000) === 0"],
+      "calculation": "(W * D) / (L * 1000)",
+      "explanation": "Young's double slit: λ = Wd ÷ L = ([W]×10⁻³ × [D]×10⁻³) ÷ [L] = [RESULT] nm"
+    },
+
+    {
+      "template_id": "WS_L3_03",
+      "pattern": "A diffraction grating has [N] lines per mm. Light of wavelength [L] nm is incident normally. At what angle does the first order maximum occur?",
+      "variables": {
+        "N": {"min": 100, "max": 600, "step": 100},
+        "L": {"min": 400, "max": 700, "step": 50}
+      },
+      "explanation": "Grating equation: d×sin θ = nλ where d = 1÷[N] mm = 1÷([N]×1000) m, n=1, λ=[L]×10⁻⁹ m. sin θ = [L]×10⁻⁹ × [N]×1000",
+      "calculation": "0",
+      "answer_label": ["sin θ = λN/1000","sin θ = λN/1000","sin θ = λN/1000","sin θ = λN/1000"]
+    },
+
+    {
+      "template_id": "WS_L3_04",
+      "pattern": "The intensity of a sound wave is [I] × 10⁻¹² W/m². What is its sound level in decibels? (I₀ = 10⁻¹² W/m²)",
+      "variables": {
+        "I": {"min": 1, "max": 10000, "step": 10}
+      },
+      "calculation": "10 * log10(I)",
+      "explanation": "Sound level (dB) = 10 × log₁₀(I ÷ I₀) = 10 × log₁₀([I]×10⁻¹²÷10⁻¹²) = 10 × log₁₀([I]) = [RESULT] dB"
+    },
+
+    {
+      "template_id": "WS_L3_05",
+      "pattern": "A standing wave on a string of length [L] m vibrates in its [N]th harmonic. What is the wavelength?",
+      "variables": {
+        "L": {"min": 1, "max": 10, "step": 1},
+        "N": {"min": 2, "max": 6,  "step": 1}
+      },
+      "calculation": "(2 * L) / N",
+      "explanation": "For the nth harmonic on a string: λ = 2L ÷ n = (2 × [L]) ÷ [N] = [2*L] ÷ [N] = [RESULT] m"
+    },
+
+    {
+      "template_id": "WS_L3_06",
+      "pattern": "Two coherent waves of amplitude [A] m meet in phase. What is the resultant amplitude at that point?",
+      "variables": {
+        "A": {"min": 1, "max": 20, "step": 1}
+      },
+      "calculation": "2 * A",
+      "explanation": "When two coherent waves of equal amplitude meet in phase (constructive interference), resultant amplitude = 2A = 2 × [A] = [RESULT] m"
+    },
+
+    {
+      "template_id": "WS_L3_07",
+      "pattern": "A stationary observer hears a frequency of [FO] Hz from an approaching source. The speed of sound is [V] m/s and source speed is [VS] m/s. What is the true frequency emitted by the source?",
+      "variables": {
+        "FO": {"min": 400, "max": 1200, "step": 50},
+        "V":  {"min": 330, "max": 340,  "step": 5},
+        "VS": {"min": 10,  "max": 50,   "step": 5}
+      },
+      "constraints": ["(FO * (V - VS)) % V === 0"],
+      "calculation": "(FO * (V - VS)) / V",
+      "explanation": "Rearranging Doppler: f = f' × (v−vs) ÷ v = [FO] × ([V]−[VS]) ÷ [V] = [FO] × [V-VS] ÷ [V] = [RESULT] Hz"
+    },
+
+    {
+      "template_id": "WS_L3_08",
+      "pattern": "A transverse wave has amplitude [A] m, frequency [F] Hz and wavelength [L] m. What is the maximum speed of a particle on the wave?",
+      "variables": {
+        "A": {"min": 1,  "max": 10, "step": 1},
+        "F": {"min": 2,  "max": 20, "step": 2},
+        "L": {"min": 2,  "max": 20, "step": 2}
+      },
+      "calculation": "2 * 3.14159 * F * A",
+      "explanation": "Maximum particle speed = ωA = 2πfA = 2π × [F] × [A] = [RESULT] m/s"
+    },
+
+    {
+      "template_id": "WS_L3_09",
+      "pattern": "Sound intensity doubles. By how many decibels does the sound level increase?",
+      "variables": {
+        "DUMMY": {"values": [1,1,1,1]}
+      },
+      "calculation": "0",
+      "answer_label": ["3 dB","3 dB","3 dB","3 dB"],
+      "explanation": "Sound level increase = 10 × log₁₀(2) ≈ 10 × 0.301 ≈ 3 dB. Doubling intensity always adds approximately 3 dB."
+    },
+
+    {
+      "template_id": "WS_L3_10",
+      "pattern": "A wave travels from medium 1 (speed [V1] m/s) into medium 2 (speed [V2] m/s). The angle of incidence is [THETA] degrees. What is the angle of refraction in degrees?",
+      "variables": {
+        "V1":   {"min": 100, "max": 400, "step": 50},
+        "V2":   {"min": 200, "max": 600, "step": 50},
+        "THETA":{"min": 10,  "max": 60,  "step": 10}
+      },
+      "constraints": ["V2 > V1"],
+      "calculation": "floor(abs(asin_safe) * 180 / 3.14159)",
+      "explanation": "Snell's law for waves: sin θ₁ ÷ v₁ = sin θ₂ ÷ v₂ → sin θ₂ = sin([THETA]°) × [V2] ÷ [V1]. The refracted ray bends away from normal since v₂ > v₁."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
