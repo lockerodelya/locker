@@ -424,11 +424,11 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Math : Number & Arithmetic',
+                label: 'Physics : Forces & Motion',
                 options: [
-                    { value: 'physics-forces-motion-level-1', text: '• Number & Arithmetic L1' },
-					{ value: 'physics-forces-motion-level-2', text: '• Number & Arithmetic L2' },
-					{ value: 'physics-forces-motion-level-3', text: '• Number & Arithmetic L3' },
+                    { value: 'physics-forces-motion-level-1', text: '• Forces & Motion L1' },
+					{ value: 'physics-forces-motion-level-2', text: '• Forces & Motion L2' },
+					{ value: 'physics-forces-motion-level-3', text: '• Forces & Motion L3' },
                 ]
             },
 
