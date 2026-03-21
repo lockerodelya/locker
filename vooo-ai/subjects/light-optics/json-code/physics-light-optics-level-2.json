@@ -5,7 +5,7 @@
 
     {
       "template_id": "LO_L2_01",
-      "pattern": "Light travels from air into a medium where its speed is [V] × 10⁶ m/s. What is the refractive index of the medium? (c = 3 × 10⁸ m/s)",
+      "pattern": "Light travels from air into a medium at a speed of [V] × 10⁶ m/s. What is the refractive index of the medium? (c = 3 × 10⁸ m/s)",
       "variables": {
         "V": {"values": [100, 150, 200, 250]}
       },
@@ -16,44 +16,51 @@
 
     {
       "template_id": "LO_L2_02",
-      "pattern": "Light hits a glass surface (refractive index [N]) from air. Using Snell's law, if sin of the angle of incidence is [SI] (as a decimal), what is the sin of the angle of refraction?",
+      "pattern": "Light travels from air into glass of refractive index [N]. The angle of incidence is [AI] degrees. Using Snell's law (sin i = n × sin r), which value is closest to sin of the angle of refraction?",
       "variables": {
-        "N":  {"values": [1, 2, 3]},
-        "SI": {"values": [3, 6, 9]}
+        "N":  {"values": [2, 2, 2, 2]},
+        "AI": {"values": [30, 60, 45, 90]},
+        "DUMMY": {"values": [1, 1, 1, 1]}
       },
-      "constraints": ["(SI * 10) % (N * 10) === 0"],
-      "calculation": "SI / (N * 10)",
-      "explanation": "Snell's law: n₁ sin θ₁ = n₂ sin θ₂. With n₁=1 (air): sin θ₂ = sin θ₁ ÷ n₂ = 0.[SI] ÷ [N] = [RESULT]"
+      "calculation": "0",
+      "options": ["0.25", "0.50", "0.35", "0.43"],
+      "answer_label": ["0.25", "0.43", "0.35", "0.50"],
+      "explanation": "Snell's law: sin r = sin i ÷ n. sin [AI]° ÷ [N] gives the sin of refraction angle."
     },
 
     {
       "template_id": "LO_L2_03",
-      "pattern": "A glass block has refractive index [N]. What is the critical angle in degrees? (Use: sin C = 1 ÷ n, and these values: n=1.5 → 42°, n=2 → 30°, n=1.4 → 46°, n=1.8 → 34°)",
+      "pattern": "A glass block has refractive index [N]. Using sin C = 1 ÷ n, what is the critical angle?\nA) 30°  B) 42°  C) 48°  D) 60°",
       "variables": {
-        "N":    {"values": [1, 2, 3, 4]},
+        "N":    {"values": [2, 1, 1, 1]},
         "DUMMY":{"values": [1, 1, 1, 1]}
       },
       "calculation": "0",
-      "answer_label": ["42°", "30°", "46°", "34°"],
-      "explanation": "Critical angle C is found from sin C = 1 ÷ n. For n=[N], C = [RESULT]. Beyond this angle total internal reflection occurs."
+      "options": ["A) 30°", "B) 42°", "C) 48°", "D) 60°"],
+      "answer_label": [
+        "A) 30°",
+        "D) 60°",
+        "C) 48°",
+        "B) 42°"
+      ],
+      "explanation": "sin C = 1 ÷ n. For n=[N], sin C = 1÷[N], giving C = [RESULT]. Beyond this angle total internal reflection occurs."
     },
 
     {
       "template_id": "LO_L2_04",
-      "pattern": "An object [H] cm tall is placed [U] cm from a converging lens of focal length [F] cm. Using the lens formula, what is the image distance v in cm?",
+      "pattern": "An object is placed [U] cm from a converging lens of focal length [F] cm. Using the lens formula, what is the image distance v in cm?",
       "variables": {
-        "H": {"min": 2,  "max": 10,  "step": 2},
-        "F": {"min": 5,  "max": 20,  "step": 5},
-        "U": {"min": 30, "max": 60,  "step": 10}
+        "F": {"min": 5,  "max": 20, "step": 5},
+        "U": {"min": 30, "max": 60, "step": 10}
       },
       "constraints": ["U > F", "(U * F) % (U - F) === 0"],
       "calculation": "(U * F) / (U - F)",
-      "explanation": "Lens formula: 1/v − 1/u = 1/f (with u negative). Rearranging: v = uF ÷ (u−F) = [U]×[F] ÷ ([U]−[F]) = [U*F] ÷ [U-F] = [RESULT] cm"
+      "explanation": "Lens formula: 1/v = 1/f − 1/u → v = uF ÷ (u−F) = [U]×[F] ÷ ([U]−[F]) = [U*F] ÷ [U-F] = [RESULT] cm"
     },
 
     {
       "template_id": "LO_L2_05",
-      "pattern": "An image is formed [V] cm from a lens and the object is [U] cm from the lens. What is the magnification?",
+      "pattern": "An image is formed [V] cm from a lens and the object is [U] cm from the lens. What is the magnification produced?",
       "variables": {
         "V": {"min": 10, "max": 60, "step": 10},
         "U": {"min": 5,  "max": 30, "step": 5}
@@ -65,21 +72,26 @@
 
     {
       "template_id": "LO_L2_06",
-      "pattern": "A ray of light inside glass (refractive index [N]) hits the glass-air boundary at [A] degrees. The critical angle is [C] degrees. What happens to the ray?",
+      "pattern": "A ray of light travels inside glass and hits the glass-air boundary. The critical angle of the glass is [C] degrees. If the angle of incidence is [A] degrees, what happens?\nA) The ray refracts out into air\nB) Total internal reflection occurs\nC) The ray is absorbed\nD) The ray slows down and stops",
       "variables": {
-        "N": {"values": [2, 2, 3, 3]},
-        "A": {"values": [40, 20, 25, 15]},
-        "C": {"values": [30, 30, 20, 20]},
+        "C": {"values": [40, 40, 40, 40]},
+        "A": {"values": [50, 30, 55, 25]},
         "DUMMY": {"values": [1, 1, 1, 1]}
       },
       "calculation": "0",
-      "answer_label": [
-        "Total internal reflection",
-        "Refraction into air",
-        "Total internal reflection",
-        "Refraction into air"
+      "options": [
+        "A) The ray refracts out into air",
+        "B) Total internal reflection occurs",
+        "C) The ray is absorbed",
+        "D) The ray slows down and stops"
       ],
-      "explanation": "If the angle of incidence ([A]°) is greater than the critical angle ([C]°), total internal reflection occurs. If less, light refracts out into air."
+      "answer_label": [
+        "B) Total internal reflection occurs",
+        "A) The ray refracts out into air",
+        "B) Total internal reflection occurs",
+        "A) The ray refracts out into air"
+      ],
+      "explanation": "Critical angle = [C]°. Angle of incidence = [A]°. If [A]° > [C]°, total internal reflection occurs. If [A]° < [C]°, the ray refracts out into air."
     },
 
     {
@@ -96,7 +108,7 @@
 
     {
       "template_id": "LO_L2_08",
-      "pattern": "An object [H] cm tall produces an image [M] times magnified by a lens. What is the height of the image in cm?",
+      "pattern": "An object [H] cm tall is magnified [M] times by a lens. What is the height of the image in cm?",
       "variables": {
         "H": {"min": 2, "max": 20, "step": 2},
         "M": {"min": 2, "max": 10, "step": 1}
@@ -107,15 +119,26 @@
 
     {
       "template_id": "LO_L2_09",
-      "pattern": "Light travels through medium 1 (refractive index [N1]) into medium 2 (refractive index [N2]). If n1 > n2, what happens to the speed of light?",
+      "pattern": "Light travels from medium 1 (refractive index [N1]) into medium 2 (refractive index [N2]), where [N2] is less than [N1]. Which statement is correct?\nA) Light speeds up and bends away from the normal\nB) Light slows down and bends toward the normal\nC) Light speed stays the same\nD) Light is totally internally reflected",
       "variables": {
-        "N1": {"values": [2, 3, 4, 3]},
-        "N2": {"values": [1, 1, 2, 2]},
+        "N1": {"values": [3, 4, 6, 4]},
+        "N2": {"values": [1, 2, 2, 1]},
         "DUMMY": {"values": [1, 1, 1, 1]}
       },
       "calculation": "0",
-      "answer_label": ["It increases", "It increases", "It increases", "It increases"],
-      "explanation": "Speed of light = c ÷ n. When moving from higher n ([N1]) to lower n ([N2]), n decreases so speed increases. Light bends away from the normal."
+      "options": [
+        "A) Light speeds up and bends away from the normal",
+        "B) Light slows down and bends toward the normal",
+        "C) Light speed stays the same",
+        "D) Light is totally internally reflected"
+      ],
+      "answer_label": [
+        "A) Light speeds up and bends away from the normal",
+        "A) Light speeds up and bends away from the normal",
+        "A) Light speeds up and bends away from the normal",
+        "A) Light speeds up and bends away from the normal"
+      ],
+      "explanation": "Moving from higher n ([N1]) to lower n ([N2]) means speed increases (v = c÷n). Light bends away from the normal when entering a less dense medium."
     },
 
     {
