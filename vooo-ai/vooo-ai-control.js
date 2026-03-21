@@ -116,6 +116,7 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-profitloss-level-2' : '/vooo-ai/vae-upscprofitloss-level-2.js',
 	'upsc-profitloss-level-3' : '/vooo-ai/vae-upscprofitloss-level-3.js',
 
+	'vae-number-arithmetic-l1' : '/vooo-ai/subjects/number-arithmetic/engine-code/vae-number-arithmetic-l1.js',
 		
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -231,6 +232,8 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-profitloss-level-1' : 'vaeupscprofitlossl1',
 	'upsc-profitloss-level-2' : 'vaeupscprofitlossl2',
 	'upsc-profitloss-level-3' : 'vaeupscprofitlossl3',
+
+	'vae-number-arithmetic-l1' : 'physicsforcesmotionl1.js',
 
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -414,6 +417,14 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'upsc-profitloss-level-1', text: '• Profit & Loss L1' },
 					{ value: 'upsc-profitloss-level-2', text: '• Profit & Loss L2' },
 					{ value: 'upsc-profitloss-level-3', text: '• Profit & Loss L3' },
+                ]
+            },
+			{
+                label: 'Math : Number & Arithmetic',
+                options: [
+                    { value: 'physics-forces-motion-level-1', text: '• Number & Arithmetic L1' },
+					{ value: 'physics-forces-motion-level-2', text: '• Number & Arithmetic L2' },
+					{ value: 'physics-forces-motion-level-3', text: '• Number & Arithmetic L3' },
                 ]
             },
 
