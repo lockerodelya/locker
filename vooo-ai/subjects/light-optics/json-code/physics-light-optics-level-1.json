@@ -1,0 +1,134 @@
+{
+  "puzzle_type": "physics-light-optics-level-1",
+  "display_name": "Light & Optics L1",
+  "templates": [
+
+    {
+      "template_id": "LO_L1_01",
+      "pattern": "Light travels at 3 × 10⁸ m/s in a vacuum. How far does light travel in [T] seconds?",
+      "variables": {
+        "T": {"min": 1, "max": 10, "step": 1}
+      },
+      "calculation": "3 * 100000000 * T",
+      "explanation": "Distance = speed × time = 3×10⁸ × [T] = [RESULT] m"
+    },
+
+    {
+      "template_id": "LO_L1_02",
+      "pattern": "A ray of light hits a plane mirror at an angle of incidence of [A] degrees. What is the angle of reflection?",
+      "variables": {
+        "A": {"min": 10, "max": 80, "step": 5}
+      },
+      "calculation": "A",
+      "explanation": "Law of reflection: angle of incidence = angle of reflection. Both angles are measured from the normal. Answer = [RESULT] degrees."
+    },
+
+    {
+      "template_id": "LO_L1_03",
+      "pattern": "Light travels from air into glass and slows down. The angle of incidence is [A] degrees. Which statement is correct about the angle of refraction?",
+      "variables": {
+        "A": {"min": 10, "max": 70, "step": 10},
+        "DUMMY": {"values": [1, 1, 1, 1]}
+      },
+      "calculation": "0",
+      "answer_label": [
+        "It is smaller than [A] degrees",
+        "It is smaller than [A] degrees",
+        "It is smaller than [A] degrees",
+        "It is smaller than [A] degrees"
+      ],
+      "explanation": "When light enters a denser medium (like glass from air) it slows down and bends toward the normal — so the angle of refraction is smaller than the angle of incidence."
+    },
+
+    {
+      "template_id": "LO_L1_04",
+      "pattern": "An object is placed [U] cm in front of a plane mirror. How far behind the mirror does the image appear?",
+      "variables": {
+        "U": {"min": 5, "max": 100, "step": 5}
+      },
+      "calculation": "U",
+      "explanation": "In a plane mirror the image is the same distance behind the mirror as the object is in front. Image distance = [RESULT] cm."
+    },
+
+    {
+      "template_id": "LO_L1_05",
+      "pattern": "A converging lens has a focal length of [F] cm. An object is placed [U] cm beyond the focal point. Is the image real or virtual?",
+      "variables": {
+        "F": {"min": 5,  "max": 20, "step": 5},
+        "U": {"min": 25, "max": 60, "step": 5},
+        "DUMMY": {"values": [1, 1, 1, 1]}
+      },
+      "constraints": ["U > F"],
+      "calculation": "0",
+      "answer_label": ["Real", "Real", "Real", "Real"],
+      "explanation": "When an object is placed beyond the focal point of a converging lens, the image formed is real, inverted and can be projected onto a screen."
+    },
+
+    {
+      "template_id": "LO_L1_06",
+      "pattern": "Light takes approximately [T] minutes to travel from the Sun to Earth. The speed of light is 3 × 10⁸ m/s. What is the approximate distance from the Sun to Earth in metres?",
+      "variables": {
+        "T": {"min": 8, "max": 8, "step": 1}
+      },
+      "calculation": "3 * 100000000 * T * 60",
+      "explanation": "Distance = speed × time = 3×10⁸ × ([T] × 60) = 3×10⁸ × [T*60] = [RESULT] m"
+    },
+
+    {
+      "template_id": "LO_L1_07",
+      "pattern": "A glass block has a refractive index of [N]. Light travels at 3 × 10⁸ m/s in a vacuum. What is the speed of light inside the glass block?",
+      "variables": {
+        "N": {"values": [1, 2, 3]}
+      },
+      "calculation": "(3 * 100000000) / N",
+      "explanation": "Speed in medium = c ÷ n = 3×10⁸ ÷ [N] = [RESULT] m/s"
+    },
+
+    {
+      "template_id": "LO_L1_08",
+      "pattern": "A concave mirror has a focal length of [F] cm. What is its radius of curvature?",
+      "variables": {
+        "F": {"min": 5, "max": 40, "step": 5}
+      },
+      "calculation": "2 * F",
+      "explanation": "Radius of curvature = 2 × focal length = 2 × [F] = [RESULT] cm"
+    },
+
+    {
+      "template_id": "LO_L1_09",
+      "pattern": "The angle of incidence of light hitting a surface is [A] degrees measured from the surface. What is the angle of incidence measured from the normal?",
+      "variables": {
+        "A": {"min": 10, "max": 80, "step": 10}
+      },
+      "calculation": "90 - A",
+      "explanation": "Angles in optics are always measured from the normal. Normal angle = 90° − surface angle = 90 − [A] = [RESULT] degrees."
+    },
+
+    {
+      "template_id": "LO_L1_10",
+      "pattern": "A magnifying glass (converging lens) of focal length [F] cm is used to view an object placed [U] cm from the lens, where [U] is less than [F]. What type of image is formed?",
+      "variables": {
+        "F": {"min": 5,  "max": 25, "step": 5},
+        "U": {"min": 2,  "max": 20, "step": 2},
+        "DUMMY": {"values": [1, 1, 1, 1]}
+      },
+      "constraints": ["U < F"],
+      "calculation": "0",
+      "answer_label": ["Virtual, upright and magnified", "Virtual, upright and magnified", "Virtual, upright and magnified", "Virtual, upright and magnified"],
+      "explanation": "When an object is placed inside the focal length of a converging lens, the image is virtual, upright and magnified. This is how a magnifying glass works."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

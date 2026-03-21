@@ -1,0 +1,145 @@
+{
+  "puzzle_type": "physics-light-optics-level-2",
+  "display_name": "Light & Optics L2",
+  "templates": [
+
+    {
+      "template_id": "LO_L2_01",
+      "pattern": "Light travels from air into a medium where its speed is [V] × 10⁶ m/s. What is the refractive index of the medium? (c = 3 × 10⁸ m/s)",
+      "variables": {
+        "V": {"values": [100, 150, 200, 250]}
+      },
+      "constraints": ["300 % V === 0"],
+      "calculation": "300 / V",
+      "explanation": "Refractive index n = c ÷ v = (3×10⁸) ÷ ([V]×10⁶) = 300 ÷ [V] = [RESULT]"
+    },
+
+    {
+      "template_id": "LO_L2_02",
+      "pattern": "Light hits a glass surface (refractive index [N]) from air. Using Snell's law, if sin of the angle of incidence is [SI] (as a decimal), what is the sin of the angle of refraction?",
+      "variables": {
+        "N":  {"values": [1, 2, 3]},
+        "SI": {"values": [3, 6, 9]}
+      },
+      "constraints": ["(SI * 10) % (N * 10) === 0"],
+      "calculation": "SI / (N * 10)",
+      "explanation": "Snell's law: n₁ sin θ₁ = n₂ sin θ₂. With n₁=1 (air): sin θ₂ = sin θ₁ ÷ n₂ = 0.[SI] ÷ [N] = [RESULT]"
+    },
+
+    {
+      "template_id": "LO_L2_03",
+      "pattern": "A glass block has refractive index [N]. What is the critical angle in degrees? (Use: sin C = 1 ÷ n, and these values: n=1.5 → 42°, n=2 → 30°, n=1.4 → 46°, n=1.8 → 34°)",
+      "variables": {
+        "N":    {"values": [1, 2, 3, 4]},
+        "DUMMY":{"values": [1, 1, 1, 1]}
+      },
+      "calculation": "0",
+      "answer_label": ["42°", "30°", "46°", "34°"],
+      "explanation": "Critical angle C is found from sin C = 1 ÷ n. For n=[N], C = [RESULT]. Beyond this angle total internal reflection occurs."
+    },
+
+    {
+      "template_id": "LO_L2_04",
+      "pattern": "An object [H] cm tall is placed [U] cm from a converging lens of focal length [F] cm. Using the lens formula, what is the image distance v in cm?",
+      "variables": {
+        "H": {"min": 2,  "max": 10,  "step": 2},
+        "F": {"min": 5,  "max": 20,  "step": 5},
+        "U": {"min": 30, "max": 60,  "step": 10}
+      },
+      "constraints": ["U > F", "(U * F) % (U - F) === 0"],
+      "calculation": "(U * F) / (U - F)",
+      "explanation": "Lens formula: 1/v − 1/u = 1/f (with u negative). Rearranging: v = uF ÷ (u−F) = [U]×[F] ÷ ([U]−[F]) = [U*F] ÷ [U-F] = [RESULT] cm"
+    },
+
+    {
+      "template_id": "LO_L2_05",
+      "pattern": "An image is formed [V] cm from a lens and the object is [U] cm from the lens. What is the magnification?",
+      "variables": {
+        "V": {"min": 10, "max": 60, "step": 10},
+        "U": {"min": 5,  "max": 30, "step": 5}
+      },
+      "constraints": ["V % U === 0"],
+      "calculation": "V / U",
+      "explanation": "Magnification = image distance ÷ object distance = [V] ÷ [U] = [RESULT]. A value greater than 1 means the image is larger than the object."
+    },
+
+    {
+      "template_id": "LO_L2_06",
+      "pattern": "A ray of light inside glass (refractive index [N]) hits the glass-air boundary at [A] degrees. The critical angle is [C] degrees. What happens to the ray?",
+      "variables": {
+        "N": {"values": [2, 2, 3, 3]},
+        "A": {"values": [40, 20, 25, 15]},
+        "C": {"values": [30, 30, 20, 20]},
+        "DUMMY": {"values": [1, 1, 1, 1]}
+      },
+      "calculation": "0",
+      "answer_label": [
+        "Total internal reflection",
+        "Refraction into air",
+        "Total internal reflection",
+        "Refraction into air"
+      ],
+      "explanation": "If the angle of incidence ([A]°) is greater than the critical angle ([C]°), total internal reflection occurs. If less, light refracts out into air."
+    },
+
+    {
+      "template_id": "LO_L2_07",
+      "pattern": "A converging lens of focal length [F] cm produces an image [V] cm from the lens. What is the object distance in cm?",
+      "variables": {
+        "F": {"min": 5,  "max": 20, "step": 5},
+        "V": {"min": 20, "max": 60, "step": 10}
+      },
+      "constraints": ["V > F", "(V * F) % (V - F) === 0"],
+      "calculation": "(V * F) / (V - F)",
+      "explanation": "Lens formula rearranged: u = vF ÷ (v−F) = [V]×[F] ÷ ([V]−[F]) = [V*F] ÷ [V-F] = [RESULT] cm"
+    },
+
+    {
+      "template_id": "LO_L2_08",
+      "pattern": "An object [H] cm tall produces an image [M] times magnified by a lens. What is the height of the image in cm?",
+      "variables": {
+        "H": {"min": 2, "max": 20, "step": 2},
+        "M": {"min": 2, "max": 10, "step": 1}
+      },
+      "calculation": "H * M",
+      "explanation": "Image height = object height × magnification = [H] × [M] = [RESULT] cm"
+    },
+
+    {
+      "template_id": "LO_L2_09",
+      "pattern": "Light travels through medium 1 (refractive index [N1]) into medium 2 (refractive index [N2]). If n1 > n2, what happens to the speed of light?",
+      "variables": {
+        "N1": {"values": [2, 3, 4, 3]},
+        "N2": {"values": [1, 1, 2, 2]},
+        "DUMMY": {"values": [1, 1, 1, 1]}
+      },
+      "calculation": "0",
+      "answer_label": ["It increases", "It increases", "It increases", "It increases"],
+      "explanation": "Speed of light = c ÷ n. When moving from higher n ([N1]) to lower n ([N2]), n decreases so speed increases. Light bends away from the normal."
+    },
+
+    {
+      "template_id": "LO_L2_10",
+      "pattern": "A lens has a power of [P] dioptres. What is its focal length in cm?",
+      "variables": {
+        "P": {"values": [2, 4, 5, 10, 20, 25, 50]}
+      },
+      "constraints": ["100 % P === 0"],
+      "calculation": "100 / P",
+      "explanation": "Power (dioptres) = 1 ÷ focal length (metres). Focal length = 1 ÷ [P] m = 100 ÷ [P] cm = [RESULT] cm"
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
