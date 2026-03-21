@@ -119,6 +119,10 @@ const VOOO_ENGINE_REGISTRY = {
 	'physics-forces-motion-level-1' : '/vooo-ai/subjects/forces-motion/engine-code/physics-forces-motion-level-1.js',
 	'physics-forces-motion-level-2' : '/vooo-ai/subjects/forces-motion/engine-code/physics-forces-motion-level-2.js',
 	'physics-forces-motion-level-3' : '/vooo-ai/subjects/forces-motion/engine-code/physics-forces-motion-level-3.js',
+
+	'physics-energy-power-level-1' : '/vooo-ai/subjects/energy-power/engine-code/physics-energy-power-level-1.js',
+	'physics-energy-power-level-2' : '/vooo-ai/subjects/energy-power/engine-code/physics-energy-power-level-1.js',
+	'physics-energy-power-level-3' : '/vooo-ai/subjects/energy-power/engine-code/physics-energy-power-level-1.js',	
 		
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -238,6 +242,10 @@ const VOOO_ENGINE_INSTANCES = {
 	'physics-forces-motion-level-1' : 'physicsforcesmotionl1',
 	'physics-forces-motion-level-2' : 'physicsforcesmotionl2',
 	'physics-forces-motion-level-3' : 'physicsforcesmotionl3',
+
+	'physics-energy-power-level-1' : 'physicsenergypowerl1',
+	'physics-energy-power-level-2' : 'physicsenergypowerl2',
+	'physics-energy-power-level-3' : 'physicsenergypowerl3',
 
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -429,6 +437,14 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'physics-forces-motion-level-1', text: '• Forces & Motion L1' },
 					{ value: 'physics-forces-motion-level-2', text: '• Forces & Motion L2' },
 					{ value: 'physics-forces-motion-level-3', text: '• Forces & Motion L3' },
+                ]
+            },
+			{
+                label: 'Physics : Energy & Power',
+                options: [
+                    { value: 'physics-energy-power-level-1', text: '• Energy & Power L1' },
+					{ value: 'physics-energy-power-level-2', text: '• Energy & Power L2' },
+					{ value: 'physics-energy-power-level-3', text: '• Energy & Power L3' },
                 ]
             },
 
