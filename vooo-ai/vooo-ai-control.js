@@ -233,7 +233,7 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-profitloss-level-2' : 'vaeupscprofitlossl2',
 	'upsc-profitloss-level-3' : 'vaeupscprofitlossl3',
 
-	'physics-forces-motion-level-1' : 'physicsforcesmotionl1.js',
+	'physics-forces-motion-level-1' : 'physicsforcesmotionl1',
 
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
