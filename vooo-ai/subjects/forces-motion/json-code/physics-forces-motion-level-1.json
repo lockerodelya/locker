@@ -7,10 +7,11 @@
       "template_id": "FM_L1_01",
       "pattern": "A cyclist travels a distance of [D] km in [T] hours. Calculate the average speed of the cyclist in km/h.",
       "variables": {
-        "D": {"min": 20,  "max": 500, "step": 5},
-        "T": {"min": 1,   "max": 10,  "step": 1}
+        "T":   {"values": [2,3,4,5,6,7,8,9,10]},
+        "SPD": {"values": [20,25,30,35,40,45,50,55,60,65,70,75,80,90,100,110,120]},
+        "D":   {"calc": "T * SPD"}
       },
-      "calculation": "Math.round(D * 100 / T) / 100",
+      "calculation": "SPD",
       "explanation": "Average speed = Distance ÷ Time\n= [D] ÷ [T]\n= [RESULT] km/h\n\nAlways divide total distance by total time to find average speed."
     },
 
@@ -26,49 +27,49 @@
     },
 
     {
-  "template_id": "FM_L1_03",
-  "pattern": "A car travels [D] km at a constant speed of [S] km/h. Calculate the time taken for the journey in hours.",
-  "variables": {
-    "S":    {"values": [20,25,30,40,50,60,70,80,90,100]},
-    "TIME": {"values": [2,3,4,5,6,7,8,9,10,11,12]},
-    "D":    {"calc": "S * TIME"}
-  },
-  "calculation": "TIME",
-  "explanation": "Time = Distance ÷ Speed\n= [D] ÷ [S]\n= [TIME] hours\n\nRearrange speed = distance ÷ time to get time = distance ÷ speed."
-},
+      "template_id": "FM_L1_03",
+      "pattern": "A car travels [D] km at a constant speed of [S] km/h. Calculate the time taken for the journey in hours.",
+      "variables": {
+        "S":    {"values": [20,25,30,40,50,60,70,80,90,100,110,120]},
+        "TIME": {"values": [2,3,4,5,6,7,8,9,10,11,12]},
+        "D":    {"calc": "S * TIME"}
+      },
+      "calculation": "TIME",
+      "explanation": "Time = Distance ÷ Speed\n= [D] ÷ [S]\n= [RESULT] hours\n\nRearrange speed = distance ÷ time to get time = distance ÷ speed."
+    },
 
     {
-  "template_id": "FM_L1_04",
-  "pattern": "A motorbike increases its velocity from [U] m/s to [V] m/s in [T] seconds. Calculate the acceleration of the motorbike in m/s².",
-  "variables": {
-    "U":   {"values": [0,2,4,6,8,10,12,14,16,18,20]},
-    "T":   {"values": [2,4,5,10]},
-    "ACC": {"values": [2,3,4,5,6,7,8,9,10]},
-    "V":   {"calc": "U + ACC * T"}
-  },
-  "constraints": ["V <= 80"],
-  "calculation": "ACC",
-  "explanation": "Acceleration = (Final velocity - Initial velocity) ÷ Time\n= ([V] - [U]) ÷ [T]\n= [ACC*T] ÷ [T]\n= [RESULT] m/s²\n\nAcceleration is the rate of change of velocity over time."
-},
+      "template_id": "FM_L1_04",
+      "pattern": "A motorbike increases its velocity from [U] m/s to [V] m/s in [T] seconds. Calculate the acceleration of the motorbike in m/s².",
+      "variables": {
+        "U":   {"values": [0,2,4,6,8,10,12,14,16,18,20]},
+        "T":   {"values": [2,4,5,10]},
+        "ACC": {"values": [2,3,4,5,6,7,8,9,10]},
+        "V":   {"calc": "U + ACC * T"}
+      },
+      "constraints": ["V <= 80"],
+      "calculation": "ACC",
+      "explanation": "Acceleration = (Final velocity − Initial velocity) ÷ Time\n= ([V] − [U]) ÷ [T]\n= [ACC*T] ÷ [T]\n= [RESULT] m/s²\n\nAcceleration is the rate of change of velocity over time."
+    },
 
-{
-  "template_id": "FM_L1_05",
-  "pattern": "A resultant force of [F] N acts on an object of mass [M] kg. Calculate the acceleration of the object in m/s².",
-  "variables": {
-    "M":   {"values": [2,4,5,8,10,20,25,50]},
-    "ACC": {"values": [2,3,4,5,6,7,8,9,10,12,15,20,25]},
-    "F":   {"calc": "M * ACC"}
-  },
-  "calculation": "ACC",
-  "explanation": "Using Newton's Second Law: F = m × a\nRearranging: a = F ÷ m\n= [F] ÷ [M]\n= [RESULT] m/s²\n\nThe greater the force or the smaller the mass, the greater the acceleration."
-},
+    {
+      "template_id": "FM_L1_05",
+      "pattern": "A resultant force of [F] N acts on an object of mass [M] kg. Calculate the acceleration of the object in m/s².",
+      "variables": {
+        "M":   {"values": [2,4,5,8,10,20,25,40,50]},
+        "ACC": {"values": [2,3,4,5,6,7,8,9,10,12,15,20,25]},
+        "F":   {"calc": "M * ACC"}
+      },
+      "calculation": "ACC",
+      "explanation": "Using Newton's Second Law: F = m × a\nRearranging: a = F ÷ m\n= [F] ÷ [M]\n= [RESULT] m/s²\n\nThe greater the force or the smaller the mass, the greater the acceleration."
+    },
 
     {
       "template_id": "FM_L1_06",
       "pattern": "A ball of mass [M] kg is moving at a velocity of [V] m/s. Calculate the kinetic energy of the ball in joules.",
       "variables": {
-        "M": {"min": 1,   "max": 50,  "step": 1},
-        "V": {"min": 2,   "max": 30,  "step": 2}
+        "M": {"min": 1,  "max": 50, "step": 1},
+        "V": {"min": 2,  "max": 30, "step": 2}
       },
       "calculation": "0.5 * M * V * V",
       "explanation": "Kinetic Energy = ½ × mass × velocity²\n= 0.5 × [M] × [V]²\n= 0.5 × [M] × [V*V]\n= [RESULT] J\n\nKinetic energy depends on the square of velocity — doubling speed quadruples KE."
@@ -78,8 +79,8 @@
       "template_id": "FM_L1_07",
       "pattern": "A crate of mass [M] kg is lifted vertically to a height of [H] m above the ground. Calculate the gravitational potential energy gained by the crate. (g = 10 m/s²)",
       "variables": {
-        "M": {"min": 2,   "max": 100, "step": 2},
-        "H": {"min": 2,   "max": 50,  "step": 2}
+        "M": {"min": 2,  "max": 100, "step": 2},
+        "H": {"min": 2,  "max": 50,  "step": 2}
       },
       "calculation": "M * 10 * H",
       "explanation": "Gravitational Potential Energy = mass × g × height\n= [M] × 10 × [H]\n= [RESULT] J\n\nGPE increases with both mass and height. g = 10 m/s² at GCSE level."
@@ -89,36 +90,36 @@
       "template_id": "FM_L1_08",
       "pattern": "A person applies a force of [F] N to push a box across a floor for a distance of [D] m in the direction of the force. Calculate the work done by the person in joules.",
       "variables": {
-        "F": {"min": 10,  "max": 500, "step": 10},
-        "D": {"min": 2,   "max": 50,  "step": 2}
+        "F": {"min": 10, "max": 500, "step": 10},
+        "D": {"min": 2,  "max": 50,  "step": 2}
       },
       "calculation": "F * D",
-      "explanation": "Work Done = Force × Distance\n= [F] × [D]\n= [RESULT] J\n\nWork is done only when a force causes movement. One joule equals one newton-metre."
+      "explanation": "Work Done = Force × Distance\n= [F] × [D]\n= [RESULT] J\n\nWork is done only when a force causes movement in the direction of the force. One joule equals one newton-metre."
     },
 
-   {
-  "template_id": "FM_L1_09",
-  "pattern": "An electric motor does [W] J of work in [T] seconds. Calculate the power output of the motor in watts.",
-  "variables": {
-    "T":   {"values": [2,4,5,10,20,25,50]},
-    "PWR": {"values": [50,100,150,200,250,300,400,500,600,750,1000,1500,2000]},
-    "W":   {"calc": "T * PWR"}
-  },
-  "calculation": "PWR",
-  "explanation": "Power = Work Done ÷ Time\n= [W] ÷ [T]\n= [RESULT] W\n\nPower is the rate of doing work. 1 watt = 1 joule per second."
-},
+    {
+      "template_id": "FM_L1_09",
+      "pattern": "An electric motor does [W] J of work in [T] seconds. Calculate the power output of the motor in watts.",
+      "variables": {
+        "T":   {"values": [2,4,5,10,20,25,50]},
+        "PWR": {"values": [50,100,150,200,250,300,400,500,600,750,1000,1500,2000,2500,3000]},
+        "W":   {"calc": "T * PWR"}
+      },
+      "calculation": "PWR",
+      "explanation": "Power = Work Done ÷ Time\n= [W] ÷ [T]\n= [RESULT] W\n\nPower is the rate of doing work. 1 watt = 1 joule per second."
+    },
 
-{
-  "template_id": "FM_L1_10",
-  "pattern": "An object has a mass of [M] kg. Calculate its weight on [PLANET] where the gravitational field strength is [G] N/kg.",
-  "variables": {
-    "M":      {"min": 5, "max": 200, "step": 5},
-    "PLANET": {"values": ["Earth","the Moon","Mars","Jupiter","Saturn"]},
-    "G":      {"values": [10,     1.6,         3.7,  24.8,     10.4]}
-  },
-  "calculation": "M * G",
-  "explanation": "Weight = mass × gravitational field strength\n= [M] × [G]\n= [RESULT] N\n\nWeight changes on different planets but mass always stays the same."
-}
+    {
+      "template_id": "FM_L1_10",
+      "pattern": "An object has a mass of [M] kg. Calculate its weight on [PLANET] where the gravitational field strength is [G] N/kg.",
+      "variables": {
+        "M":      {"min": 5,  "max": 200, "step": 5},
+        "PLANET": {"values": ["Earth","the Moon","Mars","Jupiter","Saturn"]},
+        "G":      {"values": [10,     1.6,        3.7,  24.8,     10.4]}
+      },
+      "calculation": "round2(M * G)",
+      "explanation": "Weight = mass × gravitational field strength\n= [M] × [G]\n= [RESULT] N\n\nWeight changes on different planets but mass always stays the same. Mass is constant everywhere in the universe."
+    }
 
   ],
   "responses": {
