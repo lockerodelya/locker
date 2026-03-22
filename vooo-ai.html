@@ -1744,11 +1744,20 @@ async function incrementMCQCount() {
     let currentVoooUser = null;
     let userVoooData    = null;
 
+    // Global promise — trackers wait for this before using Firestore
+    let voooDbResolve;
+    const voooDbReady = new Promise((resolve) => { voooDbResolve = resolve; });
+
     function loadFirestore() {
         return new Promise((resolve) => {
+            if (voooDb) { resolve(); return; }
             const script = document.createElement('script');
             script.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js';
-            script.onload = () => { voooDb = firebase.firestore(); resolve(); };
+            script.onload = () => {
+                voooDb = firebase.firestore();
+                voooDbResolve(voooDb); // signal trackers that Firestore is ready
+                resolve();
+            };
             document.head.appendChild(script);
         });
     }
