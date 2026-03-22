@@ -16,18 +16,19 @@
       "explanation": "Percentage by mass = (n × RAM_element ÷ RMM_compound) × 100\n= ([N] × [RAM] ÷ [RMM]) × 100\n= [N*RAM*100] ÷ [RMM]\n= [RESULT]%\n\nThis is used to find the composition of a compound and to calculate empirical formulas from experimental data."
     },
 
-    {
-      "template_id": "AT_L2_02",
-      "pattern": "An element has two isotopes of masses [M1] and [M2]. Isotope 1 has an abundance of [AB1]%. Calculate the relative atomic mass of the element.",
-      "variables": {
-        "M1":  {"values": [6,10,12,24,35,63,79,107]},
-        "M2":  {"values": [7,11,13,25,37,65,81,109]},
-        "AB1": {"values": [10,20,25,30,40,50,60,70,75,80,90]},
-        "AB2": {"calc": "100 - AB1"}
-      },
-      "calculation": "round2((M1 * AB1 + M2 * AB2) / 100)",
-      "explanation": "RAM = (M₁ × AB₁ + M₂ × AB₂) ÷ 100\n= ([M1] × [AB1] + [M2] × [AB2]) ÷ 100\n= ([M1*AB1] + [M2*AB2]) ÷ 100\n= [RESULT]\n\nThe RAM is a weighted average — isotopes with higher abundance contribute more to the average."
-    },
+ {
+  "template_id": "AT_L2_02",
+  "pattern": "An element has two isotopes of masses [M1] and [M2]. Isotope 1 has an abundance of [AB1]%. Calculate the relative atomic mass of the element.",
+  "variables": {
+    "M1":  {"min": 1,  "max": 150, "step": 1},
+    "DIFF":{"values": [1,2,3,4]},
+    "M2":  {"calc": "M1 + DIFF"},
+    "AB1": {"values": [10,20,25,30,40,50,60,70,75,80,90]},
+    "AB2": {"calc": "100 - AB1"}
+  },
+  "calculation": "round2((M1 * AB1 + M2 * AB2) / 100)",
+  "explanation": "RAM = (M₁ × AB₁ + M₂ × AB₂) ÷ 100\n= ([M1] × [AB1] + [M2] × [AB2]) ÷ 100\n= [RESULT]\n\nThe RAM is a weighted average — isotopes with higher abundance contribute more to the average."
+},
 
     {
       "template_id": "AT_L2_03",
@@ -52,40 +53,40 @@
       "explanation": "Moles = number of molecules ÷ Avogadro's number\n= [MOLECULES] × 10²³ ÷ 6.02 × 10²³\n= [MOLECULES] ÷ 6.02\n= [RESULT] mol\n\nAvogadro's number applies to any type of particle — atoms, molecules, ions or formula units."
     },
 
-    {
-      "template_id": "AT_L2_05",
-      "pattern": "The [N]th electron shell of an atom can hold a maximum of how many electrons? Use the formula 2n².",
-      "variables": {
-        "N":   {"min": 1, "max": 5, "step": 1},
-        "VOL": {"min": 1, "max": 50,"step": 1}
-      },
-      "calculation": "2 * N * N",
-      "explanation": "Maximum electrons = 2n²\n= 2 × [N]²\n= 2 × [N*N]\n= [RESULT]\n\nShell 1: 2, Shell 2: 8, Shell 3: 18, Shell 4: 32, Shell 5: 50. Higher shells have sub-shells (s, p, d, f) which divide up this capacity."
-    },
+{
+  "template_id": "AT_L2_05",
+  "pattern": "A sub-shell has an azimuthal quantum number of l = [L]. Calculate the maximum number of electrons it can hold. (Formula: 2(2l+1))",
+  "variables": {
+    "L":   {"values": [0,1,2,3]},
+    "VOL": {"min": 1, "max": 50, "step": 1}
+  },
+  "calculation": "2 * (2 * L + 1)",
+  "explanation": "Maximum electrons in sub-shell = 2(2l + 1)\n= 2 × (2 × [L] + 1)\n= 2 × [2*L+1]\n= [RESULT]\n\nl=0 (s): 2 electrons, l=1 (p): 6 electrons, l=2 (d): 10 electrons, l=3 (f): 14 electrons."
+},
 
-    {
-      "template_id": "AT_L2_06",
-      "pattern": "An atom of atomic number [Z] loses [L] electrons to form a cation. How many electrons does the cation contain?",
-      "variables": {
-        "Z": {"min": 5,  "max": 30, "step": 1},
-        "L": {"min": 1,  "max": 4,  "step": 1}
-      },
-      "constraints": ["Z > L"],
-      "calculation": "Z - L",
-      "explanation": "Electrons in cation = atomic number − electrons lost\n= [Z] − [L]\n= [RESULT]\n\nThe proton number stays the same when ions form. Only the electron count changes. A cation has fewer electrons than protons giving it a positive charge."
-    },
+{
+  "template_id": "AT_L2_06",
+  "pattern": "An ion has a mass number of [A], contains [N] neutrons and has a charge of [CHARGE]+. Calculate the number of protons in the ion.",
+  "variables": {
+    "N":      {"min": 10, "max": 80, "step": 1},
+    "PROTONS":{"min": 10, "max": 56, "step": 1},
+    "CHARGE": {"min": 1,  "max": 4,  "step": 1},
+    "A":      {"calc": "PROTONS + N"}
+  },
+  "calculation": "PROTONS",
+  "explanation": "Protons = mass number − neutrons\n= [A] − [N]\n= [RESULT]\n\nThe number of protons is the same in the ion as in the neutral atom — only electrons change when ions form. The atomic number equals the number of protons."
+},
 
-    {
-      "template_id": "AT_L2_07",
-      "pattern": "An atom has atomic number [Z] and a shielding constant of [S]. Calculate the effective nuclear charge experienced by the outermost electrons.",
-      "variables": {
-        "Z": {"min": 3,  "max": 20, "step": 1},
-        "S": {"min": 1,  "max": 15, "step": 1}
-      },
-      "constraints": ["Z > S"],
-      "calculation": "Z - S",
-      "explanation": "Effective nuclear charge Z_eff = Z − σ\n= [Z] − [S]\n= [RESULT]\n\nInner electrons partially shield outer electrons from the full nuclear attraction. Effective nuclear charge increases across a period — this explains why atomic radius decreases across a period."
-    },
+{
+  "template_id": "AT_L2_07",
+  "pattern": "A sample contains [MOLES] moles of a compound. Each molecule contains [ATOMS] atoms. Calculate the total number of atoms in the sample. Give your answer as a multiple of 10²³.",
+  "variables": {
+    "MOLES": {"min": 1,  "max": 10, "step": 1},
+    "ATOMS": {"min": 2,  "max": 10, "step": 1}
+  },
+  "calculation": "round2(MOLES * ATOMS * 6.02)",
+  "explanation": "Total atoms = moles × atoms per molecule × Avogadro's number\n= [MOLES] × [ATOMS] × 6.02 × 10²³\n= [RESULT] × 10²³\n\nThis two-step calculation uses both the mole concept and molecular formula. For example 1 mole of H₂O contains 3 × 6.02 × 10²³ atoms total."
+},
 
     {
       "template_id": "AT_L2_08",
