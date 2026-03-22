@@ -15,14 +15,15 @@
 
 {
   "template_id": "LO_L2_02",
-  "pattern": "A ray of light travels from air into glass of refractive index [N]. The angle of incidence is [AI] degrees. Calculate the sine of the angle of refraction.",
+  "pattern": "A ray of light travels from air into a glass block of refractive index [N] and thickness [T] cm. The angle of incidence is [AI] degrees. Calculate the sine of the angle of refraction. (sin 30°=0.500, sin 45°=0.707, sin 60°=0.866)",
   "variables": {
-    "N":    {"values": [2, 3, 4, 5]},
-    "AI":   {"min": 10, "max": 80, "step": 10},
-    "SINI": {"calc": "sin_degrees(AI)"}
+    "T":    {"min": 1, "max": 20, "step": 1},
+    "N":    {"values": [2,    3,    4,    5,    2,    3,    4,    5,    2,    3,    4,    5]},
+    "AI":   {"values": [30,   30,   30,   30,   45,   45,   45,   45,   60,   60,   60,   60]},
+    "SINI": {"values": [0.500,0.500,0.500,0.500,0.707,0.707,0.707,0.707,0.866,0.866,0.866,0.866]}
   },
   "calculation": "round3(SINI / N)",
-  "explanation": "Snell's law: n₁ sin θ₁ = n₂ sin θ₂\nWith n₁ = 1 (air) and n₂ = [N]:\nsin θ₂ = sin [AI]° ÷ [N]\n= [SINI] ÷ [N]\n= [RESULT]\n\nSnell's law applies at every boundary where light changes medium. The refracted ray bends toward the normal when entering a denser medium."
+  "explanation": "Snell's law: n₁ sin θ₁ = n₂ sin θ₂\nWith n₁ = 1 (air) and n₂ = [N]:\nsin θ₂ = sin [AI]° ÷ [N]\n= [SINI] ÷ [N]\n= [RESULT]\n\nThe thickness of the block does not affect the angle of refraction. The refracted ray bends toward the normal when entering a denser medium."
 },
 
     {
