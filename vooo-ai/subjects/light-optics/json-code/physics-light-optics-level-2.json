@@ -16,49 +16,24 @@
 
     {
   "template_id": "LO_L2_02",
-  "pattern": "Light travels from air (n=1) into glass of refractive index [N]. The angle of incidence is [AI] degrees. Using Snell's law, what is the sine of the angle of refraction? (sin 30°=0.500, sin 45°=0.707, sin 60°=0.866)",
+  "pattern": "Light travels from air into a medium of refractive index [N]. The angle of incidence is [AI] degrees. What is the sine of the angle of refraction? (sin 30°=0.500, sin 45°=0.707, sin 60°=0.866)",
   "variables": {
-    "N":  {"values": [2, 2, 2, 2]},
-    "AI": {"values": [30, 45, 60, 90]},
-    "DUMMY": {"values": [1, 1, 1, 1]}
+    "AI": {"values": [30, 45, 60, 30, 45, 60]},
+    "N":  {"values": [2,  2,  2,  3,  3,  3]}
   },
-  "calculation": "0",
-  "options": [
-    "0.250",
-    "0.354",
-    "0.433",
-    "0.500"
-  ],
-  "answer_label": [
-    "0.250",
-    "0.354",
-    "0.433",
-    "0.500"
-  ],
-  "explanation": "Snell's law: n₁ sin θ₁ = n₂ sin θ₂. With n₁=1, n₂=[N]: sin θ₂ = sin [AI]° ÷ [N]. This gives the sine of the refraction angle."
+  "calculation": "round(sin_degrees(AI) * 1000 / N) / 1000",
+  "explanation": "Snell's law: n₁ sin θ₁ = n₂ sin θ₂. With n₁=1 (air): sin θ₂ = sin [AI]° ÷ [N] = [RESULT]"
 },
 
     {
   "template_id": "LO_L2_03",
-  "pattern": "A glass block has refractive index [N]. Using sin C = 1 ÷ n, what is the critical angle?",
+  "pattern": "A glass block has refractive index [N]. What is the sine of the critical angle?",
   "variables": {
-    "N":    {"values": [2, 4, 2, 4]},
-    "DUMMY":{"values": [1, 1, 1, 1]}
+    "N": {"values": [2, 3, 4, 5, 6]}
   },
-  "calculation": "0",
-  "options": [
-    "30°",
-    "45°",
-    "60°",
-    "15°"
-  ],
-  "answer_label": [
-    "30°",
-    "15°",
-    "30°",
-    "15°"
-  ],
-  "explanation": "sin C = 1 ÷ n = 1 ÷ [N]. For n=2, sin C = 0.5 → C = 30°. For n=4, sin C = 0.25 → C ≈ 15°. Beyond this angle total internal reflection occurs."
+  "constraints": ["N > 1"],
+  "calculation": "round(100 / N) / 100",
+  "explanation": "sin C = 1 ÷ n = 1 ÷ [N] = [RESULT]. The critical angle is the minimum angle of incidence at which total internal reflection occurs."
 },
 
     {
@@ -75,26 +50,16 @@
 
     {
   "template_id": "LO_L2_06",
-  "pattern": "A ray of light travels inside glass with critical angle [C] degrees. The angle of incidence at the glass-air boundary is [A] degrees. What happens to the ray?",
+  "pattern": "A pump with [EFF]% efficiency raises [M] kg of water to a height of [H] m in [T] seconds. What is the electrical power input to the pump? (g = 10 m/s²)",
   "variables": {
-    "C":    {"values": [40, 40, 40, 40]},
-    "A":    {"values": [50, 30, 55, 25]},
-    "DUMMY":{"values": [1,  1,  1,  1]}
+    "EFF": {"min": 40, "max": 80,  "step": 20},
+    "M":   {"min": 10, "max": 100, "step": 10},
+    "H":   {"min": 5,  "max": 20,  "step": 5},
+    "T":   {"min": 5,  "max": 40,  "step": 5}
   },
-  "calculation": "0",
-  "options": [
-    "Total internal reflection occurs",
-    "The ray refracts out into air",
-    "The ray is absorbed by the glass",
-    "The ray travels along the boundary"
-  ],
-  "answer_label": [
-    "Total internal reflection occurs",
-    "The ray refracts out into air",
-    "Total internal reflection occurs",
-    "The ray refracts out into air"
-  ],
-  "explanation": "Critical angle = [C]°. Angle of incidence = [A]°. If the angle of incidence is greater than the critical angle, total internal reflection occurs. If less, the ray refracts out into air."
+  "constraints": ["(M * 10 * H * 100) % (T * EFF) === 0"],
+  "calculation": "(M * 10 * H * 100) / (T * EFF)",
+  "explanation": "Useful power = mgh ÷ t = [M]×10×[H] ÷ [T] W. Input power = useful power × 100 ÷ efficiency = [M*10*H*100] ÷ ([T*EFF]) = [RESULT] W"
 },
 
     {
@@ -120,29 +85,17 @@
       "explanation": "Image height = object height × magnification = [H] × [M] = [RESULT] cm"
     },
 
-    {
-      "template_id": "LO_L2_09",
-      "pattern": "Light travels from medium 1 (refractive index [N1]) into medium 2 (refractive index [N2]), where [N2] is less than [N1]. Which statement is correct?\nA) Light speeds up and bends away from the normal\nB) Light slows down and bends toward the normal\nC) Light speed stays the same\nD) Light is totally internally reflected",
-      "variables": {
-        "N1": {"values": [3, 4, 6, 4]},
-        "N2": {"values": [1, 2, 2, 1]},
-        "DUMMY": {"values": [1, 1, 1, 1]}
-      },
-      "calculation": "0",
-      "options": [
-        "A) Light speeds up and bends away from the normal",
-        "B) Light slows down and bends toward the normal",
-        "C) Light speed stays the same",
-        "D) Light is totally internally reflected"
-      ],
-      "answer_label": [
-        "A) Light speeds up and bends away from the normal",
-        "A) Light speeds up and bends away from the normal",
-        "A) Light speeds up and bends away from the normal",
-        "A) Light speeds up and bends away from the normal"
-      ],
-      "explanation": "Moving from higher n ([N1]) to lower n ([N2]) means speed increases (v = c÷n). Light bends away from the normal when entering a less dense medium."
-    },
+   {
+  "template_id": "LO_L2_09",
+  "pattern": "Light travels from medium 1 (refractive index [N1]) into medium 2 (refractive index [N2]). What is the speed of light in medium 2 in m/s? (c = 3 × 10⁸ m/s)",
+  "variables": {
+    "N1": {"values": [2, 3, 4, 6]},
+    "N2": {"values": [1, 1, 2, 2]}
+  },
+  "constraints": ["N1 > N2"],
+  "calculation": "(3 * 100000000) / N2",
+  "explanation": "Speed of light in medium 2 = c ÷ n₂ = 3×10⁸ ÷ [N2] = [RESULT] m/s. Since n₂ < n₁, light speeds up entering medium 2."
+},
 
     {
       "template_id": "LO_L2_10",
