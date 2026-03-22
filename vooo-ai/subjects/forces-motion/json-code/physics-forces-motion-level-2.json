@@ -1,0 +1,139 @@
+{
+  "puzzle_type": "physics-forces-motion-level-2",
+  "display_name": "Forces & Motion L2",
+  "templates": [
+
+    {
+      "template_id": "FM_L2_01",
+      "pattern": "A vehicle has an initial velocity of [U] m/s and accelerates uniformly at [ACC] m/s² for [T] seconds. Calculate the final velocity of the vehicle in m/s.",
+      "variables": {
+        "U":   {"min": 0,  "max": 30, "step": 2},
+        "ACC": {"min": 1,  "max": 10, "step": 1},
+        "T":   {"min": 2,  "max": 20, "step": 2}
+      },
+      "calculation": "U + ACC * T",
+      "explanation": "Using the equation of motion: v = u + at\n= [U] + [ACC] × [T]\n= [U] + [ACC*T]\n= [RESULT] m/s\n\nThis equation applies when acceleration is uniform (constant)."
+    },
+
+    {
+      "template_id": "FM_L2_02",
+      "pattern": "A car starts from rest and accelerates uniformly at [ACC] m/s² for [T] seconds. Calculate the distance travelled by the car in metres.",
+      "variables": {
+        "ACC": {"min": 1,  "max": 10, "step": 1},
+        "T":   {"min": 2,  "max": 20, "step": 2}
+      },
+      "calculation": "0.5 * ACC * T * T",
+      "explanation": "Using s = ut + ½at² with u = 0 (starts from rest):\ns = 0 + 0.5 × [ACC] × [T]²\n= 0.5 × [ACC] × [T*T]\n= [RESULT] m\n\nWhen starting from rest, initial velocity u = 0 so the ut term disappears."
+    },
+
+    {
+      "template_id": "FM_L2_03",
+      "pattern": "An object has an initial velocity of [U] m/s and accelerates uniformly at [ACC] m/s² for [T] seconds. Calculate the total distance travelled in metres.",
+      "variables": {
+        "U":   {"min": 2,  "max": 20, "step": 2},
+        "ACC": {"min": 1,  "max": 8,  "step": 1},
+        "T":   {"min": 2,  "max": 10, "step": 2}
+      },
+      "calculation": "U * T + 0.5 * ACC * T * T",
+      "explanation": "Using s = ut + ½at²:\n= [U] × [T] + 0.5 × [ACC] × [T]²\n= [U*T] + 0.5 × [ACC] × [T*T]\n= [U*T] + [0.5*ACC*T*T]\n= [RESULT] m\n\nBoth the initial velocity and acceleration contribute to the total distance."
+    },
+
+{
+  "template_id": "FM_L2_04",
+  "pattern": "An object accelerates uniformly from rest. After travelling [S] m its velocity is [V] m/s. Calculate the acceleration of the object in m/s².",
+  "variables": {
+    "V": {"min": 5,  "max": 60, "step": 5},
+    "S": {"min": 10, "max": 200,"step": 10}
+  },
+  "calculation": "round2((V * V) / (2 * S))",
+  "explanation": "Using v² = u² + 2as with u = 0:\na = v² ÷ 2s\n= [V]² ÷ (2 × [S])\n= [V*V] ÷ [2*S]\n= [RESULT] m/s²\n\nThis equation links velocity, acceleration and distance without needing time."
+},
+
+    {
+      "template_id": "FM_L2_05",
+      "pattern": "A force of [F] N acts on an object for [T] seconds. Calculate the impulse delivered to the object in N·s.",
+      "variables": {
+        "F": {"min": 5,  "max": 500, "step": 5},
+        "T": {"min": 1,  "max": 20,  "step": 1}
+      },
+      "calculation": "F * T",
+      "explanation": "Impulse = Force × Time\n= [F] × [T]\n= [RESULT] N·s\n\nImpulse equals the change in momentum of the object. It is a vector quantity measured in newton-seconds."
+    },
+
+    {
+      "template_id": "FM_L2_06",
+      "pattern": "A vehicle of mass [M] kg is travelling at [V] m/s and is brought to rest in [T] seconds by a braking force. Calculate the magnitude of the braking force in newtons.",
+      "variables": {
+        "T":   {"values": [2,4,5,10,20]},
+        "M":   {"values": [500,1000,1500,2000,2500]},
+        "V":   {"values": [10,20,30,40,50]},
+        "F":   {"calc": "M * V / T"}
+      },
+      "constraints": ["F <= 50000"],
+      "calculation": "F",
+      "explanation": "Braking force = change in momentum ÷ time\n= (mass × velocity) ÷ time\n= ([M] × [V]) ÷ [T]\n= [M*V] ÷ [T]\n= [RESULT] N\n\nThis uses the impulse-momentum theorem: F × t = m × v."
+    },
+
+    {
+      "template_id": "FM_L2_07",
+      "pattern": "A [M1] kg trolley moving at [U] m/s collides with a stationary [M2] kg trolley. They stick together after the collision. Calculate their combined velocity after the collision in m/s.",
+      "variables": {
+        "M1":  {"values": [2,4,5,10,20]},
+        "M2":  {"values": [2,4,5,10,20]},
+        "U":   {"values": [4,6,8,10,12,14,16,18,20]},
+        "V":   {"calc": "round2((M1 * U) / (M1 + M2))"}
+      },
+      "constraints": ["M1 + M2 > 0"],
+      "calculation": "V",
+      "explanation": "Using conservation of momentum:\nm₁u₁ = (m₁ + m₂)v\nv = m₁u₁ ÷ (m₁ + m₂)\n= ([M1] × [U]) ÷ ([M1] + [M2])\n= [M1*U] ÷ [M1+M2]\n= [RESULT] m/s\n\nTotal momentum before collision equals total momentum after collision."
+    },
+
+{
+  "template_id": "FM_L2_08",
+  "pattern": "An object of mass [M] kg is dropped from rest and falls freely under gravity for [T] seconds. Calculate the velocity of the object just before it hits the ground in m/s. (g = 10 m/s²)",
+  "variables": {
+    "M": {"min": 1,  "max": 50, "step": 1},
+    "T": {"min": 1,  "max": 20, "step": 1}
+  },
+  "calculation": "10 * T",
+  "explanation": "Using v = u + gt with u = 0:\nv = 0 + 10 × [T]\n= [RESULT] m/s\n\nNote: mass does not affect free fall velocity. All objects fall at the same rate regardless of mass when air resistance is ignored."
+},
+
+{
+  "template_id": "FM_L2_09",
+  "pattern": "A stone of mass [M] kg is dropped from rest from the top of a cliff of height [H] m. Calculate the distance fallen after [T] seconds. (g = 10 m/s², assume no air resistance)",
+  "variables": {
+    "M": {"min": 1,  "max": 20, "step": 1},
+    "H": {"min": 50, "max": 500,"step": 50},
+    "T": {"min": 1,  "max": 8,  "step": 1}
+  },
+  "constraints": ["0.5 * 10 * T * T <= H"],
+  "calculation": "0.5 * 10 * T * T",
+  "explanation": "Using s = ut + ½gt² with u = 0:\ns = 0.5 × 10 × [T]²\n= 5 × [T*T]\n= [RESULT] m\n\nThe stone must not have hit the ground yet — check that the distance is less than the cliff height [H] m."
+},
+
+{
+  "template_id": "FM_L2_10",
+  "pattern": "An object of mass [M] kg is dropped from a height of [H] m. Calculate the speed of the object just before it hits the ground in m/s. (g = 10 m/s², assume no air resistance)",
+  "variables": {
+    "M": {"min": 1,  "max": 50, "step": 1},
+    "H": {"min": 5,  "max": 200,"step": 5}
+  },
+  "calculation": "round2(sqrt(2 * 10 * H))",
+  "explanation": "Using v² = u² + 2gh with u = 0:\nv = √(2 × 10 × [H])\n= √[2*10*H]\n= [RESULT] m/s\n\nThis applies conservation of energy: all GPE converts to KE just before impact. Mass cancels out so it does not affect the answer."
+}
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
