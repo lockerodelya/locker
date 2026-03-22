@@ -188,7 +188,7 @@ this._evalHelpers = {
                 ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*(-?\d+(?:\.\d+)?)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
                 ev=ev.replace(/(-?\d+(?:\.\d+)?)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
                 ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
-                ev=ev.replace(/(?<![a-zA-Z_(])\((-?\d+(?:\.\d+)?)\)(?![a-zA-Z_(\d])/g,(m,n)=>{changed=true;return n;});
+                ev=ev.replace(/(?<![a-zA-Z0-9_(])\((-?\d+(?:\.\d+)?)\)(?![a-zA-Z_(\d])/g,(m,n)=>{changed=true;return n;});
                 for(const[name,fn]of fns){
                     const re=multiArgRe(name);
                     ev=ev.replace(re,(match)=>{
