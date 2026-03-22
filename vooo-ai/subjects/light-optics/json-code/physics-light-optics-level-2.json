@@ -5,107 +5,113 @@
 
     {
       "template_id": "LO_L2_01",
-      "pattern": "Light travels from air into a medium at a speed of [V] × 10⁶ m/s. What is the refractive index of the medium? (c = 3 × 10⁸ m/s)",
+      "pattern": "Light travels from air into a medium at a speed of [V] × 10⁷ m/s. What is the refractive index of the medium? (c = 3 × 10⁸ m/s)",
       "variables": {
-        "V": {"values": [100, 150, 200, 250]}
+        "V": {"values": [10, 15, 20, 25, 30]}
       },
       "constraints": ["300 % V === 0"],
-      "calculation": "300 / V",
-      "explanation": "Refractive index n = c ÷ v = (3×10⁸) ÷ ([V]×10⁶) = 300 ÷ [V] = [RESULT]"
+      "calculation": "300 / (V * 10)",
+      "explanation": "Refractive index n = c ÷ v = 3×10⁸ ÷ ([V]×10⁷) = 30 ÷ [V] = [RESULT]"
     },
 
     {
-  "template_id": "LO_L2_02",
-  "pattern": "Light travels from air into a medium of refractive index [N]. The angle of incidence is [AI] degrees. What is the sine of the angle of refraction? (sin 30°=0.500, sin 45°=0.707, sin 60°=0.866)",
-  "variables": {
-    "AI": {"values": [30, 45, 60, 30, 45, 60]},
-    "N":  {"values": [2,  2,  2,  3,  3,  3]}
-  },
-  "calculation": "round(sin_degrees(AI) * 1000 / N) / 1000",
-  "explanation": "Snell's law: n₁ sin θ₁ = n₂ sin θ₂. With n₁=1 (air): sin θ₂ = sin [AI]° ÷ [N] = [RESULT]"
-},
+      "template_id": "LO_L2_02",
+      "pattern": "Light travels from air into a medium of refractive index [N]. The angle of incidence is [AI] degrees. What is the sine of the angle of refraction? (sin 30°=0.500, sin 45°=0.707, sin 60°=0.866)",
+      "variables": {
+        "AI": {"values": [30, 45, 60, 30, 45, 60]},
+        "N":  {"values": [2,  2,  2,  3,  3,  3]}
+      },
+      "calculation": "round(sin_degrees(AI) * 1000 / N) / 1000",
+      "explanation": "Snell's law: n₁ sin θ₁ = n₂ sin θ₂. With n₁=1 (air): sin θ₂ = sin [AI]° ÷ [N] = [RESULT]"
+    },
 
     {
-  "template_id": "LO_L2_03",
-  "pattern": "A glass block has refractive index [N]. What is the sine of the critical angle?",
-  "variables": {
-    "N": {"values": [2, 3, 4, 5, 6]}
-  },
-  "constraints": ["N > 1"],
-  "calculation": "round(100 / N) / 100",
-  "explanation": "sin C = 1 ÷ n = 1 ÷ [N] = [RESULT]. The critical angle is the minimum angle of incidence at which total internal reflection occurs."
-},
+      "template_id": "LO_L2_03",
+      "pattern": "A glass block has refractive index [N]. What is the sine of the critical angle?",
+      "variables": {
+        "N": {"values": [2, 3, 4, 5]}
+      },
+      "calculation": "round(100 / N) / 100",
+      "explanation": "sin C = 1 ÷ n = 1 ÷ [N] = [RESULT]. Beyond the critical angle total internal reflection occurs."
+    },
+
+    {
+      "template_id": "LO_L2_04",
+      "pattern": "A converging lens of focal length [F] cm has an object placed [U] cm from it. What is the image distance v in cm?",
+      "variables": {
+        "F": {"min": 5,  "max": 20, "step": 5},
+        "U": {"min": 30, "max": 80, "step": 10}
+      },
+      "constraints": ["U > F", "(U * F) % (U - F) === 0"],
+      "calculation": "(U * F) / (U - F)",
+      "explanation": "Lens formula: v = uF ÷ (u − F) = [U] × [F] ÷ ([U] − [F]) = [U*F] ÷ [U-F] = [RESULT] cm"
+    },
 
     {
       "template_id": "LO_L2_05",
-      "pattern": "An image is formed [V] cm from a lens and the object is [U] cm from the lens. What is the magnification produced?",
-      "variables": {
-        "V": {"min": 10, "max": 60, "step": 10},
-        "U": {"min": 5,  "max": 30, "step": 5}
-      },
-      "constraints": ["V % U === 0"],
-      "calculation": "V / U",
-      "explanation": "Magnification = image distance ÷ object distance = [V] ÷ [U] = [RESULT]. A value greater than 1 means the image is larger than the object."
-    },
-
-    {
-  "template_id": "LO_L2_06",
-  "pattern": "A pump with [EFF]% efficiency raises [M] kg of water to a height of [H] m in [T] seconds. What is the electrical power input to the pump? (g = 10 m/s²)",
-  "variables": {
-    "EFF": {"min": 40, "max": 80,  "step": 20},
-    "M":   {"min": 10, "max": 100, "step": 10},
-    "H":   {"min": 5,  "max": 20,  "step": 5},
-    "T":   {"min": 5,  "max": 40,  "step": 5}
-  },
-  "constraints": ["(M * 10 * H * 100) % (T * EFF) === 0"],
-  "calculation": "(M * 10 * H * 100) / (T * EFF)",
-  "explanation": "Useful power = mgh ÷ t = [M]×10×[H] ÷ [T] W. Input power = useful power × 100 ÷ efficiency = [M*10*H*100] ÷ ([T*EFF]) = [RESULT] W"
-},
-
-    {
-      "template_id": "LO_L2_07",
       "pattern": "A converging lens of focal length [F] cm produces an image [V] cm from the lens. What is the object distance in cm?",
       "variables": {
         "F": {"min": 5,  "max": 20, "step": 5},
-        "V": {"min": 20, "max": 60, "step": 10}
+        "V": {"min": 20, "max": 80, "step": 10}
       },
       "constraints": ["V > F", "(V * F) % (V - F) === 0"],
       "calculation": "(V * F) / (V - F)",
-      "explanation": "Lens formula rearranged: u = vF ÷ (v−F) = [V]×[F] ÷ ([V]−[F]) = [V*F] ÷ [V-F] = [RESULT] cm"
+      "explanation": "Lens formula rearranged: u = vF ÷ (v − F) = [V] × [F] ÷ ([V] − [F]) = [V*F] ÷ [V-F] = [RESULT] cm"
     },
 
     {
-      "template_id": "LO_L2_08",
-      "pattern": "An object [H] cm tall is magnified [M] times by a lens. What is the height of the image in cm?",
+      "template_id": "LO_L2_06",
+      "pattern": "A converging lens has a focal length of [F] cm. What is its power in dioptres?",
       "variables": {
-        "H": {"min": 2, "max": 20, "step": 2},
-        "M": {"min": 2, "max": 10, "step": 1}
+        "F": {"values": [10, 20, 25, 50, 100]}
       },
-      "calculation": "H * M",
-      "explanation": "Image height = object height × magnification = [H] × [M] = [RESULT] cm"
+      "calculation": "100 / F",
+      "explanation": "Power (dioptres) = 1 ÷ focal length (metres) = 100 ÷ focal length (cm) = 100 ÷ [F] = [RESULT] dioptres"
     },
 
-   {
-  "template_id": "LO_L2_09",
-  "pattern": "Light travels from medium 1 (refractive index [N1]) into medium 2 (refractive index [N2]). What is the speed of light in medium 2 in m/s? (c = 3 × 10⁸ m/s)",
-  "variables": {
-    "N1": {"values": [2, 3, 4, 6]},
-    "N2": {"values": [1, 1, 2, 2]}
-  },
-  "constraints": ["N1 > N2"],
-  "calculation": "(3 * 100000000) / N2",
-  "explanation": "Speed of light in medium 2 = c ÷ n₂ = 3×10⁸ ÷ [N2] = [RESULT] m/s. Since n₂ < n₁, light speeds up entering medium 2."
-},
-
     {
-      "template_id": "LO_L2_10",
+      "template_id": "LO_L2_07",
       "pattern": "A lens has a power of [P] dioptres. What is its focal length in cm?",
       "variables": {
         "P": {"values": [2, 4, 5, 10, 20, 25, 50]}
       },
       "constraints": ["100 % P === 0"],
       "calculation": "100 / P",
-      "explanation": "Power (dioptres) = 1 ÷ focal length (metres). Focal length = 1 ÷ [P] m = 100 ÷ [P] cm = [RESULT] cm"
+      "explanation": "Focal length = 1 ÷ power (metres) = 100 ÷ power (cm) = 100 ÷ [P] = [RESULT] cm"
+    },
+
+    {
+      "template_id": "LO_L2_08",
+      "pattern": "Two lenses of power [P1] dioptres and [P2] dioptres are placed in contact. What is the combined power in dioptres?",
+      "variables": {
+        "P1": {"min": 2, "max": 20, "step": 2},
+        "P2": {"min": 2, "max": 20, "step": 2}
+      },
+      "calculation": "P1 + P2",
+      "explanation": "Powers of lenses in contact add together: P_total = P1 + P2 = [P1] + [P2] = [RESULT] dioptres"
+    },
+
+    {
+      "template_id": "LO_L2_09",
+      "pattern": "Two lenses of focal lengths [F1] cm and [F2] cm are placed in contact. What is the combined focal length in cm?",
+      "variables": {
+        "F1": {"min": 5,  "max": 30, "step": 5},
+        "F2": {"min": 5,  "max": 30, "step": 5}
+      },
+      "constraints": ["(F1 * F2) % (F1 + F2) === 0"],
+      "calculation": "(F1 * F2) / (F1 + F2)",
+      "explanation": "1/F = 1/F1 + 1/F2 → F = F1×F2 ÷ (F1+F2) = [F1]×[F2] ÷ ([F1]+[F2]) = [F1*F2] ÷ [F1+F2] = [RESULT] cm"
+    },
+
+    {
+      "template_id": "LO_L2_10",
+      "pattern": "An object is at an apparent depth of [D] cm when viewed through a liquid of refractive index [N]. What is the real depth of the object in cm?",
+      "variables": {
+        "D": {"min": 5,  "max": 40, "step": 5},
+        "N": {"values": [2, 3, 4]}
+      },
+      "calculation": "D * N",
+      "explanation": "Real depth = apparent depth × refractive index = [D] × [N] = [RESULT] cm"
     }
 
   ],
