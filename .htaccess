@@ -1,15 +1,12 @@
 RewriteEngine On
-
    # Force non-www and HTTPS in one step (prevents double redirects)
    RewriteCond %{HTTP_HOST} ^www\.odelya\.online [NC,OR]
    RewriteCond %{HTTPS} off
    RewriteCond %{HTTP_HOST} ^(?:www\.)?(.+)$ [NC]
    RewriteRule ^ https://odelya.online%{REQUEST_URI} [R=301,L]
-
    # Redirect .html URLs to clean URLs
    RewriteCond %{THE_REQUEST} \s/([^.]+)\.html [NC]
    RewriteRule ^ /%1 [R=301,L]
-
    # Internally add .html extension to clean URLs
    RewriteCond %{REQUEST_FILENAME} !-d
    RewriteCond %{REQUEST_FILENAME}.html -f
@@ -18,17 +15,37 @@ RewriteEngine On
 # ====== CACHING RULES ======
 <IfModule mod_expires.c>
     ExpiresActive On
-    
-    # Images - cache for 1 year
-    ExpiresByType image/jpg "access plus 1 year"
-    ExpiresByType image/jpeg "access plus 1 year"
-    ExpiresByType image/png "access plus 1 year"
-    ExpiresByType image/webp "access plus 1 year"
-    
-    # JavaScript - cache for 1 month
-    ExpiresByType application/javascript "access plus 1 month"
-    ExpiresByType text/javascript "access plus 1 month"
-    
-    # CSS - cache for 1 month
-    ExpiresByType text/css "access plus 1 month"
+
+    # Images - 1 year
+    ExpiresByType image/jpg                "access plus 1 year"
+    ExpiresByType image/jpeg               "access plus 1 year"
+    ExpiresByType image/png                "access plus 1 year"
+    ExpiresByType image/webp               "access plus 1 year"
+    ExpiresByType image/gif                "access plus 1 year"
+    ExpiresByType image/svg+xml            "access plus 1 year"
+    ExpiresByType image/x-icon             "access plus 1 year"
+
+    # JavaScript - 1 year
+    ExpiresByType application/javascript   "access plus 1 year"
+    ExpiresByType text/javascript          "access plus 1 year"
+
+    # CSS - 1 year
+    ExpiresByType text/css                 "access plus 1 year"
+
+    # Fonts - 1 year
+    ExpiresByType font/woff                "access plus 1 year"
+    ExpiresByType font/woff2               "access plus 1 year"
+    ExpiresByType application/font-woff    "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(js|css)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+    <FilesMatch "\.(webp|png|jpg|jpeg|ico|gif|svg)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+    <FilesMatch "\.(woff|woff2)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
 </IfModule>
