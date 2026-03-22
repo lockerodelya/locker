@@ -136,6 +136,11 @@ const VOOO_ENGINE_REGISTRY = {
 	'physics-electricity-magnetism-level-2' : '/vooo-ai/subjects/electricity-magnetism/engine-code/physics-electricity-magnetism-level-2.js',
 	'physics-electricity-magnetism-level-3' : '/vooo-ai/subjects/electricity-magnetism/engine-code/physics-electricity-magnetism-level-3.js',
 
+	'physics-atomic-nuclear-level-1' : '/vooo-ai/subjects/atomic-nuclear/engine-code/physics-atomic-nuclear-level-1.js',
+	'physics-atomic-nuclear-level-2' : '/vooo-ai/subjects/atomic-nuclear/engine-code/physics-atomic-nuclear-level-2.js',
+	'physics-atomic-nuclear-level-3' : '/vooo-ai/subjects/atomic-nuclear/engine-code/physics-atomic-nuclear-level-3.js',
+
+
 
 
 	
@@ -273,7 +278,11 @@ const VOOO_ENGINE_INSTANCES = {
 	'physics-electricity-magnetism-level-1' : 'physicselectricitymagnetisml1',
 	'physics-electricity-magnetism-level-2' : 'physicselectricitymagnetisml2',
 	'physics-electricity-magnetism-level-3' : 'physicselectricitymagnetisml3',
-	
+
+	'physics-atomic-nuclear-level-1' : 'physicsatomicnuclearl1',
+	'physics-atomic-nuclear-level-2' : 'physicsatomicnuclearl2',
+	'physics-atomic-nuclear-level-3' : 'physicsatomicnuclearl3',
+		
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -497,6 +506,14 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'physics-electricity-magnetism-level-1', text: '• Electricity & Magnetism L1' },
 					{ value: 'physics-electricity-magnetism-level-2', text: '• Electricity & Magnetism L2' },
 					{ value: 'physics-electricity-magnetism-level-3', text: '• Electricity & Magnetism L3' },
+                ]
+            },
+			{
+                label: 'Physics : Atomic & Nuclear',
+                options: [
+                    { value: 'physics-atomic-nuclear-level-1', text: '• Atomic & Nuclear L1' },
+					{ value: 'physics-atomic-nuclear-level-2', text: '• Atomic & Nuclear L2' },
+					{ value: 'physics-atomic-nuclear-level-3', text: '• Atomic & Nuclear L3' },
                 ]
             },
 
