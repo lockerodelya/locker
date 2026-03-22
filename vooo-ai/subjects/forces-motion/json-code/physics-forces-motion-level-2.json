@@ -90,13 +90,15 @@
 
 {
   "template_id": "FM_L2_08",
-  "pattern": "An object of mass [M] kg is dropped from rest and falls freely under gravity for [T] seconds. Calculate the velocity of the object just before it hits the ground in m/s. (g = 10 m/s²)",
+  "pattern": "A [M1] kg object moving at [U] m/s collides with a wall and rebounds at [V] m/s in the opposite direction. The collision lasts [T] seconds. Calculate the average force exerted on the object by the wall in newtons.",
   "variables": {
-    "M": {"min": 1,  "max": 50, "step": 1},
-    "T": {"min": 1,  "max": 20, "step": 1}
+    "M1": {"min": 1,  "max": 20, "step": 1},
+    "U":  {"min": 5,  "max": 30, "step": 5},
+    "V":  {"min": 5,  "max": 30, "step": 5},
+    "T":  {"min": 1,  "max": 10, "step": 1}
   },
-  "calculation": "10 * T",
-  "explanation": "Using v = u + gt with u = 0:\nv = 0 + 10 × [T]\n= [RESULT] m/s\n\nNote: mass does not affect free fall velocity. All objects fall at the same rate regardless of mass when air resistance is ignored."
+  "calculation": "round2(M1 * (U + V) / T)",
+  "explanation": "Change in momentum = m × (v − (−u)) = m × (u + v)\n= [M1] × ([U] + [V])\n= [M1*(U+V)] kg·m/s\n\nAverage force = change in momentum ÷ time\n= [M1*(U+V)] ÷ [T]\n= [RESULT] N\n\nNote: the rebound velocity is in the opposite direction so we add the speeds when calculating momentum change."
 },
 
 {
