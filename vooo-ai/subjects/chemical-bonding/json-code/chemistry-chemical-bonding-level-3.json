@@ -63,14 +63,13 @@
 
 {
   "template_id": "CB_L3_06",
-  "pattern": "Molecule A has [E1] electrons and molecule B has [E2] electrons. Both are non-polar molecules. Calculate the ratio of their polarisabilities E_A ÷ E_B.",
+  "pattern": "A bond has a partial charge of [Q] × 10⁻²⁰ C and a bond length of [L] pm. Calculate the dipole moment of the bond in debye. (1 debye = 3.336 × 10⁻³⁰ C·m, 1 pm = 10⁻¹² m)",
   "variables": {
-    "E1": {"min": 10, "max": 200, "step": 10},
-    "E2": {"min": 10, "max": 200, "step": 10}
+    "Q": {"min": 1,  "max": 20, "step": 1},
+    "L": {"min": 50, "max": 200,"step": 10}
   },
-  "constraints": ["E1 !== E2"],
-  "calculation": "round2(E1 / E2)",
-  "explanation": "Polarisability ratio = electrons in A ÷ electrons in B\n= [E1] ÷ [E2]\n= [RESULT]\n\nPolarisability increases with the number of electrons. More electrons means the electron cloud is more easily distorted to form temporary dipoles — giving stronger London dispersion forces and higher boiling points."
+  "calculation": "round2(Q * pow(10, -20) * L * pow(10, -12) / (3.336 * pow(10, -30)))",
+  "explanation": "Dipole moment μ = Q × r\n= [Q] × 10⁻²⁰ × [L] × 10⁻¹²\n= [Q*L] × 10⁻³²\nConverting to debye: ÷ 3.336 × 10⁻³⁰\n= [RESULT] D\n\nDipole moment measures bond polarity. A larger partial charge or longer bond length gives a larger dipole moment. Symmetrical molecules can have polar bonds but zero overall dipole moment."
 },
 
     {
