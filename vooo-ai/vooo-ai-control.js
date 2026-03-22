@@ -132,9 +132,9 @@ const VOOO_ENGINE_REGISTRY = {
 	'physics-light-optics-level-2' : '/vooo-ai/subjects/light-optics/engine-code/physics-light-optics-level-2.js',
 	'physics-light-optics-level-3' : '/vooo-ai/subjects/light-optics/engine-code/physics-light-optics-level-3.js',
 
-	'physics-electricity-magnetism-level-1' : '/vooo-ai/subjects/light-optics/electricity-magnetism/physics-electricity-magnetism-level-1.js',
-	'physics-electricity-magnetism-level-2' : '/vooo-ai/subjects/light-optics/electricity-magnetism/physics-electricity-magnetism-level-2.js',
-	'physics-electricity-magnetism-level-3' : '/vooo-ai/subjects/light-optics/electricity-magnetism/physics-electricity-magnetism-level-3.js',
+	'physics-electricity-magnetism-level-1' : '/vooo-ai/subjects/electricity-magnetism/engine-code/physics-electricity-magnetism-level-1.js',
+	'physics-electricity-magnetism-level-2' : '/vooo-ai/subjects/electricity-magnetism/engine-code/physics-electricity-magnetism-level-2.js',
+	'physics-electricity-magnetism-level-3' : '/vooo-ai/subjects/electricity-magnetism/engine-code/physics-electricity-magnetism-level-3.js',
 
 
 
