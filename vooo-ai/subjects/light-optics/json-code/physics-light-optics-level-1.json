@@ -25,27 +25,14 @@
 
     {
   "template_id": "LO_L1_03",
-  "pattern": "Light travels from air into glass and slows down. The angle of incidence is [A] degrees. Which of the following correctly describes the angle of refraction?",
+  "pattern": "A ray of light travels from air into glass and refracts. The angle of incidence is [AI] degrees and the refractive index of glass is [N]. What is the sine of the angle of refraction? (Give answer to 2 decimal places. sin 30°=0.50, sin 45°=0.71, sin 60°=0.87, sin 90°=1.00)",
   "variables": {
-    "A": {"min": 10, "max": 70, "step": 10}
+    "AI": {"values": [30, 45, 60, 30, 45, 60]},
+    "N":  {"values": [2,  2,  2,  3,  3,  3]}
   },
-  "calculation": "0",
-  "options": [
-    "It is larger than the angle of incidence",
-    "It is smaller than the angle of incidence",
-    "It is equal to the angle of incidence",
-    "It is always 90 degrees"
-  ],
-  "answer_label": [
-    "It is smaller than the angle of incidence",
-    "It is smaller than the angle of incidence",
-    "It is smaller than the angle of incidence",
-    "It is smaller than the angle of incidence",
-    "It is smaller than the angle of incidence",
-    "It is smaller than the angle of incidence",
-    "It is smaller than the angle of incidence"
-  ],
-  "explanation": "When light enters a denser medium such as glass from air, it slows down and bends toward the normal. Therefore the angle of refraction is always smaller than the angle of incidence."
+  "constraints": ["N > 0"],
+  "calculation": "round(sin_degrees(AI) * 100 / N) / 100",
+  "explanation": "Snell's law: sin r = sin i ÷ n = sin [AI]° ÷ [N] = [RESULT]"
 },
 
     {
@@ -60,30 +47,14 @@
 
     {
   "template_id": "LO_L1_05",
-  "pattern": "A converging lens has a focal length of [F] cm. An object is placed [U] cm from the lens. The object distance is greater than the focal length. Which statement about the image is correct?",
+  "pattern": "A converging lens has a focal length of [F] cm. An object is placed [U] cm from the lens. What is the image distance in cm?",
   "variables": {
     "F": {"min": 5,  "max": 20, "step": 5},
-    "U": {"min": 25, "max": 60, "step": 5}
+    "U": {"min": 30, "max": 80, "step": 10}
   },
-  "constraints": ["U > F"],
-  "calculation": "0",
-  "options": [
-    "A) Virtual and upright",
-    "B) Real and inverted",
-    "C) Real and upright",
-    "D) No image is formed"
-  ],
-  "answer_label": [
-    "B) Real and inverted",
-    "B) Real and inverted",
-    "B) Real and inverted",
-    "B) Real and inverted",
-    "B) Real and inverted",
-    "B) Real and inverted",
-    "B) Real and inverted",
-    "B) Real and inverted"
-  ],
-  "explanation": "When an object is placed beyond the focal point of a converging lens, the image is real and inverted. It can be projected onto a screen."
+  "constraints": ["U > F", "(U * F) % (U - F) === 0"],
+  "calculation": "(U * F) / (U - F)",
+  "explanation": "Lens formula: v = uF ÷ (u − F) = [U] × [F] ÷ ([U] − [F]) = [U*F] ÷ [U-F] = [RESULT] cm"
 },
 
     {
@@ -127,29 +98,16 @@
     },
 
     {
-      "template_id": "LO_L1_10",
-      "pattern": "A magnifying glass (converging lens) of focal length [F] cm is used to view an object placed [U] cm from the lens. The object distance [U] cm is less than the focal length [F] cm. Which of the following correctly describes the image?\nA) Real, inverted and diminished\nB) Real, upright and magnified\nC) Virtual, upright and magnified\nD) Virtual, inverted and diminished",
-      "variables": {
-        "F": {"min": 10, "max": 25, "step": 5},
-        "U": {"min": 2,  "max": 8,  "step": 2}
-      },
-      "constraints": ["U < F"],
-      "calculation": "0",
-      "options": [
-        "A) Real, inverted and diminished",
-        "B) Real, upright and magnified",
-        "C) Virtual, upright and magnified",
-        "D) Virtual, inverted and diminished"
-      ],
-      "answer_label": [
-        "C) Virtual, upright and magnified",
-        "C) Virtual, upright and magnified",
-        "C) Virtual, upright and magnified",
-        "C) Virtual, upright and magnified",
-        "C) Virtual, upright and magnified"
-      ],
-      "explanation": "When the object is inside the focal length of a converging lens, the image is virtual, upright and magnified. This is exactly how a magnifying glass works."
-    }
+  "template_id": "LO_L1_10",
+  "pattern": "A lens produces an image [V] cm from the lens. The object is [U] cm from the lens. What is the magnification?",
+  "variables": {
+    "V": {"min": 10, "max": 100, "step": 10},
+    "U": {"min": 5,  "max": 50,  "step": 5}
+  },
+  "constraints": ["V % U === 0"],
+  "calculation": "V / U",
+  "explanation": "Magnification = image distance ÷ object distance = [V] ÷ [U] = [RESULT]"
+}
 
   ],
   "responses": {
