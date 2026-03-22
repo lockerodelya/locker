@@ -6,9 +6,9 @@
 // ⭐⭐⭐ EDIT ONLY THESE 3 LINES FOR A NEW ENGINE ⭐⭐⭐
 // ============================================
 
-const _ENGINE_JSON_FILE     = 'physics-energy-power-level-2.json';
-const _ENGINE_CATEGORY_KEY  = 'physics-energy-power-level-2';
-const _ENGINE_INSTANCE_NAME = 'physicsenergypowerl2';
+const _ENGINE_JSON_FILE     = 'physics-energy-power-level-1.json';
+const _ENGINE_CATEGORY_KEY  = 'physics-energy-power-level-1';
+const _ENGINE_INSTANCE_NAME = 'physicsenergypowerl1';
 
 // ============================================
 // ✋ DO NOT EDIT ANYTHING BELOW THIS LINE
