@@ -81,16 +81,16 @@
       "explanation": "Distance in parsecs d = 1 ÷ p (arcseconds)\n= 1 ÷ ([P] × 10⁻³)\n= 1000 ÷ [P]\n= [RESULT] parsecs\n\nThe parsec is defined so that a star at 1 parsec has a parallax of 1 arcsecond. Parallax is the only direct method of measuring stellar distances."
     },
 
-    {
-      "template_id": "AS_L1_08",
-      "pattern": "A star has a radius of [R] × 10⁸ m and a surface temperature of [T] × 10³ K. Calculate the luminosity of the star in watts. (σ = 5.67 × 10⁻⁸ W/m²K⁴)",
-      "variables": {
-        "R": {"min": 1,  "max": 10, "step": 1},
-        "T": {"min": 3,  "max": 30, "step": 3}
-      },
-      "calculation": "round2(4 * 3.14159 * pow(R * pow(10, 8), 2) * 5.67 * pow(10, -8) * pow(T * pow(10, 3), 4))",
-      "explanation": "Luminosity L = 4πr²σT⁴\n= 4π × ([R] × 10⁸)² × 5.67 × 10⁻⁸ × ([T] × 10³)⁴\n= [RESULT] W\n\nLuminosity is the total power output of a star. Hotter and larger stars are much more luminous. This is the Stefan-Boltzmann law applied to stars."
-    },
+{
+  "template_id": "AS_L1_08",
+  "pattern": "A star has a radius of [R] × 10⁸ m and a surface temperature of [T] × 10³ K. Calculate the luminosity of the star in units of 10²⁵ watts. (σ = 5.67 × 10⁻⁸ W/m²K⁴)",
+  "variables": {
+    "R": {"min": 1,  "max": 10, "step": 1},
+    "T": {"min": 3,  "max": 30, "step": 3}
+  },
+  "calculation": "round2(4 * 3.14159 * pow(R, 2) * pow(10, 16) * 5.67 * pow(10, -8) * pow(T, 4) * pow(10, 12) / pow(10, 25))",
+  "explanation": "Luminosity L = 4πr²σT⁴\n= 4π × ([R] × 10⁸)² × 5.67 × 10⁻⁸ × ([T] × 10³)⁴\n= 4 × 3.14159 × [R]² × 10¹⁶ × 5.67 × 10⁻⁸ × [T]⁴ × 10¹²\n= [RESULT] × 10²⁵ W\n\nLuminosity depends strongly on temperature — doubling the temperature increases luminosity 16 times. This is because L ∝ T⁴."
+},
 
     {
       "template_id": "AS_L1_09",
