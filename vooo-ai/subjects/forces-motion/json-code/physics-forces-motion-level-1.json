@@ -5,118 +5,117 @@
 
     {
       "template_id": "FM_L1_01",
-      "pattern": "An object travels [DIST] km in [TIME] hours. What is its average speed?",
+      "pattern": "A cyclist travels a distance of [D] km in [T] hours. Calculate the average speed of the cyclist.",
       "variables": {
-        "DIST": {"min": 20, "max": 500, "step": 5},
-        "TIME": {"min": 1, "max": 20, "step": 1}
+        "D": {"min": 20, "max": 200, "step": 10},
+        "T": {"min": 2,  "max": 10,  "step": 1}
       },
-      "constraints": ["DIST % TIME === 0"],
-      "calculation": "DIST / TIME",
-      "explanation": "Speed = Distance ÷ Time = [DIST] ÷ [TIME] = [RESULT] km/h"
+      "constraints": ["D % T === 0"],
+      "calculation": "D / T",
+      "explanation": "Average speed = Distance ÷ Time\n= [D] ÷ [T]\n= [RESULT] km/h\n\nAlways divide total distance by total time to find average speed."
     },
 
     {
       "template_id": "FM_L1_02",
-      "pattern": "A car moves at [SPEED] km/h for [TIME] hours. How far does it travel?",
+      "pattern": "A train travels at a constant speed of [S] km/h for [T] hours. Calculate the total distance travelled by the train.",
       "variables": {
-        "SPEED": {"min": 10, "max": 120, "step": 5},
-        "TIME":  {"min": 1,  "max": 10,  "step": 1}
+        "S": {"min": 40,  "max": 200, "step": 20},
+        "T": {"min": 2,   "max": 8,   "step": 1}
       },
-      "calculation": "SPEED * TIME",
-      "explanation": "Distance = Speed × Time = [SPEED] × [TIME] = [RESULT] km"
+      "calculation": "S * T",
+      "explanation": "Distance = Speed × Time\n= [S] × [T]\n= [RESULT] km\n\nWhen speed is constant, simply multiply speed by time."
     },
 
     {
       "template_id": "FM_L1_03",
-      "pattern": "A train travels [DIST] km at a constant speed of [SPEED] km/h. How long does the journey take?",
+      "pattern": "A car travels [D] km at a constant speed of [S] km/h. Calculate the time taken for the journey. Give your answer in hours.",
       "variables": {
-        "SPEED": {"min": 10, "max": 100, "step": 10},
-        "DIST":  {"min": 10, "max": 500, "step": 10}
+        "S": {"min": 20,  "max": 100, "step": 20},
+        "D": {"min": 40,  "max": 400, "step": 20}
       },
-      "constraints": ["DIST % SPEED === 0"],
-      "calculation": "DIST / SPEED",
-      "explanation": "Time = Distance ÷ Speed = [DIST] ÷ [SPEED] = [RESULT] hours"
+      "constraints": ["D % S === 0"],
+      "calculation": "D / S",
+      "explanation": "Time = Distance ÷ Speed\n= [D] ÷ [S]\n= [RESULT] hours\n\nRearrange the speed formula: Speed = Distance ÷ Time becomes Time = Distance ÷ Speed."
     },
 
     {
       "template_id": "FM_L1_04",
-      "pattern": "A vehicle accelerates from [U] m/s to [V] m/s in [T] seconds. What is its acceleration?",
+      "pattern": "A motorbike accelerates from [U] m/s to [V] m/s in [T] seconds. Calculate the acceleration of the motorbike.",
       "variables": {
-        "U": {"min": 0,  "max": 20, "step": 2},
-        "V": {"min": 10, "max": 50, "step": 2},
-        "T": {"min": 2,  "max": 20, "step": 2}
+        "U": {"min": 0,  "max": 10, "step": 2},
+        "V": {"min": 20, "max": 60, "step": 4},
+        "T": {"min": 2,  "max": 10, "step": 2}
       },
       "constraints": ["V > U", "(V - U) % T === 0"],
       "calculation": "(V - U) / T",
-      "explanation": "Acceleration = (Final velocity − Initial velocity) ÷ Time = ([V] − [U]) ÷ [T] = [RESULT] m/s²"
+      "explanation": "Acceleration = (Final velocity - Initial velocity) ÷ Time\n= ([V] - [U]) ÷ [T]\n= [V-U] ÷ [T]\n= [RESULT] m/s²\n\nAcceleration is the rate of change of velocity."
     },
 
     {
       "template_id": "FM_L1_05",
-      "pattern": "A force of [F] N acts on an object of mass [M] kg. What is the acceleration produced?",
+      "pattern": "A resultant force of [F] N acts on an object of mass [M] kg. Calculate the acceleration produced.",
       "variables": {
-        "F": {"min": 10, "max": 200, "step": 10},
-        "M": {"min": 2,  "max": 40,  "step": 2}
+        "F": {"min": 12, "max": 180, "step": 12},
+        "M": {"min": 2,  "max": 30,  "step": 2}
       },
       "constraints": ["F % M === 0"],
       "calculation": "F / M",
-      "explanation": "Using Newton's Second Law: Acceleration = Force ÷ Mass = [F] ÷ [M] = [RESULT] m/s²"
+      "explanation": "Using Newton's Second Law: F = ma\nRearranging: a = F ÷ m\n= [F] ÷ [M]\n= [RESULT] m/s²\n\nForce is measured in newtons (N), mass in kg and acceleration in m/s²."
     },
 
     {
       "template_id": "FM_L1_06",
-      "pattern": "An object of mass [M] kg is moving at [V] m/s. What is its kinetic energy?",
+      "pattern": "A football of mass [M] kg is moving at [V] m/s. Calculate the kinetic energy of the football.",
       "variables": {
-        "M": {"min": 1,  "max": 50, "step": 1},
-        "V": {"min": 2,  "max": 30, "step": 2}
+        "M": {"min": 1,  "max": 20, "step": 1},
+        "V": {"min": 4,  "max": 24, "step": 4}
       },
       "calculation": "0.5 * M * V * V",
-      "explanation": "Kinetic Energy = ½ × mass × velocity² = 0.5 × [M] × [V]² = 0.5 × [M] × [V*V] = [RESULT] J"
+      "explanation": "Kinetic Energy = ½ × mass × velocity²\n= 0.5 × [M] × [V]²\n= 0.5 × [M] × [V*V]\n= [RESULT] J\n\nKinetic energy depends on the square of velocity, so doubling speed quadruples KE."
     },
 
     {
       "template_id": "FM_L1_07",
-      "pattern": "Calculate the momentum of an object with mass [M] kg moving at [V] m/s.",
+      "pattern": "A box of mass [M] kg is lifted to a height of [H] m above the ground. Calculate the gravitational potential energy gained by the box. (g = 10 m/s²)",
       "variables": {
-        "M": {"min": 1,  "max": 60, "step": 1},
-        "V": {"min": 2,  "max": 40, "step": 2}
+        "M": {"min": 2,  "max": 40, "step": 2},
+        "H": {"min": 3,  "max": 30, "step": 3}
       },
-      "calculation": "M * V",
-      "explanation": "Momentum = Mass × Velocity = [M] × [V] = [RESULT] kg·m/s"
+      "calculation": "M * 10 * H",
+      "explanation": "Gravitational Potential Energy = mass × g × height\n= [M] × 10 × [H]\n= [RESULT] J\n\nGPE increases with mass and height. g = 10 m/s² is used at GCSE level."
     },
 
     {
       "template_id": "FM_L1_08",
-      "pattern": "A force of [F] N moves an object [D] m in the direction of the force. How much work is done?",
+      "pattern": "A person pushes a shopping trolley with a force of [F] N over a distance of [D] m in the direction of the force. Calculate the work done by the person.",
       "variables": {
-        "F": {"min": 5,  "max": 100, "step": 5},
-        "D": {"min": 2,  "max": 50,  "step": 2}
+        "F": {"min": 10, "max": 150, "step": 10},
+        "D": {"min": 5,  "max": 50,  "step": 5}
       },
       "calculation": "F * D",
-      "explanation": "Work Done = Force × Distance = [F] × [D] = [RESULT] J"
+      "explanation": "Work Done = Force × Distance\n= [F] × [D]\n= [RESULT] J\n\nWork is done only when a force causes movement in the direction of the force. One joule = one newton-metre."
     },
 
     {
       "template_id": "FM_L1_09",
-      "pattern": "[W] J of work is done in [T] seconds. What is the power output?",
+      "pattern": "An electric motor does [W] J of work in [T] seconds. Calculate the power output of the motor.",
       "variables": {
-        "W": {"min": 100, "max": 2000, "step": 100},
+        "W": {"min": 200, "max": 6000, "step": 200},
         "T": {"min": 2,   "max": 20,   "step": 2}
       },
       "constraints": ["W % T === 0"],
       "calculation": "W / T",
-      "explanation": "Power = Work Done ÷ Time = [W] ÷ [T] = [RESULT] W (watts)"
+      "explanation": "Power = Work Done ÷ Time\n= [W] ÷ [T]\n= [RESULT] W\n\nPower is measured in watts (W). 1 watt = 1 joule per second."
     },
 
     {
       "template_id": "FM_L1_10",
-      "pattern": "An object of mass [M] kg is at a height of [H] m. What is its gravitational potential energy? (g = 10 m/s²)",
+      "pattern": "An astronaut has a mass of [M] kg. Calculate the weight of the astronaut on Earth. (g = 10 m/s²)",
       "variables": {
-        "M": {"min": 1,  "max": 50, "step": 1},
-        "H": {"min": 2,  "max": 40, "step": 2}
+        "M": {"min": 40, "max": 120, "step": 5}
       },
-      "calculation": "M * 10 * H",
-      "explanation": "GPE = mass × g × height = [M] × 10 × [H] = [RESULT] J"
+      "calculation": "M * 10",
+      "explanation": "Weight = mass × gravitational field strength\n= [M] × 10\n= [RESULT] N\n\nWeight is a force measured in newtons. Mass is measured in kg and never changes. Weight changes depending on the gravitational field strength."
     }
 
   ],
@@ -128,7 +127,7 @@
     ],
     "incorrect": [
       "Try again! 💪","Check your formula! 📐","Almost! 😊",
-      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
       "One more try! 🎯","Keep going! 🌈"
     ]
   }
