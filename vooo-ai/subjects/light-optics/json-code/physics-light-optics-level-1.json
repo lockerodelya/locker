@@ -15,29 +15,17 @@
 
     {
       "template_id": "LO_L1_02",
-      "pattern": "A ray of light hits a plane mirror at an angle of incidence of [A] degrees. What is the angle of reflection?",
+      "pattern": "A ray of light hits a plane mirror at an angle of incidence of [A] degrees. What is the angle of reflection in degrees?",
       "variables": {
         "A": {"min": 10, "max": 80, "step": 5}
       },
       "calculation": "A",
-      "explanation": "Law of reflection: angle of incidence = angle of reflection. Both measured from the normal. Answer = [RESULT] degrees."
+      "explanation": "Law of reflection: angle of incidence = angle of reflection = [RESULT] degrees. Both angles are always measured from the normal."
     },
 
     {
-  "template_id": "LO_L1_03",
-  "pattern": "A ray of light travels from air into glass and refracts. The angle of incidence is [AI] degrees and the refractive index of glass is [N]. What is the sine of the angle of refraction? (Give answer to 2 decimal places. sin 30°=0.50, sin 45°=0.71, sin 60°=0.87, sin 90°=1.00)",
-  "variables": {
-    "AI": {"values": [30, 45, 60, 30, 45, 60]},
-    "N":  {"values": [2,  2,  2,  3,  3,  3]}
-  },
-  "constraints": ["N > 0"],
-  "calculation": "round(sin_degrees(AI) * 100 / N) / 100",
-  "explanation": "Snell's law: sin r = sin i ÷ n = sin [AI]° ÷ [N] = [RESULT]"
-},
-
-    {
-      "template_id": "LO_L1_04",
-      "pattern": "An object is placed [U] cm in front of a plane mirror. How far behind the mirror does the image appear?",
+      "template_id": "LO_L1_03",
+      "pattern": "An object is placed [U] cm in front of a plane mirror. How far behind the mirror does the image appear in cm?",
       "variables": {
         "U": {"min": 5, "max": 100, "step": 5}
       },
@@ -46,29 +34,7 @@
     },
 
     {
-  "template_id": "LO_L1_05",
-  "pattern": "A converging lens has a focal length of [F] cm. An object is placed [U] cm from the lens. What is the image distance in cm?",
-  "variables": {
-    "F": {"min": 5,  "max": 20, "step": 5},
-    "U": {"min": 30, "max": 80, "step": 10}
-  },
-  "constraints": ["U > F", "(U * F) % (U - F) === 0"],
-  "calculation": "(U * F) / (U - F)",
-  "explanation": "Lens formula: v = uF ÷ (u − F) = [U] × [F] ÷ ([U] − [F]) = [U*F] ÷ [U-F] = [RESULT] cm"
-},
-
-    {
-      "template_id": "LO_L1_06",
-      "pattern": "Light takes approximately 8 minutes to travel from the Sun to Earth. The speed of light is 3 × 10⁸ m/s. What is the approximate distance from the Sun to Earth in metres?",
-      "variables": {
-        "DUMMY": {"values": [1, 1, 1, 1]}
-      },
-      "calculation": "3 * 100000000 * 8 * 60",
-      "explanation": "Distance = speed × time = 3×10⁸ × (8 × 60) = 3×10⁸ × 480 = [RESULT] m"
-    },
-
-    {
-      "template_id": "LO_L1_07",
+      "template_id": "LO_L1_04",
       "pattern": "A glass block has a refractive index of [N]. Light travels at 3 × 10⁸ m/s in a vacuum. What is the speed of light inside the glass block in m/s?",
       "variables": {
         "N": {"values": [2, 3, 4, 6]}
@@ -78,7 +44,7 @@
     },
 
     {
-      "template_id": "LO_L1_08",
+      "template_id": "LO_L1_05",
       "pattern": "A concave mirror has a focal length of [F] cm. What is its radius of curvature in cm?",
       "variables": {
         "F": {"min": 5, "max": 40, "step": 5}
@@ -88,8 +54,18 @@
     },
 
     {
-      "template_id": "LO_L1_09",
-      "pattern": "A ray of light hits a surface at [A] degrees measured from the surface itself. What is the angle of incidence measured from the normal?",
+      "template_id": "LO_L1_06",
+      "pattern": "A concave mirror has a radius of curvature of [R] cm. What is its focal length in cm?",
+      "variables": {
+        "R": {"min": 10, "max": 80, "step": 10}
+      },
+      "calculation": "R / 2",
+      "explanation": "Focal length = radius of curvature ÷ 2 = [R] ÷ 2 = [RESULT] cm"
+    },
+
+    {
+      "template_id": "LO_L1_07",
+      "pattern": "A ray of light hits a surface at [A] degrees measured from the surface itself. What is the angle of incidence measured from the normal in degrees?",
       "variables": {
         "A": {"min": 10, "max": 80, "step": 10}
       },
@@ -98,16 +74,39 @@
     },
 
     {
-  "template_id": "LO_L1_10",
-  "pattern": "A lens produces an image [V] cm from the lens. The object is [U] cm from the lens. What is the magnification?",
-  "variables": {
-    "V": {"min": 10, "max": 100, "step": 10},
-    "U": {"min": 5,  "max": 50,  "step": 5}
-  },
-  "constraints": ["V % U === 0"],
-  "calculation": "V / U",
-  "explanation": "Magnification = image distance ÷ object distance = [V] ÷ [U] = [RESULT]"
-}
+      "template_id": "LO_L1_08",
+      "pattern": "A converging lens has a focal length of [F] cm. An object is placed [U] cm from the lens. What is the image distance in cm?",
+      "variables": {
+        "F": {"min": 5,  "max": 15, "step": 5},
+        "U": {"min": 20, "max": 60, "step": 10}
+      },
+      "constraints": ["U > F", "(U * F) % (U - F) === 0"],
+      "calculation": "(U * F) / (U - F)",
+      "explanation": "Lens formula: v = uF ÷ (u − F) = [U] × [F] ÷ ([U] − [F]) = [U*F] ÷ [U-F] = [RESULT] cm"
+    },
+
+    {
+      "template_id": "LO_L1_09",
+      "pattern": "An image is formed [V] cm from a lens and the object is [U] cm from the lens. What is the magnification?",
+      "variables": {
+        "V": {"min": 10, "max": 80, "step": 10},
+        "U": {"min": 5,  "max": 40, "step": 5}
+      },
+      "constraints": ["V % U === 0"],
+      "calculation": "V / U",
+      "explanation": "Magnification = image distance ÷ object distance = [V] ÷ [U] = [RESULT]"
+    },
+
+    {
+      "template_id": "LO_L1_10",
+      "pattern": "An object is [H] cm tall. A lens produces a magnification of [M]. What is the height of the image in cm?",
+      "variables": {
+        "H": {"min": 2, "max": 20, "step": 2},
+        "M": {"min": 2, "max": 10, "step": 1}
+      },
+      "calculation": "H * M",
+      "explanation": "Image height = object height × magnification = [H] × [M] = [RESULT] cm"
+    }
 
   ],
   "responses": {
