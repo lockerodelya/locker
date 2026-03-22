@@ -56,7 +56,7 @@
         const pageKey = getPageKey();
         if (!pageKey) return;
 
-        const db     = firebase.firestore();
+        const db = await voooDbReady;
         const today  = getTodayIST();
         const docRef = db.collection('vooo_analytics').doc(today);
         let tracked  = false;
