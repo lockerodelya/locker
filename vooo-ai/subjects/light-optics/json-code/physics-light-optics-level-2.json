@@ -5,113 +5,111 @@
 
     {
       "template_id": "LO_L2_01",
-      "pattern": "Light travels from air into a medium at a speed of [V] × 10⁷ m/s. What is the refractive index of the medium? (c = 3 × 10⁸ m/s)",
+      "pattern": "Light travels from air into a medium at a speed of [V] × 10⁶ m/s. Calculate the refractive index of the medium. (c = 3 × 10⁸ m/s)",
       "variables": {
-        "V": {"values": [10, 15, 20, 25, 30]}
+        "V": {"values": [50,60,75,100,120,150,200]}
       },
-      "constraints": ["300 % V === 0"],
-      "calculation": "300 / (V * 10)",
-      "explanation": "Refractive index n = c ÷ v = 3×10⁸ ÷ ([V]×10⁷) = 30 ÷ [V] = [RESULT]"
+      "calculation": "round2(300 / V)",
+      "explanation": "Refractive index n = c ÷ v\n= 3 × 10⁸ ÷ ([V] × 10⁶)\n= 300 ÷ [V]\n= [RESULT]\n\nA refractive index of 1 means the speed equals the speed of light in a vacuum. Most glass has a refractive index between 1.5 and 1.9."
     },
 
     {
       "template_id": "LO_L2_02",
-      "pattern": "Light travels from air into a medium of refractive index [N]. The angle of incidence is [AI] degrees. What is the sine of the angle of refraction? (sin 30°=0.500, sin 45°=0.707, sin 60°=0.866)",
+      "pattern": "A ray of light travels from air into glass of refractive index [N]. The angle of incidence is [AI] degrees. Calculate the sine of the angle of refraction.",
       "variables": {
-        "AI": {"values": [30, 45, 60, 30, 45, 60]},
-        "N":  {"values": [2,  2,  2,  3,  3,  3]}
+        "N":  {"values": [2,3,4,5]},
+        "AI": {"min": 10, "max": 80, "step": 10}
       },
-      "calculation": "round(sin_degrees(AI) * 1000 / N) / 1000",
-      "explanation": "Snell's law: n₁ sin θ₁ = n₂ sin θ₂. With n₁=1 (air): sin θ₂ = sin [AI]° ÷ [N] = [RESULT]"
+      "calculation": "round3(sin_degrees(AI) / N)",
+      "explanation": "Snell's law: n₁ sin θ₁ = n₂ sin θ₂\nWith n₁ = 1 (air) and n₂ = [N]:\nsin θ₂ = sin [AI]° ÷ [N]\n= [sin_degrees(AI)] ÷ [N]\n= [RESULT]\n\nSnell's law applies at every boundary where light changes medium. The refracted ray bends toward the normal when entering a denser medium."
     },
 
     {
       "template_id": "LO_L2_03",
-      "pattern": "A glass block has refractive index [N]. What is the sine of the critical angle?",
+      "pattern": "A glass block has a refractive index of [N]. Calculate the sine of the critical angle for total internal reflection.",
       "variables": {
-        "N": {"values": [2, 3, 4, 5]}
+        "N": {"values": [2,3,4,5,6]}
       },
-      "calculation": "round(100 / N) / 100",
-      "explanation": "sin C = 1 ÷ n = 1 ÷ [N] = [RESULT]. Beyond the critical angle total internal reflection occurs."
+      "calculation": "round3(1 / N)",
+      "explanation": "sin C = 1 ÷ n\n= 1 ÷ [N]\n= [RESULT]\n\nThe critical angle is the minimum angle of incidence inside the denser medium at which total internal reflection occurs. Beyond this angle no light escapes into the less dense medium."
     },
 
     {
       "template_id": "LO_L2_04",
-      "pattern": "A converging lens of focal length [F] cm has an object placed [U] cm from it. What is the image distance v in cm?",
+      "pattern": "A converging lens of focal length [F] cm produces an image at a distance of [V] cm from the lens. Calculate the magnification produced by the lens.",
       "variables": {
-        "F": {"min": 5,  "max": 20, "step": 5},
-        "U": {"min": 30, "max": 80, "step": 10}
+        "F":   {"values": [5,10,15,20]},
+        "MULT":{"values": [2,3,4,5,6,7,8,9,10]},
+        "U":   {"calc": "round2(V * F / (V - F))"},
+        "V":   {"calc": "F * MULT"}
       },
-      "constraints": ["U > F", "(U * F) % (U - F) === 0"],
-      "calculation": "(U * F) / (U - F)",
-      "explanation": "Lens formula: v = uF ÷ (u − F) = [U] × [F] ÷ ([U] − [F]) = [U*F] ÷ [U-F] = [RESULT] cm"
+      "calculation": "MULT",
+      "explanation": "From the lens formula: u = vF ÷ (v − F)\n= [V] × [F] ÷ ([V] − [F]) = [U] cm\n\nMagnification = v ÷ u\n= [V] ÷ [U]\n= [RESULT]\n\nThe magnification tells us how many times larger the image is compared to the object."
     },
 
     {
       "template_id": "LO_L2_05",
-      "pattern": "A converging lens of focal length [F] cm produces an image [V] cm from the lens. What is the object distance in cm?",
+      "pattern": "A converging lens of focal length [F] cm produces an image [V] cm from the lens. Calculate the object distance in cm.",
       "variables": {
-        "F": {"min": 5,  "max": 20, "step": 5},
-        "V": {"min": 20, "max": 80, "step": 10}
+        "F":   {"values": [5,10,15,20]},
+        "MULT":{"values": [3,4,5,6,7,8,9,10]},
+        "V":   {"calc": "F * MULT"}
       },
-      "constraints": ["V > F", "(V * F) % (V - F) === 0"],
-      "calculation": "(V * F) / (V - F)",
-      "explanation": "Lens formula rearranged: u = vF ÷ (v − F) = [V] × [F] ÷ ([V] − [F]) = [V*F] ÷ [V-F] = [RESULT] cm"
+      "calculation": "round2(V * F / (V - F))",
+      "explanation": "Lens formula rearranged:\nu = vF ÷ (v − F)\n= [V] × [F] ÷ ([V] − [F])\n= [V*F] ÷ [V-F]\n= [RESULT] cm\n\nThis tells us how far the object must be placed from the lens to produce an image at distance v."
     },
 
     {
       "template_id": "LO_L2_06",
-      "pattern": "A converging lens has a focal length of [F] cm. What is its power in dioptres?",
+      "pattern": "A converging lens has a focal length of [F] cm. Calculate the power of the lens in dioptres.",
       "variables": {
-        "F": {"values": [10, 20, 25, 50, 100]}
+        "F": {"values": [4,5,8,10,20,25,40,50,100]}
       },
-      "calculation": "100 / F",
-      "explanation": "Power (dioptres) = 1 ÷ focal length (metres) = 100 ÷ focal length (cm) = 100 ÷ [F] = [RESULT] dioptres"
+      "calculation": "round2(100 / F)",
+      "explanation": "Power = 1 ÷ focal length (in metres)\n= 100 ÷ focal length (in cm)\n= 100 ÷ [F]\n= [RESULT] dioptres\n\nPower is measured in dioptres (D). A converging lens has positive power. A diverging lens has negative power. Opticians use this unit for spectacle prescriptions."
     },
 
     {
       "template_id": "LO_L2_07",
-      "pattern": "A lens has a power of [P] dioptres. What is its focal length in cm?",
+      "pattern": "A lens has a power of [P] dioptres. Calculate the focal length of the lens in cm.",
       "variables": {
-        "P": {"values": [2, 4, 5, 10, 20, 25, 50]}
+        "P": {"values": [2,4,5,8,10,20,25,40,50]}
       },
-      "constraints": ["100 % P === 0"],
-      "calculation": "100 / P",
-      "explanation": "Focal length = 1 ÷ power (metres) = 100 ÷ power (cm) = 100 ÷ [P] = [RESULT] cm"
+      "calculation": "round2(100 / P)",
+      "explanation": "Focal length = 1 ÷ power (in metres)\n= 100 ÷ power (in cm)\n= 100 ÷ [P]\n= [RESULT] cm\n\nThe higher the power of a lens the shorter its focal length and the more strongly it converges or diverges light."
     },
 
     {
       "template_id": "LO_L2_08",
-      "pattern": "Two lenses of power [P1] dioptres and [P2] dioptres are placed in contact. What is the combined power in dioptres?",
+      "pattern": "Two thin lenses of powers [P1] dioptres and [P2] dioptres are placed in contact. Calculate the combined power of the lens system in dioptres.",
       "variables": {
         "P1": {"min": 2, "max": 20, "step": 2},
         "P2": {"min": 2, "max": 20, "step": 2}
       },
       "calculation": "P1 + P2",
-      "explanation": "Powers of lenses in contact add together: P_total = P1 + P2 = [P1] + [P2] = [RESULT] dioptres"
+      "explanation": "Combined power = P₁ + P₂\n= [P1] + [P2]\n= [RESULT] dioptres\n\nWhen lenses are placed in contact their powers simply add together. This makes it easy to design lens systems for spectacles and cameras."
     },
 
     {
       "template_id": "LO_L2_09",
-      "pattern": "Two lenses of focal lengths [F1] cm and [F2] cm are placed in contact. What is the combined focal length in cm?",
+      "pattern": "Two thin lenses of focal lengths [F1] cm and [F2] cm are placed in contact. Calculate the combined focal length of the lens system in cm.",
       "variables": {
-        "F1": {"min": 5,  "max": 30, "step": 5},
-        "F2": {"min": 5,  "max": 30, "step": 5}
+        "F1": {"values": [5,10,20,25,50]},
+        "F2": {"values": [5,10,20,25,50]}
       },
-      "constraints": ["(F1 * F2) % (F1 + F2) === 0"],
-      "calculation": "(F1 * F2) / (F1 + F2)",
-      "explanation": "1/F = 1/F1 + 1/F2 → F = F1×F2 ÷ (F1+F2) = [F1]×[F2] ÷ ([F1]+[F2]) = [F1*F2] ÷ [F1+F2] = [RESULT] cm"
+      "calculation": "round2(F1 * F2 / (F1 + F2))",
+      "explanation": "Combined focal length:\n1/F = 1/F₁ + 1/F₂\nF = F₁ × F₂ ÷ (F₁ + F₂)\n= [F1] × [F2] ÷ ([F1] + [F2])\n= [F1*F2] ÷ [F1+F2]\n= [RESULT] cm\n\nThe combined focal length is always shorter than the shorter individual focal length."
     },
 
     {
       "template_id": "LO_L2_10",
-      "pattern": "An object is at an apparent depth of [D] cm when viewed through a liquid of refractive index [N]. What is the real depth of the object in cm?",
+      "pattern": "An object lies at a real depth of [R] cm beneath the surface of a liquid of refractive index [N]. Calculate the apparent depth of the object when viewed from directly above in cm.",
       "variables": {
-        "D": {"min": 5,  "max": 40, "step": 5},
-        "N": {"values": [2, 3, 4]}
+        "R": {"min": 10, "max": 100, "step": 10},
+        "N": {"values": [2,3,4,5]}
       },
-      "calculation": "D * N",
-      "explanation": "Real depth = apparent depth × refractive index = [D] × [N] = [RESULT] cm"
+      "calculation": "round2(R / N)",
+      "explanation": "Apparent depth = real depth ÷ refractive index\n= [R] ÷ [N]\n= [RESULT] cm\n\nObjects in water appear shallower than they really are. This is why a swimming pool looks less deep than it actually is and why a stick appears bent when placed in water."
     }
 
   ],
@@ -123,7 +121,7 @@
     ],
     "incorrect": [
       "Try again! 💪","Check your formula! 📐","Almost! 😊",
-      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
       "One more try! 🎯","Keep going! 🌈"
     ]
   }
