@@ -15,17 +15,17 @@
     },
 
     {
-      "template_id": "CB_L3_02",
-      "pattern": "Using a Born-Haber cycle: enthalpy of formation = [DHF] kJ/mol, ionisation energy = [IE] kJ/mol, electron affinity = [EA] kJ/mol, atomisation enthalpies sum = [AT] kJ/mol. Calculate the lattice energy in kJ/mol.",
-      "variables": {
-        "DHF": {"min": -1200, "max": -100, "step": 50},
-        "IE":  {"min": 400,   "max": 2000, "step": 100},
-        "EA":  {"min": -500,  "max": -100, "step": 50},
-        "AT":  {"min": 200,   "max": 1000, "step": 50}
-      },
-      "calculation": "DHF - IE - EA - AT",
-      "explanation": "Born-Haber cycle:\nLattice energy = ΔHf − IE − EA − ΔH_atomisation\n= [DHF] − [IE] − [EA] − [AT]\n= [RESULT] kJ/mol\n\nLattice energy is always negative — energy is released when gaseous ions come together to form an ionic lattice. More negative = stronger ionic bonding."
-    },
+  "template_id": "CB_L3_02",
+  "pattern": "Using a Born-Haber cycle for an ionic compound: the lattice energy is [LE] kJ/mol, ionisation energy is [IE] kJ/mol, electron affinity is [EA] kJ/mol and sum of atomisation enthalpies is [AT] kJ/mol. Calculate the enthalpy of formation in kJ/mol.",
+  "variables": {
+    "LE":  {"min": 600,  "max": 3000, "step": 100},
+    "IE":  {"min": 400,  "max": 2000, "step": 100},
+    "EA":  {"min": 100,  "max": 500,  "step": 50},
+    "AT":  {"min": 200,  "max": 1000, "step": 50}
+  },
+  "calculation": "round2(AT + IE - EA - LE)",
+  "explanation": "Born-Haber cycle:\nΔHf = ΔH_atomisation + IE − EA − LE\n= [AT] + [IE] − [EA] − [LE]\n= [RESULT] kJ/mol\n\nThe enthalpy of formation is usually negative for stable ionic compounds because lattice energy is large and negative. A more negative value means a more stable compound."
+},
 
     {
       "template_id": "CB_L3_03",
