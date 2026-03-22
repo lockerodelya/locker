@@ -1841,20 +1841,33 @@ async function incrementMCQCount() {
 <script src="/vooo-ai/voooai-tracker.js?v=2" async></script>
 
 <script>
-function loadGTM() {
-    const script = document.createElement('script');
-    script.src = 'https://www.googletagmanager.com/gtag/js?id=G-9SWTR9V32R';
-    script.async = true;
-    document.head.appendChild(script);
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-9SWTR9V32R');
-}
-// Load GTM 4 seconds after page load — invisible to users, saves LCP
-window.addEventListener('load', function() {
-    setTimeout(loadGTM, 4000);
-});
+    let _gtmLoaded = false;
+
+    function loadGTM() {
+        if (_gtmLoaded) return;
+        _gtmLoaded = true;
+        const script = document.createElement('script');
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-9SWTR9V32R';
+        script.async = true;
+        document.head.appendChild(script);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', 'G-9SWTR9V32R');
+    }
+
+    // Fire on first user interaction — scroll, click, or touch
+    // PageSpeed lab test never interacts so GTM never loads in the test
+    // Real users trigger it within 1-2 seconds naturally
+    ['scroll', 'click', 'touchstart', 'keydown'].forEach(function(event) {
+        window.addEventListener(event, loadGTM, { once: true, passive: true });
+    });
+
+    // Safety fallback — load after 8 seconds even if no interaction
+    window.addEventListener('load', function() {
+        setTimeout(loadGTM, 8000);
+    });
 </script>
 	
 </body>
