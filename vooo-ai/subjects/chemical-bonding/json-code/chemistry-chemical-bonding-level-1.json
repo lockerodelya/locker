@@ -5,14 +5,15 @@
 
 {
   "template_id": "CB_L1_01",
-  "pattern": "A molecule contains [C] carbon atoms, [H] hydrogen atoms and [O] oxygen atoms. Each carbon has 4 valence electrons, each hydrogen has 1 and each oxygen has 6. Calculate the total number of valence electrons in the molecule.",
+  "pattern": "A compound has the formula A[A]B[B]. Element A has a valence of [VA] and element B has a valence of [VB]. Calculate the total number of valence electrons contributed by all atoms of element A in one formula unit.",
   "variables": {
-    "C": {"min": 1, "max": 6, "step": 1},
-    "H": {"min": 2, "max": 12,"step": 2},
-    "O": {"min": 1, "max": 4, "step": 1}
+    "A":  {"min": 1,  "max": 6, "step": 1},
+    "B":  {"min": 1,  "max": 4, "step": 1},
+    "VA": {"values": [1,2,3,4,5,6,7]},
+    "VB": {"values": [1,2,3,4,5,6,7]}
   },
-  "calculation": "C * 4 + H * 1 + O * 6",
-  "explanation": "Total valence electrons = (C × 4) + (H × 1) + (O × 6)\n= ([C] × 4) + ([H] × 1) + ([O] × 6)\n= [C*4] + [H] + [O*6]\n= [RESULT]\n\nCounting valence electrons is the first step in drawing Lewis structures. Carbon always contributes 4, hydrogen 1 and oxygen 6."
+  "calculation": "A * VA",
+  "explanation": "Valence electrons from element A = number of A atoms × valence electrons per atom\n= [A] × [VA]\n= [RESULT]\n\nThis tells us how many electrons element A contributes to bonding in one formula unit of the compound."
 },
 
 {
