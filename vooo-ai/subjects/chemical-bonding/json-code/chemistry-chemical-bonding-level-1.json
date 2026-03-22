@@ -115,12 +115,13 @@
   "variables": {
     "B":   {"min": 1, "max": 4, "step": 1},
     "L":   {"values": [0,2,4,6]},
-    "ADD": {"values": [-1,0,1]},
-    "V":   {"calc": "B + L + ADD"}
+    "ADD": {"values": [0,1,2]},
+    "V":   {"calc": "B + L + ADD"},
+    "VOL": {"min": 1, "max": 50, "step": 1}
   },
   "constraints": ["V >= 1", "V <= 8", "B + L <= 8"],
-  "calculation": "V - L - B",
-  "explanation": "Formal charge = valence electrons − lone pair electrons − bonds\n= [V] − [L] − [B]\n= [RESULT]\n\nA formal charge of 0 is most stable. Formal charges of +1 or -1 are common in ions and some neutral molecules like CO."
+  "calculation": "ADD",
+  "explanation": "Formal charge = valence electrons − lone pair electrons − bonds\n= [V] − [L] − [B]\n= [ADD]\n= [RESULT]\n\nFormal charges of 0 are most stable. Values of +1 or +2 occur in electron deficient atoms. This helps identify the best Lewis structure."
 }
 
   ],
