@@ -105,13 +105,13 @@
   "template_id": "CB_L3_09",
   "pattern": "A reaction has an enthalpy change of [DH] kJ/mol and occurs at a temperature of [T] K. The entropy change is [DS] J/mol·K. Calculate the Gibbs free energy change in kJ/mol.",
   "variables": {
-    "T":  {"values": [200,300,400,500,600]},
-    "DS": {"values": [20,40,60,80,100,120,140,160]},
-    "TDS":{"calc": "T * DS / 1000"},
-    "DH": {"min": 50, "max": 500, "step": 50}
+    "DH":  {"min": 50,  "max": 500, "step": 10},
+    "T":   {"min": 100, "max": 900, "step": 100},
+    "DS":  {"min": 10,  "max": 200, "step": 10},
+    "TDS": {"calc": "T * DS / 1000"}
   },
   "calculation": "round2(DH - TDS)",
-  "explanation": "Gibbs free energy ΔG = ΔH − TΔS\n= [DH] − ([T] × [DS] ÷ 1000)\n= [DH] − [TDS]\n= [RESULT] kJ/mol\n\nIf ΔG is negative the reaction is spontaneous at that temperature. ΔS must be converted from J to kJ by dividing by 1000 before subtracting."
+  "explanation": "Gibbs free energy ΔG = ΔH − TΔS\n= [DH] − ([T] × [DS] ÷ 1000)\n= [DH] − [TDS]\n= [RESULT] kJ/mol\n\nIf ΔG is negative the reaction is spontaneous at that temperature. Converting DS from J to kJ requires dividing by 1000."
 },
 
     {
