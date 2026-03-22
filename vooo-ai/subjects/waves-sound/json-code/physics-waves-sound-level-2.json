@@ -3,15 +3,16 @@
   "display_name": "Waves & Sound L2",
   "templates": [
 
-    {
-      "template_id": "WS_L2_01",
-      "pattern": "A wave has a time period of [T] ms. Calculate the frequency of the wave in Hz.",
-      "variables": {
-        "T": {"values": [1,2,4,5,8,10,20,25,40,50,100,200,250,500]}
-      },
-      "calculation": "round2(1000 / T)",
-      "explanation": "Period in seconds = [T] ms ÷ 1000 = [T/1000] s\nFrequency = 1 ÷ period\n= 1 ÷ ([T] ÷ 1000)\n= 1000 ÷ [T]\n= [RESULT] Hz\n\nAlways convert milliseconds to seconds before applying f = 1/T."
-    },
+{
+  "template_id": "WS_L2_01",
+  "pattern": "A speaker produces a sound wave with a time period of [T] ms. The speaker has a power output of [P] W. Calculate the frequency of the sound wave in Hz.",
+  "variables": {
+    "T": {"values": [1,2,4,5,8,10,20,25,40,50,100,200,250,500]},
+    "P": {"min": 1, "max": 100, "step": 1}
+  },
+  "calculation": "round2(1000 / T)",
+  "explanation": "Period in seconds = [T] ms ÷ 1000 = [T/1000] s\nFrequency = 1 ÷ period\n= 1 ÷ ([T] ÷ 1000)\n= 1000 ÷ [T]\n= [RESULT] Hz\n\nThe power output of the speaker does not affect the frequency. Always convert milliseconds to seconds before applying f = 1/T."
+},
 
     {
       "template_id": "WS_L2_02",
@@ -64,15 +65,16 @@
       "explanation": "Frequency stays constant at a boundary.\nλ₂ = λ₁ × v₂ ÷ v₁\n= [L1] × [V2] ÷ [V1]\n= [RESULT] m\n\nWhen a wave enters a new medium its speed and wavelength change but its frequency remains the same."
     },
 
-    {
-      "template_id": "WS_L2_06",
-      "pattern": "A standing wave is set up on a string of length [L] m fixed at both ends. Calculate the wavelength of the fundamental frequency in metres.",
-      "variables": {
-        "L": {"min": 1, "max": 20, "step": 1}
-      },
-      "calculation": "2 * L",
-      "explanation": "For the fundamental (first harmonic) on a string fixed at both ends:\nλ = 2L\n= 2 × [L]\n= [RESULT] m\n\nAt the fundamental frequency exactly half a wavelength fits along the string length. The two fixed ends are always nodes."
-    },
+{
+  "template_id": "WS_L2_06",
+  "pattern": "A string of length [L] m and mass [M] g is fixed at both ends and set into vibration. A standing wave is set up at the fundamental frequency. Calculate the wavelength of the fundamental mode in metres.",
+  "variables": {
+    "L": {"min": 1,  "max": 20, "step": 1},
+    "M": {"min": 1,  "max": 50, "step": 1}
+  },
+  "calculation": "2 * L",
+  "explanation": "For the fundamental frequency on a string fixed at both ends:\nλ = 2L\n= 2 × [L]\n= [RESULT] m\n\nThe mass of the string does not affect the wavelength formula. At the fundamental frequency exactly half a wavelength fits along the string."
+},
 
     {
       "template_id": "WS_L2_07",
@@ -85,27 +87,29 @@
       "explanation": "Fundamental frequency f = v ÷ 2L\n= [V] ÷ (2 × [L])\n= [V] ÷ [2*L]\n= [RESULT] Hz\n\nThis is the lowest frequency at which the string can resonate. Higher harmonics occur at integer multiples of this frequency."
     },
 
-    {
-      "template_id": "WS_L2_08",
-      "pattern": "A pipe open at both ends has a length of [L] m. The speed of sound is [V] m/s. Calculate the frequency of the second harmonic of the pipe in Hz.",
-      "variables": {
-        "L": {"min": 1,  "max": 10,  "step": 1},
-        "V": {"values": [320,330,340,350]}
-      },
-      "calculation": "round2(V / L)",
-      "explanation": "For an open pipe the second harmonic frequency f₂ = v ÷ L\n= [V] ÷ [L]\n= [RESULT] Hz\n\nFor an open pipe: f₁ = v/2L, f₂ = v/L, f₃ = 3v/2L. Both ends are always antinodes. All harmonics are present."
-    },
+{
+  "template_id": "WS_L2_08",
+  "pattern": "A pipe of length [L] m and diameter [D] cm is open at both ends. The speed of sound is [V] m/s. Calculate the frequency of the second harmonic of the pipe in Hz.",
+  "variables": {
+    "L": {"min": 1,  "max": 10,  "step": 1},
+    "D": {"min": 1,  "max": 20,  "step": 1},
+    "V": {"values": [320,330,340,350]}
+  },
+  "calculation": "round2(V / L)",
+  "explanation": "For an open pipe the second harmonic frequency:\nf₂ = v ÷ L\n= [V] ÷ [L]\n= [RESULT] Hz\n\nThe diameter of the pipe does not affect this calculation at GCSE level. For an open pipe: f₁ = v/2L, f₂ = v/L. All harmonics are present in an open pipe."
+},
 
-    {
-      "template_id": "WS_L2_09",
-      "pattern": "A pipe closed at one end has a length of [L] m. The speed of sound is [V] m/s. Calculate the frequency of the third harmonic of the pipe in Hz.",
-      "variables": {
-        "L": {"min": 1,  "max": 10,  "step": 1},
-        "V": {"values": [320,330,340,350]}
-      },
-      "calculation": "round2(3 * V / (4 * L))",
-      "explanation": "For a closed pipe the third harmonic frequency f₃ = 3v ÷ 4L\n= 3 × [V] ÷ (4 × [L])\n= [3*V] ÷ [4*L]\n= [RESULT] Hz\n\nFor a closed pipe only odd harmonics are present: f₁ = v/4L, f₃ = 3v/4L, f₅ = 5v/4L. The closed end is always a node."
-    },
+{
+  "template_id": "WS_L2_09",
+  "pattern": "A pipe of length [L] m and diameter [D] cm is closed at one end. The speed of sound is [V] m/s. Calculate the frequency of the third harmonic of the pipe in Hz.",
+  "variables": {
+    "L": {"min": 1,  "max": 10,  "step": 1},
+    "D": {"min": 1,  "max": 20,  "step": 1},
+    "V": {"values": [320,330,340,350]}
+  },
+  "calculation": "round2(3 * V / (4 * L))",
+  "explanation": "For a closed pipe the third harmonic frequency:\nf₃ = 3v ÷ 4L\n= 3 × [V] ÷ (4 × [L])\n= [3*V] ÷ [4*L]\n= [RESULT] Hz\n\nThe diameter does not affect this calculation. For a closed pipe only odd harmonics are present: f₁ = v/4L, f₃ = 3v/4L, f₅ = 5v/4L."
+},
 
     {
       "template_id": "WS_L2_10",
