@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-IN">
 <head>
-	<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9SWTR9V32R"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-9SWTR9V32R');
-</script> 
 	
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1753,16 +1744,27 @@ async function incrementMCQCount() {
     let currentVoooUser = null;
     let userVoooData    = null;
 
+    function loadFirestore() {
+        return new Promise((resolve) => {
+            const script = document.createElement('script');
+            script.src = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js';
+            script.onload = () => { voooDb = firebase.firestore(); resolve(); };
+            document.head.appendChild(script);
+        });
+    }
+
     function initFirebaseAuth() {
         if (typeof firebase === 'undefined' || !firebase.apps.length) {
             setTimeout(initFirebaseAuth, 100);
             return;
         }
         voooAuth = firebase.auth();
-        voooDb   = firebase.firestore();
 
         voooAuth.onAuthStateChanged(async (user) => {
             if (user) {
+                if (!voooDb) {
+                    await loadFirestore();
+                }
                 currentVoooUser = user;
                 try {
                     const userDoc = await voooDb.collection('users').doc(user.uid).get();
@@ -1820,7 +1822,7 @@ async function incrementMCQCount() {
 <!-- Firebase SDKs — no defer, must load immediately -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
 <script src="/vooo-ai/vooo-config.js?v=2"></script>
 <script>
     if (!firebase.apps.length) {
@@ -1828,6 +1830,23 @@ async function incrementMCQCount() {
     }
 </script>
 <script src="/vooo-ai/voooai-tracker.js?v=2" async></script>
+
+<script>
+function loadGTM() {
+    const script = document.createElement('script');
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=G-9SWTR9V32R';
+    script.async = true;
+    document.head.appendChild(script);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9SWTR9V32R');
+}
+// Load GTM 4 seconds after page load — invisible to users, saves LCP
+window.addEventListener('load', function() {
+    setTimeout(loadGTM, 4000);
+});
+</script>
 	
 </body>
 </html>
