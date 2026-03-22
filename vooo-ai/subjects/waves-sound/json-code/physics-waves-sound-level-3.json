@@ -3,15 +3,16 @@
   "display_name": "Waves & Sound L3",
   "templates": [
 
-    {
-      "template_id": "WS_L3_01",
-      "pattern": "The intensity of a sound wave is [I] × 10⁻¹² W/m². Calculate the sound level in decibels. (Threshold of hearing I₀ = 10⁻¹² W/m²)",
-      "variables": {
-        "I": {"values": [1,2,4,5,8,10,20,50,100,200,500,1000,10000,100000,1000000]}
-      },
-      "calculation": "round2(10 * log10(I))",
-      "explanation": "Sound level = 10 × log₁₀(I ÷ I₀)\n= 10 × log₁₀([I] × 10⁻¹² ÷ 10⁻¹²)\n= 10 × log₁₀([I])\n= [RESULT] dB\n\nThe decibel scale is logarithmic. An increase of 10 dB represents a tenfold increase in intensity. Normal conversation is about 60 dB."
-    },
+{
+  "template_id": "WS_L3_01",
+  "pattern": "A sound source at a distance of [R] m produces an intensity of [I] × 10⁻¹² W/m² at the listener. Calculate the sound level in decibels. (I₀ = 10⁻¹² W/m²)",
+  "variables": {
+    "I": {"values": [1,2,4,5,8,10,20,50,100,200,500,1000,10000,100000,1000000]},
+    "R": {"min": 1, "max": 100, "step": 1}
+  },
+  "calculation": "round2(10 * log10(I))",
+  "explanation": "Sound level = 10 × log₁₀(I ÷ I₀)\n= 10 × log₁₀([I] × 10⁻¹² ÷ 10⁻¹²)\n= 10 × log₁₀([I])\n= [RESULT] dB\n\nThe distance [R] m gives context but the calculation depends only on intensity. The decibel scale is logarithmic — every 10 dB increase means ten times more intensity."
+},
 
     {
       "template_id": "WS_L3_02",
@@ -36,27 +37,29 @@
       "explanation": "Frequency of nth harmonic = n × v ÷ 2L\n= [N] × [V] ÷ (2 × [L])\n= [N] × [V] ÷ [2*L]\n= [RESULT] Hz\n\nThe nth harmonic frequency is exactly n times the fundamental frequency. Harmonics give musical instruments their characteristic timbre."
     },
 
-    {
-      "template_id": "WS_L3_04",
-      "pattern": "A pipe closed at one end has a length of [L] m and a wave speed of [V] m/s. Calculate the frequency of the fundamental mode in Hz.",
-      "variables": {
-        "L": {"min": 1,  "max": 10,  "step": 1},
-        "V": {"values": [320,330,340,350,360]}
-      },
-      "calculation": "round2(V / (4 * L))",
-      "explanation": "For a pipe closed at one end:\nFundamental frequency f₁ = v ÷ 4L\n= [V] ÷ (4 × [L])\n= [V] ÷ [4*L]\n= [RESULT] Hz\n\nA closed pipe produces only odd harmonics. Its fundamental frequency is half that of an open pipe of the same length."
-    },
+{
+  "template_id": "WS_L3_04",
+  "pattern": "A pipe of length [L] m and cross-sectional area [A] cm² is closed at one end. The speed of sound is [V] m/s. Calculate the fundamental frequency of the pipe in Hz.",
+  "variables": {
+    "L": {"min": 1,  "max": 10,  "step": 1},
+    "A": {"min": 1,  "max": 50,  "step": 1},
+    "V": {"values": [320,330,340,350,360]}
+  },
+  "calculation": "round2(V / (4 * L))",
+  "explanation": "For a pipe closed at one end:\nFundamental frequency f₁ = v ÷ 4L\n= [V] ÷ (4 × [L])\n= [V] ÷ [4*L]\n= [RESULT] Hz\n\nThe cross-sectional area does not affect the resonant frequency at this level. The closed end is always a node and the open end is always an antinode."
+},
 
-    {
-      "template_id": "WS_L3_05",
-      "pattern": "A pipe open at both ends has a length of [L] m and a wave speed of [V] m/s. Calculate the frequency of the fundamental mode in Hz.",
-      "variables": {
-        "L": {"min": 1,  "max": 10,  "step": 1},
-        "V": {"values": [320,330,340,350,360]}
-      },
-      "calculation": "round2(V / (2 * L))",
-      "explanation": "For a pipe open at both ends:\nFundamental frequency f₁ = v ÷ 2L\n= [V] ÷ (2 × [L])\n= [V] ÷ [2*L]\n= [RESULT] Hz\n\nAn open pipe produces all harmonics. Both ends are antinodes. This gives open pipes a brighter, richer sound than closed pipes."
-    },
+{
+  "template_id": "WS_L3_05",
+  "pattern": "A pipe of length [L] m and cross-sectional area [A] cm² is open at both ends. The speed of sound is [V] m/s. Calculate the fundamental frequency of the pipe in Hz.",
+  "variables": {
+    "L": {"min": 1,  "max": 10,  "step": 1},
+    "A": {"min": 1,  "max": 50,  "step": 1},
+    "V": {"values": [320,330,340,350,360]}
+  },
+  "calculation": "round2(V / (2 * L))",
+  "explanation": "For a pipe open at both ends:\nFundamental frequency f₁ = v ÷ 2L\n= [V] ÷ (2 × [L])\n= [V] ÷ [2*L]\n= [RESULT] Hz\n\nThe cross-sectional area does not affect the resonant frequency. Both ends are antinodes. An open pipe produces all harmonics and has a fundamental frequency twice that of a closed pipe of the same length."
+},
 
     {
       "template_id": "WS_L3_06",
