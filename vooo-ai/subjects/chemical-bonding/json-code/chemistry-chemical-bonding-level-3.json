@@ -64,13 +64,14 @@
 
 {
   "template_id": "CB_L3_06",
-  "pattern": "A bond has a partial charge of [Q] × 10⁻²⁰ C and a bond length of [L] pm. Calculate the dipole moment of the bond in debye. (1 debye = 3.336 × 10⁻³⁰ C·m, 1 pm = 10⁻¹² m)",
+  "pattern": "The bond dissociation energy of bond X is [BE1] kJ/mol and bond Y is [BE2] kJ/mol. Calculate the difference in their bond energies in kJ/mol.",
   "variables": {
-    "Q": {"min": 1,  "max": 20, "step": 1},
-    "L": {"min": 50, "max": 200,"step": 10}
+    "BE1": {"values": [305,347,358,391,413,436,464,498,614,805,945]},
+    "BE2": {"values": [305,347,358,391,413,436,464,498,614,805,945]}
   },
-  "calculation": "round2(Q * pow(10, -20) * L * pow(10, -12) / (3.336 * pow(10, -30)))",
-  "explanation": "Dipole moment μ = Q × r\n= [Q] × 10⁻²⁰ × [L] × 10⁻¹²\n= [Q*L] × 10⁻³²\nConverting to debye: ÷ 3.336 × 10⁻³⁰\n= [RESULT] D\n\nDipole moment measures bond polarity. A larger partial charge or longer bond length gives a larger dipole moment. Symmetrical molecules can have polar bonds but zero overall dipole moment."
+  "constraints": ["BE1 > BE2"],
+  "calculation": "BE1 - BE2",
+  "explanation": "Difference in bond energy = BE₁ − BE₂\n= [BE1] − [BE2]\n= [RESULT] kJ/mol\n\nStronger bonds have higher bond dissociation energies. Triple bonds are stronger than double bonds which are stronger than single bonds. Stronger bonds are also shorter."
 },
 
     {
