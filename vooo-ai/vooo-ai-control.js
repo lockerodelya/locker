@@ -144,6 +144,9 @@ const VOOO_ENGINE_REGISTRY = {
 	'physics-astrophysics-level-2' : '/vooo-ai/subjects/astrophysics/engine-code/physics-astrophysics-level-2.js',
 	'physics-astrophysics-level-3' : '/vooo-ai/subjects/astrophysics/engine-code/physics-astrophysics-level-3.js',
 
+	'chemistry-atomic-structure-level-1' : '/vooo-ai/subjects/chemistry-atomic/engine-code/chemistry-atomic-structure-level-1.js',
+	'chemistry-atomic-structure-level-2' : '/vooo-ai/subjects/chemistry-atomic/engine-code/chemistry-atomic-structure-level-2.js',
+	'chemistry-atomic-structure-level-3' : '/vooo-ai/subjects/chemistry-atomic/engine-code/chemistry-atomic-structure-level-3.js',
 
 
 	
@@ -290,6 +293,9 @@ const VOOO_ENGINE_INSTANCES = {
 	'physics-astrophysics-level-2' : 'physicsastrophysicsl2',
 	'physics-astrophysics-level-3' : 'physicsastrophysicsl3',
 			
+	'chemistry-atomic-structure-level-1' : 'chemistryatomicstructurel1',
+	'chemistry-atomic-structure-level-2' : 'chemistryatomicstructurel2',
+	'chemistry-atomic-structure-level-3' : 'chemistryatomicstructurel3',
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -531,7 +537,17 @@ const VOOO_ENGINE_INSTANCES = {
 					{ value: 'physics-astrophysics-level-3', text: '• Astrophysics L3' },
                 ]
             },
+			{
+                label: 'Chemistry : Atomic Structure',
+                options: [
+                    { value: 'chemistry-atomic-structure-level-1', text: '• Atomic Structure L1' },
+					{ value: 'chemistry-atomic-structure-level-2', text: '• Atomic Structure L2' },
+					{ value: 'chemistry-atomic-structure-level-3', text: '• Atomic Structure L3' },
+                ]
+            },			
 
+
+			
             // --- ADD NEW OPTGROUP BELOW THIS LINE ---
         ];
 
