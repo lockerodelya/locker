@@ -58,22 +58,25 @@ const _ENGINE_INSTANCE_NAME = 'physicslightopticsl1';
                 'superior_hc','abundant','deficient','perfect','semiprime','sphenic'
             ];
 
-            this._evalHelpers = {
-                min:   (...a) => Math.min(...a),
-                max:   (...a) => Math.max(...a),
-                abs:   x => Math.abs(x),
-                floor: x => Math.floor(x),
-                ceil:  x => Math.ceil(x),
-                round: x => Math.round(x),
-                sqrt:  x => Math.sqrt(x),
-                pow:   (x,y) => Math.pow(x,y),
-                log:   x => Math.log(x),
-                log2:  x => Math.log2(x),
-                log10: x => Math.log10(x),
-                sign:  x => Math.sign(x),
-                trunc: x => Math.trunc(x),
-                sorted: arr => [...arr].sort((a,b) => a - b),
-            };
+this._evalHelpers = {
+    min:    (...a) => Math.min(...a),
+    max:    (...a) => Math.max(...a),
+    abs:    x => Math.abs(x),
+    floor:  x => Math.floor(x),
+    ceil:   x => Math.ceil(x),
+    round:  x => Math.round(x),
+    round1: x => Math.round(x * 10) / 10,
+    round2: x => Math.round(x * 100) / 100,
+    round3: x => Math.round(x * 1000) / 1000,
+    sqrt:   x => Math.sqrt(x),
+    pow:    (x,y) => Math.pow(x,y),
+    log:    x => Math.log(x),
+    log2:   x => Math.log2(x),
+    log10:  x => Math.log10(x),
+    sign:   x => Math.sign(x),
+    trunc:  x => Math.trunc(x),
+    sorted: arr => [...arr].sort((a,b) => a - b),
+};;
         }
 
         // ── Eval context helper ──
@@ -135,6 +138,9 @@ const _ENGINE_INSTANCE_NAME = 'physicslightopticsl1';
         // ════════════════════════════════════════════
         _mathFnList(){
             return [
+				['round1', x => Math.round(x * 10) / 10],
+				['round2', x => Math.round(x * 100) / 100],
+				['round3', x => Math.round(x * 1000) / 1000],
                 ['factorial',         x=>this.factorial(Math.round(x))],
                 ['next_prime',        x=>this.nextPrime(Math.round(x))],
                 ['sigma',             x=>this.sigma(Math.round(x))],
@@ -182,7 +188,7 @@ const _ENGINE_INSTANCE_NAME = 'physicslightopticsl1';
                 ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*(-?\d+(?:\.\d+)?)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
                 ev=ev.replace(/(-?\d+(?:\.\d+)?)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
                 ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
-                ev=ev.replace(/(?<![a-zA-Z_(])\((-?\d+(?:\.\d+)?)\)(?![a-zA-Z_(\d])/g,(m,n)=>{changed=true;return n;});
+                ev=ev.replace(/(?<![a-zA-Z0-9_(])\((-?\d+(?:\.\d+)?)\)(?![a-zA-Z_(\d])/g,(m,n)=>{changed=true;return n;});
                 for(const[name,fn]of fns){
                     const re=multiArgRe(name);
                     ev=ev.replace(re,(match)=>{
