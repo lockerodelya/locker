@@ -274,7 +274,7 @@
     <link rel="icon" type="image/jpeg" sizes="512x512" href="/vooo-ai/images/vooo-512.png">
     <link rel="shortcut icon" href="/vooo-ai/images/vooo-logo.webp">
 
-    <script src="/vooo-ai/pwavooo.js"></script>
+    <script src="/vooo-ai/pwavooo.js" defer></script>
 	
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'" crossorigin="anonymous">
 <style>
@@ -1278,21 +1278,6 @@ a.vooo-intro-link:hover {
         });
     </script>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="/vooo-ai/vooo-config.js"></script>
-
-<script>
-if (!firebase.apps.length) {
-    firebase.initializeApp(VOOO_CONFIG.firebase);
-    console.log('✅ Firebase initialized');
-}
-</script>
-
-<script src="/vooo-ai/voooai-tracker.js"></script>
-	
 </head>
     
 <body>
@@ -1751,12 +1736,18 @@ async function incrementMCQCount() {
     </script>
 
     <!-- ====== FIREBASE AUTH + MCQ LIMIT VARIABLES ====== -->
-    <script>
-        const voooAuth = firebase.auth();
-        const voooDb   = firebase.firestore();
+<script>
+    let voooAuth, voooDb;
+    let currentVoooUser = null;
+    let userVoooData    = null;
 
-        let currentVoooUser = null;
-        let userVoooData    = null;
+    function initFirebaseAuth() {
+        if (typeof firebase === 'undefined' || !firebase.apps.length) {
+            setTimeout(initFirebaseAuth, 100);
+            return;
+        }
+        voooAuth = firebase.auth();
+        voooDb   = firebase.firestore();
 
         voooAuth.onAuthStateChanged(async (user) => {
             if (user) {
@@ -1775,41 +1766,60 @@ async function incrementMCQCount() {
                 userVoooData    = null;
             }
         });
+    }
 
-        function showLoggedInUI(data) {
-            document.getElementById('gap-signup-btn').style.display     = 'none';
-            document.getElementById('gap-login-btn').style.display      = 'none';
-            document.getElementById('gap-dashboard-icon').style.display = 'inline-flex';
-            document.getElementById('gap-logout-btn').style.display     = 'inline-flex';
-            const planBtn = document.getElementById('gap-plan-btn');
-            planBtn.textContent = (data.tier === 'paid') ? 'Upgrade Plan' : 'Buy Plan';
-        }
+    document.addEventListener('DOMContentLoaded', initFirebaseAuth);
 
-        function showLimitModal(title, message) {
-            document.getElementById('limit-modal-title').textContent   = title;
-            document.getElementById('limit-modal-message').textContent = message;
-            document.getElementById('vooo-limit-overlay').classList.add('active');
-            document.getElementById('vooo-question').textContent       = '—';
-            document.getElementById('vooo-options').innerHTML          = '';
-            document.getElementById('vooo-feedback').textContent       = '';
-            document.getElementById('vooo-explanation').textContent    = '';
-        }
+    function showLoggedInUI(data) {
+        document.getElementById('gap-signup-btn').style.display     = 'none';
+        document.getElementById('gap-login-btn').style.display      = 'none';
+        document.getElementById('gap-dashboard-icon').style.display = 'inline-flex';
+        document.getElementById('gap-logout-btn').style.display     = 'inline-flex';
+        const planBtn = document.getElementById('gap-plan-btn');
+        planBtn.textContent = (data.tier === 'paid') ? 'Upgrade Plan' : 'Buy Plan';
+    }
 
-        function closeLimitModal() {
-            document.getElementById('vooo-limit-overlay').classList.remove('active');
-        }
+    function showLimitModal(title, message) {
+        document.getElementById('limit-modal-title').textContent   = title;
+        document.getElementById('limit-modal-message').textContent = message;
+        document.getElementById('vooo-limit-overlay').classList.add('active');
+        document.getElementById('vooo-question').textContent       = '—';
+        document.getElementById('vooo-options').innerHTML          = '';
+        document.getElementById('vooo-feedback').textContent       = '';
+        document.getElementById('vooo-explanation').textContent    = '';
+    }
 
-        function logoutFromVooo() {
-            voooAuth.signOut().then(() => { location.reload(); });
-        }
-    </script>
+    function closeLimitModal() {
+        document.getElementById('vooo-limit-overlay').classList.remove('active');
+    }
 
-    <script src="/vooo-ai/vooo-ai-control.js"></script>
-	<script src="/vooo-ai/vooo-pagetracker.js"></script>
+    function logoutFromVooo() {
+        if (voooAuth) voooAuth.signOut().then(() => { location.reload(); });
+    }
+</script>
+
+<script src="/vooo-ai/vooo-ai-control.js" defer></script>
+<script src="/vooo-ai/vooo-pagetracker.js" defer></script>
 
 <script>
     document.getElementById('copyright-year').textContent = new Date().getFullYear();
 </script>	
+
+<!-- Firebase + Config — deferred, non-blocking -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js" defer></script>
+<script src="/vooo-ai/vooo-config.js" defer></script>
+<script src="/vooo-ai/voooai-tracker.js" defer></script>
+<script defer>
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof firebase !== 'undefined' && typeof VOOO_CONFIG !== 'undefined') {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(VOOO_CONFIG.firebase);
+        }
+    }
+});
+</script>
 	
 </body>
 </html>
