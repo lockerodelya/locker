@@ -1,0 +1,133 @@
+{
+  "puzzle_type": "chemistry-atomic-structure-level-1",
+  "display_name": "Atomic Structure L1",
+  "templates": [
+
+    {
+      "template_id": "AT_L1_01",
+      "pattern": "An element has an atomic number of [Z]. How many protons does one atom of this element contain?",
+      "variables": {
+        "Z":   {"min": 1,  "max": 92, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "Z",
+      "explanation": "Number of protons = atomic number\n= [Z]\n= [RESULT]\n\nThe atomic number uniquely identifies an element. Every atom of the same element always has the same number of protons. The periodic table is arranged in order of increasing atomic number."
+    },
+
+    {
+      "template_id": "AT_L1_02",
+      "pattern": "An atom has a mass number of [A] and an atomic number of [Z]. Calculate the number of neutrons in the nucleus.",
+      "variables": {
+        "Z": {"min": 1,  "max": 92,  "step": 1},
+        "N": {"min": 1,  "max": 146, "step": 1},
+        "A": {"calc": "Z + N"}
+      },
+      "calculation": "N",
+      "explanation": "Number of neutrons = mass number − atomic number\n= A − Z\n= [A] − [Z]\n= [RESULT]\n\nIsotopes of the same element have the same number of protons but different numbers of neutrons. They have identical chemical properties but different masses."
+    },
+
+    {
+      "template_id": "AT_L1_03",
+      "pattern": "An atom has [P] protons and [N] neutrons. Calculate the mass number of the atom.",
+      "variables": {
+        "P": {"min": 1,  "max": 92,  "step": 1},
+        "N": {"min": 1,  "max": 146, "step": 1}
+      },
+      "calculation": "P + N",
+      "explanation": "Mass number = number of protons + number of neutrons\n= [P] + [N]\n= [RESULT]\n\nThe mass number is always a whole number. It represents the total number of nucleons — protons and neutrons — in the nucleus."
+    },
+
+    {
+      "template_id": "AT_L1_04",
+      "pattern": "A neutral atom has an atomic number of [Z]. How many electrons does it have?",
+      "variables": {
+        "Z":   {"min": 1,  "max": 92, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "Z",
+      "explanation": "In a neutral atom: number of electrons = number of protons = atomic number\n= [Z]\n= [RESULT]\n\nA neutral atom has equal numbers of protons and electrons so the overall charge is zero. When electrons are gained or lost an ion is formed."
+    },
+
+    {
+      "template_id": "AT_L1_05",
+      "pattern": "An atom of atomic number [Z] loses [CHARGE] electrons to form a positive ion. How many electrons does the ion have?",
+      "variables": {
+        "Z":      {"min": 3,  "max": 20, "step": 1},
+        "CHARGE": {"min": 1,  "max": 3,  "step": 1}
+      },
+      "constraints": ["Z > CHARGE"],
+      "calculation": "Z - CHARGE",
+      "explanation": "Electrons in positive ion = atomic number − charge\n= [Z] − [CHARGE]\n= [RESULT]\n\nWhen an atom loses electrons it becomes a positive ion (cation). The charge of the ion equals the number of electrons lost. Metals typically form positive ions."
+    },
+
+    {
+      "template_id": "AT_L1_06",
+      "pattern": "An element is in Group [G] of the periodic table. How many valence electrons does one atom of this element have? (Groups 1-8 only)",
+      "variables": {
+        "G":   {"min": 1,  "max": 8, "step": 1},
+        "VOL": {"min": 1,  "max": 50,"step": 1}
+      },
+      "calculation": "G",
+      "explanation": "Number of valence electrons = group number\n= [G]\n= [RESULT]\n\nValence electrons are the electrons in the outermost shell. They determine the chemical properties and reactivity of an element. Group 8 elements have full outer shells and are very unreactive."
+    },
+
+    {
+      "template_id": "AT_L1_07",
+      "pattern": "An element is in Period [P] of the periodic table. How many electron shells does one atom of this element have?",
+      "variables": {
+        "P":   {"min": 1,  "max": 7, "step": 1},
+        "VOL": {"min": 1,  "max": 50,"step": 1}
+      },
+      "calculation": "P",
+      "explanation": "Number of electron shells = period number\n= [P]\n= [RESULT]\n\nEach new period in the periodic table adds a new electron shell. The period number tells us which shell the outermost electrons occupy."
+    },
+
+    {
+      "template_id": "AT_L1_08",
+      "pattern": "An element has two naturally occurring isotopes. Isotope 1 has mass [M1] and abundance [AB1]%. Isotope 2 has mass [M2] and abundance [AB2]%. Calculate the relative atomic mass of the element.",
+      "variables": {
+        "M1":  {"values": [1,6,10,12,24,35,63,79,107,197]},
+        "M2":  {"values": [2,7,11,13,25,37,65,81,109,199]},
+        "AB1": {"values": [75,80,70,90,60,50,40,30,20,10]},
+        "AB2": {"calc": "100 - AB1"}
+      },
+      "calculation": "round2((M1 * AB1 + M2 * AB2) / 100)",
+      "explanation": "RAM = (mass₁ × abundance₁ + mass₂ × abundance₂) ÷ 100\n= ([M1] × [AB1] + [M2] × [AB2]) ÷ 100\n= ([M1*AB1] + [M2*AB2]) ÷ 100\n= [RESULT]\n\nRelative atomic mass is a weighted average of all naturally occurring isotopes. It is why RAM values on the periodic table are not whole numbers."
+    },
+
+    {
+      "template_id": "AT_L1_09",
+      "pattern": "An element has a relative atomic mass of [RAM]. A sample contains [MOLES] moles of the element. Calculate the mass of the sample in grams.",
+      "variables": {
+        "RAM":   {"values": [1,4,7,12,14,16,20,23,24,27,28,32,35,40,56,64]},
+        "MOLES": {"min": 1,  "max": 20, "step": 1}
+      },
+      "calculation": "RAM * MOLES",
+      "explanation": "Mass = moles × relative atomic mass\n= [MOLES] × [RAM]\n= [RESULT] g\n\nOne mole of any substance contains 6.02 × 10²³ particles and has a mass in grams equal to the relative atomic or molecular mass."
+    },
+
+    {
+      "template_id": "AT_L1_10",
+      "pattern": "An atom of atomic number [Z] gains [CHARGE] electrons to form a negative ion. What is the charge of the ion formed?",
+      "variables": {
+        "Z":      {"min": 6,  "max": 17, "step": 1},
+        "CHARGE": {"min": 1,  "max": 3,  "step": 1}
+      },
+      "calculation": "CHARGE",
+      "explanation": "Charge of negative ion = number of electrons gained\n= −[CHARGE] (written as [CHARGE]−)\n= [RESULT]\n\nNote: the answer shows the magnitude of the charge. When an atom gains electrons it becomes a negative ion (anion). Non-metals typically form negative ions. The charge equals the number of electrons gained."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "puzzle_type": "chemistry-atomic-structure-level-3",
+  "display_name": "Atomic Structure L3",
+  "templates": [
+
+    {
+      "template_id": "AT_L3_01",
+      "pattern": "An electron in a hydrogen atom is in energy level n = [N]. Calculate the energy of the electron in eV using the Bohr model. (En = −13.6 ÷ n² eV)",
+      "variables": {
+        "N":   {"min": 1, "max": 6, "step": 1},
+        "VOL": {"min": 1, "max": 50,"step": 1}
+      },
+      "calculation": "round3(-13.6 / (N * N))",
+      "explanation": "Energy of electron = −13.6 ÷ n²\n= −13.6 ÷ [N]²\n= −13.6 ÷ [N*N]\n= [RESULT] eV\n\nThe negative sign indicates the electron is bound to the nucleus. Energy level n=1 is the ground state with the most negative — most stable — energy. Higher levels are less negative — less stable."
+    },
+
+    {
+      "template_id": "AT_L3_02",
+      "pattern": "An electron in hydrogen falls from energy level n = [N2] to n = [N1]. Calculate the energy of the photon emitted in eV. (En = −13.6 ÷ n² eV)",
+      "variables": {
+        "N1": {"min": 1, "max": 4, "step": 1},
+        "N2": {"min": 2, "max": 6, "step": 1}
+      },
+      "constraints": ["N2 > N1"],
+      "calculation": "round3(13.6 * (1 / (N1 * N1) - 1 / (N2 * N2)))",
+      "explanation": "Energy of photon = E_lower − E_upper\n= −13.6/[N1]² − (−13.6/[N2]²)\n= 13.6 × (1/[N1]² − 1/[N2]²)\n= 13.6 × (1/[N1*N1] − 1/[N2*N2])\n= [RESULT] eV\n\nWhen an electron falls to a lower energy level it emits a photon. The photon energy equals the difference between the two energy levels. This produces the characteristic emission spectrum of hydrogen."
+    },
+
+    {
+      "template_id": "AT_L3_03",
+      "pattern": "A photon has a frequency of [F] × 10¹⁴ Hz. Calculate the energy of the photon in joules. (h = 6.63 × 10⁻³⁴ J·s)",
+      "variables": {
+        "F":   {"min": 1,  "max": 20, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round3(6.63 * F * pow(10, -20))",
+      "explanation": "Photon energy E = hf\n= 6.63 × 10⁻³⁴ × [F] × 10¹⁴\n= 6.63 × [F] × 10⁻²⁰\n= [RESULT] J\n\nPhoton energy is directly proportional to frequency. Ultraviolet photons have enough energy to cause chemical reactions and damage DNA. This is why UV radiation is harmful."
+    },
+
+    {
+      "template_id": "AT_L3_04",
+      "pattern": "A photon has an energy of [E] × 10⁻¹⁹ J. Calculate the wavelength of the photon in metres. (h = 6.63 × 10⁻³⁴ J·s, c = 3 × 10⁸ m/s)",
+      "variables": {
+        "E":   {"min": 1,  "max": 10, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round3(6.63 * pow(10, -34) * 3 * pow(10, 8) / (E * pow(10, -19)))",
+      "explanation": "From E = hc ÷ λ:\nλ = hc ÷ E\n= 6.63 × 10⁻³⁴ × 3 × 10⁸ ÷ ([E] × 10⁻¹⁹)\n= 19.89 × 10⁻²⁶ ÷ [E] × 10⁻¹⁹\n= [RESULT] m\n\nVisible light has wavelengths between 400 nm and 700 nm. This formula connects the particle nature (energy) and wave nature (wavelength) of light."
+    },
+
+    {
+      "template_id": "AT_L3_05",
+      "pattern": "An electron of mass 9.11 × 10⁻³¹ kg moves at [V] × 10⁶ m/s. Calculate the de Broglie wavelength of the electron in metres. (h = 6.63 × 10⁻³⁴ J·s)",
+      "variables": {
+        "V":   {"min": 1,  "max": 10, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round3(6.63 * pow(10, -34) / (9.11 * pow(10, -31) * V * pow(10, 6)))",
+      "explanation": "de Broglie wavelength λ = h ÷ mv\n= 6.63 × 10⁻³⁴ ÷ (9.11 × 10⁻³¹ × [V] × 10⁶)\n= 6.63 ÷ (9.11 × [V] × 10³)\n= [RESULT] m\n\nThe de Broglie wavelength shows that particles have wave properties. Electron diffraction experiments confirm this — electrons produce diffraction patterns just like waves."
+    },
+
+    {
+      "template_id": "AT_L3_06",
+      "pattern": "An atom has atomic number [Z] and a shielding constant of [S]. Calculate the effective nuclear charge experienced by the outermost electrons.",
+      "variables": {
+        "Z": {"min": 5,  "max": 36, "step": 1},
+        "S": {"min": 2,  "max": 28, "step": 1}
+      },
+      "constraints": ["Z > S"],
+      "calculation": "Z - S",
+      "explanation": "Effective nuclear charge Z_eff = Z − σ\n= [Z] − [S]\n= [RESULT]\n\nInner shell electrons shield outer electrons from the full attraction of the nucleus. A larger effective nuclear charge means outer electrons are held more tightly — higher ionisation energy and smaller atomic radius."
+    },
+
+    {
+      "template_id": "AT_L3_07",
+      "pattern": "The successive ionisation energies of an element are [IE1], [IE2], [IE3] and [IE4] kJ/mol respectively. A large jump occurs between the [JUMP]th and [JUMP1]th values. In which group of the periodic table is this element?",
+      "variables": {
+        "IE1":  {"min": 400,  "max": 1000, "step": 50},
+        "IE2":  {"min": 800,  "max": 2000, "step": 100},
+        "IE3":  {"min": 1500, "max": 5000, "step": 200},
+        "IE4":  {"min": 3000, "max": 10000,"step": 500},
+        "JUMP": {"min": 1,    "max": 3,    "step": 1},
+        "JUMP1":{"calc": "JUMP + 1"}
+      },
+      "calculation": "JUMP",
+      "explanation": "A large jump in successive ionisation energies occurs when an electron is removed from an inner shell.\nThe large jump is between IE[JUMP] and IE[JUMP1].\nThis means [JUMP] electrons are in the outer shell.\nTherefore the element is in Group [RESULT].\n\nThis is one of the most powerful tools for determining group number from ionisation energy data."
+    },
+
+    {
+      "template_id": "AT_L3_08",
+      "pattern": "The first ionisation energy of an element is [IE] kJ/mol. Calculate the energy needed in joules to ionise one atom of this element. (Avogadro's number = 6.02 × 10²³)",
+      "variables": {
+        "IE":  {"min": 400,  "max": 2500, "step": 100},
+        "VOL": {"min": 1,    "max": 50,   "step": 1}
+      },
+      "calculation": "round3(IE * pow(10, 3) / (6.02 * pow(10, 23)))",
+      "explanation": "Energy per atom = ionisation energy ÷ Avogadro's number\n= [IE] × 10³ J/mol ÷ 6.02 × 10²³\n= [RESULT] J\n\nIonisation energies are usually quoted per mole. Dividing by Avogadro's number gives the energy needed to remove one electron from one atom."
+    },
+
+    {
+      "template_id": "AT_L3_09",
+      "pattern": "Two isotopes of an element have masses [M1] and [M2] with abundances [AB1]% and [AB2]% respectively. Calculate the relative atomic mass of the element.",
+      "variables": {
+        "M1":  {"values": [6,10,12,24,35,63,79,107]},
+        "M2":  {"values": [7,11,13,25,37,65,81,109]},
+        "AB1": {"values": [10,20,25,30,40,50,60,70,75,80,90]},
+        "AB2": {"calc": "100 - AB1"}
+      },
+      "calculation": "round2((M1 * AB1 + M2 * AB2) / 100)",
+      "explanation": "RAM = (M₁ × AB₁% + M₂ × AB₂%) ÷ 100\n= ([M1] × [AB1] + [M2] × [AB2]) ÷ 100\n= ([M1*AB1] + [M2*AB2]) ÷ 100\n= [RESULT]\n\nNote this is a multi-isotope weighted average. This is why the periodic table shows non-integer values for relative atomic masses."
+    },
+
+    {
+      "template_id": "AT_L3_10",
+      "pattern": "A sample contains [N] × 10²³ atoms of element X (RAM = [RAM]). Calculate the mass of the sample in grams. (Avogadro's number = 6.02 × 10²³)",
+      "variables": {
+        "N":   {"min": 1,  "max": 20, "step": 1},
+        "RAM": {"values": [1,4,7,12,14,16,20,23,24,27,28,32,35,40,56,64]}
+      },
+      "calculation": "round2(N * RAM / 6.02)",
+      "explanation": "Moles = number of atoms ÷ Avogadro's number\n= [N] × 10²³ ÷ 6.02 × 10²³\n= [N] ÷ 6.02 mol\n\nMass = moles × RAM\n= ([N] ÷ 6.02) × [RAM]\n= [RESULT] g\n\nThis connects the microscopic world of atoms to the macroscopic world of measurable masses."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

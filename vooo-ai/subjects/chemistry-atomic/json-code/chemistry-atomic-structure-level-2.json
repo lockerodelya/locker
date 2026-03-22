@@ -1,0 +1,140 @@
+{
+  "puzzle_type": "chemistry-atomic-structure-level-2",
+  "display_name": "Atomic Structure L2",
+  "templates": [
+
+    {
+      "template_id": "AT_L2_01",
+      "pattern": "A compound contains [N] atoms of element X (RAM = [RAM]) in one formula unit. The relative molecular mass of the compound is [RMM]. Calculate the percentage by mass of element X in the compound.",
+      "variables": {
+        "N":   {"min": 1,  "max": 6,   "step": 1},
+        "RAM": {"values": [1,12,14,16,23,24,32,35,40,56]},
+        "RMM": {"min": 18, "max": 400, "step": 2}
+      },
+      "constraints": ["N * RAM <= RMM"],
+      "calculation": "round2(N * RAM * 100 / RMM)",
+      "explanation": "Percentage by mass = (n × RAM_element ÷ RMM_compound) × 100\n= ([N] × [RAM] ÷ [RMM]) × 100\n= [N*RAM] ÷ [RMM] × 100\n= [RESULT]%\n\nThis is used to find the composition of a compound. It is also used to calculate empirical formulas from experimental data."
+    },
+
+    {
+      "template_id": "AT_L2_02",
+      "pattern": "An element has two isotopes. Isotope 1 has mass [M1] and abundance [AB1]%. The relative atomic mass of the element is [RAM]. Calculate the mass of isotope 2.",
+      "variables": {
+        "M1":  {"values": [1,6,10,12,24,35,63,79]},
+        "AB1": {"values": [10,20,25,30,40,50,60,70,75,80,90]},
+        "AB2": {"calc": "100 - AB1"},
+        "RAM": {"calc": "round2((M1 * AB1 + (M1 + 1) * AB2) / 100)"}
+      },
+      "calculation": "M1 + 1",
+      "explanation": "From RAM = (M₁ × AB₁ + M₂ × AB₂) ÷ 100:\nM₂ = (RAM × 100 − M₁ × AB₁) ÷ AB₂\n= ([RAM] × 100 − [M1] × [AB1]) ÷ [AB2]\n= [RESULT]\n\nKnowing the RAM and one isotope mass allows us to find the other isotope mass. This is used in mass spectrometry analysis."
+    },
+
+    {
+      "template_id": "AT_L2_03",
+      "pattern": "Calculate the relative molecular mass of a molecule containing [C] carbon atoms (RAM=12), [H] hydrogen atoms (RAM=1) and [O] oxygen atoms (RAM=16).",
+      "variables": {
+        "C": {"min": 1,  "max": 10, "step": 1},
+        "H": {"min": 2,  "max": 20, "step": 2},
+        "O": {"min": 1,  "max": 8,  "step": 1}
+      },
+      "calculation": "C * 12 + H * 1 + O * 16",
+      "explanation": "RMM = (C atoms × 12) + (H atoms × 1) + (O atoms × 16)\n= ([C] × 12) + ([H] × 1) + ([O] × 16)\n= [C*12] + [H] + [O*16]\n= [RESULT]\n\nThe relative molecular mass is the sum of all atomic masses in the formula. It tells us the mass of one mole of the compound in grams."
+    },
+
+    {
+      "template_id": "AT_L2_04",
+      "pattern": "A sample of an element has a mass of [MASS] g and a relative atomic mass of [RAM]. Calculate the number of moles in the sample.",
+      "variables": {
+        "RAM":  {"values": [1,4,7,12,14,16,20,23,24,27,28,32,35,40,56,64]},
+        "MULT": {"values": [1,2,3,4,5,6,7,8,9,10]},
+        "MASS": {"calc": "RAM * MULT"}
+      },
+      "calculation": "MULT",
+      "explanation": "Moles = mass ÷ relative atomic mass\n= [MASS] ÷ [RAM]\n= [RESULT] mol\n\nThe mole is the fundamental unit of amount in chemistry. One mole contains 6.02 × 10²³ particles — Avogadro's number."
+    },
+
+    {
+      "template_id": "AT_L2_05",
+      "pattern": "The [N]th electron shell of an atom can hold a maximum of how many electrons?",
+      "variables": {
+        "N":   {"min": 1, "max": 4, "step": 1},
+        "VOL": {"min": 1, "max": 50,"step": 1}
+      },
+      "calculation": "2 * N * N",
+      "explanation": "Maximum electrons in shell n = 2n²\n= 2 × [N]²\n= 2 × [N*N]\n= [RESULT]\n\nShell 1 holds maximum 2 electrons, shell 2 holds 8, shell 3 holds 18, shell 4 holds 32. This pattern follows 2n²."
+    },
+
+    {
+      "template_id": "AT_L2_06",
+      "pattern": "An atom has atomic number [Z] and loses [L] electrons to form an ion. How many electrons does the ion have?",
+      "variables": {
+        "Z": {"min": 5,  "max": 30, "step": 1},
+        "L": {"min": 1,  "max": 4,  "step": 1}
+      },
+      "constraints": ["Z > L"],
+      "calculation": "Z - L",
+      "explanation": "Electrons in ion = atomic number − electrons lost\n= [Z] − [L]\n= [RESULT]\n\nWhen an atom loses electrons it forms a positive ion. The number of protons stays the same but there are now fewer electrons than protons giving a net positive charge."
+    },
+
+    {
+      "template_id": "AT_L2_07",
+      "pattern": "A sample contains [ATOMS] × 10²³ atoms of an element. Calculate the number of moles of atoms in the sample. (Avogadro's number = 6.02 × 10²³)",
+      "variables": {
+        "ATOMS": {"min": 1,  "max": 20, "step": 1},
+        "VOL":   {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round2(ATOMS / 6.02)",
+      "explanation": "Moles = number of atoms ÷ Avogadro's number\n= [ATOMS] × 10²³ ÷ 6.02 × 10²³\n= [ATOMS] ÷ 6.02\n= [RESULT] mol\n\nAvogadro's number (6.02 × 10²³) is the number of particles in one mole of any substance."
+    },
+
+    {
+      "template_id": "AT_L2_08",
+      "pattern": "An element has atomic number [Z]. Using Slater's rules the shielding constant is [S]. Calculate the effective nuclear charge experienced by the outermost electron.",
+      "variables": {
+        "Z": {"min": 3,  "max": 20, "step": 1},
+        "S": {"min": 1,  "max": 15, "step": 1}
+      },
+      "constraints": ["Z > S"],
+      "calculation": "Z - S",
+      "explanation": "Effective nuclear charge Z_eff = Z − S\n= [Z] − [S]\n= [RESULT]\n\nInner electrons partially shield outer electrons from the full nuclear charge. The effective nuclear charge is the net positive charge experienced by the outermost electrons. It increases across a period."
+    },
+
+    {
+      "template_id": "AT_L2_09",
+      "pattern": "The first ionisation energy of element A is [IE1] kJ/mol and the second ionisation energy is [IE2] kJ/mol. Calculate the ratio of the second to first ionisation energy.",
+      "variables": {
+        "IE1": {"min": 400,  "max": 2000, "step": 100},
+        "IE2": {"min": 800,  "max": 6000, "step": 200}
+      },
+      "constraints": ["IE2 > IE1"],
+      "calculation": "round2(IE2 / IE1)",
+      "explanation": "Ratio = second ionisation energy ÷ first ionisation energy\n= [IE2] ÷ [IE1]\n= [RESULT]\n\nA very large jump in successive ionisation energies indicates that a new inner shell has been reached. This is used to determine the group of an element."
+    },
+
+    {
+      "template_id": "AT_L2_10",
+      "pattern": "An atom has atomic number [Z1] and another atom has atomic number [Z2]. If the first atom has an atomic radius of [R1] pm, estimate the atomic radius of the second atom in the same period in pm using the effective nuclear charge relationship.",
+      "variables": {
+        "Z1": {"min": 3,  "max": 10, "step": 1},
+        "Z2": {"min": 3,  "max": 10, "step": 1},
+        "R1": {"min": 50, "max": 200,"step": 10}
+      },
+      "constraints": ["Z1 !== Z2"],
+      "calculation": "round2(R1 * Z1 / Z2)",
+      "explanation": "Atomic radius ∝ 1 ÷ Z_eff\nR₂ ≈ R₁ × Z₁ ÷ Z₂\n= [R1] × [Z1] ÷ [Z2]\n= [RESULT] pm\n\nAcross a period atomic radius decreases because increasing nuclear charge pulls electrons closer. Down a group atomic radius increases because new shells are added."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
