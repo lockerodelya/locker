@@ -87,17 +87,17 @@
       "explanation": "Enthalpy change ΔH = energy absorbed (breaking) − energy released (forming)\n= [BREAK] − [FORM]\n= [RESULT] kJ/mol\n\nIf ΔH is negative the reaction is exothermic — more energy is released forming bonds than absorbed breaking them. If positive the reaction is endothermic."
     },
 
-    {
-      "template_id": "CB_L1_08",
-      "pattern": "An organic molecule has [C] carbon atoms and [H] hydrogen atoms and no rings or multiple bonds except those calculated. Calculate the degree of unsaturation of the molecule.",
-      "variables": {
-        "C": {"min": 1, "max": 10, "step": 1},
-        "H": {"min": 2, "max": 20, "step": 2}
-      },
-      "constraints": ["2 * C + 2 >= H"],
-      "calculation": "(2 * C + 2 - H) / 2",
-      "explanation": "Degree of unsaturation = (2C + 2 − H) ÷ 2\n= (2 × [C] + 2 − [H]) ÷ 2\n= ([2*C+2] − [H]) ÷ 2\n= [RESULT]\n\nEach degree of unsaturation represents one double bond or one ring. A benzene ring has 4 degrees of unsaturation (3 double bonds + 1 ring)."
-    },
+{
+  "template_id": "CB_L1_08",
+  "pattern": "An organic molecule has the formula C[C]H[H]. Calculate the degree of unsaturation of the molecule.",
+  "variables": {
+    "C": {"min": 2, "max": 10, "step": 1},
+    "H": {"min": 2, "max": 20, "step": 2}
+  },
+  "constraints": ["(2 * C + 2 - H) >= 2", "(2 * C + 2 - H) % 2 === 0"],
+  "calculation": "(2 * C + 2 - H) / 2",
+  "explanation": "Degree of unsaturation = (2C + 2 − H) ÷ 2\n= (2 × [C] + 2 − [H]) ÷ 2\n= ([2*C+2] − [H]) ÷ 2\n= [RESULT]\n\nEach degree of unsaturation represents one double bond or one ring. A value of 1 means one double bond or ring. A value of 4 suggests a benzene ring (3 double bonds + 1 ring)."
+},
 
     {
       "template_id": "CB_L1_09",
