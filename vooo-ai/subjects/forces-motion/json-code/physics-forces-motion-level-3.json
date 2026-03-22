@@ -1,0 +1,134 @@
+{
+  "puzzle_type": "physics-forces-motion-level-3",
+  "display_name": "Forces & Motion L3",
+  "templates": [
+
+    {
+      "template_id": "FM_L3_01",
+      "pattern": "An object of mass [M] kg moves in a horizontal circle of radius [R] m at a constant speed of [V] m/s. Calculate the centripetal acceleration of the object in m/s².",
+      "variables": {
+        "M": {"min": 1,  "max": 20, "step": 1},
+        "R": {"min": 2,  "max": 50, "step": 2},
+        "V": {"min": 4,  "max": 30, "step": 2}
+      },
+      "calculation": "round2(V * V / R)",
+      "explanation": "Centripetal acceleration = v² ÷ r\n= [V]² ÷ [R]\n= [V*V] ÷ [R]\n= [RESULT] m/s²\n\nCentripetal acceleration always points toward the centre of the circle. It is not a new force — it is the resultant of existing forces acting on the object."
+    },
+
+    {
+      "template_id": "FM_L3_02",
+      "pattern": "An object of mass [M] kg moves in a circle of radius [R] m at a constant speed of [V] m/s. Calculate the centripetal force acting on the object in newtons.",
+      "variables": {
+        "M": {"min": 1,  "max": 30, "step": 1},
+        "R": {"min": 2,  "max": 40, "step": 2},
+        "V": {"min": 4,  "max": 20, "step": 2}
+      },
+      "calculation": "round2(M * V * V / R)",
+      "explanation": "Centripetal force = mv² ÷ r\n= [M] × [V]² ÷ [R]\n= [M] × [V*V] ÷ [R]\n= [RESULT] N\n\nCentripetal force is always directed toward the centre of the circle. For a car on a bend this is friction. For a planet in orbit this is gravity."
+    },
+
+    {
+      "template_id": "FM_L3_03",
+      "pattern": "A ball is launched horizontally from the top of a cliff of height [H] m. Calculate the time taken for the ball to reach the ground in seconds. (g = 10 m/s², ignore air resistance)",
+      "variables": {
+        "H": {"min": 5,  "max": 500, "step": 5},
+        "U": {"min": 5,  "max": 50,  "step": 5}
+      },
+      "calculation": "round2(sqrt(2 * H / 10))",
+      "explanation": "Vertical motion only determines time of flight.\nUsing s = ½gt² with s = H and u = 0:\nH = 0.5 × 10 × t²\nt = √(2H ÷ g)\n= √(2 × [H] ÷ 10)\n= √[2*H/10]\n= [RESULT] s\n\nHorizontal velocity does not affect the time of flight. Both components of motion are completely independent."
+    },
+
+    {
+      "template_id": "FM_L3_04",
+      "pattern": "A ball is launched horizontally at [U] m/s from the top of a cliff of height [H] m. Calculate the horizontal distance travelled by the ball before it hits the ground in metres. (g = 10 m/s², ignore air resistance)",
+      "variables": {
+        "U": {"min": 5,  "max": 50,  "step": 5},
+        "H": {"min": 5,  "max": 500, "step": 5}
+      },
+      "calculation": "round2(U * sqrt(2 * H / 10))",
+      "explanation": "Time of flight t = √(2H ÷ g) = √(2 × [H] ÷ 10) s\nHorizontal range = U × t\n= [U] × √(2 × [H] ÷ 10)\n= [RESULT] m\n\nHorizontal velocity remains constant throughout the flight because there is no horizontal force acting on the ball."
+    },
+
+    {
+      "template_id": "FM_L3_05",
+      "pattern": "A rocket ejects gas at an exhaust velocity of [VE] m/s. The rocket ejects [DM] kg of gas every second. Calculate the thrust force produced by the rocket in newtons.",
+      "variables": {
+        "VE": {"min": 100, "max": 3000, "step": 100},
+        "DM": {"min": 5,   "max": 100,  "step": 5}
+      },
+      "calculation": "VE * DM",
+      "explanation": "Thrust force = exhaust velocity × mass flow rate\n= [VE] × [DM]\n= [RESULT] N\n\nThis is an application of Newton's Third Law. The rocket pushes gas backward and the gas pushes the rocket forward with an equal and opposite force."
+    },
+
+    {
+      "template_id": "FM_L3_06",
+      "pattern": "An object of mass [M] kg falls through a fluid and reaches terminal velocity. Calculate the drag force acting on the object at terminal velocity in newtons. (g = 10 m/s²)",
+      "variables": {
+        "M": {"min": 1, "max": 200, "step": 1}
+      },
+      "calculation": "M * 10",
+      "explanation": "At terminal velocity the resultant force is zero.\nDrag force = Weight = mg\n= [M] × 10\n= [RESULT] N\n\nTerminal velocity is reached when drag force equals weight. At this point acceleration is zero and velocity is constant."
+    },
+
+    {
+      "template_id": "FM_L3_07",
+      "pattern": "An object moves in a circle of radius [R] m at a linear speed of [V] m/s. Calculate the angular velocity of the object in rad/s.",
+      "variables": {
+        "R": {"min": 1,  "max": 50, "step": 1},
+        "V": {"min": 2,  "max": 100,"step": 2}
+      },
+      "calculation": "round2(V / R)",
+      "explanation": "Angular velocity ω = v ÷ r\n= [V] ÷ [R]\n= [RESULT] rad/s\n\nAngular velocity measures how fast the object rotates. One full revolution = 2π radians. The unit is radians per second (rad/s)."
+    },
+
+    {
+      "template_id": "FM_L3_08",
+      "pattern": "An object moves in a circle of radius [R] m at a linear speed of [V] m/s. Calculate the period of one complete revolution in seconds.",
+      "variables": {
+        "R": {"min": 2,  "max": 50,  "step": 2},
+        "V": {"min": 2,  "max": 40,  "step": 2}
+      },
+      "calculation": "round2(2 * 3.14159 * R / V)",
+      "explanation": "Period T = circumference ÷ speed\n= 2πr ÷ v\n= 2 × 3.14159 × [R] ÷ [V]\n= [RESULT] s\n\nThe period is the time for one complete revolution. It is related to frequency by T = 1/f."
+    },
+
+    {
+      "template_id": "FM_L3_09",
+      "pattern": "A [M1] kg object moving at [U] m/s collides with a stationary [M2] kg object. After the collision the [M2] kg object moves at [V2] m/s. Calculate the velocity of the [M1] kg object after the collision in m/s.",
+      "variables": {
+        "M1": {"min": 2,  "max": 20, "step": 2},
+        "M2": {"min": 2,  "max": 20, "step": 2},
+        "U":  {"min": 10, "max": 40, "step": 2},
+        "V2": {"min": 2,  "max": 20, "step": 2}
+      },
+      "constraints": ["M1 * U > M2 * V2"],
+      "calculation": "round2((M1 * U - M2 * V2) / M1)",
+      "explanation": "Using conservation of momentum:\nm₁u = m₁v₁ + m₂v₂\nv₁ = (m₁u − m₂v₂) ÷ m₁\n= ([M1] × [U] − [M2] × [V2]) ÷ [M1]\n= ([M1*U] − [M2*V2]) ÷ [M1]\n= [RESULT] m/s\n\nTotal momentum before = total momentum after. This is always true in a closed system."
+    },
+
+    {
+      "template_id": "FM_L3_10",
+      "pattern": "A [M] kg object moving at [V] m/s is brought to rest over a distance of [S] m by a constant retarding force. Calculate the magnitude of the retarding force in newtons.",
+      "variables": {
+        "M": {"min": 2,  "max": 50,  "step": 2},
+        "V": {"min": 4,  "max": 40,  "step": 4},
+        "S": {"min": 5,  "max": 100, "step": 5}
+      },
+      "calculation": "round2(M * V * V / (2 * S))",
+      "explanation": "Using the work-energy theorem:\nWork done by retarding force = loss in kinetic energy\nF × s = ½mv²\nF = mv² ÷ 2s\n= [M] × [V]² ÷ (2 × [S])\n= [M] × [V*V] ÷ (2 × [S])\n= [RESULT] N\n\nThe retarding force converts all kinetic energy to other forms such as heat through friction."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
