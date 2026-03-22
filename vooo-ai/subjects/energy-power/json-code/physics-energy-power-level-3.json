@@ -5,124 +5,119 @@
 
     {
       "template_id": "EP_L3_01",
-      "pattern": "A [M] kg object is heated using a [P] W heater for [T] seconds. Its temperature rises by [DT]°C. What is the specific heat capacity of the material?",
+      "pattern": "A Carnot heat engine operates between a hot reservoir at [TH] K and a cold reservoir at [TC] K. Calculate the maximum theoretical efficiency of the engine as a percentage.",
       "variables": {
-        "M":  {"min": 1,  "max": 10,  "step": 1},
-        "P":  {"min": 50, "max": 500, "step": 50},
-        "T":  {"min": 60, "max": 600, "step": 60},
-        "DT": {"min": 5,  "max": 50,  "step": 5}
+        "TH": {"min": 400, "max": 1200, "step": 100},
+        "TC": {"min": 200, "max": 400,  "step": 50}
       },
-      "constraints": ["(P * T) % (M * DT) === 0"],
-      "calculation": "(P * T) / (M * DT)",
-      "explanation": "Energy supplied = P×t = [P]×[T] = [P*T] J. c = E ÷ mΔT = [P*T] ÷ ([M]×[DT]) = [P*T] ÷ [M*DT] = [RESULT] J/kg°C"
+      "constraints": ["TH > TC"],
+      "calculation": "round2((TH - TC) * 100 / TH)",
+      "explanation": "Carnot efficiency = (1 − Tc ÷ Th) × 100\n= ((Th − Tc) ÷ Th) × 100\n= (([TH] − [TC]) ÷ [TH]) × 100\n= [TH-TC] ÷ [TH] × 100\n= [RESULT]%\n\nThe Carnot engine gives the maximum possible efficiency between two temperatures. No real engine can exceed this value."
     },
 
     {
       "template_id": "EP_L3_02",
-      "pattern": "A fuel has an energy density of [ED] MJ/kg. A [M] kg sample is completely burned with [EFF]% efficiency. How much useful energy is released in MJ?",
-      "variables": {
-        "ED":  {"min": 10, "max": 50,  "step": 5},
-        "M":   {"min": 1,  "max": 20,  "step": 1},
-        "EFF": {"min": 20, "max": 80,  "step": 10}
-      },
-      "calculation": "ED * M * EFF / 100",
-      "explanation": "Useful energy = energy density × mass × efficiency = [ED] × [M] × [EFF]/100 = [RESULT] MJ"
-    },
-
-    {
-      "template_id": "EP_L3_03",
-      "pattern": "A [V] V supply is connected across a [R] Ω resistor. What is the power dissipated?",
-      "variables": {
-        "V": {"min": 10, "max": 240, "step": 10},
-        "R": {"min": 4,  "max": 120, "step": 4}
-      },
-      "constraints": ["(V * V) % R === 0"],
-      "calculation": "(V * V) / R",
-      "explanation": "Power = V² ÷ R = [V]² ÷ [R] = [V*V] ÷ [R] = [RESULT] W"
-    },
-
-    {
-      "template_id": "EP_L3_04",
-      "pattern": "A Carnot engine operates between a hot reservoir at [TH] K and a cold reservoir at [TC] K. What is its maximum theoretical efficiency as a percentage?",
-      "variables": {
-        "TH": {"min": 400, "max": 1000, "step": 50},
-        "TC": {"min": 200, "max": 350,  "step": 25}
-      },
-      "constraints": ["TH > TC", "(TH - TC) * 100 % TH === 0"],
-      "calculation": "((TH - TC) / TH) * 100",
-      "explanation": "Carnot efficiency = (1 − Tc/Th) × 100 = (([TH]−[TC]) ÷ [TH]) × 100 = [RESULT]%"
-    },
-
-    {
-      "template_id": "EP_L3_05",
-      "pattern": "An efficiency chain has three stages with efficiencies of [E1]%, [E2]% and [E3]%. What is the overall efficiency of the system as a percentage?",
-      "variables": {
-        "E1": {"min": 40, "max": 90, "step": 10},
-        "E2": {"min": 40, "max": 90, "step": 10},
-        "E3": {"min": 40, "max": 90, "step": 10}
-      },
-      "calculation": "E1 * E2 * E3 / 10000",
-      "explanation": "Overall efficiency = (E1÷100) × (E2÷100) × (E3÷100) × 100 = [E1]×[E2]×[E3] ÷ 10000 = [RESULT]%"
-    },
-
-    {
-      "template_id": "EP_L3_06",
-      "pattern": "A transformer has [N1] turns on the primary coil and [N2] turns on the secondary coil. If the primary voltage is [V1] V, what is the secondary voltage?",
+      "pattern": "A transformer has [N1] turns on the primary coil and [N2] turns on the secondary coil. The primary voltage is [V1] V. Calculate the secondary voltage in volts.",
       "variables": {
         "N1": {"min": 100, "max": 2000, "step": 100},
         "N2": {"min": 100, "max": 2000, "step": 100},
         "V1": {"min": 10,  "max": 240,  "step": 10}
       },
-      "constraints": ["(N2 * V1) % N1 === 0"],
-      "calculation": "(N2 * V1) / N1",
-      "explanation": "Transformer equation: V2/V1 = N2/N1 → V2 = V1 × N2 ÷ N1 = [V1] × [N2] ÷ [N1] = [RESULT] V"
+      "calculation": "round2(V1 * N2 / N1)",
+      "explanation": "Transformer equation: V2 ÷ V1 = N2 ÷ N1\nV2 = V1 × N2 ÷ N1\n= [V1] × [N2] ÷ [N1]\n= [RESULT] V\n\nA step-up transformer has more secondary turns and increases voltage. A step-down transformer has fewer secondary turns and decreases voltage."
+    },
+
+    {
+      "template_id": "EP_L3_03",
+      "pattern": "A transformer has [N1] turns on the primary coil and [N2] turns on the secondary coil. The primary current is [I1] A. Calculate the secondary current in amperes. (Assume 100% efficiency)",
+      "variables": {
+        "N1": {"min": 100, "max": 2000, "step": 100},
+        "N2": {"min": 100, "max": 2000, "step": 100},
+        "I1": {"min": 1,   "max": 20,   "step": 1}
+      },
+      "calculation": "round2(I1 * N1 / N2)",
+      "explanation": "For an ideal transformer: V1I1 = V2I2\nCombining with V2/V1 = N2/N1:\nI2 = I1 × N1 ÷ N2\n= [I1] × [N1] ÷ [N2]\n= [RESULT] A\n\nWhen a transformer steps up voltage it steps down current proportionally to conserve power."
+    },
+
+    {
+      "template_id": "EP_L3_04",
+      "pattern": "A power transmission line has a resistance of [R] Ω and carries a current of [I] A. Calculate the power wasted as heat in the transmission line in watts.",
+      "variables": {
+        "R": {"min": 1,  "max": 50,  "step": 1},
+        "I": {"min": 2,  "max": 100, "step": 2}
+      },
+      "calculation": "I * I * R",
+      "explanation": "Power lost = I² × R\n= [I]² × [R]\n= [I*I] × [R]\n= [RESULT] W\n\nThis is why electricity is transmitted at very high voltages — higher voltage means lower current for the same power, which dramatically reduces transmission losses."
+    },
+
+    {
+      "template_id": "EP_L3_05",
+      "pattern": "A solar panel of area [A] m² receives solar irradiance of [G] W/m² and has an efficiency of [EFF]%. Calculate the electrical power output of the panel in watts.",
+      "variables": {
+        "A":   {"min": 1,   "max": 20,   "step": 1},
+        "G":   {"min": 200, "max": 1000, "step": 100},
+        "EFF": {"min": 10,  "max": 25,   "step": 5}
+      },
+      "calculation": "round2(A * G * EFF / 100)",
+      "explanation": "Power output = Area × Irradiance × Efficiency\n= [A] × [G] × ([EFF] ÷ 100)\n= [A] × [G] × [EFF/100]\n= [RESULT] W\n\nTypical solar panel efficiencies are between 15% and 22%. The remaining energy is reflected or converted to heat."
+    },
+
+    {
+      "template_id": "EP_L3_06",
+      "pattern": "A system has three components with efficiencies of [E1]%, [E2]% and [E3]%. Calculate the overall efficiency of the complete system as a percentage.",
+      "variables": {
+        "E1": {"min": 40, "max": 90, "step": 10},
+        "E2": {"min": 40, "max": 90, "step": 10},
+        "E3": {"min": 40, "max": 90, "step": 10}
+      },
+      "calculation": "round2(E1 * E2 * E3 / 10000)",
+      "explanation": "Overall efficiency = (E1 ÷ 100) × (E2 ÷ 100) × (E3 ÷ 100) × 100\n= E1 × E2 × E3 ÷ 10000\n= [E1] × [E2] × [E3] ÷ 10000\n= [RESULT]%\n\nEfficiencies in a chain multiply together. Even three components each 80% efficient give an overall efficiency of only 51.2%."
     },
 
     {
       "template_id": "EP_L3_07",
-      "pattern": "A power line transmits [P] kW of power at [V] kV. What is the current flowing through the line?",
+      "pattern": "An object of mass [M] kg is launched vertically upward at [V] m/s. Calculate the maximum height reached by the object in metres. (g = 10 m/s², ignore air resistance)",
       "variables": {
-        "P": {"min": 100, "max": 2000, "step": 100},
-        "V": {"min": 11,  "max": 132,  "step": 11}
+        "M": {"min": 1,  "max": 50, "step": 1},
+        "V": {"min": 10, "max": 60, "step": 5}
       },
-      "constraints": ["(P * 1000) % (V * 1000) === 0"],
-      "calculation": "(P * 1000) / (V * 1000)",
-      "explanation": "Current = Power ÷ Voltage = ([P]×1000) ÷ ([V]×1000) = [P] ÷ [V] = [RESULT] A"
+      "calculation": "round2(V * V / (2 * 10))",
+      "explanation": "Using conservation of energy: KE = GPE at maximum height\n½mv² = mgh\nh = v² ÷ 2g\n= [V]² ÷ (2 × 10)\n= [V*V] ÷ 20\n= [RESULT] m\n\nMass cancels out — the maximum height does not depend on the mass of the object."
     },
 
     {
       "template_id": "EP_L3_08",
-      "pattern": "A power line has resistance [R] Ω and carries a current of [I] A. How much power is wasted as heat in the line?",
+      "pattern": "A fuel has an energy density of [ED] MJ/kg. A [M] kg sample is burned with [EFF]% efficiency. Calculate the useful energy released in megajoules.",
       "variables": {
-        "R": {"min": 1,  "max": 20, "step": 1},
-        "I": {"min": 2,  "max": 30, "step": 2}
+        "ED":  {"min": 10, "max": 50,  "step": 5},
+        "M":   {"min": 1,  "max": 20,  "step": 1},
+        "EFF": {"min": 20, "max": 80,  "step": 10}
       },
-      "calculation": "I * I * R",
-      "explanation": "Power lost = I²R = [I]² × [R] = [I*I] × [R] = [RESULT] W. This is why high voltage transmission reduces energy losses."
+      "calculation": "round2(ED * M * EFF / 100)",
+      "explanation": "Useful energy = energy density × mass × efficiency\n= [ED] × [M] × ([EFF] ÷ 100)\n= [ED] × [M] × [EFF/100]\n= [RESULT] MJ\n\nNo combustion process is 100% efficient. Some energy is always lost as heat to the surroundings."
     },
 
     {
       "template_id": "EP_L3_09",
-      "pattern": "A photovoltaic solar panel of area [A] m² receives solar irradiance of [G] W/m² and has an efficiency of [EFF]%. What is its electrical power output?",
+      "pattern": "A power station has a useful power output of [PO] MW and a total power input of [PI] MW. Calculate the efficiency of the power station as a percentage.",
       "variables": {
-        "A":   {"min": 1,  "max": 20,  "step": 1},
-        "G":   {"min": 200,"max": 1000,"step": 100},
-        "EFF": {"min": 10, "max": 25,  "step": 5}
+        "PI":  {"min": 100, "max": 2000, "step": 100},
+        "EFF": {"min": 20,  "max": 60,   "step": 5},
+        "PO":  {"calc": "round2(PI * EFF / 100)"}
       },
-      "calculation": "A * G * EFF / 100",
-      "explanation": "Power output = A × G × (efficiency÷100) = [A] × [G] × [EFF]/100 = [RESULT] W"
+      "calculation": "EFF",
+      "explanation": "Efficiency = (Useful Power Output ÷ Total Power Input) × 100\n= ([PO] ÷ [PI]) × 100\n= [RESULT]%\n\nMost thermal power stations have efficiencies between 30% and 45%. Combined cycle gas turbines can reach 60%."
     },
 
     {
       "template_id": "EP_L3_10",
-      "pattern": "A [M] kg object is launched vertically upward at [V] m/s. What maximum height does it reach? (g = 10 m/s², assume no air resistance)",
+      "pattern": "A wind turbine has blades sweeping an area of [A] m². The wind speed is [V] m/s and the air density is 1.2 kg/m³. Calculate the maximum power available from the wind in watts.",
       "variables": {
-        "M": {"min": 1,  "max": 20, "step": 1},
-        "V": {"min": 10, "max": 50, "step": 5}
+        "A": {"min": 10,  "max": 200, "step": 10},
+        "V": {"min": 5,   "max": 20,  "step": 5}
       },
-      "constraints": ["(V * V) % (2 * 10) === 0"],
-      "calculation": "(V * V) / (2 * 10)",
-      "explanation": "Using energy conservation: KE = GPE → ½mv² = mgh → h = v² ÷ 2g = [V]² ÷ 20 = [V*V] ÷ 20 = [RESULT] m"
+      "calculation": "round2(0.5 * 1.2 * A * V * V * V)",
+      "explanation": "Wind power = ½ × air density × swept area × wind speed³\n= 0.5 × 1.2 × [A] × [V]³\n= 0.6 × [A] × [V*V*V]\n= [RESULT] W\n\nWind power depends on the cube of wind speed — doubling wind speed increases available power eightfold. Real turbines extract around 40% of this theoretical maximum."
     }
 
   ],
@@ -134,7 +129,7 @@
     ],
     "incorrect": [
       "Try again! 💪","Check your formula! 📐","Almost! 😊",
-      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
       "One more try! 🎯","Keep going! 🌈"
     ]
   }
