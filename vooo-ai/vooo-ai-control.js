@@ -131,6 +131,13 @@ const VOOO_ENGINE_REGISTRY = {
 	'physics-light-optics-level-1' : '/vooo-ai/subjects/light-optics/engine-code/physics-light-optics-level-1.js',
 	'physics-light-optics-level-2' : '/vooo-ai/subjects/light-optics/engine-code/physics-light-optics-level-2.js',
 	'physics-light-optics-level-3' : '/vooo-ai/subjects/light-optics/engine-code/physics-light-optics-level-3.js',
+
+	'physics-electricity-magnetism-level-1' : '/vooo-ai/subjects/light-optics/electricity-magnetism/physics-electricity-magnetism-level-1.js',
+	'physics-electricity-magnetism-level-2' : '/vooo-ai/subjects/light-optics/electricity-magnetism/physics-electricity-magnetism-level-2.js',
+	'physics-electricity-magnetism-level-3' : '/vooo-ai/subjects/light-optics/electricity-magnetism/physics-electricity-magnetism-level-3.js',
+
+
+
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -262,6 +269,11 @@ const VOOO_ENGINE_INSTANCES = {
 	'physics-light-optics-level-1' : 'physicslightopticsl1',
 	'physics-light-optics-level-2' : 'physicslightopticsl2',
 	'physics-light-optics-level-3' : 'physicslightopticsl3',
+
+	'physics-electricity-magnetism-level-1' : 'physicselectricitymagnetisml1',
+	'physics-electricity-magnetism-level-2' : 'physicselectricitymagnetisml2',
+	'physics-electricity-magnetism-level-3' : 'physicselectricitymagnetisml3',
+	
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -477,6 +489,14 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'physics-light-optics-level-1', text: '• Light & Optics L1' },
 					{ value: 'physics-light-optics-level-2', text: '• Light & Optics L2' },
 					{ value: 'physics-light-optics-level-3', text: '• Light & Optics L3' },
+                ]
+            },
+			{
+                label: 'Physics : Electricity & Magnetism',
+                options: [
+                    { value: 'physics-electricity-magnetism-level-1', text: '• Electricity & Magnetism L1' },
+					{ value: 'physics-electricity-magnetism-level-2', text: '• Electricity & Magnetism L2' },
+					{ value: 'physics-electricity-magnetism-level-3', text: '• Electricity & Magnetism L3' },
                 ]
             },
 
