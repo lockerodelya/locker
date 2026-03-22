@@ -26,18 +26,19 @@
       "explanation": "Mass number = number of protons + number of neutrons\n= [P] + [N]\n= [RESULT]\n\nThe mass number is always a whole number. It represents the total number of nucleons in the nucleus."
     },
 
-    {
-      "template_id": "AT_L1_03",
-      "pattern": "An element has two naturally occurring isotopes. Isotope 1 has mass [M1] and abundance [AB1]%. Isotope 2 has mass [M2] and abundance [AB2]%. Calculate the relative atomic mass of the element.",
-      "variables": {
-        "M1":  {"values": [1,6,10,12,24,35,63,79,107,197]},
-        "M2":  {"values": [2,7,11,13,25,37,65,81,109,199]},
-        "AB1": {"values": [75,80,70,90,60,50,40,30,20,10]},
-        "AB2": {"calc": "100 - AB1"}
-      },
-      "calculation": "round2((M1 * AB1 + M2 * AB2) / 100)",
-      "explanation": "RAM = (mass₁ × abundance₁ + mass₂ × abundance₂) ÷ 100\n= ([M1] × [AB1] + [M2] × [AB2]) ÷ 100\n= ([M1*AB1] + [M2*AB2]) ÷ 100\n= [RESULT]\n\nRAM is a weighted average of all naturally occurring isotopes. This is why RAM values on the periodic table are not whole numbers."
-    },
+{
+  "template_id": "AT_L1_03",
+  "pattern": "An element has two naturally occurring isotopes. Isotope 1 has mass [M1] and abundance [AB1]%. Isotope 2 has mass [M2] and abundance [AB2]%. Calculate the relative atomic mass of the element.",
+  "variables": {
+    "M1":  {"min": 1,  "max": 200, "step": 1},
+    "AB1": {"values": [10,20,25,30,40,50,60,70,75,80,90]},
+    "DIFF":{"values": [1,2,3,4]},
+    "M2":  {"calc": "M1 + DIFF"},
+    "AB2": {"calc": "100 - AB1"}
+  },
+  "calculation": "round2((M1 * AB1 + M2 * AB2) / 100)",
+  "explanation": "RAM = (M₁ × AB₁ + M₂ × AB₂) ÷ 100\n= ([M1] × [AB1] + [M2] × [AB2]) ÷ 100\n= [RESULT]\n\nRAM is a weighted average of all naturally occurring isotopes. This is why RAM values on the periodic table are not whole numbers."
+},
 
     {
       "template_id": "AT_L1_04",
