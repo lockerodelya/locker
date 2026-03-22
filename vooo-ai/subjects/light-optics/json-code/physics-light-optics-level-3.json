@@ -5,7 +5,7 @@
 
     {
       "template_id": "LO_L3_01",
-      "pattern": "Light passes from medium 1 (refractive index [N1]) through medium 2 into medium 3 (refractive index [N3]). What is the effective refractive index from medium 1 to medium 3?",
+      "pattern": "Light passes from medium 1 (refractive index [N1]) into medium 3 (refractive index [N3]) through an intermediate medium. What is the effective refractive index from medium 1 to medium 3?",
       "variables": {
         "N1": {"values": [1, 1, 2, 1]},
         "N3": {"values": [2, 3, 6, 4]}
@@ -14,55 +14,44 @@
       "explanation": "Effective refractive index = n3 ÷ n1 = [N3] ÷ [N1] = [RESULT]. The intermediate medium does not affect the overall ratio."
     },
 
-{
-  "template_id": "LO_L3_02",
-  "pattern": "An optical fibre has a core refractive index of [NC] and cladding refractive index of [NK]. What is the sine of the critical angle at the core-cladding boundary?",
-  "variables": {
-    "NC": {"values": [2, 3, 4, 6]},
-    "NK": {"values": [1, 1, 2, 3]}
-  },
-  "constraints": ["NC > NK", "(NK * 100) % (NC * 100) === 0"],
-  "calculation": "NK / NC",
-  "explanation": "sin C = n_cladding ÷ n_core = [NK] ÷ [NC] = [RESULT]. Light hitting the boundary beyond this critical angle undergoes total internal reflection and stays inside the fibre."
-},
+    {
+      "template_id": "LO_L3_02",
+      "pattern": "An optical fibre has core refractive index [NC] and cladding refractive index [NK]. What is the sine of the critical angle at the core-cladding boundary?",
+      "variables": {
+        "NC": {"values": [2, 3, 4, 6]},
+        "NK": {"values": [1, 1, 2, 3]}
+      },
+      "constraints": ["NC > NK", "(NK * 100) % NC === 0"],
+      "calculation": "NK / NC",
+      "explanation": "sin C = n_cladding ÷ n_core = [NK] ÷ [NC] = [RESULT]. Light beyond this critical angle undergoes total internal reflection inside the fibre."
+    },
 
     {
       "template_id": "LO_L3_03",
-      "pattern": "A thin converging lens of focal length [F] cm has an object placed [U] cm from it. What is the image distance v in cm?",
+      "pattern": "A thin converging lens of focal length [F] cm has an object placed [U] cm from it. What is the image distance in cm?",
       "variables": {
         "F": {"min": 5,  "max": 20, "step": 5},
-        "U": {"min": 30, "max": 80, "step": 10}
+        "U": {"min": 30, "max": 100,"step": 10}
       },
       "constraints": ["U > F", "(U * F) % (U - F) === 0"],
       "calculation": "(U * F) / (U - F)",
-      "explanation": "Thin lens formula: v = uF ÷ (u−F) = [U]×[F] ÷ ([U]−[F]) = [U*F] ÷ [U-F] = [RESULT] cm"
+      "explanation": "Thin lens formula: v = uF ÷ (u − F) = [U] × [F] ÷ ([U] − [F]) = [U*F] ÷ [U-F] = [RESULT] cm"
     },
 
     {
       "template_id": "LO_L3_04",
       "pattern": "Two thin lenses of focal lengths [F1] cm and [F2] cm are placed in contact. What is the combined focal length in cm?",
       "variables": {
-        "F1": {"min": 5,  "max": 30, "step": 5},
-        "F2": {"min": 5,  "max": 30, "step": 5}
+        "F1": {"min": 10, "max": 60, "step": 10},
+        "F2": {"min": 10, "max": 60, "step": 10}
       },
       "constraints": ["(F1 * F2) % (F1 + F2) === 0"],
       "calculation": "(F1 * F2) / (F1 + F2)",
-      "explanation": "For lenses in contact: 1/F = 1/F1 + 1/F2 → F = F1×F2 ÷ (F1+F2) = [F1]×[F2] ÷ ([F1]+[F2]) = [RESULT] cm"
+      "explanation": "1/F = 1/F1 + 1/F2 → F = F1×F2 ÷ (F1+F2) = [F1]×[F2] ÷ ([F1]+[F2]) = [F1*F2] ÷ [F1+F2] = [RESULT] cm"
     },
 
     {
       "template_id": "LO_L3_05",
-      "pattern": "A lens has power [P1] dioptres and a second lens has power [P2] dioptres. They are placed in contact. What is the combined power in dioptres?",
-      "variables": {
-        "P1": {"min": 2, "max": 20, "step": 2},
-        "P2": {"min": 2, "max": 20, "step": 2}
-      },
-      "calculation": "P1 + P2",
-      "explanation": "Powers of lenses in contact simply add: P_total = P1 + P2 = [P1] + [P2] = [RESULT] dioptres"
-    },
-
-    {
-      "template_id": "LO_L3_06",
       "pattern": "A glass slab of refractive index [N] and thickness [T] cm is placed in the path of a light ray. What is the apparent shift of the image in cm?",
       "variables": {
         "N": {"values": [2, 3, 4, 6]},
@@ -70,24 +59,24 @@
       },
       "constraints": ["T % N === 0"],
       "calculation": "T - (T / N)",
-      "explanation": "Apparent shift = t(1 − 1/n) = [T] × (1 − 1/[N]) = [T] − [T]/[N] = [T] − [T/N] = [RESULT] cm"
+      "explanation": "Apparent shift = t(1 − 1/n) = [T] × (1 − 1/[N]) = [T] − [T/N] = [RESULT] cm"
     },
 
     {
-      "template_id": "LO_L3_07",
-      "pattern": "A compound microscope has an objective lens of focal length [FO] cm and eyepiece focal length [FE] cm. The tube length is [L] cm. What is the total magnification? (near point = 25 cm)",
+      "template_id": "LO_L3_06",
+      "pattern": "A compound microscope has objective focal length [FO] cm, eyepiece focal length [FE] cm and tube length [L] cm. What is the total magnification? (near point = 25 cm)",
       "variables": {
-        "FO": {"min": 1, "max": 5,  "step": 1},
+        "FO": {"min": 1, "max": 4,  "step": 1},
         "FE": {"min": 2, "max": 10, "step": 2},
         "L":  {"min": 10,"max": 20, "step": 5}
       },
       "constraints": ["(L * 25) % (FO * FE) === 0"],
       "calculation": "(L * 25) / (FO * FE)",
-      "explanation": "Microscope magnification = (L ÷ FO) × (25 ÷ FE) = ([L]÷[FO]) × (25÷[FE]) = [L*25] ÷ ([FO*FE]) = [RESULT]×"
+      "explanation": "Microscope magnification = (L ÷ FO) × (25 ÷ FE) = ([L] ÷ [FO]) × (25 ÷ [FE]) = [L*25] ÷ [FO*FE] = [RESULT]×"
     },
 
     {
-      "template_id": "LO_L3_08",
+      "template_id": "LO_L3_07",
       "pattern": "An astronomical telescope has objective focal length [FO] cm and eyepiece focal length [FE] cm. What is the angular magnification in normal adjustment?",
       "variables": {
         "FO": {"min": 50,  "max": 200, "step": 50},
@@ -99,28 +88,40 @@
     },
 
     {
-      "template_id": "LO_L3_09",
-      "pattern": "In a Young's double slit experiment, the slit separation is [D] mm, the screen is [SCR] m away and the wavelength is [L] nm. What is the fringe spacing in mm?",
+      "template_id": "LO_L3_08",
+      "pattern": "In a Young's double slit experiment, slit separation is [D] mm, screen distance is [S] m and wavelength is [L] nm. What is the fringe spacing in mm?",
       "variables": {
-        "D":   {"min": 1,   "max": 5,   "step": 1},
-        "SCR": {"min": 1,   "max": 5,   "step": 1},
-        "L":   {"min": 400, "max": 600, "step": 100}
+        "D": {"min": 1,   "max": 4,   "step": 1},
+        "S": {"min": 1,   "max": 4,   "step": 1},
+        "L": {"min": 400, "max": 600, "step": 100}
       },
-      "constraints": ["(L * SCR) % (D * 1000) === 0"],
-      "calculation": "(L * SCR) / (D * 1000)",
-      "explanation": "Fringe spacing W = λD ÷ d = ([L]×10⁻⁹ × [SCR]) ÷ ([D]×10⁻³) = [L*SCR] ÷ ([D]*1000) = [RESULT] mm"
+      "constraints": ["(L * S) % (D * 1000) === 0"],
+      "calculation": "(L * S) / (D * 1000)",
+      "explanation": "Fringe spacing W = λS ÷ d = ([L]×10⁻⁹ × [S]) ÷ ([D]×10⁻³) = [L*S] ÷ ([D]*1000) = [RESULT] mm"
+    },
+
+    {
+      "template_id": "LO_L3_09",
+      "pattern": "A converging mirror has focal length [F] cm. An object is placed [U] cm in front of it. What is the image distance in cm?",
+      "variables": {
+        "F": {"min": 5,  "max": 20, "step": 5},
+        "U": {"min": 30, "max": 100,"step": 10}
+      },
+      "constraints": ["U > F", "(U * F) % (U - F) === 0"],
+      "calculation": "(U * F) / (U - F)",
+      "explanation": "Mirror formula: v = uF ÷ (u − F) = [U] × [F] ÷ ([U] − [F]) = [U*F] ÷ [U-F] = [RESULT] cm"
     },
 
     {
       "template_id": "LO_L3_10",
-      "pattern": "A converging mirror has focal length [F] cm. An object is placed [U] cm in front of it. What is the image distance in cm?",
+      "pattern": "An object is at a real depth of [R] cm in a liquid of refractive index [N]. What is the apparent depth in cm?",
       "variables": {
-        "F": {"min": 5,  "max": 20, "step": 5},
-        "U": {"min": 30, "max": 80, "step": 10}
+        "R": {"min": 10, "max": 60, "step": 10},
+        "N": {"values": [2, 3, 4, 5]}
       },
-      "constraints": ["U > F", "(U * F) % (U - F) === 0"],
-      "calculation": "(U * F) / (U - F)",
-      "explanation": "Mirror formula: v = uF ÷ (u−F) = [U]×[F] ÷ ([U]−[F]) = [U*F] ÷ [U-F] = [RESULT] cm"
+      "constraints": ["R % N === 0"],
+      "calculation": "R / N",
+      "explanation": "Apparent depth = real depth ÷ refractive index = [R] ÷ [N] = [RESULT] cm"
     }
 
   ],
