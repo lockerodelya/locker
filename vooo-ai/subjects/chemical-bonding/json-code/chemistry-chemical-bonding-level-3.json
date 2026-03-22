@@ -42,15 +42,14 @@
   "template_id": "CB_L3_04",
   "pattern": "Compound A has ions of charge [Q1]+ and [Q2]- with interionic distance [R1] pm. Compound B has ions of charge 1+ and 1- with interionic distance [R2] pm. Calculate the ratio of their lattice energies E_A ÷ E_B.",
   "variables": {
-    "Q1":  {"values": [1,2,2,3,1,2,3]},
-    "Q2":  {"values": [1,1,2,1,2,2,2]},
-    "R2":  {"values": [100,200,300,400,500]},
-    "MULT":{"values": [1,2,3,4,5]},
-    "R1":  {"calc": "R2 / MULT"}
+    "Q1":   {"values": [1,2,2,3,1,2,3]},
+    "Q2":   {"values": [1,1,2,1,2,2,2]},
+    "MULT": {"values": [2,3,4,5,6]},
+    "R1":   {"values": [100,100,100,100,100]},
+    "R2":   {"calc": "R1 * MULT"}
   },
-  "constraints": ["R1 >= 100"],
   "calculation": "Q1 * Q2 * MULT",
-  "explanation": "Lattice energy ∝ Q₊ × Q₋ ÷ r\nRatio E_A ÷ E_B = (Q1 × Q2 ÷ R1) ÷ (1 × 1 ÷ R2)\n= Q1 × Q2 × R2 ÷ R1\n= [Q1] × [Q2] × [MULT]\n= [RESULT]\n\nLattice energy increases with ionic charge and decreases with interionic distance. MgO has much greater lattice energy than NaCl because both ions carry double charges."
+  "explanation": "Lattice energy ∝ Q₊ × Q₋ ÷ r\nRatio E_A ÷ E_B = Q1 × Q2 × R2 ÷ R1\n= [Q1] × [Q2] × [R2] ÷ [R1]\n= [Q1] × [Q2] × [MULT]\n= [RESULT]\n\nLattice energy increases with ionic charge and decreases with interionic distance. MgO has much greater lattice energy than NaCl because both ions carry double charges."
 },
 
 {
