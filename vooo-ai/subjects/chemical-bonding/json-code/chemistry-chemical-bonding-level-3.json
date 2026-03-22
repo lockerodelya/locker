@@ -51,23 +51,26 @@
   "explanation": "Lattice energy ∝ Q₊ × Q₋ ÷ r\nRatio E_A ÷ E_B = (Q1 × Q2 ÷ R1) ÷ (1 × 1 ÷ R2)\n= Q1 × Q2 × R2 ÷ R1\n= [Q1] × [Q2] × [R2] ÷ [R1]\n= [RESULT]\n\nLattice energy increases with ionic charge and decreases with interionic distance. MgO has much greater lattice energy than NaCl because both ions have double charges."
 },
 
-    {
-      "template_id": "CB_L3_05",
-      "pattern": "A molecule has [NB] electrons in bonding molecular orbitals and [NA] electrons in antibonding molecular orbitals. Calculate the bond order.",
-      "variables": {
-        "NB": {"values": [2,4,6,8,4,6,8,6,8,10]},
-        "NA": {"values": [0,0,0,0,2,2,2,4,4, 4]}
-      },
-      "calculation": "(NB - NA) / 2",
-      "explanation": "Bond order = (bonding electrons − antibonding electrons) ÷ 2\n= ([NB] − [NA]) ÷ 2\n= [NB-NA] ÷ 2\n= [RESULT]\n\nA bond order of 0 means no stable bond exists. Bond order 1 = single bond, 2 = double bond, 3 = triple bond. Higher bond order means shorter stronger bond."
-    },
+{
+  "template_id": "CB_L3_05",
+  "pattern": "A molecule has [NB] electrons in bonding molecular orbitals and [NA] electrons in antibonding molecular orbitals. Calculate the bond order.",
+  "variables": {
+    "BO":  {"values": [0.5, 1, 1.5, 2, 2.5, 3]},
+    "NA":  {"values": [0,   0, 1,   0, 1,   0]},
+    "NB":  {"calc": "NA + BO * 2"},
+    "VOL": {"min": 1, "max": 50, "step": 1}
+  },
+  "calculation": "BO",
+  "explanation": "Bond order = (bonding electrons − antibonding electrons) ÷ 2\n= ([NB] − [NA]) ÷ 2\n= [NB-NA] ÷ 2\n= [RESULT]\n\nBond order 0 = no bond, 1 = single, 2 = double, 3 = triple. Higher bond order means shorter and stronger bond."
+},
 
 {
   "template_id": "CB_L3_06",
   "pattern": "The bond dissociation energy of bond X is [BE1] kJ/mol and bond Y is [BE2] kJ/mol. Calculate the difference in their bond energies in kJ/mol.",
   "variables": {
     "BE1": {"values": [305,347,358,391,413,436,464,498,614,805,945]},
-    "BE2": {"values": [305,347,358,391,413,436,464,498,614,805,945]}
+    "BE2": {"values": [305,347,358,391,413,436,464,498,614,805,945]},
+    "VOL": {"min": 1, "max": 50, "step": 1}
   },
   "constraints": ["BE1 > BE2"],
   "calculation": "BE1 - BE2",
