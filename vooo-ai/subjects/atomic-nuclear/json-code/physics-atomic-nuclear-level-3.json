@@ -1,0 +1,133 @@
+{
+  "puzzle_type": "physics-atomic-nuclear-level-3",
+  "display_name": "Atomic & Nuclear L3",
+  "templates": [
+
+    {
+      "template_id": "AN_L3_01",
+      "pattern": "A radioactive source has an initial activity of [A0] Bq and a half life of [THALF] years. Calculate the activity after [TIME] years in Bq.",
+      "variables": {
+        "A0":    {"values": [1000,2000,4000,8000,16000]},
+        "THALF": {"values": [2,4,5,10,20,25,50]},
+        "TIME":  {"values": [2,4,5,10,20,25,50,100]}
+      },
+      "calculation": "round2(A0 * pow(0.5, TIME / THALF))",
+      "explanation": "Activity A = A₀ × (0.5)^(t ÷ T½)\n= [A0] × (0.5)^([TIME] ÷ [THALF])\n= [A0] × (0.5)^[TIME/THALF]\n= [RESULT] Bq\n\nThis formula works for any time — not just whole numbers of half lives. The exponent t/T½ tells us how many half lives have elapsed."
+    },
+
+    {
+      "template_id": "AN_L3_02",
+      "pattern": "A radioactive sample has an initial mass of [M0] g and a half life of [THALF] years. Calculate the mass remaining after [TIME] years in grams.",
+      "variables": {
+        "M0":    {"values": [100,200,400,800,1000]},
+        "THALF": {"values": [2,4,5,10,20,25,50]},
+        "TIME":  {"values": [2,4,5,10,20,25,50,100]}
+      },
+      "calculation": "round2(M0 * pow(0.5, TIME / THALF))",
+      "explanation": "Mass remaining M = M₀ × (0.5)^(t ÷ T½)\n= [M0] × (0.5)^([TIME] ÷ [THALF])\n= [M0] × (0.5)^[TIME/THALF]\n= [RESULT] g\n\nThis continuous decay formula gives the mass at any time t. It is the same exponential relationship as for activity."
+    },
+
+    {
+      "template_id": "AN_L3_03",
+      "pattern": "A radioactive isotope has a decay constant of [LAM] × 10⁻³ per second. Calculate the half life of the isotope in seconds.",
+      "variables": {
+        "LAM": {"min": 1,  "max": 50, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round2(693 / LAM)",
+      "explanation": "Half life T½ = 0.693 ÷ λ\n= 0.693 ÷ ([LAM] × 10⁻³)\n= 693 ÷ [LAM]\n= [RESULT] s\n\nThe decay constant and half life are inversely related. A large decay constant means a short half life and rapid decay."
+    },
+
+    {
+      "template_id": "AN_L3_04",
+      "pattern": "A radioactive source contains [N] × 10¹⁰ atoms and has a decay constant of [LAM] × 10⁻³ per second. Calculate the activity of the source in Bq.",
+      "variables": {
+        "N":   {"min": 1,  "max": 20, "step": 1},
+        "LAM": {"min": 1,  "max": 20, "step": 1}
+      },
+      "calculation": "round2(N * LAM * pow(10, 7))",
+      "explanation": "Activity A = λ × N\n= [LAM] × 10⁻³ × [N] × 10¹⁰\n= [LAM] × [N] × 10⁷\n= [RESULT] Bq\n\nActivity is directly proportional to both the number of radioactive atoms and the decay constant. A source with more atoms or a larger decay constant has a higher activity."
+    },
+
+    {
+      "template_id": "AN_L3_05",
+      "pattern": "A photon has a frequency of [F] × 10¹⁴ Hz. Calculate the energy of the photon in joules. (h = 6.63 × 10⁻³⁴ J·s)",
+      "variables": {
+        "F":   {"min": 1,  "max": 20, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round3(6.63 * F * pow(10, -20))",
+      "explanation": "Photon energy E = hf\n= 6.63 × 10⁻³⁴ × [F] × 10¹⁴\n= 6.63 × [F] × 10⁻²⁰\n= [RESULT] J\n\nThe energy of a photon is directly proportional to its frequency. Higher frequency radiation such as gamma rays carries more energy per photon than lower frequency radiation such as radio waves."
+    },
+
+    {
+      "template_id": "AN_L3_06",
+      "pattern": "An electron of mass 9.11 × 10⁻³¹ kg moves at [V] × 10⁶ m/s. Calculate the de Broglie wavelength of the electron in metres. (h = 6.63 × 10⁻³⁴ J·s)",
+      "variables": {
+        "V":   {"min": 1,  "max": 10, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round3(6.63 * pow(10, -34) / (9.11 * pow(10, -31) * V * pow(10, 6)))",
+      "explanation": "de Broglie wavelength λ = h ÷ (mv)\n= 6.63 × 10⁻³⁴ ÷ (9.11 × 10⁻³¹ × [V] × 10⁶)\n= 6.63 ÷ (9.11 × [V] × 10³) nm range\n= [RESULT] m\n\nThe de Broglie wavelength shows that particles have wave properties. Electrons have wavelengths similar to atomic spacings which is why electron diffraction is used to study crystal structures."
+    },
+
+    {
+      "template_id": "AN_L3_07",
+      "pattern": "Light of frequency [F] × 10¹⁴ Hz falls on a metal surface with a work function of [PHI] × 10⁻¹⁹ J. Calculate the maximum kinetic energy of the emitted photoelectrons in joules. (h = 6.63 × 10⁻³⁴ J·s)",
+      "variables": {
+        "F":   {"min": 6,  "max": 15, "step": 1},
+        "PHI": {"min": 2,  "max": 8,  "step": 1}
+      },
+      "constraints": ["6.63 * F > PHI * 10"],
+      "calculation": "round3(6.63 * F * pow(10, -20) - PHI * pow(10, -19))",
+      "explanation": "Maximum KE = hf − φ\n= 6.63 × 10⁻³⁴ × [F] × 10¹⁴ − [PHI] × 10⁻¹⁹\n= [6.63*F] × 10⁻²⁰ − [PHI] × 10⁻¹⁹\n= [RESULT] J\n\nThe work function φ is the minimum energy needed to release an electron from the surface. Any extra photon energy becomes kinetic energy of the photoelectron."
+    },
+
+    {
+      "template_id": "AN_L3_08",
+      "pattern": "Light of frequency [F] × 10¹⁴ Hz causes photoelectric emission from a metal with work function [PHI] × 10⁻¹⁹ J. Calculate the stopping potential in volts. (h = 6.63 × 10⁻³⁴ J·s, e = 1.6 × 10⁻¹⁹ C)",
+      "variables": {
+        "F":   {"min": 6,  "max": 15, "step": 1},
+        "PHI": {"min": 2,  "max": 8,  "step": 1}
+      },
+      "constraints": ["6.63 * F > PHI * 10"],
+      "calculation": "round2((6.63 * F * pow(10, -20) - PHI * pow(10, -19)) / (1.6 * pow(10, -19)))",
+      "explanation": "Stopping potential eV₀ = hf − φ\nV₀ = (hf − φ) ÷ e\n= (6.63 × [F] × 10⁻²⁰ − [PHI] × 10⁻¹⁹) ÷ 1.6 × 10⁻¹⁹\n= [RESULT] V\n\nThe stopping potential is the minimum reverse voltage needed to stop all photoelectrons. It directly measures the maximum kinetic energy of the emitted electrons."
+    },
+
+    {
+      "template_id": "AN_L3_09",
+      "pattern": "A metal has a work function of [PHI] × 10⁻¹⁹ J. Calculate the threshold frequency for photoelectric emission in Hz. (h = 6.63 × 10⁻³⁴ J·s)",
+      "variables": {
+        "PHI": {"min": 2,  "max": 12, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round3(PHI * pow(10, -19) / (6.63 * pow(10, -34)))",
+      "explanation": "Threshold frequency f₀ = φ ÷ h\n= [PHI] × 10⁻¹⁹ ÷ 6.63 × 10⁻³⁴\n= [PHI] ÷ 6.63 × 10¹⁵\n= [RESULT] Hz\n\nBelow the threshold frequency no electrons are emitted regardless of intensity. This proves light consists of photons — particles of energy hf."
+    },
+
+    {
+      "template_id": "AN_L3_10",
+      "pattern": "An electron in an atom falls from a higher energy level to a lower one. The wavelength of the emitted photon is [LAM] × 10⁻⁷ m. Calculate the energy of the emitted photon in joules. (h = 6.63 × 10⁻³⁴ J·s, c = 3 × 10⁸ m/s)",
+      "variables": {
+        "LAM": {"min": 1,  "max": 9, "step": 1},
+        "VOL": {"min": 1,  "max": 50,"step": 1}
+      },
+      "calculation": "round3(6.63 * pow(10, -34) * 3 * pow(10, 8) / (LAM * pow(10, -7)))",
+      "explanation": "Photon energy E = hc ÷ λ\n= 6.63 × 10⁻³⁴ × 3 × 10⁸ ÷ ([LAM] × 10⁻⁷)\n= 19.89 × 10⁻²⁶ ÷ [LAM] × 10⁻⁷\n= [RESULT] J\n\nWhen an electron transitions to a lower energy level it releases a photon. The wavelength of this photon gives spectral lines unique to each element — this is the basis of spectroscopy."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
