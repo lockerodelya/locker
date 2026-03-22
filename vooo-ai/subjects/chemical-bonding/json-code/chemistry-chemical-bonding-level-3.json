@@ -1,0 +1,138 @@
+{
+  "puzzle_type": "chemistry-chemical-bonding-level-3",
+  "display_name": "Chemical Bonding L3",
+  "templates": [
+
+    {
+      "template_id": "CB_L3_01",
+      "pattern": "Breaking bonds in the reactants requires [BREAK] kJ/mol. Forming bonds in the products releases [FORM] kJ/mol. Calculate the enthalpy change of the reaction in kJ/mol.",
+      "variables": {
+        "BREAK": {"min": 200, "max": 4000, "step": 100},
+        "FORM":  {"min": 200, "max": 4000, "step": 100}
+      },
+      "calculation": "BREAK - FORM",
+      "explanation": "ΔH = energy to break bonds − energy released forming bonds\n= [BREAK] − [FORM]\n= [RESULT] kJ/mol\n\nThis method uses average bond energies and gives approximate enthalpy changes. It is less accurate than using formation enthalpies because bond energies are averages."
+    },
+
+    {
+      "template_id": "CB_L3_02",
+      "pattern": "Using a Born-Haber cycle: enthalpy of formation = [DHF] kJ/mol, ionisation energy = [IE] kJ/mol, electron affinity = [EA] kJ/mol, atomisation enthalpies sum = [AT] kJ/mol. Calculate the lattice energy in kJ/mol.",
+      "variables": {
+        "DHF": {"min": -1200, "max": -100, "step": 50},
+        "IE":  {"min": 400,   "max": 2000, "step": 100},
+        "EA":  {"min": -500,  "max": -100, "step": 50},
+        "AT":  {"min": 200,   "max": 1000, "step": 50}
+      },
+      "calculation": "DHF - IE - EA - AT",
+      "explanation": "Born-Haber cycle:\nLattice energy = ΔHf − IE − EA − ΔH_atomisation\n= [DHF] − [IE] − [EA] − [AT]\n= [RESULT] kJ/mol\n\nLattice energy is always negative — energy is released when gaseous ions come together to form an ionic lattice. More negative = stronger ionic bonding."
+    },
+
+    {
+      "template_id": "CB_L3_03",
+      "pattern": "The lattice energy of an ionic compound is [LE] kJ/mol. The sum of hydration enthalpies of its ions is [HE] kJ/mol. Calculate the enthalpy of solution in kJ/mol.",
+      "variables": {
+        "LE":  {"min": 600,  "max": 4000, "step": 100},
+        "HE":  {"min": 500,  "max": 3800, "step": 100}
+      },
+      "calculation": "HE - LE",
+      "explanation": "ΔH_solution = ΔH_hydration + lattice energy\nSince lattice energy is endothermic when dissolving:\nΔH_solution = ΔH_hydration − lattice energy\n= [HE] − [LE]\n= [RESULT] kJ/mol\n\nA small or negative enthalpy of solution means the compound dissolves readily. If too endothermic the compound is poorly soluble."
+    },
+
+    {
+      "template_id": "CB_L3_04",
+      "pattern": "An ionic compound has cation charge [Q1] and anion charge [Q2]. The interionic distance is [R] pm. Calculate the relative lattice energy using the formula Q₊ × Q₋ ÷ r.",
+      "variables": {
+        "Q1": {"min": 1,   "max": 3,   "step": 1},
+        "Q2": {"min": 1,   "max": 3,   "step": 1},
+        "R":  {"min": 200, "max": 500, "step": 50}
+      },
+      "calculation": "round3(Q1 * Q2 / R)",
+      "explanation": "Relative lattice energy ∝ Q₊ × Q₋ ÷ r\n= [Q1] × [Q2] ÷ [R]\n= [RESULT]\n\nLattice energy increases with ionic charge and decreases with ionic radius. MgO has much greater lattice energy than NaCl because Mg²⁺ and O²⁻ have double charges."
+    },
+
+    {
+      "template_id": "CB_L3_05",
+      "pattern": "A molecule has [NB] electrons in bonding molecular orbitals and [NA] electrons in antibonding molecular orbitals. Calculate the bond order.",
+      "variables": {
+        "NB": {"values": [2,4,6,8,4,6,8,6,8,10]},
+        "NA": {"values": [0,0,0,0,2,2,2,4,4, 4]}
+      },
+      "calculation": "(NB - NA) / 2",
+      "explanation": "Bond order = (bonding electrons − antibonding electrons) ÷ 2\n= ([NB] − [NA]) ÷ 2\n= [NB-NA] ÷ 2\n= [RESULT]\n\nA bond order of 0 means no stable bond exists. Bond order 1 = single bond, 2 = double bond, 3 = triple bond. Higher bond order means shorter stronger bond."
+    },
+
+    {
+      "template_id": "CB_L3_06",
+      "pattern": "Two compounds A and B have molecular masses [Mr1] and [Mr2] respectively. Both are simple molecular compounds with similar shapes. Calculate the ratio of their London dispersion force strengths Mr_A ÷ Mr_B.",
+      "variables": {
+        "Mr1": {"min": 20,  "max": 500, "step": 10},
+        "Mr2": {"min": 20,  "max": 500, "step": 10}
+      },
+      "constraints": ["Mr1 !== Mr2"],
+      "calculation": "round2(Mr1 / Mr2)",
+      "explanation": "London dispersion force strength ∝ molecular mass\nRatio = Mr_A ÷ Mr_B\n= [Mr1] ÷ [Mr2]\n= [RESULT]\n\nLarger molecules are more polarisable — their electron clouds are more easily distorted to create temporary dipoles. This is why larger noble gases have higher boiling points."
+    },
+
+    {
+      "template_id": "CB_L3_07",
+      "pattern": "The C-C bond length in a molecule is [BL] pm. Calculate the covalent radius of carbon in pm.",
+      "variables": {
+        "BL":  {"values": [120,134,154,167,177]},
+        "VOL": {"min": 1, "max": 50, "step": 1}
+      },
+      "calculation": "BL / 2",
+      "explanation": "Covalent radius = bond length ÷ 2\n= [BL] ÷ 2\n= [RESULT] pm\n\nDifferent C-C bond lengths (154 pm single, 134 pm double, 120 pm triple) give different covalent radii for carbon in different bonding environments."
+    },
+
+    {
+      "template_id": "CB_L3_08",
+      "pattern": "An atom in a metallic lattice contributes [VE] valence electrons to the delocalised electron sea. The metal contains [N] × 10²³ atoms per cm³. Calculate the number of delocalised electrons per cm³ in units of 10²³.",
+      "variables": {
+        "VE": {"min": 1, "max": 3,  "step": 1},
+        "N":  {"min": 1, "max": 20, "step": 1}
+      },
+      "calculation": "VE * N",
+      "explanation": "Delocalised electrons per cm³ = valence electrons per atom × atoms per cm³\n= [VE] × [N] × 10²³\n= [RESULT] × 10²³\n\nThe sea of delocalised electrons explains metallic properties — electrical conductivity, thermal conductivity and metallic lustre. More valence electrons generally means stronger metallic bonding."
+    },
+
+    {
+      "template_id": "CB_L3_09",
+      "pattern": "The standard enthalpy of formation of a compound is [DHF] kJ/mol. The sum of enthalpies of atomisation of all elements is [AT] kJ/mol and the sum of all bond energies in the compound is [BE] kJ/mol. Calculate the difference between the theoretical and experimental enthalpy of formation in kJ/mol.",
+      "variables": {
+        "DHF": {"min": -800, "max": -50, "step": 50},
+        "AT":  {"min": 200,  "max": 2000,"step": 100},
+        "BE":  {"min": 200,  "max": 2000,"step": 100}
+      },
+      "calculation": "round2((AT - BE) - abs(DHF))",
+      "explanation": "Theoretical ΔHf = ΔH_atomisation − bond energies formed\n= [AT] − [BE]\n\nDifference from experimental = theoretical − experimental\n= ([AT] − [BE]) − [DHF]\n= [RESULT] kJ/mol\n\nDifferences arise because bond energies are averages across many compounds — they give approximate not exact values."
+    },
+
+    {
+      "template_id": "CB_L3_10",
+      "pattern": "A reaction involves breaking [N1] moles of bond X (BE = [BE1] kJ/mol) and [N2] moles of bond Y (BE = [BE2] kJ/mol) and forming [N3] moles of bond Z (BE = [BE3] kJ/mol). Calculate the enthalpy change in kJ/mol.",
+      "variables": {
+        "N1":  {"min": 1, "max": 4,  "step": 1},
+        "N2":  {"min": 1, "max": 4,  "step": 1},
+        "N3":  {"min": 1, "max": 6,  "step": 1},
+        "BE1": {"values": [413,347,464,391,358,436,498,614]},
+        "BE2": {"values": [413,347,464,391,358,436,498,614]},
+        "BE3": {"values": [413,347,464,391,358,436,498,614]}
+      },
+      "calculation": "(N1 * BE1 + N2 * BE2) - N3 * BE3",
+      "explanation": "ΔH = energy to break bonds − energy to form bonds\n= ([N1] × [BE1] + [N2] × [BE2]) − ([N3] × [BE3])\n= [N1*BE1+N2*BE2] − [N3*BE3]\n= [RESULT] kJ/mol\n\nThis multi-bond calculation is the standard method for estimating enthalpy changes using bond energies in A-Level chemistry."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
