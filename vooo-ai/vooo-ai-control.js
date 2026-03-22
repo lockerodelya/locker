@@ -148,6 +148,9 @@ const VOOO_ENGINE_REGISTRY = {
 	'chemistry-atomic-structure-level-2' : '/vooo-ai/subjects/chemistry-atomic/engine-code/chemistry-atomic-structure-level-2.js',
 	'chemistry-atomic-structure-level-3' : '/vooo-ai/subjects/chemistry-atomic/engine-code/chemistry-atomic-structure-level-3.js',
 
+	'chemistry-chemical-bonding-level-1' : '/vooo-ai/subjects/chemical-bonding/engine-code/chemistry-chemical-bonding-level-1.js',
+	'chemistry-chemical-bonding-level-2' : '/vooo-ai/subjects/chemical-bonding/engine-code/chemistry-chemical-bonding-level-2.js',
+	'chemistry-chemical-bonding-level-3' : '/vooo-ai/subjects/chemical-bonding/engine-code/chemistry-chemical-bonding-level-3.js',
 
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
@@ -296,6 +299,11 @@ const VOOO_ENGINE_INSTANCES = {
 	'chemistry-atomic-structure-level-1' : 'chemistryatomicstructurel1',
 	'chemistry-atomic-structure-level-2' : 'chemistryatomicstructurel2',
 	'chemistry-atomic-structure-level-3' : 'chemistryatomicstructurel3',
+
+	'chemistry-chemical-bonding-level-1' : 'chemistrychemicalbondingl1',
+	'chemistry-chemical-bonding-level-2' : 'chemistrychemicalbondingl2',
+	'chemistry-chemical-bonding-level-3' : 'chemistrychemicalbondingl3',
+
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -545,7 +553,14 @@ const VOOO_ENGINE_INSTANCES = {
 					{ value: 'chemistry-atomic-structure-level-3', text: '• Atomic Structure L3' },
                 ]
             },			
-
+			{
+                label: 'Chemistry : Chemical Bonding',
+                options: [
+                    { value: 'chemistry-chemical-bonding-level-1', text: '• Chemical Bonding L1' },
+					{ value: 'chemistry-chemical-bonding-level-2', text: '• Chemical Bonding L2' },
+					{ value: 'chemistry-chemical-bonding-level-3', text: '• Chemical Bonding L3' },
+                ]
+            },
 
 			
             // --- ADD NEW OPTGROUP BELOW THIS LINE ---
