@@ -5,118 +5,114 @@
 
     {
       "template_id": "WS_L1_01",
-      "pattern": "A wave has a frequency of [F] Hz and a wavelength of [L] m. What is its wave speed?",
+      "pattern": "A wave has a frequency of [F] Hz and a wavelength of [L] m. Calculate the wave speed in m/s.",
       "variables": {
         "F": {"min": 2,  "max": 100, "step": 2},
         "L": {"min": 2,  "max": 50,  "step": 2}
       },
       "calculation": "F * L",
-      "explanation": "Wave speed = frequency × wavelength = [F] × [L] = [RESULT] m/s"
+      "explanation": "Wave speed = frequency × wavelength\n= v = fλ\n= [F] × [L]\n= [RESULT] m/s\n\nThis equation applies to all types of waves including sound, light and water waves."
     },
 
     {
       "template_id": "WS_L1_02",
-      "pattern": "A wave travels at [V] m/s and has a wavelength of [L] m. What is its frequency?",
+      "pattern": "A wave travels at [V] m/s and has a wavelength of [L] m. Calculate the frequency of the wave in Hz.",
       "variables": {
-        "V": {"min": 10, "max": 400, "step": 10},
-        "L": {"min": 2,  "max": 40,  "step": 2}
+        "V": {"min": 10, "max": 500, "step": 10},
+        "L": {"min": 2,  "max": 50,  "step": 2}
       },
-      "constraints": ["V % L === 0"],
-      "calculation": "V / L",
-      "explanation": "Frequency = wave speed ÷ wavelength = [V] ÷ [L] = [RESULT] Hz"
+      "calculation": "round2(V / L)",
+      "explanation": "Frequency = wave speed ÷ wavelength\n= f = v ÷ λ\n= [V] ÷ [L]\n= [RESULT] Hz\n\nFrequency tells us how many complete waves pass a fixed point every second."
     },
 
     {
       "template_id": "WS_L1_03",
-      "pattern": "A wave has a speed of [V] m/s and a frequency of [F] Hz. What is its wavelength?",
+      "pattern": "A wave has a speed of [V] m/s and a frequency of [F] Hz. Calculate the wavelength of the wave in metres.",
       "variables": {
-        "V": {"min": 20, "max": 400, "step": 20},
-        "F": {"min": 2,  "max": 40,  "step": 2}
+        "V": {"min": 20,  "max": 500, "step": 20},
+        "F": {"min": 2,   "max": 50,  "step": 2}
       },
-      "constraints": ["V % F === 0"],
-      "calculation": "V / F",
-      "explanation": "Wavelength = wave speed ÷ frequency = [V] ÷ [F] = [RESULT] m"
+      "calculation": "round2(V / F)",
+      "explanation": "Wavelength = wave speed ÷ frequency\n= λ = v ÷ f\n= [V] ÷ [F]\n= [RESULT] m\n\nWavelength is the distance between two successive crests or two successive troughs of a wave."
     },
 
     {
       "template_id": "WS_L1_04",
-      "pattern": "A sound wave travels [D] m in [T] seconds through air. What is the speed of sound in this medium?",
+      "pattern": "A sound wave travels [D] m through air in [T] seconds. Calculate the speed of sound in m/s.",
       "variables": {
-        "D": {"min": 100, "max": 3400, "step": 100},
-        "T": {"min": 1,   "max": 10,   "step": 1}
+        "T":   {"values": [1,2,3,4,5,6,7,8,9,10]},
+        "SPD": {"values": [300,310,320,330,340,350]},
+        "D":   {"calc": "T * SPD"}
       },
-      "constraints": ["D % T === 0"],
-      "calculation": "D / T",
-      "explanation": "Speed = Distance ÷ Time = [D] ÷ [T] = [RESULT] m/s"
+      "calculation": "SPD",
+      "explanation": "Speed of sound = Distance ÷ Time\n= [D] ÷ [T]\n= [RESULT] m/s\n\nThe speed of sound in air is approximately 340 m/s at room temperature. It is much faster in liquids and solids."
     },
 
     {
       "template_id": "WS_L1_05",
-      "pattern": "A wave completes [N] full oscillations in [T] seconds. What is its frequency?",
+      "pattern": "A source produces [N] complete wave oscillations in [T] seconds. Calculate the frequency of the wave in Hz.",
       "variables": {
-        "N": {"min": 10, "max": 500, "step": 10},
-        "T": {"min": 1,  "max": 10,  "step": 1}
+        "T":   {"values": [1,2,4,5,10,20,25,50]},
+        "F":   {"values": [2,4,5,10,20,40,50,100,200,500]},
+        "N":   {"calc": "T * F"}
       },
-      "constraints": ["N % T === 0"],
-      "calculation": "N / T",
-      "explanation": "Frequency = number of oscillations ÷ time = [N] ÷ [T] = [RESULT] Hz"
+      "calculation": "F",
+      "explanation": "Frequency = number of oscillations ÷ time\n= f = N ÷ t\n= [N] ÷ [T]\n= [RESULT] Hz\n\nFrequency is measured in hertz (Hz). 1 Hz means one complete oscillation per second."
     },
 
     {
       "template_id": "WS_L1_06",
-      "pattern": "A wave has a frequency of [F] Hz. What is its time period?",
+      "pattern": "A wave has a frequency of [F] Hz. Calculate the time period of the wave in seconds.",
       "variables": {
-        "F": {"min": 2, "max": 50, "step": 2}
+        "F": {"values": [2,4,5,8,10,20,25,40,50,100,200,250,500]}
       },
-      "calculation": "1 / F",
-      "explanation": "Time period T = 1 ÷ frequency = 1 ÷ [F] = [RESULT] s"
+      "calculation": "round3(1 / F)",
+      "explanation": "Time period = 1 ÷ frequency\n= T = 1 ÷ f\n= 1 ÷ [F]\n= [RESULT] s\n\nThe time period is the time taken for one complete oscillation. Period and frequency are reciprocals of each other."
     },
 
     {
       "template_id": "WS_L1_07",
-      "pattern": "A person shouts near a cliff and hears the echo after [T] seconds. The speed of sound is [V] m/s. How far away is the cliff?",
+      "pattern": "A person shouts near a cliff and hears the echo after [T] seconds. The speed of sound is [V] m/s. Calculate the distance from the person to the cliff in metres.",
       "variables": {
-        "T": {"min": 1,   "max": 10,  "step": 1},
-        "V": {"min": 300, "max": 360, "step": 10}
+        "T":   {"values": [1,2,3,4,5,6,7,8,9,10]},
+        "V":   {"values": [320,330,340,350]},
+        "DIST":{"calc": "V * T / 2"}
       },
-      "calculation": "(V * T) / 2",
-      "explanation": "Sound travels to the cliff and back. Distance = (speed × time) ÷ 2 = ([V] × [T]) ÷ 2 = [V*T] ÷ 2 = [RESULT] m"
+      "calculation": "DIST",
+      "explanation": "The sound travels to the cliff and back — so total distance = v × t\nDistance to cliff = v × t ÷ 2\n= [V] × [T] ÷ 2\n= [V*T] ÷ 2\n= [RESULT] m\n\nThis is the principle used in SONAR and echo location."
     },
 
     {
       "template_id": "WS_L1_08",
-      "pattern": "A wave has an amplitude of [A] cm and a wavelength of [L] m. If the frequency doubles, what happens to the wave speed? Choose the correct statement.",
+      "pattern": "Ultrasound of frequency [F] kHz travels at [V] m/s through soft tissue. Calculate the wavelength of the ultrasound in the tissue in millimetres.",
       "variables": {
-        "A": {"min": 1, "max": 20, "step": 1},
-        "L": {"min": 2, "max": 20, "step": 2},
-        "DUMMY": {"values": [1,1,1,1]}
+        "F": {"values": [1,2,4,5,8,10]},
+        "V": {"values": [1400,1500,1540,1600]}
       },
-      "calculation": "0",
-      "answer_label": ["It stays the same","It stays the same","It stays the same","It stays the same"],
-      "explanation": "Wave speed depends on the medium, not on frequency or amplitude. Doubling the frequency halves the wavelength but wave speed stays the same."
+      "calculation": "round3(V / (F * 1000) * 1000)",
+      "explanation": "Wavelength = speed ÷ frequency\n= [V] ÷ ([F] × 1000)\n= [V] ÷ [F*1000] m\n= [RESULT] mm\n\nUltrasound uses frequencies above 20,000 Hz. Shorter wavelengths give better resolution in medical imaging."
     },
 
     {
       "template_id": "WS_L1_09",
-      "pattern": "Ultrasound of frequency [F] kHz travels at [V] m/s in soft tissue. What is its wavelength in millimetres?",
+      "pattern": "A water wave has a wavelength of [L] m and a time period of [T] seconds. Calculate the speed of the wave in m/s.",
       "variables": {
-        "F": {"min": 1,   "max": 10,  "step": 1},
-        "V": {"min": 1400,"max": 1600,"step": 100}
+        "L": {"min": 2,  "max": 50, "step": 2},
+        "T": {"min": 1,  "max": 20, "step": 1}
       },
-      "constraints": ["(V * 1000) % (F * 1000) === 0"],
-      "calculation": "(V / (F * 1000)) * 1000",
-      "explanation": "Wavelength = speed ÷ frequency = [V] ÷ ([F]×1000) = [V/(F*1000)] m = [RESULT] mm"
+      "calculation": "round2(L / T)",
+      "explanation": "Wave speed = wavelength ÷ period\n= v = λ ÷ T\n= [L] ÷ [T]\n= [RESULT] m/s\n\nThis is equivalent to v = fλ since f = 1/T. The period tells us how long each wave takes to pass a fixed point."
     },
 
     {
       "template_id": "WS_L1_10",
-      "pattern": "The distance between two successive crests of a water wave is [L] m. The wave passes a fixed point every [T] seconds. What is the wave speed?",
+      "pattern": "A sound wave travels at [V] m/s through air and has a wavelength of [L] cm. Calculate the frequency of the sound in Hz.",
       "variables": {
-        "L": {"min": 2,  "max": 20, "step": 2},
-        "T": {"min": 1,  "max": 10, "step": 1}
+        "V": {"min": 300, "max": 360, "step": 10},
+        "L": {"min": 2,   "max": 100, "step": 2}
       },
-      "calculation": "L / T",
-      "explanation": "The distance between successive crests is the wavelength. Wave speed = wavelength ÷ period = [L] ÷ [T] = [RESULT] m/s"
+      "calculation": "round2(V / (L / 100))",
+      "explanation": "Convert wavelength to metres: [L] cm = [L/100] m\nFrequency = speed ÷ wavelength\n= [V] ÷ [L/100]\n= [RESULT] Hz\n\nHuman hearing range is approximately 20 Hz to 20,000 Hz. Sound waves in this range have wavelengths from about 17 mm to 17 m."
     }
 
   ],
@@ -128,7 +124,7 @@
     ],
     "incorrect": [
       "Try again! 💪","Check your formula! 📐","Almost! 😊",
-      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
       "One more try! 🎯","Keep going! 🌈"
     ]
   }

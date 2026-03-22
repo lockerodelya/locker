@@ -5,117 +5,116 @@
 
     {
       "template_id": "WS_L3_01",
-      "pattern": "Light of wavelength [L] nm travels through a medium of refractive index [N]. What is its speed in that medium? (speed of light in vacuum = 3 × 10⁸ m/s)",
+      "pattern": "The intensity of a sound wave is [I] × 10⁻¹² W/m². Calculate the sound level in decibels. (Threshold of hearing I₀ = 10⁻¹² W/m²)",
       "variables": {
-        "L": {"min": 400, "max": 700, "step": 50},
-        "N": {"min": 1,   "max": 3,   "step": 1}
+        "I": {"values": [1,2,4,5,8,10,20,50,100,200,500,1000,10000,100000,1000000]}
       },
-      "constraints": ["N > 0"],
-      "calculation": "(3 * 100000000) / N",
-      "explanation": "Speed in medium = c ÷ n = (3×10⁸) ÷ [N] = [RESULT] m/s. Refractive index tells us how much slower light travels in the medium."
+      "calculation": "round2(10 * log10(I))",
+      "explanation": "Sound level = 10 × log₁₀(I ÷ I₀)\n= 10 × log₁₀([I] × 10⁻¹² ÷ 10⁻¹²)\n= 10 × log₁₀([I])\n= [RESULT] dB\n\nThe decibel scale is logarithmic. An increase of 10 dB represents a tenfold increase in intensity. Normal conversation is about 60 dB."
     },
 
     {
       "template_id": "WS_L3_02",
-      "pattern": "In a double slit experiment, slit separation is [D] mm, screen distance is [L] m and fringe spacing is [W] mm. What is the wavelength of light in nm?",
+      "pattern": "A standing wave is set up on a string of length [L] m. The wave is vibrating in its [N]th harmonic. Calculate the wavelength in metres.",
       "variables": {
-        "D": {"min": 1, "max": 5, "step": 1},
-        "L": {"min": 1, "max": 5, "step": 1},
-        "W": {"min": 1, "max": 5, "step": 1}
+        "L": {"min": 1, "max": 20, "step": 1},
+        "N": {"min": 2, "max": 8,  "step": 1}
       },
-      "constraints": ["(W * D) % L === 0"],
-      "calculation": "(W * D * 1000000) / L",
-      "explanation": "Young's double slit: λ = Wd ÷ L = ([W]×10⁻³ × [D]×10⁻³) ÷ [L] = [W*D/L] × 10⁻⁶ m = [RESULT] nm"
+      "calculation": "round2(2 * L / N)",
+      "explanation": "For the nth harmonic on a string fixed at both ends:\nλ = 2L ÷ n\n= 2 × [L] ÷ [N]\n= [2*L] ÷ [N]\n= [RESULT] m\n\nHigher harmonics have shorter wavelengths and higher frequencies. The nth harmonic has n antinodes along the string."
     },
 
     {
       "template_id": "WS_L3_03",
-      "pattern": "A diffraction grating has [N] lines per mm. What is the grating spacing d in micrometres?",
+      "pattern": "A string of length [L] m vibrates in its [N]th harmonic with a wave speed of [V] m/s. Calculate the frequency of this harmonic in Hz.",
       "variables": {
-        "N": {"min": 100, "max": 600, "step": 100}
+        "L": {"min": 1,  "max": 10, "step": 1},
+        "N": {"min": 2,  "max": 6,  "step": 1},
+        "V": {"min": 20, "max": 400,"step": 20}
       },
-      "constraints": ["1000 % N === 0"],
-      "calculation": "1000 / N",
-      "explanation": "Grating spacing d = 1 ÷ (lines per mm) = 1 ÷ [N] mm = 1000 ÷ [N] micrometres = [RESULT] μm"
+      "calculation": "round2(N * V / (2 * L))",
+      "explanation": "Frequency of nth harmonic = n × v ÷ 2L\n= [N] × [V] ÷ (2 × [L])\n= [N] × [V] ÷ [2*L]\n= [RESULT] Hz\n\nThe nth harmonic frequency is exactly n times the fundamental frequency. Harmonics give musical instruments their characteristic timbre."
     },
 
     {
       "template_id": "WS_L3_04",
-      "pattern": "The intensity of a sound is [I] times the threshold of hearing (10⁻¹² W/m²). What is the sound level in decibels?",
+      "pattern": "A pipe closed at one end has a length of [L] m and a wave speed of [V] m/s. Calculate the frequency of the fundamental mode in Hz.",
       "variables": {
-        "I": {"values": [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000]}
+        "L": {"min": 1,  "max": 10,  "step": 1},
+        "V": {"values": [320,330,340,350,360]}
       },
-      "calculation": "10 * log10(I)",
-      "explanation": "Sound level = 10 × log₁₀(I ÷ I₀) = 10 × log₁₀([I]) = [RESULT] dB"
+      "calculation": "round2(V / (4 * L))",
+      "explanation": "For a pipe closed at one end:\nFundamental frequency f₁ = v ÷ 4L\n= [V] ÷ (4 × [L])\n= [V] ÷ [4*L]\n= [RESULT] Hz\n\nA closed pipe produces only odd harmonics. Its fundamental frequency is half that of an open pipe of the same length."
     },
 
     {
       "template_id": "WS_L3_05",
-      "pattern": "A standing wave on a string of length [L] m vibrates in its [N]th harmonic. What is the wavelength?",
+      "pattern": "A pipe open at both ends has a length of [L] m and a wave speed of [V] m/s. Calculate the frequency of the fundamental mode in Hz.",
       "variables": {
-        "L": {"min": 1, "max": 10, "step": 1},
-        "N": {"min": 2, "max": 6,  "step": 1}
+        "L": {"min": 1,  "max": 10,  "step": 1},
+        "V": {"values": [320,330,340,350,360]}
       },
-      "calculation": "(2 * L) / N",
-      "explanation": "For the nth harmonic on a fixed string: λ = 2L ÷ n = (2 × [L]) ÷ [N] = [2*L] ÷ [N] = [RESULT] m"
+      "calculation": "round2(V / (2 * L))",
+      "explanation": "For a pipe open at both ends:\nFundamental frequency f₁ = v ÷ 2L\n= [V] ÷ (2 × [L])\n= [V] ÷ [2*L]\n= [RESULT] Hz\n\nAn open pipe produces all harmonics. Both ends are antinodes. This gives open pipes a brighter, richer sound than closed pipes."
     },
 
     {
       "template_id": "WS_L3_06",
-      "pattern": "Two coherent waves of amplitude [A] m meet in phase. What is the resultant amplitude at that point?",
+      "pattern": "A particle on a transverse wave has amplitude [A] m and frequency [F] Hz. Calculate the maximum speed of the particle in m/s.",
       "variables": {
-        "A": {"min": 1, "max": 20, "step": 1}
+        "A": {"min": 1,  "max": 20, "step": 1},
+        "F": {"min": 2,  "max": 50, "step": 2}
       },
-      "calculation": "2 * A",
-      "explanation": "Constructive interference: resultant amplitude = 2A = 2 × [A] = [RESULT] m. Waves add when they are in phase."
+      "calculation": "round2(2 * 3.14159 * F * A)",
+      "explanation": "Maximum particle speed = ωA = 2πfA\n= 2 × π × [F] × [A]\n= 2 × 3.14159 × [F] × [A]\n= [RESULT] m/s\n\nThis is the maximum speed of a single particle oscillating about its rest position. It is not the same as wave speed."
     },
 
     {
       "template_id": "WS_L3_07",
-      "pattern": "A stationary observer hears [FO] Hz from an approaching source. Speed of sound is [V] m/s and source speed is [VS] m/s. What is the true emitted frequency?",
+      "pattern": "In a Young's double slit experiment the slit separation is [d] mm, the screen distance is [D] m and the wavelength of light is [LAM] nm. Calculate the fringe spacing in mm.",
       "variables": {
-        "FO": {"min": 400, "max": 1200, "step": 50},
-        "V":  {"min": 330, "max": 340,  "step": 5},
-        "VS": {"min": 10,  "max": 50,   "step": 5}
+        "d":   {"min": 1,   "max": 5,   "step": 1},
+        "D":   {"min": 1,   "max": 5,   "step": 1},
+        "LAM": {"min": 400, "max": 700, "step": 50}
       },
-      "constraints": ["V > VS", "(FO * (V - VS)) % V === 0"],
-      "calculation": "(FO * (V - VS)) / V",
-      "explanation": "Rearranging Doppler: f = f' × (v−vs) ÷ v = [FO] × ([V]−[VS]) ÷ [V] = [FO*(V-VS)] ÷ [V] = [RESULT] Hz"
+      "calculation": "round3(LAM * D / (d * 1000))",
+      "explanation": "Fringe spacing W = λD ÷ d\n= ([LAM] × 10⁻⁹ × [D]) ÷ ([d] × 10⁻³)\n= [LAM] × [D] ÷ ([d] × 1000)\n= [RESULT] mm\n\nSmaller slit separation gives wider fringes. Longer wavelengths also give wider fringes."
     },
 
     {
       "template_id": "WS_L3_08",
-      "pattern": "A transverse wave has amplitude [A] m and frequency [F] Hz. What is the maximum speed of a particle on the wave?",
+      "pattern": "In a Young's double slit experiment the fringe spacing is [W] mm, the screen distance is [D] m and the slit separation is [d] mm. Calculate the wavelength of light used in nm.",
       "variables": {
-        "A": {"min": 1,  "max": 10, "step": 1},
-        "F": {"min": 2,  "max": 20, "step": 2}
+        "W": {"min": 1,   "max": 5,   "step": 1},
+        "D": {"min": 1,   "max": 5,   "step": 1},
+        "d": {"min": 1,   "max": 5,   "step": 1}
       },
-      "calculation": "2 * 3.14159 * F * A",
-      "explanation": "Maximum particle speed = ωA = 2πfA = 2π × [F] × [A] = 6.28318 × [F] × [A] = [RESULT] m/s"
+      "calculation": "round2(W * d * 1000 / D)",
+      "explanation": "Wavelength λ = W × d ÷ D\n= ([W] × 10⁻³ × [d] × 10⁻³) ÷ [D]\n= [W] × [d] × 1000 ÷ [D] nm\n= [RESULT] nm\n\nThis is how the wavelength of light can be accurately measured using a double slit experiment."
     },
 
     {
       "template_id": "WS_L3_09",
-      "pattern": "Sound intensity doubles. By approximately how many decibels does the sound level increase?",
+      "pattern": "A wave has frequency [F] Hz and travels into a new medium where its wavelength becomes [L2] m. Calculate the speed of the wave in the new medium in m/s.",
       "variables": {
-        "DUMMY": {"values": [1, 1, 1, 1]}
+        "F":  {"min": 2,  "max": 100, "step": 2},
+        "L2": {"min": 2,  "max": 50,  "step": 2}
       },
-      "calculation": "0",
-      "answer_label": ["3 dB", "3 dB", "3 dB", "3 dB"],
-      "explanation": "Sound level increase = 10 × log₁₀(2) ≈ 10 × 0.301 ≈ 3 dB. Doubling intensity always adds approximately 3 dB regardless of starting level."
+      "calculation": "F * L2",
+      "explanation": "Wave speed in new medium = frequency × new wavelength\n= f × λ₂\n= [F] × [L2]\n= [RESULT] m/s\n\nFrequency stays constant when a wave crosses a boundary. The new speed is determined by the properties of the new medium."
     },
 
     {
       "template_id": "WS_L3_10",
-      "pattern": "A wave enters a new medium and its speed increases from [V1] m/s to [V2] m/s. If the original wavelength was [L1] m, what is the new wavelength?",
+      "pattern": "A stationary observer hears a frequency of [FO] Hz from an approaching source. The speed of sound is [V] m/s and the source speed is [VS] m/s. Calculate the true frequency emitted by the source in Hz.",
       "variables": {
-        "V1": {"min": 100, "max": 400, "step": 50},
-        "V2": {"min": 200, "max": 600, "step": 100},
-        "L1": {"min": 2,   "max": 20,  "step": 2}
+        "FO": {"min": 300, "max": 1200, "step": 50},
+        "V":  {"values": [330,340,350]},
+        "VS": {"min": 10,  "max": 50,   "step": 10}
       },
-      "constraints": ["V2 > V1", "(V2 * L1) % V1 === 0"],
-      "calculation": "(V2 * L1) / V1",
-      "explanation": "Frequency stays constant at a boundary. New wavelength = L1 × v₂ ÷ v₁ = [L1] × [V2] ÷ [V1] = [RESULT] m"
+      "constraints": ["V > VS"],
+      "calculation": "round2(FO * (V - VS) / V)",
+      "explanation": "Rearranging the Doppler formula f' = fv/(v-vs):\nTrue frequency f = f' × (v − vs) ÷ v\n= [FO] × ([V] − [VS]) ÷ [V]\n= [FO] × [V-VS] ÷ [V]\n= [RESULT] Hz\n\nThe observer hears a higher frequency than the true emitted frequency when the source is approaching."
     }
 
   ],
@@ -127,7 +126,7 @@
     ],
     "incorrect": [
       "Try again! 💪","Check your formula! 📐","Almost! 😊",
-      "Think carefully! 🤔","Review the equation! 📚","So close! 💝",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
       "One more try! 🎯","Keep going! 🌈"
     ]
   }
