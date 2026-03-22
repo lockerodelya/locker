@@ -17,27 +17,43 @@
     // END OF CONFIGURATION - DO NOT EDIT BELOW
     // ============================================
 
-    // Wait for Firebase to be ready
-    function initDeviceTracker() {
-        if (!firebase || !firebase.auth() || !firebase.firestore()) {
+    // Wait for Firebase + Firestore to be ready
+    async function initDeviceTracker() {
+        if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) {
             setTimeout(initDeviceTracker, 100);
             return;
         }
 
+        // Wait for voooDbReady promise (set in main page script)
+        let db;
+        if (typeof voooDbReady !== 'undefined') {
+            db = await voooDbReady;
+        } else {
+            // Fallback — wait for firebase.firestore to exist
+            let attempts = 0;
+            while (typeof firebase.firestore !== 'function' && attempts < 50) {
+                await new Promise(r => setTimeout(r, 100));
+                attempts++;
+            }
+            if (typeof firebase.firestore !== 'function') {
+                console.warn('Device tracker: Firestore not available');
+                return;
+            }
+            db = firebase.firestore();
+        }
+
         firebase.auth().onAuthStateChanged(async (user) => {
-            if (!user) return; // User not logged in, do nothing
+            if (!user) return;
 
             try {
                 const uid = user.uid;
                 const fingerprint = await generateFingerprint();
-                const deviceRef = firebase.firestore().collection(DEVICE_CONFIG.COLLECTION_NAME).doc(uid);
-                
-                // Use transaction to prevent race conditions
-                await firebase.firestore().runTransaction(async (transaction) => {
+                const deviceRef = db.collection(DEVICE_CONFIG.COLLECTION_NAME).doc(uid);
+
+                await db.runTransaction(async (transaction) => {
                     const deviceDoc = await transaction.get(deviceRef);
-                    
+
                     if (!deviceDoc.exists) {
-                        // First time this user anywhere
                         transaction.set(deviceRef, {
                             count: 1,
                             lastFingerprint: fingerprint,
@@ -52,18 +68,15 @@
                     const lastFingerprint = data.lastFingerprint || '';
 
                     if (lastFingerprint !== fingerprint) {
-                        // New device detected
                         const newCount = currentCount + 1;
-                        
+
                         transaction.update(deviceRef, {
                             count: newCount,
                             lastFingerprint: fingerprint,
                             lastActive: firebase.firestore.FieldValue.serverTimestamp()
                         });
 
-                        // Check if this new device exceeds limit
                         if (newCount > DEVICE_CONFIG.MAX_DEVICES_ALLOWED) {
-                            // Start logout timer
                             setTimeout(() => {
                                 firebase.auth().signOut().then(() => {
                                     alert("Username only for one device only");
@@ -74,7 +87,6 @@
                             }, DEVICE_CONFIG.LOGOUT_TIMER_SECONDS * 1000);
                         }
                     } else {
-                        // Same device, just update timestamp
                         transaction.update(deviceRef, {
                             lastActive: firebase.firestore.FieldValue.serverTimestamp()
                         });
@@ -83,7 +95,6 @@
 
             } catch (error) {
                 console.error('Device tracker error:', error);
-                // Fail silently - don't block user
             }
         });
     }
@@ -99,15 +110,12 @@
             !!window.chrome,
             navigator.hardwareConcurrency || 'unknown'
         ];
-        
-        // Create a simple hash
+
         const fingerprint = components.join('|');
-        
-        // Return as base64 to keep it clean
+
         try {
             return btoa(encodeURIComponent(fingerprint)).substring(0, 50);
         } catch (e) {
-            // Fallback if btoa fails
             let hash = 0;
             for (let i = 0; i < fingerprint.length; i++) {
                 hash = ((hash << 5) - hash) + fingerprint.charCodeAt(i);
