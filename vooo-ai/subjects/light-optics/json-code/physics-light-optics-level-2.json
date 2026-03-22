@@ -13,16 +13,17 @@
       "explanation": "Refractive index n = c ÷ v\n= 3 × 10⁸ ÷ ([V] × 10⁶)\n= 300 ÷ [V]\n= [RESULT]\n\nA refractive index of 1 means the speed equals the speed of light in a vacuum. Most glass has a refractive index between 1.5 and 1.9."
     },
 
-    {
-      "template_id": "LO_L2_02",
-      "pattern": "A ray of light travels from air into glass of refractive index [N]. The angle of incidence is [AI] degrees. Calculate the sine of the angle of refraction.",
-      "variables": {
-        "N":  {"values": [2,3,4,5]},
-        "AI": {"min": 10, "max": 80, "step": 10}
-      },
-      "calculation": "round3(sin_degrees(AI) / N)",
-      "explanation": "Snell's law: n₁ sin θ₁ = n₂ sin θ₂\nWith n₁ = 1 (air) and n₂ = [N]:\nsin θ₂ = sin [AI]° ÷ [N]\n= [sin_degrees(AI)] ÷ [N]\n= [RESULT]\n\nSnell's law applies at every boundary where light changes medium. The refracted ray bends toward the normal when entering a denser medium."
-    },
+{
+  "template_id": "LO_L2_02",
+  "pattern": "A ray of light travels from air into glass of refractive index [N]. The angle of incidence is [AI] degrees. Calculate the sine of the angle of refraction.",
+  "variables": {
+    "N":    {"values": [2, 3, 4, 5]},
+    "AI":   {"min": 10, "max": 80, "step": 10},
+    "SINI": {"calc": "sin_degrees(AI)"}
+  },
+  "calculation": "round3(SINI / N)",
+  "explanation": "Snell's law: n₁ sin θ₁ = n₂ sin θ₂\nWith n₁ = 1 (air) and n₂ = [N]:\nsin θ₂ = sin [AI]° ÷ [N]\n= [SINI] ÷ [N]\n= [RESULT]\n\nSnell's law applies at every boundary where light changes medium. The refracted ray bends toward the normal when entering a denser medium."
+},
 
     {
       "template_id": "LO_L2_03",
@@ -34,18 +35,18 @@
       "explanation": "sin C = 1 ÷ n\n= 1 ÷ [N]\n= [RESULT]\n\nThe critical angle is the minimum angle of incidence inside the denser medium at which total internal reflection occurs. Beyond this angle no light escapes into the less dense medium."
     },
 
-    {
-      "template_id": "LO_L2_04",
-      "pattern": "A converging lens of focal length [F] cm produces an image at a distance of [V] cm from the lens. Calculate the magnification produced by the lens.",
-      "variables": {
-        "F":   {"values": [5,10,15,20]},
-        "MULT":{"values": [2,3,4,5,6,7,8,9,10]},
-        "U":   {"calc": "round2(V * F / (V - F))"},
-        "V":   {"calc": "F * MULT"}
-      },
-      "calculation": "MULT",
-      "explanation": "From the lens formula: u = vF ÷ (v − F)\n= [V] × [F] ÷ ([V] − [F]) = [U] cm\n\nMagnification = v ÷ u\n= [V] ÷ [U]\n= [RESULT]\n\nThe magnification tells us how many times larger the image is compared to the object."
-    },
+{
+  "template_id": "LO_L2_04",
+  "pattern": "A converging lens of focal length [F] cm produces an image at a distance of [V] cm from the lens. Calculate the magnification produced by the lens.",
+  "variables": {
+    "F":    {"values": [5,10,15,20]},
+    "MULT": {"values": [3,4,5,6,7,8,9,10]},
+    "V":    {"calc": "F * MULT"},
+    "U":    {"calc": "F * MULT * F / (F * MULT - F)"}
+  },
+  "calculation": "MULT",
+  "explanation": "Object distance u = vF ÷ (v − F)\n= [V] × [F] ÷ ([V] − [F]) = [U] cm\n\nMagnification = v ÷ u\n= [V] ÷ [U]\n= [RESULT]\n\nThe magnification tells us how many times larger the image is compared to the object."
+},
 
     {
       "template_id": "LO_L2_05",
