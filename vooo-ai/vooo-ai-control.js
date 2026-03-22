@@ -140,6 +140,9 @@ const VOOO_ENGINE_REGISTRY = {
 	'physics-atomic-nuclear-level-2' : '/vooo-ai/subjects/atomic-nuclear/engine-code/physics-atomic-nuclear-level-2.js',
 	'physics-atomic-nuclear-level-3' : '/vooo-ai/subjects/atomic-nuclear/engine-code/physics-atomic-nuclear-level-3.js',
 
+	'physics-astrophysics-level-1' : '/vooo-ai/subjects/astrophysics/engine-code/physics-astrophysics-level-1.js',
+	'physics-astrophysics-level-2' : '/vooo-ai/subjects/astrophysics/engine-code/physics-astrophysics-level-2.js',
+	'physics-astrophysics-level-3' : '/vooo-ai/subjects/astrophysics/engine-code/physics-astrophysics-level-3.js',
 
 
 
@@ -282,7 +285,11 @@ const VOOO_ENGINE_INSTANCES = {
 	'physics-atomic-nuclear-level-1' : 'physicsatomicnuclearl1',
 	'physics-atomic-nuclear-level-2' : 'physicsatomicnuclearl2',
 	'physics-atomic-nuclear-level-3' : 'physicsatomicnuclearl3',
-		
+
+	'physics-astrophysics-level-1' : 'physicsastrophysicsl1',
+	'physics-astrophysics-level-2' : 'physicsastrophysicsl2',
+	'physics-astrophysics-level-3' : 'physicsastrophysicsl3',
+			
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -516,7 +523,14 @@ const VOOO_ENGINE_INSTANCES = {
 					{ value: 'physics-atomic-nuclear-level-3', text: '• Atomic & Nuclear L3' },
                 ]
             },
-
+			{
+                label: 'Physics : Astrophysics',
+                options: [
+                    { value: 'physics-astrophysics-level-1', text: '• Astrophysics L1' },
+					{ value: 'physics-astrophysics-level-2', text: '• Astrophysics L2' },
+					{ value: 'physics-astrophysics-level-3', text: '• Astrophysics L3' },
+                ]
+            },
 
             // --- ADD NEW OPTGROUP BELOW THIS LINE ---
         ];
