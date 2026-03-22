@@ -2,16 +2,11 @@
 // VOOO AI PAGE TRACKER
 // Tracks: page views (5 sec minimum), PWA installs, visitor country
 // Collection: vooo_analytics (independent — delete anytime)
-// Version: 1.3
-// ============================================
-// HOW TO USE:
-//   Add this ONE line to any page you want to track:
-//   <script src="/vooo-ai/vooo-pagetracker.js"></script>
-//   Remove it anytime — zero effect on your website.
+// Version: 1.4
 // ============================================
 (function () {
 
-    // Wait for Firebase to be ready
+    // Wait for Firebase app to be ready
     function waitForFirebase(callback) {
         if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
             callback();
@@ -26,7 +21,6 @@
     }
 
     // Identify which page we are on
-    // IMPORTANT: most specific checks must come first
     function getPageKey() {
         const path = window.location.pathname.toLowerCase();
         if (path.includes('/vooo-ai/blog/voooblog'))    return 'blog_home';
@@ -37,7 +31,6 @@
     }
 
     // Get visitor country using free IP geolocation API
-    // Only country name is fetched — IP address is never stored
     function getCountry(callback) {
         fetch('https://ipapi.co/json/')
             .then(res => res.json())
@@ -46,17 +39,40 @@
                 callback(country);
             })
             .catch(() => {
-                // If API fails — use Unknown — never break the tracker
                 callback('Unknown');
             });
     }
 
+    // Get Firestore db — waits for voooDbReady if available, else loads directly
+    async function getDb() {
+        if (typeof voooDbReady !== 'undefined') {
+            return await voooDbReady;
+        }
+        // Fallback for pages without voooDbReady
+        let attempts = 0;
+        while (typeof firebase.firestore !== 'function' && attempts < 50) {
+            await new Promise(r => setTimeout(r, 100));
+            attempts++;
+        }
+        if (typeof firebase.firestore !== 'function') {
+            throw new Error('Firestore not available');
+        }
+        return firebase.firestore();
+    }
+
     // Main tracking logic
-    function initTracker() {
+    async function initTracker() {
         const pageKey = getPageKey();
         if (!pageKey) return;
 
-        const db = await voooDbReady;
+        let db;
+        try {
+            db = await getDb();
+        } catch (err) {
+            console.warn('Vooo Tracker: Firestore not ready', err);
+            return;
+        }
+
         const today  = getTodayIST();
         const docRef = db.collection('vooo_analytics').doc(today);
         let tracked  = false;
@@ -65,12 +81,10 @@
             if (tracked) return;
             tracked = true;
 
-            // Get country first — then save everything together
             getCountry(function(country) {
 
                 const updateData = { date: today };
 
-                // Page view count — same as before
                 if (pageKey === 'main') {
                     updateData['views_main'] = firebase.firestore.FieldValue.increment(1);
                     updateData['countries_main.' + country] = firebase.firestore.FieldValue.increment(1);
@@ -88,16 +102,22 @@
                 docRef.set(updateData, { merge: true })
                     .then(() => console.log('Vooo Tracker: page view counted (' + pageKey + ') from ' + country))
                     .catch(err => console.warn('Vooo Tracker: write failed', err));
-
             });
 
         }, 5000);
     }
 
-    // PWA Install Tracking — with country
-    function initPWATracking() {
-        window.addEventListener('appinstalled', () => {
-            const db     = firebase.firestore();
+    // PWA Install Tracking
+    async function initPWATracking() {
+        window.addEventListener('appinstalled', async () => {
+            let db;
+            try {
+                db = await getDb();
+            } catch (err) {
+                console.warn('Vooo Tracker: Firestore not ready for PWA tracking', err);
+                return;
+            }
+
             const today  = getTodayIST();
             const docRef = db.collection('vooo_analytics').doc(today);
 
@@ -118,6 +138,6 @@
         initPWATracking();
     });
 
-    console.log('Vooo Page Tracker v1.3 loaded');
+    console.log('Vooo Page Tracker v1.4 loaded');
 
 })();
