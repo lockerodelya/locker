@@ -1,0 +1,131 @@
+{
+  "puzzle_type": "cs-networks-level-1",
+  "display_name": "Networks L1",
+  "templates": [
+
+    {
+      "template_id": "NW_L1_01",
+      "pattern": "A file of [SIZE] MB needs to be transmitted over a network with a bandwidth of [BW] MB/s. Calculate the transmission delay in seconds.",
+      "variables": {
+        "BW":   {"values": [1,2,4,5,8,10,20,25,50,100]},
+        "MULT": {"min": 1, "max": 20, "step": 1},
+        "SIZE": {"calc": "BW * MULT"}
+      },
+      "calculation": "MULT",
+      "explanation": "Transmission delay = file size ÷ bandwidth\n= [SIZE] ÷ [BW]\n= [RESULT] s\n\nTransmission delay is the time taken to push all bits of the file onto the link. A faster bandwidth reduces transmission delay proportionally."
+    },
+
+    {
+      "template_id": "NW_L1_02",
+      "pattern": "A file has a size of [SIZE] KB. Calculate the size of the file in bits.",
+      "variables": {
+        "SIZE": {"min": 1, "max": 500, "step": 1}
+      },
+      "calculation": "SIZE * 1024 * 8",
+      "explanation": "File size in bits = KB × 1024 × 8\n= [SIZE] × 1024 × 8\n= [SIZE] × 8192\n= [RESULT] bits\n\n1 KB = 1024 bytes and 1 byte = 8 bits. Always convert to bits before calculating transmission times."
+    },
+
+    {
+      "template_id": "NW_L1_03",
+      "pattern": "A file of [SIZE] MB is downloaded at a speed of [SPEED] MB/s. Calculate the download time in seconds.",
+      "variables": {
+        "SPEED": {"values": [1,2,4,5,8,10,20,25,50]},
+        "MULT":  {"min": 1, "max": 20, "step": 1},
+        "SIZE":  {"calc": "SPEED * MULT"}
+      },
+      "calculation": "MULT",
+      "explanation": "Download time = file size ÷ download speed\n= [SIZE] ÷ [SPEED]\n= [RESULT] s\n\nDownload time depends on both the file size and the available bandwidth. Larger files and slower connections both increase download time."
+    },
+
+    {
+      "template_id": "NW_L1_04",
+      "pattern": "A file of [SIZE] KB is divided into packets of [PACKET] KB each. Calculate the number of packets needed to transmit the file.",
+      "variables": {
+        "PACKET": {"values": [1,2,4,5,8,10,20,25,50]},
+        "PKTS":   {"min": 2, "max": 50, "step": 1},
+        "SIZE":   {"calc": "PACKET * PKTS"}
+      },
+      "calculation": "PKTS",
+      "explanation": "Number of packets = file size ÷ packet size\n= [SIZE] ÷ [PACKET]\n= [RESULT] packets\n\nPacket switching divides data into smaller units for transmission. Smaller packets reduce the impact of errors but increase header overhead."
+    },
+
+    {
+      "template_id": "NW_L1_05",
+      "pattern": "A network has a propagation delay of [PROP] ms and a transmission delay of [TRANS] ms. Calculate the total latency in ms.",
+      "variables": {
+        "PROP":  {"min": 1,  "max": 100, "step": 1},
+        "TRANS": {"min": 1,  "max": 100, "step": 1}
+      },
+      "calculation": "PROP + TRANS",
+      "explanation": "Total latency = propagation delay + transmission delay\n= [PROP] + [TRANS]\n= [RESULT] ms\n\nLatency is the total time for data to travel from sender to receiver. Propagation delay depends on distance and transmission delay depends on file size and bandwidth."
+    },
+
+    {
+      "template_id": "NW_L1_06",
+      "pattern": "A signal travels [DIST] km through a cable at a speed of [SPEED] × 10⁵ km/s. Calculate the propagation delay in milliseconds.",
+      "variables": {
+        "DIST":  {"min": 100, "max": 5000, "step": 100},
+        "SPEED": {"values": [2,3,4,5,6,7,8,9,10]}
+      },
+      "calculation": "round2(DIST / (SPEED * pow(10,5)) * 1000)",
+      "explanation": "Propagation delay = distance ÷ speed\n= [DIST] km ÷ ([SPEED] × 10⁵ km/s)\n= [DIST] ÷ ([SPEED] × 10⁵) s\n= [RESULT] ms\n\nPropagation delay depends on the physical distance and the speed of the signal in the medium. Light in fibre travels at about 2 × 10⁵ km/s."
+    },
+
+    {
+      "template_id": "NW_L1_07",
+      "pattern": "A network connection has a bandwidth of [BW] Mbits/s. Calculate the bandwidth in Mbytes/s.",
+      "variables": {
+        "BW":  {"values": [8,16,24,32,40,48,56,64,72,80,88,96,104,112,120,128]},
+        "VOL": {"min": 1, "max": 50, "step": 1}
+      },
+      "calculation": "BW / 8",
+      "explanation": "Bandwidth in MB/s = bandwidth in Mb/s ÷ 8\n= [BW] ÷ 8\n= [RESULT] MB/s\n\nBandwidth is often quoted in bits per second but file sizes are usually in bytes. Always divide by 8 to convert between bits and bytes."
+    },
+
+    {
+      "template_id": "NW_L1_08",
+      "pattern": "A data transmission sends [PKTS] packets each of size [SIZE] KB. Calculate the total data transmitted in KB.",
+      "variables": {
+        "PKTS": {"min": 2,  "max": 100, "step": 1},
+        "SIZE": {"min": 1,  "max": 50,  "step": 1}
+      },
+      "calculation": "PKTS * SIZE",
+      "explanation": "Total data = number of packets × packet size\n= [PKTS] × [SIZE]\n= [RESULT] KB\n\nThis is useful for calculating the total bandwidth used by a transmission. In practice each packet also has a header which adds overhead."
+    },
+
+    {
+      "template_id": "NW_L1_09",
+      "pattern": "A file of [SIZE] MB is stored on a hard drive. Calculate the storage required in KB.",
+      "variables": {
+        "SIZE": {"min": 1, "max": 500, "step": 1}
+      },
+      "calculation": "SIZE * 1024",
+      "explanation": "Storage in KB = MB × 1024\n= [SIZE] × 1024\n= [RESULT] KB\n\n1 MB = 1024 KB. Understanding unit conversions is essential in Computer Science — always be careful whether you are working in bits, bytes, KB, MB or GB."
+    },
+
+    {
+      "template_id": "NW_L1_10",
+      "pattern": "A network has a maximum bandwidth of [BW] Mbits/s. A file of [SIZE] MB is transmitted. Calculate the minimum transmission time in seconds.",
+      "variables": {
+        "BW":   {"values": [1,2,4,5,8,10,20,25,50,100]},
+        "MULT": {"min": 1, "max": 10, "step": 1},
+        "SIZE": {"calc": "BW * MULT"}
+      },
+      "calculation": "round2(SIZE * 8 / BW)",
+      "explanation": "Transmission time = file size in bits ÷ bandwidth\n= ([SIZE] × 8) Mbits ÷ [BW] Mbits/s\n= [SIZE*8] ÷ [BW]\n= [RESULT] s\n\nNote: file size must be converted from MB to Mbits by multiplying by 8 before dividing by bandwidth."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
