@@ -1,0 +1,135 @@
+{
+  "puzzle_type": "biology-cell-level-1",
+  "display_name": "Cell Biology L1",
+  "templates": [
+
+    {
+      "template_id": "CB_L1_01",
+      "pattern": "A cell is observed under a microscope. The image size is [IMG] mm and the actual size of the cell is [ACT] mm. Calculate the magnification of the microscope.",
+      "variables": {
+        "ACT":  {"values": [0.01,0.02,0.05,0.1,0.2,0.5,1.0]},
+        "MULT": {"values": [10,20,40,50,100,200,400,1000]},
+        "IMG":  {"calc": "ACT * MULT"}
+      },
+      "calculation": "MULT",
+      "explanation": "Magnification = image size ÷ actual size\n= [IMG] ÷ [ACT]\n= [RESULT]\n\nMagnification tells us how many times larger the image appears compared to the real object. Light microscopes typically magnify up to ×1500 and electron microscopes up to ×500,000."
+    },
+
+    {
+      "template_id": "CB_L1_02",
+      "pattern": "A cell appears [IMG] mm in size under a microscope with a magnification of ×[MAG]. Calculate the actual size of the cell in mm.",
+      "variables": {
+        "MAG":  {"values": [10,20,40,50,100,200,400,1000]},
+        "ACT":  {"values": [1,2,3,4,5,6,7,8,9,10]},
+        "IMG":  {"calc": "ACT * MAG"}
+      },
+      "calculation": "ACT",
+      "explanation": "Actual size = image size ÷ magnification\n= [IMG] ÷ [MAG]\n= [RESULT] mm\n\nAlways divide the image size by the magnification to find the actual size. Use consistent units throughout — convert all measurements to the same unit first."
+    },
+
+    {
+      "template_id": "CB_L1_03",
+      "pattern": "A cell has an actual size of [ACT] μm. It is viewed under a microscope with magnification ×[MAG]. Calculate the size of the image in μm.",
+      "variables": {
+        "ACT": {"min": 1,   "max": 100, "step": 1},
+        "MAG": {"values": [10,20,40,50,100,200,400,1000]}
+      },
+      "calculation": "ACT * MAG",
+      "explanation": "Image size = actual size × magnification\n= [ACT] × [MAG]\n= [RESULT] μm\n\nMultiply the actual size by the magnification to find the image size. A 10 μm cell at ×400 magnification appears 4000 μm = 4 mm in the image."
+    },
+
+    {
+      "template_id": "CB_L1_04",
+      "pattern": "A cubic cell has a side length of [L] μm. Calculate the total surface area of the cell in μm².",
+      "variables": {
+        "L":   {"min": 1,  "max": 20, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "6 * L * L",
+      "explanation": "Surface area of cube = 6 × L²\n= 6 × [L]²\n= 6 × [L*L]\n= [RESULT] μm²\n\nA cube has 6 faces each with area L². Surface area determines the rate of exchange of substances — oxygen, nutrients and waste — with the environment."
+    },
+
+    {
+      "template_id": "CB_L1_05",
+      "pattern": "A cubic cell has a side length of [L] μm. Calculate the volume of the cell in μm³.",
+      "variables": {
+        "L":   {"min": 1,  "max": 20, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "L * L * L",
+      "explanation": "Volume of cube = L³\n= [L]³\n= [L] × [L] × [L]\n= [RESULT] μm³\n\nVolume determines the metabolic demand of a cell — larger cells need more nutrients and produce more waste. Volume increases faster than surface area as cell size increases."
+    },
+
+    {
+      "template_id": "CB_L1_06",
+      "pattern": "A cubic cell has a side length of [L] μm. Calculate the surface area to volume ratio of the cell in μm⁻¹.",
+      "variables": {
+        "L":   {"min": 1,  "max": 20, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round2(6 / L)",
+      "explanation": "SA:V ratio = 6L² ÷ L³ = 6 ÷ L\n= 6 ÷ [L]\n= [RESULT] μm⁻¹\n\nAs cell size increases SA:V ratio decreases. Small cells have high SA:V ratios allowing efficient exchange. Large cells struggle to exchange substances quickly enough — this limits maximum cell size."
+    },
+
+    {
+      "template_id": "CB_L1_07",
+      "pattern": "A single cell undergoes [N] rounds of cell division. Calculate the total number of cells produced.",
+      "variables": {
+        "N":   {"min": 1,  "max": 10, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round2(pow(2, N))",
+      "explanation": "Cells after n divisions = 2ⁿ\n= 2^[N]\n= [RESULT]\n\nEach cell division doubles the number of cells. After 10 divisions one cell becomes 1024 cells. This exponential growth is important in development and tumour growth."
+    },
+
+    {
+      "template_id": "CB_L1_08",
+      "pattern": "A cell divides every [T] hours. Calculate the total time taken for [N] cell divisions in hours.",
+      "variables": {
+        "T": {"min": 1,  "max": 24, "step": 1},
+        "N": {"min": 1,  "max": 10, "step": 1}
+      },
+      "calculation": "N * T",
+      "explanation": "Total time = number of divisions × time per division\n= [N] × [T]\n= [RESULT] hours\n\nDivision time varies enormously — bacteria divide every 20 minutes, human cells every 24 hours. Cancer cells often divide faster than normal cells."
+    },
+
+    {
+      "template_id": "CB_L1_09",
+      "pattern": "A piece of tissue has an initial mass of [INITIAL] g. After being placed in a solution it has a final mass of [FINAL] g. Calculate the percentage change in mass.",
+      "variables": {
+        "INITIAL": {"min": 10,  "max": 50,  "step": 5},
+        "CHANGE":  {"min": 1,   "max": 10,  "step": 1},
+        "SIGN":    {"values": [1,-1,1,-1,1,-1,1,-1,1,-1]},
+        "FINAL":   {"calc": "INITIAL + SIGN * CHANGE"}
+      },
+      "constraints": ["FINAL > 0"],
+      "calculation": "round2(SIGN * CHANGE * 100 / INITIAL)",
+      "explanation": "Percentage change = (final − initial) ÷ initial × 100\n= ([FINAL] − [INITIAL]) ÷ [INITIAL] × 100\n= [SIGN*CHANGE] ÷ [INITIAL] × 100\n= [RESULT]%\n\nPositive percentage change means water entered by osmosis — solution was hypotonic. Negative means water left — solution was hypertonic."
+    },
+
+    {
+      "template_id": "CB_L1_10",
+      "pattern": "A culture starts with [INITIAL] cells and grows to [FINAL] cells. Calculate the number of cell divisions that occurred.",
+      "variables": {
+        "N":       {"min": 1,  "max": 8,  "step": 1},
+        "INITIAL": {"values": [1,2,4,8,16,32,64,128]},
+        "FINAL":   {"calc": "round2(INITIAL * pow(2,N))"}
+      },
+      "calculation": "N",
+      "explanation": "Number of divisions = log₂(final ÷ initial)\n= log₂([FINAL] ÷ [INITIAL])\n= log₂([FINAL/INITIAL])\n= [RESULT]\n\nEach division doubles the population. Knowing the initial and final cell counts allows us to calculate exactly how many divisions occurred."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
