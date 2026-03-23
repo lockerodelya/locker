@@ -8,7 +8,7 @@
 
 const _ENGINE_JSON_FILE     = 'biology-human-body-level-3.json';
 const _ENGINE_CATEGORY_KEY  = 'biology-human-body-level-3';
-const _ENGINE_INSTANCE_NAME = 'biologyhumbodysystemsl3';
+const _ENGINE_INSTANCE_NAME = 'biologyhumanbodyl3';
 
 // ============================================
 // ✋ DO NOT EDIT ANYTHING BELOW THIS LINE
@@ -496,7 +496,7 @@ generateOptions(correctAnswer,template,variables){
             const correctNum=Number(correctAnswer);
             if(!isNaN(correctNum)&&isFinite(correctNum)){
                 const isInt=Number.isInteger(correctNum)||(Math.abs(correctNum-Math.round(correctNum))<0.0001);
-                const isDecimal=!isInt&&Math.abs(correctNum)<1;
+                const isDecimal=!isInt;
                 const isSmall=Math.abs(correctNum)<=12;
                 const fmt=v=>isInt?String(Math.round(v)):String(parseFloat(v.toFixed(isDecimal?4:2)));
                 options.push(fmt(correctNum));
@@ -523,6 +523,7 @@ generateOptions(correctAnswer,template,variables){
                     else if(mag>10)offset=sign*(Math.floor(Math.random()*5)+1);
                     else offset=sign*(Math.floor(Math.random()*4)+1);
                     const wrong=correctNum+offset;
+					if(wrong<0&&correctNum>=0)continue;
                     const ws=fmt(wrong);
                     if(!options.includes(ws))options.push(ws);
                 }
@@ -567,6 +568,7 @@ generateOptions(correctAnswer,template,variables){
             if(prog.currentIndex>=total){
                 prog.shuffledIndices=this._shuffleIndices(total);
                 prog.currentIndex=0;
+				this.clearUsedQuestions();
             }
             try{localStorage.setItem(sKey,JSON.stringify(prog));}catch(e){}
             return idx;
