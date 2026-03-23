@@ -1,0 +1,135 @@
+{
+  "puzzle_type": "cs-algorithms-level-1",
+  "display_name": "Algorithms L1",
+  "templates": [
+
+    {
+      "template_id": "AL_L1_01",
+      "pattern": "A linear search is performed on an unsorted list of [N] items. Calculate the maximum number of comparisons needed in the worst case.",
+      "variables": {
+        "N":   {"min": 5,  "max": 500, "step": 5},
+        "VOL": {"min": 1,  "max": 50,  "step": 1}
+      },
+      "calculation": "N",
+      "explanation": "Linear search worst case = n comparisons\n= [N]\n= [RESULT]\n\nIn the worst case the target item is the last one or not in the list at all. Every item must be checked. Linear search has O(n) time complexity."
+    },
+
+    {
+      "template_id": "AL_L1_02",
+      "pattern": "A bubble sort is performed on a list of [N] items. Calculate the maximum number of passes needed to fully sort the list.",
+      "variables": {
+        "N":   {"min": 5,  "max": 100, "step": 5},
+        "VOL": {"min": 1,  "max": 50,  "step": 1}
+      },
+      "calculation": "N - 1",
+      "explanation": "Bubble sort max passes = n − 1\n= [N] − 1\n= [RESULT]\n\nEach pass bubbles the largest unsorted element to its correct position. After n−1 passes all elements are in order. The last element is automatically in position."
+    },
+
+    {
+      "template_id": "AL_L1_03",
+      "pattern": "A bubble sort is performed on a list of [N] items. Calculate the maximum number of comparisons in the worst case.",
+      "variables": {
+        "N":   {"min": 5,  "max": 50, "step": 5},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "N * (N - 1) / 2",
+      "explanation": "Bubble sort max comparisons = n(n−1) ÷ 2\n= [N] × ([N]−1) ÷ 2\n= [N] × [N-1] ÷ 2\n= [RESULT]\n\nThis is the sum 1+2+3+...+(n-1). Bubble sort has O(n²) time complexity in the worst case — it is inefficient for large lists."
+    },
+
+    {
+      "template_id": "AL_L1_04",
+      "pattern": "A stack initially contains [START] items. [PUSH] items are pushed onto the stack and [POP] items are popped off. Calculate the number of items remaining on the stack.",
+      "variables": {
+        "START": {"min": 0,  "max": 20, "step": 1},
+        "PUSH":  {"min": 1,  "max": 20, "step": 1},
+        "POP":   {"min": 0,  "max": 10, "step": 1}
+      },
+      "constraints": ["START + PUSH > POP"],
+      "calculation": "START + PUSH - POP",
+      "explanation": "Items remaining = initial items + pushed items − popped items\n= [START] + [PUSH] − [POP]\n= [RESULT]\n\nA stack follows LIFO — Last In First Out. Push adds to the top and pop removes from the top. A stack underflow error occurs if you try to pop from an empty stack."
+    },
+
+    {
+      "template_id": "AL_L1_05",
+      "pattern": "A queue initially contains [START] items. [ENQ] items are enqueued and [DEQ] items are dequeued. Calculate the number of items remaining in the queue.",
+      "variables": {
+        "START": {"min": 0,  "max": 20, "step": 1},
+        "ENQ":   {"min": 1,  "max": 20, "step": 1},
+        "DEQ":   {"min": 0,  "max": 10, "step": 1}
+      },
+      "constraints": ["START + ENQ > DEQ"],
+      "calculation": "START + ENQ - DEQ",
+      "explanation": "Items remaining = initial + enqueued − dequeued\n= [START] + [ENQ] − [DEQ]\n= [RESULT]\n\nA queue follows FIFO — First In First Out. Items join at the rear and leave from the front. Queues are used in print spooling, CPU scheduling and breadth-first search."
+    },
+
+    {
+      "template_id": "AL_L1_06",
+      "pattern": "An array starts at base index [BASE]. Calculate the index of the element that is [POS] positions from the start.",
+      "variables": {
+        "BASE": {"min": 0,  "max": 10, "step": 1},
+        "POS":  {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "BASE + POS",
+      "explanation": "Array index = base index + position\n= [BASE] + [POS]\n= [RESULT]\n\nMost programming languages use 0-based indexing so the first element is at index 0. Some languages like Pascal use 1-based indexing. Always check which convention is being used."
+    },
+
+    {
+      "template_id": "AL_L1_07",
+      "pattern": "A nested loop has an outer loop that runs [N] times and an inner loop that runs [M] times for each outer iteration. Calculate the total number of iterations.",
+      "variables": {
+        "N": {"min": 2,  "max": 50, "step": 1},
+        "M": {"min": 2,  "max": 50, "step": 1}
+      },
+      "calculation": "N * M",
+      "explanation": "Total iterations = outer loop × inner loop\n= [N] × [M]\n= [RESULT]\n\nNested loops multiply their iteration counts. Two nested loops each running n times give n² total iterations — this is why nested loops produce O(n²) algorithms."
+    },
+
+    {
+      "template_id": "AL_L1_08",
+      "pattern": "A loop starts at [START] and increments by [STEP] each iteration until it reaches [END]. Calculate the number of iterations the loop executes.",
+      "variables": {
+        "START": {"min": 0,  "max": 10,  "step": 1},
+        "STEP":  {"values": [1,2,3,4,5,10]},
+        "ITER":  {"min": 5,  "max": 50,  "step": 1},
+        "END":   {"calc": "START + STEP * ITER"}
+      },
+      "calculation": "ITER",
+      "explanation": "Iterations = (end − start) ÷ step\n= ([END] − [START]) ÷ [STEP]\n= [END-START] ÷ [STEP]\n= [RESULT]\n\nCounting loop iterations precisely is essential for calculating algorithm time complexity. Always check whether the loop condition is strict (<) or inclusive (<=)."
+    },
+
+    {
+      "template_id": "AL_L1_09",
+      "pattern": "A bubble sort performs [K] complete passes on a list of [N] items. Calculate the total number of array element accesses made during these passes.",
+      "variables": {
+        "N": {"min": 5,  "max": 50, "step": 5},
+        "K": {"min": 1,  "max": 10, "step": 1}
+      },
+      "calculation": "N * K * 2",
+      "explanation": "Array accesses = items × passes × 2 (read and write per comparison)\n= [N] × [K] × 2\n= [RESULT]\n\nEach comparison in bubble sort accesses two array elements. Minimising array accesses is important for cache efficiency in modern processors."
+    },
+
+    {
+      "template_id": "AL_L1_10",
+      "pattern": "A selection sort is performed on a list of [N] items. Calculate the total number of comparisons made.",
+      "variables": {
+        "N":   {"min": 5,  "max": 50, "step": 5},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "N * (N - 1) / 2",
+      "explanation": "Selection sort comparisons = n(n−1) ÷ 2\n= [N] × ([N]−1) ÷ 2\n= [N] × [N-1] ÷ 2\n= [RESULT]\n\nSelection sort always makes the same number of comparisons regardless of the input order. It has O(n²) time complexity but makes fewer swaps than bubble sort."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
