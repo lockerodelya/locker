@@ -6,8 +6,8 @@
 // ⭐⭐⭐ EDIT ONLY THESE 3 LINES FOR A NEW ENGINE ⭐⭐⭐
 // ============================================
 
-const _ENGINE_JSON_FILE     = 'biology-human-body-level-1.json';
-const _ENGINE_CATEGORY_KEY  = 'biology-human-body-level-1';
+const _ENGINE_JSON_FILE     = 'biology-human-body-systems-level-1.json';
+const _ENGINE_CATEGORY_KEY  = 'biology-human-body-systems-level-1';
 const _ENGINE_INSTANCE_NAME = 'biologyhumbodysystemsl1';
 
 // ============================================
@@ -426,15 +426,19 @@ calculateAnswer(template,variables){
             if(calc===''||calc==='null')return null;
             if(this.isPlainText(calc))return null;
 
-            if(/^[A-Z][A-Z0-9_]*$/.test(calc)){
-                if(variables.hasOwnProperty(calc)){
-                    const val=variables[calc];
-                    if(template.answer_type==='shape_selector'&&typeof val==='string')return this.shapeMap[val]||val;
-                    if(template.answer_type==='color_picker'&&typeof val==='string')return this.colorMap[val]||val;
-                    if(typeof val==='number')return parseFloat(val.toFixed(4));
-                    return val;
-                }
-            }
+if(/^[A-Z][A-Z0-9_]*$/.test(calc)){
+    if(variables.hasOwnProperty(calc)){
+        const val=variables[calc];
+        if(template.answer_type==='shape_selector'&&typeof val==='string')return this.shapeMap[val]||val;
+        if(template.answer_type==='color_picker'&&typeof val==='string')return this.colorMap[val]||val;
+        if(typeof val==='number'){
+            // DEBUG: log to see what val actually is
+            console.log('DEBUG calculateAnswer - calc:', calc, 'val:', val);
+            return parseFloat(val.toFixed(4));
+        }
+        return val;
+    }
+}
 
             if(calc.includes('repeat('))return this.evaluateExpression(calc,variables);
             if(calc.includes('next_in_pattern(')){
