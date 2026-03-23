@@ -17,13 +17,14 @@
 
     {
       "template_id": "HB_L2_02",
-      "pattern": "A patient has a pulse pressure of [PP] mmHg and an arterial compliance of [C] mL/mmHg. Calculate the stroke volume in mL.",
+      "pattern": "The kidney filters [FILT] mg of glucose per minute. The urine contains [EXC] mg of glucose per minute. Calculate the percentage of filtered glucose that is reabsorbed.",
       "variables": {
-        "PP": {"min": 20, "max": 80, "step": 5},
-        "C":  {"values": [0.5,1.0,1.5,2.0,2.5,3.0]}
+        "FILT": {"min": 100, "max": 1000, "step": 50},
+        "EFF":  {"values": [90,92,95,96,98,99,100]},
+        "EXC":  {"calc": "round2(FILT * (100 - EFF) / 100)"}
       },
-      "calculation": "round2(PP * C)",
-      "explanation": "Stroke volume = pulse pressure × arterial compliance\n= [PP] × [C]\n= [RESULT] mL\n\nArterial compliance describes how much the aorta expands per mmHg of pressure. Normal stroke volume is 60-100 mL. Stiff arteries (low compliance) in older patients produce a wider pulse pressure for the same stroke volume."
+      "calculation": "EFF",
+      "explanation": "Reabsorption % = (filtered − excreted) ÷ filtered × 100\n= ([FILT] − [EXC]) ÷ [FILT] × 100\n= [RESULT]%\n\nNormally 100% of filtered glucose is reabsorbed in the proximal convoluted tubule. Glucose appears in urine only when blood glucose exceeds the renal threshold of about 10 mmol/L."
     },
 
     {
@@ -40,13 +41,15 @@
 
     {
       "template_id": "HB_L2_04",
-      "pattern": "A person breathes with a tidal volume of [TV] mL and a respiratory rate of [RR] breaths per minute. Calculate the pulmonary ventilation rate in mL/min.",
+      "pattern": "A patient's blood glucose falls from [G1] mmol/L to [G2] mmol/L in [T] minutes after insulin injection. Calculate the glucose clearance rate in mmol/L/min.",
       "variables": {
-        "TV": {"min": 300, "max": 700, "step": 50},
-        "RR": {"min": 10,  "max": 25,  "step": 1}
+        "T":    {"values": [5,10,15,20,25,30]},
+        "RATE": {"min": 1,  "max": 10,  "step": 1},
+        "G2":   {"min": 4,  "max": 10,  "step": 1},
+        "G1":   {"calc": "G2 + RATE * T"}
       },
-      "calculation": "round2(TV * RR)",
-      "explanation": "Pulmonary ventilation = tidal volume × respiratory rate\n= [TV] × [RR]\n= [RESULT] mL/min\n\nNormal pulmonary ventilation at rest is about 6000 mL/min. This is the total air moved in and out of the lungs per minute. It differs from alveolar ventilation because it includes dead space air that does not reach the alveoli."
+      "calculation": "RATE",
+      "explanation": "Glucose clearance rate = (initial − final glucose) ÷ time\n= ([G1] − [G2]) ÷ [T]\n= [RATE*T] ÷ [T]\n= [RESULT] mmol/L/min\n\nInsulin stimulates glucose uptake by cells. Impaired glucose clearance is characteristic of type 2 diabetes where cells become insulin resistant."
     },
 
     {
@@ -75,13 +78,14 @@
 
     {
       "template_id": "HB_L2_07",
-      "pattern": "A patient's lung volume increases by [DV] mL in response to a transpulmonary pressure change of [DP] cmH₂O. Calculate the lung compliance in mL/cmH₂O.",
+      "pattern": "A nerve impulse travels [DIST] mm along an axon in [TIME] ms. Calculate the nerve conduction velocity in m/s.",
       "variables": {
-        "DV": {"min": 100, "max": 600, "step": 50},
-        "DP": {"values": [1,2,3,4,5,6,8,10]}
+        "TIME": {"values": [1,2,4,5,8,10,20,25,50]},
+        "VEL":  {"min": 1,  "max": 100, "step": 5},
+        "DIST": {"calc": "TIME * VEL"}
       },
-      "calculation": "round2(DV / DP)",
-      "explanation": "Lung compliance = change in volume ÷ change in pressure\n= [DV] ÷ [DP]\n= [RESULT] mL/cmH₂O\n\nNormal lung compliance is about 200 mL/cmH₂O. Compliance is reduced in pulmonary fibrosis making the lungs stiff and hard to inflate. It is increased in emphysema where alveolar walls are destroyed."
+      "calculation": "VEL",
+      "explanation": "Nerve conduction velocity = distance ÷ time\n= [DIST] mm ÷ [TIME] ms\n= [RESULT] m/s\n\nMyelinated nerve fibres conduct at 70-120 m/s. Unmyelinated fibres conduct at only 0.5-2 m/s. Multiple sclerosis damages myelin and slows nerve conduction."
     },
 
     {
@@ -105,9 +109,19 @@
       },
       "calculation": "IRV + TV + ERV",
       "explanation": "Vital capacity = IRV + tidal volume + ERV\n= [IRV] + [TV] + [ERV]\n= [RESULT] mL\n\nVital capacity is the maximum volume of air that can be exhaled after maximum inhalation. Normal values are 3500-5000 mL. It is reduced in restrictive lung diseases."
+    },
+
+    {
+      "template_id": "HB_L2_10",
+      "pattern": "A person has a BMI of [BMI] and an age of [AGE] years. Using the simplified formula, estimate their body fat percentage. (Body fat % = 1.2 × BMI + 0.23 × age − 5.4 for males)",
+      "variables": {
+        "BMI": {"min": 18,  "max": 35,  "step": 1},
+        "AGE": {"min": 20,  "max": 60,  "step": 5}
+      },
+      "calculation": "round2(1.2 * BMI + 0.23 * AGE - 5.4)",
+      "explanation": "Body fat % = 1.2 × BMI + 0.23 × age − 5.4\n= 1.2 × [BMI] + 0.23 × [AGE] − 5.4\n= [1.2*BMI] + [0.23*AGE] − 5.4\n= [RESULT]%\n\nBody fat percentage is a better measure of health risk than BMI alone. Healthy ranges for males are 10-20% and for females 18-28%."
     }
 
-   
   ],
   "responses": {
     "correct": [
