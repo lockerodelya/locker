@@ -152,9 +152,9 @@ const VOOO_ENGINE_REGISTRY = {
 	'chemistry-chemical-bonding-level-2' : '/vooo-ai/subjects/chemical-bonding/engine-code/chemistry-chemical-bonding-level-2.js',
 	'chemistry-chemical-bonding-level-3' : '/vooo-ai/subjects/chemical-bonding/engine-code/chemistry-chemical-bonding-level-3.js',
 
-	'cs-networks-level-1' : '/vooo-ai/subjects/computer-science/engine-code/cs-networks-level-1.js',
-	'cs-networks-level-2' : '/vooo-ai/subjects/computer-science/engine-code/cs-networks-level-2.js',
-	'cs-networks-level-3' : '/vooo-ai/subjects/computer-science/engine-code/cs-networks-level-3.js',
+	'cs-networks-level-1' : '/vooo-ai/subjects/cs-networks/engine-code/cs-networks-level-1.js',
+	'cs-networks-level-2' : '/vooo-ai/subjects/cs-networks/engine-code/cs-networks-level-2.js',
+	'cs-networks-level-3' : '/vooo-ai/subjects/cs-networks/engine-code/cs-networks-level-3.js',
 
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
