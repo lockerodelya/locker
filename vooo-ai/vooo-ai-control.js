@@ -156,6 +156,9 @@ const VOOO_ENGINE_REGISTRY = {
 	'cs-networks-level-2' : '/vooo-ai/subjects/cs-networks/engine-code/cs-networks-level-2.js',
 	'cs-networks-level-3' : '/vooo-ai/subjects/cs-networks/engine-code/cs-networks-level-3.js',
 
+	'cs-data-reprentation-level-1' : '/vooo-ai/subjects/cs-data-reprentation/engine-code/cs-data-reprentation-level-1.js',
+	'cs-data-reprentation-level-2' : '/vooo-ai/subjects/cs-data-reprentation/engine-code/cs-data-reprentation-level-2.js',
+	'cs-data-reprentation-level-3' : '/vooo-ai/subjects/cs-data-reprentation/engine-code/cs-data-reprentation-level-3.js',
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -312,6 +315,10 @@ const VOOO_ENGINE_INSTANCES = {
 	'cs-networks-level-2' : 'csnetworksl2',
 	'cs-networks-level-3' : 'csnetworksl3',
 
+	'cs-data-reprentation-level-1' : 'csdatarepresentationl1',
+	'cs-data-reprentation-level-2' : 'csdatarepresentationl2',
+	'cs-data-reprentation-level-3' : 'csdatarepresentationl3',
+	
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -577,6 +584,14 @@ const VOOO_ENGINE_INSTANCES = {
 					{ value: 'cs-networks-level-3', text: '• Networks L3' },
                 ]
             },
+			{
+                label: 'Computer Science : Data Representation',
+                options: [
+                    { value: 'cs-data-representation-level-1', text: '• Data Representation L1' },
+					{ value: 'cs-data-representation-level-2', text: '• Data Representation L2' },
+					{ value: 'cs-data-representation-level-3', text: '• Data Representation L3' },
+                ]
+            },			
 			
             // --- ADD NEW OPTGROUP BELOW THIS LINE ---
         ];
