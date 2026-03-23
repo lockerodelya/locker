@@ -6,8 +6,8 @@
 // ⭐⭐⭐ EDIT ONLY THESE 3 LINES FOR A NEW ENGINE ⭐⭐⭐
 // ============================================
 
-const _ENGINE_JSON_FILE     = 'biology-ecology-ecosystems-2.json';
-const _ENGINE_CATEGORY_KEY  = 'biology-ecology-ecosystems-2';
+const _ENGINE_JSON_FILE     = 'biology-ecology-ecosystems-level-2.json';
+const _ENGINE_CATEGORY_KEY  = 'biology-ecology-ecosystems-level-2';
 const _ENGINE_INSTANCE_NAME = 'biologyecologyecosystemsl2';
 
 // ============================================
