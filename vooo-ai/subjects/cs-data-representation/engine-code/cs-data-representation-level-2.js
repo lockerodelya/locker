@@ -16,7 +16,7 @@ const _ENGINE_INSTANCE_NAME = 'csdatarepresentationl2';
 
 
     // ── JSON base path — same for all engines ──
-    const _JSON_BASE_PATH = '/vooo-ai/subjects/cs-data-reprentation/json-code/';
+    const _JSON_BASE_PATH = '/vooo-ai/subjects/cs-data-representation/json-code/';
 
     // ════════════════════════════════════════════
     // ENGINE CLASS
