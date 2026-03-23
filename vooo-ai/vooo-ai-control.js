@@ -167,6 +167,15 @@ const VOOO_ENGINE_REGISTRY = {
 	'biology-cell-level-1' : '/vooo-ai/subjects/biology-cell/engine-code/biology-cell-level-1.js',
 	'biology-cell-level-2' : '/vooo-ai/subjects/biology-cell/engine-code/biology-cell-level-2.js',
 	'biology-cell-level-3' : '/vooo-ai/subjects/biology-cell/engine-code/biology-cell-level-3.js',
+
+	'biology-human-body-level-1' : '/vooo-ai/subjects/biology-human-body/engine-code/biology-human-body-level-1.js',
+	'biology-human-body-level-2' : '/vooo-ai/subjects/biology-human-body/engine-code/biology-human-body-level-2.js',
+	'biology-human-body-level-3' : '/vooo-ai/subjects/biology-human-body/engine-code/biology-human-body-level-3.js',
+
+	'biology-ecology-ecosystems-level-1' : '/vooo-ai/subjects/biology-ecology-ecosystems/engine-code/biology-ecology-ecosystems-level-1.js',
+	'biology-ecology-ecosystems-level-2' : '/vooo-ai/subjects/biology-ecology-ecosystems/engine-code/biology-ecology-ecosystems-level-2.js',
+	'biology-ecology-ecosystems-level-3' : '/vooo-ai/subjects/biology-ecology-ecosystems/engine-code/biology-ecology-ecosystems-level-3.js',
+	
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -334,6 +343,14 @@ const VOOO_ENGINE_INSTANCES = {
 	'biology-cell-level-1' : 'biologycelll1',
 	'biology-cell-level-2' : 'biologycelll2',
 	'biology-cell-level-3' : 'biologycelll3',
+
+	'biology-human-body-level-1' : 'biologyhumbodysystemsl1',
+	'biology-human-body-level-2' : 'biologyhumbodysystemsl2',
+	'biology-human-body-level-3' : 'biologyhumbodysystemsl3',
+
+	'biology-ecology-ecosystems-level-1' : 'biologyecologyecosystemsl1',
+	'biology-ecology-ecosystems-level-2' : 'biologyecologyecosystemsl2',
+	'biology-ecology-ecosystems-level-3' : 'biologyecologyecosystemsl3',
 	
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
