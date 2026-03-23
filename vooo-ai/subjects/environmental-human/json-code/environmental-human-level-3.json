@@ -1,0 +1,132 @@
+{
+  "puzzle_type": "environmental-human-impact-level-3",
+  "display_name": "Human Impact L3",
+  "templates": [
+    {
+      "template_id": "HI_L3_T01",
+      "pattern": "In a region, total Net Primary Production (NPP) is [NPP_TOTAL] Tg C/yr. Humans appropriate [NPP_H] Tg C/yr through harvest, land use change, and fire. Calculate HANPP (Human Appropriation of NPP) as a percentage of total NPP. Round to 1 decimal place.",
+      "variables": {
+        "NPP_TOTAL": {"min": 100, "max": 1000, "step": 50},
+        "NPP_H":     {"min": 10,  "max": 500,  "step": 10}
+      },
+      "constraints": ["NPP_H < NPP_TOTAL"],
+      "calculation": "round1(NPP_H / NPP_TOTAL * 100)",
+      "explanation": "HANPP % = Human NPP ÷ Total NPP × 100\n= [NPP_H] ÷ [NPP_TOTAL] × 100\n= [RESULT]%\n\nHANPP quantifies human dominance over the biosphere's energy flows. Globally, humans appropriate ~25–40% of terrestrial NPP. High HANPP leaves less energy for wild species, driving biodiversity loss. Agricultural intensification increases NPP per unit area but concentrates it for human use, leaving wildlife without habitat or food. HANPP is a core metric in the safe operating space for the biosphere."
+    },
+    {
+      "template_id": "HI_L3_T02",
+      "pattern": "The safe planetary boundary for nitrogen flow from atmosphere to biosphere is [SAFE] Tg N/yr. Current anthropogenic nitrogen fixation is [CURRENT] Tg N/yr. Calculate the overshoot factor (current ÷ safe boundary). Round to 2 decimal places.",
+      "variables": {
+        "SAFE":    {"min": 50,  "max": 80,  "step": 5},
+        "CURRENT": {"min": 100, "max": 200, "step": 10}
+      },
+      "constraints": ["CURRENT > SAFE"],
+      "calculation": "round2(CURRENT / SAFE)",
+      "explanation": "Overshoot Factor = Current Value ÷ Safe Boundary\n= [CURRENT] ÷ [SAFE]\n= [RESULT]×\n\nThe nitrogen planetary boundary (Steffen et al., 2015) is set at 62 Tg N/yr; current fixation exceeds 150 Tg/yr. An overshoot >1 means the boundary is transgressed. Nine planetary boundaries define the 'safe operating space for humanity'. Six are currently exceeded: climate change, biosphere integrity, land system change, freshwater use, novel entities (chemicals), and nitrogen/phosphorus cycles."
+    },
+    {
+      "template_id": "HI_L3_T03",
+      "pattern": "A climate tipping element has a tipping threshold of [THRESH]°C of global warming. Once tipped, it amplifies warming by a feedback factor of [FEED] (unitless multiplier on original forcing). If baseline forcing = [BASE] W/m², calculate the effective forcing after the tip (W/m²). Round to 2 decimal places.",
+      "variables": {
+        "THRESH": {"min": 10, "max": 30, "step": 5},
+        "FEED":   {"min": 10, "max": 25, "step": 5},
+        "BASE":   {"min": 2,  "max": 10, "step": 1}
+      },
+      "calculation": "round2(BASE * FEED / 10)",
+      "explanation": "Effective Forcing = Base Forcing × Feedback Factor\n= [BASE] × [FEED]/10\n= [RESULT] W/m²\n\nTipping elements (Arctic sea ice, West Antarctic Ice Sheet, Amazon dieback, Atlantic Meridional Overturning Circulation) can flip abruptly and self-perpetuate beyond human control. Cascading tipping (domino effects) could destabilise the entire Earth system. The IPCC AR6 warns that tipping elements may be triggered even at 1.5–2°C of warming. Avoiding tipping points is a core argument for urgent emissions reduction."
+    },
+    {
+      "template_id": "HI_L3_T04",
+      "pattern": "A region's Biodiversity Intactness Index (BII) is measured at [BII]% of its pre-human baseline. The safe planetary boundary for BII is [BII_SAFE]%. Calculate the percentage point deficit from the safe boundary.",
+      "variables": {
+        "BII":      {"min": 40,  "max": 85,  "step": 5},
+        "BII_SAFE": {"min": 88,  "max": 95,  "step": 1}
+      },
+      "constraints": ["BII < BII_SAFE"],
+      "calculation": "BII_SAFE - BII",
+      "explanation": "BII Deficit = Safe Boundary − Current BII\n= [BII_SAFE]% − [BII]%\n= [RESULT] percentage points\n\nThe Biodiversity Intactness Index measures the average abundance of native species relative to their abundance in an intact ecosystem. The planetary boundary is set at 90% BII. Global average BII is ~79%, already transgressed. Hotspots of biodiversity loss include tropical forests, Mediterranean biomes, and grasslands. BII is used in national biodiversity strategy and the Kunming-Montreal Global Biodiversity Framework targets."
+    },
+    {
+      "template_id": "HI_L3_T05",
+      "pattern": "A country's total Material Footprint (MF) is [MF] billion tonnes/yr and its population is [POP] million. The global sustainable MF is estimated at [SUST] tonnes/capita/yr. Calculate the per capita MF (tonnes/capita) and determine the overshoot above the sustainable level. Round to 2 decimal places.",
+      "variables": {
+        "MF":   {"min": 1,   "max": 50,   "step": 1},
+        "POP":  {"min": 5,   "max": 500,  "step": 5},
+        "SUST": {"min": 5,   "max": 10,   "step": 1}
+      },
+      "calculation": "round2(MF * 1000 / POP - SUST)",
+      "explanation": "MF Overshoot = (Total MF / Population) − Sustainable Level\n= ([MF]×10⁹ / ([POP]×10⁶)) − [SUST]\n= [RESULT] tonnes/capita above sustainable\n\nMaterial footprint (raw material equivalent of consumption) averages ~12 tonnes/capita globally, against a sustainable level of ~8 tonnes. High-income countries average ~27 tonnes/capita. The material footprint decoupling from GDP remains weak globally. Circular economy strategies (reuse, remanufacturing, recycling) target reducing MF while maintaining service levels."
+    },
+    {
+      "template_id": "HI_L3_T06",
+      "pattern": "A person's diet emits [DIET_N] kg of reactive nitrogen per year. Natural background nitrogen cycling contributes [BG_N] kg N/capita/yr. The safe per capita nitrogen footprint limit is [SAFE_N] kg N/yr. Calculate the excess above the safe limit (kg N/yr). Round to 2 decimal places.",
+      "variables": {
+        "DIET_N": {"min": 10, "max": 40, "step": 5},
+        "BG_N":   {"min": 2,  "max": 8,  "step": 1},
+        "SAFE_N": {"min": 5,  "max": 15, "step": 1}
+      },
+      "constraints": ["DIET_N + BG_N > SAFE_N"],
+      "calculation": "round2(DIET_N + BG_N - SAFE_N)",
+      "explanation": "Nitrogen Footprint Excess = (Diet N + Background N) − Safe Limit\n= ([DIET_N] + [BG_N]) − [SAFE_N]\n= [RESULT] kg N/yr\n\nThe average European nitrogen footprint is ~23 kg N/yr per person. Animal products contribute ~75% of dietary nitrogen losses. Reducing red meat consumption can halve a person's nitrogen footprint. The Nitrogen Footprint Tool (N-Calculator) allows individuals to estimate their contribution. Moving to plant-rich diets simultaneously reduces greenhouse gas emissions, water use, and land use."
+    },
+    {
+      "template_id": "HI_L3_T07",
+      "pattern": "Agricultural runoff from [AREA] ha contributes a pollution load of [LOAD] kg/ha/yr of total suspended solids to a river. The river's dilution factor at low flow is [DILUT] (volume river/volume runoff). Calculate the in-river concentration increase (mg/L). (1 kg in 1000 L = 1 g/L; assume 1 ha generates 200 m³ runoff/yr). Round to 2 decimal places.",
+      "variables": {
+        "AREA":  {"min": 10,  "max": 200, "step": 10},
+        "LOAD":  {"min": 50,  "max": 500, "step": 50},
+        "DILUT": {"min": 5,   "max": 50,  "step": 5}
+      },
+      "calculation": "round2(LOAD * 5 / (1 + DILUT))",
+      "explanation": "In-river Concentration = (Area × Load) ÷ (Area × Runoff × Dilution) × 1000\n= ([AREA] × [LOAD]) ÷ ([AREA] × 200 × [DILUT]) × 1000\n= [RESULT] mg/L\n\nRunoff pollution loads depend on land management, soil type, and rainfall intensity. The EU Water Framework Directive requires rivers to achieve 'good ecological status', which includes total suspended solids <25 mg/L. Buffer strips (vegetation between field and river) can intercept 50–90% of sediment load. Constructed wetlands are used as end-of-pipe treatment for diffuse agricultural pollution."
+    },
+    {
+      "template_id": "HI_L3_T08",
+      "pattern": "An urban area has a surface coverage of [IMPERM]% impermeable surfaces over [CITY_AREA] km². The surrounding rural area has a mean surface temperature of [RURAL_T]°C. The urban heat island intensity is estimated as UHI = 0.05 × impervious fraction × CITY_AREA^0.25. Calculate UHI (°C above rural). Round to 2 decimal places.",
+      "variables": {
+        "IMPERM":    {"min": 30,  "max": 90,  "step": 10},
+        "CITY_AREA": {"min": 10,  "max": 500, "step": 10},
+        "RURAL_T":   {"min": 10,  "max": 25,  "step": 1}
+      },
+      "calculation": "round2(0.05 * (IMPERM / 100) * pow(CITY_AREA, 0.25))",
+      "explanation": "UHI Intensity = 0.05 × Impervious Fraction × Area^0.25\n= 0.05 × ([IMPERM]/100) × [CITY_AREA]^0.25\n= [RESULT]°C above rural\n\nUrban heat islands form because dark impervious surfaces absorb more solar radiation and release it as sensible heat; evapotranspiration is reduced; and waste heat from vehicles and buildings adds to warming. UHI intensity of 2–8°C is common in large cities. Heat waves are amplified in cities — the 2003 European heat wave killed ~70,000 people, disproportionately urban elderly residents. Green roofs, urban forests, and reflective surfaces mitigate UHI."
+    },
+    {
+      "template_id": "HI_L3_T09",
+      "pattern": "Microplastic concentration in a river is [INIT] particles/L and grows at [RATE]% per year. Calculate the projected concentration (particles/L) after [YRS] years. Round to 2 decimal places.",
+      "variables": {
+        "INIT": {"min": 10,  "max": 500, "step": 10},
+        "RATE": {"min": 2,   "max": 20,  "step": 2},
+        "YRS":  {"min": 5,   "max": 30,  "step": 5}
+      },
+      "calculation": "round2(INIT * pow(1 + RATE / 100, YRS))",
+      "explanation": "Future Concentration = Initial × (1 + Growth Rate)^Years\n= [INIT] × (1 + [RATE]/100)^[YRS]\n= [RESULT] particles/L\n\nMicroplastic concentrations are rising in rivers, lakes, and oceans. They originate from fragmentation of macro-plastics, synthetic textile washing (releasing microfibres), tyre wear, and industrial pellets. Effects on aquatic biota include ingestion, physical blockage, endocrine disruption from adsorbed chemicals, and trophic transfer up food chains. Wastewater treatment plants remove ~99% of microplastics but the effluent volume means billions of particles still escape daily."
+    },
+    {
+      "template_id": "HI_L3_T10",
+      "pattern": "A region's cumulative environmental impact score is calculated as: CIS = (Deforestation Index × [WD]) + (Pollution Index × [WP]) + (Biodiversity Loss Index × [WB]). Given DI = [DI], PI = [PI], BLI = [BLI] (all scored 0–100), calculate CIS. Round to 2 decimal places.",
+      "variables": {
+        "WD":  {"min": 20, "max": 50, "step": 5},
+        "WP":  {"min": 20, "max": 40, "step": 5},
+        "WB":  {"min": 10, "max": 40, "step": 5},
+        "DI":  {"min": 10, "max": 90, "step": 5},
+        "PI":  {"min": 10, "max": 90, "step": 5},
+        "BLI": {"min": 10, "max": 90, "step": 5}
+      },
+      "calculation": "round2((DI * WD + PI * WP + BLI * WB) / (WD + WP + WB))",
+      "explanation": "Composite Impact Score = Weighted Average of Sub-indices\n= (DI×[WD] + PI×[WP] + BLI×[WB]) ÷ ([WD]+[WP]+[WB])\n= [RESULT]\n\nComposite environmental indices (e.g., Environmental Performance Index, Living Planet Index, Planetary Boundaries Dashboard) aggregate multiple pressures into a single metric. Weighted aggregation allows policy-relevant emphasis on priority issues. Limitations include weighting subjectivity and masking of critical threshold breaches. Multi-criteria decision analysis is used in environmental impact assessment (EIA) and strategic environmental assessment (SEA)."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

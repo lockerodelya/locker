@@ -1,0 +1,129 @@
+{
+  "puzzle_type": "environmental-renewable-level-3",
+  "display_name": "Renewable Energy L3",
+  "templates": [
+    {
+      "template_id": "RE_L3_T01",
+      "pattern": "A solar project has a base LCOE of £[LCOE_BASE]/MWh. A [DELTA]% increase in capital cost and a [CF_DROP]% reduction in capacity factor are modelled simultaneously. Calculate the new LCOE (£/MWh). Round to 2 decimal places.",
+      "variables": {
+        "LCOE_BASE": {"min": 30,  "max": 100, "step": 5},
+        "DELTA":     {"min": 5,   "max": 30,  "step": 5},
+        "CF_DROP":   {"min": 5,   "max": 20,  "step": 5}
+      },
+      "calculation": "round2(LCOE_BASE * (1 + DELTA / 100) / (1 - CF_DROP / 100))",
+      "explanation": "New LCOE = Base LCOE × (1 + ΔCAPEX%) / (1 − ΔCF%)\n= [LCOE_BASE] × (1 + [DELTA]/100) / (1 − [CF_DROP]/100)\n= £[RESULT]/MWh\n\nLCOE sensitivity analysis quantifies how robust a project is to cost overruns and resource variability. LCOE is directly proportional to capital cost and inversely proportional to energy yield. A combined 20% cost increase and 10% yield decrease can raise LCOE by ~33%, potentially making a project unviable."
+    },
+    {
+      "template_id": "RE_L3_T02",
+      "pattern": "A downstream wind turbine is in the wake of an upstream turbine. The upstream turbine has power output [P1] kW. The wake reduces wind speed by [WD]% at the downstream rotor. Calculate the downstream turbine power (kW), noting that power ∝ v³. Round to 2 decimal places.",
+      "variables": {
+        "P1": {"min": 500,  "max": 5000, "step": 250},
+        "WD": {"min": 5,    "max": 25,   "step": 5}
+      },
+      "calculation": "round2(P1 * Math.pow(1 - WD / 100, 3))",
+      "explanation": "Since P ∝ v³:\nP2 = P1 × (1 − WD/100)³\n= [P1] × (1 − [WD]/100)³\n= [RESULT] kW\n\nWake effects can reduce downstream turbine output by 10–40%. Wind farm layouts use turbine spacing of 5–10 rotor diameters to minimise wake losses. Wake models (Jensen, Gaussian) are used in wind farm optimisation software to maximise total array output."
+    },
+    {
+      "template_id": "RE_L3_T03",
+      "pattern": "A fixed-tilt solar array generates [E_FIXED] MWh/yr. A single-axis tracking system increases energy yield by [GAIN]%. Calculate the additional energy generated (MWh/yr) and the total tracked yield (MWh/yr).",
+      "variables": {
+        "E_FIXED": {"min": 500,  "max": 10000, "step": 250},
+        "GAIN":    {"min": 15,   "max": 35,    "step": 5}
+      },
+      "calculation": "round2(E_FIXED * (1 + GAIN / 100))",
+      "explanation": "Tracked Yield = Fixed Yield × (1 + Gain%)\n= [E_FIXED] × (1 + [GAIN]/100)\n= [RESULT] MWh/yr\n\nAdditional energy = [RESULT] − [E_FIXED] = [RESULT-E_FIXED] MWh/yr\n\nSingle-axis (N–S axis) trackers boost yield 20–30% by following the sun's daily east–west arc. Dual-axis tracking adds a further 5–10% by also following seasonal N–S movement. The economic case depends on tracker cost vs. extra revenue from additional generation."
+    },
+    {
+      "template_id": "RE_L3_T04",
+      "pattern": "An electrolyser produces hydrogen from water using [POWER] kW of electricity. Electrolyser efficiency is [EFF]% and the energy content of hydrogen (HHV) is 39.4 kWh/kg. Calculate the hydrogen production rate (kg/hr). Round to 4 decimal places.",
+      "variables": {
+        "POWER": {"min": 100,  "max": 5000, "step": 100},
+        "EFF":   {"min": 60,   "max": 85,   "step": 5}
+      },
+      "calculation": "round2(POWER * EFF / 100 / 39.4)",
+      "explanation": "H₂ Production Rate = (Power × Efficiency) ÷ Energy content of H₂\n= ([POWER] × [EFF]/100) ÷ 39.4 kWh/kg\n= [RESULT] kg/hr\n\nGreen hydrogen from renewable-powered electrolysis is central to decarbonising hard-to-electrify sectors (steel, shipping, fertilisers). PEM electrolysers achieve 70–80% efficiency; alkaline electrolysers 60–75%. The 39.4 kWh/kg figure uses the Higher Heating Value (HHV) of hydrogen."
+    },
+    {
+      "template_id": "RE_L3_T05",
+      "pattern": "A pumped hydro storage system pumps [V] m³ of water uphill ([EFF_P]% pump efficiency) and generates electricity on discharge ([EFF_T]% turbine efficiency). Head h = [H] m, ρ = 1000 kg/m³, g = 9.81 m/s². Calculate the round-trip efficiency (%) and energy delivered (kWh). Round to 2 decimal places.",
+      "variables": {
+        "V":     {"min": 1000, "max": 100000, "step": 1000},
+        "H":     {"min": 50,   "max": 500,    "step": 25},
+        "EFF_P": {"min": 80,   "max": 95,     "step": 5},
+        "EFF_T": {"min": 80,   "max": 95,     "step": 5}
+      },
+      "calculation": "round2(1000 * 9.81 * V * H * EFF_T / 100 / 3600000)",
+      "explanation": "Potential energy stored = ρ × g × V × h = 1000 × 9.81 × [V] × [H] J\nEnergy input (pumping) = PE / (η_pump) \nEnergy output (generation) = PE × η_turbine\nEnergy delivered = ρgVh × η_pump × η_turbine ÷ 3,600,000 J/kWh\n= [RESULT] kWh\nRound-trip efficiency = [EFF_P]% × [EFF_T]% / 100 = [EFF_P*EFF_T/100]%\n\nPumped hydro provides ~95% of global grid-scale energy storage. Round-trip efficiency of 70–85% is much better than hydrogen (25–40%). It provides long-duration storage (hours to days) essential for balancing seasonal renewable variability."
+    },
+    {
+      "template_id": "RE_L3_T06",
+      "pattern": "Grid frequency drops from 50 Hz to [FREQ] Hz following a generation trip. A battery storage system must inject [POWER] MW of frequency response power within 1 second. Calculate the energy dispatched (MWh) in a [DURATION] second response window. Round to 6 decimal places.",
+      "variables": {
+        "FREQ":     {"min": 4900, "max": 4990, "step": 10},
+        "POWER":    {"min": 10,   "max": 500,  "step": 10},
+        "DURATION": {"min": 1,    "max": 30,   "step": 1}
+      },
+      "calculation": "round2(POWER * DURATION / 3600)",
+      "explanation": "Energy dispatched = Power × Time ÷ 3600 s/hr\n= [POWER] MW × [DURATION] s ÷ 3600\n= [RESULT] MWh\n\nFrequency = [FREQ/100] Hz (deviation = [50 - FREQ/100] Hz from 50 Hz nominal).\n\nBatteries are uniquely suited to grid frequency response due to sub-second response times. In Great Britain, frequency must stay within 49.5–50.5 Hz (normal) and 47–52 Hz (emergency). Battery storage providing Dynamic Containment services earns premium revenues for rapid frequency response."
+    },
+    {
+      "template_id": "RE_L3_T07",
+      "pattern": "A renewable energy site is [DIST] km from the grid connection point. The transmission cable has a resistance of [R_PER_KM] ohms/km and carries [I] amps. Calculate the total transmission power loss (kW) and the loss as a percentage of the [GEN] MW generated. Round to 2 decimal places.",
+      "variables": {
+        "DIST":      {"min": 5,   "max": 100,  "step": 5},
+        "R_PER_KM":  {"min": 1,   "max": 5,    "step": 1},
+        "I":         {"min": 100, "max": 1000, "step": 50},
+        "GEN":       {"min": 10,  "max": 500,  "step": 10}
+      },
+      "calculation": "round2(I * I * R_PER_KM * DIST / 1000)",
+      "explanation": "Total resistance R = R_per_km × Distance = [R_PER_KM] × [DIST] Ω\nTransmission Loss = I² × R = [I]² × [R_PER_KM×DIST] W\n= [RESULT] kW\nLoss% = [RESULT] kW ÷ ([GEN]×1000 kW) × 100\n\nTransmission losses increase with distance and resistance, and fall with higher voltage (lower current). HVDC cables are preferred for distances >80 km offshore because AC cables generate large reactive power losses at long distances, leaving less capacity for real power transmission."
+    },
+    {
+      "template_id": "RE_L3_T08",
+      "pattern": "A wind farm generates [GEN] GWh of electricity in a year but [CURT] GWh is curtailed (wasted) due to grid constraints. Calculate the curtailment rate (%) and the actual energy exported to the grid (GWh). Round to 2 decimal places.",
+      "variables": {
+        "GEN":  {"min": 100,  "max": 2000, "step": 50},
+        "CURT": {"min": 5,    "max": 400,  "step": 5}
+      },
+      "constraints": ["CURT < GEN"],
+      "calculation": "round2(CURT / GEN * 100)",
+      "explanation": "Curtailment Rate = Curtailed Energy ÷ Total Generated Energy × 100\n= [CURT] ÷ [GEN] × 100\n= [RESULT]%\nEnergy exported = [GEN] − [CURT] = [GEN-CURT] GWh\n\nCurtailment occurs when grid capacity is insufficient to absorb all generated power. In some markets (e.g., Texas, UK) curtailment rates of 5–15% are common. Solutions include grid reinforcement, demand-side response, battery storage, and interconnectors to neighbouring regions."
+    },
+    {
+      "template_id": "RE_L3_T09",
+      "pattern": "A solar panel has an energy payback time of [EPBT] years and an operational lifetime of [LIFE] years. During operation it generates [EOUT] kWh/yr. Its manufacture required [EIN] kWh of primary energy. Calculate the Energy Payback Ratio (EPR = lifetime energy output ÷ energy input). Round to 2 decimal places.",
+      "variables": {
+        "EPBT": {"min": 1,    "max": 4,    "step": 1},
+        "LIFE": {"min": 25,   "max": 30,   "step": 5},
+        "EOUT": {"min": 200,  "max": 500,  "step": 25},
+        "EIN":  {"min": 500,  "max": 2000, "step": 100}
+      },
+      "constraints": ["LIFE > EPBT"],
+      "calculation": "round2(EOUT * LIFE / EIN)",
+      "explanation": "Energy Payback Ratio (EPR) = Lifetime Energy Output ÷ Energy Input\n= ([EOUT] × [LIFE]) ÷ [EIN]\n= [RESULT]\n\nEPR > 1 confirms the panel is energy-positive over its lifetime. Typical crystalline silicon solar panels have EPR of 10–30× and EPBT of 1–3 years. Wind turbines have EPR of 20–80×. Higher EPR indicates a more energy-efficient investment in renewable infrastructure."
+    },
+    {
+      "template_id": "RE_L3_T10",
+      "pattern": "A solar PV system has a total lifecycle CO₂ emissions of [LCA_CO2] tonnes from manufacture, installation, maintenance and decommissioning. Over its [LIFE]-year lifetime it generates [TOTAL_E] GWh of electricity. Calculate the lifecycle CO₂ intensity (gCO₂/kWh). Round to 2 decimal places.",
+      "variables": {
+        "LCA_CO2": {"min": 50,   "max": 2000, "step": 50},
+        "LIFE":    {"min": 25,   "max": 30,   "step": 5},
+        "TOTAL_E": {"min": 5,    "max": 500,  "step": 5}
+      },
+      "calculation": "round2(LCA_CO2 * 1e6 / (TOTAL_E * 1e6))",
+      "explanation": "Lifecycle CO₂ Intensity = Total CO₂ ÷ Total Energy Generated\n= [LCA_CO2] tonnes × 10⁶ g/tonne ÷ ([TOTAL_E] GWh × 10⁶ kWh/GWh)\n= [RESULT] gCO₂/kWh\n\nLife cycle CO₂ reference values (gCO₂/kWh): coal ~820, gas CCGT ~490, nuclear ~12, onshore wind ~7–11, solar PV ~20–50, offshore wind ~8–16. Even accounting for manufacturing emissions, renewables emit 20–100× less CO₂ per kWh than fossil fuels over their operational lifetime."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

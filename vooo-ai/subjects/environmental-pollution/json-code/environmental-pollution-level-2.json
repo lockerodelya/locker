@@ -1,0 +1,112 @@
+{
+  "puzzle_type": "environmental-pollution-level-2",
+  "display_name": "Pollution L2",
+  "templates": [
+    {
+      "template_id": "POL_L2_T01",
+      "pattern": "The concentration of a pollutant in a fish is [CORG] µg/kg wet weight. The concentration in the surrounding water is [CWAT] µg/L. Calculate the Bioaccumulation Factor (BAF).",
+      "variables": {
+        "CORG":  {"min": 100,  "max": 50000, "step": 100},
+        "CWAT":  {"min": 1,    "max": 100,   "step": 1}
+      },
+      "constraints": ["CORG > CWAT"],
+      "calculation": "round2(CORG / CWAT)",
+      "explanation": "Bioaccumulation Factor (BAF) = Concentration in organism ÷ Concentration in water\n= [CORG] ÷ [CWAT]\n= [RESULT]\n\nBAF > 1 indicates the organism accumulates the pollutant above ambient water levels. Persistent organic pollutants (POPs) like DDT and PCBs have BAFs of 10,000–1,000,000 due to their lipophilic nature and resistance to metabolic breakdown."
+    },
+    {
+      "template_id": "POL_L2_T02",
+      "pattern": "A pollutant has a concentration of [C1] µg/kg at trophic level 1. The biomagnification factor per trophic level is [BMF]. What is the concentration (µg/kg) at trophic level [TL]?",
+      "variables": {
+        "C1":  {"min": 1,   "max": 50,  "step": 1},
+        "BMF": {"min": 3,   "max": 15,  "step": 1},
+        "TL":  {"min": 2,   "max": 5,   "step": 1}
+      },
+      "calculation": "round2(C1 * Math.pow(BMF, TL - 1))",
+      "explanation": "Concentration at trophic level n = C1 × BMF^(n−1)\n= [C1] × [BMF]^([TL]−1)\n= [RESULT] µg/kg\n\nBiomagnification occurs because organisms at higher trophic levels consume and retain the pollutant from many prey items. Top predators such as eagles, orca, and humans can accumulate extremely high concentrations of lipophilic pollutants."
+    },
+    {
+      "template_id": "POL_L2_T03",
+      "pattern": "In a toxicity test, [D] mg/kg of a substance kills [K] out of [N] test organisms. If lethality is proportional to dose and 50% mortality occurs at the LD50, estimate LD50 (mg/kg) given the dose-response is linear through the origin. Round to 2 decimal places.",
+      "variables": {
+        "D": {"min": 10,  "max": 500, "step": 10},
+        "K": {"min": 10,  "max": 90,  "step": 5},
+        "N": {"values": [100]}
+      },
+      "calculation": "round2(D * 50 / K)",
+      "explanation": "Using linear dose-response:\nLD50 = Dose × (50% ÷ % mortality observed)\n= [D] × (50 ÷ [K])\n= [RESULT] mg/kg\n\nLD50 (Lethal Dose 50%) is the dose that kills 50% of a test population. Lower LD50 = more toxic. It is widely used in hazard classification — a substance with LD50 < 5 mg/kg is classified as extremely toxic."
+    },
+    {
+      "template_id": "POL_L2_T04",
+      "pattern": "In an aquatic toxicity test, a pollutant at [C] µg/L causes [EFF]% inhibition of algal growth. Assuming a linear dose-response, calculate the EC50 (µg/L) — the concentration causing 50% effect. Round to 2 decimal places.",
+      "variables": {
+        "C":   {"min": 10,  "max": 200, "step": 10},
+        "EFF": {"min": 10,  "max": 90,  "step": 5}
+      },
+      "calculation": "round2(C * 50 / EFF)",
+      "explanation": "EC50 = Test Concentration × (50 ÷ % Effect observed)\n= [C] × (50 ÷ [EFF])\n= [RESULT] µg/L\n\nEC50 (Effective Concentration 50%) is the concentration producing a half-maximal response. It is used in environmental risk assessment to derive Predicted No-Effect Concentrations (PNECs) and set water quality guidelines."
+    },
+    {
+      "template_id": "POL_L2_T05",
+      "pattern": "A wastewater treatment plant receives influent with BOD of [IN] mg/L and discharges effluent with BOD of [OUT] mg/L. Calculate the treatment efficiency (%).",
+      "variables": {
+        "IN":  {"min": 100, "max": 800, "step": 25},
+        "OUT": {"min": 5,   "max": 80,  "step": 5}
+      },
+      "constraints": ["IN > OUT"],
+      "calculation": "round2((IN - OUT) / IN * 100)",
+      "explanation": "Treatment Efficiency = (Influent − Effluent) ÷ Influent × 100\n= ([IN] − [OUT]) ÷ [IN] × 100\n= [RESULT]%\n\nHigh-quality secondary treatment achieves >90% BOD removal. Tertiary treatment can reach >98%. Discharge standards in many countries require effluent BOD below 20–30 mg/L before release to receiving waters."
+    },
+    {
+      "template_id": "POL_L2_T06",
+      "pattern": "A lake receives [N] kg/day of nitrogen from agricultural runoff. The algal growth rate constant is [R] per day per kg of N. Calculate the daily algal growth rate (arbitrary units/day).",
+      "variables": {
+        "N": {"min": 1,   "max": 50,  "step": 1},
+        "R": {"min": 1,   "max": 10,  "step": 1}
+      },
+      "calculation": "N * R",
+      "explanation": "Algal Growth Rate = Nutrient Load × Growth Rate Constant\n= [N] kg/day × [R] units/day per kg N\n= [RESULT] units/day\n\nEutrophication occurs when excess nutrients (N, P) stimulate rapid algal growth. Algal blooms reduce light penetration, consume oxygen during decomposition, and release toxins — creating dead zones that devastate aquatic biodiversity."
+    },
+    {
+      "template_id": "POL_L2_T07",
+      "pattern": "A soil contaminated with [M] mg of a heavy metal leaches at a rate of [LR]% per year. How many mg leach into groundwater in one year?",
+      "variables": {
+        "M":  {"min": 100,  "max": 5000, "step": 100},
+        "LR": {"min": 1,    "max": 20,   "step": 1}
+      },
+      "calculation": "round2(M * LR / 100)",
+      "explanation": "Leaching Amount = Total Mass × Leaching Rate\n= [M] mg × ([LR]%/100)\n= [RESULT] mg/yr\n\nHeavy metal leaching from contaminated soils and mine tailings is a major source of groundwater pollution. Leaching rates depend on pH, redox conditions, organic matter content, and the specific metal. Acidic conditions generally increase leaching."
+    },
+{
+  "template_id": "POL_L2_T08",
+  "pattern": "Acid mine drainage contains sulfuric acid at a concentration of [ACID_MMOL] mmol/L. Calculate the pH of the drainage. (H₂SO₄ is a strong diprotic acid: [H⁺] = 2 × [H₂SO₄]. pH = −log₁₀([H⁺] in mol/L). Round to 2 decimal places.)",
+  "variables": {
+    "ACID_MMOL": {"min": 1, "max": 50, "step": 1}
+  },
+  "calculation": "round2(-Math.log10(2 * ACID_MMOL / 1000))",
+  "explanation": "H₂SO₄ → 2H⁺ + SO₄²⁻\n[H⁺] = 2 × [H₂SO₄] = 2 × [ACID_MMOL] mmol/L = [ACID_MMOL×2/1000] mol/L\npH = −log₁₀([H⁺])\n= −log₁₀(2 × [ACID_MMOL] / 1000)\n= [RESULT]\n\nAcid mine drainage (AMD) results from oxidation of iron sulfide minerals (pyrite) exposed during mining. AMD with pH < 3 dissolves toxic metals from surrounding rock, creating highly toxic plumes that sterilise streams for kilometres downstream."
+},
+    {
+      "template_id": "POL_L2_T09",
+      "pattern": "A factory chimney emits flue gas at a concentration of [C] mg/m³ with a volumetric flow rate of [Q] m³/s. Calculate the stack emission rate in g/s.",
+      "variables": {
+        "C": {"min": 50,   "max": 2000, "step": 50},
+        "Q": {"min": 5,    "max": 100,  "step": 5}
+      },
+      "calculation": "round2(C * Q / 1000)",
+      "explanation": "Stack Emission Rate = Concentration × Flow Rate\n= [C] mg/m³ × [Q] m³/s ÷ 1000 mg/g\n= [RESULT] g/s\n\nStack emission rates are used in air quality modelling (e.g., Gaussian plume models) to predict downwind pollutant concentrations. Regulators set maximum emission rates (MERs) as part of industrial operating permits."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "puzzle_type": "environmental-biodiversity-level-3",
+  "display_name": "Biodiversity L3",
+  "templates": [
+    {
+      "template_id": "BIO_L3_T01",
+      "pattern": "A phylogenetic tree has [N_TIPS] terminal tips (species). The total branch length sum is [TOTAL_BL] million years (My). Calculate the mean branch length per species (My/species). Round to 2 decimal places.",
+      "variables": {
+        "N_TIPS":   {"min": 5,   "max": 50,  "step": 5},
+        "TOTAL_BL": {"min": 50,  "max": 500, "step": 25}
+      },
+      "calculation": "round2(TOTAL_BL / N_TIPS)",
+      "explanation": "Mean Branch Length = Total Branch Length ÷ Number of Species\n= [TOTAL_BL] My ÷ [N_TIPS]\n= [RESULT] My/species\n\nPhylogenetic Diversity (PD, Faith 1992) is the sum of branch lengths in a phylogenetic tree spanning a set of species — capturing evolutionary history rather than just species count. Losing a single evolutionarily unique species (long branch) can represent more PD loss than losing several closely related species. PD is used in conservation prioritisation (EDGE of Existence), biogeography, and ecosystem function research."
+    },
+    {
+      "template_id": "BIO_L3_T02",
+      "pattern": "A community's functional trait space spans [TRAITS] traits. For trait 1, the range across species is [TR1] units; trait 2 spans [TR2] units; trait 3 spans [TR3] units. Calculate the Functional Richness (FRic) as the product of all trait ranges. Round to 2 decimal places.",
+      "variables": {
+        "TRAITS": {"value": 3},
+        "TR1":    {"min": 1,  "max": 20, "step": 1},
+        "TR2":    {"min": 1,  "max": 20, "step": 1},
+        "TR3":    {"min": 1,  "max": 20, "step": 1}
+      },
+      "calculation": "round2(TR1 * TR2 * TR3)",
+      "explanation": "Functional Richness = Product of Trait Ranges\n= [TR1] × [TR2] × [TR3]\n= [RESULT] units³\n\nFunctional diversity quantifies the range of functional traits in a community — a measure of ecological roles rather than species identity. The CWM-RaoQ framework decomposes functional diversity into richness (FRic), evenness (FEve), and divergence (FDiv). High functional diversity is associated with ecosystem stability, resilience, and productivity. Trait-based ecology links biodiversity to ecosystem functioning."
+    },
+    {
+      "template_id": "BIO_L3_T03",
+      "pattern": "Two adjacent communities have [A_SP] and [B_SP] species respectively, sharing [SHARED_SP] species. Calculate Whittaker's beta diversity: β = (a + b)/2j − 1, where a, b are species totals and j is shared species count. Round to 2 decimal places.",
+      "variables": {
+        "A_SP":     {"min": 10, "max": 80, "step": 5},
+        "B_SP":     {"min": 10, "max": 80, "step": 5},
+        "SHARED_SP":{"min": 2,  "max": 30, "step": 2}
+      },
+      "constraints": ["SHARED_SP <= A_SP", "SHARED_SP <= B_SP"],
+      "calculation": "round2((A_SP + B_SP) / (2 * SHARED_SP) - 1)",
+      "explanation": "Whittaker's β = (a + b)/(2j) − 1\n= ([A_SP] + [B_SP]) / (2 × [SHARED_SP]) − 1\n= [RESULT]\n\nBeta diversity measures community turnover between sites — high β means different species assemblages (high turnover); β = 0 means identical communities. Whittaker's β ranges from 0 (complete overlap) upward. Modern decomposition separates β into nestedness (subset) and replacement (true turnover) components. Beta diversity is central to understanding species distribution, biogeographic boundaries, and setting conservation area networks."
+    },
+    {
+      "template_id": "BIO_L3_T04",
+      "pattern": "In a metacommunity of [NPATCH] patches, each patch has extinction probability e = [E_PROB]% and colonisation probability c = [C_PROB]% per year. The equilibrium fraction of occupied patches p* = 1 − e/c. Calculate p* (as a proportion). Round to 2 decimal places.",
+      "variables": {
+        "NPATCH": {"min": 10, "max": 100, "step": 10},
+        "E_PROB": {"min": 5,  "max": 30,  "step": 5},
+        "C_PROB": {"min": 20, "max": 80,  "step": 5}
+      },
+      "constraints": ["C_PROB > E_PROB"],
+      "calculation": "round2(1 - E_PROB / C_PROB)",
+      "explanation": "Equilibrium Occupancy p* = 1 − e/c\n= 1 − [E_PROB]/[C_PROB]\n= [RESULT]\n\nLevins' metapopulation model (1969) shows that species can persist regionally even if local extinction is certain, provided colonisation exceeds extinction. The threshold condition for persistence is c > e. Metapopulation theory underpins conservation of fragmented species (Glanville Fritillary butterfly, Northern Spotted Owl) and justifies habitat network design over isolated reserves. Stochastic metapopulation models extend Levins' deterministic framework."
+    },
+    {
+      "template_id": "BIO_L3_T05",
+      "pattern": "A habitat patch of [AREA] km² is isolated. Using the species-area relationship with z = [Z_VAL] (as decimal, e.g. 28 = 0.28) and c = [C_SAR], and assuming the original habitat supported S0 = c × [ORIG_AREA]^z species, calculate the extinction debt (species expected to be lost) when habitat shrinks to [AREA] km².",
+      "variables": {
+        "ORIG_AREA": {"min": 100, "max": 2000, "step": 100},
+        "AREA":      {"min": 5,   "max": 500,  "step": 25},
+        "Z_VAL":     {"min": 20,  "max": 35,   "step": 5},
+        "C_SAR":     {"min": 2,   "max": 10,   "step": 2}
+      },
+      "constraints": ["AREA < ORIG_AREA"],
+      "calculation": "round2(C_SAR * pow(ORIG_AREA, Z_VAL / 100) - C_SAR * pow(AREA, Z_VAL / 100))",
+      "explanation": "Extinction Debt = S(original) − S(current area)\n= c × A_orig^z − c × A_new^z\n= [C_SAR]×[ORIG_AREA]^[Z_VAL]/100 − [C_SAR]×[AREA]^[Z_VAL]/100\n= [RESULT] species\n\nExtinction debt refers to species committed to future extinction by past habitat loss but not yet extinct — a 'biological debt' to be paid later. Time lags between habitat loss and extinction can be decades to centuries. The extinction debt is one reason why current extinction rates underestimate the true biodiversity crisis — future extinctions are already inevitable from past habitat loss."
+    },
+    {
+      "template_id": "BIO_L3_T06",
+      "pattern": "A degraded ecosystem has a current biodiversity score of [CURR_BIO] (on a 0–100 scale). Under a rewilding programme with recovery rate r = [RECOV]%/yr, calculate the biodiversity score after [YRS] years. Use: B(t) = 100 − (100 − B0) × e^(−r×t). Round to 1 decimal place.",
+      "variables": {
+        "CURR_BIO": {"min": 10, "max": 60,  "step": 5},
+        "RECOV":    {"min": 2,  "max": 15,  "step": 1},
+        "YRS":      {"min": 5,  "max": 50,  "step": 5}
+      },
+      "calculation": "round1(100 - (100 - CURR_BIO) * pow(2.71828, -(RECOV / 100) * YRS))",
+      "explanation": "Recovery: B(t) = 100 − (100 − B₀) × e^(−r×t)\n= 100 − (100 − [CURR_BIO]) × e^(−[RECOV]/100 × [YRS])\n= [RESULT]\n\nEcological recovery follows asymptotic trajectories — rapid initial improvement then slowing as the system approaches the reference state. Rewilding (passive: removing pressures; active: reintroducing species/trophic levels) can accelerate recovery. Cascading trophic interactions (e.g., wolf reintroduction in Yellowstone) create 'trophic cascades' that transform ecosystem structure and function."
+    },
+    {
+      "template_id": "BIO_L3_T07",
+      "pattern": "A species' current range centre is at latitude [LAT]°N. Climate models project a [SHIFT] km poleward shift in suitable habitat per decade. Calculate the required assisted migration distance (km) over [DECADES] decades.",
+      "variables": {
+        "LAT":     {"min": 30, "max": 60, "step": 5},
+        "SHIFT":   {"min": 5,  "max": 50, "step": 5},
+        "DECADES": {"min": 2,  "max": 8,  "step": 1}
+      },
+      "calculation": "SHIFT * DECADES",
+      "explanation": "Assisted Migration Distance = Shift per Decade × Number of Decades\n= [SHIFT] × [DECADES]\n= [RESULT] km\n\nAssisted migration (assisted colonisation) involves moving individuals to habitats that will be climatically suitable in the future. Climate change is driving species' ranges poleward at ~17 km/decade and upslope at ~11 m/decade. Many species cannot track these changes naturally due to habitat barriers, slow dispersal, or long generation times. Assisted migration is controversial — translocated species may become invasive or fail to establish."
+    },
+    {
+      "template_id": "BIO_L3_T08",
+      "pattern": "An inbred population has heterozygosity H0 = [H0]%. After genetic rescue (introducing [N_RESCUE] unrelated individuals into a population of [N_POP]), the new heterozygosity is estimated as: H_new = H0 + (1 − H0) × (N_RESCUE / (N_POP + N_RESCUE)) × [BENEFIT]. Calculate H_new (%). Round to 1 decimal place.",
+      "variables": {
+        "H0":       {"min": 10, "max": 50,  "step": 5},
+        "N_RESCUE": {"min": 2,  "max": 20,  "step": 2},
+        "N_POP":    {"min": 10, "max": 100, "step": 10},
+        "BENEFIT":  {"min": 5,  "max": 10,  "step": 1}
+      },
+      "calculation": "round1(H0 + (100 - H0) * (N_RESCUE / (N_POP + N_RESCUE)) * (BENEFIT / 10))",
+      "explanation": "H_new = H₀ + (1−H₀) × (N_rescue/(N+N_rescue)) × benefit\n= [RESULT]%\n\nGenetic rescue improves fitness through heterosis (hybrid vigour) and removal of inbreeding depression. Case studies include Isle Royale wolves (H increased from 0.0 to >0.3 after rescue) and the Florida Panther (7 Texas Pumas introduced in 1995; kitten survival tripled). Genetic rescue is now considered a standard tool in conservation genetics, complementing habitat management and demographic interventions."
+    },
+    {
+      "template_id": "BIO_L3_T09",
+      "pattern": "A conservation programme aims to prevent extinction of [N_SP] species. The intervention cost per species is £[COST_SP] thousand. The programme receives £[BUDGET] thousand in funding. Calculate the cost per species saved and the number of species that can be protected within budget.",
+      "variables": {
+        "N_SP":    {"min": 5,   "max": 50,  "step": 5},
+        "COST_SP": {"min": 10,  "max": 200, "step": 10},
+        "BUDGET":  {"min": 100, "max": 5000,"step": 100}
+      },
+      "calculation": "floor(BUDGET / COST_SP)",
+      "explanation": "Species Protected = Budget ÷ Cost per Species\n= £[BUDGET]k ÷ £[COST_SP]k\n= [RESULT] species\n\nConservation economics analyses cost-effectiveness of interventions. Global cost of protecting biodiversity is estimated at ~$500 billion/yr; current spending is ~$150 billion. Most species-saving spending goes to a few charismatic species — 80% of conservation funding covers <5% of threatened species. Systematic conservation planning (Marxan, Zonation) optimises the spatial allocation of conservation resources across competing priorities."
+    },
+    {
+      "template_id": "BIO_L3_T10",
+      "pattern": "The IUCN Criterion E defines 'Critically Endangered' as a probability of extinction ≥[CR_THRESH]% within [CR_YRS] years (or [CR_GEN] generations). A population model gives a [MODEL_P]% extinction probability over [CR_YRS] years. How far (percentage points) is this from the CR threshold? (Positive = exceeds threshold, negative = below)",
+      "variables": {
+        "CR_THRESH": {"value": 50},
+        "CR_YRS":    {"value": 10},
+        "CR_GEN":    {"value": 3},
+        "MODEL_P":   {"min": 20, "max": 80, "step": 5}
+      },
+      "calculation": "MODEL_P - 50",
+      "explanation": "Distance from CR Threshold = Model Probability − CR Threshold\n= [MODEL_P]% − 50%\n= [RESULT] percentage points\n\nIUCN Red List criteria use quantitative thresholds to assign threat categories. Criterion E (quantitative analysis) uses PVA-derived extinction probability: CR ≥50% in 10 yr/3 gen; EN ≥20% in 20 yr/5 gen; VU ≥10% in 100 yr. PVA models (VORTEX, RAMAS) simulate demographic, genetic, and environmental stochasticity. Over 44,000 species are currently IUCN-listed as threatened (CR, EN, or VU)."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

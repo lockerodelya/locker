@@ -1,0 +1,132 @@
+{
+  "puzzle_type": "environmental-water-cycle-level-1",
+  "display_name": "Water Cycle L1",
+  "templates": [
+    {
+      "template_id": "WC_L1_T01",
+      "pattern": "A rain gauge records [D] days of rainfall with daily totals of [R1] mm, [R2] mm, [R3] mm, [R4] mm, and [R5] mm (first 5 days shown). Calculate the total rainfall (mm) over these 5 days.",
+      "variables": {
+        "D":  {"value": 5},
+        "R1": {"min": 1, "max": 30, "step": 1},
+        "R2": {"min": 0, "max": 25, "step": 1},
+        "R3": {"min": 2, "max": 40, "step": 1},
+        "R4": {"min": 0, "max": 20, "step": 1},
+        "R5": {"min": 1, "max": 35, "step": 1}
+      },
+      "calculation": "R1 + R2 + R3 + R4 + R5",
+      "explanation": "Total Rainfall = R1 + R2 + R3 + R4 + R5\n= [R1] + [R2] + [R3] + [R4] + [R5]\n= [RESULT] mm\n\nRain gauges measure precipitation depth over a given area. Standard gauges in the UK are read daily at 09:00 GMT. The recorded depth represents the volume of water per unit area (1 mm = 1 litre per m²). Monthly totals are used to assess drought or flood risk."
+    },
+    {
+      "template_id": "WC_L1_T02",
+      "pattern": "A catchment receives [P] mm of rainfall. Infiltration is [INF] mm and evapotranspiration is [ET] mm. Calculate the surface runoff (mm).",
+      "variables": {
+        "P":   {"min": 50,  "max": 200, "step": 5},
+        "INF": {"min": 10,  "max": 60,  "step": 5},
+        "ET":  {"min": 10,  "max": 50,  "step": 5}
+      },
+      "constraints": ["P > INF + ET"],
+      "calculation": "P - INF - ET",
+      "explanation": "Surface Runoff = Precipitation − Infiltration − Evapotranspiration\n= [P] − [INF] − [ET]\n= [RESULT] mm\n\nThe rainfall-runoff relationship underpins flood hydrology. Impermeable surfaces (urban areas, frozen ground) reduce infiltration and increase runoff. Vegetation increases evapotranspiration and interception, reducing runoff. The remaining water either enters streams or recharges groundwater."
+    },
+    {
+      "template_id": "WC_L1_T03",
+      "pattern": "A catchment has annual precipitation P = [P] mm, evapotranspiration ET = [ET] mm, and streamflow Q = [Q] mm. Calculate the change in water storage ΔS (mm) using the water balance equation: ΔS = P − ET − Q.",
+      "variables": {
+        "P":  {"min": 400, "max": 1200, "step": 50},
+        "ET": {"min": 200, "max": 700,  "step": 50},
+        "Q":  {"min": 50,  "max": 400,  "step": 25}
+      },
+      "constraints": ["P > ET + Q - 100", "P < ET + Q + 200"],
+      "calculation": "P - ET - Q",
+      "explanation": "Water Balance: ΔS = P − ET − Q\n= [P] − [ET] − [Q]\n= [RESULT] mm\n\nThe water balance equation is fundamental to hydrology. Positive ΔS means water is being stored (soil moisture or groundwater recharge increasing). Negative ΔS means depletion of stored water. Over long periods, ΔS approaches zero for steady-state catchments."
+    },
+    {
+      "template_id": "WC_L1_T04",
+      "pattern": "A river channel is [W] m wide and [DEP] m deep. The average water velocity is [V] m/s. Calculate the river discharge Q (m³/s) using Q = width × depth × velocity.",
+      "variables": {
+        "W":   {"min": 5,   "max": 100, "step": 5},
+        "DEP": {"min": 1,   "max": 10,  "step": 1},
+        "V":   {"min": 1,   "max": 5,   "step": 1}
+      },
+      "calculation": "W * DEP * V",
+      "explanation": "River Discharge Q = Width × Depth × Velocity\n= [W] m × [DEP] m × [V] m/s\n= [RESULT] m³/s\n\nDischarge is the volume of water passing a cross-section per second. It is measured using the velocity-area method: the channel is divided into vertical strips, velocity is measured with a current meter, and Q = Σ(width × depth × velocity) for each strip. The River Thames at Teddington has a mean flow of ~80 m³/s."
+    },
+    {
+      "template_id": "WC_L1_T05",
+      "pattern": "A reservoir holds [VOL] million litres of water. Water flows out at [FLOW] thousand litres per day. Calculate the residence time (days).",
+      "variables": {
+        "VOL":  {"min": 10,  "max": 500, "step": 10},
+        "FLOW": {"min": 1,   "max": 50,  "step": 1}
+      },
+      "calculation": "round2(VOL * 1000 / FLOW)",
+      "explanation": "Residence Time = Volume ÷ Flow Rate\n= [VOL]×10⁶ L ÷ ([FLOW]×10³ L/day)\n= [RESULT] days\n\nResidence time indicates how long water remains in a storage compartment. Oceans: ~3200 years; groundwater: days to thousands of years; rivers: ~16 days; atmosphere: ~9 days. Short residence times mean rapid response to pollution — contamination enters and leaves quickly."
+    },
+    {
+      "template_id": "WC_L1_T06",
+      "pattern": "At time t=0, a soil has water content of [W0] mm. After [T] minutes, a ponded infiltration experiment shows [WT] mm of water has entered the soil. Calculate the average infiltration rate (mm/hr).",
+      "variables": {
+        "W0": {"value": 0},
+        "WT": {"min": 5,  "max": 80,  "step": 5},
+        "T":  {"min": 10, "max": 60,  "step": 5}
+      },
+      "calculation": "round2(WT / T * 60)",
+      "explanation": "Infiltration Rate = Volume Infiltrated ÷ Time\n= [WT] mm ÷ [T] min × 60 min/hr\n= [RESULT] mm/hr\n\nInfiltration rate depends on soil texture, structure, initial moisture content, and surface conditions. Sandy soils: >100 mm/hr; clay soils: 1–5 mm/hr; compacted urban soils: <1 mm/hr. When rainfall intensity exceeds infiltration capacity, Hortonian overland flow occurs."
+    },
+    {
+      "template_id": "WC_L1_T07",
+      "pattern": "An evaporation pan has a diameter of [DIAM] m. Over [DAYS] days, the water level drops by [DROP] mm (ignoring rainfall). Calculate the daily evaporation rate (mm/day). Round to 1 decimal place.",
+      "variables": {
+        "DIAM": {"min": 1,  "max": 3,   "step": 1},
+        "DAYS": {"min": 5,  "max": 30,  "step": 5},
+        "DROP": {"min": 10, "max": 200, "step": 10}
+      },
+      "calculation": "round1(DROP / DAYS)",
+      "explanation": "Daily Evaporation Rate = Total Drop ÷ Number of Days\n= [DROP] mm ÷ [DAYS] days\n= [RESULT] mm/day\n\nClass A evaporation pans are the standard instrument for measuring open-water evaporation. A pan coefficient (typically 0.7) is applied to convert pan evaporation to lake evaporation, as the pan overestimates due to heat storage differences. Evaporation rates in the UK average 2–4 mm/day in summer."
+    },
+    {
+      "template_id": "WC_L1_T08",
+      "pattern": "A borehole is drilled to [DEPTH] m below ground surface. The water level inside the borehole stabilises at [LEVEL] m below the surface. Calculate the depth to the water table (m).",
+      "variables": {
+        "DEPTH": {"min": 10, "max": 100, "step": 5},
+        "LEVEL": {"min": 2,  "max": 30,  "step": 2}
+      },
+      "constraints": ["LEVEL < DEPTH"],
+      "calculation": "LEVEL",
+      "explanation": "Depth to Water Table = Water Level in Borehole below Ground Surface\n= [LEVEL] m\n\nWhen a borehole is drilled into an unconfined aquifer, water rises to the level of the water table. The water table is the upper boundary of the saturated zone. It fluctuates seasonally — rising after wet periods and falling during droughts. In confined aquifers, water may rise above the confining layer (artesian conditions)."
+    },
+    {
+      "template_id": "WC_L1_T09",
+      "pattern": "A crop requires [CROP] mm of water per month. Rainfall provides [RAIN] mm during the same month. Calculate the irrigation requirement (mm) needed to meet the crop demand.",
+      "variables": {
+        "CROP": {"min": 50,  "max": 200, "step": 10},
+        "RAIN": {"min": 5,   "max": 100, "step": 5}
+      },
+      "constraints": ["CROP > RAIN"],
+      "calculation": "CROP - RAIN",
+      "explanation": "Irrigation Requirement = Crop Water Demand − Effective Rainfall\n= [CROP] − [RAIN]\n= [RESULT] mm\n\nIrrigation scheduling ensures crops receive water when and where needed. The crop coefficient Kc adjusts reference ET to account for crop type and growth stage. Over-irrigation wastes water and can cause waterlogging and salinisation; under-irrigation reduces yield. Deficit irrigation strategies optimise yield per unit water applied."
+    },
+    {
+      "template_id": "WC_L1_T10",
+      "pattern": "A reservoir is [L] m long, [WID] m wide, and has an average depth of [DEP] m. Calculate the storage capacity (million litres). (1 m³ = 1000 litres)",
+      "variables": {
+        "L":   {"min": 100,  "max": 2000, "step": 100},
+        "WID": {"min": 50,   "max": 500,  "step": 50},
+        "DEP": {"min": 5,    "max": 30,   "step": 5}
+      },
+      "calculation": "round2(L * WID * DEP * 1000 / 1000000)",
+      "explanation": "Storage Capacity = Length × Width × Depth × 1000 L/m³ ÷ 10⁶\n= [L] × [WID] × [DEP] × 1000 ÷ 1,000,000\n= [RESULT] million litres\n\nReservoir capacity is used to assess yield and security of supply. The usable capacity (live storage) excludes dead storage below the outlet. Capacity is reduced over time by sedimentation — a major management challenge. UK reservoirs supply ~30% of public water; the rest comes from rivers and groundwater."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

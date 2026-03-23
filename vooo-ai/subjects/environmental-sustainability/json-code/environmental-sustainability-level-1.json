@@ -1,0 +1,137 @@
+{
+  "puzzle_type": "environmental-sustainability-level-1",
+  "display_name": "Sustainability L1",
+  "templates": [
+    {
+      "template_id": "SUS_L1_T01",
+      "pattern": "A household consumes [MEAT] kg of meat, [FLIGHT] hours of flying, and [DRIVE] km of car travel per year. The impact factors are: meat = [MIF] kg CO₂e/kg, flights = [FIF] kg CO₂e/hr, driving = [DIF] kg CO₂e/km. Calculate the total ecological footprint in kg CO₂e.",
+      "variables": {
+        "MEAT":  {"min": 20,  "max": 150, "step": 10},
+        "FLIGHT":{"min": 0,   "max": 100, "step": 5},
+        "DRIVE": {"min": 500, "max": 20000,"step": 500},
+        "MIF":   {"min": 5,   "max": 25,  "step": 5},
+        "FIF":   {"min": 50,  "max": 200, "step": 25},
+        "DIF":   {"min": 10,  "max": 30,  "step": 5}
+      },
+      "calculation": "round2(MEAT * MIF + FLIGHT * FIF + DRIVE * (DIF / 100))",
+      "explanation": "Ecological Footprint = Σ(Activity × Impact Factor)\n= [MEAT]×[MIF] + [FLIGHT]×[FIF] + [DRIVE]×[DIF]/100\n= [RESULT] kg CO₂e\n\nThe ecological footprint measures resource consumption in terms of the biologically productive land and water area required to produce consumed goods and absorb waste. The average UK carbon footprint is ~10 tonnes CO₂e/yr per person. Meat production (especially beef and lamb) accounts for ~14.5% of global GHG emissions. Aviation contributes ~2.5% of global CO₂ but has additional warming effects from contrails and NOx."
+    },
+    {
+      "template_id": "SUS_L1_T02",
+      "pattern": "A household uses [ELEC] kWh of electricity, [GAS] kWh of gas, and travels [CAR] km by petrol car per year. The emission factors are: electricity = [EEF] g CO₂e/kWh, gas = [GEF] g CO₂e/kWh, car = [CEF] g CO₂e/km. Calculate the total annual carbon footprint (kg CO₂e). Round to 1 decimal place.",
+      "variables": {
+        "ELEC": {"min": 1000, "max": 8000, "step": 500},
+        "GAS":  {"min": 2000, "max": 20000,"step": 1000},
+        "CAR":  {"min": 1000, "max": 20000,"step": 1000},
+        "EEF":  {"min": 50,   "max": 300,  "step": 25},
+        "GEF":  {"value": 183},
+        "CEF":  {"min": 100,  "max": 250,  "step": 25}
+      },
+      "calculation": "round1((ELEC * EEF + GAS * GEF + CAR * CEF) / 1000)",
+      "explanation": "Carbon Footprint = (Electricity×EEF + Gas×GEF + Car×CEF) ÷ 1000\n= ([ELEC]×[EEF] + [GAS]×183 + [CAR]×[CEF]) ÷ 1000\n= [RESULT] kg CO₂e\n\nEmission factors convert activity data to CO₂ equivalent. The UK electricity grid emission factor has fallen from ~500 g/kWh in 2012 to ~150 g/kWh in 2023 as coal has been replaced by renewables and gas. Gas heating remains the dominant source of household emissions in the UK. Heat pumps (COP ~3) reduce heating emissions by ~65–75% compared to gas boilers."
+    },
+    {
+      "template_id": "SUS_L1_T03",
+      "pattern": "A council collects [TOTAL] tonnes of household waste per year. Of this, [RECYCLED] tonnes are recycled and [COMPOSTED] tonnes are composted. Calculate the recycling rate (%). Round to 1 decimal place.",
+      "variables": {
+        "TOTAL":     {"min": 1000, "max": 50000, "step": 1000},
+        "RECYCLED":  {"min": 100,  "max": 20000, "step": 500},
+        "COMPOSTED": {"min": 50,   "max": 10000, "step": 500}
+      },
+      "constraints": ["RECYCLED + COMPOSTED < TOTAL"],
+      "calculation": "round1((RECYCLED + COMPOSTED) / TOTAL * 100)",
+      "explanation": "Recycling Rate = (Recycled + Composted) ÷ Total Waste × 100\n= ([RECYCLED] + [COMPOSTED]) ÷ [TOTAL] × 100\n= [RESULT]%\n\nThe UK recycling rate is ~44% (2022), below the EU target of 55% by 2025. The EU Circular Economy Action Plan targets 70% recycling of packaging by 2030. Waste hierarchy: reduce > reuse > recycle > energy recovery > landfill. Contamination of recycling streams (non-recyclables in bins) significantly reduces the economic value and environmental benefit of collected material."
+    },
+    {
+      "template_id": "SUS_L1_T04",
+      "pattern": "A factory previously generated [OLD] tonnes of waste per year. After implementing a waste reduction programme, it now generates [NEW] tonnes. Calculate the waste reduction percentage. Round to 1 decimal place.",
+      "variables": {
+        "OLD": {"min": 100,  "max": 10000, "step": 100},
+        "NEW": {"min": 10,   "max": 9000,  "step": 50}
+      },
+      "constraints": ["OLD > NEW"],
+      "calculation": "round1((OLD - NEW) / OLD * 100)",
+      "explanation": "Waste Reduction % = (Old − New) ÷ Old × 100\n= ([OLD] − [NEW]) ÷ [OLD] × 100\n= [RESULT]%\n\nWaste prevention (source reduction) is the highest tier of the waste management hierarchy and delivers the greatest environmental savings — no waste means no collection, treatment, or disposal impacts. Industrial ecology approaches (industrial symbiosis, cleaner production) redesign processes to eliminate waste as a concept. Zero Waste Scotland and the Ellen MacArthur Foundation's circular economy model set the policy direction."
+    },
+    {
+      "template_id": "SUS_L1_T05",
+      "pattern": "A building uses [OLD_E] kWh of energy per year before renovation and [NEW_E] kWh after energy efficiency improvements. Calculate the energy efficiency improvement percentage. Round to 1 decimal place.",
+      "variables": {
+        "OLD_E": {"min": 10000, "max": 100000, "step": 5000},
+        "NEW_E": {"min": 2000,  "max": 80000,  "step": 2000}
+      },
+      "constraints": ["OLD_E > NEW_E"],
+      "calculation": "round1((OLD_E - NEW_E) / OLD_E * 100)",
+      "explanation": "Energy Efficiency Improvement = (Old − New Energy) ÷ Old Energy × 100\n= ([OLD_E] − [NEW_E]) ÷ [OLD_E] × 100\n= [RESULT]%\n\nBuildings account for ~40% of global energy consumption and ~33% of GHG emissions. Deep retrofits (insulation, triple glazing, heat pumps) can reduce energy demand by 60–80%. The UK's Energy Performance Certificate (EPC) rates buildings A–G; the government targets all rental properties to achieve EPC C by 2030. Embodied carbon (in building materials) can represent 50–80% of a new building's lifetime carbon footprint."
+    },
+    {
+      "template_id": "SUS_L1_T06",
+      "pattern": "A country generates [TOTAL_E] TWh of electricity per year. Of this, [RENEW_E] TWh comes from renewable sources. Calculate the renewable energy fraction (%). Round to 1 decimal place.",
+      "variables": {
+        "TOTAL_E": {"min": 100, "max": 1000, "step": 50},
+        "RENEW_E": {"min": 10,  "max": 800,  "step": 25}
+      },
+      "constraints": ["RENEW_E < TOTAL_E"],
+      "calculation": "round1(RENEW_E / TOTAL_E * 100)",
+      "explanation": "Renewable Energy Fraction = Renewable Energy ÷ Total Energy × 100\n= [RENEW_E] ÷ [TOTAL_E] × 100\n= [RESULT]%\n\nThe UK generated ~42% of its electricity from renewables in 2023 (wind: 29%, solar: 5%, hydro/bioenergy: 8%). Global renewable electricity generation reached 30% in 2023. The IEA projects renewables will supply 90% of new electricity capacity through 2030. Variable renewables (wind/solar) require grid balancing through storage, interconnectors, demand response, and dispatchable low-carbon backup."
+    },
+    {
+      "template_id": "SUS_L1_T07",
+      "pattern": "A green building retrofit reduces annual energy consumption from [OLD_E] kWh to [NEW_E] kWh. The emission factor is [EF] g CO₂e/kWh. Calculate the annual CO₂e savings (kg). Round to 1 decimal place.",
+      "variables": {
+        "OLD_E": {"min": 10000, "max": 100000, "step": 5000},
+        "NEW_E": {"min": 2000,  "max": 80000,  "step": 2000},
+        "EF":    {"min": 100,   "max": 500,    "step": 50}
+      },
+      "constraints": ["OLD_E > NEW_E"],
+      "calculation": "round1((OLD_E - NEW_E) * EF / 1000)",
+      "explanation": "CO₂e Savings = (Old − New Energy) × Emission Factor ÷ 1000\n= ([OLD_E] − [NEW_E]) × [EF] g/kWh ÷ 1000\n= [RESULT] kg CO₂e/yr\n\nGreen building standards (BREEAM in UK, LEED in USA, Passivhaus internationally) certify energy and environmental performance. Passivhaus buildings consume 80–90% less heating energy than conventional builds through superinsulation, thermal bridge elimination, and mechanical ventilation with heat recovery (MVHR). Embodied carbon standards are increasingly included in green building ratings."
+    },
+    {
+      "template_id": "SUS_L1_T08",
+      "pattern": "A water-efficient retrofit reduces daily water consumption from [OLD_W] litres per person to [NEW_W] litres. For a household of [PEOPLE] people over [DAYS] days, calculate the total water saved (litres).",
+      "variables": {
+        "OLD_W":  {"min": 100, "max": 300, "step": 10},
+        "NEW_W":  {"min": 50,  "max": 200, "step": 10},
+        "PEOPLE": {"min": 1,   "max": 6,   "step": 1},
+        "DAYS":   {"min": 30,  "max": 365, "step": 30}
+      },
+      "constraints": ["OLD_W > NEW_W"],
+      "calculation": "(OLD_W - NEW_W) * PEOPLE * DAYS",
+      "explanation": "Water Saved = (Old − New) × People × Days\n= ([OLD_W] − [NEW_W]) × [PEOPLE] × [DAYS]\n= [RESULT] litres\n\nAverage UK daily water consumption is ~150 litres/person — higher than Germany (120 L) or Denmark (100 L) but lower than the USA (380 L). Water-efficient appliances (dual-flush toilets, low-flow showers, WELS-rated dishwashers) can reduce demand by 30–50%. Water scarcity is growing in southern England — Thames Water faced severe drought restrictions in 2022. Water saving reduces both water supply costs and wastewater treatment costs."
+    },
+    {
+      "template_id": "SUS_L1_T09",
+      "pattern": "A fish stock has an intrinsic growth rate r = [R_FISH]% per year (as decimal, e.g. 20 = 0.20) and a carrying capacity K = [K_FISH] thousand tonnes. Calculate the Sustainable Yield at MSY (thousand tonnes) using: MSY = r × K / 4. Round to 2 decimal places.",
+      "variables": {
+        "R_FISH": {"min": 10, "max": 50, "step": 5},
+        "K_FISH": {"min": 50, "max": 500,"step": 25}
+      },
+      "calculation": "round2((R_FISH / 100) * K_FISH / 4)",
+      "explanation": "Sustainable Yield = r × K / 4\n= ([R_FISH]/100) × [K_FISH] / 4\n= [RESULT] thousand tonnes\n\nSustainable yield is the harvest that can be maintained indefinitely. The logistic model predicts MSY occurs at population size K/2, with harvest rate r/2. In practice, MSY is rarely achieved due to stock uncertainty, mixed fisheries, and market pressures. Precautionary approaches fish below MSY to allow for uncertainty. The Common Fisheries Policy uses Total Allowable Catches (TACs) as an instrument to limit harvest."
+    },
+    {
+      "template_id": "SUS_L1_T10",
+      "pattern": "A manufacturing process uses [INPUT] kg of raw materials to produce [OUTPUT] kg of finished product. Calculate the resource efficiency (%) of the process. Round to 1 decimal place.",
+      "variables": {
+        "INPUT":  {"min": 100, "max": 5000, "step": 100},
+        "OUTPUT": {"min": 50,  "max": 4000, "step": 50}
+      },
+      "constraints": ["OUTPUT < INPUT"],
+      "calculation": "round1(OUTPUT / INPUT * 100)",
+      "explanation": "Resource Efficiency = Output ÷ Input × 100\n= [OUTPUT] ÷ [INPUT] × 100\n= [RESULT]%\n\nResource efficiency measures how much of the input material ends up in the final product. The difference (100% − efficiency) represents waste, process losses, and by-products. Circular economy strategies target closing material loops: redesigning products for longevity and recyclability, recovering process waste as inputs for other industries (industrial symbiosis), and shifting from product sales to service models (Product as a Service)."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

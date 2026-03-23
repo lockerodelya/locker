@@ -1,0 +1,126 @@
+{
+  "puzzle_type": "environmental-renewable-level-1",
+  "display_name": "Renewable Energy L1",
+  "templates": [
+    {
+      "template_id": "RE_L1_T01",
+      "pattern": "A solar panel has an area of [A] m², receives irradiance of [I] W/m², and has an efficiency of [EFF]%. Calculate the electrical power output (W).",
+      "variables": {
+        "A":   {"min": 1,   "max": 20,   "step": 1},
+        "I":   {"min": 200, "max": 1000, "step": 50},
+        "EFF": {"min": 10,  "max": 22,   "step": 1}
+      },
+      "calculation": "round2(A * I * EFF / 100)",
+      "explanation": "Solar Panel Output = Area × Irradiance × Efficiency\n= [A] m² × [I] W/m² × ([EFF]/100)\n= [RESULT] W\n\nTypical commercial solar panels have efficiencies of 15–22%. Peak irradiance at Earth's surface is ~1000 W/m² (AM1.5). Real-world output is lower due to temperature effects, shading, soiling, and inverter losses."
+    },
+    {
+      "template_id": "RE_L1_T02",
+      "pattern": "A wind turbine has a rotor diameter of [D] m, air density ρ = [RHO] kg/m³, and wind speed v = [V] m/s. Calculate the theoretical maximum power (W) using P = 0.5 × ρ × A × v³, where A = π × (D/2)².",
+      "variables": {
+        "D":   {"min": 10,  "max": 100, "step": 5},
+        "RHO": {"values": [1.20, 1.22, 1.23, 1.25]},
+        "V":   {"min": 5,   "max": 15,  "step": 1}
+      },
+      "calculation": "round2(0.5 * RHO * 3.14159 * pow(D / 2, 2) * pow(V, 3))",
+      "explanation": "Wind Power P = 0.5 × ρ × A × v³\nA = π × (D/2)² = π × ([D]/2)²\nP = 0.5 × [RHO] × π × ([D]/2)² × [V]³\n= [RESULT] W\n\nWind power scales with the cube of wind speed — doubling wind speed increases power 8-fold. This is why small increases in average wind speed dramatically improve turbine economics. The Betz limit caps theoretical extraction at 59.3% of this value."
+    },
+    {
+      "template_id": "RE_L1_T03",
+      "pattern": "A hydroelectric turbine has water flow Q = [Q] m³/s, head h = [H] m, water density ρ = 1000 kg/m³, and g = 9.81 m/s². Calculate the hydraulic power (kW) using P = ρ × g × Q × h.",
+      "variables": {
+        "Q": {"min": 1,   "max": 100, "step": 1},
+        "H": {"min": 5,   "max": 200, "step": 5}
+      },
+      "calculation": "round2(1000 * 9.81 * Q * H / 1000)",
+      "explanation": "Hydroelectric Power P = ρ × g × Q × h\n= 1000 × 9.81 × [Q] × [H] W\n= [RESULT] kW\n\nHydroelectric power depends on both the volume flow rate and the vertical head (drop). Large dams use high head and high flow. Run-of-river schemes typically have lower head but consistent flow. Real turbine output is reduced by turbine efficiency (~85–95%)."
+    },
+    {
+      "template_id": "RE_L1_T04",
+      "pattern": "A biomass boiler burns [M] kg of wood chips with a calorific value of [CV] MJ/kg. Calculate the total energy released (MJ).",
+      "variables": {
+        "M":  {"min": 100,  "max": 5000, "step": 100},
+        "CV": {"min": 8,    "max": 20,   "step": 1}
+      },
+      "calculation": "M * CV",
+      "explanation": "Energy from Biomass = Mass × Calorific Value\n= [M] kg × [CV] MJ/kg\n= [RESULT] MJ\n\nCalorific value (heating value) varies by fuel type and moisture content. Dry wood: ~18 MJ/kg; wood chips (30% moisture): ~10–12 MJ/kg; straw: ~14 MJ/kg; miscanthus: ~17 MJ/kg. Moisture reduces effective energy as heat is used to evaporate water."
+    },
+    {
+      "template_id": "RE_L1_T05",
+      "pattern": "A tidal barrage covers an estuary area of [A] km². The tidal range is [R] m and seawater density ρ = 1025 kg/m³, g = 9.81 m/s². Calculate the potential energy per tidal cycle (GJ) using E = 0.5 × ρ × g × A × R².",
+      "variables": {
+        "A": {"min": 1,  "max": 50,  "step": 1},
+        "R": {"min": 2,  "max": 12,  "step": 1}
+      },
+      "calculation": "round2(0.5 * 1025 * 9.81 * A * 1000000 * R * R / 1000000000)",
+      "explanation": "Tidal Potential Energy E = 0.5 × ρ × g × A × R²\n= 0.5 × 1025 × 9.81 × [A]×10⁶ m² × [R]² m²\n= [RESULT] GJ per tidal cycle\n\nTidal energy is highly predictable unlike wind or solar. The factor of 0.5 arises because the average head during emptying is R/2. Large tidal ranges (>5 m) in funnel-shaped estuaries are most suitable for barrage schemes."
+    },
+    {
+      "template_id": "RE_L1_T06",
+      "pattern": "A geothermal plant extracts hot water at a flow rate of [Q] kg/s. The water cools from [T1]°C to [T2]°C. Specific heat capacity cp = 4.18 kJ/kg·°C. Calculate the thermal power output (kW).",
+      "variables": {
+        "Q":  {"min": 10,  "max": 200,  "step": 10},
+        "T1": {"min": 100, "max": 300,  "step": 10},
+        "T2": {"min": 30,  "max": 80,   "step": 5}
+      },
+      "constraints": ["T1 > T2"],
+      "calculation": "round2(Q * 4.18 * (T1 - T2))",
+      "explanation": "Geothermal Power P = Q × cp × ΔT\n= [Q] × 4.18 × ([T1] − [T2])\n= [RESULT] kW\n\nGeothermal energy exploits heat stored in the Earth's crust. High-enthalpy resources (>150°C) are used for electricity generation; low-enthalpy resources are used for direct heating. Iceland and Kenya generate >25% of their electricity from geothermal sources."
+    },
+    {
+      "template_id": "RE_L1_T07",
+      "pattern": "A wind farm has a rated capacity of [CAP] MW and actually generated [GEN] MWh of energy in a year ([HOURS] hours). Calculate the capacity factor (%).",
+      "variables": {
+        "CAP":   {"min": 10,   "max": 500,  "step": 10},
+        "HOURS": {"value": 8760},
+        "GEN":   {"min": 1000, "max": 100000, "step": 500}
+      },
+      "constraints": ["GEN < CAP * 8760"],
+      "calculation": "round2(GEN / (CAP * HOURS) * 100)",
+      "explanation": "Capacity Factor = Actual Output ÷ (Rated Capacity × Hours) × 100\n= [GEN] MWh ÷ ([CAP] MW × [HOURS] hr) × 100\n= [RESULT]%\n\nCapacity factor reflects how much of the time a plant runs at full output. Offshore wind: 35–45%; onshore wind: 25–35%; solar PV: 10–25% (location dependent); nuclear: 85–95%. Higher capacity factors lower the effective cost of energy."
+    },
+    {
+      "template_id": "RE_L1_T08",
+      "pattern": "A solar farm costs £[COST] million to build and maintain over its lifetime, and produces [ENERGY] GWh of electricity in total over its lifetime. Calculate the Levelised Cost of Energy (LCOE) in £/MWh.",
+      "variables": {
+        "COST":   {"min": 5,    "max": 500,  "step": 5},
+        "ENERGY": {"min": 10,   "max": 2000, "step": 10}
+      },
+      "calculation": "round2(COST * 1000000 / (ENERGY * 1000))",
+      "explanation": "LCOE = Total Lifetime Cost ÷ Total Lifetime Energy\n= £[COST]×10⁶ ÷ ([ENERGY]×10³ MWh)\n= £[RESULT]/MWh\n\nLCOE is the key metric for comparing energy technologies. Utility-scale solar PV LCOE has fallen from >£300/MWh in 2010 to <£40/MWh in 2024. Offshore wind LCOE is ~£45–70/MWh. Gas peaker plants can exceed £150/MWh."
+    },
+    {
+      "template_id": "RE_L1_T09",
+      "pattern": "A home solar installation costs £[COST]. It saves £[SAVING] on electricity bills per year. Calculate the simple payback period (years). Round to 1 decimal place.",
+      "variables": {
+        "COST":   {"min": 3000,  "max": 15000, "step": 500},
+        "SAVING": {"min": 300,   "max": 1500,  "step": 50}
+      },
+      "constraints": ["COST > SAVING"],
+      "calculation": "round1(COST / SAVING)",
+      "explanation": "Simple Payback Period = Capital Cost ÷ Annual Savings\n= £[COST] ÷ £[SAVING]/yr\n= [RESULT] years\n\nPayback period is the simplest investment appraisal tool. It does not account for the time value of money or degradation. Solar PV payback periods in the UK typically range from 6–12 years, while system lifetimes are 25–30 years, giving strong long-term returns."
+    },
+    {
+      "template_id": "RE_L1_T10",
+      "pattern": "Fuel A has an energy density of [EA] MJ/kg and Fuel B has an energy density of [EB] MJ/kg. How many times greater is Fuel A's energy density compared to Fuel B? Round to 2 decimal places.",
+      "variables": {
+        "EA": {"min": 15,  "max": 55,  "step": 5},
+        "EB": {"min": 5,   "max": 20,  "step": 1}
+      },
+      "constraints": ["EA > EB"],
+      "calculation": "round2(EA / EB)",
+      "explanation": "Energy Density Ratio = Energy Density A ÷ Energy Density B\n= [EA] MJ/kg ÷ [EB] MJ/kg\n= [RESULT]×\n\nEnergy density comparison guides fuel selection and storage design. Reference values (MJ/kg): hydrogen ~120, diesel ~45, petrol ~44, coal ~24, wood ~18, wet biomass ~8. Higher energy density means less mass and volume needed to store the same energy."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

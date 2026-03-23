@@ -1,0 +1,125 @@
+{
+  "puzzle_type": "environmental-human-impact-level-1",
+  "display_name": "Human Impact L1",
+  "templates": [
+    {
+      "template_id": "HI_L1_T01",
+      "pattern": "A forest region had [INIT] km² of forest cover in [YEAR1]. By [YEAR2] only [FINAL] km² remained. Calculate the average annual deforestation rate (km²/yr).",
+      "variables": {
+        "INIT":  {"min": 500,  "max": 10000, "step": 500},
+        "FINAL": {"min": 100,  "max": 8000,  "step": 100},
+        "YEAR1": {"value": 2000},
+        "YEAR2": {"value": 2020}
+      },
+      "constraints": ["INIT > FINAL"],
+      "calculation": "round2((INIT - FINAL) / 20)",
+      "explanation": "Annual Deforestation Rate = (Initial − Final Area) ÷ Years\n= ([INIT] − [FINAL]) ÷ 20\n= [RESULT] km²/yr\n\nDeforestation is driven by agriculture (80% globally), logging, mining, and infrastructure. Between 2015–2020, the world lost ~10 million hectares of forest per year. The Amazon, Congo Basin, and Southeast Asian rainforests are the most affected regions. Deforestation contributes ~10% of global CO₂ emissions annually."
+    },
+    {
+      "template_id": "HI_L1_T02",
+      "pattern": "Deforestation clears [AREA] ha of tropical forest. Each hectare stores [STOCK] tonnes of carbon in above-ground biomass. Calculate the total carbon released (tonnes) assuming all biomass is burned or decays.",
+      "variables": {
+        "AREA":  {"min": 100,  "max": 5000, "step": 100},
+        "STOCK": {"min": 50,   "max": 250,  "step": 10}
+      },
+      "calculation": "AREA * STOCK",
+      "explanation": "Carbon Released = Area × Carbon Stock per Hectare\n= [AREA] ha × [STOCK] tC/ha\n= [RESULT] tonnes C\n\nTropical forests store 200–300 tC/ha in above-ground biomass plus 50–100 tC/ha in soil organic matter. Burning releases carbon immediately as CO₂; decomposition is slower but yields the same total. To convert tonnes C to tonnes CO₂: multiply by 44/12 = 3.67. REDD+ (Reducing Emissions from Deforestation and Forest Degradation) aims to compensate developing countries for forest protection."
+    },
+    {
+      "template_id": "HI_L1_T03",
+      "pattern": "A region had [SP_INIT] species in 1970. By 2020 the count had fallen to [SP_FINAL]. Calculate the average annual species extinction rate (species/yr). Round to 1 decimal place.",
+      "variables": {
+        "SP_INIT":  {"min": 200, "max": 2000, "step": 50},
+        "SP_FINAL": {"min": 50,  "max": 1800, "step": 50}
+      },
+      "constraints": ["SP_INIT > SP_FINAL"],
+      "calculation": "round1((SP_INIT - SP_FINAL) / 50)",
+      "explanation": "Annual Extinction Rate = (Initial − Final Species Count) ÷ Years\n= ([SP_INIT] − [SP_FINAL]) ÷ 50\n= [RESULT] species/yr\n\nThe current extinction rate is estimated at 100–1,000× the natural background rate of ~0.1 species per million species per year. The IUCN Red List assesses over 150,000 species; >40,000 are threatened. The sixth mass extinction is primarily driven by habitat loss, overexploitation, invasive species, pollution, and climate change."
+    },
+    {
+      "template_id": "HI_L1_T04",
+      "pattern": "A country has a total land area of [TOTAL] million ha. Of this, [DEGRAD] million ha is classified as degraded land. Calculate the land degradation percentage. Round to 1 decimal place.",
+      "variables": {
+        "TOTAL":  {"min": 10,  "max": 500,  "step": 10},
+        "DEGRAD": {"min": 1,   "max": 200,  "step": 5}
+      },
+      "constraints": ["DEGRAD < TOTAL"],
+      "calculation": "round1(DEGRAD / TOTAL * 100)",
+      "explanation": "Land Degradation % = Degraded Area ÷ Total Area × 100\n= [DEGRAD] ÷ [TOTAL] × 100\n= [RESULT]%\n\nLand degradation (soil erosion, nutrient depletion, desertification, salinisation) affects ~33% of Earth's land surface. It costs the global economy ~$6.3 trillion annually. The UN Decade on Ecosystem Restoration (2021–2030) targets restoration of 350 million ha. Land degradation neutrality (LDN) is a Sustainable Development Goal 15 target."
+    },
+    {
+      "template_id": "HI_L1_T05",
+      "pattern": "A fish stock has a current population of [POP] million tonnes. Due to overfishing, the stock is declining by [RATE]% per year. Calculate the stock size (million tonnes) after [YRS] years. Round to 2 decimal places.",
+      "variables": {
+        "POP":  {"min": 1,   "max": 100, "step": 5},
+        "RATE": {"min": 2,   "max": 15,  "step": 1},
+        "YRS":  {"min": 5,   "max": 30,  "step": 5}
+      },
+      "calculation": "round2(POP * pow(1 - RATE / 100, YRS))",
+      "explanation": "Stock Size = Initial Population × (1 − Decline Rate)^Years\n= [POP] × (1 − [RATE]/100)^[YRS]\n= [RESULT] million tonnes\n\nOver 34% of global fish stocks are overfished — beyond Maximum Sustainable Yield (MSY). A further 60% are fished at maximum capacity. The Grand Banks cod collapse in 1992 (population fell >99%) is a cautionary example. Ecosystem-based fisheries management now considers predator-prey interactions, habitat, and bycatch, not just target species."
+    },
+    {
+      "template_id": "HI_L1_T06",
+      "pattern": "Agricultural land expands by [RATE] ha per day in a region. Calculate the total agricultural land expansion (km²) over [YRS] years. (1 km² = 100 ha)",
+      "variables": {
+        "RATE": {"min": 10,  "max": 500, "step": 10},
+        "YRS":  {"min": 5,   "max": 30,  "step": 5}
+      },
+      "calculation": "round2(RATE * 365 * YRS / 100)",
+      "explanation": "Agricultural Expansion = Rate × Days/Year × Years ÷ 100\n= [RATE] ha/day × 365 × [YRS] ÷ 100\n= [RESULT] km²\n\nAgricultural land expansion is the leading driver of deforestation globally. Between 2000–2019, food production expanded cropland by ~90 million ha, mainly in tropical regions. Sustainable intensification — increasing yields on existing farmland — is essential to reduce land-use pressure. Agroforestry systems can integrate food production with biodiversity conservation."
+    },
+    {
+      "template_id": "HI_L1_T07",
+      "pattern": "A city had an urban area of [INIT] km² in 2000. The urban area expands at [RATE] km² per year. Calculate the urban area (km²) in [YEAR]. (Years elapsed = YEAR − 2000)",
+      "variables": {
+        "INIT": {"min": 50,   "max": 500,  "step": 50},
+        "RATE": {"min": 1,    "max": 20,   "step": 1},
+        "YEAR": {"min": 2010, "max": 2030, "step": 5}
+      },
+      "calculation": "INIT + RATE * (YEAR - 2000)",
+      "explanation": "Urban Area = Initial Area + (Rate × Years Elapsed)\n= [INIT] + ([RATE] × ([YEAR] − 2000))\n= [RESULT] km²\n\nUrban areas are expanding faster than urban populations — urban land use is growing 3× faster than urban population growth. Global urban land area may triple by 2030 from 2000 levels. Urban sprawl destroys biodiversity-rich peri-urban land, increases car dependency, reduces agricultural land, and intensifies urban heat island and flooding effects."
+    },
+    {
+      "template_id": "HI_L1_T08",
+      "pattern": "A copper mine extracts [ORE] million tonnes of ore per year. For every tonne of ore, [WASTE] tonnes of waste rock are generated. Calculate the annual mining waste volume (million tonnes).",
+      "variables": {
+        "ORE":   {"min": 1,  "max": 100, "step": 5},
+        "WASTE": {"min": 2,  "max": 20,  "step": 1}
+      },
+      "calculation": "ORE * WASTE",
+      "explanation": "Annual Mining Waste = Ore Extracted × Waste Rock Ratio\n= [ORE] × [WASTE]\n= [RESULT] million tonnes\n\nMining waste (tailings, waste rock, overburden) accounts for >50% of all industrial waste globally. Metal ore grades are declining — copper ore grades have fallen from ~2% to ~0.6% over the past century, meaning more waste per unit of metal. Tailings dams failures (e.g., Brumadinho, Brazil, 2019) can be catastrophic. Mine rehabilitation and circular economy approaches aim to reduce primary mining demand."
+    },
+    {
+      "template_id": "HI_L1_T09",
+      "pattern": "A country produces [PLASTIC] kg of plastic waste per person per year and has a population of [POP] million. Calculate the total annual plastic waste (million tonnes). Round to 2 decimal places.",
+      "variables": {
+        "PLASTIC": {"min": 10,  "max": 100, "step": 5},
+        "POP":     {"min": 1,   "max": 200, "step": 5}
+      },
+      "calculation": "round2(PLASTIC * POP * 1000000 / 1000000000)",
+      "explanation": "Total Plastic Waste = Per Capita × Population\n= [PLASTIC] kg/person × [POP]×10⁶ people ÷ 10⁹\n= [RESULT] million tonnes\n\nGlobal plastic production exceeds 400 million tonnes per year; ~40% is single-use packaging. Only ~9% of all plastic ever produced has been recycled. Plastic pollution reaches every ocean, with >5 trillion pieces estimated floating on the surface. Microplastics (<5mm) are found in rainwater, drinking water, human blood, and placentas. The UN is negotiating a global plastics treaty."
+    },
+    {
+      "template_id": "HI_L1_T10",
+      "pattern": "A restaurant prepares [MEALS] meals per day and wastes [WASTE_PCT]% of food prepared. Calculate the daily food waste (meals equivalent) and express as a percentage loss. Round to 1 decimal place.",
+      "variables": {
+        "MEALS":     {"min": 50,  "max": 500, "step": 50},
+        "WASTE_PCT": {"min": 5,   "max": 40,  "step": 5}
+      },
+      "calculation": "round1(MEALS * WASTE_PCT / 100)",
+      "explanation": "Food Waste = Meals Prepared × Waste Percentage ÷ 100\n= [MEALS] × [WASTE_PCT] ÷ 100\n= [RESULT] meals wasted per day\n\nOne-third of all food produced globally (~1.3 billion tonnes/yr) is wasted. Food waste represents a colossal misuse of water (25% of all agricultural water), land (28% of agricultural land), and energy. Food waste generates ~8% of global greenhouse gas emissions when it decomposes in landfill. The UN SDG 12.3 targets halving per-capita food waste by 2030."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

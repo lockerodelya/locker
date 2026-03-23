@@ -1,0 +1,129 @@
+{
+  "puzzle_type": "environmental-ecosystems-level-2",
+  "display_name": "Ecosystems L2",
+  "templates": [
+    {
+      "template_id": "ECO_L2_T01",
+      "pattern": "A community has [S] species. Species 1 has [N1] individuals, Species 2 has [N2] individuals, and Species 3 has [N3] individuals. Total N = [N1+N2+N3]. Calculate Simpson's Diversity Index D = 1 − Σn(n−1)/N(N−1). Round to 4 decimal places.",
+      "variables": {
+        "N1": {"min": 5,  "max": 40, "step": 1},
+        "N2": {"min": 5,  "max": 40, "step": 1},
+        "N3": {"min": 5,  "max": 40, "step": 1},
+        "S":  {"value": 3}
+      },
+      "calculation": "round2(1 - (N1*(N1-1) + N2*(N2-1) + N3*(N3-1)) / ((N1+N2+N3)*((N1+N2+N3)-1)))",
+      "explanation": "Simpson's D = 1 − Σn(n−1) / N(N−1)\nN = [N1] + [N2] + [N3] = [N1+N2+N3]\nΣn(n−1) = [N1]([N1]−1) + [N2]([N2]−1) + [N3]([N3]−1)\nD = 1 − Σn(n−1) / (N × (N−1))\n= [RESULT]\n\nD ranges from 0 (no diversity) to 1 (maximum diversity). Values closer to 1 indicate a more even, species-rich community."
+    },
+    {
+      "template_id": "ECO_L2_T02",
+      "pattern": "A sample has 3 species with proportions p1 = [P1], p2 = [P2], and p3 = [P3] (where p1+p2+p3 = 1). Calculate the Shannon-Wiener Index H = −Σ(pᵢ × ln pᵢ). Round to 4 decimal places.",
+      "variables": {
+        "P1": {"values": [0.1, 0.2, 0.3, 0.4, 0.5]},
+        "P2": {"values": [0.2, 0.3, 0.2, 0.3, 0.3]},
+        "P3": {"values": [0.7, 0.5, 0.5, 0.3, 0.2]}
+      },
+      "calculation": "round2(-(P1 * Math.log(P1) + P2 * Math.log(P2) + P3 * Math.log(P3)))",
+      "explanation": "Shannon-Wiener H = −Σ(pᵢ × ln pᵢ)\n= −([P1]×ln[P1] + [P2]×ln[P2] + [P3]×ln[P3])\n= [RESULT]\n\nHigher H values indicate greater diversity. H = 0 means only one species is present. Maximum H = ln(S) where S is the number of species."
+    },
+    {
+      "template_id": "ECO_L2_T03",
+      "pattern": "Energy input at a trophic level is [IN] kJ/m²/yr and energy output to the next level is [OUT] kJ/m²/yr. Calculate the trophic efficiency (%).",
+      "variables": {
+        "IN":  {"min": 1000, "max": 20000, "step": 500},
+        "OUT": {"min": 50,   "max": 2000,  "step": 50}
+      },
+      "constraints": ["OUT < IN", "OUT / IN <= 0.25"],
+      "calculation": "round2((OUT / IN) * 100)",
+      "explanation": "Trophic Efficiency = (Output ÷ Input) × 100\n= ([OUT] ÷ [IN]) × 100\n= [RESULT]%\n\nEcological trophic efficiency typically ranges from 5–20%. Energy is lost as heat, respiration, excretion and uneaten material between trophic levels."
+    },
+    {
+      "template_id": "ECO_L2_T04",
+      "pattern": "Primary consumers assimilate [A] kJ/m²/yr of energy. They use [R] kJ/m²/yr for respiration and [U] kJ/m²/yr is lost as urine/excretion. Calculate secondary productivity (kJ/m²/yr).",
+      "variables": {
+        "A": {"min": 500,  "max": 5000, "step": 100},
+        "R": {"min": 100,  "max": 2000, "step": 50},
+        "U": {"min": 10,   "max": 500,  "step": 10}
+      },
+      "constraints": ["A > R + U"],
+      "calculation": "A - R - U",
+      "explanation": "Secondary Productivity = Assimilation − Respiration − Excretion\n= [A] − [R] − [U]\n= [RESULT] kJ/m²/yr\n\nSecondary productivity is the rate of energy stored in consumer biomass. It represents the energy available to the next trophic level."
+    },
+    {
+      "template_id": "ECO_L2_T05",
+      "pattern": "A leaf litter sample has initial mass [M0] g and remaining mass after 1 year is [MT] g. Calculate the decomposition rate constant k (yr⁻¹) using the exponential decay model: Mt = M0 × e^(−kt), so k = −ln(Mt/M0). Round to 4 decimal places.",
+      "variables": {
+        "M0": {"min": 50,  "max": 200, "step": 10},
+        "MT": {"min": 10,  "max": 90,  "step": 5}
+      },
+      "constraints": ["MT < M0"],
+      "calculation": "round2(-Math.log(MT / M0))",
+      "explanation": "Decomposition rate: Mt = M0 × e^(−k×t)\nSolving for k: k = −ln(Mt/M0)\n= −ln([MT]/[M0])\n= [RESULT] yr⁻¹\n\nHigher k values mean faster decomposition. Tropical ecosystems typically have high k values due to warm, moist conditions. Tundra ecosystems have very low k values."
+    },
+    {
+      "template_id": "ECO_L2_T06",
+      "pattern": "A nutrient pool contains [POOL] g/m² of nitrogen. The annual flux (input or output rate) is [FLUX] g/m²/yr. Calculate the residence time (years) of nitrogen in this pool.",
+      "variables": {
+        "POOL": {"min": 100,  "max": 5000, "step": 100},
+        "FLUX": {"min": 5,    "max": 500,  "step": 5}
+      },
+      "calculation": "round2(POOL / FLUX)",
+      "explanation": "Residence Time = Pool Size ÷ Flux Rate\n= [POOL] ÷ [FLUX]\n= [RESULT] years\n\nResidence time tells us how long, on average, a nutrient atom stays in a particular pool before moving to another. Long residence times indicate slow cycling (e.g., carbon in soil organic matter)."
+    },
+    {
+      "template_id": "ECO_L2_T07",
+      "pattern": "A soil sample contains [C] kg of carbon in a plot of area [A] m². Calculate the soil carbon density (kg C/m²).",
+      "variables": {
+        "C": {"min": 10,  "max": 500, "step": 10},
+        "A": {"min": 1,   "max": 50,  "step": 1}
+      },
+      "calculation": "round2(C / A)",
+      "explanation": "Soil Carbon Density = Total Carbon ÷ Area\n= [C] ÷ [A]\n= [RESULT] kg C/m²\n\nSoil carbon density is a key indicator of ecosystem carbon storage capacity. Forest and peatland soils typically have high carbon densities, making them important carbon sinks."
+    },
+    {
+      "template_id": "ECO_L2_T08",
+      "pattern": "A plant community had a biomass of [B1] g/m² at the start of the year and [B2] g/m² at the end. Calculate the biomass accumulation rate (g/m²/yr).",
+      "variables": {
+        "B1": {"min": 100,  "max": 2000, "step": 50},
+        "B2": {"min": 150,  "max": 2500, "step": 50}
+      },
+      "constraints": ["B2 > B1"],
+      "calculation": "B2 - B1",
+      "explanation": "Biomass Accumulation Rate = Final Biomass − Initial Biomass\n= [B2] − [B1]\n= [RESULT] g/m²/yr\n\nPositive accumulation means the ecosystem is gaining biomass (acting as a carbon sink). This is measured over a set time period, usually one year."
+    },
+    {
+      "template_id": "ECO_L2_T09",
+      "pattern": "Producers fix [E1] kJ/m²/yr. The ecological efficiency from level 1→2 is [EFF1]% and from level 2→3 is [EFF2]%. How much energy (kJ/m²/yr) reaches trophic level 3?",
+      "variables": {
+        "E1":   {"min": 10000, "max": 100000, "step": 5000},
+        "EFF1": {"min": 5, "max": 20, "step": 1},
+        "EFF2": {"min": 5, "max": 20, "step": 1}
+      },
+      "calculation": "round2(E1 * (EFF1 / 100) * (EFF2 / 100))",
+      "explanation": "Energy at level 3 = E1 × (EFF1/100) × (EFF2/100)\n= [E1] × ([EFF1]/100) × ([EFF2]/100)\n= [RESULT] kJ/m²/yr\n\nUnlike the fixed 10% rule, real ecological efficiencies vary between trophic transfers. Multiplying successive efficiencies gives the cumulative energy reaching higher trophic levels."
+    },
+    {
+      "template_id": "ECO_L2_T10",
+      "pattern": "A food web has [P] producers, [H] primary consumers (herbivores), and [C] secondary consumers (carnivores). What is the total number of organisms in the pyramid of numbers?",
+      "variables": {
+        "P": {"min": 500,  "max": 5000, "step": 100},
+        "H": {"min": 50,   "max": 500,  "step": 25},
+        "C": {"min": 5,    "max": 50,   "step": 5}
+      },
+      "constraints": ["P > H", "H > C"],
+      "calculation": "P + H + C",
+      "explanation": "Total organisms in pyramid = Producers + Herbivores + Carnivores\n= [P] + [H] + [C]\n= [RESULT]\n\nIn a typical pyramid of numbers, each successive trophic level has fewer organisms than the level below it. This reflects the energy losses described by the 10% rule — fewer individuals can be supported at each level."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "puzzle_type": "environmental-renewable-level-2",
+  "display_name": "Renewable Energy L2",
+  "templates": [
+    {
+      "template_id": "RE_L2_T01",
+      "pattern": "A solar panel faces a surface tilted at [TILT]° from horizontal. The horizontal irradiance is [GH] W/m² and the angle of incidence is [AOI]°. Calculate irradiance on the tilted surface (W/m²) using: G_tilt = GH × cos(AOI) / cos(TILT). Round to 2 decimal places.",
+      "variables": {
+        "GH":   {"min": 300, "max": 900, "step": 50},
+        "TILT": {"min": 10,  "max": 45,  "step": 5},
+        "AOI":  {"min": 0,   "max": 30,  "step": 5}
+      },
+      "constraints": ["AOI <= TILT"],
+      "calculation": "round2(GH * Math.cos(AOI * 3.14159 / 180) / Math.cos(TILT * 3.14159 / 180))",
+      "explanation": "Irradiance on tilted surface: G_tilt = GH × cos(AOI) / cos(tilt)\n= [GH] × cos([AOI]°) / cos([TILT]°)\n= [RESULT] W/m²\n\nTilting panels towards the equator (south in northern hemisphere) increases the annual energy yield by 10–20% compared to horizontal mounting. The optimal tilt angle roughly equals the site's latitude. Tracking systems can further boost yield by 20–35%."
+    },
+    {
+      "template_id": "RE_L2_T02",
+      "pattern": "A wind mast records wind speed [V1] m/s at [H1] m height. Using the wind shear power law, calculate the wind speed (m/s) at hub height [H2] m with roughness exponent α = [ALPHA] (expressed as a decimal, e.g. 0.14). Round to 2 decimal places.",
+      "variables": {
+        "V1":    {"min": 4,    "max": 12,  "step": 1},
+        "H1":    {"min": 10,   "max": 50,  "step": 5},
+        "H2":    {"min": 60,   "max": 150, "step": 10},
+        "ALPHA": {"values": [14, 17, 20, 22, 25]}
+      },
+      "constraints": ["H2 > H1"],
+      "calculation": "round2(V1 * Math.pow(H2 / H1, ALPHA / 100))",
+      "explanation": "Wind Shear Power Law: V2 = V1 × (H2/H1)^α\n= [V1] × ([H2]/[H1])^([ALPHA]/100)\n= [RESULT] m/s\n\nWind speed increases with height due to reduced surface friction. The roughness exponent α varies: open sea ~0.11, open grassland ~0.14, farmland ~0.20, suburban ~0.25, urban ~0.33. This is why modern turbines use taller towers (100–150 m) to capture faster, more consistent winds."
+    },
+    {
+      "template_id": "RE_L2_T03",
+      "pattern": "A wind turbine has a rotor diameter of [D] m operating in wind speed [V] m/s with air density ρ = 1.225 kg/m³. Its actual power output is [PACT] kW. Calculate the turbine's power coefficient Cp as a fraction of the theoretical maximum. Round to 4 decimal places. (Theoretical max P = 0.5 × ρ × A × v³, where A = π(D/2)².)",
+      "variables": {
+        "D":    {"min": 40,   "max": 120, "step": 10},
+        "V":    {"min": 8,    "max": 14,  "step": 1},
+        "PACT": {"min": 100,  "max": 3000,"step": 50}
+      },
+      "calculation": "round2(PACT * 1000 / (0.5 * 1.225 * 3.14159 * Math.pow(D / 2, 2) * Math.pow(V, 3)))",
+      "explanation": "Power Coefficient Cp = Actual Power ÷ Theoretical Wind Power\nTheoretical P = 0.5 × 1.225 × π×(D/2)² × v³\nCp = [PACT]×10³ ÷ (0.5 × 1.225 × π × ([D]/2)² × [V]³)\n= [RESULT]\n\nThe Betz limit caps Cp at 16/27 ≈ 0.593. Modern turbines achieve Cp of 0.45–0.50. Values above 0.593 are physically impossible — they would indicate an error in measurement or calculation."
+    },
+    {
+      "template_id": "RE_L2_T04",
+      "pattern": "A wind farm has an installed capacity of [CAP] MW, a capacity factor of [CF]%, and operates for [LIFE] years. Calculate the total annual energy yield (GWh/yr) and the lifetime energy yield (GWh).",
+      "variables": {
+        "CAP":  {"min": 10,   "max": 500, "step": 10},
+        "CF":   {"min": 25,   "max": 45,  "step": 1},
+        "LIFE": {"min": 20,   "max": 30,  "step": 5}
+      },
+      "calculation": "round2(CAP * CF / 100 * 8760 / 1000)",
+      "explanation": "Annual Energy Yield = Capacity × Capacity Factor × Hours per year\n= [CAP] MW × ([CF]/100) × 8760 hr/yr\n= [RESULT] GWh/yr\n\nLifetime yield = [RESULT] × [LIFE] = [RESULT*LIFE] GWh\n\nAnnual energy yield drives revenue forecasting and is the denominator in LCOE calculations. Offshore wind farms (~40% CF) generate roughly twice the annual energy of equivalent onshore solar farms (~20% CF) for the same installed capacity."
+    },
+    {
+      "template_id": "RE_L2_T05",
+      "pattern": "A solar farm must generate [TARGET] GWh/yr. Panels have efficiency [EFF]% and the site receives average irradiance of [IRRAD] kWh/m²/day. Calculate the land area required (hectares), assuming a ground coverage ratio of [GCR]%. Round to 1 decimal place.",
+      "variables": {
+        "TARGET": {"min": 10,   "max": 500,  "step": 10},
+        "EFF":    {"min": 15,   "max": 22,   "step": 1},
+        "IRRAD":  {"min": 3,    "max": 6,    "step": 1},
+        "GCR":    {"min": 30,   "max": 50,   "step": 5}
+      },
+      "calculation": "round1(TARGET * 1000000000 / (EFF / 100 * IRRAD * 365 * 1000 * GCR / 100) / 10000)",
+      "explanation": "Panel area = Target energy ÷ (efficiency × annual irradiance)\nAnnual irradiance = [IRRAD] × 365 kWh/m²/yr\nPanel area = [TARGET]×10⁹ Wh ÷ ([EFF]/100 × [IRRAD]×365×1000 Wh/m²)\nLand area = Panel area ÷ (GCR/100) ÷ 10000 m²/ha\n= [RESULT] hectares\n\nGround Coverage Ratio (GCR) accounts for spacing between panel rows needed to avoid self-shading. Typical utility-scale solar farms require 1–2 hectares per MW of installed capacity."
+    },
+    {
+      "template_id": "RE_L2_T06",
+      "pattern": "A region needs [PTARGET] MW of offshore wind power. Each turbine is rated at [PTURB] MW and has a capacity factor of [CF]%. How many turbines are needed to reliably meet the target on average? Round up to the nearest whole turbine.",
+      "variables": {
+        "PTARGET": {"min": 100,  "max": 2000, "step": 100},
+        "PTURB":   {"min": 3,    "max": 15,   "step": 1},
+        "CF":      {"min": 30,   "max": 45,   "step": 5}
+      },
+      "calculation": "round2(Math.ceil(PTARGET / (PTURB * CF / 100)))",
+      "explanation": "Effective output per turbine = Rated power × Capacity Factor\n= [PTURB] × [CF]/100 MW average\nNumber of turbines = Target ÷ Effective output per turbine\n= [PTARGET] ÷ ([PTURB] × [CF]/100)\n= [RESULT] turbines (rounded up)\n\nRounding up ensures the fleet meets the target on average. In practice, additional turbines are included as reserve margin to account for maintenance downtime and variability."
+    },
+    {
+      "template_id": "RE_L2_T07",
+      "pattern": "A battery bank has a capacity of [CAP] kWh. It is charged with [IN] kWh and discharged. The round-trip efficiency is [EFF]%. Calculate the usable energy delivered (kWh) on discharge.",
+      "variables": {
+        "CAP": {"min": 10,  "max": 500, "step": 10},
+        "IN":  {"min": 5,   "max": 400, "step": 5},
+        "EFF": {"min": 80,  "max": 98,  "step": 2}
+      },
+      "constraints": ["IN <= CAP"],
+      "calculation": "round2(IN * EFF / 100)",
+      "explanation": "Usable Energy = Energy In × Round-trip Efficiency\n= [IN] kWh × ([EFF]/100)\n= [RESULT] kWh\n\nRound-trip efficiency (RTE) accounts for losses during both charge and discharge. Lithium-ion batteries: RTE 90–98%; pumped hydro: 70–85%; vanadium flow batteries: 65–80%; hydrogen (P2G2P): 25–40%. RTE losses directly increase the effective cost of stored energy."
+    },
+    {
+      "template_id": "RE_L2_T08",
+      "pattern": "A wind farm is connected to the grid via a cable with resistance [R] ohms. The farm exports current [I] amps at [V] kV. Calculate the transmission power loss (kW) using P_loss = I² × R.",
+      "variables": {
+        "R": {"min": 1,   "max": 20,  "step": 1},
+        "I": {"min": 50,  "max": 500, "step": 25},
+        "V": {"min": 11,  "max": 132, "step": 11}
+      },
+      "calculation": "round2(I * I * R / 1000)",
+      "explanation": "Transmission Power Loss = I² × R\n= [I]² × [R] W\n= [RESULT] kW\n\nOhmic (resistive) losses increase with the square of current. This is why electricity is transmitted at high voltages (lower current for the same power). High-voltage DC (HVDC) cables are preferred for long offshore wind connections due to lower losses compared to AC cables."
+    },
+    {
+      "template_id": "RE_L2_T09",
+      "pattern": "A renewable energy plant generates [ENERGY] MWh/yr and displaces electricity from a gas power station with a carbon intensity of [CI] gCO₂/kWh. Calculate the annual carbon saving (tonnes CO₂/yr).",
+      "variables": {
+        "ENERGY": {"min": 1000,  "max": 100000, "step": 1000},
+        "CI":     {"min": 300,   "max": 600,    "step": 25}
+      },
+      "calculation": "round2(ENERGY * CI * 1000 / 1e6)",
+      "explanation": "Carbon Saving = Energy Generated × Carbon Intensity of Displaced Generation\n= [ENERGY] MWh × [CI] gCO₂/kWh × 1000 kWh/MWh ÷ 10⁶ g/tonne\n= [RESULT] tonnes CO₂/yr\n\nCarbon intensity varies by fuel and technology: gas CCGT ~350–450 gCO₂/kWh, coal ~820 gCO₂/kWh, nuclear ~12 gCO₂/kWh, wind ~7–15 gCO₂/kWh (lifecycle). Grid average carbon intensity falls as more renewables are added."
+    },
+    {
+      "template_id": "RE_L2_T10",
+      "pattern": "A wind project costs £[CAPEX] million upfront. It generates annual revenue of £[REV] million for [LIFE] years. Using a discount rate of [DR]%, calculate the Net Present Value (NPV) in £ million: NPV = −CAPEX + REV × (1 − (1+DR/100)^(−LIFE)) / (DR/100). Round to 2 decimal places.",
+      "variables": {
+        "CAPEX": {"min": 5,   "max": 200, "step": 5},
+        "REV":   {"min": 1,   "max": 30,  "step": 1},
+        "LIFE":  {"min": 15,  "max": 30,  "step": 5},
+        "DR":    {"min": 4,   "max": 10,  "step": 1}
+      },
+      "constraints": ["REV * LIFE > CAPEX"],
+      "calculation": "round2(-CAPEX + REV * (1 - Math.pow(1 + DR / 100, -LIFE)) / (DR / 100))",
+      "explanation": "NPV = −CAPEX + REV × annuity factor\nAnnuity factor = (1 − (1+r)^(−n)) / r  where r = [DR]/100, n = [LIFE]\nNPV = −[CAPEX] + [REV] × (1 − (1+[DR]/100)^(−[LIFE])) / ([DR]/100)\n= £[RESULT] million\n\nPositive NPV means the project creates value. The discount rate reflects opportunity cost of capital and project risk. Renewable energy projects typically require NPV > 0 at discount rates of 5–10% to attract private investment."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "puzzle_type": "environmental-pollution-level-3",
+  "display_name": "Pollution L3",
+  "templates": [
+    {
+      "template_id": "POL_L3_T01",
+      "pattern": "A stack emits [Q] g/s of a pollutant. At downwind distance x, the dispersion coefficients are σy = [SY] m and σz = [SZ] m. Wind speed u = [U] m/s and stack height H = [H] m. Using the Gaussian plume model, calculate the ground-level centreline concentration (g/m³): C = (Q / (π σy σz u)) × exp(−H²/(2σz²)). Round to 6 decimal places.",
+      "variables": {
+        "Q":  {"min": 1,   "max": 10,  "step": 1},
+        "SY": {"min": 20,  "max": 150, "step": 10},
+        "SZ": {"min": 10,  "max": 80,  "step": 5},
+        "U":  {"min": 2,   "max": 10,  "step": 1},
+        "H":  {"min": 10,  "max": 80,  "step": 5}
+      },
+      "calculation": "round2((Q / (3.14159 * SY * SZ * U)) * Math.exp(-(H * H) / (2 * SZ * SZ)))",
+      "explanation": "Gaussian Plume: C = (Q / π·σy·σz·u) × exp(−H²/2σz²)\n= ([Q] / (π × [SY] × [SZ] × [U])) × exp(−[H]²/(2×[SZ]²))\n= [RESULT] g/m³\n\nThe exponential term accounts for the vertical displacement of the plume above ground. As stack height H increases, ground-level concentrations decrease. σy and σz grow with downwind distance and atmospheric instability class (Pasquill-Gifford classes A–F)."
+    },
+ {
+  "template_id": "POL_L3_T02",
+  "pattern": "The photochemical smog formation rate depends on VOC concentration [VOC] ppb and NOx concentration [NOX] ppb. Using the simplified rate R = k × [VOC] × [NOX], where k = [K] × 10⁻⁴ ppb⁻¹hr⁻¹, calculate the ozone formation rate R (ppb/hr). Round to 4 decimal places.",
+  "variables": {
+    "VOC": {"min": 10,  "max": 200, "step": 10},
+    "NOX": {"min": 5,   "max": 100, "step": 5},
+    "K":   {"min": 1,   "max": 9,   "step": 1}
+  },
+  "calculation": "round2(K * 0.0001 * VOC * NOX)",
+  "explanation": "Ozone Formation Rate R = k × [VOC] × [NOX]\n= [K]×10⁻⁴ × [VOC] × [NOX]\n= [RESULT] ppb/hr\n\nPhotochemical smog involves complex radical chain reactions. VOCs and NOx (from vehicle and industrial emissions) react in sunlight to produce ground-level ozone (O₃) — a respiratory irritant. O₃ > 70 ppb triggers health advisories in most countries."
+},
+    {
+      "template_id": "POL_L3_T03",
+      "pattern": "PCB contamination in sediment has a measured half-life of [T_HALF] years. Starting with an initial concentration of [C0] mg/kg, calculate the remaining concentration (mg/kg) after [T] years using first-order decay. Round to 4 decimal places.",
+      "variables": {
+        "T_HALF": {"min": 5,   "max": 50,  "step": 5},
+        "C0":     {"min": 10,  "max": 500, "step": 10},
+        "T":      {"min": 10,  "max": 100, "step": 5}
+      },
+      "calculation": "round2(C0 * Math.pow(0.5, T / T_HALF))",
+      "explanation": "First-order decay: C(t) = C0 × (0.5)^(t/t½)\n= [C0] × (0.5)^([T]/[T_HALF])\n= [RESULT] mg/kg\n\nPCBs (polychlorinated biphenyls) are highly persistent POPs. Sediment half-lives depend on degree of chlorination, temperature, organic carbon content, and microbial activity. Highly chlorinated congeners (e.g., PCB-209) can persist for centuries."
+    },
+    {
+      "template_id": "POL_L3_T04",
+      "pattern": "A dioxin compound has a log Kow (octanol-water partition coefficient) of [LOGKOW]. Estimate the Bioconcentration Factor (BCF) using the regression: log BCF = 0.85 × log Kow − 0.70. Calculate BCF (dimensionless). Round to 2 decimal places.",
+      "variables": {
+        "LOGKOW": {"min": 40, "max": 80, "step": 5}
+      },
+      "calculation": "round2(Math.pow(10, 0.85 * (LOGKOW / 10) - 0.70))",
+      "explanation": "log BCF = 0.85 × log Kow − 0.70\n= 0.85 × [LOGKOW/10] − 0.70\nBCF = 10^(log BCF)\n= [RESULT]\n\nDioxins and furans are among the most potent environmental toxins. Their extremely high log Kow (6–8) drives massive bioconcentration in fatty tissues. BCF values > 5000 trigger regulatory concern under REACH and Stockholm Convention."
+    },
+    {
+      "template_id": "POL_L3_T05",
+      "pattern": "A noise source measures [L1] dB at [D1] m. Account for both geometric spreading and atmospheric absorption (α = [ALPHA] dB/100m). Calculate the noise level (dB) at [D2] m using: L2 = L1 − 20·log₁₀(D2/D1) − α·(D2−D1)/100. Round to 1 decimal place.",
+      "variables": {
+        "L1":    {"min": 80,  "max": 120, "step": 5},
+        "D1":    {"min": 1,   "max": 10,  "step": 1},
+        "D2":    {"min": 50,  "max": 500, "step": 25},
+        "ALPHA": {"min": 1,   "max": 5,   "step": 1}
+      },
+      "constraints": ["D2 > D1"],
+      "calculation": "round1(L1 - 20 * Math.log10(D2 / D1) - ALPHA * (D2 - D1) / 100)",
+      "explanation": "L2 = L1 − 20·log₁₀(D2/D1) − α·(D2−D1)/100\n= [L1] − 20·log₁₀([D2]/[D1]) − [ALPHA]·([D2]−[D1])/100\n= [RESULT] dB\n\nAtmospheric absorption α increases with frequency and humidity. High-frequency sounds (e.g., from machinery) attenuate faster than low-frequency sounds (e.g., from traffic). This is why distant thunder sounds low-pitched — the high frequencies have been absorbed."
+    },
+    {
+      "template_id": "POL_L3_T06",
+      "pattern": "A radioactive source has an activity of [A] kBq. The dose conversion factor is [DCF] µSv per kBq·hr. Calculate the total radiation dose (µSv) received after [T] hours of exposure.",
+      "variables": {
+        "A":   {"min": 1,   "max": 100, "step": 1},
+        "DCF": {"min": 1,   "max": 20,  "step": 1},
+        "T":   {"min": 1,   "max": 48,  "step": 1}
+      },
+      "calculation": "A * DCF * T",
+      "explanation": "Radiation Dose = Activity × Dose Conversion Factor × Time\n= [A] kBq × [DCF] µSv/(kBq·hr) × [T] hr\n= [RESULT] µSv\n\nThe annual background dose is ~2400 µSv. A chest X-ray delivers ~20 µSv. Occupational exposure limit is typically 20,000 µSv/yr. DCFs vary by radionuclide, exposure pathway (inhalation, ingestion, external), and organ of interest."
+    },
+    {
+      "template_id": "POL_L3_T07",
+      "pattern": "A contaminant plume travels through an aquifer with seepage velocity v = [V] m/day and a retardation factor R = [RF] (accounting for sorption). Calculate the actual contaminant travel time (days) to travel [DIST] m.",
+      "variables": {
+        "V":    {"min": 1,    "max": 10,   "step": 1},
+        "RF":   {"min": 2,    "max": 10,   "step": 1},
+        "DIST": {"min": 50,   "max": 500,  "step": 25}
+      },
+      "calculation": "round2(DIST * RF / V)",
+      "explanation": "Contaminant Travel Time = Distance × Retardation Factor ÷ Seepage Velocity\n= [DIST] × [RF] ÷ [V]\n= [RESULT] days\n\nThe retardation factor R = 1 + (ρb × Kd) / θ, where Kd is the distribution coefficient between soil and water. Sorption to aquifer materials slows contaminant movement relative to groundwater flow. Non-sorbing tracers (R=1) move at seepage velocity; hydrophobic chemicals move much more slowly."
+    },
+    {
+      "template_id": "POL_L3_T08",
+      "pattern": "A contaminated soil has an initial pollutant concentration of [C0] mg/kg. The first-order remediation rate constant is [K] yr⁻¹. Calculate the time (years) required to reach a target concentration of [CT] mg/kg. Use: t = −ln(CT/C0) / k. Round to 2 decimal places.",
+      "variables": {
+        "C0": {"min": 100, "max": 2000, "step": 100},
+        "CT": {"min": 5,   "max": 50,   "step": 5},
+        "K":  {"min": 10,  "max": 50,   "step": 5}
+      },
+      "constraints": ["C0 > CT"],
+      "calculation": "round2(-Math.log(CT / C0) / (K / 100))",
+      "explanation": "Remediation Time t = −ln(CT/C0) ÷ k\nk = [K]/100 yr⁻¹\nt = −ln([CT]/[C0]) ÷ ([K]/100)\n= [RESULT] years\n\nFirst-order kinetics assumes the remediation rate is proportional to remaining concentration. Bioremediation, natural attenuation, and pump-and-treat systems often follow this model. The result guides cost-benefit analysis of remediation strategies."
+    },
+{
+  "template_id": "POL_L3_T09",
+  "pattern": "An industrial facility emits [CO2] tonnes of CO₂, [METH] tonnes of CH₄ (GWP=25), and [NITO] tonnes of N₂O (GWP=298) per year. Calculate the total carbon dioxide equivalent (CO₂e) in tonnes per year.",
+  "variables": {
+    "CO2":  {"min": 100, "max": 5000, "step": 100},
+    "METH": {"min": 1,   "max": 100,  "step": 5},
+    "NITO": {"min": 1,   "max": 50,   "step": 1}
+  },
+  "calculation": "CO2 + METH * 25 + NITO * 298",
+  "explanation": "CO₂ equivalent = CO₂ + (CH₄ × GWP_CH₄) + (N₂O × GWP_N₂O)\n= [CO2] + ([METH] × 25) + ([NITO] × 298)\n= [RESULT] tonnes CO₂e/yr\n\nGlobal Warming Potential (GWP) normalises different greenhouse gases to a CO₂ baseline over 100 years. CH₄ (GWP=25) is 25× more potent than CO₂; N₂O (GWP=298) is 298× more potent. CO₂e is the standard unit for national greenhouse gas inventories under the UNFCCC."
+},
+    {
+      "template_id": "POL_L3_T10",
+      "pattern": "A chemical has a measured environmental exposure concentration (MEC) of [MEC] µg/L in a river. The Predicted No-Effect Concentration (PNEC) is [PNEC] µg/L. Calculate the Environmental Risk Quotient (RQ).",
+      "variables": {
+        "MEC":  {"min": 1,   "max": 500,  "step": 5},
+        "PNEC": {"min": 5,   "max": 200,  "step": 5}
+      },
+      "calculation": "round2(MEC / PNEC)",
+      "explanation": "Environmental Risk Quotient (RQ) = MEC ÷ PNEC\n= [MEC] ÷ [PNEC]\n= [RESULT]\n\nRQ < 1: risk is considered acceptable (exposure below no-effect level).\nRQ > 1: unacceptable risk — the substance may cause adverse ecological effects and further risk reduction or monitoring is required.\nPNEC is typically derived from ecotoxicity data divided by an assessment factor (AF) of 10–1000 depending on data quality."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

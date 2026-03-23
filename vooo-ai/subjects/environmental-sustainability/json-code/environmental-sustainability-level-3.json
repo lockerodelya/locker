@@ -1,0 +1,136 @@
+{
+  "puzzle_type": "environmental-sustainability-level-3",
+  "display_name": "Sustainability L3",
+  "templates": [
+    {
+      "template_id": "SUS_L3_T01",
+      "pattern": "A planetary boundary is set at [BOUND] units. Current human pressure is [PRESS] units. The uncertainty zone extends from [LOWER]% to [UPPER]% above the boundary. Calculate whether the current pressure is in the safe zone (<[LOWER]% above), uncertainty zone, or high-risk zone (>[UPPER]% above). Express current pressure as % above the boundary. Round to 1 decimal place.",
+      "variables": {
+        "BOUND": {"min": 50,  "max": 500,  "step": 25},
+        "PRESS": {"min": 50,  "max": 800,  "step": 25},
+        "LOWER": {"value": 20},
+        "UPPER": {"value": 100}
+      },
+      "calculation": "round1((PRESS - BOUND) / BOUND * 100)",
+      "explanation": "% Above Boundary = (Pressure − Boundary) ÷ Boundary × 100\n= ([PRESS] − [BOUND]) ÷ [BOUND] × 100\n= [RESULT]%\n\nThe planetary boundaries framework (Rockström et al., 2009; Steffen et al., 2015) defines nine Earth system processes with quantified boundaries. Each has a safe zone (<boundary), zone of uncertainty (boundary to 2× boundary), and high-risk zone (>2× boundary). The framework is used in corporate ESG reporting, national strategy, and international negotiations to define 'safe operating space for humanity'."
+    },
+    {
+      "template_id": "SUS_L3_T02",
+      "pattern": "Kate Raworth's Doughnut Economics defines a social foundation and ecological ceiling. A society's wellbeing score is [WELL]% of the social foundation (100% = fully met). Its environmental overshoot is [OVER]% above the ecological ceiling (0% = within ceiling). Calculate the Doughnut Distance = √(([100 − WELL])² + [OVER]²). Round to 2 decimal places.",
+      "variables": {
+        "WELL": {"min": 40, "max": 95, "step": 5},
+        "OVER": {"min": 0,  "max": 60, "step": 5}
+      },
+      "calculation": "round2(sqrt((100 - WELL) * (100 - WELL) + OVER * OVER))",
+      "explanation": "Doughnut Distance = √((100−Wellbeing)² + Overshoot²)\n= √((100−[WELL])² + [OVER]²)\n= [RESULT]\n\nThe Doughnut model defines the space between meeting everyone's needs (social foundation: food, water, health, energy, voice, etc.) and staying within planetary limits (ecological ceiling: climate, biodiversity, nutrients, etc.). A score of 0 would mean all 12 social dimensions are met and all 9 planetary boundaries are respected. Amsterdam, Copenhagen, and several national governments use the Doughnut as a policy framework."
+    },
+    {
+      "template_id": "SUS_L3_T03",
+      "pattern": "A water-food-energy nexus analysis finds: producing [FOOD] tonnes of food requires [FOOD_W] m³ of water and [FOOD_E] GJ of energy. Providing [WATER] m³ of treated water requires [WATER_E] GJ of energy and [WATER_F] kg of chemicals (food-grade). Calculate the total energy demand (GJ) for both food and water provision.",
+      "variables": {
+        "FOOD":    {"min": 100,  "max": 5000, "step": 100},
+        "FOOD_W":  {"min": 500,  "max": 5000, "step": 500},
+        "FOOD_E":  {"min": 10,   "max": 500,  "step": 10},
+        "WATER":   {"min": 1000, "max": 50000,"step": 1000},
+        "WATER_E": {"min": 1,    "max": 50,   "step": 1},
+        "WATER_F": {"min": 10,   "max": 200,  "step": 10}
+      },
+      "calculation": "FOOD_E + WATER_E",
+      "explanation": "Total Nexus Energy = Food Energy + Water Energy\n= [FOOD_E] + [WATER_E]\n= [RESULT] GJ\n\nThe Water-Food-Energy Nexus recognises that these three systems are deeply interdependent — actions in one sector cascade through the others. Irrigated agriculture accounts for 70% of global freshwater withdrawals; water treatment and distribution use 2–3% of global electricity; food systems consume ~30% of global energy. Nexus approaches integrated into Sustainable Development Goals 2 (food), 6 (water), and 7 (energy) aim to optimise across all three simultaneously."
+    },
+    {
+      "template_id": "SUS_L3_T04",
+      "pattern": "A systems model has a reinforcing feedback loop. The initial value is [INIT] units and the feedback gain per time step is [GAIN]% per step. Calculate the value after [STEPS] time steps. Round to 2 decimal places.",
+      "variables": {
+        "INIT":  {"min": 10,  "max": 500, "step": 10},
+        "GAIN":  {"min": 5,   "max": 30,  "step": 5},
+        "STEPS": {"min": 3,   "max": 10,  "step": 1}
+      },
+      "calculation": "round2(INIT * pow(1 + GAIN / 100, STEPS))",
+      "explanation": "Value after n steps = Initial × (1 + Gain)^n\n= [INIT] × (1 + [GAIN]/100)^[STEPS]\n= [RESULT]\n\nReinforcing (positive) feedback loops amplify change — examples include melting Arctic ice reducing albedo (causing further warming), economic growth increasing emissions (increasing warming), and population growth increasing resource demand. Balancing (negative) feedback loops stabilise systems. Systems thinking (Forrester, Meadows) identifies feedback structure as the root cause of systemic behaviour — including 'overshoot and collapse' patterns as modelled in Limits to Growth (1972)."
+    },
+    {
+      "template_id": "SUS_L3_T05",
+      "pattern": "After a disturbance, an ecosystem's function drops to [DISTURB]% of its pre-disturbance level. It recovers at [RECOV_R]% per year. Calculate the time (years) to return to [TARGET]% of the original function. Use: t = ln(TARGET/DISTURB) / ln(1 + RECOV_R/100). Round to 1 decimal place.",
+      "variables": {
+        "DISTURB":  {"min": 10, "max": 60,  "step": 5},
+        "RECOV_R":  {"min": 5,  "max": 30,  "step": 5},
+        "TARGET":   {"min": 70, "max": 95,  "step": 5}
+      },
+      "constraints": ["TARGET > DISTURB"],
+      "calculation": "round1(log(TARGET / DISTURB) / log(1 + RECOV_R / 100))",
+      "explanation": "Recovery Time t = ln(Target/Disturbed) ÷ ln(1 + r)\n= ln([TARGET]/[DISTURB]) ÷ ln(1 + [RECOV_R]/100)\n= [RESULT] years\n\nResilience is the capacity of a system to absorb disturbance and reorganise while undergoing change so as to retain essentially the same function and structure (Folke et al., 2004). Ecological resilience differs from engineering resilience (return time) — a highly resilient system can absorb large disturbances without flipping to an alternative state. Regime shifts (lake eutrophication, savannah to desert) represent loss of resilience and are often irreversible."
+    },
+    {
+      "template_id": "SUS_L3_T06",
+      "pattern": "A country's current emissions are [CURR_E] MtCO₂e/yr in 2025. A transition pathway targets [TARGET_E] MtCO₂e/yr by [TARGET_YR]. Assuming exponential decline, calculate the annual reduction rate (%) needed. Use: r = (1 − (Target/Current)^(1/Years)) × 100. Round to 2 decimal places.",
+      "variables": {
+        "CURR_E":    {"min": 50,  "max": 1000, "step": 50},
+        "TARGET_E":  {"min": 1,   "max": 200,  "step": 5},
+        "TARGET_YR": {"min": 2030,"max": 2050, "step": 5}
+      },
+      "constraints": ["TARGET_E < CURR_E"],
+      "calculation": "round2((1 - pow(TARGET_E / CURR_E, 1 / (TARGET_YR - 2025))) * 100)",
+      "explanation": "Annual Reduction Rate r = (1 − (Target/Current)^(1/Years)) × 100\n= (1 − ([TARGET_E]/[CURR_E])^(1/([TARGET_YR]−2025))) × 100\n= [RESULT]%/yr\n\nExponential emission reduction pathways are more realistic than linear ones as they reflect the compounding effect of efficiency improvements and technology deployment. The IEA Net Zero Emissions by 2050 scenario requires global emissions to fall by ~7.6%/yr — faster than the COVID-19 pandemic dip (~5.8% in 2020). Carbon Countdown clocks track remaining carbon budgets in real time."
+    },
+    {
+      "template_id": "SUS_L3_T07",
+      "pattern": "A just transition programme decommissions a coal plant employing [COAL_JOBS] workers. Renewable energy projects in the same region are projected to create [RE_JOBS] permanent jobs. Calculate the net employment ratio (RE jobs per coal job lost). Round to 2 decimal places.",
+      "variables": {
+        "COAL_JOBS": {"min": 100, "max": 5000, "step": 100},
+        "RE_JOBS":   {"min": 50,  "max": 8000, "step": 100}
+      },
+      "calculation": "round2(RE_JOBS / COAL_JOBS)",
+      "explanation": "Employment Ratio = Renewable Jobs ÷ Coal Jobs Lost\n= [RE_JOBS] ÷ [COAL_JOBS]\n= [RESULT] RE jobs per coal job\n\nJust transition addresses the social dimensions of decarbonisation — ensuring workers and communities dependent on fossil fuels are not left behind. The ILO estimates renewable energy could create 24 million jobs by 2030 but eliminate 7 million fossil fuel jobs. Geographic mismatch (coal regions in Appalachia, Welsh valleys, Ruhr) creates concentrated job losses. Just Transition Commissions (Scotland, EU) develop region-specific reskilling and investment programmes."
+    },
+    {
+      "template_id": "SUS_L3_T08",
+      "pattern": "A circular economy system recovers [RECOV_M] tonnes of material per year and reintroduces it into production. The linear replacement rate (virgin material per tonne product) is [VIR] kg/kg. Calculate the tonnes of virgin material saved per year. Round to 2 decimal places.",
+      "variables": {
+        "RECOV_M": {"min": 100,  "max": 10000, "step": 100},
+        "VIR":     {"min": 50,   "max": 150,   "step": 10}
+      },
+      "calculation": "round2(RECOV_M * VIR / 100)",
+      "explanation": "Virgin Material Saved = Recovered Material × Replacement Rate\n= [RECOV_M] × [VIR]/100\n= [RESULT] tonnes\n\nCircular material flow rate measures the fraction of material inputs that come from secondary (recycled/recovered) rather than primary (virgin) sources. The global circularity rate is only ~7.2% (Circularity Gap Report, 2023), meaning >90% of materials used are still virgin. Closing material loops for critical raw materials (lithium, cobalt, neodymium) is a strategic priority for energy transition security."
+    },
+    {
+      "template_id": "SUS_L3_T09",
+      "pattern": "A thermodynamic analysis of an industrial system shows useful work output of [WORK] GJ from a total energy input of [ENERGY] GJ. The theoretical maximum (Carnot) efficiency at temperatures Th = [TH] K and Tc = [TC] K is η_max = 1 − Tc/Th. Calculate the actual efficiency (%) and the gap to the thermodynamic limit. Round to 1 decimal place.",
+      "variables": {
+        "WORK":   {"min": 10,  "max": 200,  "step": 10},
+        "ENERGY": {"min": 50,  "max": 500,  "step": 25},
+        "TH":     {"min": 400, "max": 900,  "step": 50},
+        "TC":     {"min": 280, "max": 380,  "step": 10}
+      },
+      "constraints": ["WORK < ENERGY", "TH > TC"],
+      "calculation": "round1((1 - TC / TH) * 100 - WORK / ENERGY * 100)",
+      "explanation": "Carnot Efficiency = (1 − Tc/Th) × 100 = (1 − [TC]/[TH]) × 100\nActual Efficiency = [WORK]/[ENERGY] × 100\nGap = Carnot − Actual = [RESULT] percentage points\n\nThe second law of thermodynamics sets absolute limits on energy conversion. Industrial processes typically operate at 30–60% of Carnot efficiency. Exergy analysis identifies where quality energy is degraded (exergy destruction) — pinpointing improvement opportunities. Waste heat recovery, combined heat and power (CHP), and heat integration (Pinch Analysis) can dramatically improve industrial thermodynamic efficiency."
+    },
+    {
+      "template_id": "SUS_L3_T10",
+      "pattern": "A composite wellbeing index is calculated from [N_IND] equal-weighted indicators, each scored 0–100. The scores are: [IND1], [IND2], [IND3], [IND4], [IND5]. Calculate the composite wellbeing index. Round to 1 decimal place.",
+      "variables": {
+        "N_IND": {"value": 5},
+        "IND1":  {"min": 20, "max": 90, "step": 5},
+        "IND2":  {"min": 20, "max": 90, "step": 5},
+        "IND3":  {"min": 20, "max": 90, "step": 5},
+        "IND4":  {"min": 20, "max": 90, "step": 5},
+        "IND5":  {"min": 20, "max": 90, "step": 5}
+      },
+      "calculation": "round1((IND1 + IND2 + IND3 + IND4 + IND5) / 5)",
+      "explanation": "Composite Wellbeing Index = Mean of All Indicators\n= ([IND1]+[IND2]+[IND3]+[IND4]+[IND5]) ÷ 5\n= [RESULT]\n\nComposite wellbeing indices include UNDP's Human Development Index (HDI: income, health, education), OECD Better Life Index (11 dimensions), and national measures like the UK's Measures of National Wellbeing. Equal weighting is transparent but may not reflect policy priorities. The Stiglitz-Sen-Fitoussi Commission (2008) catalysed the 'beyond GDP' movement — recognising that GDP alone fails to capture human and ecological wellbeing."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

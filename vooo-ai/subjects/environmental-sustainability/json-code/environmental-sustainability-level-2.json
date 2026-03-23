@@ -1,0 +1,131 @@
+{
+  "puzzle_type": "environmental-sustainability-level-2",
+  "display_name": "Sustainability L2",
+  "templates": [
+    {
+      "template_id": "SUS_L2_T01",
+      "pattern": "A life cycle assessment (LCA) of a product covers three stages: manufacturing ([MFG] kg CO₂e), use phase ([USE] kg CO₂e), and end-of-life ([EOL] kg CO₂e). The recycling credit offsets [CREDIT] kg CO₂e. Calculate the net CO₂ equivalent (kg CO₂e) over the product's lifetime.",
+      "variables": {
+        "MFG":    {"min": 10,  "max": 500, "step": 10},
+        "USE":    {"min": 5,   "max": 300, "step": 10},
+        "EOL":    {"min": 1,   "max": 50,  "step": 5},
+        "CREDIT": {"min": 1,   "max": 100, "step": 5}
+      },
+      "constraints": ["MFG + USE + EOL > CREDIT"],
+      "calculation": "MFG + USE + EOL - CREDIT",
+      "explanation": "Net LCA Emissions = Manufacturing + Use + End-of-Life − Recycling Credit\n= [MFG] + [USE] + [EOL] − [CREDIT]\n= [RESULT] kg CO₂e\n\nLife Cycle Assessment (ISO 14040/14044) quantifies environmental impacts from cradle to grave (or cradle to cradle in circular systems). System boundary decisions critically affect results — 'cut-off' vs 'system expansion' for recycling credits gives different answers. LCA underpins eco-labelling (e.g., EU Ecolabel), Environmental Product Declarations (EPDs), and Product Environmental Footprint (PEF) regulation."
+    },
+    {
+      "template_id": "SUS_L2_T02",
+      "pattern": "A service delivers [SERVICE] units. Material input is [MAT] kg. Calculate the Material Input Per Service Unit (MIPS). Round to 2 decimal places.",
+      "variables": {
+        "SERVICE": {"min": 10,   "max": 10000, "step": 100},
+        "MAT":     {"min": 100,  "max": 50000, "step": 500}
+      },
+      "calculation": "round2(MAT / SERVICE)",
+      "explanation": "MIPS = Material Input ÷ Service Units\n= [MAT] ÷ [SERVICE]\n= [RESULT] kg per service unit\n\nMIPS (Schmidt-Bleek, 1994) measures resource productivity — how much physical material is needed to deliver a unit of service. The 'Factor 10' concept advocates reducing material throughput by 90% while maintaining or improving service levels. Dematerialisation through digital services, sharing economy platforms, and product-service systems (leasing vs. owning) can dramatically reduce MIPS. The global material footprint exceeds 90 billion tonnes/yr."
+    },
+    {
+      "template_id": "SUS_L2_T03",
+      "pattern": "A circular economy scheme recovers [RECOV] tonnes of material from [WASTE] tonnes of end-of-life products. Calculate the material recovery rate (%). Round to 1 decimal place.",
+      "variables": {
+        "RECOV": {"min": 10,  "max": 5000, "step": 50},
+        "WASTE": {"min": 50,  "max": 10000,"step": 100}
+      },
+      "constraints": ["RECOV < WASTE"],
+      "calculation": "round1(RECOV / WASTE * 100)",
+      "explanation": "Material Recovery Rate = Recovered ÷ Total Waste × 100\n= [RECOV] ÷ [WASTE] × 100\n= [RESULT]%\n\nThe circular economy aims to keep materials in productive use at their highest value. Recovery rates for metals vary widely: aluminium ~75%; steel ~85%; copper ~45%; rare earth elements <1%. The EU Circular Economy Package sets recovery targets for packaging, batteries, electronics, and vehicles. Extended Producer Responsibility (EPR) schemes make producers financially responsible for end-of-life management."
+    },
+    {
+      "template_id": "SUS_L2_T04",
+      "pattern": "An economy's material consumption was [OLD_M] million tonnes in 2000. It is now [NEW_M] million tonnes, while GDP grew from [OLD_GDP] to [NEW_GDP] billion £ over the same period. Calculate the dematerialisation ratio: (GDP growth %) ÷ (Material growth %). Round to 2 decimal places.",
+      "variables": {
+        "OLD_M":   {"min": 100, "max": 1000,"step": 50},
+        "NEW_M":   {"min": 80,  "max": 1200,"step": 50},
+        "OLD_GDP": {"min": 100, "max": 2000,"step": 100},
+        "NEW_GDP": {"min": 150, "max": 5000,"step": 100}
+      },
+      "constraints": ["NEW_GDP > OLD_GDP"],
+      "calculation": "round2(((NEW_GDP - OLD_GDP) / OLD_GDP) / ((NEW_M - OLD_M) / OLD_M))",
+      "explanation": "Dematerialisation Ratio = GDP Growth % ÷ Material Growth %\n= (([NEW_GDP]−[OLD_GDP])/[OLD_GDP]) ÷ (([NEW_M]−[OLD_M])/[OLD_M])\n= [RESULT]\n\nA ratio >1 indicates relative dematerialisation (GDP grows faster than material use). Absolute dematerialisation requires material use to fall in absolute terms. Most advanced economies show relative decoupling but not absolute. This is partly a statistical artefact — outsourcing material-intensive production to developing countries reduces domestic material footprint while increasing consumption-based material footprint."
+    },
+    {
+      "template_id": "SUS_L2_T05",
+      "pattern": "A product's cradle-to-gate emissions include: raw material extraction [RAW] kg CO₂e, transport to factory [TRANS] kg CO₂e, and manufacturing process [MFG] kg CO₂e. Calculate the total cradle-to-gate emissions (kg CO₂e).",
+      "variables": {
+        "RAW":   {"min": 5,   "max": 200, "step": 5},
+        "TRANS": {"min": 1,   "max": 50,  "step": 5},
+        "MFG":   {"min": 5,   "max": 300, "step": 10}
+      },
+      "calculation": "RAW + TRANS + MFG",
+      "explanation": "Cradle-to-Gate Emissions = Raw Materials + Transport + Manufacturing\n= [RAW] + [TRANS] + [MFG]\n= [RESULT] kg CO₂e\n\nCradle-to-gate (C2G) covers upstream processes from resource extraction to factory gate — excluding use phase and end-of-life. It forms the basis for Environmental Product Declarations (EPDs) in construction. For materials like cement and steel, C2G accounts for 80–95% of total lifecycle emissions. 'Scope 3' GHG accounting includes C2G emissions in a company's value chain reporting under GHG Protocol."
+    },
+    {
+      "template_id": "SUS_L2_T06",
+      "pattern": "A company currently emits [CURR_E] tonnes CO₂e/yr and commits to reach net zero by [TARGET_YR]. The current year is 2025. Calculate the required annual reduction rate (% per year) to reach net zero linearly. Round to 2 decimal places.",
+      "variables": {
+        "CURR_E":    {"min": 1000, "max": 100000,"step": 1000},
+        "TARGET_YR": {"min": 2030, "max": 2050,  "step": 5}
+      },
+      "calculation": "round2(100 / (TARGET_YR - 2025))",
+      "explanation": "Annual Reduction Rate = 100% ÷ (Target Year − Current Year)\n= 100 ÷ ([TARGET_YR] − 2025)\n= [RESULT]% per year\n\nLinear decarbonisation pathways require consistent annual reductions. The UK's Climate Change Act commits to net zero by 2050 — requiring ~2.5%/yr linear reduction from 2025. Exponential reduction pathways (constant % per year) are often used for modelling, but linear pathways are simpler for target-setting. Carbon budgets (5-year caps) translate long-term targets into near-term accountability under the Paris Agreement."
+    },
+    {
+      "template_id": "SUS_L2_T07",
+      "pattern": "A country tracks SDG 7.2 (renewable energy share). Its renewable share is [CURR_RE]% and needs to reach [TARGET_RE]% by 2030. With [YRS_LEFT] years remaining, calculate the required annual percentage point increase. Round to 2 decimal places.",
+      "variables": {
+        "CURR_RE":  {"min": 10, "max": 70,  "step": 5},
+        "TARGET_RE":{"min": 30, "max": 100, "step": 5},
+        "YRS_LEFT": {"min": 2,  "max": 8,   "step": 1}
+      },
+      "constraints": ["TARGET_RE > CURR_RE"],
+      "calculation": "round2((TARGET_RE - CURR_RE) / YRS_LEFT)",
+      "explanation": "Annual Increase Required = (Target − Current) ÷ Years Remaining\n= ([TARGET_RE] − [CURR_RE]) ÷ [YRS_LEFT]\n= [RESULT] percentage points per year\n\nSDG 7 (Affordable and Clean Energy) targets: 7.1 universal access to affordable energy; 7.2 substantially increase renewable share in global energy mix; 7.3 double the rate of energy efficiency improvement. Progress is tracked through the Global SDG Database. The world is currently off-track to achieve SDG 7 by 2030, with renewable energy adoption insufficient to offset demand growth in developing regions."
+    },
+    {
+      "template_id": "SUS_L2_T08",
+      "pattern": "A tonne of CO₂ emitted causes estimated damages of £[SCC] (Social Cost of Carbon). A power plant emits [EMIS] thousand tonnes of CO₂ per year. Calculate the annual social cost of emissions (£ million). Round to 2 decimal places.",
+      "variables": {
+        "SCC":  {"min": 50,   "max": 300,  "step": 25},
+        "EMIS": {"min": 10,   "max": 1000, "step": 10}
+      },
+      "calculation": "round2(SCC * EMIS * 1000 / 1000000)",
+      "explanation": "Social Cost of Emissions = SCC × Annual Emissions\n= £[SCC] × [EMIS]×10³ tCO₂ ÷ 10⁶\n= £[RESULT] million/yr\n\nThe Social Cost of Carbon (SCC) monetises the economic damages from one additional tonne of CO₂: sea level rise, extreme weather, productivity loss, health impacts. Estimates range from $50 to >$400/tCO₂ depending on discount rate, damage functions, and equity weighting. The US EPA uses ~$190/tonne (2023). SCC underpins cost-benefit analysis of climate policy and carbon pricing design."
+    },
+    {
+      "template_id": "SUS_L2_T09",
+      "pattern": "A country's GDP is £[GDP] billion. Environmental degradation costs are estimated at £[ENV_COST] billion per year (air/water pollution, soil erosion, biodiversity loss). Calculate Green GDP = GDP − Environmental Cost, and express environmental costs as a percentage of GDP. Round to 1 decimal place.",
+      "variables": {
+        "GDP":      {"min": 100,  "max": 5000, "step": 100},
+        "ENV_COST": {"min": 5,    "max": 500,  "step": 10}
+      },
+      "constraints": ["ENV_COST < GDP"],
+      "calculation": "round1(ENV_COST / GDP * 100)",
+      "explanation": "Green GDP = GDP − Environmental Cost\n= [GDP] − [ENV_COST] = £[GDP - ENV_COST] billion\nEnvironmental Cost as % of GDP = [ENV_COST]/[GDP] × 100 = [RESULT]%\n\nGreen GDP (environmentally adjusted GDP) subtracts environmental degradation costs from conventional GDP. Studies estimate environmental costs at 5–20% of GDP in developing economies and 2–5% in developed countries. The UN System of Environmental-Economic Accounting (SEEA) provides a standardised framework for integrating environmental data into national accounts — used by over 90 countries."
+    },
+    {
+      "template_id": "SUS_L2_T10",
+      "pattern": "A country's Genuine Progress Indicator (GPI) is calculated as GPI = GDP + [SOCIAL] − [INEQUALITY] − [ENVIRON]. Given GDP = £[GDP] billion, social benefits = £[SOCIAL] billion, inequality cost = £[INEQUALITY] billion, environmental cost = £[ENVIRON] billion. Calculate GPI (£ billion).",
+      "variables": {
+        "GDP":        {"min": 100, "max": 3000, "step": 100},
+        "SOCIAL":     {"min": 10,  "max": 500,  "step": 25},
+        "INEQUALITY": {"min": 5,   "max": 300,  "step": 25},
+        "ENVIRON":    {"min": 5,   "max": 200,  "step": 10}
+      },
+      "calculation": "GDP + SOCIAL - INEQUALITY - ENVIRON",
+      "explanation": "GPI = GDP + Social Benefits − Inequality Cost − Environmental Cost\n= [GDP] + [SOCIAL] − [INEQUALITY] − [ENVIRON]\n= [RESULT] £ billion\n\nGenuine Progress Indicator (GPI) adjusts GDP for 26 factors including income inequality, value of unpaid household work, cost of crime, environmental degradation, and loss of leisure time. Studies show GPI peaked in many countries in the 1970s–1980s, then stagnated or declined, despite continued GDP growth — suggesting economic growth is no longer improving genuine wellbeing. Alternative metrics (Bhutan's Gross National Happiness, HDI, Wellbeing Economy) challenge GDP supremacy."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "puzzle_type": "environmental-human-impact-level-2",
+  "display_name": "Human Impact L2",
+  "templates": [
+    {
+      "template_id": "HI_L2_T01",
+      "pattern": "A habitat patch shrinks from [INIT] km² to [FINAL] km² over [YRS] years due to human activity. Calculate the annual habitat loss rate (% per year). Round to 2 decimal places.",
+      "variables": {
+        "INIT":  {"min": 200, "max": 5000, "step": 100},
+        "FINAL": {"min": 50,  "max": 4000, "step": 50},
+        "YRS":   {"min": 10,  "max": 50,   "step": 5}
+      },
+      "constraints": ["INIT > FINAL"],
+      "calculation": "round2((1 - pow(FINAL / INIT, 1 / YRS)) * 100)",
+      "explanation": "Annual Habitat Loss Rate = (1 − (Final/Initial)^(1/Years)) × 100\n= (1 − ([FINAL]/[INIT])^(1/[YRS])) × 100\n= [RESULT]% per year\n\nCompound habitat loss rate mirrors financial depreciation. Even a modest 2%/yr loss halves habitat in 35 years. Satellite-derived land cover datasets (e.g., Hansen Global Forest Change) now track habitat loss at 30m resolution globally in near-real time. Habitat fragmentation multiplies the impact of area loss — interior core habitat declines faster than total area."
+    },
+    {
+      "template_id": "HI_L2_T02",
+      "pattern": "A region has a population of [POP] million and consumes [RES] tonnes of a resource per person per year. The sustainable resource supply is [SUPPLY] million tonnes per year. Calculate the resource deficit (million tonnes/yr) if any.",
+      "variables": {
+        "POP":    {"min": 1,   "max": 200, "step": 5},
+        "RES":    {"min": 1,   "max": 20,  "step": 1},
+        "SUPPLY": {"min": 10,  "max": 2000, "step": 50}
+      },
+      "constraints": ["POP * RES > SUPPLY"],
+      "calculation": "round2(POP * RES - SUPPLY)",
+      "explanation": "Resource Deficit = (Population × Per Capita Consumption) − Sustainable Supply\n= ([POP] × [RES]) − [SUPPLY]\n= [RESULT] million tonnes/yr\n\nPopulation pressure on resources is quantified by the I=PAT framework: Environmental Impact = Population × Affluence × Technology. Even with stable population, rising affluence increases per capita consumption. Resource caps define carrying capacity — the maximum population an environment can support sustainably. Planetary boundaries define nine Earth system limits, six of which have already been transgressed."
+    },
+    {
+      "template_id": "HI_L2_T03",
+      "pattern": "A country has an ecological footprint of [EF] global hectares (gha) per person and a biocapacity of [BC] gha per person. With a population of [POP] million, calculate the total ecological overshoot (million gha).",
+      "variables": {
+        "EF":  {"min": 2,   "max": 10,  "step": 1},
+        "BC":  {"min": 1,   "max": 8,   "step": 1},
+        "POP": {"min": 5,   "max": 500, "step": 5}
+      },
+      "constraints": ["EF > BC"],
+      "calculation": "round2((EF - BC) * POP)",
+      "explanation": "Ecological Overshoot = (Footprint − Biocapacity) × Population\n= ([EF] − [BC]) × [POP]\n= [RESULT] million gha\n\nThe ecological footprint measures how much biologically productive land/sea is required to produce resources consumed and absorb waste. Global average footprint is ~2.7 gha/person vs. biocapacity of ~1.6 gha/person — humanity currently needs 1.7 Earths. Earth Overshoot Day (the date Earth's resource budget is exhausted) now falls in late July annually."
+    },
+    {
+      "template_id": "HI_L2_T04",
+      "pattern": "The Environmental Kuznets Curve (EKC) suggests pollution peaks then declines as income rises. A country's pollution load P = [A] + [B] × GDP − [C] × GDP². Calculate the GDP (£ thousands) at which pollution is maximised. (Use turning point: GDP_peak = B / (2 × C)). Round to 2 decimal places.",
+      "variables": {
+        "A": {"min": 10, "max": 100, "step": 10},
+        "B": {"min": 5,  "max": 30,  "step": 1},
+        "C": {"min": 1,  "max": 5,   "step": 1}
+      },
+      "calculation": "round2(B / (2 * C))",
+      "explanation": "EKC Turning Point: GDP_peak = B / (2C)\n= [B] / (2 × [C])\n= [RESULT] £ thousands\n\nThe Environmental Kuznets Curve (EKC) hypothesis posits that as income rises, pollution first increases (industrial takeoff) then decreases (post-industrial services, environmental regulation, cleaner technology). Evidence is mixed — it holds for some local pollutants (SO₂, particulates) but not for CO₂ or biodiversity loss. Critics argue it cannot justify 'grow first, clean later' policies."
+    },
+    {
+      "template_id": "HI_L2_T05",
+      "pattern": "A country emits [EMIS] million tonnes of CO₂ and has a GDP of [GDP] billion £. Calculate the pollution intensity (tonnes CO₂ per million £ GDP). Round to 2 decimal places.",
+      "variables": {
+        "EMIS": {"min": 10,   "max": 1000, "step": 10},
+        "GDP":  {"min": 50,   "max": 5000, "step": 50}
+      },
+      "calculation": "round2(EMIS * 1000 / GDP)",
+      "explanation": "Pollution Intensity = Emissions ÷ GDP\n= [EMIS]×10⁶ tonnes ÷ [GDP]×10⁹ £\n= [RESULT] tonnes CO₂ per million £\n\nCarbon intensity of GDP is a key decoupling indicator. The UK's carbon intensity fell from ~800 tCO₂/£m GDP in 1990 to ~150 tCO₂/£m in 2022 — mainly due to the shift from coal to gas and renewables and deindustrialisation. Absolute decoupling (emissions falling while GDP grows) is required for net zero; relative decoupling (emissions growing slower than GDP) is insufficient."
+    },
+    {
+      "template_id": "HI_L2_T06",
+      "pattern": "Converting [AREA] ha of tropical forest to agriculture releases [C_STOCK] tC/ha from soil and biomass. Calculate the CO₂ equivalent released (tonnes CO₂e). (Multiply carbon by 44/12 = 3.667 to convert to CO₂). Round to 0 decimal places.",
+      "variables": {
+        "AREA":    {"min": 100,  "max": 5000, "step": 100},
+        "C_STOCK": {"min": 100,  "max": 300,  "step": 25}
+      },
+      "calculation": "round2(AREA * C_STOCK * 44 / 12)",
+      "explanation": "CO₂e Released = Area × Carbon Stock × 3.667\n= [AREA] × [C_STOCK] × 3.667\n= [RESULT] tonnes CO₂e\n\nLand use change (LUC) CO₂ emissions are second only to fossil fuels as a source of anthropogenic greenhouse gases. The carbon conversion factor (44/12 = 3.667) reflects the molecular mass ratio of CO₂ to C. Forest soils (particularly peat) often store more carbon than above-ground biomass — drainage of tropical peatlands for palm oil releases enormous amounts of CO₂."
+    },
+    {
+      "template_id": "HI_L2_T07",
+      "pattern": "A cultivated field loses [LOSS] kg of soil per m² per year due to water erosion. The field area is [AREA] ha. Calculate the total annual soil loss (tonnes/yr). (1 ha = 10,000 m²)",
+      "variables": {
+        "LOSS": {"min": 1,  "max": 20,  "step": 1},
+        "AREA": {"min": 10, "max": 500, "step": 10}
+      },
+      "calculation": "round2(LOSS * AREA * 10000 / 1000)",
+      "explanation": "Soil Loss = Loss Rate × Area\n= [LOSS] kg/m² × [AREA] ha × 10,000 m²/ha ÷ 1,000 kg/tonne\n= [RESULT] tonnes/yr\n\nThe Universal Soil Loss Equation (USLE) estimates erosion from rainfall, soil erodibility, slope, cover, and management factors. Global soil erosion rates average ~13 tonnes/ha/yr for cropland — far exceeding soil formation rates (~0.5–2 t/ha/yr). Topsoil loss reduces crop yields, increases flood risk, and degrades water quality through sedimentation. No-till farming, cover crops, and contour ploughing reduce erosion."
+    },
+    {
+      "template_id": "HI_L2_T08",
+      "pattern": "A farm applies [FERT] kg/ha of nitrogen fertiliser to [AREA] ha of cropland. [LEACH]% of applied nitrogen leaches into waterways. Calculate the total nitrogen loading to waterways (kg N/yr).",
+      "variables": {
+        "FERT":  {"min": 50,  "max": 300, "step": 25},
+        "AREA":  {"min": 10,  "max": 500, "step": 10},
+        "LEACH": {"min": 5,   "max": 40,  "step": 5}
+      },
+      "calculation": "round2(FERT * AREA * LEACH / 100)",
+      "explanation": "Nitrogen Loading = Fertiliser Rate × Area × Leaching Fraction\n= [FERT] × [AREA] × [LEACH]/100\n= [RESULT] kg N/yr\n\nNitrogen leaching from agriculture is the primary cause of eutrophication in freshwater and coastal systems. Excess nitrogen drives algal blooms, oxygen depletion (hypoxia), and 'dead zones' (>500 globally). The nitrogen planetary boundary has been exceeded — humanity applies ~120 Tg N/yr in fertilisers, far above the 62 Tg/yr threshold. Precision agriculture and cover crops reduce leaching."
+    },
+    {
+      "template_id": "HI_L2_T09",
+      "pattern": "A river receives [LOAD] tonnes of phosphorus per year from agricultural runoff. The river's natural assimilative capacity is [ASSIM] tonnes/yr. Calculate the phosphorus surplus loading (tonnes/yr) contributing to eutrophication.",
+      "variables": {
+        "LOAD":  {"min": 10,  "max": 500, "step": 10},
+        "ASSIM": {"min": 5,   "max": 200, "step": 5}
+      },
+      "constraints": ["LOAD > ASSIM"],
+      "calculation": "LOAD - ASSIM",
+      "explanation": "Phosphorus Surplus = Total Load − Assimilative Capacity\n= [LOAD] − [ASSIM]\n= [RESULT] tonnes P/yr\n\nPhosphorus is the limiting nutrient in most freshwater systems. Unlike nitrogen, phosphorus has no atmospheric reservoir — it cycles only through soils, water, and organisms. The critical threshold for eutrophication onset is ~0.02–0.05 mg/L in rivers. Phosphorus is also a finite resource — global rock phosphate reserves may be depleted within 300–400 years. Phosphorus recovery from wastewater is a key circular economy priority."
+    },
+    {
+      "template_id": "HI_L2_T10",
+      "pattern": "A fishery has a population growth rate r = [R] yr⁻¹ and a carrying capacity K = [K] thousand tonnes. Calculate the Maximum Sustainable Yield (MSY) in thousand tonnes using MSY = r × K / 4. Round to 2 decimal places.",
+      "variables": {
+        "R": {"min": 10, "max": 50, "step": 5},
+        "K": {"min": 50, "max": 500, "step": 50}
+      },
+      "calculation": "round2((R / 100) * K / 4)",
+      "explanation": "Maximum Sustainable Yield MSY = r × K / 4\n= ([R]/100) × [K] / 4\n= [RESULT] thousand tonnes\n\nMSY is the theoretical maximum harvest that a fish stock can sustain indefinitely, occurring at half the carrying capacity (K/2) under the logistic growth model. The MSY harvest rate = r/2. In practice, MSY is difficult to achieve due to uncertainty in stock assessment, mixed fisheries, and the precautionary approach. Most fisheries managers now target biomass above BMSY to reduce collapse risk."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

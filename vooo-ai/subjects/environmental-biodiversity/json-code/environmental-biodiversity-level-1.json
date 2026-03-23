@@ -1,0 +1,134 @@
+{
+  "puzzle_type": "environmental-biodiversity-level-1",
+  "display_name": "Biodiversity L1",
+  "templates": [
+    {
+      "template_id": "BIO_L1_T01",
+      "pattern": "A quadrat survey of [QUADS] quadrats (each 1 m²) records the following number of species in each: [S1], [S2], [S3], [S4], and [S5] species. Calculate the mean species richness per quadrat. Round to 1 decimal place.",
+      "variables": {
+        "QUADS": {"value": 5},
+        "S1": {"min": 2, "max": 15, "step": 1},
+        "S2": {"min": 1, "max": 12, "step": 1},
+        "S3": {"min": 3, "max": 18, "step": 1},
+        "S4": {"min": 1, "max": 10, "step": 1},
+        "S5": {"min": 2, "max": 14, "step": 1}
+      },
+      "calculation": "round1((S1 + S2 + S3 + S4 + S5) / 5)",
+      "explanation": "Mean Species Richness = Total Species Counts ÷ Number of Quadrats\n= ([S1]+[S2]+[S3]+[S4]+[S5]) ÷ 5\n= [RESULT] species/quadrat\n\nSpecies richness is the simplest biodiversity measure — a count of species present. Quadrat surveys provide estimates of richness for a defined area. Larger quadrats capture more species (species-area relationship). Standardised quadrat size allows comparison between sites and habitats. Species richness alone does not capture evenness — 10 species all equally abundant is 'more diverse' than 10 species where one dominates."
+    },
+    {
+      "template_id": "BIO_L1_T02",
+      "pattern": "A [SIZE] m² quadrat has [COVER]% cover of grass species. Calculate the estimated number of grass plant individuals if the mean plant occupies [PLANT_SIZE] cm² of ground. (Convert units carefully.)",
+      "variables": {
+        "SIZE":       {"min": 1,   "max": 4,   "step": 1},
+        "COVER":      {"min": 10,  "max": 90,  "step": 5},
+        "PLANT_SIZE": {"min": 5,   "max": 50,  "step": 5}
+      },
+      "calculation": "round2(SIZE * 10000 * COVER / 100 / PLANT_SIZE)",
+      "explanation": "Abundance = (Quadrat Area × % Cover) ÷ Mean Plant Size\n= ([SIZE] m² × 10,000 cm²/m² × [COVER]/100) ÷ [PLANT_SIZE] cm²\n= [RESULT] individuals\n\nPercentage cover estimates are made using point quadrats (pins), visual estimation, or photographic analysis. Cover measures the proportion of ground directly beneath vegetation — it can exceed 100% if canopy layers are counted separately. DAFOR (Dominant, Abundant, Frequent, Occasional, Rare) is a rapid semi-quantitative method used in NVC surveys."
+    },
+    {
+      "template_id": "BIO_L1_T03",
+      "pattern": "A survey counts [INDIV] individuals of a plant species in a [AREA] m² sampling area. Calculate the population density (individuals per m²). Round to 2 decimal places.",
+      "variables": {
+        "INDIV": {"min": 5,   "max": 500, "step": 5},
+        "AREA":  {"min": 10,  "max": 200, "step": 10}
+      },
+      "calculation": "round2(INDIV / AREA)",
+      "explanation": "Population Density = Number of Individuals ÷ Area\n= [INDIV] ÷ [AREA]\n= [RESULT] individuals/m²\n\nDensity measures provide comparable abundance data across sites and times. Density estimates are used in population viability analysis, habitat suitability models, and conservation status assessments. Mark-recapture methods (Lincoln-Petersen) estimate density for mobile animals. Density can vary enormously: invasive species often reach much higher densities than native equivalents."
+    },
+    {
+      "template_id": "BIO_L1_T04",
+      "pattern": "A species is found in [PRESENT] out of [TOTAL] quadrats surveyed. Calculate the frequency (%) of this species. Round to 1 decimal place.",
+      "variables": {
+        "PRESENT": {"min": 1,  "max": 49, "step": 1},
+        "TOTAL":   {"min": 10, "max": 50, "step": 5}
+      },
+      "constraints": ["PRESENT < TOTAL"],
+      "calculation": "round1(PRESENT / TOTAL * 100)",
+      "explanation": "Frequency = (Quadrats Containing Species ÷ Total Quadrats) × 100\n= [PRESENT] ÷ [TOTAL] × 100\n= [RESULT]%\n\nFrequency is an easily recorded measure that avoids the difficulty of counting all individuals. However, it is sensitive to quadrat size — increasing quadrat size increases frequency. Frequency classes (Raunkiaer's: A=1–20%, B=21–40%, C=41–60%, D=61–80%, E=81–100%) are used to characterise plant community structure. Species with high frequency are characteristic of the community."
+    },
+    {
+      "template_id": "BIO_L1_T05",
+      "pattern": "A tree species has a relative density of [RD]%, a relative frequency of [RF]%, and a relative dominance of [RDOM]%. Calculate the Importance Value Index (IVI). Maximum IVI = 300.",
+      "variables": {
+        "RD":   {"min": 5,  "max": 50, "step": 5},
+        "RF":   {"min": 5,  "max": 50, "step": 5},
+        "RDOM": {"min": 5,  "max": 50, "step": 5}
+      },
+      "calculation": "RD + RF + RDOM",
+      "explanation": "Importance Value Index = Relative Density + Relative Frequency + Relative Dominance\n= [RD] + [RF] + [RDOM]\n= [RESULT]\n\nIVI (Curtis & McIntosh, 1951) combines three measures to give an overall importance score for a species in a community. It is widely used in tropical forest ecology and forestry. Species with IVI > 50 are considered ecologically dominant. Relative dominance is based on basal area (cross-sectional area of trunks at breast height) — reflecting a tree's structural role in the forest."
+    },
+    {
+      "template_id": "BIO_L1_T06",
+      "pattern": "A community has [N] individuals across [S] species. Species counts are: [N1], [N2], [N3], [N4], [N5]. Calculate the Simpson's Diversity Index D = 1 − Σ(n/N)², where N = total individuals. Round to 4 decimal places.",
+      "variables": {
+        "N1": {"min": 5,  "max": 50, "step": 5},
+        "N2": {"min": 5,  "max": 50, "step": 5},
+        "N3": {"min": 5,  "max": 50, "step": 5},
+        "N4": {"min": 5,  "max": 50, "step": 5},
+        "N5": {"min": 5,  "max": 50, "step": 5},
+        "S":  {"value": 5},
+        "N":  {"calc": "N1 + N2 + N3 + N4 + N5"}
+      },
+      "calculation": "round2(1 - ((N1*N1 + N2*N2 + N3*N3 + N4*N4 + N5*N5) / ((N1+N2+N3+N4+N5) * (N1+N2+N3+N4+N5))))",
+      "explanation": "Simpson's D = 1 − Σ(ni/N)²\nN = [N1]+[N2]+[N3]+[N4]+[N5]\n= 1 − (N1²+N2²+N3²+N4²+N5²)/N²\n= [RESULT]\n\nSimpson's index measures the probability that two randomly selected individuals belong to different species. Values range from 0 (no diversity) to 1 (maximum diversity). It is weighted towards the most abundant species, making it sensitive to evenness. It is one of the most widely used diversity indices in ecological surveys because it is intuitive and mathematically simple."
+    },
+    {
+      "template_id": "BIO_L1_T07",
+      "pattern": "Two grassland sites are compared. Site A has [A_TOTAL] species, Site B has [B_TOTAL] species, and [SHARED] species are present at both sites. Calculate Sørensen's Similarity Index: Cs = 2j / (a + b). Round to 2 decimal places.",
+      "variables": {
+        "A_TOTAL": {"min": 10, "max": 50, "step": 5},
+        "B_TOTAL": {"min": 10, "max": 50, "step": 5},
+        "SHARED":  {"min": 2,  "max": 20, "step": 2}
+      },
+      "constraints": ["SHARED <= A_TOTAL", "SHARED <= B_TOTAL"],
+      "calculation": "round2(2 * SHARED / (A_TOTAL + B_TOTAL))",
+      "explanation": "Sørensen's Index Cs = 2j ÷ (a + b)\n= 2 × [SHARED] ÷ ([A_TOTAL] + [B_TOTAL])\n= [RESULT]\n\nValues range from 0 (no shared species) to 1 (identical communities). Sørensen's index gives double weight to shared species. Jaccard's index (j/(a+b−j)) is more conservative. Similarity indices are used in biogeography, conservation planning, and monitoring the effects of management on community composition. Communities with Cs < 0.3 are considered distinct; >0.7 are very similar."
+    },
+    {
+      "template_id": "BIO_L1_T08",
+      "pattern": "A conservation geneticist estimates that a species needs a minimum viable population (MVP) of [MVP] individuals to persist for 100 years with 95% probability. The current population is [CURR]. Calculate the population deficit (individuals needed).",
+      "variables": {
+        "MVP":  {"min": 50,  "max": 1000, "step": 50},
+        "CURR": {"min": 5,   "max": 500,  "step": 5}
+      },
+      "constraints": ["MVP > CURR"],
+      "calculation": "MVP - CURR",
+      "explanation": "Population Deficit = MVP − Current Population\n= [MVP] − [CURR]\n= [RESULT] individuals\n\nMinimum Viable Population (MVP) was originally defined as the minimum size for 99% survival probability over 1,000 years (~500–5,000 depending on the species). Small populations face extinction vortices: demographic stochasticity, environmental stochasticity, Allee effects, and genetic erosion interact to accelerate decline. Population Viability Analysis (PVA) models these processes to set MVP thresholds for management."
+    },
+    {
+      "template_id": "BIO_L1_T09",
+      "pattern": "A population of [N_ALLELE] individuals has [A] alleles at a gene locus. Calculate the allelic richness (alleles per individual). Round to 2 decimal places.",
+      "variables": {
+        "N_ALLELE": {"min": 10, "max": 200, "step": 10},
+        "A":        {"min": 5,  "max": 50,  "step": 5}
+      },
+      "calculation": "round2(A / N_ALLELE)",
+      "explanation": "Allelic Richness = Number of Alleles ÷ Number of Individuals\n= [A] ÷ [N_ALLELE]\n= [RESULT] alleles/individual\n\nAllelic richness measures genetic diversity — the raw material for adaptation and evolution. Rare alleles are lost first in small populations. Heterozygosity (the probability of two alleles at a locus being different) is the standard measure of genetic diversity. Low genetic diversity reduces adaptive potential, increases inbreeding depression, and elevates extinction risk — as seen in the Cheetah (very low heterozygosity) and Florida Panther."
+    },
+    {
+      "template_id": "BIO_L1_T10",
+      "pattern": "A country has a total land area of [TOTAL] million ha. Of this, [PROT] million ha is under formal protected area status. Calculate the percentage of land that is protected. Round to 1 decimal place.",
+      "variables": {
+        "TOTAL": {"min": 10,  "max": 500, "step": 10},
+        "PROT":  {"min": 1,   "max": 200, "step": 5}
+      },
+      "constraints": ["PROT < TOTAL"],
+      "calculation": "round1(PROT / TOTAL * 100)",
+      "explanation": "Protected Area % = Protected Area ÷ Total Land Area × 100\n= [PROT] ÷ [TOTAL] × 100\n= [RESULT]%\n\nThe Kunming-Montreal Global Biodiversity Framework (2022) set a target of 30% of land and ocean under effective protection by 2030 (30×30). Currently ~17% of land and ~8% of ocean is formally protected. Protected areas vary enormously in effectiveness — 'paper parks' lack management, funding, and enforcement. IUCN categories I–VI distinguish strictly protected reserves from multiple-use areas."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

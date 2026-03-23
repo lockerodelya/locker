@@ -1,0 +1,129 @@
+{
+  "puzzle_type": "environmental-water-cycle-level-3",
+  "display_name": "Water Cycle L3",
+  "templates": [
+    {
+      "template_id": "WC_L3_T01",
+      "pattern": "The global water cycle transfers [PRECIP_L] × 10³ km³/yr of precipitation over land. Rivers return [RUNOFF] × 10³ km³/yr to the ocean. Calculate the net groundwater and subsurface flow to the ocean (× 10³ km³/yr), given that total ocean evaporation is [OC_EVAP] × 10³ km³/yr and ocean precipitation is [OC_PREC] × 10³ km³/yr. Use: Subsurface = (OC_EVAP − OC_PREC) − RUNOFF.",
+      "variables": {
+        "OC_EVAP": {"min": 400, "max": 500, "step": 10},
+        "OC_PREC": {"min": 370, "max": 440, "step": 10},
+        "RUNOFF":  {"min": 30,  "max": 50,  "step": 5},
+        "PRECIP_L": {"min": 100, "max": 130, "step": 5}
+      },
+      "constraints": ["OC_EVAP > OC_PREC + RUNOFF"],
+      "calculation": "OC_EVAP - OC_PREC - RUNOFF",
+      "explanation": "Global Water Flux Balance:\nSubsurface flow = Ocean Evaporation − Ocean Precipitation − River Runoff\n= [OC_EVAP] − [OC_PREC] − [RUNOFF]\n= [RESULT] × 10³ km³/yr\n\nThe global hydrological cycle moves ~577,000 km³ of water per year. Solar energy drives evaporation (mainly from oceans); atmospheric circulation transports water vapour; precipitation returns it to land and oceans. Only ~2.5% of Earth's water is fresh, and two-thirds of that is locked in ice caps."
+    },
+    {
+      "template_id": "WC_L3_T02",
+      "pattern": "Country A exports [EXP] million m³ of virtual water in agricultural products and imports [IMP] million m³. Calculate the net virtual water balance (million m³). A positive value means net exporter.",
+      "variables": {
+        "EXP": {"min": 100, "max": 5000, "step": 100},
+        "IMP": {"min": 100, "max": 5000, "step": 100}
+      },
+      "calculation": "EXP - IMP",
+      "explanation": "Virtual Water Balance = Exports − Imports\n= [EXP] − [IMP]\n= [RESULT] million m³\n\nVirtual water (embedded water) is the water used to produce traded goods. Net exporters of virtual water are effectively exporting their water resources. Arid countries (e.g. Jordan, Egypt) are large virtual water importers — importing water-intensive food rather than growing it domestically. Global virtual water trade is ~2,300 km³/yr, equivalent to the annual flow of the Amazon."
+    },
+    {
+      "template_id": "WC_L3_T03",
+      "pattern": "A country withdraws [WITH] km³ of freshwater per year from a total renewable freshwater availability of [AVAIL] km³/yr. Calculate the Water Scarcity Index (%). Values >40% indicate severe water stress.",
+      "variables": {
+        "WITH":  {"min": 5,   "max": 200, "step": 5},
+        "AVAIL": {"min": 10,  "max": 500, "step": 10}
+      },
+      "constraints": ["WITH < AVAIL"],
+      "calculation": "round2(WITH / AVAIL * 100)",
+      "explanation": "Water Scarcity Index = Withdrawal ÷ Availability × 100\n= [WITH] ÷ [AVAIL] × 100\n= [RESULT]%\n\nThe Falkenmark indicator classifies water stress: <10% = no stress; 10–20% = low stress; 20–40% = moderate stress; >40% = severe water stress. Countries such as Egypt, Saudi Arabia, and Libya exceed 100% (withdrawals exceed renewable supply, depleting aquifers). The UN projects 5 billion people will face water scarcity by 2050."
+    },
+    {
+      "template_id": "WC_L3_T04",
+      "pattern": "A reverse osmosis desalination plant produces [OUTPUT] m³/day of freshwater. The specific energy consumption is [SEC] kWh/m³. Calculate the total daily energy requirement (MWh/day). Round to 2 decimal places.",
+      "variables": {
+        "OUTPUT": {"min": 1000,  "max": 100000, "step": 1000},
+        "SEC":    {"min": 3,     "max": 8,      "step": 1}
+      },
+      "calculation": "round2(OUTPUT * SEC / 1000)",
+      "explanation": "Energy Requirement = Output × Specific Energy Consumption\n= [OUTPUT] m³/day × [SEC] kWh/m³ ÷ 1000\n= [RESULT] MWh/day\n\nReverse osmosis (RO) is the dominant desalination technology, with SEC of 3–8 kWh/m³ — down from >20 kWh/m³ in the 1970s due to energy recovery devices. Thermal desalination (MSF, MED) uses 10–15 kWh/m³. Global desalination capacity exceeds 100 million m³/day, concentrated in the Middle East. High energy cost and brine disposal are major environmental concerns."
+    },
+    {
+      "template_id": "WC_L3_T05",
+      "pattern": "A water recycling scheme treats [INFLOW] ML/day of wastewater and recovers [RECOV] ML/day for reuse. Calculate the water recycling efficiency (%). Round to 1 decimal place.",
+      "variables": {
+        "INFLOW": {"min": 10,  "max": 500, "step": 10},
+        "RECOV":  {"min": 5,   "max": 400, "step": 5}
+      },
+      "constraints": ["RECOV < INFLOW"],
+      "calculation": "round1(RECOV / INFLOW * 100)",
+      "explanation": "Recycling Efficiency = Recovered Volume ÷ Inflow Volume × 100\n= [RECOV] ÷ [INFLOW] × 100\n= [RESULT]%\n\nWater recycling (reclaimed water) is used for irrigation, industrial cooling, toilet flushing, and groundwater recharge. Singapore's NEWater achieves >40% recycling efficiency and supplies ~40% of the nation's water needs. Advanced treatment trains (MF/UF → RO → UV/H₂O₂) meet potable reuse standards. Indirect potable reuse via aquifer recharge is widely practised in the USA and Australia."
+    },
+    {
+      "template_id": "WC_L3_T06",
+      "pattern": "An aquifer had a volume of [V0] km³ in 2000. Abstraction exceeds recharge by [DEFICIT] km³/yr. Calculate the remaining aquifer volume (km³) after [YRS] years.",
+      "variables": {
+        "V0":      {"min": 100, "max": 2000, "step": 100},
+        "DEFICIT": {"min": 1,   "max": 20,   "step": 1},
+        "YRS":     {"min": 5,   "max": 50,   "step": 5}
+      },
+      "constraints": ["V0 > DEFICIT * YRS"],
+      "calculation": "V0 - DEFICIT * YRS",
+      "explanation": "Remaining Volume = Initial Volume − (Deficit Rate × Years)\n= [V0] − ([DEFICIT] × [YRS])\n= [RESULT] km³\n\nGroundwater depletion is a global crisis. The High Plains (Ogallala) Aquifer in the USA is being depleted at ~12 km³/yr — recharge takes thousands of years. The Indo-Gangetic Plain aquifer system is declining at ~54 km³/yr due to irrigation for rice and wheat. Once depleted, fossil aquifers cannot be replenished on human timescales."
+    },
+    {
+      "template_id": "WC_L3_T07",
+      "pattern": "A climate model projects that mean annual precipitation in a region will change by [PCHANGE]% by 2100. Current annual precipitation is [P_NOW] mm. Calculate the projected future annual precipitation (mm). Round to 1 decimal place.",
+      "variables": {
+        "PCHANGE": {"min": -30, "max": 30,   "step": 5},
+        "P_NOW":   {"min": 400, "max": 1500, "step": 50}
+      },
+      "calculation": "round1(P_NOW * (1 + PCHANGE / 100))",
+      "explanation": "Future Precipitation = Current Precipitation × (1 + % Change / 100)\n= [P_NOW] × (1 + [PCHANGE]/100)\n= [RESULT] mm/yr\n\nClimate change intensifies the water cycle — wet regions get wetter, dry regions get drier. CMIP6 models project precipitation increases of 10–30% in high latitudes and decreases of 10–30% in Mediterranean, southern Africa, and southern Australia by 2100 under SSP5-8.5. Extreme rainfall events become more frequent even in regions with decreasing mean precipitation."
+    },
+    {
+      "template_id": "WC_L3_T08",
+      "pattern": "Saltwater intrusion in a coastal aquifer advances at [RATE] m/yr. The freshwater-saltwater interface is currently [DIST] m inland from the coast. Calculate how many years until the interface reaches a wellfield located [WELL] m inland.",
+      "variables": {
+        "RATE": {"min": 5,    "max": 50,   "step": 5},
+        "DIST": {"min": 100,  "max": 500,  "step": 50},
+        "WELL": {"min": 500,  "max": 2000, "step": 100}
+      },
+      "constraints": ["WELL > DIST"],
+      "calculation": "round2((WELL - DIST) / RATE)",
+      "explanation": "Time to Reach Wellfield = (Wellfield Distance − Current Interface Distance) ÷ Intrusion Rate\n= ([WELL] − [DIST]) ÷ [RATE]\n= [RESULT] years\n\nSaltwater intrusion occurs when excessive groundwater abstraction lowers the freshwater head, allowing denser saline water to migrate inland. The Ghyben-Herzberg principle states that for every 1 m of freshwater head above sea level, the freshwater-saltwater interface is ~40 m below sea level. Sea level rise from climate change accelerates intrusion. Managed aquifer recharge (MAR) can act as a hydraulic barrier."
+    },
+    {
+      "template_id": "WC_L3_T09",
+      "pattern": "A coastal wetland has an area of [AREA] ha and an average water depth of [DEPTH] m. After a storm surge of [SURGE] m, the wetland absorbs the additional water volume. Calculate the storm surge volume absorbed (million litres). (1 m³ = 1000 L, 1 ha = 10,000 m²)",
+      "variables": {
+        "AREA":  {"min": 10,  "max": 500, "step": 10},
+        "DEPTH": {"min": 1,   "max": 5,   "step": 1},
+        "SURGE": {"min": 1,   "max": 3,   "step": 1}
+      },
+      "calculation": "round2(AREA * 10000 * SURGE * 1000 / 1000000)",
+      "explanation": "Storm Surge Volume = Area × Surge Depth × Conversion\n= [AREA] ha × 10,000 m²/ha × [SURGE] m × 1,000 L/m³ ÷ 10⁶\n= [RESULT] million litres\n\nCoastal wetlands (saltmarshes, mangroves, seagrasses) provide critical flood attenuation services. Each hectare of saltmarsh can store up to 1 million litres of floodwater. They also sequester carbon at rates 10× higher than tropical forests per unit area (blue carbon). Global wetland loss exceeds 35% since 1970, greatly reducing natural flood protection."
+    },
+    {
+      "template_id": "WC_L3_T10",
+      "pattern": "A wheat crop requires [ET_CROP] mm of evapotranspiration to grow. Effective rainfall contributes [GREEN] mm (green water). Calculate the blue water footprint (mm) that must be supplied by irrigation.",
+      "variables": {
+        "ET_CROP": {"min": 200, "max": 600, "step": 25},
+        "GREEN":   {"min": 50,  "max": 400, "step": 25}
+      },
+      "constraints": ["ET_CROP > GREEN"],
+      "calculation": "ET_CROP - GREEN",
+      "explanation": "Blue Water Footprint = Crop ET − Green Water (effective rainfall)\n= [ET_CROP] − [GREEN]\n= [RESULT] mm\n\nThe blue water footprint quantifies irrigation water demand (surface water + groundwater). Green water footprint = rainwater consumed by crops. Grey water footprint = water needed to dilute pollution. Global agriculture accounts for ~92% of the human water footprint. Irrigated agriculture uses ~70% of global freshwater withdrawals. The blue water footprint of 1 kg of wheat is ~1,600 litres on average."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

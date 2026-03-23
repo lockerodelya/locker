@@ -1,0 +1,127 @@
+{
+  "puzzle_type": "environmental-ecosystems-level-3",
+  "display_name": "Ecosystems L3",
+  "templates": [
+    {
+      "template_id": "ECO_L3_T01",
+      "pattern": "An ecosystem has a Gross Primary Production (GPP) of [GPP] gC/m²/yr. Total ecosystem respiration (autotrophic + heterotrophic) is [ER] gC/m²/yr. Calculate the Net Ecosystem Production (NEP) in gC/m²/yr.",
+      "variables": {
+        "GPP": {"min": 500,  "max": 3000, "step": 50},
+        "ER":  {"min": 200,  "max": 2500, "step": 50}
+      },
+      "constraints": ["GPP > ER"],
+      "calculation": "GPP - ER",
+      "explanation": "Net Ecosystem Production (NEP) = GPP − Ecosystem Respiration\n= [GPP] − [ER]\n= [RESULT] gC/m²/yr\n\nPositive NEP means the ecosystem is a net carbon sink (accumulating carbon). Negative NEP means it is a net carbon source. NEP accounts for both plant and decomposer respiration, unlike NPP."
+    },
+    {
+      "template_id": "ECO_L3_T02",
+      "pattern": "A forest ecosystem has a Gross Primary Production (GPP) of [GPP] gC/m²/yr and a Net Primary Production (NPP) of [NPP] gC/m²/yr. Calculate the Carbon Use Efficiency (CUE) as a decimal rounded to 2 decimal places.",
+      "variables": {
+        "GPP": {"min": 800,  "max": 3000, "step": 100},
+        "NPP": {"min": 200,  "max": 1500, "step": 50}
+      },
+      "constraints": ["NPP < GPP", "NPP / GPP <= 0.7"],
+      "calculation": "round2(NPP / GPP)",
+      "explanation": "Carbon Use Efficiency (CUE) = NPP ÷ GPP\n= [NPP] ÷ [GPP]\n= [RESULT]\n\nCUE reflects the fraction of carbon fixed by photosynthesis that is retained as plant biomass after autotrophic respiration. Typical values range from 0.3–0.6. Higher CUE means plants are using fixed carbon more efficiently for growth."
+    },
+    {
+      "template_id": "ECO_L3_T03",
+      "pattern": "A soil chamber of area [A] cm² captures [V] mL of CO₂ over [T] hours. The CO₂ concentration is [CONC] μmol/mol. Calculate the soil respiration rate in μmol CO₂/m²/s. (Use: rate = (V × CONC) / (A × T × 3600) × 10000, round to 4 decimal places.)",
+      "variables": {
+        "A":    {"min": 50,   "max": 200,  "step": 10},
+        "V":    {"min": 500,  "max": 5000, "step": 100},
+        "T":    {"min": 1,    "max": 8,    "step": 1},
+        "CONC": {"min": 380,  "max": 800,  "step": 20}
+      },
+      "calculation": "round2((V * CONC) / (A * T * 3600) * 10000)",
+      "explanation": "Soil Respiration Rate = (V × CONC) / (A × T × 3600) × 10000\n= ([V] × [CONC]) / ([A] × [T] × 3600) × 10000\n= [RESULT] μmol CO₂/m²/s\n\nSoil respiration integrates root respiration and microbial decomposition. It is a major pathway for carbon return to the atmosphere and is sensitive to temperature and soil moisture."
+    },
+    {
+      "template_id": "ECO_L3_T04",
+      "pattern": "Leaf litter decomposition follows first-order decay with rate constant k = [K] yr⁻¹. Calculate the half-life (t½) of litter decomposition in years using t½ = ln(2)/k. Round to 2 decimal places.",
+      "variables": {
+        "K": {"min": 10, "max": 200, "step": 5}
+      },
+      "calculation": "round2(Math.log(2) / (K / 100))",
+      "explanation": "Half-life t½ = ln(2) ÷ k\nk = [K]/100 yr⁻¹\nt½ = 0.6931 ÷ ([K]/100)\n= [RESULT] years\n\nThe half-life tells us how long it takes for half of the litter to decompose. In tropical forests with fast decomposition, t½ may be months; in boreal or tundra systems it can be decades."
+    },
+    {
+      "template_id": "ECO_L3_T05",
+      "pattern": "A tree fixes [GPP] gC/m²/yr through photosynthesis. It allocates [MYC]% of its net photosynthate to mycorrhizal fungi. If NPP is [NPP] gC/m²/yr, how many gC/m²/yr is allocated to mycorrhizae?",
+      "variables": {
+        "GPP": {"min": 1000, "max": 4000, "step": 100},
+        "NPP": {"min": 400,  "max": 2000, "step": 50},
+        "MYC": {"min": 5,    "max": 30,   "step": 1}
+      },
+      "constraints": ["NPP < GPP"],
+      "calculation": "round2(NPP * MYC / 100)",
+      "explanation": "Mycorrhizal Carbon Allocation = NPP × (MYC% ÷ 100)\n= [NPP] × ([MYC] ÷ 100)\n= [RESULT] gC/m²/yr\n\nMycorrhizal fungi receive a significant portion of plant carbon in exchange for enhanced nutrient uptake (especially phosphorus and nitrogen). This mutualistic relationship is critical to ecosystem nutrient cycling."
+    },
+    {
+      "template_id": "ECO_L3_T06",
+      "pattern": "Using the allometric equation Biomass = a × DBH^b, where a = [A_COEF] and b = [B_EXP], calculate the above-ground dry biomass (kg) of a tree with diameter at breast height (DBH) = [DBH] cm. Round to 2 decimal places.",
+      "variables": {
+        "A_COEF": {"values": [0.1, 0.15, 0.2, 0.25, 0.3]},
+        "B_EXP":  {"values": [2.3, 2.4, 2.5, 2.6, 2.7]},
+        "DBH":    {"min": 5, "max": 60, "step": 5}
+      },
+      "calculation": "round2(A_COEF * Math.pow(DBH, B_EXP))",
+      "explanation": "Tree Biomass = a × DBH^b\n= [A_COEF] × [DBH]^[B_EXP]\n= [RESULT] kg\n\nAllometric equations are empirically derived relationships between easily measured tree dimensions (like trunk diameter) and total biomass. They are essential for estimating forest carbon stocks from field surveys without destructive harvesting."
+    },
+    {
+      "template_id": "ECO_L3_T07",
+      "pattern": "A satellite pixel records Near-Infrared (NIR) reflectance = [NIR] and Red reflectance = [RED]. Calculate the Normalised Difference Vegetation Index: NDVI = (NIR − Red) / (NIR + Red). Round to 4 decimal places.",
+      "variables": {
+        "NIR": {"min": 30, "max": 90, "step": 5},
+        "RED": {"min": 5,  "max": 40, "step": 5}
+      },
+      "constraints": ["NIR > RED"],
+      "calculation": "round2((NIR - RED) / (NIR + RED))",
+      "explanation": "NDVI = (NIR − Red) / (NIR + Red)\n= ([NIR] − [RED]) / ([NIR] + [RED])\n= [RESULT]\n\nNDVI ranges from −1 to +1. Values above 0.3 indicate healthy vegetation; values near 0 suggest bare soil; negative values indicate water or snow. NDVI is widely used in remote sensing to monitor ecosystem health and vegetation cover."
+    },
+    {
+      "template_id": "ECO_L3_T08",
+      "pattern": "A habitat patch is [L] km long and [W] km wide. Calculate the patch area (km²) and determine the perimeter-to-area ratio (km⁻¹), which is a key measure of habitat fragmentation. Round to 2 decimal places.",
+      "variables": {
+        "L": {"min": 2,  "max": 30, "step": 1},
+        "W": {"min": 1,  "max": 20, "step": 1}
+      },
+      "calculation": "round2((2 * (L + W)) / (L * W))",
+      "explanation": "Patch Area = L × W = [L] × [W] km²\nPerimeter = 2 × (L + W) = 2 × ([L] + [W]) km\nPerimeter-to-Area Ratio = Perimeter ÷ Area\n= 2([L]+[W]) ÷ ([L]×[W])\n= [RESULT] km⁻¹\n\nHigher perimeter-to-area ratios indicate more fragmented habitats with proportionally more edge. Edge effects can harm interior species and reduce effective habitat quality."
+    },
+    {
+      "template_id": "ECO_L3_T09",
+      "pattern": "A metapopulation patch has extinction probability e = [E_PROB] and colonisation probability c = [C_PROB] per year. At equilibrium, the fraction of occupied patches p* = 1 − (e/c). Calculate p* rounded to 2 decimal places.",
+      "variables": {
+        "E_PROB": {"min": 5,  "max": 40, "step": 5},
+        "C_PROB": {"min": 20, "max": 80, "step": 5}
+      },
+      "constraints": ["C_PROB > E_PROB"],
+      "calculation": "round2(1 - (E_PROB / C_PROB))",
+      "explanation": "Metapopulation equilibrium: p* = 1 − (e ÷ c)\n= 1 − ([E_PROB] ÷ [C_PROB])\n= [RESULT]\n\np* is the expected proportion of suitable patches that are occupied at equilibrium (Levins metapopulation model). If e ≥ c, the metapopulation goes extinct (p* ≤ 0). Higher colonisation relative to extinction promotes persistence."
+    },
+    {
+      "template_id": "ECO_L3_T10",
+      "pattern": "A landscape has [N] habitat patches with a total area of [TA] km². The mean nearest-neighbour distance between patches is [D] km. Calculate the Landscape Connectivity Index LCI = TA / (N × D). Round to 2 decimal places.",
+      "variables": {
+        "N":  {"min": 3,   "max": 30,  "step": 1},
+        "TA": {"min": 50,  "max": 500, "step": 25},
+        "D":  {"min": 1,   "max": 20,  "step": 1}
+      },
+      "calculation": "round2(TA / (N * D))",
+      "explanation": "Landscape Connectivity Index (LCI) = Total Area ÷ (Number of patches × Mean distance)\n= [TA] ÷ ([N] × [D])\n= [RESULT]\n\nHigher LCI values indicate better connectivity — larger patches that are closer together. Good connectivity facilitates species dispersal, gene flow, and recolonisation after local extinction events."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}

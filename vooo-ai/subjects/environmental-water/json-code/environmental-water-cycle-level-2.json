@@ -1,0 +1,134 @@
+{
+  "puzzle_type": "environmental-water-cycle-level-2",
+  "display_name": "Water Cycle L2",
+  "templates": [
+    {
+      "template_id": "WC_L2_T01",
+      "pattern": "Using a simplified Penman-Monteith approach, reference ET₀ = [RN] × 0.0408 + [GAMMA] × ([U2] × ([ES] − [EA]) / ([T] + 273)). Given Rn = [RN] MJ/m²/day, γ = [GAMMA], u₂ = [U2] m/s, es = [ES] kPa, ea = [EA] kPa, T = [T]°C. Calculate ET₀ (mm/day). Round to 2 decimal places.",
+      "variables": {
+        "RN":    {"min": 5,    "max": 25,   "step": 1},
+        "GAMMA": {"min": 60,   "max": 70,   "step": 2},
+        "U2":    {"min": 1,    "max": 5,    "step": 1},
+        "ES":    {"min": 20,   "max": 50,   "step": 5},
+        "EA":    {"min": 10,   "max": 30,   "step": 5},
+        "T":     {"min": 10,   "max": 35,   "step": 5}
+      },
+      "constraints": ["ES > EA"],
+      "calculation": "round2(RN * 0.0408 + (GAMMA / 1000) * (U2 * (ES / 10 - EA / 10) / (T + 273)))",
+      "explanation": "ET₀ = Rn×0.0408 + γ×(u₂×(es−ea)/(T+273))\n= [RN]×0.0408 + ([GAMMA]/1000)×([U2]×(([ES]−[EA])/10)/([T]+273))\n= [RESULT] mm/day\n\nThe Penman-Monteith equation is the FAO-recommended standard for estimating reference evapotranspiration. It combines the energy balance (radiation term) and aerodynamic (wind/vapour pressure deficit) components. ET₀ represents water demand of a hypothetical reference grass crop."
+    },
+    {
+      "template_id": "WC_L2_T02",
+      "pattern": "A soil layer has an initial moisture content of [SM0] mm. After a storm event, the moisture content is [SM1] mm. Drainage removes [DR] mm. Calculate the net change in soil moisture storage ΔS (mm).",
+      "variables": {
+        "SM0": {"min": 50,  "max": 200, "step": 10},
+        "SM1": {"min": 80,  "max": 250, "step": 10},
+        "DR":  {"min": 5,   "max": 50,  "step": 5}
+      },
+      "calculation": "SM1 - SM0 - DR",
+      "explanation": "Soil Moisture Change ΔS = Final Storage − Initial Storage − Drainage\n= [SM1] − [SM0] − [DR]\n= [RESULT] mm\n\nSoil moisture storage drives antecedent conditions for flood forecasting. Field capacity is the maximum water held against gravity (~30–40% vol. in clay). Wilting point is the minimum available for plants (~15% vol.). The plant-available water is the difference. Soil moisture sensors (TDR, capacitance) now enable continuous monitoring."
+    },
+    {
+      "template_id": "WC_L2_T03",
+      "pattern": "An unconfined aquifer has a storage coefficient (specific yield) of [SY] (dimensionless, e.g. 0.15). The water table drops by [DH] m over an area of [AREA] km². Calculate the volume of water released from storage (million m³).",
+      "variables": {
+        "SY":   {"min": 5,   "max": 25,  "step": 5},
+        "DH":   {"min": 1,   "max": 20,  "step": 1},
+        "AREA": {"min": 1,   "max": 50,  "step": 1}
+      },
+      "calculation": "round2((SY / 100) * DH * AREA * 1000000 / 1000000)",
+      "explanation": "Volume Released = Sy × Δh × Area\n= ([SY]/100) × [DH] m × [AREA]×10⁶ m²\n= [RESULT] million m³\n\nStorage coefficient (Sy) for unconfined aquifers equals specific yield — the fraction of water released by gravity drainage. Sandy aquifers: Sy = 0.20–0.30; gravel: 0.25–0.35; clay: 0.01–0.05. Confined aquifers have much smaller storativity (10⁻⁵ to 10⁻³), driven by water and aquifer compressibility."
+    },
+    {
+      "template_id": "WC_L2_T04",
+      "pattern": "An aquifer has hydraulic conductivity K = [K] m/day and a hydraulic gradient of [GRAD] m per [DIST] m. Calculate the groundwater seepage velocity (m/day) using v = K × i, where i = gradient/distance. Round to 4 decimal places.",
+      "variables": {
+        "K":    {"min": 1,    "max": 50,   "step": 1},
+        "GRAD": {"min": 1,    "max": 10,   "step": 1},
+        "DIST": {"min": 100,  "max": 2000, "step": 100}
+      },
+      "calculation": "round2(K * GRAD / DIST)",
+      "explanation": "Groundwater Velocity v = K × i\ni = Δh/L = [GRAD]/[DIST]\nv = [K] × ([GRAD]/[DIST])\n= [RESULT] m/day\n\nDarcy velocity (flux) is the apparent velocity through the bulk aquifer. The actual pore velocity is higher: v_pore = v_Darcy / porosity. Typical groundwater velocities range from metres per day (gravels) to metres per year (clays). Velocity governs contaminant transport and travel times to abstraction boreholes."
+    },
+    {
+      "template_id": "WC_L2_T05",
+      "pattern": "Using Darcy's Law, calculate the groundwater flow Q (m³/day) through an aquifer with hydraulic conductivity K = [K] m/day, hydraulic gradient i = [GRAD] / [DIST], and cross-sectional area A = [A] m².",
+      "variables": {
+        "K":    {"min": 1,   "max": 30,   "step": 1},
+        "GRAD": {"min": 1,   "max": 10,   "step": 1},
+        "DIST": {"min": 100, "max": 1000, "step": 100},
+        "A":    {"min": 10,  "max": 500,  "step": 10}
+      },
+      "calculation": "round2(K * (GRAD / DIST) * A)",
+      "explanation": "Darcy's Law: Q = K × i × A\n= [K] × ([GRAD]/[DIST]) × [A]\n= [RESULT] m³/day\n\nDarcy's Law is valid for laminar (low Reynolds number) flow in porous media. It breaks down in fractures, karst, and near high-velocity abstraction zones. K varies by 13 orders of magnitude across geological materials — from 10⁻¹³ m/s (unfractured crystalline rock) to 10⁻¹ m/s (clean gravel)."
+    },
+    {
+      "template_id": "WC_L2_T06",
+      "pattern": "A flood of magnitude [Q] m³/s was exceeded [EXCEED] times in [YRS] years of records. Calculate the return period T (years) using T = N / m, where N = years of record and m = number of exceedances. Round to 1 decimal place.",
+      "variables": {
+        "Q":      {"min": 50,  "max": 500, "step": 50},
+        "EXCEED": {"min": 1,   "max": 10,  "step": 1},
+        "YRS":    {"min": 20,  "max": 100, "step": 5}
+      },
+      "calculation": "round1(YRS / EXCEED)",
+      "explanation": "Return Period T = N ÷ m\n= [YRS] ÷ [EXCEED]\n= [RESULT] years\n\nReturn period (recurrence interval) is the average time between events of a given magnitude. A 100-year flood has a 1% annual probability of exceedance — it does NOT mean one flood per century. There is a 26% chance of at least one 100-year flood occurring in a 30-year mortgage period. Flood risk maps typically show 1%, 0.5%, and 0.1% AEP events."
+    },
+    {
+      "template_id": "WC_L2_T07",
+      "pattern": "A unit hydrograph has a peak flow of [UH_PEAK] m³/s per mm of effective rainfall. A storm produces [ERF] mm of effective rainfall. Calculate the peak flow of the storm hydrograph (m³/s).",
+      "variables": {
+        "UH_PEAK": {"min": 5,   "max": 100,  "step": 5},
+        "ERF":     {"min": 5,   "max": 50,   "step": 5}
+      },
+      "calculation": "UH_PEAK * ERF",
+      "explanation": "Storm Peak Flow = Unit Hydrograph Peak × Effective Rainfall\n= [UH_PEAK] m³/s/mm × [ERF] mm\n= [RESULT] m³/s\n\nThe unit hydrograph (UH) concept assumes linearity: the hydrograph from any rainfall is proportional to the UH scaled by the rainfall depth. It is derived from gauged flood events. The UH shape depends on catchment size, slope, channel network, and land use. It underpins flood estimation in the Flood Estimation Handbook (FEH)."
+    },
+    {
+      "template_id": "WC_L2_T08",
+      "pattern": "A snow pack has a depth of [SNOW] mm water equivalent. The temperature rises to [TEMP]°C above 0°C for [DAYS] days. Using a degree-day melt factor of [MF] mm/°C/day, calculate the total snowmelt (mm).",
+      "variables": {
+        "SNOW": {"min": 50,  "max": 500, "step": 25},
+        "TEMP": {"min": 1,   "max": 10,  "step": 1},
+        "DAYS": {"min": 1,   "max": 14,  "step": 1},
+        "MF":   {"min": 2,   "max": 8,   "step": 1}
+      },
+      "constraints": ["TEMP * DAYS * MF <= SNOW"],
+      "calculation": "TEMP * DAYS * MF",
+      "explanation": "Snowmelt = Melt Factor × Temperature × Days\n= [MF] mm/°C/day × [TEMP]°C × [DAYS] days\n= [RESULT] mm\n\nThe degree-day method is the simplest snowmelt model, requiring only temperature data. Melt factors vary seasonally (2–8 mm/°C/day) — higher in spring due to increased solar radiation. More complex energy balance models account for radiation, wind, humidity, and rainfall-on-snow events that drive rapid melt and flooding."
+    },
+    {
+      "template_id": "WC_L2_T09",
+      "pattern": "A forest canopy intercepts [GROSS] mm of gross rainfall. Throughfall (water reaching the ground through gaps) is [TF] mm and stemflow (water running down trunks) is [SF] mm. Calculate the interception loss as a percentage of gross rainfall. Round to 1 decimal place.",
+      "variables": {
+        "GROSS": {"min": 20, "max": 100, "step": 5},
+        "TF":    {"min": 10, "max": 70,  "step": 5},
+        "SF":    {"min": 1,  "max": 10,  "step": 1}
+      },
+      "constraints": ["TF + SF < GROSS"],
+      "calculation": "round1((GROSS - TF - SF) / GROSS * 100)",
+      "explanation": "Interception Loss = (Gross Rainfall − Throughfall − Stemflow) / Gross Rainfall × 100\n= ([GROSS] − [TF] − [SF]) / [GROSS] × 100\n= [RESULT]%\n\nForest interception typically accounts for 15–40% of gross rainfall, depending on storm size, canopy density, and species. Conifers intercept more than broadleaves (retaining foliage in winter). Interception reduces effective rainfall reaching the soil, reducing runoff and recharge — a key consideration in upland water resource management."
+    },
+    {
+      "template_id": "WC_L2_T10",
+      "pattern": "A cotton T-shirt requires [CROP_W] litres of water to grow the cotton and [PROD_W] litres during production. Calculate the total water footprint (litres) per T-shirt.",
+      "variables": {
+        "CROP_W": {"min": 5000,  "max": 15000, "step": 500},
+        "PROD_W": {"min": 500,   "max": 3000,  "step": 100}
+      },
+      "calculation": "CROP_W + PROD_W",
+      "explanation": "Total Water Footprint = Agricultural Water + Production Water\n= [CROP_W] + [PROD_W]\n= [RESULT] litres per T-shirt\n\nThe water footprint concept (Hoekstra, 2002) quantifies freshwater use across a product's supply chain. Blue water = surface/groundwater consumed; green water = rainwater used by crops; grey water = volume needed to dilute pollutants. A 250g cotton T-shirt requires ~2,700 litres of water in total — mostly in cotton growing. Virtual water trade redistributes water-intensive production to water-abundant countries."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check your formula! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Show your working! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}
