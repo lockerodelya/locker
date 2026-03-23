@@ -52,25 +52,26 @@
 
     {
       "template_id": "HB_L1_05",
-      "pattern": "A person has a tidal volume of [TV] mL and a vital capacity of [VC] mL. Calculate the tidal volume as a percentage of vital capacity.",
+      "pattern": "A patient has a serum sodium of [NA] mmol/L, a blood glucose of [GLU] mmol/L and a blood urea of [UREA] mmol/L. Calculate the plasma osmolality in mOsm/kg using the formula: osmolality = 2×Na + glucose + urea.",
       "variables": {
-        "VC":  {"min": 3000, "max": 6000, "step": 500},
-        "EFF": {"values": [8,10,12,14,15,16,18,20]},
-        "TV":  {"calc": "round2(VC * EFF / 100)"}
+        "NA":   {"min": 130, "max": 150, "step": 2},
+        "GLU":  {"min": 4,   "max": 15,  "step": 1},
+        "UREA": {"min": 2,   "max": 12,  "step": 1}
       },
-      "calculation": "EFF",
-      "explanation": "Tidal volume % = (tidal volume ÷ vital capacity) × 100\n= ([TV] ÷ [VC]) × 100\n= [RESULT]%\n\nAt rest tidal volume is typically 10-15% of vital capacity. During exercise it can increase to 50-60% of vital capacity as breathing deepens."
+      "calculation": "2 * NA + GLU + UREA",
+      "explanation": "Plasma osmolality = 2×Na + glucose + urea\n= 2×[NA] + [GLU] + [UREA]\n= [2*NA] + [GLU] + [UREA]\n= [RESULT] mOsm/kg\n\nNormal plasma osmolality is 275-295 mOsm/kg. Sodium is the dominant contributor because it is the main extracellular cation. Elevated osmolality triggers thirst and ADH release to retain water."
     },
 
     {
       "template_id": "HB_L1_06",
-      "pattern": "A person has a body mass of [M] kg. Estimate their total blood volume in mL. (Blood volume ≈ 70 mL per kg body mass)",
+      "pattern": "A patient takes in [IN] mL of fluid and loses [OUT] mL over 24 hours. Calculate their fluid balance in mL.",
       "variables": {
-        "M":   {"min": 40,  "max": 120, "step": 5},
-        "VOL": {"min": 1,   "max": 50,  "step": 1}
+        "IN":  {"min": 1500, "max": 3500, "step": 100},
+        "OUT": {"min": 1000, "max": 3000, "step": 100}
       },
-      "calculation": "M * 70",
-      "explanation": "Blood volume = body mass × 70 mL/kg\n= [M] × 70\n= [RESULT] mL\n\nAdults have approximately 70 mL of blood per kg of body mass — about 5 litres for a 70 kg person. Blood volume increases during pregnancy and in endurance athletes."
+      "constraints": ["IN > OUT"],
+      "calculation": "IN - OUT",
+      "explanation": "Fluid balance = fluid intake − fluid output\n= [IN] − [OUT]\n= [RESULT] mL\n\nA positive balance means the patient is retaining fluid. A negative balance means they are losing more than they are taking in. Normal daily fluid intake and output are both approximately 2500 mL. Monitoring fluid balance is essential in critically ill patients."
     },
 
     {
@@ -98,14 +99,13 @@
 
     {
       "template_id": "HB_L1_09",
-      "pattern": "A person consumes [IN] kcal per day and expends [EXP] kcal per day. Calculate the daily calorie balance in kcal.",
+      "pattern": "A patient weighs [W] kg and has a serum sodium of [NA] mmol/L. Calculate their free water deficit in litres. (Free water deficit = 0.6 × weight × (Na ÷ 140 − 1))",
       "variables": {
-        "EXP": {"min": 1500, "max": 3000, "step": 100},
-        "BAL": {"min": 100,  "max": 500,  "step": 50},
-        "IN":  {"calc": "EXP + BAL"}
+        "W":  {"min": 40,  "max": 100, "step": 5},
+        "NA": {"min": 145, "max": 170, "step": 5}
       },
-      "calculation": "BAL",
-      "explanation": "Calorie balance = intake − expenditure\n= [IN] − [EXP]\n= [RESULT] kcal\n\nA positive balance means surplus energy is stored as fat. A negative balance means stored fat is used for energy. A surplus of 3500 kcal leads to approximately 0.45 kg of fat gain."
+      "calculation": "round2(0.6 * W * (NA / 140 - 1))",
+      "explanation": "Free water deficit = 0.6 × weight × (Na ÷ 140 − 1)\n= 0.6 × [W] × ([NA] ÷ 140 − 1)\n= 0.6 × [W] × [NA/140-1]\n= [RESULT] L\n\nThis formula estimates how much pure water is needed to correct hypernatraemia. The constant 0.6 represents total body water as a fraction of body mass. Hypernatraemia above 145 mmol/L indicates a water deficit relative to sodium."
     },
 
     {
