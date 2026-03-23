@@ -152,6 +152,10 @@ const VOOO_ENGINE_REGISTRY = {
 	'chemistry-chemical-bonding-level-2' : '/vooo-ai/subjects/chemical-bonding/engine-code/chemistry-chemical-bonding-level-2.js',
 	'chemistry-chemical-bonding-level-3' : '/vooo-ai/subjects/chemical-bonding/engine-code/chemistry-chemical-bonding-level-3.js',
 
+	'cs-networks-level-1' : '/vooo-ai/subjects/computer-science/engine-code/cs-networks-level-1.js',
+	'cs-networks-level-2' : '/vooo-ai/subjects/computer-science/engine-code/cs-networks-level-2.js',
+	'cs-networks-level-3' : '/vooo-ai/subjects/computer-science/engine-code/cs-networks-level-3.js',
+
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -303,6 +307,10 @@ const VOOO_ENGINE_INSTANCES = {
 	'chemistry-chemical-bonding-level-1' : 'chemistrychemicalbondingl1',
 	'chemistry-chemical-bonding-level-2' : 'chemistrychemicalbondingl2',
 	'chemistry-chemical-bonding-level-3' : 'chemistrychemicalbondingl3',
+
+	'cs-networks-level-1' : 'csnetworksl1',
+	'cs-networks-level-2' : 'csnetworksl2',
+	'cs-networks-level-3' : 'csnetworksl3',
 
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
@@ -561,7 +569,14 @@ const VOOO_ENGINE_INSTANCES = {
 					{ value: 'chemistry-chemical-bonding-level-3', text: '• Chemical Bonding L3' },
                 ]
             },
-
+			{
+                label: 'Computer Science : Networks',
+                options: [
+                    { value: 'cs-networks-level-1', text: '• Networks L1' },
+					{ value: 'cs-networks-level-2', text: '• Networks L2' },
+					{ value: 'cs-networks-level-3', text: '• Networks L3' },
+                ]
+            },
 			
             // --- ADD NEW OPTGROUP BELOW THIS LINE ---
         ];
