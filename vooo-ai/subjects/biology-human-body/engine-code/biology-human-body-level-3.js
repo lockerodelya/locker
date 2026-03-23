@@ -179,34 +179,37 @@ this._evalHelpers = {
             ];
         }
 
-        applyMathFunctions(ev){
-            const fns=this._mathFnList();
-            const numArg='(-?\\d+(?:\\.\\d+)?)';
-            const multiArgRe=(name)=>new RegExp(name+'\\(\\s*'+numArg+'(?:\\s*,\\s*'+numArg+')*\\s*\\)','g');
-            for(let pass=0;pass<20;pass++){
-                let changed=false;
-                ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*(-?\d+(?:\.\d+)?)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
-                ev=ev.replace(/(-?\d+(?:\.\d+)?)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
-                ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
-                ev=ev.replace(/(?<![a-zA-Z0-9_(])\((-?\d+(?:\.\d+)?)\)(?![a-zA-Z_(\d])/g,(m,n)=>{changed=true;return n;});
-                for(const[name,fn]of fns){
-                    const re=multiArgRe(name);
-                    ev=ev.replace(re,(match)=>{
-                        try{
-                            const inner=match.slice(name.length+1,-1);
-                            const vals=inner.split(',').map(a=>Number(a.trim()));
-                            if(vals.some(isNaN))return match;
-                            const result=fn(...vals);
-                            if(result===null||result===undefined){changed=true;return 'null';}
-                            changed=true;
-                            return String(result);
-                        }catch(e){return match;}
-                    });
+applyMathFunctions(ev) {
+    const fns = this._mathFnList();
+    const numArg = '(-?\\d+(?:\\.\\d+)?)';
+    const multiArgRe = (name) => new RegExp(name + '\\(\\s*' + numArg + '(?:\\s*,\\s*' + numArg + ')*\\s*\\)', 'g');
+    let changed;
+    do {
+        changed = false;
+        for (const [name, fn] of fns) {
+            const re = multiArgRe(name);
+            ev = ev.replace(re, (match) => {
+                try {
+                    const inner = match.slice(name.length + 1, -1);
+                    const vals = inner.split(',').map(a => Number(a.trim()));
+                    if (vals.some(isNaN)) return match;
+                    const result = fn(...vals);
+                    if (result === null || result === undefined) {
+                        changed = true;
+                        return 'null';
+                    }
+                    changed = true;
+                    return String(result);
+                } catch (e) {
+                    return match;
                 }
-                if(!changed)break;
-            }
-            return ev;
+            });
         }
+        // Remove any remaining parentheses around numbers (only once per pass)
+        ev = ev.replace(/\((-?\d+(?:\.\d+)?)\)/g, '$1');
+    } while (changed);
+    return ev;
+}
 
         // ════════════════════════════════════════════
         // PLAIN TEXT GUARD
