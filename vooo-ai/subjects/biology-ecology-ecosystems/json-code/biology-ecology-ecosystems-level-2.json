@@ -1,0 +1,139 @@
+{
+  "puzzle_type": "biology-ecology-ecosystems-level-2",
+  "display_name": "Ecology & Ecosystems L2",
+  "templates": [
+
+    {
+      "template_id": "EC_L2_01",
+      "pattern": "A community has two species with [N1] and [N2] individuals respectively. The total number of individuals is [TOTAL]. Calculate the Simpson diversity index D = 1 − [(n₁(n₁−1) + n₂(n₂−1)) ÷ N(N−1)].",
+      "variables": {
+        "N1":    {"min": 5,  "max": 50, "step": 5},
+        "N2":    {"min": 5,  "max": 50, "step": 5},
+        "TOTAL": {"calc": "N1 + N2"}
+      },
+      "calculation": "round2(1 - (N1*(N1-1) + N2*(N2-1)) / (TOTAL*(TOTAL-1)))",
+      "explanation": "Simpson's D = 1 − [n₁(n₁−1) + n₂(n₂−1)] ÷ [N(N−1)]\n= 1 − [([N1]×[N1-1]) + ([N2]×[N2-1])] ÷ [[TOTAL]×[TOTAL-1]]\n= [RESULT]\n\nD ranges from 0 (no diversity) to 1 (maximum diversity). Equal numbers of each species gives maximum D. A value near 1 indicates a highly diverse community."
+    },
+
+    {
+      "template_id": "EC_L2_02",
+      "pattern": "A population of [N] individuals records [B] births and [D] deaths in one year. Calculate the per capita population growth rate r per year.",
+      "variables": {
+        "N": {"min": 100, "max": 2000, "step": 100},
+        "B": {"min": 10,  "max": 300,  "step": 10},
+        "D": {"min": 5,   "max": 200,  "step": 5}
+      },
+      "constraints": ["B > D"],
+      "calculation": "round2((B - D) / N)",
+      "explanation": "Per capita growth rate r = (births − deaths) ÷ population size\n= ([B] − [D]) ÷ [N]\n= [B-D] ÷ [N]\n= [RESULT] per year\n\nA positive r means the population is growing. r = 0 means births equal deaths and population size is stable. r is the intrinsic rate of natural increase and is central to all population growth models."
+    },
+
+    {
+      "template_id": "EC_L2_03",
+      "pattern": "A carbon pool holds [STOCK] Pg of carbon and receives [FLUX] Pg of carbon per year from the atmosphere. Calculate the mean residence time of carbon in this pool in years.",
+      "variables": {
+        "STOCK": {"values": [100, 200, 500, 800, 1000, 2000, 3000]},
+        "FLUX":  {"values": [10, 20, 25, 40, 50, 100, 200]}
+      },
+      "calculation": "round2(STOCK / FLUX)",
+      "explanation": "Mean residence time = carbon stock ÷ carbon flux\n= [STOCK] ÷ [FLUX]\n= [RESULT] years\n\nResidence time describes how long carbon stays in a pool on average. Carbon in the atmosphere has a residence time of about 5 years. Soil organic carbon can reside for centuries. Deep ocean carbon may persist for thousands of years."
+    },
+
+    {
+      "template_id": "EC_L2_04",
+      "pattern": "A leaf litter sample has an initial mass of [INIT] g and after [TIME] years has a remaining mass of [REMAIN] g. Calculate the decomposition rate constant k per year.",
+      "variables": {
+        "INIT":   {"min": 100, "max": 500, "step": 50},
+        "TIME":   {"min": 1,   "max": 10,  "step": 1},
+        "REMAIN": {"min": 10,  "max": 90,  "step": 10},
+        "RATIO":  {"calc": "round2(REMAIN / INIT * 10) / 10"}
+      },
+      "constraints": ["REMAIN < INIT"],
+      "calculation": "round2(-log(REMAIN / INIT) / TIME)",
+      "explanation": "Decomposition rate k = −ln(remaining/initial) ÷ time\n= −ln([REMAIN]/[INIT]) ÷ [TIME]\n= [RESULT] per year\n\nHigher k values mean faster decomposition. Tropical forests decompose leaf litter in weeks while tundra litter may take decades. Temperature and moisture are the key controlling factors."
+    },
+
+    {
+      "template_id": "EC_L2_05",
+      "pattern": "A population is growing at [R]% per year. Calculate the approximate doubling time in years using the rule of 70.",
+      "variables": {
+        "R":   {"min": 1,  "max": 10, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round2(70 / R)",
+      "explanation": "Doubling time ≈ 70 ÷ growth rate\n= 70 ÷ [R]\n= [RESULT] years\n\nThe rule of 70 is a quick approximation. At 2% growth a population doubles in 35 years. At 7% it doubles in 10 years. World population grew at about 2% per year in the 1960s."
+    },
+
+    {
+      "template_id": "EC_L2_06",
+      "pattern": "A bacterial population starts at [N0] cells and has a doubling time of [DT] minutes. Calculate the population size after [T] minutes.",
+      "variables": {
+        "N0": {"values": [100,500,1000,5000,10000]},
+        "DT": {"values": [20,30,40,60]},
+        "T":  {"values": [20,40,60,80,100,120,160,180,240]}
+      },
+      "calculation": "round2(N0 * pow(2, T / DT))",
+      "explanation": "Population = N₀ × 2^(t ÷ doubling time)\n= [N0] × 2^([T] ÷ [DT])\n= [N0] × 2^[T/DT]\n= [RESULT]\n\nExponential growth cannot continue indefinitely — it is limited by resources. Real populations follow logistic growth as they approach carrying capacity."
+    },
+
+    {
+      "template_id": "EC_L2_07",
+      "pattern": "A forest ecosystem covers [AREA] hectares and releases [RATE] tonnes of carbon per hectare per year. Calculate the total carbon flux in tonnes per year.",
+      "variables": {
+        "AREA": {"min": 100,  "max": 10000, "step": 100},
+        "RATE": {"min": 1,    "max": 20,    "step": 1}
+      },
+      "calculation": "AREA * RATE",
+      "explanation": "Carbon flux = area × carbon flux rate\n= [AREA] × [RATE]\n= [RESULT] tonnes/year\n\nCarbon flux measurements are essential for understanding the global carbon cycle and predicting climate change. Forests act as carbon sinks when NPP exceeds respiration."
+    },
+
+    {
+      "template_id": "EC_L2_08",
+      "pattern": "A soil sample from an area of [A] m² contains [C] kg of carbon. Calculate the soil carbon density in kg/m².",
+      "variables": {
+        "A":   {"min": 1,   "max": 100,  "step": 1},
+        "DEN": {"min": 1,   "max": 20,   "step": 1},
+        "C":   {"calc": "A * DEN"}
+      },
+      "calculation": "DEN",
+      "explanation": "Soil carbon density = total carbon ÷ area\n= [C] ÷ [A]\n= [RESULT] kg/m²\n\nSoils store about 3 times more carbon than the atmosphere. Peatlands have the highest soil carbon densities. Soil disturbance releases stored carbon contributing to climate change."
+    },
+
+    {
+      "template_id": "EC_L2_09",
+      "pattern": "An ecosystem has two trophic levels with efficiencies of [E1]% and [E2]% respectively. Calculate the overall ecological efficiency from the first to the third trophic level as a percentage.",
+      "variables": {
+        "E1": {"min": 5,  "max": 20, "step": 5},
+        "E2": {"min": 5,  "max": 20, "step": 5}
+      },
+      "calculation": "round2(E1 * E2 / 100)",
+      "explanation": "Overall efficiency = (E1 ÷ 100) × (E2 ÷ 100) × 100\n= E1 × E2 ÷ 100\n= [E1] × [E2] ÷ 100\n= [RESULT]%\n\nEfficiencies multiply through trophic levels. Two levels each at 10% efficiency gives only 1% overall efficiency. This is why food chains rarely exceed 4-5 links."
+    },
+
+    {
+      "template_id": "EC_L2_10",
+      "pattern": "An organism ingests [ING] kJ of energy, loses [RESP] kJ through respiration and [EXC] kJ through excretion. Calculate the secondary productivity in kJ.",
+      "variables": {
+        "RESP": {"min": 100, "max": 2000, "step": 100},
+        "EXC":  {"min": 50,  "max": 500,  "step": 50},
+        "PROD": {"min": 50,  "max": 500,  "step": 50},
+        "ING":  {"calc": "RESP + EXC + PROD"}
+      },
+      "calculation": "PROD",
+      "explanation": "Secondary productivity = ingested − respiration − excretion\n= [ING] − [RESP] − [EXC]\n= [RESULT] kJ\n\nSecondary productivity represents energy stored as new biomass by consumers. It is always less than ingested energy because some is always lost to respiration and excretion."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

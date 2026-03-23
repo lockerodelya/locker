@@ -1,0 +1,134 @@
+{
+  "puzzle_type": "biology-ecology-ecosystems-level-3",
+  "display_name": "Ecology & Ecosystems L3",
+  "templates": [
+
+    {
+      "template_id": "EC_L3_01",
+      "pattern": "A community has two species with proportions [P1] and [P2] of the total (where P1 + P2 = 1). Calculate the Shannon diversity index H. (Use ln values: ln(0.1)=-2.303, ln(0.2)=-1.609, ln(0.3)=-1.204, ln(0.4)=-0.916, ln(0.5)=-0.693, ln(0.6)=-0.511, ln(0.7)=-0.357, ln(0.8)=-0.223, ln(0.9)=-0.105)",
+      "variables": {
+        "P1":  {"values": [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]},
+        "P2":  {"calc": "round2(1 - P1)"}
+      },
+      "constraints": ["P1 > 0", "P2 > 0"],
+      "calculation": "round2(-1 * (P1 * log(P1) + P2 * log(P2)))",
+      "explanation": "Shannon index H = −Σ(pᵢ × ln pᵢ)\n= −([P1] × ln[P1] + [P2] × ln[P2])\n= [RESULT]\n\nMaximum H occurs when all species are equally abundant. H = 0 when only one species is present. Typical values range from 1.5 to 3.5 for most ecosystems."
+    },
+
+    {
+      "template_id": "EC_L3_02",
+      "pattern": "An island has an area of [A] km². Using the species-area relationship S = c × A^z where c = [C] and z = 0.25, calculate the expected number of species.",
+      "variables": {
+        "A": {"values": [1,4,9,16,25,36,49,64,81,100]},
+        "C": {"min": 5,  "max": 30, "step": 5}
+      },
+      "calculation": "round2(C * pow(A, 0.25))",
+      "explanation": "Species number S = c × A^z\n= [C] × [A]^0.25\n= [C] × [A^0.25]\n= [RESULT]\n\nLarger islands support more species. The species-area relationship has z ≈ 0.25 for islands and 0.15 for habitat patches on continents. This underpins conservation area design."
+    },
+
+    {
+      "template_id": "EC_L3_03",
+      "pattern": "A fish population has an intrinsic growth rate of [R] per year and a carrying capacity of [K] individuals. Calculate the maximum sustainable yield.",
+      "variables": {
+        "R": {"values": [0.2,0.4,0.5,0.6,0.8,1.0,1.2,1.4,1.5,2.0]},
+        "K": {"min": 1000, "max": 10000, "step": 500}
+      },
+      "calculation": "round2(R * K / 4)",
+      "explanation": "Maximum sustainable yield = r × K ÷ 4\n= [R] × [K] ÷ 4\n= [RESULT]\n\nMSY occurs at population size K/2 — half the carrying capacity. Harvesting at this rate is theoretically sustainable. In practice MSY is difficult to achieve because r and K vary with environmental conditions."
+    },
+
+    {
+      "template_id": "EC_L3_04",
+      "pattern": "A crop produces [BM] kg of biomass per hectare using [W] litres of water per hectare. Calculate the water use efficiency in kg biomass per litre.",
+      "variables": {
+        "W":   {"min": 100,  "max": 5000, "step": 100},
+        "EFF": {"values": [0.1,0.2,0.3,0.4,0.5,0.6,0.8,1.0]},
+        "BM":  {"calc": "round2(W * EFF)"}
+      },
+      "calculation": "EFF",
+      "explanation": "Water use efficiency = biomass produced ÷ water used\n= [BM] ÷ [W]\n= [RESULT] kg/L\n\nImproving water use efficiency is critical for food security as freshwater becomes scarcer. C4 plants like maize have higher WUE than C3 plants. Drip irrigation dramatically improves WUE compared to flood irrigation."
+    },
+
+    {
+      "template_id": "EC_L3_05",
+      "pattern": "A metapopulation patch has a local extinction rate of [E] per year and a colonisation rate of [C] per year. Calculate the equilibrium fraction of occupied patches.",
+      "variables": {
+        "E": {"min": 1,  "max": 10, "step": 1},
+        "C": {"min": 2,  "max": 20, "step": 2}
+      },
+      "constraints": ["C > E"],
+      "calculation": "round2(1 - E / C)",
+      "explanation": "Equilibrium fraction occupied = 1 − (extinction rate ÷ colonisation rate)\n= 1 − ([E] ÷ [C])\n= [RESULT]\n\nIf colonisation exceeds extinction some patches are always occupied. If extinction exceeds colonisation the metapopulation goes extinct. Habitat corridors increase colonisation rates."
+    },
+
+    {
+      "template_id": "EC_L3_06",
+      "pattern": "A wildlife reserve needs [AREA_PER] hectares per individual to support a viable population of [N] individuals. Calculate the total habitat area required in hectares.",
+      "variables": {
+        "AREA_PER": {"min": 1,  "max": 50,   "step": 1},
+        "N":        {"min": 10, "max": 1000, "step": 10}
+      },
+      "calculation": "AREA_PER * N",
+      "explanation": "Total habitat area = area per individual × population size\n= [AREA_PER] × [N]\n= [RESULT] hectares\n\nHome range requirements vary enormously — wolves need 200-500 km² while voles need less than 1 hectare. This calculation is fundamental in conservation planning for minimum viable reserves."
+    },
+
+    {
+      "template_id": "EC_L3_07",
+      "pattern": "A forest of [AREA] hectares sequesters [RATE] tonnes of carbon per hectare per year. Calculate the total carbon sequestered per year in tonnes.",
+      "variables": {
+        "AREA": {"min": 100,  "max": 10000, "step": 100},
+        "RATE": {"min": 1,    "max": 10,    "step": 1}
+      },
+      "calculation": "AREA * RATE",
+      "explanation": "Carbon sequestered = area × sequestration rate\n= [AREA] × [RATE]\n= [RESULT] tonnes/year\n\nForests sequester carbon through photosynthesis. Tropical forests sequester about 2-4 tonnes per hectare per year. Deforestation releases this stored carbon contributing to global warming."
+    },
+
+    {
+      "template_id": "EC_L3_08",
+      "pattern": "An ecosystem has a net primary productivity of [NPP] kJ/m²/year and a total ecosystem respiration of [R] kJ/m²/year. Calculate the gross primary productivity in kJ/m²/year.",
+      "variables": {
+        "R":   {"min": 100, "max": 2000, "step": 100},
+        "NPP": {"min": 200, "max": 5000, "step": 100}
+      },
+      "calculation": "NPP + R",
+      "explanation": "Gross primary productivity = NPP + respiration\n= [NPP] + [R]\n= [RESULT] kJ/m²/year\n\nGPP is the total energy fixed by photosynthesis. NPP is what remains after plant respiration. GPP cannot be measured directly but can be calculated from NPP and respiration measurements."
+    },
+
+    {
+      "template_id": "EC_L3_09",
+      "pattern": "A species has [S] individuals going extinct per year from a total of [TOTAL] species in the ecosystem. Calculate the species extinction rate as a percentage per year.",
+      "variables": {
+        "TOTAL": {"min": 100,  "max": 1000, "step": 100},
+        "EFF":   {"values": [1,2,3,4,5,6,7,8,9,10]},
+        "S":     {"calc": "round2(TOTAL * EFF / 100)"}
+      },
+      "calculation": "EFF",
+      "explanation": "Extinction rate = (species lost ÷ total species) × 100\n= ([S] ÷ [TOTAL]) × 100\n= [RESULT]% per year\n\nBackground extinction rate is about 0.01% per year. Current rates are estimated at 100-1000 times this background rate — a mass extinction driven by habitat loss, overexploitation and climate change."
+    },
+
+    {
+      "template_id": "EC_L3_10",
+      "pattern": "In a survey of [TOTAL] individuals [S] belong to species X. Calculate the relative abundance of species X as a percentage.",
+      "variables": {
+        "TOTAL": {"min": 100,  "max": 1000, "step": 50},
+        "EFF":   {"values": [5,10,15,20,25,30,40,50]},
+        "S":     {"calc": "round2(TOTAL * EFF / 100)"}
+      },
+      "calculation": "EFF",
+      "explanation": "Relative abundance = (individuals of species X ÷ total individuals) × 100\n= ([S] ÷ [TOTAL]) × 100\n= [RESULT]%\n\nRelative abundance measures the proportional representation of a species. Dominant species have high relative abundance. Rare species have low relative abundance and may be vulnerable to extinction."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "puzzle_type": "biology-ecology-ecosystems-level-1",
+  "display_name": "Ecology & Ecosystems L1",
+  "templates": [
+
+    {
+      "template_id": "EC_L1_01",
+      "pattern": "A field has an area of [A] m² and contains [N] individuals of a species. Calculate the population density in individuals per m².",
+      "variables": {
+        "A":   {"min": 10,  "max": 500, "step": 10},
+        "DEN": {"min": 1,   "max": 20,  "step": 1},
+        "N":   {"calc": "A * DEN"}
+      },
+      "calculation": "DEN",
+      "explanation": "Population density = number of individuals ÷ area\n= [N] ÷ [A]\n= [RESULT] individuals/m²\n\nPopulation density allows comparison between populations in different sized areas. High density populations may face greater competition for resources and higher disease transmission rates."
+    },
+
+    {
+      "template_id": "EC_L1_02",
+      "pattern": "In a mark-recapture study [M] animals are caught and marked. In a second sample of [n] animals [m] are found to be marked. Calculate the estimated population size using the Lincoln-Petersen method.",
+      "variables": {
+        "M":  {"min": 10,  "max": 100, "step": 5},
+        "m":  {"values": [2,4,5,8,10]},
+        "POP":{"min": 50,  "max": 500, "step": 50},
+        "n":  {"calc": "round2(m * POP / M)"}
+      },
+      "calculation": "round2(M * n / m)",
+      "explanation": "Population estimate N = M × n ÷ m\n= [M] × [n] ÷ [m]\n= [RESULT]\n\nThis assumes the marked animals mix randomly with the unmarked population. Assumptions: no births, deaths or migration between samples and marking does not affect survival."
+    },
+
+    {
+      "template_id": "EC_L1_03",
+      "pattern": "A population of [P] individuals has [B] births in one year. Calculate the birth rate per 1000 individuals.",
+      "variables": {
+        "P":  {"min": 1000, "max": 10000, "step": 500},
+        "BR": {"min": 5,    "max": 50,    "step": 5},
+        "B":  {"calc": "round2(P * BR / 1000)"}
+      },
+      "calculation": "BR",
+      "explanation": "Birth rate = (births ÷ population) × 1000\n= ([B] ÷ [P]) × 1000\n= [RESULT] per 1000\n\nBirth rates are expressed per 1000 to allow fair comparison between populations of different sizes. High birth rates are typical in developing countries with limited access to contraception."
+    },
+
+    {
+      "template_id": "EC_L1_04",
+      "pattern": "A population of [P] individuals has [D] deaths in one year. Calculate the death rate per 1000 individuals.",
+      "variables": {
+        "P":  {"min": 1000, "max": 10000, "step": 500},
+        "DR": {"min": 5,    "max": 50,    "step": 5},
+        "D":  {"calc": "round2(P * DR / 1000)"}
+      },
+      "calculation": "DR",
+      "explanation": "Death rate = (deaths ÷ population) × 1000\n= ([D] ÷ [P]) × 1000\n= [RESULT] per 1000\n\nDeath rates decrease with improved healthcare and nutrition. The difference between birth rate and death rate gives the natural increase rate of a population."
+    },
+
+    {
+      "template_id": "EC_L1_05",
+      "pattern": "A population has a birth rate of [B] per 1000 and a death rate of [D] per 1000. Calculate the natural increase rate per 1000.",
+      "variables": {
+        "D":  {"min": 5,  "max": 30, "step": 5},
+        "NI": {"min": 5,  "max": 30, "step": 5},
+        "B":  {"calc": "D + NI"}
+      },
+      "calculation": "NI",
+      "explanation": "Natural increase rate = birth rate − death rate\n= [B] − [D]\n= [RESULT] per 1000\n\nA positive natural increase means the population is growing. A negative value means the population is declining. Many European countries have negative natural increase rates."
+    },
+
+    {
+      "template_id": "EC_L1_06",
+      "pattern": "A trophic level contains [E] kJ of energy. Calculate the energy available to the next trophic level assuming 10% efficiency.",
+      "variables": {
+        "E":   {"min": 100, "max": 10000, "step": 100},
+        "VOL": {"min": 1,   "max": 50,    "step": 1}
+      },
+      "calculation": "round2(E * 10 / 100)",
+      "explanation": "Energy at next level = current energy × 10%\n= [E] × 10 ÷ 100\n= [RESULT] kJ\n\nOnly about 10% of energy passes from one trophic level to the next. The rest is lost as heat through respiration, egestion and decomposition. This limits food chains to 4-5 levels."
+    },
+
+    {
+      "template_id": "EC_L1_07",
+      "pattern": "A trophic level has [E] kJ of energy and an energy-to-biomass conversion factor of [C] kJ/g. Calculate the biomass of this trophic level in grams.",
+      "variables": {
+        "C":  {"values": [2,4,5,8,10,20]},
+        "BM": {"min": 100, "max": 5000, "step": 100},
+        "E":  {"calc": "C * BM"}
+      },
+      "calculation": "BM",
+      "explanation": "Biomass = energy ÷ conversion factor\n= [E] ÷ [C]\n= [RESULT] g\n\nDifferent organisms have different energy-to-biomass ratios depending on their chemical composition. Fat has more energy per gram than carbohydrate or protein."
+    },
+
+    {
+      "template_id": "EC_L1_08",
+      "pattern": "A population of [N] individuals has [B] births and [D] deaths per year. Calculate the population growth rate as a percentage.",
+      "variables": {
+        "N":  {"min": 100,  "max": 5000, "step": 100},
+        "B":  {"min": 10,   "max": 200,  "step": 10},
+        "D":  {"min": 5,    "max": 100,  "step": 5}
+      },
+      "constraints": ["B > D"],
+      "calculation": "round2((B - D) * 100 / N)",
+      "explanation": "Population growth rate = (births − deaths) ÷ population × 100\n= ([B] − [D]) ÷ [N] × 100\n= [B-D] ÷ [N] × 100\n= [RESULT]%\n\nGrowth rate combines birth and death rates relative to population size. It does not include migration. A 2% growth rate doubles a population in about 35 years."
+    },
+
+    {
+      "template_id": "EC_L1_09",
+      "pattern": "An ecosystem has [PREY] prey animals and [PRED] predator animals. Calculate the prey to predator ratio.",
+      "variables": {
+        "PRED": {"min": 5,   "max": 100,  "step": 5},
+        "RATIO":{"min": 5,   "max": 50,   "step": 5},
+        "PREY": {"calc": "PRED * RATIO"}
+      },
+      "calculation": "RATIO",
+      "explanation": "Prey to predator ratio = prey population ÷ predator population\n= [PREY] ÷ [PRED]\n= [RESULT]\n\nA healthy ecosystem typically has many more prey than predators. The ratio varies by ecosystem — African savannas have about 50-100 prey per predator. Disrupting this ratio destabilises the food web."
+    },
+
+    {
+      "template_id": "EC_L1_10",
+      "pattern": "A quadrat survey records [S1] species A, [S2] species B, [S3] species C and [S4] species D. Calculate the total species richness.",
+      "variables": {
+        "S1": {"min": 1,  "max": 20, "step": 1},
+        "S2": {"min": 1,  "max": 20, "step": 1},
+        "S3": {"min": 1,  "max": 20, "step": 1},
+        "S4": {"min": 1,  "max": 20, "step": 1}
+      },
+      "calculation": "S1 + S2 + S3 + S4",
+      "explanation": "Total species richness = sum of all species counts\n= [S1] + [S2] + [S3] + [S4]\n= [RESULT]\n\nSpecies richness is the simplest measure of biodiversity — just counting the number of different species present. It does not account for the relative abundance of each species."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
