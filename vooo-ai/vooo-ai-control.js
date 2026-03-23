@@ -163,6 +163,10 @@ const VOOO_ENGINE_REGISTRY = {
 	'cs-algorithms-level-1' : '/vooo-ai/subjects/cs-algorithms/engine-code/cs-algorithms-level-1.js',
 	'cs-algorithms-level-2' : '/vooo-ai/subjects/cs-algorithms/engine-code/cs-algorithms-level-2.js',
 	'cs-algorithms-level-3' : '/vooo-ai/subjects/cs-algorithms/engine-code/cs-algorithms-level-3.js',
+
+	'biology-cell-level-1' : '/vooo-ai/subjects/biology-cell/engine-code/biology-cell-level-1.js',
+	'biology-cell-level-2' : '/vooo-ai/subjects/biology-cell/engine-code/biology-cell-level-2.js',
+	'biology-cell-level-3' : '/vooo-ai/subjects/biology-cell/engine-code/biology-cell-level-3.js',
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -326,6 +330,11 @@ const VOOO_ENGINE_INSTANCES = {
 	'cs-algorithms-level-1' : 'csalgorithmsl1',
 	'cs-algorithms-level-2' : 'csalgorithmsl2',
 	'cs-algorithms-level-3' : 'csalgorithmsl3',
+	
+	'biology-cell-level-1' : 'biologycelll1',
+	'biology-cell-level-2' : 'biologycelll2',
+	'biology-cell-level-3' : 'biologycelll3',
+	
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
