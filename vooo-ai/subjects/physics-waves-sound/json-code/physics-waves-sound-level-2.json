@@ -1,0 +1,138 @@
+{
+  "puzzle_type": "physics-waves-sound-level-2",
+  "display_name": "Waves & Sound L2",
+  "templates": [
+
+{
+  "template_id": "WS_L2_01",
+  "pattern": "A speaker produces a sound wave with a time period of [T] ms. The speaker has a power output of [P] W. Calculate the frequency of the sound wave in Hz.",
+  "variables": {
+    "T": {"values": [1,2,4,5,8,10,20,25,40,50,100,200,250,500]},
+    "P": {"min": 1, "max": 100, "step": 1}
+  },
+  "calculation": "round2(1000 / T)",
+  "explanation": "Period in seconds = [T] ms ÷ 1000 = [T/1000] s\nFrequency = 1 ÷ period\n= 1 ÷ ([T] ÷ 1000)\n= 1000 ÷ [T]\n= [RESULT] Hz\n\nThe power output of the speaker does not affect the frequency. Always convert milliseconds to seconds before applying f = 1/T."
+},
+
+    {
+      "template_id": "WS_L2_02",
+      "pattern": "A sound source emitting [F] Hz moves toward a stationary observer at [VS] m/s. The speed of sound is [V] m/s. Calculate the frequency heard by the observer in Hz.",
+      "variables": {
+        "F":  {"min": 200, "max": 1000, "step": 50},
+        "VS": {"min": 10,  "max": 50,   "step": 10},
+        "V":  {"values": [330,340,350]}
+      },
+      "constraints": ["V > VS"],
+      "calculation": "round2(F * V / (V - VS))",
+      "explanation": "Doppler effect — source approaching:\nf' = f × v ÷ (v − vs)\n= [F] × [V] ÷ ([V] − [VS])\n= [F] × [V] ÷ [V-VS]\n= [RESULT] Hz\n\nThe observed frequency is higher than the emitted frequency when the source approaches. This is why a siren sounds higher pitched as it approaches."
+    },
+
+    {
+      "template_id": "WS_L2_03",
+      "pattern": "A sound source emitting [F] Hz moves away from a stationary observer at [VS] m/s. The speed of sound is [V] m/s. Calculate the frequency heard by the observer in Hz.",
+      "variables": {
+        "F":  {"min": 200, "max": 1000, "step": 50},
+        "VS": {"min": 10,  "max": 50,   "step": 10},
+        "V":  {"values": [330,340,350]}
+      },
+      "calculation": "round2(F * V / (V + VS))",
+      "explanation": "Doppler effect — source receding:\nf' = f × v ÷ (v + vs)\n= [F] × [V] ÷ ([V] + [VS])\n= [F] × [V] ÷ [V+VS]\n= [RESULT] Hz\n\nThe observed frequency is lower than the emitted frequency when the source moves away. This is why a siren sounds lower pitched as it moves away."
+    },
+
+    {
+      "template_id": "WS_L2_04",
+      "pattern": "Sound intensity at a distance of [D1] m from a source is [I] W/m². Calculate the intensity at a distance of [D2] m from the same source in W/m².",
+      "variables": {
+        "D1": {"min": 1,  "max": 5,   "step": 1},
+        "D2": {"min": 2,  "max": 20,  "step": 2},
+        "I":  {"min": 10, "max": 200, "step": 10}
+      },
+      "constraints": ["D2 > D1"],
+      "calculation": "round2(I * D1 * D1 / (D2 * D2))",
+      "explanation": "Inverse square law:\nI₁d₁² = I₂d₂²\nI₂ = I₁ × d₁² ÷ d₂²\n= [I] × [D1]² ÷ [D2]²\n= [I] × [D1*D1] ÷ [D2*D2]\n= [RESULT] W/m²\n\nSound intensity decreases with the square of distance. Doubling the distance reduces intensity to one quarter."
+    },
+
+    {
+      "template_id": "WS_L2_05",
+      "pattern": "A wave passes from medium 1 where its speed is [V1] m/s into medium 2 where its speed is [V2] m/s. The original wavelength is [L1] m. Calculate the new wavelength in medium 2 in metres.",
+      "variables": {
+        "V1": {"min": 100, "max": 400, "step": 50},
+        "V2": {"min": 50,  "max": 400, "step": 50},
+        "L1": {"min": 2,   "max": 20,  "step": 2}
+      },
+      "constraints": ["V1 !== V2"],
+      "calculation": "round2(L1 * V2 / V1)",
+      "explanation": "Frequency stays constant at a boundary.\nλ₂ = λ₁ × v₂ ÷ v₁\n= [L1] × [V2] ÷ [V1]\n= [RESULT] m\n\nWhen a wave enters a new medium its speed and wavelength change but its frequency remains the same."
+    },
+
+{
+  "template_id": "WS_L2_06",
+  "pattern": "A string of length [L] m and mass [M] g is fixed at both ends and set into vibration. A standing wave is set up at the fundamental frequency. Calculate the wavelength of the fundamental mode in metres.",
+  "variables": {
+    "L": {"min": 1,  "max": 20, "step": 1},
+    "M": {"min": 1,  "max": 50, "step": 1}
+  },
+  "calculation": "2 * L",
+  "explanation": "For the fundamental frequency on a string fixed at both ends:\nλ = 2L\n= 2 × [L]\n= [RESULT] m\n\nThe mass of the string does not affect the wavelength formula. At the fundamental frequency exactly half a wavelength fits along the string."
+},
+
+    {
+      "template_id": "WS_L2_07",
+      "pattern": "A string of length [L] m is fixed at both ends and has a wave speed of [V] m/s. Calculate the fundamental frequency of the string in Hz.",
+      "variables": {
+        "L": {"min": 1,  "max": 10, "step": 1},
+        "V": {"min": 20, "max": 400,"step": 20}
+      },
+      "calculation": "round2(V / (2 * L))",
+      "explanation": "Fundamental frequency f = v ÷ 2L\n= [V] ÷ (2 × [L])\n= [V] ÷ [2*L]\n= [RESULT] Hz\n\nThis is the lowest frequency at which the string can resonate. Higher harmonics occur at integer multiples of this frequency."
+    },
+
+{
+  "template_id": "WS_L2_08",
+  "pattern": "A pipe of length [L] m and diameter [D] cm is open at both ends. The speed of sound is [V] m/s. Calculate the frequency of the second harmonic of the pipe in Hz.",
+  "variables": {
+    "L": {"min": 1,  "max": 10,  "step": 1},
+    "D": {"min": 1,  "max": 20,  "step": 1},
+    "V": {"values": [320,330,340,350]}
+  },
+  "calculation": "round2(V / L)",
+  "explanation": "For an open pipe the second harmonic frequency:\nf₂ = v ÷ L\n= [V] ÷ [L]\n= [RESULT] Hz\n\nThe diameter of the pipe does not affect this calculation at GCSE level. For an open pipe: f₁ = v/2L, f₂ = v/L. All harmonics are present in an open pipe."
+},
+
+{
+  "template_id": "WS_L2_09",
+  "pattern": "A pipe of length [L] m and diameter [D] cm is closed at one end. The speed of sound is [V] m/s. Calculate the frequency of the third harmonic of the pipe in Hz.",
+  "variables": {
+    "L": {"min": 1,  "max": 10,  "step": 1},
+    "D": {"min": 1,  "max": 20,  "step": 1},
+    "V": {"values": [320,330,340,350]}
+  },
+  "calculation": "round2(3 * V / (4 * L))",
+  "explanation": "For a closed pipe the third harmonic frequency:\nf₃ = 3v ÷ 4L\n= 3 × [V] ÷ (4 × [L])\n= [3*V] ÷ [4*L]\n= [RESULT] Hz\n\nThe diameter does not affect this calculation. For a closed pipe only odd harmonics are present: f₁ = v/4L, f₃ = 3v/4L, f₅ = 5v/4L."
+},
+
+    {
+      "template_id": "WS_L2_10",
+      "pattern": "A wave enters a new medium and its speed increases from [V1] m/s to [V2] m/s. The frequency remains constant at [F] Hz. Calculate the wavelength in the new medium in metres.",
+      "variables": {
+        "F":  {"min": 2,   "max": 100, "step": 2},
+        "V2": {"min": 100, "max": 600, "step": 50}
+      },
+      "calculation": "round2(V2 / F)",
+      "explanation": "Wavelength in new medium = new speed ÷ frequency\n= v₂ ÷ f\n= [V2] ÷ [F]\n= [RESULT] m\n\nFrequency never changes when a wave crosses a boundary. Only speed and wavelength change."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

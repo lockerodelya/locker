@@ -1,0 +1,130 @@
+{
+  "puzzle_type": "cs-algorithms-level-2",
+  "display_name": "Algorithms L2",
+  "templates": [
+
+    {
+      "template_id": "AL_L2_01",
+      "pattern": "A binary search is performed on a sorted list of [N] items. Calculate the maximum number of comparisons needed.",
+      "variables": {
+        "N": {"values": [1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535]}
+      },
+      "calculation": "round2(log2(N + 1))",
+      "explanation": "Binary search max comparisons = log₂(n+1)\n= log₂([N]+1)\n= log₂([N+1])\n= [RESULT]\n\nBinary search halves the search space with each comparison. For n = 2^k − 1 items it takes exactly k comparisons. This is O(log n) — far more efficient than linear search for large lists."
+    },
+
+    {
+      "template_id": "AL_L2_02",
+      "pattern": "A merge sort is applied to a list of [N] items where N is a power of 2. Calculate the recursion depth of the merge sort.",
+      "variables": {
+        "N": {"values": [2,4,8,16,32,64,128,256,512,1024,2048,4096]}
+      },
+      "calculation": "round2(log2(N))",
+      "explanation": "Merge sort recursion depth = log₂(n)\n= log₂([N])\n= [RESULT]\n\nEach level of recursion halves the list size. A list of 1024 items requires 10 levels of recursion. This depth also equals the number of merge phases needed."
+    },
+
+    {
+      "template_id": "AL_L2_03",
+      "pattern": "A hash table has a size of [SIZE] slots. A key with value [KEY] is inserted. Calculate the hash index using the formula: key mod table size.",
+      "variables": {
+        "SIZE": {"values": [7,11,13,17,19,23,29,31,37,41,43,47]},
+        "KEY":  {"min": 10, "max": 500, "step": 1}
+      },
+      "calculation": "KEY % SIZE",
+      "explanation": "Hash index = key mod table size\n= [KEY] mod [SIZE]\n= [KEY] % [SIZE]\n= [RESULT]\n\nHash tables use modulo arithmetic to map keys to array positions. Prime number table sizes reduce clustering and improve distribution of keys."
+    },
+
+    {
+      "template_id": "AL_L2_04",
+      "pattern": "A hash table has [SIZE] slots and currently stores [ITEMS] items. Calculate the load factor of the hash table.",
+      "variables": {
+        "SIZE":  {"min": 10,  "max": 100, "step": 10},
+        "EFF":   {"values": [10,20,25,30,40,50,60,70,75,80,90]},
+        "ITEMS": {"calc": "round2(SIZE * EFF / 100)"}
+      },
+      "calculation": "EFF / 100",
+      "explanation": "Load factor = items ÷ table size\n= [ITEMS] ÷ [SIZE]\n= [RESULT]\n\nA load factor above 0.7 causes too many collisions and degrades performance. When the load factor exceeds the threshold the table is resized — typically doubled."
+    },
+
+    {
+      "template_id": "AL_L2_05",
+      "pattern": "A hash table has [SIZE] slots and [ITEMS] items are inserted. Assuming perfect distribution calculate the number of collisions.",
+      "variables": {
+        "SIZE":  {"min": 5,  "max": 50,  "step": 5},
+        "EXTRA": {"min": 1,  "max": 20,  "step": 1},
+        "ITEMS": {"calc": "SIZE + EXTRA"}
+      },
+      "calculation": "EXTRA",
+      "explanation": "Collisions = items − table size (when items > size)\n= [ITEMS] − [SIZE]\n= [RESULT]\n\nA collision occurs when two keys hash to the same index. Collisions are handled by chaining (linked lists at each slot) or open addressing (probing for next free slot)."
+    },
+
+    {
+      "template_id": "AL_L2_06",
+      "pattern": "A binary search is performed on a sorted list of [N] items. After [K] comparisons how many items remain in the search range?",
+      "variables": {
+        "N": {"values": [32,64,128,256,512,1024,2048,4096]},
+        "K": {"min": 1, "max": 6, "step": 1}
+      },
+      "constraints": ["pow(2,K) <= N"],
+      "calculation": "round2(N / pow(2, K))",
+      "explanation": "Remaining items = n ÷ 2^k\n= [N] ÷ 2^[K]\n= [N] ÷ [pow(2,K)]\n= [RESULT]\n\nEach binary search comparison halves the remaining search space. After k comparisons the remaining range is n/2^k items."
+    },
+
+    {
+      "template_id": "AL_L2_07",
+      "pattern": "A merge sort is applied to a list of [N] items where N is a power of 2. Calculate the total number of comparisons in the worst case.",
+      "variables": {
+        "N": {"values": [2,4,8,16,32,64,128,256,512,1024]}
+      },
+      "calculation": "round2(N * log2(N))",
+      "explanation": "Merge sort total comparisons = n × log₂(n)\n= [N] × log₂([N])\n= [N] × [log2(N)]\n= [RESULT]\n\nMerge sort has O(n log n) time complexity in all cases — best, average and worst. This makes it more efficient than O(n²) algorithms like bubble sort for large lists."
+    },
+
+    {
+      "template_id": "AL_L2_08",
+      "pattern": "A breadth-first search tree has a branching factor of 2. Calculate the number of nodes at level [K] of the tree.",
+      "variables": {
+        "K":   {"min": 1,  "max": 10, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round2(pow(2, K))",
+      "explanation": "Nodes at level k = 2^k (for binary tree)\n= 2^[K]\n= [RESULT]\n\nIn a BFS tree with branching factor b, level k has b^k nodes. The total nodes up to level k grows exponentially — this is why BFS can be memory-intensive for deep searches."
+    },
+
+    {
+      "template_id": "AL_L2_09",
+      "pattern": "In a weighted graph Dijkstra's algorithm finds the shortest path from source to destination through nodes with edge weights [W1], [W2] and [W3]. Calculate the total path cost.",
+      "variables": {
+        "W1": {"min": 1,  "max": 50, "step": 1},
+        "W2": {"min": 1,  "max": 50, "step": 1},
+        "W3": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "W1 + W2 + W3",
+      "explanation": "Total path cost = sum of edge weights along path\n= [W1] + [W2] + [W3]\n= [RESULT]\n\nDijkstra's algorithm finds the shortest path in a weighted graph with non-negative edge weights. It uses a priority queue to always process the lowest-cost node next."
+    },
+
+    {
+      "template_id": "AL_L2_10",
+      "pattern": "An algorithm processes [N] operations. Each operation takes [R] microseconds. Calculate the total execution time in microseconds.",
+      "variables": {
+        "N": {"min": 10,  "max": 10000, "step": 10},
+        "R": {"min": 1,   "max": 100,   "step": 1}
+      },
+      "calculation": "N * R",
+      "explanation": "Total time = number of operations × time per operation\n= [N] × [R]\n= [RESULT] microseconds\n\nThis is the basis of time complexity analysis. If doubling n doubles the time the algorithm is O(n). If it quadruples the time it is O(n²)."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🈈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

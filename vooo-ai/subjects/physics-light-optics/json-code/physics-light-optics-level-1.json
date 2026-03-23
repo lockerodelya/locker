@@ -1,0 +1,124 @@
+{
+  "puzzle_type": "physics-light-optics-level-1",
+  "display_name": "Light & Optics L1",
+  "templates": [
+
+    {
+      "template_id": "LO_L1_01",
+      "pattern": "Light travels at 3 × 10⁸ m/s in a vacuum. Calculate the distance travelled by light in [T] seconds.",
+      "variables": {
+        "T": {"min": 1, "max": 10, "step": 1}
+      },
+      "calculation": "3 * 100000000 * T",
+      "explanation": "Distance = speed × time\n= 3 × 10⁸ × [T]\n= [RESULT] m\n\nThe speed of light in a vacuum is exactly 299,792,458 m/s. At GCSE level we use 3 × 10⁸ m/s. Light from the Sun takes approximately 8 minutes to reach Earth."
+    },
+
+    {
+      "template_id": "LO_L1_02",
+      "pattern": "A ray of light strikes a plane mirror at an angle of incidence of [A] degrees. Calculate the angle of reflection in degrees.",
+      "variables": {
+        "A": {"min": 5, "max": 85, "step": 5}
+      },
+      "calculation": "A",
+      "explanation": "Law of reflection: angle of incidence = angle of reflection\n= [A] degrees\n= [RESULT] degrees\n\nBoth angles are always measured from the normal to the surface — not from the surface itself. This law applies to all types of reflection."
+    },
+
+    {
+      "template_id": "LO_L1_03",
+      "pattern": "An object is placed [U] cm in front of a plane mirror. Calculate the distance of the image behind the mirror in cm.",
+      "variables": {
+        "U": {"min": 5, "max": 200, "step": 5}
+      },
+      "calculation": "U",
+      "explanation": "In a plane mirror the image is always formed as far behind the mirror as the object is in front.\nImage distance = object distance = [RESULT] cm\n\nThe image in a plane mirror is virtual, upright and laterally inverted. It cannot be projected onto a screen."
+    },
+
+    {
+      "template_id": "LO_L1_04",
+      "pattern": "A glass block has a refractive index of [N]. The speed of light in a vacuum is 3 × 10⁸ m/s. Calculate the speed of light inside the glass block in m/s.",
+      "variables": {
+        "N": {"values": [1,2,3,4,5,6]}
+      },
+      "calculation": "300000000 / N",
+      "explanation": "Speed of light in medium = c ÷ n\n= 3 × 10⁸ ÷ [N]\n= [RESULT] m/s\n\nThe refractive index tells us how much slower light travels in a medium compared to a vacuum. A higher refractive index means slower light."
+    },
+
+    {
+      "template_id": "LO_L1_05",
+      "pattern": "A concave mirror has a focal length of [F] cm. Calculate the radius of curvature of the mirror in cm.",
+      "variables": {
+        "F": {"min": 5, "max": 50, "step": 5}
+      },
+      "calculation": "2 * F",
+      "explanation": "Radius of curvature = 2 × focal length\n= 2 × [F]\n= [RESULT] cm\n\nThe centre of curvature is the centre of the sphere of which the mirror forms a part. The focal point lies exactly halfway between the mirror and the centre of curvature."
+    },
+
+    {
+      "template_id": "LO_L1_06",
+      "pattern": "A spherical mirror has a radius of curvature of [R] cm. Calculate the focal length of the mirror in cm.",
+      "variables": {
+        "R": {"min": 10, "max": 100, "step": 10}
+      },
+      "calculation": "R / 2",
+      "explanation": "Focal length = radius of curvature ÷ 2\n= [R] ÷ 2\n= [RESULT] cm\n\nThis relationship holds for both concave and convex mirrors. The focal length is always half the radius of curvature."
+    },
+
+    {
+      "template_id": "LO_L1_07",
+      "pattern": "A ray of light hits a surface at [A] degrees measured from the surface itself. Calculate the angle of incidence measured from the normal in degrees.",
+      "variables": {
+        "A": {"min": 10, "max": 80, "step": 10}
+      },
+      "calculation": "90 - A",
+      "explanation": "Angle from normal = 90° − angle from surface\n= 90 − [A]\n= [RESULT] degrees\n\nIn optics all angles are always measured from the normal — the imaginary line perpendicular to the surface at the point of incidence. This is a very common source of error for students."
+    },
+
+    {
+      "template_id": "LO_L1_08",
+      "pattern": "A converging lens has a focal length of [F] cm. An object is placed [U] cm from the lens. Calculate the image distance in cm.",
+      "variables": {
+        "F":   {"values": [5,10,15,20]},
+        "MULT":{"values": [3,4,5,6,7,8,9,10]},
+        "U":   {"calc": "F * MULT"}
+      },
+      "calculation": "round2(U * F / (U - F))",
+      "explanation": "Lens formula: 1/v = 1/f − 1/u\nRearranging: v = uF ÷ (u − f)\n= [U] × [F] ÷ ([U] − [F])\n= [U*F] ÷ [U-F]\n= [RESULT] cm\n\nA positive image distance means the image is real and on the opposite side of the lens from the object."
+    },
+
+    {
+      "template_id": "LO_L1_09",
+      "pattern": "A lens produces an image [V] cm from the lens. The object is placed [U] cm from the lens. Calculate the magnification produced by the lens.",
+      "variables": {
+        "U":   {"values": [5,10,15,20,25,30]},
+        "MULT":{"values": [2,3,4,5,6,7,8,9,10]},
+        "V":   {"calc": "U * MULT"}
+      },
+      "calculation": "MULT",
+      "explanation": "Magnification = image distance ÷ object distance\n= v ÷ u\n= [V] ÷ [U]\n= [RESULT]\n\nA magnification greater than 1 means the image is larger than the object. A magnification less than 1 means the image is smaller. A negative value means the image is inverted."
+    },
+
+    {
+      "template_id": "LO_L1_10",
+      "pattern": "An object is [H] cm tall. A lens produces a magnification of [M]. Calculate the height of the image in cm.",
+      "variables": {
+        "H": {"min": 1,  "max": 20, "step": 1},
+        "M": {"min": 2,  "max": 10, "step": 1}
+      },
+      "calculation": "H * M",
+      "explanation": "Image height = object height × magnification\n= [H] × [M]\n= [RESULT] cm\n\nMagnification tells us how many times larger the image is compared to the object. A magnification of [M] means the image is [M] times the size of the object."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

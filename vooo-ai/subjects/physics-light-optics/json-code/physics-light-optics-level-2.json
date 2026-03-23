@@ -1,0 +1,130 @@
+{
+  "puzzle_type": "physics-light-optics-level-2",
+  "display_name": "Light & Optics L2",
+  "templates": [
+
+    {
+      "template_id": "LO_L2_01",
+      "pattern": "Light travels from air into a medium at a speed of [V] × 10⁶ m/s. Calculate the refractive index of the medium. (c = 3 × 10⁸ m/s)",
+      "variables": {
+        "V": {"values": [50,60,75,100,120,150,200]}
+      },
+      "calculation": "round2(300 / V)",
+      "explanation": "Refractive index n = c ÷ v\n= 3 × 10⁸ ÷ ([V] × 10⁶)\n= 300 ÷ [V]\n= [RESULT]\n\nA refractive index of 1 means the speed equals the speed of light in a vacuum. Most glass has a refractive index between 1.5 and 1.9."
+    },
+
+{
+  "template_id": "LO_L2_02",
+  "pattern": "A ray of light travels from air into a glass block of refractive index [N] and thickness [T] cm. The angle of incidence is [AI] degrees. Calculate the sine of the angle of refraction. (sin 30°=0.500, sin 45°=0.707, sin 60°=0.866)",
+  "variables": {
+    "T":    {"min": 1, "max": 20, "step": 1},
+    "N":    {"values": [2,    3,    4,    5,    2,    3,    4,    5,    2,    3,    4,    5]},
+    "AI":   {"values": [30,   30,   30,   30,   45,   45,   45,   45,   60,   60,   60,   60]},
+    "SINI": {"values": [0.500,0.500,0.500,0.500,0.707,0.707,0.707,0.707,0.866,0.866,0.866,0.866]}
+  },
+  "calculation": "round3(SINI / N)",
+  "explanation": "Snell's law: n₁ sin θ₁ = n₂ sin θ₂\nWith n₁ = 1 (air) and n₂ = [N]:\nsin θ₂ = sin [AI]° ÷ [N]\n= [SINI] ÷ [N]\n= [RESULT]\n\nThe thickness of the block does not affect the angle of refraction. The refracted ray bends toward the normal when entering a denser medium."
+},
+
+    {
+      "template_id": "LO_L2_03",
+      "pattern": "A glass block has a refractive index of [N]. Calculate the sine of the critical angle for total internal reflection.",
+      "variables": {
+        "N": {"values": [2,3,4,5,6]}
+      },
+      "calculation": "round3(1 / N)",
+      "explanation": "sin C = 1 ÷ n\n= 1 ÷ [N]\n= [RESULT]\n\nThe critical angle is the minimum angle of incidence inside the denser medium at which total internal reflection occurs. Beyond this angle no light escapes into the less dense medium."
+    },
+
+{
+  "template_id": "LO_L2_04",
+  "pattern": "A converging lens of focal length [F] cm produces an image at a distance of [V] cm from the lens. Calculate the magnification produced by the lens.",
+  "variables": {
+    "F":    {"values": [5,10,15,20]},
+    "MULT": {"values": [3,4,5,6,7,8,9,10]},
+    "V":    {"calc": "F * MULT"},
+    "U":    {"calc": "F * MULT * F / (F * MULT - F)"}
+  },
+  "calculation": "MULT",
+  "explanation": "Object distance u = vF ÷ (v − F)\n= [V] × [F] ÷ ([V] − [F]) = [U] cm\n\nMagnification = v ÷ u\n= [V] ÷ [U]\n= [RESULT]\n\nThe magnification tells us how many times larger the image is compared to the object."
+},
+
+    {
+      "template_id": "LO_L2_05",
+      "pattern": "A converging lens of focal length [F] cm produces an image [V] cm from the lens. Calculate the object distance in cm.",
+      "variables": {
+        "F":   {"values": [5,10,15,20]},
+        "MULT":{"values": [3,4,5,6,7,8,9,10]},
+        "V":   {"calc": "F * MULT"}
+      },
+      "calculation": "round2(V * F / (V - F))",
+      "explanation": "Lens formula rearranged:\nu = vF ÷ (v − F)\n= [V] × [F] ÷ ([V] − [F])\n= [V*F] ÷ [V-F]\n= [RESULT] cm\n\nThis tells us how far the object must be placed from the lens to produce an image at distance v."
+    },
+
+    {
+      "template_id": "LO_L2_06",
+      "pattern": "A converging lens has a focal length of [F] cm. Calculate the power of the lens in dioptres.",
+      "variables": {
+        "F": {"values": [4,5,8,10,20,25,40,50,100]}
+      },
+      "calculation": "round2(100 / F)",
+      "explanation": "Power = 1 ÷ focal length (in metres)\n= 100 ÷ focal length (in cm)\n= 100 ÷ [F]\n= [RESULT] dioptres\n\nPower is measured in dioptres (D). A converging lens has positive power. A diverging lens has negative power. Opticians use this unit for spectacle prescriptions."
+    },
+
+    {
+      "template_id": "LO_L2_07",
+      "pattern": "A lens has a power of [P] dioptres. Calculate the focal length of the lens in cm.",
+      "variables": {
+        "P": {"values": [2,4,5,8,10,20,25,40,50]}
+      },
+      "calculation": "round2(100 / P)",
+      "explanation": "Focal length = 1 ÷ power (in metres)\n= 100 ÷ power (in cm)\n= 100 ÷ [P]\n= [RESULT] cm\n\nThe higher the power of a lens the shorter its focal length and the more strongly it converges or diverges light."
+    },
+
+    {
+      "template_id": "LO_L2_08",
+      "pattern": "Two thin lenses of powers [P1] dioptres and [P2] dioptres are placed in contact. Calculate the combined power of the lens system in dioptres.",
+      "variables": {
+        "P1": {"min": 2, "max": 20, "step": 2},
+        "P2": {"min": 2, "max": 20, "step": 2}
+      },
+      "calculation": "P1 + P2",
+      "explanation": "Combined power = P₁ + P₂\n= [P1] + [P2]\n= [RESULT] dioptres\n\nWhen lenses are placed in contact their powers simply add together. This makes it easy to design lens systems for spectacles and cameras."
+    },
+
+    {
+      "template_id": "LO_L2_09",
+      "pattern": "Two thin lenses of focal lengths [F1] cm and [F2] cm are placed in contact. Calculate the combined focal length of the lens system in cm.",
+      "variables": {
+        "F1": {"values": [5,10,20,25,50]},
+        "F2": {"values": [5,10,20,25,50]}
+      },
+      "calculation": "round2(F1 * F2 / (F1 + F2))",
+      "explanation": "Combined focal length:\n1/F = 1/F₁ + 1/F₂\nF = F₁ × F₂ ÷ (F₁ + F₂)\n= [F1] × [F2] ÷ ([F1] + [F2])\n= [F1*F2] ÷ [F1+F2]\n= [RESULT] cm\n\nThe combined focal length is always shorter than the shorter individual focal length."
+    },
+
+    {
+      "template_id": "LO_L2_10",
+      "pattern": "An object lies at a real depth of [R] cm beneath the surface of a liquid of refractive index [N]. Calculate the apparent depth of the object when viewed from directly above in cm.",
+      "variables": {
+        "R": {"min": 10, "max": 100, "step": 10},
+        "N": {"values": [2,3,4,5]}
+      },
+      "calculation": "round2(R / N)",
+      "explanation": "Apparent depth = real depth ÷ refractive index\n= [R] ÷ [N]\n= [RESULT] cm\n\nObjects in water appear shallower than they really are. This is why a swimming pool looks less deep than it actually is and why a stick appears bent when placed in water."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

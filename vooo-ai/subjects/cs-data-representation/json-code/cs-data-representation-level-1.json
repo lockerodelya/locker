@@ -1,0 +1,130 @@
+{
+  "puzzle_type": "cs-data-representation-level-1",
+  "display_name": "Data Representation L1",
+  "templates": [
+
+    {
+      "template_id": "DR_L1_01",
+      "pattern": "A bitmap image is [W] pixels wide and [H] pixels tall with a colour depth of [D] bits per pixel. Calculate the file size of the image in bits.",
+      "variables": {
+        "W": {"min": 10,  "max": 500, "step": 10},
+        "H": {"min": 10,  "max": 500, "step": 10},
+        "D": {"values": [1,2,4,8,16,24,32]}
+      },
+      "calculation": "W * H * D",
+      "explanation": "File size in bits = width × height × colour depth\n= [W] × [H] × [D]\n= [RESULT] bits\n\nEvery pixel requires [D] bits to store its colour information. More colours need more bits per pixel but produce larger files."
+    },
+
+    {
+      "template_id": "DR_L1_02",
+      "pattern": "A file has a size of [BITS] bits. Calculate the size of the file in bytes.",
+      "variables": {
+        "BYTES": {"min": 1,    "max": 10000, "step": 1},
+        "BITS":  {"calc": "BYTES * 8"}
+      },
+      "calculation": "BYTES",
+      "explanation": "File size in bytes = bits ÷ 8\n= [BITS] ÷ 8\n= [RESULT] bytes\n\n1 byte = 8 bits. This conversion is used constantly in Computer Science — always check whether you are working in bits or bytes."
+    },
+
+    {
+      "template_id": "DR_L1_03",
+      "pattern": "A file has a size of [BYTES] bytes. Calculate the size of the file in kilobytes (KB).",
+      "variables": {
+        "KB":    {"min": 1,   "max": 1000, "step": 1},
+        "BYTES": {"calc": "KB * 1024"}
+      },
+      "calculation": "KB",
+      "explanation": "File size in KB = bytes ÷ 1024\n= [BYTES] ÷ 1024\n= [RESULT] KB\n\n1 KB = 1024 bytes. Note that 1 kilobyte is 1024 not 1000 bytes because computers work in powers of 2."
+    },
+
+    {
+      "template_id": "DR_L1_04",
+      "pattern": "A file has a size of [KB] KB. Calculate the size of the file in megabytes (MB).",
+      "variables": {
+        "MB": {"min": 1,   "max": 500, "step": 1},
+        "KB": {"calc": "MB * 1024"}
+      },
+      "calculation": "MB",
+      "explanation": "File size in MB = KB ÷ 1024\n= [KB] ÷ 1024\n= [RESULT] MB\n\n1 MB = 1024 KB = 1,048,576 bytes. These conversions are essential for calculating storage requirements."
+    },
+
+    {
+      "template_id": "DR_L1_05",
+      "pattern": "A colour palette uses [N] bits per pixel. Calculate the maximum number of different colours that can be represented.",
+      "variables": {
+        "N":   {"min": 1,  "max": 16, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round2(pow(2, N))",
+      "explanation": "Number of colours = 2ⁿ\n= 2^[N]\n= [RESULT]\n\nEach additional bit doubles the number of available colours. 8-bit colour gives 256 colours, 16-bit gives 65,536 and 24-bit gives over 16 million colours."
+    },
+
+    {
+      "template_id": "DR_L1_06",
+      "pattern": "A colour palette contains [N] different colours. Calculate the minimum number of bits needed to represent each colour.",
+      "variables": {
+        "N": {"values": [2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536]}
+      },
+      "calculation": "round2(log2(N))",
+      "explanation": "Bits needed = log₂(number of colours)\n= log₂([N])\n= [RESULT] bits\n\nThis is the inverse of 2ⁿ. If you need 256 colours you need log₂(256) = 8 bits per pixel. Always round up if the answer is not a whole number."
+    },
+
+    {
+      "template_id": "DR_L1_07",
+      "pattern": "A bitmap image is [W] pixels wide and [H] pixels tall with a colour depth of [D] bits per pixel. Calculate the file size of the image in kilobytes (KB).",
+      "variables": {
+        "W": {"min": 10,  "max": 500, "step": 10},
+        "H": {"min": 10,  "max": 500, "step": 10},
+        "D": {"values": [8,16,24,32]}
+      },
+      "calculation": "round2(W * H * D / 8 / 1024)",
+      "explanation": "File size in KB = (W × H × D) ÷ 8 ÷ 1024\n= ([W] × [H] × [D]) ÷ 8 ÷ 1024\n= [W*H*D] ÷ 8 ÷ 1024\n= [RESULT] KB\n\nFirst calculate total bits, divide by 8 for bytes, then divide by 1024 for kilobytes."
+    },
+
+    {
+      "template_id": "DR_L1_08",
+      "pattern": "An audio recording has a sample rate of [SR] Hz and a bit depth of [BD] bits. Calculate the data generated per second in bits.",
+      "variables": {
+        "SR": {"values": [8000,11025,22050,44100,48000,96000]},
+        "BD": {"values": [8,16,24,32]}
+      },
+      "calculation": "SR * BD",
+      "explanation": "Data per second = sample rate × bit depth\n= [SR] × [BD]\n= [RESULT] bits/s\n\nThe sample rate determines how many times per second the audio is measured. The bit depth determines the precision of each measurement. Both affect file size and quality."
+    },
+
+    {
+      "template_id": "DR_L1_09",
+      "pattern": "A digital image is [W] pixels wide and [H] pixels tall. Calculate the total number of pixels in the image.",
+      "variables": {
+        "W": {"min": 10,  "max": 1000, "step": 10},
+        "H": {"min": 10,  "max": 1000, "step": 10}
+      },
+      "calculation": "W * H",
+      "explanation": "Total pixels = width × height\n= [W] × [H]\n= [RESULT] pixels\n\nThe total number of pixels determines the resolution of an image. More pixels means higher resolution and more detail but also larger file size."
+    },
+
+    {
+      "template_id": "DR_L1_10",
+      "pattern": "A storage device has a capacity of [MB] MB. Calculate the storage capacity in gigabytes (GB).",
+      "variables": {
+        "GB": {"min": 1,   "max": 500, "step": 1},
+        "MB": {"calc": "GB * 1024"}
+      },
+      "calculation": "GB",
+      "explanation": "Storage in GB = MB ÷ 1024\n= [MB] ÷ 1024\n= [RESULT] GB\n\n1 GB = 1024 MB. Modern storage devices are measured in gigabytes or terabytes. A 1 TB drive holds 1024 GB = 1,048,576 MB."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

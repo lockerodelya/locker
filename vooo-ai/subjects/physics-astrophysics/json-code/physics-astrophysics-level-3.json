@@ -1,0 +1,136 @@
+{
+  "puzzle_type": "physics-astrophysics-level-3",
+  "display_name": "Astrophysics L3",
+  "templates": [
+
+    {
+      "template_id": "AS_L3_01",
+      "pattern": "A black hole has a mass of [M] × 10³⁰ kg. Calculate the Schwarzschild radius of the black hole in metres. (G = 6.67 × 10⁻¹¹ N·m²/kg², c = 3 × 10⁸ m/s)",
+      "variables": {
+        "M":   {"min": 1,  "max": 20, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round2(2 * 6.67 * pow(10, -11) * M * pow(10, 30) / (9 * pow(10, 16)))",
+      "explanation": "Schwarzschild radius Rs = 2GM ÷ c²\n= 2 × 6.67 × 10⁻¹¹ × [M] × 10³⁰ ÷ (3 × 10⁸)²\n= 2 × 6.67 × [M] × 10¹⁹ ÷ 9 × 10¹⁶\n= [RESULT] m\n\nThe Schwarzschild radius is the event horizon — the point of no return for a black hole. The Sun's Schwarzschild radius is about 3 km."
+    },
+
+    {
+      "template_id": "AS_L3_02",
+      "pattern": "A galaxy has a spectral line at a rest wavelength of [LAM] nm. The observed wavelength is [LAMO] nm. Calculate the redshift z of the galaxy.",
+      "variables": {
+        "LAM":  {"min": 400, "max": 700, "step": 50},
+        "DLAM": {"min": 5,   "max": 100, "step": 5},
+        "LAMO": {"calc": "LAM + DLAM"}
+      },
+      "calculation": "round3(DLAM / LAM)",
+      "explanation": "Redshift z = Δλ ÷ λ\n= (λ_observed − λ_rest) ÷ λ_rest\n= ([LAMO] − [LAM]) ÷ [LAM]\n= [DLAM] ÷ [LAM]\n= [RESULT]\n\nRedshift is caused by the expansion of the universe stretching the wavelength of light. A larger redshift means the galaxy is moving away faster and is further away."
+    },
+
+    {
+      "template_id": "AS_L3_03",
+      "pattern": "A star has a luminosity of [L] × 10²⁶ W and the flux received at Earth is [F] × 10⁻¹⁰ W/m². Calculate the distance to the star in metres.",
+      "variables": {
+        "L": {"min": 1,  "max": 20, "step": 1},
+        "F": {"min": 1,  "max": 20, "step": 1}
+      },
+      "calculation": "round2(sqrt(L * pow(10, 26) / (4 * 3.14159 * F * pow(10, -10))))",
+      "explanation": "From F = L ÷ 4πd²:\nd = √(L ÷ 4πF)\n= √([L] × 10²⁶ ÷ (4π × [F] × 10⁻¹⁰))\n= [RESULT] m\n\nThis is the standard candle method of measuring distances. If we know the true luminosity and measure the flux we can calculate the distance."
+    },
+
+    {
+      "template_id": "AS_L3_04",
+      "pattern": "Planet A orbits a star with period [T1] years and planet B orbits the same star with period [T2] years. Calculate the ratio of their orbital radii r_A ÷ r_B using Kepler's Third Law.",
+      "variables": {
+        "T1": {"min": 1,  "max": 20, "step": 1},
+        "T2": {"min": 1,  "max": 20, "step": 1}
+      },
+      "calculation": "round2(pow(T1 / T2, 0.667))",
+      "explanation": "Kepler's Third Law: T² ∝ r³\nr_A ÷ r_B = (T_A ÷ T_B)^(2/3)\n= ([T1] ÷ [T2])^0.667\n= [RESULT]\n\nThis allows us to find orbital radii from period measurements alone. It applies to all objects orbiting the same central body."
+    },
+
+    {
+      "template_id": "AS_L3_05",
+      "pattern": "A satellite of mass [m] kg orbits a planet of mass [M] × 10²⁴ kg at a radius of [R] × 10⁷ m. Calculate the gravitational potential energy of the satellite in joules. (G = 6.67 × 10⁻¹¹ N·m²/kg²)",
+      "variables": {
+        "m": {"min": 100, "max": 5000, "step": 100},
+        "M": {"min": 1,   "max": 10,   "step": 1},
+        "R": {"min": 1,   "max": 20,   "step": 1}
+      },
+      "calculation": "round2(-6.67 * pow(10, -11) * M * pow(10, 24) * m / (R * pow(10, 7)))",
+      "explanation": "Gravitational PE = −GMm ÷ r\n= −6.67 × 10⁻¹¹ × [M] × 10²⁴ × [m] ÷ ([R] × 10⁷)\n= [RESULT] J\n\nGravitational potential energy is always negative — energy must be supplied to move an object further from the planet. Zero PE is defined at infinite distance."
+    },
+
+    {
+      "template_id": "AS_L3_06",
+      "pattern": "A satellite of mass [m] kg orbits a planet of mass [M] × 10²⁴ kg at a radius of [R] × 10⁷ m. Calculate the total orbital energy of the satellite in joules. (G = 6.67 × 10⁻¹¹ N·m²/kg²)",
+      "variables": {
+        "m": {"min": 100, "max": 5000, "step": 100},
+        "M": {"min": 1,   "max": 10,   "step": 1},
+        "R": {"min": 1,   "max": 20,   "step": 1}
+      },
+      "calculation": "round2(-6.67 * pow(10, -11) * M * pow(10, 24) * m / (2 * R * pow(10, 7)))",
+      "explanation": "Total orbital energy E = −GMm ÷ 2r\n= −6.67 × 10⁻¹¹ × [M] × 10²⁴ × [m] ÷ (2 × [R] × 10⁷)\n= [RESULT] J\n\nTotal energy = KE + GPE = −GMm/2r. It is always negative for a bound orbit. A satellite in a higher orbit has greater total energy — less negative — but less kinetic energy."
+    },
+
+    {
+      "template_id": "AS_L3_07",
+      "pattern": "Star A has luminosity [L1] times the Sun's luminosity and temperature [T1] × 10³ K. Star B has luminosity [L2] times the Sun's luminosity and temperature [T2] × 10³ K. Calculate the ratio of their radii r_A ÷ r_B.",
+      "variables": {
+        "L1": {"min": 1,  "max": 20, "step": 1},
+        "L2": {"min": 1,  "max": 20, "step": 1},
+        "T1": {"min": 3,  "max": 30, "step": 3},
+        "T2": {"min": 3,  "max": 30, "step": 3}
+      },
+      "calculation": "round2(sqrt(L1 / L2) * pow(T2 / T1, 2))",
+      "explanation": "From L = 4πr²σT⁴:\nr_A ÷ r_B = √(L_A/L_B) × (T_B/T_A)²\n= √([L1]/[L2]) × ([T2]/[T1])²\n= [RESULT]\n\nThis ratio is used to compare the sizes of stars. Red giants are cool but large. Main sequence stars follow a clear pattern on the Hertzsprung-Russell diagram."
+    },
+
+    {
+      "template_id": "AS_L3_08",
+      "pattern": "A planet of mass [m] × 10²⁴ kg orbits a star of mass [M] × 10³⁰ kg at a radius of [R] × 10¹¹ m. Calculate the orbital period of the planet in seconds. (G = 6.67 × 10⁻¹¹ N·m²/kg²)",
+      "variables": {
+        "m": {"min": 1,  "max": 10, "step": 1},
+        "M": {"min": 1,  "max": 5,  "step": 1},
+        "R": {"min": 1,  "max": 20, "step": 1}
+      },
+      "calculation": "round2(sqrt(4 * 9.87 * pow(R * pow(10, 11), 3) / (6.67 * pow(10, -11) * M * pow(10, 30))))",
+      "explanation": "From Kepler's Third Law: T² = 4π²r³ ÷ GM\nT = √(4π²r³ ÷ GM)\n= √(4 × 9.87 × ([R] × 10¹¹)³ ÷ (6.67 × 10⁻¹¹ × [M] × 10³⁰))\n= [RESULT] s\n\nThis derivation combines Newton's law of gravitation with circular motion. It allows us to calculate orbital periods from known masses and distances."
+    },
+
+    {
+      "template_id": "AS_L3_09",
+      "pattern": "The Hubble constant is [H0] km/s/Mpc. Calculate the critical density of the universe in kg/m³. (G = 6.67 × 10⁻¹¹ N·m²/kg², 1 Mpc = 3.09 × 10²² m)",
+      "variables": {
+        "H0":  {"values": [67,68,70,72,73,74]},
+        "VOL": {"min": 1, "max": 50, "step": 1}
+      },
+      "calculation": "round3(3 * pow(H0 * 1000 / (3.09 * pow(10, 22)), 2) / (8 * 3.14159 * 6.67 * pow(10, -11)))",
+      "explanation": "Critical density ρ_c = 3H₀² ÷ 8πG\nFirst convert H₀: [H0] km/s/Mpc = [H0] × 10³ ÷ (3.09 × 10²²) s⁻¹\nρ_c = 3H₀² ÷ (8π × 6.67 × 10⁻¹¹)\n= [RESULT] kg/m³\n\nThe critical density determines the geometry of the universe. If the actual density equals the critical density the universe is flat. The critical density is about 9 × 10⁻²⁷ kg/m³ — extremely sparse."
+    },
+
+    {
+      "template_id": "AS_L3_10",
+      "pattern": "A star has a surface temperature of [T] × 10³ K and a radius of [R] × 10⁸ m. Calculate the surface temperature of a second star that has the same luminosity but a radius of [R2] × 10⁸ m in kelvin. (σ = 5.67 × 10⁻⁸ W/m²K⁴)",
+      "variables": {
+        "T":  {"min": 3,  "max": 20, "step": 3},
+        "R":  {"min": 1,  "max": 10, "step": 1},
+        "R2": {"min": 1,  "max": 10, "step": 1}
+      },
+      "calculation": "round2(T * pow(10, 3) * pow(R / R2, 0.5))",
+      "explanation": "Equal luminosity: 4πR²σT⁴ = 4πR₂²σT₂⁴\nT₂ = T₁ × (R₁/R₂)^(1/2)\n= [T] × 10³ × ([R]/[R2])^0.5\n= [RESULT] K\n\nTwo stars can have the same luminosity with different combinations of radius and temperature. A larger star can be cooler and still match a smaller hotter star in total power output."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

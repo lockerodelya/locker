@@ -1,0 +1,132 @@
+{
+  "puzzle_type": "physics-electricity-magnetism-level-3",
+  "display_name": "Electricity & Magnetism L3",
+  "templates": [
+
+    {
+      "template_id": "EM_L3_01",
+      "pattern": "A straight conductor of length [L] m carries a current of [I] A in a magnetic field of flux density [B] T. Calculate the magnetic flux density needed to produce a force of [F] N on the conductor in T.",
+      "variables": {
+        "L": {"min": 1,  "max": 20, "step": 1},
+        "I": {"min": 1,  "max": 20, "step": 1},
+        "F": {"min": 2,  "max": 100,"step": 2}
+      },
+      "calculation": "round2(F / (I * L))",
+      "explanation": "From F = BIL:\nB = F ÷ (I × L)\n= [F] ÷ ([I] × [L])\n= [F] ÷ [I*L]\n= [RESULT] T\n\nMagnetic flux density is measured in tesla (T). It tells us the strength of the magnetic field at a point."
+    },
+
+    {
+      "template_id": "EM_L3_02",
+      "pattern": "A charged particle of charge [Q] C moves at [V] m/s perpendicular to a magnetic field of flux density [B] T. Calculate the magnetic force on the particle in newtons.",
+      "variables": {
+        "Q": {"min": 1,  "max": 10,  "step": 1},
+        "V": {"min": 10, "max": 200, "step": 10},
+        "B": {"values": [0.1,0.2,0.5,1.0,2.0]}
+      },
+      "calculation": "round2(B * Q * V)",
+      "explanation": "Force on moving charge = BQv\n= [B] × [Q] × [V]\n= [RESULT] N\n\nThis force is always perpendicular to both the velocity and the magnetic field. It causes charged particles to move in circular paths in uniform magnetic fields."
+    },
+
+    {
+      "template_id": "EM_L3_03",
+      "pattern": "A conductor of length [L] m moves at [V] m/s perpendicular to a magnetic field of flux density [B] T. Calculate the EMF induced in the conductor in volts.",
+      "variables": {
+        "L": {"min": 1,   "max": 20,  "step": 1},
+        "V": {"min": 5,   "max": 50,  "step": 5},
+        "B": {"values": [0.1,0.2,0.5,1.0,2.0]}
+      },
+      "calculation": "round2(B * L * V)",
+      "explanation": "Induced EMF = BLv\n= [B] × [L] × [V]\n= [RESULT] V\n\nThis is Faraday's Law in action. The faster the conductor moves and the stronger the field the greater the induced EMF. This is how generators produce electricity."
+    },
+
+    {
+      "template_id": "EM_L3_04",
+      "pattern": "A coil of [N] turns has a magnetic flux change of [DPHI] Wb in [T] seconds. Calculate the magnitude of the induced EMF in volts.",
+      "variables": {
+        "N":    {"min": 10,  "max": 500, "step": 10},
+        "DPHI": {"values": [0.01,0.02,0.05,0.1,0.2,0.5,1.0]},
+        "T":    {"min": 1,   "max": 20,  "step": 1}
+      },
+      "calculation": "round2(N * DPHI / T)",
+      "explanation": "Induced EMF = N × ΔΦ ÷ t\n= [N] × [DPHI] ÷ [T]\n= [RESULT] V\n\nThis is Faraday's Law of electromagnetic induction. A greater number of turns, a faster flux change or a larger flux change all produce a greater induced EMF."
+    },
+
+    {
+      "template_id": "EM_L3_05",
+      "pattern": "A capacitor stores a charge of [Q] C when connected to a potential difference of [V] V. Calculate the capacitance of the capacitor in farads.",
+      "variables": {
+        "V":   {"values": [2,4,5,10,20,50,100]},
+        "C":   {"values": [2,4,5,10,20,50,100]},
+        "Q":   {"calc": "V * C"}
+      },
+      "calculation": "C",
+      "explanation": "Capacitance = Charge ÷ Potential Difference\n= C = Q ÷ V\n= [Q] ÷ [V]\n= [RESULT] F\n\nCapacitance measures the ability of a component to store charge. The farad is a very large unit — most practical capacitors are measured in microfarads (μF) or picofarads (pF)."
+    },
+
+    {
+      "template_id": "EM_L3_06",
+      "pattern": "A capacitor of capacitance [C] F is charged to a potential difference of [V] V. Calculate the energy stored in the capacitor in joules.",
+      "variables": {
+        "C": {"values": [1,2,4,5,8,10,20,50]},
+        "V": {"min": 2,  "max": 50, "step": 2}
+      },
+      "calculation": "round2(0.5 * C * V * V)",
+      "explanation": "Energy stored = ½CV²\n= 0.5 × [C] × [V]²\n= 0.5 × [C] × [V*V]\n= [RESULT] J\n\nThe energy stored increases with the square of voltage. Doubling the voltage quadruples the stored energy. Capacitors release this energy very rapidly — much faster than batteries."
+    },
+
+    {
+      "template_id": "EM_L3_07",
+      "pattern": "A capacitor of capacitance [C] F is connected in series with a resistor of resistance [R] Ω. Calculate the time constant of the RC circuit in seconds.",
+      "variables": {
+        "R": {"min": 10,  "max": 1000, "step": 10},
+        "C": {"values": [1,2,4,5,8,10,20,50]}
+      },
+      "calculation": "round2(R * C)",
+      "explanation": "Time constant τ = R × C\n= [R] × [C]\n= [RESULT] s\n\nThe time constant is the time taken for the charge to fall to 37% of its initial value during discharge, or rise to 63% during charging. After 5 time constants the capacitor is considered fully charged or discharged."
+    },
+
+    {
+      "template_id": "EM_L3_08",
+      "pattern": "An AC supply has a peak voltage of [VP] V. Calculate the RMS voltage in volts.",
+      "variables": {
+        "VP": {"min": 10, "max": 500, "step": 10}
+      },
+      "calculation": "round2(VP / sqrt(2))",
+      "explanation": "RMS voltage = peak voltage ÷ √2\n= [VP] ÷ √2\n= [VP] ÷ 1.414\n= [RESULT] V\n\nThe RMS voltage is the equivalent DC voltage that would deliver the same power. The UK mains supply has a peak voltage of about 325 V giving an RMS of 230 V."
+    },
+
+    {
+      "template_id": "EM_L3_09",
+      "pattern": "An AC supply has a peak current of [IP] A. Calculate the RMS current in amperes.",
+      "variables": {
+        "IP": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round2(IP / sqrt(2))",
+      "explanation": "RMS current = peak current ÷ √2\n= [IP] ÷ √2\n= [IP] ÷ 1.414\n= [RESULT] A\n\nRMS current produces the same heating effect as an equivalent DC current. Power calculations using P = I²R should use RMS values not peak values."
+    },
+
+    {
+      "template_id": "EM_L3_10",
+      "pattern": "An AC power supply has a time period of [T] ms. Calculate the frequency of the supply in Hz.",
+      "variables": {
+        "T":   {"values": [1,2,4,5,8,10,20,25,40,50]},
+        "AREA":{"min": 1, "max": 100, "step": 1}
+      },
+      "calculation": "round2(1000 / T)",
+      "explanation": "Frequency = 1 ÷ period\n= 1 ÷ ([T] ÷ 1000)\n= 1000 ÷ [T]\n= [RESULT] Hz\n\nThe UK mains frequency is 50 Hz giving a period of 20 ms. The USA uses 60 Hz. Frequency and period are always reciprocals of each other."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

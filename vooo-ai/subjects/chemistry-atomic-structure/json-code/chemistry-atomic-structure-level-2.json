@@ -1,0 +1,140 @@
+{
+  "puzzle_type": "chemistry-atomic-structure-level-2",
+  "display_name": "Atomic Structure L2",
+  "templates": [
+
+    {
+      "template_id": "AT_L2_01",
+      "pattern": "A compound contains [N] atoms of element X (RAM = [RAM]) in one formula unit. The relative molecular mass of the compound is [RMM]. Calculate the percentage by mass of element X in the compound.",
+      "variables": {
+        "N":   {"min": 1,  "max": 6,   "step": 1},
+        "RAM": {"values": [1,12,14,16,23,24,32,35,40,56]},
+        "RMM": {"min": 18, "max": 400, "step": 2}
+      },
+      "constraints": ["N * RAM <= RMM"],
+      "calculation": "round2(N * RAM * 100 / RMM)",
+      "explanation": "Percentage by mass = (n × RAM_element ÷ RMM_compound) × 100\n= ([N] × [RAM] ÷ [RMM]) × 100\n= [N*RAM*100] ÷ [RMM]\n= [RESULT]%\n\nThis is used to find the composition of a compound and to calculate empirical formulas from experimental data."
+    },
+
+ {
+  "template_id": "AT_L2_02",
+  "pattern": "An element has two isotopes of masses [M1] and [M2]. Isotope 1 has an abundance of [AB1]%. Calculate the relative atomic mass of the element.",
+  "variables": {
+    "M1":  {"min": 1,  "max": 150, "step": 1},
+    "DIFF":{"values": [1,2,3,4]},
+    "M2":  {"calc": "M1 + DIFF"},
+    "AB1": {"values": [10,20,25,30,40,50,60,70,75,80,90]},
+    "AB2": {"calc": "100 - AB1"}
+  },
+  "calculation": "round2((M1 * AB1 + M2 * AB2) / 100)",
+  "explanation": "RAM = (M₁ × AB₁ + M₂ × AB₂) ÷ 100\n= ([M1] × [AB1] + [M2] × [AB2]) ÷ 100\n= [RESULT]\n\nThe RAM is a weighted average — isotopes with higher abundance contribute more to the average."
+},
+
+    {
+      "template_id": "AT_L2_03",
+      "pattern": "Calculate the relative molecular mass of a molecule containing [C] carbon atoms (RAM=12), [H] hydrogen atoms (RAM=1) and [O] oxygen atoms (RAM=16).",
+      "variables": {
+        "C": {"min": 1,  "max": 10, "step": 1},
+        "H": {"min": 2,  "max": 20, "step": 2},
+        "O": {"min": 1,  "max": 8,  "step": 1}
+      },
+      "calculation": "C * 12 + H * 1 + O * 16",
+      "explanation": "RMM = (C × 12) + (H × 1) + (O × 16)\n= ([C] × 12) + ([H] × 1) + ([O] × 16)\n= [C*12] + [H] + [O*16]\n= [RESULT]\n\nThe RMM is the sum of all atomic masses in the formula. It equals the mass in grams of one mole of the compound."
+    },
+
+    {
+      "template_id": "AT_L2_04",
+      "pattern": "A sample contains [MOLECULES] × 10²³ molecules of a compound. Calculate the number of moles of the compound. (Avogadro's number = 6.02 × 10²³)",
+      "variables": {
+        "MOLECULES": {"min": 1,  "max": 30, "step": 1},
+        "VOL":       {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round2(MOLECULES / 6.02)",
+      "explanation": "Moles = number of molecules ÷ Avogadro's number\n= [MOLECULES] × 10²³ ÷ 6.02 × 10²³\n= [MOLECULES] ÷ 6.02\n= [RESULT] mol\n\nAvogadro's number applies to any type of particle — atoms, molecules, ions or formula units."
+    },
+
+{
+  "template_id": "AT_L2_05",
+  "pattern": "A sub-shell has an azimuthal quantum number of l = [L]. Calculate the maximum number of electrons it can hold. (Formula: 2(2l+1))",
+  "variables": {
+    "L":   {"values": [0,1,2,3]},
+    "VOL": {"min": 1, "max": 50, "step": 1}
+  },
+  "calculation": "2 * (2 * L + 1)",
+  "explanation": "Maximum electrons in sub-shell = 2(2l + 1)\n= 2 × (2 × [L] + 1)\n= 2 × [2*L+1]\n= [RESULT]\n\nl=0 (s): 2 electrons, l=1 (p): 6 electrons, l=2 (d): 10 electrons, l=3 (f): 14 electrons."
+},
+
+{
+  "template_id": "AT_L2_06",
+  "pattern": "An ion has a mass number of [A], contains [N] neutrons and has a charge of [CHARGE]+. Calculate the number of protons in the ion.",
+  "variables": {
+    "N":      {"min": 10, "max": 80, "step": 1},
+    "PROTONS":{"min": 10, "max": 56, "step": 1},
+    "CHARGE": {"min": 1,  "max": 4,  "step": 1},
+    "A":      {"calc": "PROTONS + N"}
+  },
+  "calculation": "PROTONS",
+  "explanation": "Protons = mass number − neutrons\n= [A] − [N]\n= [RESULT]\n\nThe number of protons is the same in the ion as in the neutral atom — only electrons change when ions form. The atomic number equals the number of protons."
+},
+
+{
+  "template_id": "AT_L2_07",
+  "pattern": "A sample contains [MOLES] moles of a compound. Each molecule contains [ATOMS] atoms. Calculate the total number of atoms in the sample. Give your answer as a multiple of 10²³.",
+  "variables": {
+    "MOLES": {"min": 1,  "max": 10, "step": 1},
+    "ATOMS": {"min": 2,  "max": 10, "step": 1}
+  },
+  "calculation": "round2(MOLES * ATOMS * 6.02)",
+  "explanation": "Total atoms = moles × atoms per molecule × Avogadro's number\n= [MOLES] × [ATOMS] × 6.02 × 10²³\n= [RESULT] × 10²³\n\nThis two-step calculation uses both the mole concept and molecular formula. For example 1 mole of H₂O contains 3 × 6.02 × 10²³ atoms total."
+},
+
+    {
+      "template_id": "AT_L2_08",
+      "pattern": "The first ionisation energy of an element is [IE1] kJ/mol and the second ionisation energy is [IE2] kJ/mol. Calculate the ratio IE2 ÷ IE1.",
+      "variables": {
+        "IE1": {"min": 400,  "max": 2000, "step": 100},
+        "IE2": {"min": 800,  "max": 6000, "step": 200}
+      },
+      "constraints": ["IE2 > IE1"],
+      "calculation": "round2(IE2 / IE1)",
+      "explanation": "Ratio = IE₂ ÷ IE₁\n= [IE2] ÷ [IE1]\n= [RESULT]\n\nA very large ratio indicates the second electron is being removed from an inner shell — this element is in Group 1. Smaller ratios suggest both electrons are in the same outer shell."
+    },
+
+    {
+      "template_id": "AT_L2_09",
+      "pattern": "Atom A has atomic number [Z1] and atomic radius [R1] pm. Atom B has atomic number [Z2] and is in the same period. Estimate the atomic radius of atom B in pm using the Zeff relationship.",
+      "variables": {
+        "Z1": {"min": 3,  "max": 10, "step": 1},
+        "Z2": {"min": 3,  "max": 10, "step": 1},
+        "R1": {"min": 50, "max": 200,"step": 10}
+      },
+      "constraints": ["Z1 !== Z2"],
+      "calculation": "round2(R1 * Z1 / Z2)",
+      "explanation": "Atomic radius ∝ 1 ÷ Z_eff\nR₂ ≈ R₁ × Z₁ ÷ Z₂\n= [R1] × [Z1] ÷ [Z2]\n= [RESULT] pm\n\nAtomic radius decreases across a period because increasing nuclear charge pulls electrons closer without adding new shells."
+    },
+
+    {
+      "template_id": "AT_L2_10",
+      "pattern": "A sample contains [ATOMS] × 10²³ atoms of element X (RAM = [RAM]). Calculate the mass of the sample in grams. (Avogadro's number = 6.02 × 10²³)",
+      "variables": {
+        "ATOMS": {"min": 1,  "max": 20, "step": 1},
+        "RAM":   {"values": [1,4,7,12,14,16,20,23,24,27,28,32,35,40,56,64]}
+      },
+      "calculation": "round2(ATOMS * RAM / 6.02)",
+      "explanation": "Moles = [ATOMS] × 10²³ ÷ 6.02 × 10²³ = [ATOMS] ÷ 6.02\nMass = moles × RAM\n= ([ATOMS] ÷ 6.02) × [RAM]\n= [RESULT] g\n\nThis two-step calculation connects the number of atoms to a measurable mass — essential in experimental chemistry."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

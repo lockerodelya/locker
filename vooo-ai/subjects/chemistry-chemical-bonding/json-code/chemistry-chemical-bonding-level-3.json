@@ -1,0 +1,144 @@
+{
+  "puzzle_type": "chemistry-chemical-bonding-level-3",
+  "display_name": "Chemical Bonding L3",
+  "templates": [
+
+    {
+      "template_id": "CB_L3_01",
+      "pattern": "Breaking bonds in the reactants requires [BREAK] kJ/mol. Forming bonds in the products releases [FORM] kJ/mol. Calculate the enthalpy change of the reaction in kJ/mol.",
+      "variables": {
+        "BREAK": {"min": 200, "max": 4000, "step": 100},
+        "FORM":  {"min": 200, "max": 4000, "step": 100}
+      },
+      "calculation": "BREAK - FORM",
+      "explanation": "ΔH = energy to break bonds − energy released forming bonds\n= [BREAK] − [FORM]\n= [RESULT] kJ/mol\n\nThis method uses average bond energies and gives approximate enthalpy changes. It is less accurate than using formation enthalpies because bond energies are averages."
+    },
+
+    {
+  "template_id": "CB_L3_02",
+  "pattern": "Using a Born-Haber cycle for an ionic compound: the lattice energy is [LE] kJ/mol, ionisation energy is [IE] kJ/mol, electron affinity is [EA] kJ/mol and sum of atomisation enthalpies is [AT] kJ/mol. Calculate the enthalpy of formation in kJ/mol.",
+  "variables": {
+    "LE":  {"min": 600,  "max": 3000, "step": 100},
+    "IE":  {"min": 400,  "max": 2000, "step": 100},
+    "EA":  {"min": 100,  "max": 500,  "step": 50},
+    "AT":  {"min": 200,  "max": 1000, "step": 50}
+  },
+  "calculation": "round2(AT + IE - EA - LE)",
+  "explanation": "Born-Haber cycle:\nΔHf = ΔH_atomisation + IE − EA − LE\n= [AT] + [IE] − [EA] − [LE]\n= [RESULT] kJ/mol\n\nThe enthalpy of formation is usually negative for stable ionic compounds because lattice energy is large and negative. A more negative value means a more stable compound."
+},
+
+    {
+      "template_id": "CB_L3_03",
+      "pattern": "The lattice energy of an ionic compound is [LE] kJ/mol. The sum of hydration enthalpies of its ions is [HE] kJ/mol. Calculate the enthalpy of solution in kJ/mol.",
+      "variables": {
+        "LE":  {"min": 600,  "max": 4000, "step": 100},
+        "HE":  {"min": 500,  "max": 3800, "step": 100}
+      },
+      "calculation": "HE - LE",
+      "explanation": "ΔH_solution = ΔH_hydration + lattice energy\nSince lattice energy is endothermic when dissolving:\nΔH_solution = ΔH_hydration − lattice energy\n= [HE] − [LE]\n= [RESULT] kJ/mol\n\nA small or negative enthalpy of solution means the compound dissolves readily. If too endothermic the compound is poorly soluble."
+    },
+
+{
+  "template_id": "CB_L3_04",
+  "pattern": "Compound A has ions of charge [Q1]+ and [Q2]- with interionic distance [R1] pm. Compound B has ions of charge 1+ and 1- with interionic distance [R2] pm. Calculate the ratio of their lattice energies E_A ÷ E_B.",
+  "variables": {
+    "Q1":   {"values": [1,2,2,3,1,2,3]},
+    "Q2":   {"values": [1,1,2,1,2,2,2]},
+    "MULT": {"values": [2,3,4,5,6]},
+    "R1":   {"values": [100,100,100,100,100]},
+    "R2":   {"calc": "R1 * MULT"}
+  },
+  "calculation": "Q1 * Q2 * MULT",
+  "explanation": "Lattice energy ∝ Q₊ × Q₋ ÷ r\nRatio E_A ÷ E_B = Q1 × Q2 × R2 ÷ R1\n= [Q1] × [Q2] × [R2] ÷ [R1]\n= [Q1] × [Q2] × [MULT]\n= [RESULT]\n\nLattice energy increases with ionic charge and decreases with interionic distance. MgO has much greater lattice energy than NaCl because both ions carry double charges."
+},
+
+{
+  "template_id": "CB_L3_05",
+  "pattern": "A molecule has [NB] electrons in bonding molecular orbitals and [NA] electrons in antibonding molecular orbitals. Calculate the bond order.",
+  "variables": {
+    "BO":  {"values": [0.5, 1, 1.5, 2, 2.5, 3]},
+    "NA":  {"values": [0,   0, 1,   0, 1,   0]},
+    "NB":  {"calc": "NA + BO * 2"},
+    "VOL": {"min": 1, "max": 50, "step": 1}
+  },
+  "calculation": "BO",
+  "explanation": "Bond order = (bonding electrons − antibonding electrons) ÷ 2\n= ([NB] − [NA]) ÷ 2\n= [NB-NA] ÷ 2\n= [RESULT]\n\nBond order 0 = no bond, 1 = single, 2 = double, 3 = triple. Higher bond order means shorter and stronger bond."
+},
+
+{
+  "template_id": "CB_L3_06",
+  "pattern": "The bond dissociation energy of bond X is [BE1] kJ/mol and bond Y is [BE2] kJ/mol. Calculate the difference in their bond energies in kJ/mol.",
+  "variables": {
+    "BE1": {"values": [305,347,358,391,413,436,464,498,614,805,945]},
+    "BE2": {"values": [305,347,358,391,413,436,464,498,614,805,945]},
+    "VOL": {"min": 1, "max": 50, "step": 1}
+  },
+  "constraints": ["BE1 > BE2"],
+  "calculation": "BE1 - BE2",
+  "explanation": "Difference in bond energy = BE₁ − BE₂\n= [BE1] − [BE2]\n= [RESULT] kJ/mol\n\nStronger bonds have higher bond dissociation energies. Triple bonds are stronger than double bonds which are stronger than single bonds. Stronger bonds are also shorter."
+},
+
+    {
+      "template_id": "CB_L3_07",
+      "pattern": "The C-C bond length in a molecule is [BL] pm. Calculate the covalent radius of carbon in pm.",
+      "variables": {
+        "BL":  {"values": [120,134,154,167,177]},
+        "VOL": {"min": 1, "max": 50, "step": 1}
+      },
+      "calculation": "BL / 2",
+      "explanation": "Covalent radius = bond length ÷ 2\n= [BL] ÷ 2\n= [RESULT] pm\n\nDifferent C-C bond lengths (154 pm single, 134 pm double, 120 pm triple) give different covalent radii for carbon in different bonding environments."
+    },
+
+    {
+      "template_id": "CB_L3_08",
+      "pattern": "An atom in a metallic lattice contributes [VE] valence electrons to the delocalised electron sea. The metal contains [N] × 10²³ atoms per cm³. Calculate the number of delocalised electrons per cm³ in units of 10²³.",
+      "variables": {
+        "VE": {"min": 1, "max": 3,  "step": 1},
+        "N":  {"min": 1, "max": 20, "step": 1}
+      },
+      "calculation": "VE * N",
+      "explanation": "Delocalised electrons per cm³ = valence electrons per atom × atoms per cm³\n= [VE] × [N] × 10²³\n= [RESULT] × 10²³\n\nThe sea of delocalised electrons explains metallic properties — electrical conductivity, thermal conductivity and metallic lustre. More valence electrons generally means stronger metallic bonding."
+    },
+
+{
+  "template_id": "CB_L3_09",
+  "pattern": "A reaction has an enthalpy change of [DH] kJ/mol and occurs at a temperature of [T] K. The entropy change is [DS] J/mol·K. Calculate the Gibbs free energy change in kJ/mol.",
+  "variables": {
+    "DH":  {"min": 50,  "max": 500, "step": 10},
+    "T":   {"min": 100, "max": 900, "step": 100},
+    "DS":  {"min": 10,  "max": 200, "step": 10},
+    "TDS": {"calc": "T * DS / 1000"}
+  },
+  "calculation": "round2(DH - TDS)",
+  "explanation": "Gibbs free energy ΔG = ΔH − TΔS\n= [DH] − ([T] × [DS] ÷ 1000)\n= [DH] − [TDS]\n= [RESULT] kJ/mol\n\nIf ΔG is negative the reaction is spontaneous at that temperature. Converting DS from J to kJ requires dividing by 1000."
+},
+
+    {
+      "template_id": "CB_L3_10",
+      "pattern": "A reaction involves breaking [N1] moles of bond X (BE = [BE1] kJ/mol) and [N2] moles of bond Y (BE = [BE2] kJ/mol) and forming [N3] moles of bond Z (BE = [BE3] kJ/mol). Calculate the enthalpy change in kJ/mol.",
+      "variables": {
+        "N1":  {"min": 1, "max": 4,  "step": 1},
+        "N2":  {"min": 1, "max": 4,  "step": 1},
+        "N3":  {"min": 1, "max": 6,  "step": 1},
+        "BE1": {"values": [413,347,464,391,358,436,498,614]},
+        "BE2": {"values": [413,347,464,391,358,436,498,614]},
+        "BE3": {"values": [413,347,464,391,358,436,498,614]}
+      },
+      "calculation": "(N1 * BE1 + N2 * BE2) - N3 * BE3",
+      "explanation": "ΔH = energy to break bonds − energy to form bonds\n= ([N1] × [BE1] + [N2] × [BE2]) − ([N3] × [BE3])\n= [N1*BE1+N2*BE2] − [N3*BE3]\n= [RESULT] kJ/mol\n\nThis multi-bond calculation is the standard method for estimating enthalpy changes using bond energies in A-Level chemistry."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

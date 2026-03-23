@@ -1,0 +1,135 @@
+{
+  "puzzle_type": "physics-atomic-nuclear-level-2",
+  "display_name": "Atomic & Nuclear L2",
+  "templates": [
+
+    {
+      "template_id": "AN_L2_01",
+      "pattern": "A radioactive source has an initial activity of [A0] Bq and a half life of [THALF] years. Calculate the activity after [N] half lives in Bq.",
+      "variables": {
+        "A0":    {"values": [1000,2000,4000,8000,16000,32000]},
+        "THALF": {"min": 1, "max": 100,"step": 1},
+        "N":     {"min": 1, "max": 5,  "step": 1}
+      },
+      "calculation": "round2(A0 / pow(2, N))",
+      "explanation": "Activity after n half lives:\nA = A₀ ÷ 2ⁿ\n= [A0] ÷ 2^[N]\n= [A0] ÷ [pow(2,N)]\n= [RESULT] Bq\n\nThis is equivalent to A₀ × (0.5)ⁿ. The half life tells us how long each halving takes but not how many halvings occur."
+    },
+
+    {
+      "template_id": "AN_L2_02",
+      "pattern": "A radioactive sample has an initial mass of [M0] g and a half life of [THALF] days. Calculate the mass remaining after [N] half lives in grams.",
+      "variables": {
+        "M0":    {"values": [100,200,400,800,1600,3200]},
+        "THALF": {"min": 1, "max": 100,"step": 1},
+        "N":     {"min": 1, "max": 5,  "step": 1}
+      },
+      "calculation": "round2(M0 / pow(2, N))",
+      "explanation": "Mass remaining = M₀ ÷ 2ⁿ\n= [M0] ÷ 2^[N]\n= [M0] ÷ [pow(2,N)]\n= [RESULT] g\n\nThe mass of the radioactive isotope decreases with each half life. The total mass of all nuclei (parent and daughter) is conserved."
+    },
+
+    {
+      "template_id": "AN_L2_03",
+      "pattern": "A radioactive source has a half life of [THALF] years. Calculate the time elapsed after [N] half lives in years.",
+      "variables": {
+        "THALF": {"min": 1,  "max": 1000, "step": 1},
+        "N":     {"min": 1,  "max": 10,   "step": 1}
+      },
+      "calculation": "N * THALF",
+      "explanation": "Time elapsed = number of half lives × half life\n= [N] × [THALF]\n= [RESULT] years\n\nKnowing the half life and the number of half lives that have elapsed tells us exactly how much time has passed. This is used in radioactive dating."
+    },
+
+    {
+      "template_id": "AN_L2_04",
+      "pattern": "A radioactive nucleus has [N0] atoms initially. After [N] half lives calculate the number of radioactive nuclei remaining.",
+      "variables": {
+        "N0": {"values": [1000,2000,4000,8000,16000,32000,64000]},
+        "N":  {"min": 1, "max": 6, "step": 1}
+      },
+      "calculation": "round2(N0 / pow(2, N))",
+      "explanation": "Number of nuclei remaining = N₀ ÷ 2ⁿ\n= [N0] ÷ 2^[N]\n= [N0] ÷ [pow(2,N)]\n= [RESULT]\n\nThe number of radioactive nuclei decreases exponentially. As nuclei decay they produce daughter nuclei of a different element."
+    },
+
+    {
+      "template_id": "AN_L2_05",
+      "pattern": "A nucleus has a binding energy of [BE] MeV and a mass number of [A]. Calculate the binding energy per nucleon in MeV.",
+      "variables": {
+        "BE": {"min": 10,  "max": 1800, "step": 10},
+        "A":  {"min": 2,   "max": 240,  "step": 2}
+      },
+      "calculation": "round2(BE / A)",
+      "explanation": "Binding energy per nucleon = total binding energy ÷ mass number\n= [BE] ÷ [A]\n= [RESULT] MeV\n\nBinding energy per nucleon is a measure of nuclear stability. Iron-56 has the highest binding energy per nucleon at about 8.8 MeV and is therefore the most stable nucleus."
+    },
+
+    {
+      "template_id": "AN_L2_06",
+      "pattern": "A nuclear reaction involves a mass difference of [DM] × 10⁻²⁹ kg. Calculate the energy released in joules. (c = 3 × 10⁸ m/s)",
+      "variables": {
+        "DM": {"min": 1, "max": 20, "step": 1},
+        "VOL":{"min": 1, "max": 50, "step": 1}
+      },
+      "calculation": "round2(DM * pow(10, -29) * 9 * pow(10, 16))",
+      "explanation": "Energy = mass × c²\n= [DM] × 10⁻²⁹ × (3 × 10⁸)²\n= [DM] × 10⁻²⁹ × 9 × 10¹⁶\n= [RESULT] J\n\nThis is Einstein's mass-energy equivalence. Even tiny mass differences release enormous amounts of energy. This is the source of energy in nuclear fission and fusion reactions."
+    },
+
+    {
+      "template_id": "AN_L2_07",
+      "pattern": "A patient receives a radiation dose from a source of activity [ACT] Bq for [T] seconds. The dose factor is [F] × 10⁻¹² Sv/Bq·s. Calculate the radiation dose received in microsieverts.",
+      "variables": {
+        "ACT": {"min": 100,  "max": 5000, "step": 100},
+        "T":   {"min": 10,   "max": 300,  "step": 10},
+        "F":   {"min": 1,    "max": 20,   "step": 1}
+      },
+      "calculation": "round2(ACT * T * F * pow(10, -12) * pow(10, 6))",
+      "explanation": "Dose = activity × time × dose factor\n= [ACT] × [T] × [F] × 10⁻¹²\n= [RESULT] μSv\n\nThe sievert (Sv) measures the biological effect of radiation. Different types of radiation have different biological effectiveness — this is accounted for by the dose factor."
+    },
+
+    {
+      "template_id": "AN_L2_08",
+      "pattern": "A radioactive source has an initial activity of [A0] Bq and after [N] half lives its activity is [A] Bq. The half life is [THALF] years. Calculate the total time elapsed in years.",
+      "variables": {
+        "THALF": {"min": 1,  "max": 100, "step": 1},
+        "N":     {"min": 1,  "max": 5,   "step": 1},
+        "A0":    {"values": [1000,2000,4000,8000,16000]},
+        "A":     {"calc": "round2(A0 / pow(2, N))"}
+      },
+      "calculation": "N * THALF",
+      "explanation": "Total time = number of half lives × half life\n= [N] × [THALF]\n= [RESULT] years\n\nThe activity has fallen from [A0] Bq to [A] Bq which represents [N] halvings. Each halving takes [THALF] years."
+    },
+
+    {
+      "template_id": "AN_L2_09",
+      "pattern": "A nucleus has a radius of [R] × 10⁻¹⁵ m. The nuclear radius constant R₀ = 1.2 × 10⁻¹⁵ m. Estimate the mass number of the nucleus using R = R₀ × A^(1/3).",
+      "variables": {
+        "A":  {"values": [8,27,64,125,216]},
+        "VOL":{"min": 1, "max": 50, "step": 1},
+        "R":  {"calc": "round2(1.2 * pow(A, 0.333))"}
+      },
+      "calculation": "A",
+      "explanation": "From R = R₀ × A^(1/3):\nA = (R ÷ R₀)³\n= ([R] × 10⁻¹⁵ ÷ 1.2 × 10⁻¹⁵)³\n= ([R] ÷ 1.2)³\n= [RESULT]\n\nNuclear radii are of the order of femtometres (fm) where 1 fm = 10⁻¹⁵ m. This formula shows that all nuclei have approximately the same density."
+    },
+
+    {
+      "template_id": "AN_L2_10",
+      "pattern": "A radioactive source has a half life of [THALF] days. Calculate the decay constant of the source in per day.",
+      "variables": {
+        "THALF": {"min": 1,  "max": 100, "step": 1},
+        "VOL":   {"min": 1,  "max": 50,  "step": 1}
+      },
+      "calculation": "round3(0.693 / THALF)",
+      "explanation": "Decay constant λ = 0.693 ÷ T½\n= 0.693 ÷ [THALF]\n= [RESULT] per day\n\nThe decay constant gives the probability of a nucleus decaying per unit time. A larger decay constant means faster decay and therefore a shorter half life."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
