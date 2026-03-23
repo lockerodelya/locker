@@ -97,27 +97,28 @@
       "explanation": "Iterations = (end − start) ÷ step\n= ([END] − [START]) ÷ [STEP]\n= [END-START] ÷ [STEP]\n= [RESULT]\n\nCounting loop iterations precisely is essential for calculating algorithm time complexity. Always check whether the loop condition is strict (<) or inclusive (<=)."
     },
 
-    {
-      "template_id": "AL_L1_09",
-      "pattern": "A bubble sort performs [K] complete passes on a list of [N] items. Calculate the total number of array element accesses made during these passes.",
-      "variables": {
-        "N": {"min": 5,  "max": 50, "step": 5},
-        "K": {"min": 1,  "max": 10, "step": 1}
-      },
-      "calculation": "N * K * 2",
-      "explanation": "Array accesses = items × passes × 2 (read and write per comparison)\n= [N] × [K] × 2\n= [RESULT]\n\nEach comparison in bubble sort accesses two array elements. Minimising array accesses is important for cache efficiency in modern processors."
-    },
+{
+  "template_id": "AL_L1_09",
+  "pattern": "A recursive function calls itself [N] times before reaching the base case. Each call adds one frame to the call stack. Calculate the maximum call stack size including the initial call.",
+  "variables": {
+    "N":   {"min": 2,  "max": 50, "step": 1},
+    "VOL": {"min": 1,  "max": 50, "step": 1}
+  },
+  "calculation": "N + 1",
+  "explanation": "Call stack size = recursive calls + initial call\n= [N] + 1\n= [RESULT]\n\nEach recursive call adds a stack frame. Too many recursive calls causes a stack overflow. The base case stops the recursion and the stack unwinds."
+},
 
-    {
-      "template_id": "AL_L1_10",
-      "pattern": "A selection sort is performed on a list of [N] items. Calculate the total number of comparisons made.",
-      "variables": {
-        "N":   {"min": 5,  "max": 50, "step": 5},
-        "VOL": {"min": 1,  "max": 50, "step": 1}
-      },
-      "calculation": "N * (N - 1) / 2",
-      "explanation": "Selection sort comparisons = n(n−1) ÷ 2\n= [N] × ([N]−1) ÷ 2\n= [N] × [N-1] ÷ 2\n= [RESULT]\n\nSelection sort always makes the same number of comparisons regardless of the input order. It has O(n²) time complexity but makes fewer swaps than bubble sort."
-    }
+{
+  "template_id": "AL_L1_10",
+  "pattern": "An algorithm processes [N] data items in groups of [G]. Calculate the number of complete groups.",
+  "variables": {
+    "G":      {"values": [2,4,5,8,10]},
+    "GROUPS": {"min": 2, "max": 50, "step": 1},
+    "N":      {"calc": "G * GROUPS"}
+  },
+  "calculation": "GROUPS",
+  "explanation": "Number of complete groups = total items ÷ group size\n= [N] ÷ [G]\n= [RESULT]\n\nGrouping data items is fundamental in algorithms — merge sort groups pairs then fours then eights. Knowing how many groups exist determines the number of merge operations needed."
+}
 
   ],
   "responses": {
