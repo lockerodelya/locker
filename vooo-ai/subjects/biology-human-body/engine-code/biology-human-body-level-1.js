@@ -7,7 +7,7 @@
 // ============================================
 
 const _ENGINE_JSON_FILE     = 'biology-human-body-level-1.json';
-const _ENGINE_CATEGORY_KEY  = 'biology-human-body-level-1-1';
+const _ENGINE_CATEGORY_KEY  = 'biology-human-body-level-1';
 const _ENGINE_INSTANCE_NAME = 'biologyhumanbodyl1';
 
 // ============================================
