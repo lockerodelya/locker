@@ -6,9 +6,9 @@
 // ⭐⭐⭐ EDIT ONLY THESE 3 LINES FOR A NEW ENGINE ⭐⭐⭐
 // ============================================
 
-const _ENGINE_JSON_FILE     = 'biology-cell-level-1.json';
-const _ENGINE_CATEGORY_KEY  = 'biology-cell-level-1';
-const _ENGINE_INSTANCE_NAME = 'biologycelll1';
+const _ENGINE_JSON_FILE     = 'biology-ecology-ecosystems-1.json';
+const _ENGINE_CATEGORY_KEY  = 'biology-ecology-ecosystems-1';
+const _ENGINE_INSTANCE_NAME = 'biologyecologyecosystemsl1';
 
 // ============================================
 // ✋ DO NOT EDIT ANYTHING BELOW THIS LINE
@@ -179,34 +179,37 @@ this._evalHelpers = {
             ];
         }
 
-        applyMathFunctions(ev){
-            const fns=this._mathFnList();
-            const numArg='(-?\\d+(?:\\.\\d+)?)';
-            const multiArgRe=(name)=>new RegExp(name+'\\(\\s*'+numArg+'(?:\\s*,\\s*'+numArg+')*\\s*\\)','g');
-            for(let pass=0;pass<20;pass++){
-                let changed=false;
-                ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*(-?\d+(?:\.\d+)?)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
-                ev=ev.replace(/(-?\d+(?:\.\d+)?)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
-                ev=ev.replace(/\((-?\d+(?:\.\d+)?)\)\s*([\+\-\*\/])\s*\((-?\d+(?:\.\d+)?)\)/g,(m,a,op,b)=>{try{const r=new Function('return '+a+op+b)();changed=true;return String(r);}catch(e){return m;}});
-                ev=ev.replace(/(?<![a-zA-Z0-9_(])\((-?\d+(?:\.\d+)?)\)(?![a-zA-Z_(\d])/g,(m,n)=>{changed=true;return n;});
-                for(const[name,fn]of fns){
-                    const re=multiArgRe(name);
-                    ev=ev.replace(re,(match)=>{
-                        try{
-                            const inner=match.slice(name.length+1,-1);
-                            const vals=inner.split(',').map(a=>Number(a.trim()));
-                            if(vals.some(isNaN))return match;
-                            const result=fn(...vals);
-                            if(result===null||result===undefined){changed=true;return 'null';}
-                            changed=true;
-                            return String(result);
-                        }catch(e){return match;}
-                    });
+applyMathFunctions(ev) {
+    const fns = this._mathFnList();
+    const numArg = '(-?\\d+(?:\\.\\d+)?)';
+    const multiArgRe = (name) => new RegExp(name + '\\(\\s*' + numArg + '(?:\\s*,\\s*' + numArg + ')*\\s*\\)', 'g');
+    let changed;
+    do {
+        changed = false;
+        for (const [name, fn] of fns) {
+            const re = multiArgRe(name);
+            ev = ev.replace(re, (match) => {
+                try {
+                    const inner = match.slice(name.length + 1, -1);
+                    const vals = inner.split(',').map(a => Number(a.trim()));
+                    if (vals.some(isNaN)) return match;
+                    const result = fn(...vals);
+                    if (result === null || result === undefined) {
+                        changed = true;
+                        return 'null';
+                    }
+                    changed = true;
+                    return String(result);
+                } catch (e) {
+                    return match;
                 }
-                if(!changed)break;
-            }
-            return ev;
+            });
         }
+        // Remove any remaining parentheses around numbers (only once per pass)
+        ev = ev.replace(/\((-?\d+(?:\.\d+)?)\)/g, '$1');
+    } while (changed);
+    return ev;
+}
 
         // ════════════════════════════════════════════
         // PLAIN TEXT GUARD
@@ -496,7 +499,7 @@ generateOptions(correctAnswer,template,variables){
             const correctNum=Number(correctAnswer);
             if(!isNaN(correctNum)&&isFinite(correctNum)){
                 const isInt=Number.isInteger(correctNum)||(Math.abs(correctNum-Math.round(correctNum))<0.0001);
-                const isDecimal=!isInt&&Math.abs(correctNum)<1;
+                const isDecimal=!isInt;
                 const isSmall=Math.abs(correctNum)<=12;
                 const fmt=v=>isInt?String(Math.round(v)):String(parseFloat(v.toFixed(isDecimal?4:2)));
                 options.push(fmt(correctNum));
@@ -523,6 +526,7 @@ generateOptions(correctAnswer,template,variables){
                     else if(mag>10)offset=sign*(Math.floor(Math.random()*5)+1);
                     else offset=sign*(Math.floor(Math.random()*4)+1);
                     const wrong=correctNum+offset;
+					if(wrong<0&&correctNum>=0)continue;
                     const ws=fmt(wrong);
                     if(!options.includes(ws))options.push(ws);
                 }
@@ -567,6 +571,7 @@ generateOptions(correctAnswer,template,variables){
             if(prog.currentIndex>=total){
                 prog.shuffledIndices=this._shuffleIndices(total);
                 prog.currentIndex=0;
+				this.clearUsedQuestions();
             }
             try{localStorage.setItem(sKey,JSON.stringify(prog));}catch(e){}
             return idx;
