@@ -1,0 +1,137 @@
+{
+  "puzzle_type": "biology-human-body-systems-level-1",
+  "display_name": "Human Body Systems L1",
+  "templates": [
+
+    {
+      "template_id": "HB_L1_01",
+      "pattern": "A person has a mass of [M] kg and a height of [H] m. Calculate their Body Mass Index (BMI).",
+      "variables": {
+        "H":    {"values": [1.5,1.6,1.7,1.8,1.9]},
+        "BMI":  {"values": [18,20,22,24,25,26,28,30,32,35]},
+        "M":    {"calc": "round2(BMI * H * H)"}
+      },
+      "calculation": "BMI",
+      "explanation": "BMI = mass ÷ height²\n= [M] ÷ [H]²\n= [M] ÷ [H*H]\n= [RESULT]\n\nBMI ranges: underweight < 18.5, healthy 18.5-24.9, overweight 25-29.9, obese ≥ 30. BMI is a useful screening tool but does not account for muscle mass or body composition."
+    },
+
+    {
+      "template_id": "HB_L1_02",
+      "pattern": "A person has a heart rate of [HR] beats per minute and a stroke volume of [SV] mL per beat. Calculate the cardiac output in mL per minute.",
+      "variables": {
+        "HR": {"min": 40,  "max": 200, "step": 5},
+        "SV": {"min": 50,  "max": 130, "step": 5}
+      },
+      "calculation": "HR * SV",
+      "explanation": "Cardiac output = heart rate × stroke volume\n= [HR] × [SV]\n= [RESULT] mL/min\n\nResting cardiac output is approximately 5000 mL/min. During vigorous exercise it can increase to 20,000-25,000 mL/min in trained athletes."
+    },
+
+    {
+      "template_id": "HB_L1_03",
+      "pattern": "A person has a cardiac output of [CO] mL/min and a stroke volume of [SV] mL per beat. Calculate the heart rate in beats per minute.",
+      "variables": {
+        "SV":  {"values": [50,60,70,75,80,90,100,110,120]},
+        "HR":  {"min": 40,  "max": 200, "step": 5},
+        "CO":  {"calc": "SV * HR"}
+      },
+      "calculation": "HR",
+      "explanation": "Heart rate = cardiac output ÷ stroke volume\n= [CO] ÷ [SV]\n= [RESULT] beats/min\n\nNormal resting heart rate is 60-100 beats per minute. Athletes often have lower resting heart rates because their hearts pump more blood per beat."
+    },
+
+    {
+      "template_id": "HB_L1_04",
+      "pattern": "A person has a cardiac output of [CO] mL/min and a heart rate of [HR] beats per minute. Calculate the stroke volume in mL per beat.",
+      "variables": {
+        "HR":  {"values": [40,50,60,70,75,80,90,100]},
+        "SV":  {"min": 50,  "max": 130, "step": 5},
+        "CO":  {"calc": "HR * SV"}
+      },
+      "calculation": "SV",
+      "explanation": "Stroke volume = cardiac output ÷ heart rate\n= [CO] ÷ [HR]\n= [RESULT] mL/beat\n\nStroke volume increases during exercise due to increased venous return (Frank-Starling mechanism). Trained athletes have larger stroke volumes even at rest."
+    },
+
+    {
+      "template_id": "HB_L1_05",
+      "pattern": "A person takes [B] breaths in [T] minutes. Calculate the breathing rate in breaths per minute.",
+      "variables": {
+        "T":  {"values": [1,2,3,4,5,6,7,8,9,10]},
+        "BR": {"min": 10,  "max": 30,  "step": 2},
+        "B":  {"calc": "T * BR"}
+      },
+      "calculation": "BR",
+      "explanation": "Breathing rate = number of breaths ÷ time\n= [B] ÷ [T]\n= [RESULT] breaths/min\n\nNormal resting breathing rate is 12-20 breaths per minute. During exercise it increases to meet the greater oxygen demand and remove excess CO₂."
+    },
+
+    {
+      "template_id": "HB_L1_06",
+      "pattern": "A person has a pulmonary ventilation rate of [VR] mL/min and a breathing rate of [BR] breaths per minute. Calculate the tidal volume in mL.",
+      "variables": {
+        "BR": {"values": [10,12,14,15,16,18,20,24,25,30]},
+        "TV": {"min": 300, "max": 700, "step": 50},
+        "VR": {"calc": "BR * TV"}
+      },
+      "calculation": "TV",
+      "explanation": "Tidal volume = pulmonary ventilation rate ÷ breathing rate\n= [VR] ÷ [BR]\n= [RESULT] mL\n\nTidal volume is the volume of air inhaled or exhaled in one normal breath. At rest it is approximately 500 mL. It increases significantly during exercise."
+    },
+
+    {
+      "template_id": "HB_L1_07",
+      "pattern": "A person has a breathing rate of [BR] breaths per minute and a tidal volume of [TV] mL. Calculate the pulmonary ventilation rate in mL per minute.",
+      "variables": {
+        "BR": {"min": 10,  "max": 30,  "step": 2},
+        "TV": {"min": 300, "max": 700, "step": 50}
+      },
+      "calculation": "BR * TV",
+      "explanation": "Pulmonary ventilation rate = breathing rate × tidal volume\n= [BR] × [TV]\n= [RESULT] mL/min\n\nPulmonary ventilation rate measures the total volume of air moved per minute. At rest it is about 6000 mL/min and can exceed 100,000 mL/min during intense exercise."
+    },
+
+    {
+      "template_id": "HB_L1_08",
+      "pattern": "A patient has a systolic blood pressure of [SYS] mmHg and a diastolic blood pressure of [DIA] mmHg. Calculate the pulse pressure in mmHg.",
+      "variables": {
+        "DIA": {"min": 60,  "max": 90,  "step": 5},
+        "PP":  {"min": 30,  "max": 60,  "step": 5},
+        "SYS": {"calc": "DIA + PP"}
+      },
+      "calculation": "PP",
+      "explanation": "Pulse pressure = systolic pressure − diastolic pressure\n= [SYS] − [DIA]\n= [RESULT] mmHg\n\nNormal pulse pressure is 40-60 mmHg. A wide pulse pressure may indicate aortic regurgitation or atherosclerosis. A narrow pulse pressure may indicate heart failure or shock."
+    },
+
+    {
+      "template_id": "HB_L1_09",
+      "pattern": "A person consumes [IN] kcal per day and expends [EXP] kcal per day through activity and metabolism. Calculate the daily calorie balance in kcal.",
+      "variables": {
+        "EXP": {"min": 1500, "max": 3000, "step": 100},
+        "BAL": {"min": 100,  "max": 500,  "step": 50},
+        "IN":  {"calc": "EXP + BAL"}
+      },
+      "calculation": "BAL",
+      "explanation": "Calorie balance = intake − expenditure\n= [IN] − [EXP]\n= [RESULT] kcal\n\nA positive balance means more energy is consumed than used — the excess is stored as fat. A deficit of 3500 kcal is roughly equivalent to losing 0.45 kg of body fat."
+    },
+
+    {
+      "template_id": "HB_L1_10",
+      "pattern": "A drug has a half life of [THALF] hours. The initial concentration is [C0] mg/L. Calculate the concentration remaining after [N] half lives in mg/L.",
+      "variables": {
+        "C0":    {"values": [100,200,400,800,1000,2000]},
+        "N":     {"min": 1,  "max": 6,  "step": 1},
+        "THALF": {"min": 1,  "max": 24, "step": 1}
+      },
+      "calculation": "round2(C0 * pow(0.5, N))",
+      "explanation": "Drug concentration = C₀ × (0.5)ⁿ\n= [C0] × (0.5)^[N]\n= [C0] × [pow(0.5,N)]\n= [RESULT] mg/L\n\nDrug concentration falls by half with each half life. After 5 half lives less than 3% of the original dose remains — the drug is considered eliminated from the body."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

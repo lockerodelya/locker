@@ -1,0 +1,138 @@
+{
+  "puzzle_type": "biology-human-body-systems-level-2",
+  "display_name": "Human Body Systems L2",
+  "templates": [
+
+    {
+      "template_id": "HB_L2_01",
+      "pattern": "A patient produces [VOL] mL of urine in [TIME] minutes. Calculate the glomerular filtration rate in mL/min.",
+      "variables": {
+        "TIME": {"values": [1,2,4,5,8,10,20,25,50]},
+        "GFR":  {"min": 60,  "max": 140, "step": 5},
+        "VOL":  {"calc": "TIME * GFR"}
+      },
+      "calculation": "GFR",
+      "explanation": "Glomerular filtration rate = volume filtered ÷ time\n= [VOL] ÷ [TIME]\n= [RESULT] mL/min\n\nNormal GFR is 90-120 mL/min. A GFR below 60 mL/min for more than 3 months indicates chronic kidney disease. GFR declines naturally with age."
+    },
+
+    {
+      "template_id": "HB_L2_02",
+      "pattern": "The kidney filters [FILT] mg of glucose per minute. The urine contains [EXC] mg of glucose per minute. Calculate the percentage of filtered glucose that is reabsorbed.",
+      "variables": {
+        "FILT": {"min": 100, "max": 1000, "step": 50},
+        "EFF":  {"values": [90,92,95,96,98,99,100]},
+        "EXC":  {"calc": "round2(FILT * (100 - EFF) / 100)"}
+      },
+      "calculation": "EFF",
+      "explanation": "Reabsorption % = (filtered − excreted) ÷ filtered × 100\n= ([FILT] − [EXC]) ÷ [FILT] × 100\n= [RESULT]%\n\nNormally 100% of filtered glucose is reabsorbed in the proximal convoluted tubule. Glucose appears in urine only when blood glucose exceeds the renal threshold of about 10 mmol/L."
+    },
+
+    {
+      "template_id": "HB_L2_03",
+      "pattern": "A patient has a systolic blood pressure of [SYS] mmHg and a diastolic blood pressure of [DIA] mmHg. Calculate the mean arterial pressure in mmHg.",
+      "variables": {
+        "DIA": {"min": 60,  "max": 90,  "step": 5},
+        "PP":  {"min": 30,  "max": 60,  "step": 5},
+        "SYS": {"calc": "DIA + PP"}
+      },
+      "calculation": "round2(DIA + PP / 3)",
+      "explanation": "Mean arterial pressure = diastolic + (pulse pressure ÷ 3)\n= [DIA] + ([SYS] − [DIA]) ÷ 3\n= [DIA] + [PP] ÷ 3\n= [RESULT] mmHg\n\nMAP represents the average pressure driving blood through the circulation. Normal MAP is 70-100 mmHg. Below 60 mmHg organ perfusion becomes inadequate."
+    },
+
+    {
+      "template_id": "HB_L2_04",
+      "pattern": "A patient's blood glucose falls from [G1] mmol/L to [G2] mmol/L in [T] minutes after insulin injection. Calculate the glucose clearance rate in mmol/L/min.",
+      "variables": {
+        "T":    {"values": [5,10,15,20,25,30]},
+        "RATE": {"min": 1,  "max": 10,  "step": 1},
+        "G2":   {"min": 4,  "max": 10,  "step": 1},
+        "G1":   {"calc": "G2 + RATE * T"}
+      },
+      "calculation": "RATE",
+      "explanation": "Glucose clearance rate = (initial − final glucose) ÷ time\n= ([G1] − [G2]) ÷ [T]\n= [RATE*T] ÷ [T]\n= [RESULT] mmol/L/min\n\nInsulin stimulates glucose uptake by cells. Impaired glucose clearance is characteristic of type 2 diabetes where cells become insulin resistant."
+    },
+
+    {
+      "template_id": "HB_L2_05",
+      "pattern": "A person has a basal metabolic rate of [BMR] kcal/day and a physical activity level of [AF]. Calculate their total daily energy requirement in kcal/day.",
+      "variables": {
+        "BMR": {"min": 1200, "max": 2500, "step": 100},
+        "AF":  {"values": [1.2,1.4,1.6,1.8,2.0,2.2]}
+      },
+      "calculation": "round2(BMR * AF)",
+      "explanation": "Total energy requirement = BMR × activity factor\n= [BMR] × [AF]\n= [RESULT] kcal/day\n\nActivity factors: sedentary=1.2, lightly active=1.4, moderately active=1.6, very active=1.8, extremely active=2.0-2.2. Athletes may need over 5000 kcal/day."
+    },
+
+    {
+      "template_id": "HB_L2_06",
+      "pattern": "A drug has an initial concentration of [C0] mg/L. After [TIME] hours the concentration is [C1] mg/L. The concentration has halved [N] times. Calculate the half life of the drug in hours.",
+      "variables": {
+        "N":    {"min": 1,  "max": 4,   "step": 1},
+        "C0":   {"values": [100,200,400,800,1000,1600]},
+        "TIME": {"values": [2,4,6,8,10,12,16,20,24]},
+        "C1":   {"calc": "round2(C0 * pow(0.5, N))"}
+      },
+      "calculation": "round2(TIME / N)",
+      "explanation": "Half life = total time ÷ number of halvings\n= [TIME] ÷ [N]\n= [RESULT] hours\n\nHalf life is constant for a given drug regardless of initial concentration. Drugs with long half lives accumulate in the body with repeated doses. Short half life drugs are cleared quickly."
+    },
+
+    {
+      "template_id": "HB_L2_07",
+      "pattern": "A nerve impulse travels [DIST] mm along an axon in [TIME] ms. Calculate the nerve conduction velocity in m/s.",
+      "variables": {
+        "TIME": {"values": [1,2,4,5,8,10,20,25,50]},
+        "VEL":  {"min": 1,  "max": 100, "step": 5},
+        "DIST": {"calc": "TIME * VEL"}
+      },
+      "calculation": "VEL",
+      "explanation": "Nerve conduction velocity = distance ÷ time\n= [DIST] mm ÷ [TIME] ms\n= [RESULT] m/s\n\nMyelinated nerve fibres conduct at 70-120 m/s. Unmyelinated fibres conduct at only 0.5-2 m/s. Multiple sclerosis damages myelin and slows nerve conduction."
+    },
+
+    {
+      "template_id": "HB_L2_08",
+      "pattern": "Blood contains [HB] g/dL of haemoglobin with an oxygen saturation of [SAT]%. Each gram of haemoglobin carries 1.34 mL of O₂ at full saturation. Calculate the oxygen content of blood in mL O₂/dL.",
+      "variables": {
+        "HB":  {"min": 10,  "max": 18,  "step": 1},
+        "SAT": {"min": 80,  "max": 100, "step": 5}
+      },
+      "calculation": "round2(HB * SAT * 1.34 / 100)",
+      "explanation": "O₂ content = Hb × saturation × 1.34 ÷ 100\n= [HB] × [SAT] × 1.34 ÷ 100\n= [RESULT] mL O₂/dL\n\nNormal arterial O₂ content is about 20 mL/dL. Anaemia (low Hb) and low saturation both reduce oxygen delivery to tissues."
+    },
+
+    {
+      "template_id": "HB_L2_09",
+      "pattern": "A spirometry test shows an inspiratory reserve volume of [IRV] mL, a tidal volume of [TV] mL and an expiratory reserve volume of [ERV] mL. Calculate the vital capacity in mL.",
+      "variables": {
+        "IRV": {"min": 1500, "max": 3500, "step": 100},
+        "TV":  {"min": 300,  "max": 700,  "step": 50},
+        "ERV": {"min": 800,  "max": 1500, "step": 100}
+      },
+      "calculation": "IRV + TV + ERV",
+      "explanation": "Vital capacity = IRV + tidal volume + ERV\n= [IRV] + [TV] + [ERV]\n= [RESULT] mL\n\nVital capacity is the maximum volume of air that can be exhaled after maximum inhalation. Normal values are 3500-5000 mL. It is reduced in restrictive lung diseases."
+    },
+
+    {
+      "template_id": "HB_L2_10",
+      "pattern": "A person has a BMI of [BMI] and an age of [AGE] years. Using the simplified formula, estimate their body fat percentage. (Body fat % = 1.2 × BMI + 0.23 × age − 5.4 for males)",
+      "variables": {
+        "BMI": {"min": 18,  "max": 35,  "step": 1},
+        "AGE": {"min": 20,  "max": 60,  "step": 5}
+      },
+      "calculation": "round2(1.2 * BMI + 0.23 * AGE - 5.4)",
+      "explanation": "Body fat % = 1.2 × BMI + 0.23 × age − 5.4\n= 1.2 × [BMI] + 0.23 × [AGE] − 5.4\n= [1.2*BMI] + [0.23*AGE] − 5.4\n= [RESULT]%\n\nBody fat percentage is a better measure of health risk than BMI alone. Healthy ranges for males are 10-20% and for females 18-28%."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
