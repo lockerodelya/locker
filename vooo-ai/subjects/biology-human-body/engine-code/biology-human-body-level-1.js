@@ -6,8 +6,8 @@
 // ⭐⭐⭐ EDIT ONLY THESE 3 LINES FOR A NEW ENGINE ⭐⭐⭐
 // ============================================
 
-const _ENGINE_JSON_FILE     = 'biology-human-body-level-1.json';
-const _ENGINE_CATEGORY_KEY  = 'biology-human-body-level-1';
+const _ENGINE_JSON_FILE     = 'biology-human-body-systems-level-1.json';
+const _ENGINE_CATEGORY_KEY  = 'biology-human-body-systems-level-1';
 const _ENGINE_INSTANCE_NAME = 'biologyhumbodysystemsl1';
 
 // ============================================
@@ -500,18 +500,31 @@ generateOptions(correctAnswer,template,variables){
                 const isSmall=Math.abs(correctNum)<=12;
                 const fmt=v=>isInt?String(Math.round(v)):String(parseFloat(v.toFixed(isDecimal?4:2)));
                 options.push(fmt(correctNum));
-                const baseOffsets=isDecimal
-                    ?[0.1,-0.1,0.2,-0.2,0.25,-0.25,0.5,-0.5,0.3,-0.3]
-                    :isSmall
-                        ?[1,2,3,-1,-2,-3,4,-4,5,-5,6,-6]
-                        :[5,-5,10,-10,15,-15,20,-20,25,-25];
-                for(const off of baseOffsets){
-                    if(options.length>=4)break;
-                    const wrong=correctNum+off;
-                    if(wrong<0&&correctNum>=0)continue;
-                    const ws=fmt(wrong);
-                    if(!options.includes(ws))options.push(ws);
-                }
+const baseOffsets=isDecimal
+    ?[0.1,-0.1,0.2,-0.2,0.25,-0.25,0.5,-0.5,0.3,-0.3]
+    :isSmall
+        ?[1,2,3,-1,-2,-3,4,-4,5,-5,6,-6]
+        :[5,-5,10,-10,15,-15,20,-20,25,-25];
+for(const off of baseOffsets){
+    if(options.length>=4)break;
+    const wrong=correctNum+off;
+    // FIX: Allow negative offsets that still result in positive numbers
+    if(wrong<=0 && correctNum>0) continue;
+    const ws=fmt(wrong);
+    if(!options.includes(ws))options.push(ws);
+}
+// FIX: Add smaller positive offsets if we still need more options
+if(options.length<4 && correctNum>1){
+    const smallOffsets=[0.5,1,1.5,2,2.5,3,3.5,4];
+    for(const off of smallOffsets){
+        if(options.length>=4)break;
+        const wrong=correctNum-off;
+        if(wrong>0){
+            const ws=fmt(wrong);
+            if(!options.includes(ws))options.push(ws);
+        }
+    }
+}
                 let attempts=0;
                 while(options.length<4&&attempts<60){
                     attempts++;
