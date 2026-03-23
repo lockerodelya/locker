@@ -30,13 +30,14 @@
 
     {
       "template_id": "HB_L3_03",
-      "pattern": "A patient's arterial blood has a bicarbonate concentration of [HCO3] mmol/L and a partial pressure of CO₂ of [PCO2] mmHg. Calculate the arterial pH using the Henderson-Hasselbalch equation. (pH = 6.1 + log₁₀([HCO3] ÷ (0.0307 × [PCO2])))",
+      "pattern": "A patient has a mean arterial pressure of [MAP] mmHg and a cardiac output of [CO] L/min. Calculate the total peripheral resistance in mmHg·min/L.",
       "variables": {
-        "PCO2":  {"values": [30, 35, 40, 45, 50, 55, 60]},
-        "HCO3":  {"values": [18, 20, 22, 24, 26, 28, 30]}
+        "CO":  {"values": [4,5,6,7,8]},
+        "TPR": {"min": 10,  "max": 25,  "step": 1},
+        "MAP": {"calc": "CO * TPR"}
       },
-      "calculation": "round2(6.1 + log10(HCO3 / (0.0307 * PCO2)))",
-      "explanation": "pH = 6.1 + log₁₀(HCO₃⁻ ÷ (0.0307 × PCO₂))\n= 6.1 + log₁₀([HCO3] ÷ (0.0307 × [PCO2]))\n= 6.1 + log₁₀([HCO3] ÷ [0.0307*PCO2])\n= 6.1 + [log10(HCO3/(0.0307*PCO2))]\n= [RESULT]\n\nThe normal arterial pH is 7.35-7.45. The constant 0.0307 converts PCO₂ in mmHg to dissolved CO₂ in mmol/L. This equation is essential for interpreting acid-base disturbances such as respiratory acidosis, metabolic alkalosis and their compensations."
+      "calculation": "TPR",
+      "explanation": "Total peripheral resistance = MAP ÷ cardiac output\n= [MAP] ÷ [CO]\n= [RESULT] mmHg·min/L\n\nTPR reflects the resistance blood faces flowing through the systemic circulation. Arterioles are the main site of resistance. Vasodilation decreases TPR and vasodilation increases it."
     },
 
     {
@@ -101,15 +102,27 @@
 
     {
       "template_id": "HB_L3_09",
-      "pattern": "Arterial blood has an oxygen content of [CaO2] mL O₂/dL and mixed venous blood has an oxygen content of [CvO2] mL O₂/dL. Cardiac output is [CO] dL/min. Calculate the oxygen consumption in mL O₂/min.",
+      "pattern": "A male patient weighs [W] kg, is [H] cm tall and is [A] years old. Calculate his estimated basal metabolic rate in kcal/day using the Harris-Benedict equation. (BMR = 88.4 + 13.4W + 4.8H − 5.7A)",
       "variables": {
-        "CvO2": {"min": 10, "max": 16, "step": 1},
-        "DIFF": {"values": [4, 5, 6, 7, 8]},
-        "CaO2": {"calc": "CvO2 + DIFF"},
-        "CO":   {"min": 40, "max": 80, "step": 5}
+        "W": {"min": 50,  "max": 120, "step": 5},
+        "H": {"min": 155, "max": 195, "step": 5},
+        "A": {"min": 20,  "max": 70,  "step": 5}
       },
-      "calculation": "round2((CaO2 - CvO2) * CO)",
-      "explanation": "Oxygen consumption (VO₂) = cardiac output × (arterial O₂ content − venous O₂ content)\n= [CO] × ([CaO2] − [CvO2])\n= [CO] × [DIFF]\n= [RESULT] mL O₂/min\n\nThis is the Fick principle. Normal VO₂ at rest is 200-300 mL/min. The arterio-venous oxygen difference reflects how much O₂ tissues extract from each dL of blood. A widening difference signals reduced cardiac output or increased tissue oxygen demand."
+      "calculation": "round2(88.4 + 13.4 * W + 4.8 * H - 5.7 * A)",
+      "explanation": "BMR = 88.4 + 13.4W + 4.8H − 5.7A\n= 88.4 + 13.4 × [W] + 4.8 × [H] − 5.7 × [A]\n= [RESULT] kcal/day\n\nBMR is the energy needed at complete rest to maintain vital functions. It accounts for about 60-70% of total daily energy expenditure. Muscle mass increases BMR while ageing decreases it."
+    },
+
+    {
+      "template_id": "HB_L3_10",
+      "pattern": "A patient has a dead space ventilation of [VD] mL per breath, a respiratory rate of [RR] breaths per minute and a tidal volume of [TV] mL. Calculate the dead space fraction as a percentage.",
+      "variables": {
+        "TV": {"min": 400, "max": 700, "step": 50},
+        "EFF":{"values": [20,25,30,35,40]},
+        "VD": {"calc": "round2(TV * EFF / 100)"},
+        "RR": {"min": 10,  "max": 25,  "step": 1}
+      },
+      "calculation": "EFF",
+      "explanation": "Dead space fraction = (dead space ÷ tidal volume) × 100\n= ([VD] ÷ [TV]) × 100\n= [RESULT]%\n\nNormal dead space fraction is 20-30% of tidal volume. It increases in pulmonary embolism where alveoli are ventilated but not perfused — wasted ventilation. This is Bohr's dead space equation."
     }
 
   ],
