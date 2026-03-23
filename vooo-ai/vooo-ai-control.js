@@ -344,9 +344,9 @@ const VOOO_ENGINE_INSTANCES = {
 	'biology-cell-level-2' : 'biologycelll2',
 	'biology-cell-level-3' : 'biologycelll3',
 
-	'biology-human-body-level-1' : 'biologyhumbodysystemsl1',
-	'biology-human-body-level-2' : 'biologyhumbodysystemsl2',
-	'biology-human-body-level-3' : 'biologyhumbodysystemsl3',
+	'biology-human-body-level-1' : 'biologyhumanbodyl1',
+	'biology-human-body-level-2' : 'biologyhumanbodyl2',
+	'biology-human-body-level-3' : 'biologyhumanbodyl3',
 
 	'biology-ecology-ecosystems-level-1' : 'biologyecologyecosystemsl1',
 	'biology-ecology-ecosystems-level-2' : 'biologyecologyecosystemsl2',
