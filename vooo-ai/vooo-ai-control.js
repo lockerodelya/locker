@@ -159,6 +159,10 @@ const VOOO_ENGINE_REGISTRY = {
 	'cs-data-representation-level-1' : '/vooo-ai/subjects/cs-data-representation/engine-code/cs-data-representation-level-1.js',
 	'cs-data-representation-level-2' : '/vooo-ai/subjects/cs-data-representation/engine-code/cs-data-representation-level-2.js',
 	'cs-data-representation-level-3' : '/vooo-ai/subjects/cs-data-representation/engine-code/cs-data-representation-level-3.js',
+
+	'cs-algorithms-level-1' : '/vooo-ai/subjects/cs-algorithms/engine-code/cs-algorithms-level-1.js',
+	'cs-algorithms-level-2' : '/vooo-ai/subjects/cs-algorithms/engine-code/cs-algorithms-level-2.js',
+	'cs-algorithms-level-3' : '/vooo-ai/subjects/cs-algorithms/engine-code/cs-algorithms-level-3.js',
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -319,6 +323,9 @@ const VOOO_ENGINE_INSTANCES = {
 	'cs-data-representation-level-2' : 'csdatarepresentationl2',
 	'cs-data-representation-level-3' : 'csdatarepresentationl3',
 	
+	'cs-algorithms-level-1' : 'csalgorithmsl1',
+	'cs-algorithms-level-2' : 'csalgorithmsl2',
+	'cs-algorithms-level-3' : 'csalgorithmsl3',
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -590,6 +597,14 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'cs-data-representation-level-1', text: '• Data Representation L1' },
 					{ value: 'cs-data-representation-level-2', text: '• Data Representation L2' },
 					{ value: 'cs-data-representation-level-3', text: '• Data Representation L3' },
+                ]
+            },
+			{
+                label: 'Computer Science : Algorithms',
+                options: [
+                    { value: 'cs-algorithms-level-1', text: '• Algorithms L1' },
+					{ value: 'cs-algorithms-level-2', text: '• Algorithms L2' },
+					{ value: 'cs-algorithms-level-3', text: '• Algorithms L3' },
                 ]
             },			
 			
