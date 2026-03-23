@@ -7,12 +7,12 @@
       "template_id": "HB_L1_01",
       "pattern": "A person has a mass of [M] kg and a height of [H] m. Calculate their Body Mass Index (BMI).",
       "variables": {
-        "H":    {"values": [1.5,1.6,1.7,1.8,1.9]},
-        "BMI":  {"values": [18,20,22,24,25,26,28,30,32,35]},
-        "M":    {"calc": "round2(BMI * H * H)"}
+        "H":   {"values": [1.5,1.6,1.7,1.8,1.9]},
+        "BMI": {"values": [18,20,22,24,25,26,28,30,32,35]},
+        "M":   {"calc": "round2(BMI * H * H)"}
       },
       "calculation": "BMI",
-      "explanation": "BMI = mass ÷ height²\n= [M] ÷ [H]²\n= [M] ÷ [H*H]\n= [RESULT]\n\nBMI ranges: underweight < 18.5, healthy 18.5-24.9, overweight 25-29.9, obese ≥ 30. BMI is a useful screening tool but does not account for muscle mass or body composition."
+      "explanation": "BMI = mass ÷ height²\n= [M] ÷ [H]²\n= [M] ÷ [H*H]\n= [RESULT]\n\nBMI ranges: underweight < 18.5, healthy 18.5-24.9, overweight 25-29.9, obese ≥ 30. BMI is a useful screening tool but does not account for muscle mass."
     },
 
     {
@@ -28,61 +28,60 @@
 
     {
       "template_id": "HB_L1_03",
-      "pattern": "A person has a cardiac output of [CO] mL/min and a stroke volume of [SV] mL per beat. Calculate the heart rate in beats per minute.",
+      "pattern": "A patient has a systolic blood pressure of [SYS] mmHg and a diastolic blood pressure of [DIA] mmHg. Calculate the mean arterial pressure in mmHg using MAP = (SYS + 2×DIA) ÷ 3.",
       "variables": {
-        "SV":  {"values": [50,60,70,75,80,90,100,110,120]},
-        "HR":  {"min": 40,  "max": 200, "step": 5},
-        "CO":  {"calc": "SV * HR"}
+        "DIA": {"min": 60, "max": 90,  "step": 5},
+        "PP":  {"min": 30, "max": 60,  "step": 5},
+        "SYS": {"calc": "DIA + PP"}
       },
-      "calculation": "HR",
-      "explanation": "Heart rate = cardiac output ÷ stroke volume\n= [CO] ÷ [SV]\n= [RESULT] beats/min\n\nNormal resting heart rate is 60-100 beats per minute. Athletes often have lower resting heart rates because their hearts pump more blood per beat."
+      "calculation": "round2((SYS + 2 * DIA) / 3)",
+      "explanation": "MAP = (systolic + 2 × diastolic) ÷ 3\n= ([SYS] + 2 × [DIA]) ÷ 3\n= ([SYS] + [2*DIA]) ÷ 3\n= [RESULT] mmHg\n\nMAP represents average driving pressure for blood flow. Normal MAP is 70-100 mmHg. The formula weights diastolic pressure twice because the heart spends more time in diastole."
     },
 
     {
       "template_id": "HB_L1_04",
-      "pattern": "A person has a cardiac output of [CO] mL/min and a heart rate of [HR] beats per minute. Calculate the stroke volume in mL per beat.",
+      "pattern": "A person with a body mass of [W] kg performs an activity with a MET value of [MET] for [T] hours. Calculate the calories burned in kcal. (Calories = MET × weight × time)",
       "variables": {
-        "HR":  {"values": [40,50,60,70,75,80,90,100]},
-        "SV":  {"min": 50,  "max": 130, "step": 5},
-        "CO":  {"calc": "HR * SV"}
+        "W":   {"min": 50,  "max": 100, "step": 5},
+        "MET": {"values": [2,3,4,5,6,7,8,9,10,12]},
+        "T":   {"min": 1,   "max": 3,   "step": 1}
       },
-      "calculation": "SV",
-      "explanation": "Stroke volume = cardiac output ÷ heart rate\n= [CO] ÷ [HR]\n= [RESULT] mL/beat\n\nStroke volume increases during exercise due to increased venous return (Frank-Starling mechanism). Trained athletes have larger stroke volumes even at rest."
+      "calculation": "MET * W * T",
+      "explanation": "Calories burned = MET × body mass × time\n= [MET] × [W] × [T]\n= [RESULT] kcal\n\nMET (Metabolic Equivalent of Task) measures exercise intensity. Walking = 3 METs, jogging = 7 METs, cycling = 8 METs. Heavier people burn more calories for the same activity."
     },
 
     {
       "template_id": "HB_L1_05",
-      "pattern": "A person takes [B] breaths in [T] minutes. Calculate the breathing rate in breaths per minute.",
+      "pattern": "A person has a tidal volume of [TV] mL and a vital capacity of [VC] mL. Calculate the tidal volume as a percentage of vital capacity.",
       "variables": {
-        "T":  {"values": [1,2,3,4,5,6,7,8,9,10]},
-        "BR": {"min": 10,  "max": 30,  "step": 2},
-        "B":  {"calc": "T * BR"}
+        "VC":  {"min": 3000, "max": 6000, "step": 500},
+        "EFF": {"values": [8,10,12,14,15,16,18,20]},
+        "TV":  {"calc": "round2(VC * EFF / 100)"}
       },
-      "calculation": "BR",
-      "explanation": "Breathing rate = number of breaths ÷ time\n= [B] ÷ [T]\n= [RESULT] breaths/min\n\nNormal resting breathing rate is 12-20 breaths per minute. During exercise it increases to meet the greater oxygen demand and remove excess CO₂."
+      "calculation": "EFF",
+      "explanation": "Tidal volume % = (tidal volume ÷ vital capacity) × 100\n= ([TV] ÷ [VC]) × 100\n= [RESULT]%\n\nAt rest tidal volume is typically 10-15% of vital capacity. During exercise it can increase to 50-60% of vital capacity as breathing deepens."
     },
 
     {
       "template_id": "HB_L1_06",
-      "pattern": "A person has a pulmonary ventilation rate of [VR] mL/min and a breathing rate of [BR] breaths per minute. Calculate the tidal volume in mL.",
+      "pattern": "A person has a body mass of [M] kg. Estimate their total blood volume in mL. (Blood volume ≈ 70 mL per kg body mass)",
       "variables": {
-        "BR": {"values": [10,12,14,15,16,18,20,24,25,30]},
-        "TV": {"min": 300, "max": 700, "step": 50},
-        "VR": {"calc": "BR * TV"}
+        "M":   {"min": 40,  "max": 120, "step": 5},
+        "VOL": {"min": 1,   "max": 50,  "step": 1}
       },
-      "calculation": "TV",
-      "explanation": "Tidal volume = pulmonary ventilation rate ÷ breathing rate\n= [VR] ÷ [BR]\n= [RESULT] mL\n\nTidal volume is the volume of air inhaled or exhaled in one normal breath. At rest it is approximately 500 mL. It increases significantly during exercise."
+      "calculation": "M * 70",
+      "explanation": "Blood volume = body mass × 70 mL/kg\n= [M] × 70\n= [RESULT] mL\n\nAdults have approximately 70 mL of blood per kg of body mass — about 5 litres for a 70 kg person. Blood volume increases during pregnancy and in endurance athletes."
     },
 
     {
       "template_id": "HB_L1_07",
-      "pattern": "A person has a breathing rate of [BR] breaths per minute and a tidal volume of [TV] mL. Calculate the pulmonary ventilation rate in mL per minute.",
+      "pattern": "A person wants to lose [LOSS] kg of body fat. Calculate the total calorie deficit needed in kcal. (1 kg of fat ≈ 7700 kcal)",
       "variables": {
-        "BR": {"min": 10,  "max": 30,  "step": 2},
-        "TV": {"min": 300, "max": 700, "step": 50}
+        "LOSS": {"min": 1,  "max": 20, "step": 1},
+        "VOL":  {"min": 1,  "max": 50, "step": 1}
       },
-      "calculation": "BR * TV",
-      "explanation": "Pulmonary ventilation rate = breathing rate × tidal volume\n= [BR] × [TV]\n= [RESULT] mL/min\n\nPulmonary ventilation rate measures the total volume of air moved per minute. At rest it is about 6000 mL/min and can exceed 100,000 mL/min during intense exercise."
+      "calculation": "LOSS * 7700",
+      "explanation": "Calorie deficit = target weight loss × 7700 kcal/kg\n= [LOSS] × 7700\n= [RESULT] kcal\n\nTo lose 1 kg of fat a deficit of approximately 7700 kcal is needed. At a daily deficit of 500 kcal it takes about 15 days to lose 1 kg. Sustainable weight loss is 0.5-1 kg per week."
     },
 
     {
@@ -94,31 +93,31 @@
         "SYS": {"calc": "DIA + PP"}
       },
       "calculation": "PP",
-      "explanation": "Pulse pressure = systolic pressure − diastolic pressure\n= [SYS] − [DIA]\n= [RESULT] mmHg\n\nNormal pulse pressure is 40-60 mmHg. A wide pulse pressure may indicate aortic regurgitation or atherosclerosis. A narrow pulse pressure may indicate heart failure or shock."
+      "explanation": "Pulse pressure = systolic − diastolic\n= [SYS] − [DIA]\n= [RESULT] mmHg\n\nNormal pulse pressure is 40-60 mmHg. Wide pulse pressure may indicate atherosclerosis. Narrow pulse pressure may indicate heart failure or severe blood loss."
     },
 
     {
       "template_id": "HB_L1_09",
-      "pattern": "A person consumes [IN] kcal per day and expends [EXP] kcal per day through activity and metabolism. Calculate the daily calorie balance in kcal.",
+      "pattern": "A person consumes [IN] kcal per day and expends [EXP] kcal per day. Calculate the daily calorie balance in kcal.",
       "variables": {
         "EXP": {"min": 1500, "max": 3000, "step": 100},
         "BAL": {"min": 100,  "max": 500,  "step": 50},
         "IN":  {"calc": "EXP + BAL"}
       },
       "calculation": "BAL",
-      "explanation": "Calorie balance = intake − expenditure\n= [IN] − [EXP]\n= [RESULT] kcal\n\nA positive balance means more energy is consumed than used — the excess is stored as fat. A deficit of 3500 kcal is roughly equivalent to losing 0.45 kg of body fat."
+      "explanation": "Calorie balance = intake − expenditure\n= [IN] − [EXP]\n= [RESULT] kcal\n\nA positive balance means surplus energy is stored as fat. A negative balance means stored fat is used for energy. A surplus of 3500 kcal leads to approximately 0.45 kg of fat gain."
     },
 
     {
       "template_id": "HB_L1_10",
-      "pattern": "A drug has a half life of [THALF] hours. The initial concentration is [C0] mg/L. Calculate the concentration remaining after [N] half lives in mg/L.",
+      "pattern": "A drug has a half life of [THALF] hours. The initial plasma concentration is [C0] mg/L. Calculate the concentration remaining after [N] half lives in mg/L.",
       "variables": {
         "C0":    {"values": [100,200,400,800,1000,2000]},
         "N":     {"min": 1,  "max": 6,  "step": 1},
         "THALF": {"min": 1,  "max": 24, "step": 1}
       },
       "calculation": "round2(C0 * pow(0.5, N))",
-      "explanation": "Drug concentration = C₀ × (0.5)ⁿ\n= [C0] × (0.5)^[N]\n= [C0] × [pow(0.5,N)]\n= [RESULT] mg/L\n\nDrug concentration falls by half with each half life. After 5 half lives less than 3% of the original dose remains — the drug is considered eliminated from the body."
+      "explanation": "Drug concentration = C₀ × (0.5)ⁿ\n= [C0] × (0.5)^[N]\n= [C0] × [pow(0.5,N)]\n= [RESULT] mg/L\n\nAfter 5 half lives less than 3% of the original dose remains. This principle guides drug dosing intervals in clinical medicine."
     }
 
   ],
