@@ -7,8 +7,8 @@
 // ============================================
 
 const _ENGINE_JSON_FILE     = 'biology-human-body-level-1.json';
-const _ENGINE_CATEGORY_KEY  = 'biology-human-body-level-1';
-const _ENGINE_INSTANCE_NAME = 'biologyhumbodysystemsl1';
+const _ENGINE_CATEGORY_KEY  = 'biology-human-body-level-1-1';
+const _ENGINE_INSTANCE_NAME = 'biologyhumanbodyl1';
 
 // ============================================
 // ✋ DO NOT EDIT ANYTHING BELOW THIS LINE
@@ -426,19 +426,15 @@ calculateAnswer(template,variables){
             if(calc===''||calc==='null')return null;
             if(this.isPlainText(calc))return null;
 
-if(/^[A-Z][A-Z0-9_]*$/.test(calc)){
-    if(variables.hasOwnProperty(calc)){
-        const val=variables[calc];
-        if(template.answer_type==='shape_selector'&&typeof val==='string')return this.shapeMap[val]||val;
-        if(template.answer_type==='color_picker'&&typeof val==='string')return this.colorMap[val]||val;
-        if(typeof val==='number'){
-            // DEBUG: log to see what val actually is
-            console.log('DEBUG calculateAnswer - calc:', calc, 'val:', val);
-            return parseFloat(val.toFixed(4));
-        }
-        return val;
-    }
-}
+            if(/^[A-Z][A-Z0-9_]*$/.test(calc)){
+                if(variables.hasOwnProperty(calc)){
+                    const val=variables[calc];
+                    if(template.answer_type==='shape_selector'&&typeof val==='string')return this.shapeMap[val]||val;
+                    if(template.answer_type==='color_picker'&&typeof val==='string')return this.colorMap[val]||val;
+                    if(typeof val==='number')return parseFloat(val.toFixed(4));
+                    return val;
+                }
+            }
 
             if(calc.includes('repeat('))return this.evaluateExpression(calc,variables);
             if(calc.includes('next_in_pattern(')){
@@ -500,35 +496,22 @@ generateOptions(correctAnswer,template,variables){
             const correctNum=Number(correctAnswer);
             if(!isNaN(correctNum)&&isFinite(correctNum)){
                 const isInt=Number.isInteger(correctNum)||(Math.abs(correctNum-Math.round(correctNum))<0.0001);
-                const isDecimal=!isInt&&Math.abs(correctNum)<1;
+                const isDecimal=!isInt;
                 const isSmall=Math.abs(correctNum)<=12;
                 const fmt=v=>isInt?String(Math.round(v)):String(parseFloat(v.toFixed(isDecimal?4:2)));
                 options.push(fmt(correctNum));
-const baseOffsets=isDecimal
-    ?[0.1,-0.1,0.2,-0.2,0.25,-0.25,0.5,-0.5,0.3,-0.3]
-    :isSmall
-        ?[1,2,3,-1,-2,-3,4,-4,5,-5,6,-6]
-        :[5,-5,10,-10,15,-15,20,-20,25,-25];
-for(const off of baseOffsets){
-    if(options.length>=4)break;
-    const wrong=correctNum+off;
-    // FIX: Allow negative offsets that still result in positive numbers
-    if(wrong<=0 && correctNum>0) continue;
-    const ws=fmt(wrong);
-    if(!options.includes(ws))options.push(ws);
-}
-// FIX: Add smaller positive offsets if we still need more options
-if(options.length<4 && correctNum>1){
-    const smallOffsets=[0.5,1,1.5,2,2.5,3,3.5,4];
-    for(const off of smallOffsets){
-        if(options.length>=4)break;
-        const wrong=correctNum-off;
-        if(wrong>0){
-            const ws=fmt(wrong);
-            if(!options.includes(ws))options.push(ws);
-        }
-    }
-}
+                const baseOffsets=isDecimal
+                    ?[0.1,-0.1,0.2,-0.2,0.25,-0.25,0.5,-0.5,0.3,-0.3]
+                    :isSmall
+                        ?[1,2,3,-1,-2,-3,4,-4,5,-5,6,-6]
+                        :[5,-5,10,-10,15,-15,20,-20,25,-25];
+                for(const off of baseOffsets){
+                    if(options.length>=4)break;
+                    const wrong=correctNum+off;
+                    if(wrong<0&&correctNum>=0)continue;
+                    const ws=fmt(wrong);
+                    if(!options.includes(ws))options.push(ws);
+                }
                 let attempts=0;
                 while(options.length<4&&attempts<60){
                     attempts++;
@@ -540,6 +523,7 @@ if(options.length<4 && correctNum>1){
                     else if(mag>10)offset=sign*(Math.floor(Math.random()*5)+1);
                     else offset=sign*(Math.floor(Math.random()*4)+1);
                     const wrong=correctNum+offset;
+					if(wrong<0&&correctNum>=0)continue;
                     const ws=fmt(wrong);
                     if(!options.includes(ws))options.push(ws);
                 }
@@ -584,6 +568,7 @@ if(options.length<4 && correctNum>1){
             if(prog.currentIndex>=total){
                 prog.shuffledIndices=this._shuffleIndices(total);
                 prog.currentIndex=0;
+				this.clearUsedQuestions();
             }
             try{localStorage.setItem(sKey,JSON.stringify(prog));}catch(e){}
             return idx;
