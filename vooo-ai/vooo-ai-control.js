@@ -632,7 +632,31 @@ const VOOO_ENGINE_INSTANCES = {
 					{ value: 'cs-algorithms-level-2', text: '• Algorithms L2' },
 					{ value: 'cs-algorithms-level-3', text: '• Algorithms L3' },
                 ]
-            },			
+            },
+			{
+                label: 'Biology : Cell Biology',
+                options: [
+                    { value: 'biology-cell-level-1', text: '• Cell Biology L1' },
+					{ value: 'biology-cell-level-2', text: '• Cell Biology L2' },
+					{ value: 'biology-cell-level-3', text: '• Cell Biology L3' },
+                ]
+            },
+			{
+                label: 'Biology : Human Body Systems',
+                options: [
+                    { value: 'biology-human-body-level-1', text: '• Human Body Systems L1' },
+					{ value: 'biology-human-body-level-2', text: '• Human Body Systems L2' },
+					{ value: 'biology-human-body-level-3', text: '• Human Body Systems L3' },
+                ]
+            },
+			{
+                label: 'Biology : Ecology & Ecosystems',
+                options: [
+                    { value: 'biology-ecology-ecosystems-level-1', text: '• Ecology & Ecosystems L1' },
+					{ value: 'biology-ecology-ecosystems-level-2', text: '• Ecology & Ecosystems L2' },
+					{ value: 'biology-ecology-ecosystems-level-3', text: '• Ecology & Ecosystems L3' },
+                ]
+            },
 			
             // --- ADD NEW OPTGROUP BELOW THIS LINE ---
         ];
