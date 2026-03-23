@@ -1,0 +1,138 @@
+{
+  "puzzle_type": "biology-cell-level-3",
+  "display_name": "Cell Biology L3",
+  "templates": [
+
+    {
+      "template_id": "CB_L3_01",
+      "pattern": "A spherical cell has a radius of [R] μm. Calculate the volume of the cell in μm³.",
+      "variables": {
+        "R":   {"min": 1,  "max": 20, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round2(4 * 3.14159 * R * R * R / 3)",
+      "explanation": "Volume of sphere = (4/3)πr³\n= (4/3) × π × [R]³\n= 4 × 3.14159 × [R*R*R] ÷ 3\n= [RESULT] μm³\n\nVolume grows much faster than surface area as radius increases. Doubling the radius increases volume 8-fold but surface area only 4-fold — this is why cells divide rather than grow indefinitely."
+    },
+
+    {
+      "template_id": "CB_L3_02",
+      "pattern": "A spherical cell has a radius of [R] μm. Calculate the surface area to volume ratio of the cell in μm⁻¹.",
+      "variables": {
+        "R":   {"min": 1,  "max": 20, "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round2(3 / R)",
+      "explanation": "SA:V ratio of sphere = (4πr²) ÷ (4/3)πr³ = 3 ÷ r\n= 3 ÷ [R]\n= [RESULT] μm⁻¹\n\nAs cell radius doubles the SA:V ratio halves. Small cells are more efficient at exchanging substances. This fundamental relationship drives cell division and the evolution of specialised exchange surfaces."
+    },
+
+    {
+      "template_id": "CB_L3_03",
+      "pattern": "Mitosis in a cell type takes [MIT_T] minutes. A sample of cells has a mitotic index of [MI]%. Calculate the total cell cycle length in minutes.",
+      "variables": {
+        "MIT_T": {"min": 20,  "max": 120, "step": 10},
+        "MI":    {"values": [1,2,4,5,8,10,12,15,20,25]}
+      },
+      "calculation": "round2(MIT_T * 100 / MI)",
+      "explanation": "Cell cycle length = mitosis duration × 100 ÷ mitotic index\n= [MIT_T] × 100 ÷ [MI]\n= [RESULT] minutes\n\nThis assumes cells are equally likely to be at any stage of the cycle. The mitotic index reflects the proportion of time spent in mitosis relative to the whole cycle."
+    },
+
+    {
+      "template_id": "CB_L3_04",
+      "pattern": "A membrane has a surface area of [SA] μm², a concentration difference of [CD] mmol/L, a permeability coefficient of [PERM] and a thickness of [T] μm. Calculate the rate of diffusion in arbitrary units.",
+      "variables": {
+        "SA":   {"min": 10,  "max": 200, "step": 10},
+        "CD":   {"min": 1,   "max": 10,  "step": 1},
+        "PERM": {"values": [1,2,3,4,5]},
+        "T":    {"values": [1,2,4,5,8,10]}
+      },
+      "calculation": "round2(SA * CD * PERM / T)",
+      "explanation": "Extended Fick's Law: rate = (SA × CD × permeability) ÷ thickness\n= ([SA] × [CD] × [PERM]) ÷ [T]\n= [SA*CD*PERM] ÷ [T]\n= [RESULT]\n\nPermeability varies for different molecules. Lipid-soluble molecules cross membranes faster than polar molecules. This is why cell membranes are selectively permeable."
+    },
+
+    {
+      "template_id": "CB_L3_05",
+      "pattern": "A DNA molecule undergoes [N] rounds of replication. Calculate the number of new DNA strands produced (excluding the original two strands).",
+      "variables": {
+        "N":   {"min": 1,  "max": 8,  "step": 1},
+        "VOL": {"min": 1,  "max": 50, "step": 1}
+      },
+      "calculation": "round2(pow(2, N) - 2)",
+      "explanation": "New DNA strands = 2ⁿ − 2\n= 2^[N] − 2\n= [pow(2,N)] − 2\n= [RESULT]\n\nSemi-conservative replication produces 2ⁿ total DNA molecules after n rounds. Subtracting 2 gives the number of new molecules since the two original strands are always retained."
+    },
+
+    {
+      "template_id": "CB_L3_06",
+      "pattern": "A plant grows from an initial dry mass of [W1] g to a final dry mass of [W2] g over [TIME] days. Calculate the relative growth rate in per day.",
+      "variables": {
+        "W1":   {"min": 1,   "max": 10,  "step": 1},
+        "MULT": {"values": [2,3,4,5,6,7,8,9,10]},
+        "W2":   {"calc": "W1 * MULT"},
+        "TIME": {"min": 1,   "max": 20,  "step": 1}
+      },
+      "calculation": "round2(log(MULT) / TIME)",
+      "explanation": "Relative growth rate = ln(W₂/W₁) ÷ time\n= ln([W2]/[W1]) ÷ [TIME]\n= ln([MULT]) ÷ [TIME]\n= [RESULT] per day\n\nRGR measures growth relative to existing mass. It allows fair comparison between plants of different sizes. A high RGR means rapid proportional growth."
+    },
+
+    {
+      "template_id": "CB_L3_07",
+      "pattern": "An organism has a maximum oxygen uptake (VO₂ max) of [VO2] mL O₂/kg/min and a body mass of [MASS] kg. Calculate the maximum oxygen consumption rate in mL/min.",
+      "variables": {
+        "VO2":  {"min": 20,  "max": 80,  "step": 5},
+        "MASS": {"min": 30,  "max": 100, "step": 5}
+      },
+      "calculation": "VO2 * MASS",
+      "explanation": "O₂ consumption = VO₂ max × body mass\n= [VO2] × [MASS]\n= [RESULT] mL/min\n\nVO₂ max is a key measure of aerobic fitness. Elite endurance athletes can have VO₂ max values above 70 mL/kg/min. Untrained individuals are typically 35-45 mL/kg/min."
+    },
+
+    {
+      "template_id": "CB_L3_08",
+      "pattern": "An enzyme converts [PRODUCT] nmol of substrate into product in [TIME] seconds. Calculate the enzyme activity in nmol/s.",
+      "variables": {
+        "TIME":    {"values": [1,2,4,5,8,10,20,25,50]},
+        "RATE":    {"min": 1,  "max": 50, "step": 1},
+        "PRODUCT": {"calc": "TIME * RATE"}
+      },
+      "calculation": "RATE",
+      "explanation": "Enzyme activity = product formed ÷ time\n= [PRODUCT] ÷ [TIME]\n= [RESULT] nmol/s\n\nEnzyme activity is measured by how much product is formed per unit time. It depends on enzyme concentration, substrate concentration, temperature and pH."
+    },
+
+    {
+      "template_id": "CB_L3_09",
+      "pattern": "An enzyme has a reaction rate of [R1] nmol/s at [T1]°C and [R2] nmol/s at [T2]°C where T2 = T1 + 10. Calculate the Q10 temperature coefficient.",
+      "variables": {
+        "T1":   {"min": 10,  "max": 40,  "step": 5},
+        "R1":   {"min": 5,   "max": 50,  "step": 5},
+        "MULT": {"values": [2,3,4,5]},
+        "R2":   {"calc": "R1 * MULT"},
+        "T2":   {"calc": "T1 + 10"}
+      },
+      "calculation": "MULT",
+      "explanation": "Q10 = rate at (T+10°C) ÷ rate at T°C\n= [R2] ÷ [R1]\n= [RESULT]\n\nFor most enzymes Q10 ≈ 2 meaning the reaction rate doubles for every 10°C rise in temperature. Above the optimum temperature the rate falls as the enzyme denatures."
+    },
+
+    {
+      "template_id": "CB_L3_10",
+      "pattern": "An enzyme has a normal activity of [NORM] nmol/s. In the presence of an inhibitor the activity falls to [INH] nmol/s. Calculate the percentage inhibition.",
+      "variables": {
+        "NORM": {"min": 20,  "max": 100, "step": 5},
+        "EFF":  {"values": [10,20,25,30,40,50,60,70,75,80,90]},
+        "INH":  {"calc": "round2(NORM * (100 - EFF) / 100)"}
+      },
+      "calculation": "EFF",
+      "explanation": "Percentage inhibition = (normal − inhibited) ÷ normal × 100\n= ([NORM] − [INH]) ÷ [NORM] × 100\n= [RESULT]%\n\nCompetitive inhibitors compete with substrate for the active site. Non-competitive inhibitors bind elsewhere and change the active site shape. Both reduce enzyme activity."
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your formula! 📐","Almost! 😊",
+      "Think carefully! 🤔","Show your working! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
