@@ -6,8 +6,8 @@
 // ⭐⭐⭐ EDIT ONLY THESE 3 LINES FOR A NEW ENGINE ⭐⭐⭐
 // ============================================
 
-const _ENGINE_JSON_FILE     = 'biology-human-body-systems-level-1.json';
-const _ENGINE_CATEGORY_KEY  = 'biology-human-body-systems-level-1';
+const _ENGINE_JSON_FILE     = 'biology-human-body-level-1.json';
+const _ENGINE_CATEGORY_KEY  = 'biology-human-body-level-1';
 const _ENGINE_INSTANCE_NAME = 'biologyhumbodysystemsl1';
 
 // ============================================
