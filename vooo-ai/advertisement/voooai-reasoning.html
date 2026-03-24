@@ -754,17 +754,18 @@
         const hamburger = document.getElementById('hamburger');
         const dropdown  = document.getElementById('dropdown');
         if (hamburger && dropdown) {
-            hamburger.addEventListener('click', function(e) {
-                e.stopPropagation();
-                dropdown.classList.toggle('active');
-                document.body.classList.toggle('menu-open');
-                const icon = hamburger.querySelector('i');
-                if (dropdown.classList.contains('active')) {
-                    icon.classList.replace('fa-bars', 'fa-times');
-                } else {
-                    icon.classList.replace('fa-times', 'fa-bars');
-                }
-            });
+// AFTER — read first, then write
+hamburger.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const isActive = dropdown.classList.contains('active'); // read first
+    const icon = hamburger.querySelector('i');              // read first
+    dropdown.classList.toggle('active');                    // then write
+    document.body.classList.toggle('menu-open');            // then write
+    icon.classList.replace(
+        isActive ? 'fa-times' : 'fa-bars',
+        isActive ? 'fa-bars' : 'fa-times'
+    );
+});
             document.addEventListener('click', function(e) {
                 if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
                     dropdown.classList.remove('active');
