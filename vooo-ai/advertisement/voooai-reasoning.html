@@ -308,8 +308,15 @@
     font-size: 0.85rem;
     color: var(--muted);
   }
-  .breadcrumb a { color: var(--blue-light); text-decoration: none; }
-  .breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb a {
+  color: var(--blue);          /* darker = better contrast too */
+  text-decoration: underline;  /* visible by default, not just on hover */
+  text-underline-offset: 3px;  /* small gap between text and underline, looks cleaner */
+}
+.breadcrumb a:hover {
+  text-decoration: underline;
+  opacity: 0.75;               /* hover feedback without relying on color change */
+}
   .breadcrumb span { margin: 0 6px; }
 
   /* ── HERO ── */
