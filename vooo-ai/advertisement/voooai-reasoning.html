@@ -791,11 +791,18 @@ hamburger.addEventListener('click', function(e) {
     });
 
     // FAQ accordion
-    document.querySelectorAll('.faq-q').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var item   = btn.closest('.faq-item');
-            var isOpen = item.classList.contains('open');
-            document.querySelectorAll('.faq-item').forEach(function(i) {
+// AFTER — batch reads first, then writes
+document.querySelectorAll('.faq-q').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var item = btn.closest('.faq-item');
+        var isOpen = item.classList.contains('open'); // read first
+
+        // collect all items first (read)
+        var allItems = document.querySelectorAll('.faq-item');
+        
+        // then do all writes together
+        requestAnimationFrame(function() {
+            allItems.forEach(function(i) {
                 i.classList.remove('open');
                 i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
             });
@@ -805,6 +812,7 @@ hamburger.addEventListener('click', function(e) {
             }
         });
     });
+});
 </script>
 
 <!-- Lazy GTM -->
