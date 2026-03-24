@@ -176,6 +176,35 @@ const VOOO_ENGINE_REGISTRY = {
 	'biology-ecology-ecosystems-level-2' : '/vooo-ai/subjects/biology-ecology-ecosystems/engine-code/biology-ecology-ecosystems-level-2.js',
 	'biology-ecology-ecosystems-level-3' : '/vooo-ai/subjects/biology-ecology-ecosystems/engine-code/biology-ecology-ecosystems-level-3.js',
 	
+	'environmental-pollution-level-1' : '/vooo-ai/subjects/environmental-pollution/engine-code/environmental-pollution-level-1.js',
+	'environmental-pollution-level-2' : '/vooo-ai/subjects/environmental-pollution/engine-code/environmental-pollution-level-2.js',
+	'environmental-pollution-level-3' : '/vooo-ai/subjects/environmental-pollution/engine-code/environmental-pollution-level-3.js',
+
+	'environmental-ecosystems-level-1' : '/vooo-ai/subjects/environmental-ecosystems/engine-code/environmental-ecosystems-level-1.js',
+	'environmental-ecosystems-level-2' : '/vooo-ai/subjects/environmental-ecosystems/engine-code/environmental-ecosystems-level-2.js',
+	'environmental-ecosystems-level-3' : '/vooo-ai/subjects/environmental-ecosystems/engine-code/environmental-ecosystems-level-3.js',
+
+	'environmental-renewable-level-1' : '/vooo-ai/subjects/environmental-renewable/engine-code/environmental-renewable-level-1.js',
+	'environmental-renewable-level-2' : '/vooo-ai/subjects/environmental-renewable/engine-code/environmental-renewable-level-2.js',
+	'environmental-renewable-level-3' : '/vooo-ai/subjects/environmental-renewable/engine-code/environmental-renewable-level-3.js',
+	
+	'environmental-biodiversity-level-1' : '/vooo-ai/subjects/environmental-biodiversity/engine-code/environmental-biodiversity-level-1.js',
+	'environmental-biodiversity-level-2' : '/vooo-ai/subjects/environmental-biodiversity/engine-code/environmental-biodiversity-level-2.js',
+	'environmental-biodiversity-level-3' : '/vooo-ai/subjects/environmental-biodiversity/engine-code/environmental-biodiversity-level-3.js',
+
+	'environmental-human-level-1' : '/vooo-ai/subjects/environmental-human/engine-code/environmental-human-level-1.js',
+	'environmental-human-level-2' : '/vooo-ai/subjects/environmental-human/engine-code/environmental-human-level-2.js',
+	'environmental-human-level-3' : '/vooo-ai/subjects/environmental-human/engine-code/environmental-human-level-3.js',
+
+	'environmental-sustainability-level-1' : '/vooo-ai/subjects/environmental-sustainability/engine-code/environmental-sustainability-level-1.js',
+	'environmental-sustainability-level-2' : '/vooo-ai/subjects/environmental-sustainability/engine-code/environmental-sustainability-level-2.js',
+	'environmental-sustainability-level-3' : '/vooo-ai/subjects/environmental-sustainability/engine-code/environmental-sustainability-level-3.js',
+	
+	'environmental-water-level-1' : '/vooo-ai/subjects/environmental-water/engine-code/environmental-water-level-1.js',
+	'environmental-water-level-2' : '/vooo-ai/subjects/environmental-water/engine-code/environmental-water-level-2.js',
+	'environmental-water-level-3' : '/vooo-ai/subjects/environmental-water/engine-code/environmental-water-level-3.js',
+	
+	
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -351,6 +380,34 @@ const VOOO_ENGINE_INSTANCES = {
 	'biology-ecology-ecosystems-level-1' : 'biologyecologyecosystemsl1',
 	'biology-ecology-ecosystems-level-2' : 'biologyecologyecosystemsl2',
 	'biology-ecology-ecosystems-level-3' : 'biologyecologyecosystemsl3',
+	
+	'environmental-pollution-level-1' : 'environmentalpollutionl1',
+	'environmental-pollution-level-2' : 'environmentalpollutionl2',
+	'environmental-pollution-level-3' : 'environmentalpollutionl3',
+	
+	'environmental-ecosystems-level-1' : 'environmentalecosystemsl1',
+	'environmental-ecosystems-level-2' : 'environmentalecosystemsl2',
+	'environmental-ecosystems-level-3' : 'environmentalecosystemsl3',
+	
+	'environmental-renewable-level-1' : 'environmentalrenewablel1',
+	'environmental-renewable-level-2' : 'environmentalrenewablel2',
+	'environmental-renewable-level-3' : 'environmentalrenewablel3',
+	
+	'environmental-biodiversity-level-1' : 'environmentalbiodiversityl1',
+	'environmental-biodiversity-level-2' : 'environmentalbiodiversityl2',
+	'environmental-biodiversity-level-3' : 'environmentalbiodiversityl3',
+	
+	'environmental-human-level-1' : 'environmentalhumanl1',
+	'environmental-human-level-2' : 'environmentalhumanl2',
+	'environmental-human-level-3' : 'environmentalhumanl3',
+	
+	'environmental-sustainability-level-1' : 'environmentalsustainabilityl1',
+	'environmental-sustainability-level-2' : 'environmentalsustainabilityl2',
+	'environmental-sustainability-level-3' : 'environmentalsustainabilityl3',
+	
+	'environmental-water-level-1' : 'environmentalwaterl1',
+	'environmental-water-level-2' : 'environmentalwaterl2',
+	'environmental-water-level-3' : 'environmentalwaterl3',
 	
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
@@ -657,6 +714,64 @@ const VOOO_ENGINE_INSTANCES = {
 					{ value: 'biology-ecology-ecosystems-level-3', text: '• Ecology & Ecosystems L3' },
                 ]
             },
+			{
+                label: 'Environmental Science : Pollution',
+                options: [
+                    { value: 'environmental-pollution-level-1', text: '• Pollution L1' },
+					{ value: 'environmental-pollution-level-2', text: '• Pollution L2' },
+					{ value: 'environmental-pollution-level-3', text: '• Pollution L3' },
+                ]
+            },
+			{
+                label: 'Environmental Science : Ecosystems',
+                options: [
+                    { value: 'environmental-ecosystems-level-1', text: '• Ecosystems L1' },
+					{ value: 'environmental-ecosystems-level-2', text: '• Ecosystems L2' },
+					{ value: 'environmental-ecosystems-level-3', text: '• Ecosystems L3' },
+                ]
+            },
+			{
+                label: 'Environmental Science : Renewable Energy',
+                options: [
+                    { value: 'environmental-renewable-level-1', text: '• Renewable Energy L1' },
+					{ value: 'environmental-renewable-level-2', text: '• Renewable Energy L2' },
+					{ value: 'environmental-renewable-level-3', text: '• Renewable Energy L3' },
+                ]
+            },
+			{
+                label: 'Environmental Science : Biodiversity',
+                options: [
+                    { value: 'environmental-biodiversity-level-1', text: '• Biodiversity L1' },
+					{ value: 'environmental-biodiversity-level-2', text: '• Biodiversity L2' },
+					{ value: 'environmental-biodiversity-level-3', text: '• Biodiversity L3' },
+                ]
+            },
+			{
+                label: 'Environmental Science : Human Impact',
+                options: [
+                    { value: 'environmental-human-level-1', text: '• Human Impact L1' },
+					{ value: 'environmental-human-level-2', text: '• Human Impact L2' },
+					{ value: 'environmental-human-level-3', text: '• Human Impact L3' },
+                ]
+            },
+			{
+                label: 'Environmental Science : Sustainability',
+                options: [
+                    { value: 'environmental-sustainability-level-1', text: '• Sustainability L1' },
+					{ value: 'environmental-sustainability-level-2', text: '• Sustainability L2' },
+					{ value: 'environmental-sustainability-level-3', text: '• Sustainability L3' },
+                ]
+            },
+			{
+                label: 'Environmental Science : Water Cycle',
+                options: [
+                    { value: 'environmental-water-level-1', text: '• Water Cycle L1' },
+					{ value: 'environmental-water-level-2', text: '• Water Cycle L2' },
+					{ value: 'environmental-water-level-3', text: '• Water Cycle L3' },
+                ]
+            },
+			
+			
 			
             // --- ADD NEW OPTGROUP BELOW THIS LINE ---
         ];
