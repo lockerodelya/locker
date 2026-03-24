@@ -16,7 +16,7 @@ const _ENGINE_INSTANCE_NAME = 'environmentalbiodiversityl3';
 
 
     // ── JSON base path — same for all engines ──
-    const _JSON_BASE_PATH = '/vooo-ai/subjects/environmentalbiodiversityl1/json-code/';
+    const _JSON_BASE_PATH = '/vooo-ai/subjects/environmental-biodiversity/json-code/';
 
     // ════════════════════════════════════════════
     // ENGINE CLASS
