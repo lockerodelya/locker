@@ -252,14 +252,17 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // Holds verified user data from Step 1
         let verifiedUserEmail = null;
+        let verifiedUserDocRef = null;
+        let verifiedUserCurrentPassword = null;
 
         const step1 = document.getElementById('step1');
         const step2 = document.getElementById('step2');
         const errorDiv = document.getElementById('error-message');
         const successDiv = document.getElementById('success-message');
 
-        // Verify form
+        // ── STEP 1: Verify Identity ──────────────────────────────────────────
         document.getElementById('verify-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -275,7 +278,7 @@
             successDiv.style.display = 'none';
 
             try {
-                // Find user by username
+                // Find user by username in Firestore
                 const userQuery = await db.collection('users')
                     .where('username', '==', username)
                     .limit(1)
@@ -288,26 +291,26 @@
                 const userDoc  = userQuery.docs[0];
                 const userData = userDoc.data();
 
-                // Verify details match
+                // Verify all details match
                 if (userData.dob !== dob) {
                     throw new Error('Date of birth does not match.');
                 }
-
                 if (userData.phone !== phone) {
                     throw new Error('Phone number does not match.');
                 }
-
                 if (userData.email !== email) {
                     throw new Error('Email ID does not match.');
                 }
 
-                // All verification passed
-                verifiedUserEmail = userData.email;
+                // Store for use in Step 2
+                verifiedUserEmail           = userData.email;
+                verifiedUserDocRef          = userDoc.ref;
+                verifiedUserCurrentPassword = userData.password; // stored plaintext in Firestore
 
                 successDiv.textContent = '✓ Identity verified! Now set your new password.';
                 successDiv.style.display = 'block';
 
-                // Move to step 2
+                // Move to Step 2
                 setTimeout(() => {
                     step1.classList.remove('active');
                     step2.classList.add('active');
@@ -323,13 +326,14 @@
             }
         });
 
-        // Reset password form
+        // ── STEP 2: Reset Password ───────────────────────────────────────────
         document.getElementById('reset-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const newPassword     = document.getElementById('new-password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
 
+            // Client-side validation
             if (newPassword !== confirmPassword) {
                 errorDiv.textContent = 'Passwords do not match.';
                 errorDiv.style.display = 'block';
@@ -346,13 +350,62 @@
             resetBtn.disabled = true;
             resetBtn.textContent = 'Resetting...';
             errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
 
             try {
-                // Send password reset email
-                await auth.sendPasswordResetEmail(verifiedUserEmail);
+                const apiKey = VOOO_CONFIG.firebase.apiKey;
 
-                successDiv.textContent = '✓ Password reset email sent! Check your email and follow the link to complete reset.';
+                // ── Step A: Sign in with current password to get a fresh idToken ──
+                // (This works because you store plaintext password in Firestore)
+                const signInResp = await fetch(
+                    `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: verifiedUserEmail,
+                            password: verifiedUserCurrentPassword,
+                            returnSecureToken: true
+                        })
+                    }
+                );
+                const signInData = await signInResp.json();
+
+                if (signInData.error) {
+                    throw new Error('Re-authentication failed. Please contact support.');
+                }
+
+                const idToken = signInData.idToken;
+
+                // ── Step B: Update password directly via Firebase Auth REST API ──
+                const updateResp = await fetch(
+                    `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${apiKey}`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            idToken: idToken,
+                            password: newPassword,
+                            returnSecureToken: true
+                        })
+                    }
+                );
+                const updateData = await updateResp.json();
+
+                if (updateData.error) {
+                    throw new Error('Password update failed. Please try again.');
+                }
+
+                // ── Step C: Update the password in Firestore as well ──
+                await verifiedUserDocRef.update({ password: newPassword });
+
+                // ── Step D: Sign out any active Firebase session ──
+                await auth.signOut();
+
+                // ── Step E: Show success — NO email, just this message ──
+                successDiv.textContent = '✓ Password Changed Successfully!';
                 successDiv.style.display = 'block';
+                errorDiv.style.display = 'none';
 
                 // Redirect to login after 3 seconds
                 setTimeout(() => {
@@ -361,14 +414,14 @@
 
             } catch (error) {
                 console.error('Reset error:', error);
-                errorDiv.textContent = 'Unable to reset password. Please contact support at ' + VOOO_CONFIG.business.email;
+                errorDiv.textContent = error.message || 'Unable to reset password. Please contact support at ' + VOOO_CONFIG.business.email;
                 errorDiv.style.display = 'block';
                 resetBtn.disabled = false;
                 resetBtn.textContent = 'Reset Password';
             }
         });
 
-        // Validate password
+        // ── Password strength validator ──────────────────────────────────────
         function validatePassword(password) {
             const hasUpper   = /[A-Z]/.test(password);
             const hasLower   = /[a-z]/.test(password);
@@ -377,7 +430,7 @@
             return hasUpper && hasLower && hasNumber && hasSpecial;
         }
 
-        // Phone: digits only, max 10
+        // ── Phone: digits only, max 10 ───────────────────────────────────────
         const phoneInput = document.getElementById('phone');
         phoneInput.addEventListener('input', (e) => {
             e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
@@ -388,7 +441,7 @@
             phoneInput.value = pastedData.replace(/\D/g, '').slice(0, 10);
         });
 
-        // Auto-format DOB
+        // ── Auto-format DOB as DD-MM-YYYY ────────────────────────────────────
         document.getElementById('dob').addEventListener('input', (e) => {
             let numbers = e.target.value.replace(/\D/g, '').slice(0, 8);
             let formatted = '';
