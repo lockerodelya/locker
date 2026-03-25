@@ -305,7 +305,7 @@
                 // Store for use in Step 2
                 verifiedUserEmail           = userData.email;
                 verifiedUserDocRef          = userDoc.ref;
-                verifiedUserCurrentPassword = userData.password; // stored plaintext in Firestore
+                verifiedUserCurrentPassword = userData.password;
 
                 successDiv.textContent = '✓ Identity verified! Now set your new password.';
                 successDiv.style.display = 'block';
@@ -355,36 +355,7 @@
             try {
                 const apiKey = VOOO_CONFIG.firebase.apiKey;
 
-                // ── DEBUG: Re-fetch Firestore doc and dump ALL field names ──
-                const freshDoc  = await verifiedUserDocRef.get();
-                const freshData = freshDoc.data();
-
-                console.log('===== VOOO DEBUG START =====');
-                console.log('Email:', verifiedUserEmail);
-                console.log('All Firestore field names on this user doc:');
-                Object.keys(freshData).forEach(key => {
-                    const val    = String(freshData[key] ?? '');
-                    const masked = val.length > 2 ? val.slice(0, 2) + '*'.repeat(Math.min(val.length - 2, 6)) : val;
-                    console.log(`  FIELD: "${key}" => "${masked}" (len: ${val.length})`);
-                });
-
-                // Auto-detect password field (try common names)
-                const passwordToUse = freshData.password
-                    || freshData.pass
-                    || freshData.userPassword
-                    || freshData.passwd
-                    || freshData.user_password
-                    || freshData.Password
-                    || null;
-
-                console.log('Password field resolved:', passwordToUse ? 'YES len=' + passwordToUse.length : 'NOT FOUND');
-                console.log('===== VOOO DEBUG END =====');
-
-                if (!passwordToUse) {
-                    throw new Error('Cannot locate password field in Firestore. Open DevTools Console — look for "VOOO DEBUG" to see all field names on this user document.');
-                }
-
-                // ── Step A: Sign in with Firestore password to get a fresh idToken ──
+                // Step A: sign in with the current password saved from Firestore
                 const signInResp = await fetch(
                     `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
                     {
@@ -392,50 +363,41 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             email: verifiedUserEmail,
-                            password: passwordToUse,
+                            password: verifiedUserCurrentPassword,
                             returnSecureToken: true
                         })
                     }
                 );
                 const signInData = await signInResp.json();
-                console.log('signInWithPassword result:', signInData.error ? JSON.stringify(signInData.error) : 'SUCCESS');
+                if (signInData.error) throw new Error('Sign-in failed: ' + signInData.error.message);
 
-                if (signInData.error) {
-                    throw new Error(`Re-auth failed [${signInData.error.code}]: ${signInData.error.message}`);
-                }
-
-                const idToken = signInData.idToken;
-                // ── Step B: Update password directly via Firebase Auth REST API ──
+                // Step B: update password in Firebase Auth
                 const updateResp = await fetch(
                     `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${apiKey}`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            idToken: idToken,
+                            idToken: signInData.idToken,
                             password: newPassword,
                             returnSecureToken: true
                         })
                     }
                 );
                 const updateData = await updateResp.json();
+                if (updateData.error) throw new Error('Password update failed: ' + updateData.error.message);
 
-                if (updateData.error) {
-                    throw new Error('Password update failed. Please try again.');
-                }
-
-                // ── Step C: Update the password in Firestore as well ──
+                // Step C: overwrite password field in Firestore
                 await verifiedUserDocRef.update({ password: newPassword });
 
-                // ── Step D: Sign out any active Firebase session ──
+                // Step D: sign out
                 await auth.signOut();
 
-                // ── Step E: Show success — NO email, just this message ──
+                // Step E: done
                 successDiv.textContent = '✓ Password Changed Successfully!';
                 successDiv.style.display = 'block';
                 errorDiv.style.display = 'none';
 
-                // Redirect to login after 3 seconds
                 setTimeout(() => {
                     window.location.href = 'vooologin.html';
                 }, 3000);
