@@ -355,9 +355,7 @@
             try {
                 const apiKey = VOOO_CONFIG.firebase.apiKey;
 
-                // Step A: sign in with the current password saved from Firestore
-                console.log('EMAIL BEING USED:', verifiedUserEmail);
-                console.log('PASSWORD FROM FIRESTORE:', verifiedUserCurrentPassword);
+                // Step 1: sign in using current Firestore password to get idToken
                 const signInResp = await fetch(
                     `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
                     {
@@ -373,7 +371,7 @@
                 const signInData = await signInResp.json();
                 if (signInData.error) throw new Error('Sign-in failed: ' + signInData.error.message);
 
-                // Step B: update password in Firebase Auth
+                // Step 2: update password in Firebase Auth
                 const updateResp = await fetch(
                     `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${apiKey}`,
                     {
@@ -389,13 +387,12 @@
                 const updateData = await updateResp.json();
                 if (updateData.error) throw new Error('Password update failed: ' + updateData.error.message);
 
-                // Step C: overwrite password field in Firestore
+                // Step 3: update Firestore password field
                 await verifiedUserDocRef.update({ password: newPassword });
 
-                // Step D: sign out
+                // Step 4: sign out
                 await auth.signOut();
 
-                // Step E: done
                 successDiv.textContent = '✓ Password Changed Successfully!';
                 successDiv.style.display = 'block';
                 errorDiv.style.display = 'none';
