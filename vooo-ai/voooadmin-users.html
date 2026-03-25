@@ -765,12 +765,42 @@
                 updateData.planType = null; updateData.planValue = null;
                 updateData.planStartDate = null; updateData.planExpiryDate = null;
             }
-            try {
-                await db.collection('users').doc(currentEditUser.id).update(updateData);
-                alert('✅ User updated successfully!');
-                closeModal('edit-modal');
-                loadUsers();
-            } catch (err) { alert('❌ Error updating user: ' + err.message); }
+try {
+    // If password changed — update Firebase Auth too
+    if (newPassword) {
+        const apiKey = VOOO_CONFIG.firebase.apiKey;
+        const signInResp = await fetch(
+            `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: currentEditUser.email,
+                    password: currentEditUser.password,
+                    returnSecureToken: true
+                })
+            }
+        );
+        const signInData = await signInResp.json();
+        if (!signInData.idToken) throw new Error('Could not sync password to Firebase Auth.');
+        await fetch(
+            `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${apiKey}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    idToken: signInData.idToken,
+                    password: newPassword,
+                    returnSecureToken: true
+                })
+            }
+        );
+    }
+    await db.collection('users').doc(currentEditUser.id).update(updateData);
+    alert('✅ User updated successfully!');
+    closeModal('edit-modal');
+    loadUsers();
+} catch (err) { alert('❌ Error updating user: ' + err.message); }            
         });
 
         // ====== OPEN CREATE MODAL ======
