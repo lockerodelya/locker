@@ -47,44 +47,7 @@
         .btn-success { background: #10b981; color: white; }
         .btn-success:hover { background: #059669; }
         .loading { text-align: center; padding: 50px; font-size: 1.2em; color: #666; }
-        .analytics-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .analytics-card { background: white; border-radius: 12px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; border-top: 4px solid #1e40af; }
-        .analytics-card.green  { border-top-color: #10b981; }
-        .analytics-card.purple { border-top-color: #7c3aed; }
-        .analytics-card.orange { border-top-color: #f97316; }
-        .analytics-card.teal   { border-top-color: #0d9488; }
-        .analytics-val   { font-size: 2.4em; font-weight: bold; color: #1e40af; }
-        .analytics-card.green  .analytics-val { color: #059669; }
-        .analytics-card.purple .analytics-val { color: #7c3aed; }
-        .analytics-card.orange .analytics-val { color: #ea580c; }
-        .analytics-card.teal   .analytics-val { color: #0d9488; }
-        .analytics-lbl   { color: #666; font-size: 0.88em; margin-top: 6px; font-weight: 600; }
-        .analytics-table-wrap { overflow-x: auto; margin-top: 10px; width: 100%; }
-        .analytics-table { width: 100%; border-collapse: collapse; }
-        .analytics-table th { background: #1e40af; color: white; padding: 11px 14px; text-align: left; font-size: 0.92em; }
-        .analytics-table td { padding: 10px 14px; border-bottom: 1px solid #e0e0e0; font-size: 0.92em; color: #333; }
-        .analytics-table tr:hover td { background: #f0f4ff; }
-        .analytics-table tr:nth-child(even) td { background: #f8f9ff; }
-        .analytics-table tr:nth-child(even):hover td { background: #e8eeff; }
-        .analytics-refresh { background: #1e40af; color: white; border: none; border-radius: 8px; padding: 9px 20px; font-size: 0.95em; font-weight: 700; cursor: pointer; transition: background 0.2s; }
-        .analytics-refresh:hover { background: #1d4ed8; }
-        .no-data { text-align: center; color: #999; padding: 30px; font-size: 1em; }
-        .country-summary-section { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 30px; }
-        .country-summary-section h2 { color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0; font-size: 1.15em; }
-        .country-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-        .country-card { background: #f8f9ff; border-radius: 10px; padding: 18px; border-left: 4px solid #1e40af; }
-        .country-card.green  { border-left-color: #10b981; }
-        .country-card.purple { border-left-color: #7c3aed; }
-        .country-card.orange { border-left-color: #f97316; }
-        .country-card.teal   { border-left-color: #0d9488; }
-        .country-card-title { font-weight: 700; font-size: 0.9em; color: #1e40af; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
-        .country-card.green  .country-card-title { color: #059669; }
-        .country-card.purple .country-card-title { color: #7c3aed; }
-        .country-card.orange .country-card-title { color: #ea580c; }
-        .country-card.teal   .country-card-title { color: #0d9488; }
-        .country-list { display: flex; flex-wrap: wrap; gap: 8px; }
-        .country-tag { background: white; border: 1px solid #e0e0e0; border-radius: 20px; padding: 4px 12px; font-size: 0.85em; color: #333; font-weight: 600; white-space: nowrap; }
-        .country-no-data { color: #aaa; font-size: 0.85em; font-style: italic; }
+
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: flex-start; padding-top: 30px; overflow-y: auto; }
         .modal.active { display: flex; }
         .modal-content { background: white; border-radius: 15px; padding: 30px; max-width: 580px; width: 90%; margin-bottom: 30px; }
@@ -122,7 +85,6 @@
 
         <div class="tab-bar">
             <button class="tab-btn active" onclick="switchTab('users')">👥 Users</button>
-            <button class="tab-btn" onclick="switchTab('analytics')">📊 Analytics</button>
         </div>
 
         <!-- TAB 1: USERS -->
@@ -155,67 +117,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- TAB 2: ANALYTICS -->
-        <div id="tab-analytics" class="tab-panel">
-            <div class="analytics-summary">
-                <div class="analytics-card">
-                    <div class="analytics-val" id="an-total-main">—</div>
-                    <div class="analytics-lbl">Vooo Home Page Views<br><small id="an-main-month-lbl">(this month)</small></div>
-                </div>
-                <div class="analytics-card green">
-                    <div class="analytics-val" id="an-total-pricing">—</div>
-                    <div class="analytics-lbl">Total Pricing Page Views<br><small id="an-pricing-month-lbl">(this month)</small></div>
-                </div>
-                <div class="analytics-card purple">
-                    <div class="analytics-val" id="an-total-pwa">—</div>
-                    <div class="analytics-lbl">Total PWA Installs<br><small id="an-pwa-month-lbl">(this month)</small></div>
-                </div>
-                <div class="analytics-card orange">
-                    <div class="analytics-val" id="an-total-bloghome">—</div>
-                    <div class="analytics-lbl">Vooo Blog Home Views<br><small id="an-bloghome-month-lbl">(this month)</small></div>
-                </div>
-                <div class="analytics-card teal">
-                    <div class="analytics-val" id="an-total-blogtot">—</div>
-                    <div class="analytics-lbl">Vooo Blog Posts Total<br><small id="an-blogtot-month-lbl">(this month)</small></div>
-                </div>
-            </div>
-            <div class="section">
-                <div class="section-header">
-                    <h2 id="analytics-section-title">📅 Day-wise Breakdown</h2>
-                    <button class="analytics-refresh" onclick="loadAnalytics()">🔄 Refresh</button>
-                </div>
-                <div id="analytics-loading" class="loading">Loading analytics...</div>
-                <div id="analytics-table-container" style="display:none;">
-                    <div class="analytics-table-wrap">
-                        <table class="analytics-table">
-                            <thead>
-                                <tr>
-                                    <th style="width:11.67%">Date</th>
-                                    <th style="width:17.67%">Vooo Home Page</th>
-                                    <th style="width:17.67%">Vooo Pricing Page</th>
-                                    <th style="width:17.67%">PWA Installs</th>
-                                    <th style="width:17.67%">Blog Home</th>
-                                    <th style="width:17.67%">Blog Posts Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="analytics-tbody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="country-summary-section" id="country-summary-section" style="display:none;">
-                <h2>🌍 Visitor Country Summary — <span id="country-month-label"></span></h2>
-                <div class="country-grid">
-                    <div class="country-card"><div class="country-card-title">🏠 Vooo Home Page</div><div class="country-list" id="country-main"><span class="country-no-data">No data yet</span></div></div>
-                    <div class="country-card green"><div class="country-card-title">💰 Pricing Page</div><div class="country-list" id="country-pricing"><span class="country-no-data">No data yet</span></div></div>
-                    <div class="country-card purple"><div class="country-card-title">📱 PWA Installs</div><div class="country-list" id="country-pwa"><span class="country-no-data">No data yet</span></div></div>
-                    <div class="country-card orange"><div class="country-card-title">📚 Blog Home</div><div class="country-list" id="country-bloghome"><span class="country-no-data">No data yet</span></div></div>
-                    <div class="country-card teal"><div class="country-card-title">📝 Blog Posts Total</div><div class="country-list" id="country-blogtot"><span class="country-no-data">No data yet</span></div></div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <!-- EDIT USER MODAL -->
@@ -414,7 +315,6 @@
             document.getElementById('tab-' + tab).classList.add('active');
             event.target.classList.add('active');
             localStorage.setItem('vooo_admin_tab', tab);
-            if (tab === 'analytics') loadAnalytics();
         }
 
         // ====== AUTH CHECK ======
