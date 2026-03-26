@@ -1657,9 +1657,13 @@ let _mcqWriteInProgress = false;
 async function checkMCQLimit() {
     try {
         if (!currentVoooUser) return false;
-        const isPaid = userVoooData && userVoooData.tier === 'paid';
-        if (isPaid) return true;
-
+// Always fetch fresh tier from Firestore — catches admin plan upgrades
+const freshDoc = await voooDb.collection('users').doc(currentVoooUser.uid).get();
+const freshTier = freshDoc.exists ? freshDoc.data().tier : 'free';
+if (freshTier === 'paid') {
+    if (userVoooData) userVoooData.tier = 'paid'; // update cache too
+    return true;
+}
         const todayStr   = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
         const dailyData  = userVoooData ? (userVoooData.dailyUsage || {}) : {};
         const savedDate  = dailyData.date || '';
