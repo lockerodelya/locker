@@ -1563,28 +1563,19 @@ async function updatePuzzleDisplay(puzzle) {
     const container = document.getElementById('vooo-options');
     container.innerHTML = '';
     puzzle.options.forEach((option, index) => {
-    const btn = document.createElement('button');
-    btn.className = 'vooo-option';
-    btn.textContent = option;
-const len = String(option).length;
-if (len <= 3)       btn.style.fontSize = '1.6em';
-else if (len <= 6)  btn.style.fontSize = '1.6em';
-else if (len <= 15) btn.style.fontSize = '1.6em';
-else if (len <= 30) btn.style.fontSize = '1.6em';
-else                btn.style.fontSize = '1.4em';
-    btn.style.color = '#000000';
-    btn.onclick = () => selectAnswer(index);
-    container.appendChild(btn);
-	});
+        const btn = document.createElement('button');
+        btn.className = 'vooo-option';
+        btn.textContent = option;
+        // ... your font size logic ...
+        btn.style.color = '#000000';
+        btn.onclick = () => selectAnswer(index);
+        container.appendChild(btn);
+    });
     const fb = document.getElementById('vooo-feedback');
     fb.textContent = ''; fb.className = 'vooo-feedback'; fb.style.cssText = '';
     document.getElementById('vooo-explanation').textContent = '';
     updateStatsDisplay();
-
-    // ── COUNT THIS MCQ (for all logged-in users, free and paid) ──
-    if (currentVoooUser) {
-        await incrementMCQCount();
-    }
+    // ❌ REMOVE the incrementMCQCount() call from here
 }
 
         function selectAnswer(selectedIndex) {
@@ -1615,14 +1606,19 @@ else                btn.style.fontSize = '1.4em';
         // ============================================================
         // nextPuzzle — generates new MCQ + increments count for logged-in users
         // ============================================================
+let _nextPuzzleLock = false;
+
 async function nextPuzzle() {
     if (!window.voooEngine) return;
+    if (_nextPuzzleLock) return;
+    _nextPuzzleLock = true;
 
-    // First puzzle on page load — show freely, no login check
+    // First puzzle on page load — show freely, no login check, no count
     if (window._voooFirstLoad) {
         window._voooFirstLoad = false;
         const puzzle = window.voooEngine.generateNewPuzzle();
         if (puzzle) updatePuzzleDisplay(puzzle);
+        _nextPuzzleLock = false;
         return;
     }
 
@@ -1632,27 +1628,25 @@ async function nextPuzzle() {
             'Get Free 30 MCQs Per Day!',
             'Sign up for free to practice 30 MCQs every day.'
         );
+        _nextPuzzleLock = false;
         return;
     }
 
     // Check limit BEFORE generating puzzle
     const allowed = await checkMCQLimit();
-    if (!allowed) return;
+    if (!allowed) {
+        _nextPuzzleLock = false;
+        return;
+    }
 
     const puzzle = window.voooEngine.generateNewPuzzle();
-    if (puzzle) updatePuzzleDisplay(puzzle);
-}
+    if (puzzle) {
+        updatePuzzleDisplay(puzzle);
+        await incrementMCQCount(); // ✅ called exactly once, only here
+    }
 
-        // ============================================================
-        // incrementMCQCount
-        // - Reads today's count from Firestore
-        // - Free users: limit 40/day. Paid users: unlimited.
-        // - Increments dailyUsage.count and totalMCQsAttempted
-        // - Returns true if allowed, false if limit reached
-        // ============================================================
-// Check if user is allowed to see next MCQ (free limit check only)
-// ── Debounce flag — prevents rapid Next clicks firing multiple counts ──
-let _mcqWriteInProgress = false;
+    _nextPuzzleLock = false;
+}
 
 async function checkMCQLimit() {
     try {
