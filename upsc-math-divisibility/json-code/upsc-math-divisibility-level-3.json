@@ -1,0 +1,338 @@
+{
+  "puzzle_type": "upsc-math-divisibility-level-3",
+  "display_name": "Divisibility Rules L3",
+  "templates": [
+    {
+      "template_id": "DIV_L3_01",
+      "pattern": "What is the remainder when [B]^[E] is divided by [D]?",
+      "variables": {
+        "B": {
+          "min": 2,
+          "max": 9,
+          "step": 1
+        },
+        "E": {
+          "values": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ]
+        },
+        "D": {
+          "values": [
+            5,
+            7,
+            9,
+            11,
+            13
+          ]
+        }
+      },
+      "constraints": [
+        "B % D !== 0",
+        "(B*B*B*B*B*B) % D !== 0"
+      ],
+      "calculation": "pow(B,E) % D",
+      "explanation": "Find cyclicity of [B] mod [D].\n[B]^1 mod [D] = [B%D]\n[B]^2 mod [D] = [B*B%D]\n[B]^3 mod [D] = [B*B*B%D]\n[B]^4 mod [D] = [B*B*B*B%D]\n\nIdentify the repeating cycle, then use [E] mod cycle_length.\n[B]^[E] mod [D] = [RESULT]\n\nRule: Use cyclicity to simplify large powers."
+    },
+    {
+      "template_id": "DIV_L3_02",
+      "pattern": "Find the smallest positive number that leaves remainder [R1] when divided by [D1] and remainder [R2] when divided by [D2].",
+      "variables": {
+        "D1": {
+          "values": [
+            3,
+            4,
+            5,
+            6
+          ]
+        },
+        "D2": {
+          "values": [
+            5,
+            7,
+            8,
+            9,
+            11
+          ]
+        },
+        "R1": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        },
+        "R2": {
+          "min": 1,
+          "max": 6,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "R1 < D1",
+        "R2 < D2",
+        "D1 !== D2"
+      ],
+      "calculation": "floor(D1*D2/1) > 0 ? (function(){ for(var n=1;n<=500;n++) if(n%D1===R1 && n%D2===R2) return n; return null; })() : null",
+      "explanation": "We need N such that:\nN mod [D1] = [R1] → N = [D1]k + [R1] for some k\nN mod [D2] = [R2]\n\nTry values: [D1]*0+[R1]=[R1], [D1]*1+[R1]=[D1+R1], [D1]*2+[R1]=[D1*2+R1]...\nCheck which satisfies N mod [D2] = [R2].\nSmallest such N = [RESULT]\n\nRule: Chinese Remainder Theorem approach."
+    },
+    {
+      "template_id": "DIV_L3_03",
+      "pattern": "What is the remainder when [N]! is divided by [D]?",
+      "variables": {
+        "N": {
+          "min": 3,
+          "max": 8,
+          "step": 1
+        },
+        "D": {
+          "values": [
+            7,
+            11,
+            13
+          ]
+        }
+      },
+      "constraints": [
+        "N < D",
+        "factorial(N) % D !== 0"
+      ],
+      "calculation": "factorial(N) % D",
+      "explanation": "Since [N] < [D] (and [D] is prime), [N]! is not divisible by [D].\nCalculate [N]! directly:\n[N]! = [factorial(N)]\n[factorial(N)] ÷ [D] gives remainder [RESULT].\n\nNote: If N ≥ D (prime), then N! mod D = 0 always.\nHere N=[N] < D=[D], so we compute directly."
+    },
+    {
+      "template_id": "DIV_L3_04",
+      "pattern": "What is the remainder when the 4-digit number [A][B][C][D2] is divided by 11?",
+      "variables": {
+        "A": {
+          "min": 1,
+          "max": 9,
+          "step": 1
+        },
+        "B": {
+          "min": 0,
+          "max": 9,
+          "step": 1
+        },
+        "C": {
+          "min": 0,
+          "max": 9,
+          "step": 1
+        },
+        "D2": {
+          "min": 0,
+          "max": 9,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "(A*1000 + B*100 + C*10 + D2) % 11 !== 0"
+      ],
+      "calculation": "(A * 1000 + B * 100 + C * 10 + D2) % 11",
+      "explanation": "Divisibility rule for 11: alternating digit sum.\nFor [A][B][C][D2]:\nOdd position digits (from right): [D2] and [B]\nEven position digits (from right): [C] and [A]\n\nAlternating sum = ([D2] + [B]) - ([C] + [A])\n= [D2+B] - [C+A] = [D2+B-C-A]\n\nRemainder = ([D2+B-C-A]) mod 11 = [RESULT]\n(Add 11 if negative)"
+    },
+    {
+      "template_id": "DIV_L3_05",
+      "pattern": "How many numbers from 1 to [N] are divisible by both [D1] and [D2]?",
+      "variables": {
+        "N": {
+          "values": [
+            60,
+            90,
+            100,
+            120,
+            150,
+            180,
+            200
+          ]
+        },
+        "D1": {
+          "values": [
+            3,
+            4,
+            5,
+            3,
+            4,
+            5,
+            3
+          ]
+        },
+        "D2": {
+          "values": [
+            7,
+            7,
+            7,
+            11,
+            11,
+            11,
+            8
+          ]
+        }
+      },
+      "constraints": [
+        "D1 !== D2",
+        "floor(N / (D1 * D2)) > 1"
+      ],
+      "calculation": "floor(N / (D1 * D2))",
+      "explanation": "To be divisible by both [D1] and [D2], a number must be divisible by their LCM.\n[D1] and [D2] are coprime (GCD = 1), so LCM([D1],[D2]) = [D1] × [D2] = [D1*D2].\n\nCount = floor([N] ÷ LCM)\n= floor([N] ÷ [D1*D2])\n= [RESULT]\n\nRule: For coprime D1, D2 → LCM = D1 × D2."
+    },
+    {
+      "template_id": "DIV_L3_06",
+      "pattern": "What is the remainder when 1 + 2 + 3 + ... + [N] is divided by [D]?",
+      "variables": {
+        "N": {
+          "min": 10,
+          "max": 30,
+          "step": 1
+        },
+        "D": {
+          "values": [
+            6,
+            7,
+            8,
+            9,
+            11,
+            13
+          ]
+        }
+      },
+      "constraints": [
+        "(N * (N + 1) / 2) % D !== 0"
+      ],
+      "calculation": "(N * (N + 1) / 2) % D",
+      "explanation": "Sum of first [N] natural numbers = N(N+1)/2.\n= [N] × ([N]+1) ÷ 2\n= [N] × [N+1] ÷ 2\n= [N*(N+1)/2]\n\n[N*(N+1)/2] ÷ [D] gives remainder [RESULT].\n\nRule: Sum = N(N+1)/2, then find remainder."
+    },
+    {
+      "template_id": "DIV_L3_07",
+      "pattern": "N leaves remainder [R] when divided by [D]. What is the remainder when (N + [K])² is divided by [D]?",
+      "variables": {
+        "D": {
+          "values": [
+            7,
+            9,
+            11,
+            13
+          ]
+        },
+        "R": {
+          "min": 1,
+          "max": 6,
+          "step": 1
+        },
+        "K": {
+          "min": 1,
+          "max": 6,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "R < D",
+        "K < D",
+        "((R + K) % D) !== 0",
+        "((R+K)%D) * ((R+K)%D) % D !== 0"
+      ],
+      "calculation": "((R + K) % D) * ((R + K) % D) % D",
+      "explanation": "N mod [D] = [R].\n(N + [K]) mod [D] = ([R] + [K]) mod [D] = [R+K] mod [D] = [(R+K)%D].\n\n(N + [K])² mod [D] = ((N+[K]) mod [D])² mod [D]\n= [(R+K)%D]² mod [D]\n= [(R+K)%D * (R+K)%D] mod [D]\n= [RESULT]\n\nRule: (A+B) mod D = ((A mod D) + (B mod D)) mod D"
+    },
+    {
+      "template_id": "DIV_L3_08",
+      "pattern": "The number [A][B]_[C] has a missing digit _. What digit makes it divisible by 9?",
+      "variables": {
+        "A": {
+          "min": 1,
+          "max": 9,
+          "step": 1
+        },
+        "B": {
+          "min": 0,
+          "max": 9,
+          "step": 1
+        },
+        "C": {
+          "min": 0,
+          "max": 9,
+          "step": 1
+        }
+      },
+      "calculation": "(9 - (A + B + C) % 9) % 9",
+      "explanation": "For divisibility by 9, sum of all digits must be divisible by 9.\nKnown digit sum = [A] + [B] + [C] = [A+B+C].\nMissing digit X must satisfy: [A+B+C] + X ≡ 0 (mod 9)\nX = (9 - [A+B+C] mod 9) mod 9\n= (9 - [A+B+C] % 9) % 9\n= [RESULT]\n\nRule: Digit sum divisible by 9 → number divisible by 9."
+    },
+    {
+      "template_id": "DIV_L3_09",
+      "pattern": "What is the remainder when [N] × ([N] + 1) × ([N] + 2) is divided by [D]?",
+      "variables": {
+        "N": {
+          "min": 2,
+          "max": 12,
+          "step": 1
+        },
+        "D": {
+          "values": [
+            7,
+            11,
+            13
+          ]
+        }
+      },
+      "constraints": [
+        "N % D !== 0",
+        "(N+1) % D !== 0",
+        "(N+2) % D !== 0",
+        "N * (N+1) * (N+2) % D !== 0"
+      ],
+      "calculation": "N * (N + 1) * (N + 2) % D",
+      "explanation": "[N] × ([N]+1) × ([N]+2) is a product of 3 consecutive integers.\n= [N] × [N+1] × [N+2]\n= [N*(N+1)] × [N+2]\n= [N*(N+1)*( N+2)]\n\n[N*(N+1)*(N+2)] ÷ [D] gives remainder [RESULT].\n\nNote: Product of 3 consecutive integers is always divisible by 6."
+    },
+    {
+      "template_id": "DIV_L3_10",
+      "pattern": "N gives remainder [R] when divided by [D]. What is the remainder when N³ is divided by [D]?",
+      "variables": {
+        "D": {
+          "values": [
+            7,
+            9,
+            11,
+            13
+          ]
+        },
+        "R": {
+          "min": 2,
+          "max": 6,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "R < D",
+        "(R * R * R) % D !== 0"
+      ],
+      "options_builder": "[(R*R*R)%D, (R*R)%D, R%D, ((R*R*R)+1)%D, ((R+1)*(R+1)*(R+1))%D].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4)",
+      "calculation": "R * R * R % D",
+      "explanation": "N mod [D] = [R].\nN³ mod [D] = (N mod [D])³ mod [D]\n= [R]³ mod [D]\n= [R*R*R] mod [D]\n= [RESULT]\n\nRule: (N^k) mod D = (N mod D)^k mod D"
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯",
+      "Perfect! ⭐",
+      "Brilliant! 🧠",
+      "Well done! 👍",
+      "Amazing! 🌟",
+      "Superb! 🚀",
+      "Outstanding! 💫",
+      "Great job! 🎊",
+      "Spot on! ✨",
+      "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪",
+      "Check divisibility rules! 📐",
+      "Almost! 😊",
+      "Think carefully! 🤔",
+      "Use the remainder property! 📚",
+      "So close! 💝",
+      "One more try! 🎯",
+      "Keep going! 🌈"
+    ]
+  }
+}
