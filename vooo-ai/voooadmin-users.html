@@ -47,8 +47,6 @@
         .btn-danger:hover { background: #dc2626; }
         .btn-success { background: #10b981; color: white; }
         .btn-success:hover { background: #059669; }
-        .btn-orange { background: #f97316; color: white; }
-        .btn-orange:hover { background: #ea580c; }
         .loading { text-align: center; padding: 50px; font-size: 1.2em; color: #666; }
         /* MODAL */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: flex-start; padding-top: 30px; overflow-y: auto; }
@@ -299,7 +297,7 @@
         const auth = firebase.auth();
         const db   = firebase.firestore();
 
-        let allUsers       = [];
+        let allUsers        = [];
         let currentEditUser = null;
 
         // ====== PLAN LOOKUP TABLES ======
@@ -314,12 +312,6 @@
             '3month': '3 Months (90 days)',
             '6month': '6 Months (180 days)',
             '1year':  '1 Year (365 days)'
-        };
-        const PLAN_DAYS = {
-            '1month': 30,
-            '3month': 90,
-            '6month': 180,
-            '1year':  365
         };
 
         // ====== AUTH CHECK ======
@@ -415,7 +407,6 @@
             const plan     = document.getElementById(prefix + '-plan').value;
             const startVal = document.getElementById(prefix + '-start-date').value;
 
-            // Always update plan value and duration
             document.getElementById(prefix + '-plan-value').textContent = PLAN_VALUES[plan]   || '—';
             document.getElementById(prefix + '-duration').value         = PLAN_DURATION[plan] || '';
 
@@ -463,10 +454,8 @@
             document.getElementById('edit-plan-fields').style.display = isPaid ? 'block' : 'none';
 
             if (isPaid) {
-                // Set plan type
                 document.getElementById('edit-plan').value = u.planType || '1month';
 
-                // Safely set start date
                 if (u.planStartDate && u.planStartDate.seconds) {
                     const startDate = new Date(u.planStartDate.seconds * 1000);
                     if (!isNaN(startDate.getTime())) {
@@ -478,7 +467,6 @@
                     document.getElementById('edit-start-date').value = '';
                 }
 
-                // Safely set expiry date display
                 if (u.planExpiryDate && u.planExpiryDate.seconds) {
                     const expiryDate = new Date(u.planExpiryDate.seconds * 1000);
                     if (!isNaN(expiryDate.getTime())) {
@@ -490,14 +478,12 @@
                     document.getElementById('edit-expiry').value = '';
                 }
 
-                // Set plan value and duration from lookup
                 document.getElementById('edit-plan-value').textContent = PLAN_VALUES[u.planType]   || u.planValue || '—';
                 document.getElementById('edit-duration').value         = PLAN_DURATION[u.planType] || '';
             } else {
-                // Reset plan fields for free users
-                document.getElementById('edit-start-date').value      = '';
-                document.getElementById('edit-expiry').value          = '';
-                document.getElementById('edit-duration').value        = '';
+                document.getElementById('edit-start-date').value       = '';
+                document.getElementById('edit-expiry').value           = '';
+                document.getElementById('edit-duration').value         = '';
                 document.getElementById('edit-plan-value').textContent = '—';
             }
 
@@ -518,7 +504,6 @@
                 tier:     tier
             };
 
-            // Only update password if admin typed a new one
             if (newPassword) {
                 updateData.password = newPassword;
             }
@@ -574,7 +559,6 @@
             const password = document.getElementById('create-password').value.trim();
             const tier     = document.getElementById('create-tier').value;
 
-            // Check username not already taken
             const usernameCheck = await db.collection('users').where('username', '==', username).limit(1).get();
             if (!usernameCheck.empty) {
                 alert('❌ Username already taken. Please choose another.');
@@ -582,7 +566,6 @@
             }
 
             try {
-                // Create Firebase Auth user
                 const cred = await auth.createUserWithEmailAndPassword(email, password);
                 const uid  = cred.user.uid;
                 await cred.user.updateProfile({ displayName: fullname });
