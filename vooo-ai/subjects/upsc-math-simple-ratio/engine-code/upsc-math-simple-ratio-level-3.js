@@ -6,8 +6,8 @@
 // ⭐⭐⭐ EDIT ONLY THESE 3 LINES FOR A NEW ENGINE ⭐⭐⭐
 // ============================================
 
-const _ENGINE_JSON_FILE     = 'upsc-math-ratio-proportion-level-3.json';
-const _ENGINE_CATEGORY_KEY  = 'upsc-math-ratio-proportion-level-3';
+const _ENGINE_JSON_FILE     = 'upsc-math-simple-ratio-level-3.json';
+const _ENGINE_CATEGORY_KEY  = 'upsc-math-simple-ratio-level-3';
 const _ENGINE_INSTANCE_NAME = 'upscmathsimpleratiol3';
 
 // ============================================
