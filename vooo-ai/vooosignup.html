@@ -437,19 +437,33 @@
                     }
                 });
 
-                // ====== SAVE USER INFO TO LOCALSTORAGE FOR PAYMENT PAGE ======
+                // ====== SAVE USER INFO TO LOCALSTORAGE FOR                // ====== SAVE USER INFO TO LOCALSTORAGE FOR PAYMENT PAGE ======
                 localStorage.setItem('vooo_uid',       user.uid);
                 localStorage.setItem('vooo_email',     email);
                 localStorage.setItem('vooo_fullname',  fullname);
 
-successDiv.textContent = '✓ Account created! Please login to continue.';
-successDiv.style.display = 'block';
-form.reset();
+                // Sign out immediately (prevents browser password prompts)
+                await auth.signOut();
 
-setTimeout(() => {
-    window.location.href = 'vooologin.html';
-}, 1800);
+                // Show success
+                successDiv.textContent   = '✓ User created successfully! Redirecting to payment...';
+                successDiv.style.display = 'block';
+                form.reset();
 
+                // ====== REDIRECT ======
+                setTimeout(() => {
+                    const storedPlan   = localStorage.getItem('vooo_plan_key');
+                    const storedAmount = localStorage.getItem('vooo_plan_amount');
+                    const storedName   = localStorage.getItem('vooo_plan_name');
+
+                    if (storedPlan && storedAmount) {
+                        // Go to payment page
+                        window.location.href = 'https://odelya.online/vooo-ai/vooonusrpy.html?plan=' + storedPlan + '&name=' + encodeURIComponent(storedName) + '&amount=' + storedAmount;
+                    } else {
+                        // No plan selected — go to main site
+                        window.location.href = 'https://odelya.online/vooo-ai';
+                    }
+                }, 1800);
 
             } catch (error) {
                 console.error('Signup error:', error);
