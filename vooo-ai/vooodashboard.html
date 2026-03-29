@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9SWTR9V32R"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-9SWTR9V32R');
+</script> 
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <title>Dashboard - Vooo AI Education</title>
 
     <!-- jsPDF for invoice download -->
@@ -371,7 +379,7 @@
     <!-- LOGO STRIP — logo left, download button right of it, paid users only -->
     <div class="logo-strip">
         <div class="logo-circle">
-            <img src="/vooo-ai/images/vooo-logo.webp" alt="Vooo AI Logo">
+            <img src="/vooo-ai/images/vooo-logo.jpg" alt="Vooo AI Logo">
         </div>
         <button id="download-invoice-btn" onclick="downloadInvoice()">⬇ Download Details</button>
     </div>
@@ -590,7 +598,7 @@
                 if (isPaid) accountTypeEl.classList.add('paid');
 
                 // Today's MCQs
-                const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+                const todayStr  = new Date().toISOString().split('T')[0];
                 const dailyData = userData.dailyUsage || {};
                 const todayUsed = (dailyData.date === todayStr) ? (dailyData.count || 0) : 0;
                 document.getElementById('today-usage').textContent = todayUsed;
