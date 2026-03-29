@@ -1,0 +1,120 @@
+{
+  "puzzle_type": "upsc-math-divisibility-level-1",
+  "display_name": "Divisibility Rules L1",
+  "templates": [
+    {
+      "template_id": "DIV_L1_01",
+      "pattern": "Is [N] divisible by 2?",
+      "variables": {
+        "N": {"values": [12, 34, 56, 78, 90, 124, 246, 368, 472, 580, 638, 754, 896, 912, 1024]}
+      },
+      "calculation": "N % 2 === 0 ? 'Yes' : 'No'",
+      "options": ["Yes", "No", "Cannot be determined", "Sometimes"],
+      "explanation": "A number is divisible by 2 if its last digit is even (0,2,4,6,8).\nLast digit of [N] is [N % 10].\n[N % 10] is even, so [N] is divisible by 2.\nAnswer: Yes"
+    },
+    {
+      "template_id": "DIV_L1_02",
+      "pattern": "Is [N] divisible by 5?",
+      "variables": {
+        "N": {"values": [25, 35, 50, 75, 100, 125, 200, 305, 410, 525, 630, 745, 850, 965, 1000]}
+      },
+      "calculation": "N % 5 === 0 ? 'Yes' : 'No'",
+      "options": ["Yes", "No", "Cannot be determined", "Sometimes"],
+      "explanation": "A number is divisible by 5 if its last digit is 0 or 5.\nLast digit of [N] is [N % 10].\nSince last digit is 0 or 5, [N] is divisible by 5.\nAnswer: Yes"
+    },
+    {
+      "template_id": "DIV_L1_03",
+      "pattern": "Is [N] divisible by 10?",
+      "variables": {
+        "N": {"values": [10, 20, 50, 100, 130, 240, 350, 460, 570, 680, 790, 810, 920, 1000, 1100]}
+      },
+      "calculation": "N % 10 === 0 ? 'Yes' : 'No'",
+      "options": ["Yes", "No", "Cannot be determined", "Sometimes"],
+      "explanation": "A number is divisible by 10 if its last digit is 0.\nLast digit of [N] is 0.\nSo [N] is divisible by 10.\nAnswer: Yes"
+    },
+    {
+      "template_id": "DIV_L1_04",
+      "pattern": "What is the smallest number to add to [N] to make it divisible by [D]?",
+      "variables": {
+        "N": {"min": 11, "max": 97, "step": 1},
+        "D": {"values": [2, 5, 10]}
+      },
+      "constraints": ["N % D !== 0"],
+      "calculation": "D - N % D",
+      "explanation": "To make [N] divisible by [D], find the remainder first.\n[N] ÷ [D] gives remainder [N % D].\nSo we need to add [D] - [N % D] = [RESULT] to [N].\n[N] + [RESULT] = [N + D - N % D] which is divisible by [D]."
+    },
+    {
+      "template_id": "DIV_L1_05",
+      "pattern": "What is the remainder when [N] is divided by 3?",
+      "variables": {
+        "N": {"min": 10, "max": 99, "step": 1}
+      },
+      "calculation": "N % 3",
+      "explanation": "To find remainder when [N] is divided by 3, add its digits.\nDigit sum of [N] = [N % 9 === 0 ? 9 : N % 9].\nRemainder when digit sum is divided by 3 = [N % 3].\nAnswer: [RESULT]"
+    },
+    {
+      "template_id": "DIV_L1_06",
+      "pattern": "How many numbers from 1 to [N] are divisible by [D]?",
+      "variables": {
+        "N": {"values": [20, 30, 40, 50, 60, 70, 80, 90, 100]},
+        "D": {"values": [2, 3, 4, 5, 6, 10]}
+      },
+      "calculation": "floor(N / D)",
+      "explanation": "Numbers from 1 to [N] divisible by [D] = floor([N] ÷ [D]).\n= floor([N] / [D])\n= [RESULT]\n\nRule: Count = floor(Last number ÷ Divisor)"
+    },
+    {
+      "template_id": "DIV_L1_07",
+      "pattern": "Is [N] divisible by 3?",
+      "variables": {
+        "N": {"values": [12, 33, 51, 72, 93, 111, 123, 144, 213, 321, 432, 531, 612, 711, 801]}
+      },
+      "calculation": "N % 3 === 0 ? 'Yes' : 'No'",
+      "options": ["Yes", "No", "Cannot be determined", "Sometimes"],
+      "explanation": "A number is divisible by 3 if sum of its digits is divisible by 3.\nDigit sum of [N] = [N % 9 === 0 ? 9 : N % 9].\nSince digit sum is divisible by 3, [N] is divisible by 3.\nAnswer: Yes"
+    },
+    {
+      "template_id": "DIV_L1_08",
+      "pattern": "What is the largest number less than [N] that is divisible by [D]?",
+      "variables": {
+        "N": {"min": 20, "max": 100, "step": 1},
+        "D": {"values": [2, 3, 4, 5, 6, 10]}
+      },
+      "constraints": ["N % D !== 0"],
+      "calculation": "N - N % D",
+      "explanation": "Find the largest number less than [N] divisible by [D].\nRemainder when [N] ÷ [D] = [N % D].\nSubtract remainder: [N] - [N % D] = [RESULT].\n[RESULT] is the largest number below [N] divisible by [D]."
+    },
+    {
+      "template_id": "DIV_L1_09",
+      "pattern": "Which of the following is divisible by both 2 and 3?",
+      "variables": {
+        "A": {"values": [12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96]}
+      },
+      "calculation": "A % 6 === 0 ? 'Yes' : 'No'",
+      "options": ["Yes, divisible by both", "No, only by 2", "No, only by 3", "No, by neither"],
+      "explanation": "A number divisible by both 2 and 3 must be divisible by 6.\nCheck [A]:\n- Last digit [A % 10] is even → divisible by 2 ✓\n- Digit sum [A % 9 === 0 ? 9 : A % 9] is divisible by 3 ✓\nSo [A] is divisible by both 2 and 3.\nAnswer: Yes, divisible by both"
+    },
+    {
+      "template_id": "DIV_L1_10",
+      "pattern": "What is the remainder when [A] × [B] is divided by [D]?",
+      "variables": {
+        "A": {"min": 2, "max": 12, "step": 1},
+        "B": {"min": 2, "max": 12, "step": 1},
+        "D": {"values": [2, 3, 4, 5, 6, 9, 10]}
+      },
+      "calculation": "(A * B) % D",
+      "explanation": "Find remainder when [A] × [B] is divided by [D].\n[A] × [B] = [A*B].\n[A*B] ÷ [D] gives remainder [RESULT].\n\nShortcut: (remainder of [A] ÷ [D]) × (remainder of [B] ÷ [D]) mod [D]\n= [A%D] × [B%D] mod [D] = [RESULT]"
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯", "Perfect! ⭐", "Brilliant! 🧠", "Well done! 👍",
+      "Amazing! 🌟", "Superb! 🚀", "Outstanding! 💫", "Great job! 🎊",
+      "Spot on! ✨", "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪", "Check divisibility rules! 📐", "Almost! 😊",
+      "Think carefully! 🤔", "Remember the digit sum rule! 📚", "So close! 💝",
+      "One more try! 🎯", "Keep going! 🌈"
+    ]
+  }
+}
