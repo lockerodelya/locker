@@ -1619,7 +1619,6 @@ async function nextPuzzle() {
     if (_nextPuzzleLock) return;
     _nextPuzzleLock = true;
 
-    // First puzzle on page load — show freely, no login check, no count
     if (window._voooFirstLoad) {
         window._voooFirstLoad = false;
         const puzzle = window.voooEngine.generateNewPuzzle();
@@ -1628,7 +1627,15 @@ async function nextPuzzle() {
         return;
     }
 
-    // Not logged in — show sign-up modal
+    // ✅ Wait for auth to finish before checking user
+    await new Promise(resolve => {
+        if (currentVoooUser !== undefined) { resolve(); return; }
+        const unsubscribe = firebase.auth().onAuthStateChanged(() => {
+            unsubscribe();
+            resolve();
+        });
+    });
+
     if (!currentVoooUser) {
         showLimitModal(
             'Get Free 30 MCQs Per Day!',
@@ -1638,45 +1645,41 @@ async function nextPuzzle() {
         return;
     }
 
-    // Check limit BEFORE generating puzzle
     const allowed = await checkMCQLimit();
-    if (!allowed) {
-        _nextPuzzleLock = false;
-        return;
-    }
+    if (!allowed) { _nextPuzzleLock = false; return; }
 
     const puzzle = window.voooEngine.generateNewPuzzle();
     if (puzzle) {
         updatePuzzleDisplay(puzzle);
-        await incrementMCQCount(); // ✅ called exactly once, only here
+        await incrementMCQCount();
     }
     _nextPuzzleLock = false;
+}
+
+// ── SINGLE SOURCE OF TRUTH for today's date string (IST) ──
+function getTodayIST() {
+    return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 }
 
 async function checkMCQLimit() {
     try {
         if (!currentVoooUser) return false;
 
-        // Always use local cache — incrementMCQCount keeps it in sync
-        // Only fetch fresh from Firestore for tier check
-        const freshDoc = await voooDb.collection('users').doc(currentVoooUser.uid).get();
+        const freshDoc  = await voooDb.collection('users').doc(currentVoooUser.uid).get();
         const freshData = freshDoc.exists ? freshDoc.data() : {};
         const freshTier = freshData.tier || 'free';
 
-        // Sync fresh Firestore count into local cache
         if (freshData.dailyUsage) {
             if (userVoooData) userVoooData.dailyUsage = freshData.dailyUsage;
             else userVoooData = freshData;
         }
+        if (userVoooData) userVoooData.tier = freshTier;
 
-        if (freshTier === 'paid') {
-            if (userVoooData) userVoooData.tier = 'paid';
-            return true;
-        }
+        if (freshTier === 'paid') return true;
 
-        const todayStr   = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+        const todayStr   = getTodayIST();
         const dailyData  = userVoooData ? (userVoooData.dailyUsage || {}) : {};
-        const savedDate  = dailyData.date || '';
+        const savedDate  = dailyData.date  || '';
         const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
 
         const FREE_LIMIT = VOOO_CONFIG.free_daily_limit;
@@ -1694,37 +1697,35 @@ async function checkMCQLimit() {
     }
 }
 
-// Write the count to Firestore (called from updatePuzzleDisplay)
 async function incrementMCQCount() {
     try {
         if (!currentVoooUser) return;
-        const uid = currentVoooUser.uid;
-        const userRef = voooDb.collection('users').doc(uid);
-        const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+        const uid      = currentVoooUser.uid;
+        const userRef  = voooDb.collection('users').doc(uid);
+        const todayStr = getTodayIST();  // ✅ same timezone everywhere
 
-        // ── Check if date has changed ──
-        const dailyData = userVoooData?.dailyUsage || {};
-        const savedDate = dailyData.date || '';
+        const dailyData  = userVoooData?.dailyUsage || {};
+        const savedDate  = dailyData.date  || '';
         const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
-        const newCount = savedCount + 1;
+        const newCount   = savedCount + 1;
 
-        // ── Direct write — no transaction, no conflict ever ──
-        await userRef.set({
+        // ✅ Use update() with flat field paths — reliable for nested fields
+        await userRef.update({
             'dailyUsage.date':    todayStr,
             'dailyUsage.count':   newCount,
             'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
-}, { merge: true });
+        });
 
-        // ── Keep local cache in sync ──
-		
         if (userVoooData) {
-            userVoooData.dailyUsage = { date: todayStr, count: newCount };
+            userVoooData.dailyUsage        = { date: todayStr, count: newCount };
             userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
         }
     } catch (err) {
         console.error('MCQ count write error:', err);
     }
 }
+
+
 
         function updateStatsDisplay() {
             const stats = window.voooEngine.getStats();
@@ -1745,7 +1746,7 @@ async function incrementMCQCount() {
     <!-- ====== FIREBASE AUTH + MCQ LIMIT VARIABLES ====== -->
 <script>
     let voooAuth, voooDb;
-    let currentVoooUser = null;
+    let currentVoooUser = undefined; // undefined = not yet checked, null = confirmed logged out
     let userVoooData    = null;
 
     // Global promise — trackers wait for this before using Firestore
@@ -1789,7 +1790,7 @@ async function incrementMCQCount() {
                     console.error('Error loading user data:', err);
                 }
             } else {
-                currentVoooUser = null;
+                currentVoooUser = null;  // ✅ explicitly null, not undefined
                 userVoooData    = null;
             }
         });
