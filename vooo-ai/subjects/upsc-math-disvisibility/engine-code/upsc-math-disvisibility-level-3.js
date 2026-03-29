@@ -6,9 +6,9 @@
 // ⭐⭐⭐ EDIT ONLY THESE 3 LINES FOR A NEW ENGINE ⭐⭐⭐
 // ============================================
 
-const _ENGINE_JSON_FILE     = 'upsc-math-divisibility-level-3.json';
-const _ENGINE_CATEGORY_KEY  = 'upsc-math-divisibility-level-3';
-const _ENGINE_INSTANCE_NAME = 'upscmathdivisibilityl3';
+const _ENGINE_JSON_FILE     = 'upsc-math-disvisibility-level-3.json';
+const _ENGINE_CATEGORY_KEY  = 'upsc-math-disvisibility-level-3';
+const _ENGINE_INSTANCE_NAME = 'upscmathdisvisibilityl3';
 
 // ============================================
 // ✋ DO NOT EDIT ANYTHING BELOW THIS LINE
