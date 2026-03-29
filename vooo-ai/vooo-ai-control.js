@@ -204,7 +204,26 @@ const VOOO_ENGINE_REGISTRY = {
 	'environmental-water-level-2' : '/vooo-ai/subjects/environmental-water/engine-code/environmental-water-level-2.js',
 	'environmental-water-level-3' : '/vooo-ai/subjects/environmental-water/engine-code/environmental-water-level-3.js',
 	
+	'upsc-math-simple-ratio-level-1' : '/vooo-ai/subjects/upsc-math-simple-ratio/engine-code/upsc-math-simple-ratio-level-1.js',
+	'upsc-math-simple-ratio-level-2' : '/vooo-ai/subjects/upsc-math-simple-ratio/engine-code/upsc-math-simple-ratio-level-2.js',
+	'upsc-math-simple-ratio-level-3' : '/vooo-ai/subjects/upsc-math-simple-ratio/engine-code/upsc-math-simple-ratio-level-3.js',
 	
+	'upsc-math-approximation-level-1' : '/vooo-ai/subjects/upsc-math-approximation/engine-code/upsc-math-approximation-level-1.js',
+	'upsc-math-approximation-level-2' : '/vooo-ai/subjects/upsc-math-approximation/engine-code/upsc-math-approximation-level-2.js',
+	'upsc-math-approximation-level-3' : '/vooo-ai/subjects/upsc-math-approximation/engine-code/upsc-math-approximation-level-3.js',
+	
+	'upsc-math-bodmas-level-1' : '/vooo-ai/subjects/upsc-math-bodmas/engine-code/upsc-math-bodmas-level-1.js',
+	'upsc-math-bodmas-level-2' : '/vooo-ai/subjects/upsc-math-bodmas/engine-code/upsc-math-bodmas-level-2.js',
+	'upsc-math-bodmas-level-3' : '/vooo-ai/subjects/upsc-math-bodmas/engine-code/upsc-math-bodmas-level-3.js',
+	
+	'upsc-math-divisibility-level-1' : '/vooo-ai/subjects/upsc-math-divisibility/engine-code/upsc-math-divisibility-level-1.js',
+	'upsc-math-divisibility-level-2' : '/vooo-ai/subjects/upsc-math-divisibility/engine-code/upsc-math-divisibility-level-2.js',
+	'upsc-math-divisibility-level-3' : '/vooo-ai/subjects/upsc-math-divisibility/engine-code/upsc-math-divisibility-level-3.js',
+	
+	'upsc-math-factors-multiples-level-1' : '/vooo-ai/subjects/upsc-math-factors-multiples/engine-code/upsc-math-factors-multiples-level-1.js',
+	'upsc-math-factors-multiples-level-2' : '/vooo-ai/subjects/upsc-math-factors-multiples/engine-code/upsc-math-factors-multiples-level-2.js',
+	'upsc-math-factors-multiples-level-3' : '/vooo-ai/subjects/upsc-math-factors-multiples/engine-code/upsc-math-factors-multiples-level-3.js',
+
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -409,6 +428,26 @@ const VOOO_ENGINE_INSTANCES = {
 	'environmental-water-level-2' : 'environmentalwaterl2',
 	'environmental-water-level-3' : 'environmentalwaterl3',
 	
+	'upsc-math-simple-ratio-level-1' : 'upscmathsimpleratiol1',
+	'upsc-math-simple-ratio-level-2' : 'upscmathsimpleratiol2',
+	'upsc-math-simple-ratio-level-3' : 'upscmathsimpleratiol3',
+
+	'upsc-math-approximation-level-1' : 'upscmathapproximationl1',
+	'upsc-math-approximation-level-2' : 'upscmathapproximationl2',
+	'upsc-math-approximation-level-3' : 'upscmathapproximationl3',
+
+	'upsc-math-bodmas-level-1' : 'upscmathbodmasl1',
+	'upsc-math-bodmas-level-2' : 'upscmathbodmasl2',
+	'upsc-math-bodmas-level-3' : 'upscmathbodmasl3',
+
+	'upsc-math-divisibility-level-1' : 'upscmathdivisibilityl1',
+	'upsc-math-divisibility-level-2' : 'upscmathdivisibilityl2',
+	'upsc-math-divisibility-level-3' : 'upscmathdivisibilityl3',
+
+	'upsc-math-factors-multiples-level-1' : 'upscmathfactorsmultiplesl1',
+	'upsc-math-factors-multiples-level-2' : 'upscmathfactorsmultiplesl2',
+	'upsc-math-factors-multiples-level-3' : 'upscmathfactorsmultiplesl3',
+
 	
     // --- ADD NEW ENGINES BELOW THIS LINE ---
 };
@@ -768,6 +807,46 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'environmental-water-level-1', text: '• Water Cycle L1' },
 					{ value: 'environmental-water-level-2', text: '• Water Cycle L2' },
 					{ value: 'environmental-water-level-3', text: '• Water Cycle L3' },
+                ]
+            },
+			{
+                label: 'Mathematics : Simple Ratio',
+                options: [
+                    { value: 'upsc-math-simple-ratio-level-1', text: '• Simple Ratio L1' },
+					{ value: 'upsc-math-simple-ratio-level-2', text: '• Simple Ratio L2' },
+					{ value: 'upsc-math-simple-ratio-level-3', text: '• Simple Ratio L3' },
+                ]
+            },
+			{
+                label: 'Mathematics : Approximation',
+                options: [
+                    { value: 'upsc-math-approximation-level-1', text: '• Approximation L1' },
+					{ value: 'upsc-math-approximation-level-2', text: '• Approximation L2' },
+					{ value: 'upsc-math-approximation-level-3', text: '• Approximation L3' },
+                ]
+            },
+			{
+                label: 'Mathematics : BODMAS',
+                options: [
+                    { value: 'upsc-math-bodmas-level-1', text: '• BODMAS L1' },
+					{ value: 'upsc-math-bodmas-level-2', text: '• BODMAS L2' },
+					{ value: 'upsc-math-bodmas-level-3', text: '• BODMAS L3' },
+                ]
+            },
+			{
+                label: 'Mathematics : Divisibility',
+                options: [
+                    { value: 'upsc-math-divisibility-level-1', text: '• Divisibility L1' },
+					{ value: 'upsc-math-divisibility-level-2', text: '• Divisibility L2' },
+					{ value: 'upsc-math-divisibility-level-3', text: '• Divisibility L3' },
+                ]
+            },
+			{
+                label: 'Mathematics : Factors & Multiples',
+                options: [
+                    { value: 'upsc-math-factors-multiples-level-1', text: '• Factors & Multiples L1' },
+					{ value: 'upsc-math-factors-multiples-level-2', text: '• Factors & Multiples L2' },
+					{ value: 'upsc-math-factors-multiples-level-3', text: '• Factors & Multiples L3' },
                 ]
             },
 			
