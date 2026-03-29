@@ -16,7 +16,7 @@ const _ENGINE_INSTANCE_NAME = 'upscmathsimpleratiol3';
 
 
     // ── JSON base path — same for all engines ──
-    const _JSON_BASE_PATH = '/vooo-ai/subjects/upsc-math-ratio-proportion/json-code/';
+    const _JSON_BASE_PATH = '/vooo-ai/subjects/upsc-math-simple-ratio/json-code/';
 
     // ════════════════════════════════════════════
     // ENGINE CLASS
