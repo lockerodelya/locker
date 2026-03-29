@@ -810,11 +810,11 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Mathematics : Simple Ratio',
+                label: 'Mathematics : Simple & Compound Ratio',
                 options: [
-                    { value: 'upsc-math-simple-ratio-level-1', text: '• Simple Ratio L1' },
-					{ value: 'upsc-math-simple-ratio-level-2', text: '• Simple Ratio L2' },
-					{ value: 'upsc-math-simple-ratio-level-3', text: '• Simple Ratio L3' },
+                    { value: 'upsc-math-simple-ratio-level-1', text: '• Simple & Compound Ratio L1' },
+					{ value: 'upsc-math-simple-ratio-level-2', text: '• Simple & Compound Ratio L2' },
+					{ value: 'upsc-math-simple-ratio-level-3', text: '• Simple & Compound Ratio L3' },
                 ]
             },
 			{
