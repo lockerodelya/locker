@@ -1,0 +1,334 @@
+{
+  "puzzle_type": "upsc-math-divisibility-level-2",
+  "display_name": "Divisibility Rules L2",
+  "templates": [
+    {
+      "template_id": "DIV_L2_01",
+      "pattern": "What is the smallest number to subtract from [N] to make it exactly divisible by [D]?",
+      "variables": {
+        "N": {
+          "min": 50,
+          "max": 200,
+          "step": 1
+        },
+        "D": {
+          "values": [
+            6,
+            7,
+            8,
+            9,
+            11
+          ]
+        }
+      },
+      "constraints": [
+        "N % D !== 0"
+      ],
+      "calculation": "N % D",
+      "explanation": "To make [N] divisible by [D], find the remainder.\n[N] ÷ [D] = [floor(N/D)] remainder [N % D].\nSubtract the remainder: [N] - [N % D] = [N - N % D].\nSo the smallest number to subtract = [RESULT].\n\nVerify: [N - N % D] ÷ [D] = [floor(N/D)] exactly."
+    },
+    {
+      "template_id": "DIV_L2_02",
+      "pattern": "How many numbers between [A] and [B] (inclusive) are divisible by [D]?",
+      "variables": {
+        "A": {
+          "min": 10,
+          "max": 50,
+          "step": 1
+        },
+        "B": {
+          "min": 60,
+          "max": 150,
+          "step": 1
+        },
+        "D": {
+          "values": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            11
+          ]
+        }
+      },
+      "calculation": "floor(B / D) - floor((A - 1) / D)",
+      "explanation": "Count of numbers from [A] to [B] divisible by [D]:\n= floor([B] ÷ [D]) - floor(([A]-1) ÷ [D])\n= [floor(B/D)] - [floor((A-1)/D)]\n= [RESULT]\n\nRule: floor(B/D) - floor((A-1)/D)"
+    },
+    {
+      "template_id": "DIV_L2_03",
+      "pattern": "A number when divided by [D] leaves remainder [R]. What is the remainder when twice that number is divided by [D]?",
+      "variables": {
+        "D": {
+          "values": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            11,
+            12
+          ]
+        },
+        "R": {
+          "min": 1,
+          "max": 5,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "R < D"
+      ],
+      "calculation": "(2 * R) % D",
+      "explanation": "Let the number be N where N mod [D] = [R].\nTwice the number = 2N.\n2N mod [D] = (2 × [R]) mod [D]\n= [2*R] mod [D]\n= [RESULT]\n\nRule: (2 × remainder) mod divisor"
+    },
+    {
+      "template_id": "DIV_L2_04",
+      "pattern": "Find the remainder when [A] × [B] + [C] is divided by [D].",
+      "variables": {
+        "A": {
+          "min": 5,
+          "max": 20,
+          "step": 1
+        },
+        "B": {
+          "min": 5,
+          "max": 20,
+          "step": 1
+        },
+        "C": {
+          "min": 2,
+          "max": 15,
+          "step": 1
+        },
+        "D": {
+          "values": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ]
+        }
+      },
+      "calculation": "(A * B + C) % D",
+      "explanation": "Find remainder of ([A] × [B] + [C]) ÷ [D].\n[A] × [B] = [A*B].\n[A*B] + [C] = [A*B+C].\n[A*B+C] ÷ [D] gives remainder [RESULT].\n\nShortcut: (([A] mod [D]) × ([B] mod [D]) + [C] mod [D]) mod [D] = [RESULT]"
+    },
+    {
+      "template_id": "DIV_L2_05",
+      "pattern": "What least value must be added to [N] so that the sum is divisible by [D]?",
+      "variables": {
+        "N": {
+          "min": 100,
+          "max": 500,
+          "step": 1
+        },
+        "D": {
+          "values": [
+            6,
+            7,
+            8,
+            9,
+            11,
+            12,
+            13
+          ]
+        }
+      },
+      "constraints": [
+        "N % D !== 0"
+      ],
+      "calculation": "D - N % D",
+      "explanation": "Find remainder when [N] ÷ [D].\nRemainder = [N % D].\nTo make it divisible, add [D] - [N % D] = [RESULT].\n[N] + [RESULT] = [N + D - N % D].\n\nAnswer: [RESULT]"
+    },
+    {
+      "template_id": "DIV_L2_06",
+      "pattern": "Two numbers leave remainders [R1] and [R2] respectively when divided by [D]. What is the remainder when their product is divided by [D]?",
+      "variables": {
+        "D": {
+          "values": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            11
+          ]
+        },
+        "R1": {
+          "min": 2,
+          "max": 5,
+          "step": 1
+        },
+        "R2": {
+          "min": 2,
+          "max": 5,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "R1 < D",
+        "R2 < D",
+        "(R1 * R2) % D !== 0"
+      ],
+      "calculation": "(R1 * R2) % D",
+      "explanation": "Let the two numbers be N1 and N2.\nN1 mod [D] = [R1], N2 mod [D] = [R2].\n(N1 × N2) mod [D] = (N1 mod [D]) × (N2 mod [D]) mod [D]\n= [R1] × [R2] mod [D]\n= [R1*R2] mod [D]\n= [RESULT]\n\nRule: (A × B) mod D = ((A mod D) × (B mod D)) mod D"
+    },
+    {
+      "template_id": "DIV_L2_07",
+      "pattern": "How many numbers from 1 to [N] are divisible by [D1] or [D2]?",
+      "variables": {
+        "N": {
+          "values": [
+            50,
+            60,
+            70,
+            80,
+            90,
+            100
+          ]
+        },
+        "D1": {
+          "values": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        "D2": {
+          "values": [
+            3,
+            4,
+            5,
+            6
+          ]
+        }
+      },
+      "constraints": [
+        "D1 !== D2"
+      ],
+      "calculation": "floor(N / D1) + floor(N / D2) - floor(N / (D1 * D2))",
+      "explanation": "Using inclusion-exclusion principle:\nDivisible by [D1]: floor([N]/[D1]) = [floor(N/D1)]\nDivisible by [D2]: floor([N]/[D2]) = [floor(N/D2)]\nDivisible by both: floor([N]/[D1*D2]) = [floor(N/(D1*D2))]\n\nTotal = [floor(N/D1)] + [floor(N/D2)] - [floor(N/(D1*D2))] = [RESULT]\n\nRule: |A∪B| = |A| + |B| - |A∩B|"
+    },
+    {
+      "template_id": "DIV_L2_08",
+      "pattern": "If N = [Q] × [D] + [R], what is the remainder when N + [D] is divided by [D]?",
+      "variables": {
+        "Q": {
+          "min": 3,
+          "max": 15,
+          "step": 1
+        },
+        "D": {
+          "values": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ]
+        },
+        "R": {
+          "min": 1,
+          "max": 4,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "R < D"
+      ],
+      "calculation": "R",
+      "explanation": "N = [Q] × [D] + [R], so N mod [D] = [R].\nN + [D] = [Q] × [D] + [R] + [D] = ([Q]+1) × [D] + [R].\nRemainder when (N + [D]) ÷ [D] = [R].\n\nRule: Adding the divisor does not change the remainder.\nAnswer: [RESULT]"
+    },
+    {
+      "template_id": "DIV_L2_09",
+      "pattern": "What is the remainder when [A]² + [B]² is divided by [D]?",
+      "variables": {
+        "A": {
+          "min": 3,
+          "max": 15,
+          "step": 1
+        },
+        "B": {
+          "min": 3,
+          "max": 15,
+          "step": 1
+        },
+        "D": {
+          "values": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ]
+        }
+      },
+      "calculation": "(A * A + B * B) % D",
+      "explanation": "Find remainder of ([A]² + [B]²) ÷ [D].\n[A]² = [A*A], [B]² = [B*B].\n[A*A] + [B*B] = [A*A+B*B].\n[A*A+B*B] ÷ [D] gives remainder [RESULT].\n\nShortcut: (([A] mod [D])² + ([B] mod [D])²) mod [D] = [RESULT]"
+    },
+    {
+      "template_id": "DIV_L2_10",
+      "pattern": "A number N gives remainder [R] when divided by [D]. What is the remainder when N² is divided by [D]?",
+      "variables": {
+        "D": {
+          "values": [
+            5,
+            7,
+            9,
+            11,
+            13
+          ]
+        },
+        "R": {
+          "min": 2,
+          "max": 6,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "R < D",
+        "(R * R) % D !== 0"
+      ],
+      "options_builder": "[(R*R)%D, R%D, (2*R)%D, (R+1)%D, (R+2)%D, (R*R+1)%D].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4)",
+      "calculation": "(R * R) % D",
+      "explanation": "N mod [D] = [R].\nN² mod [D] = (N mod [D])² mod [D]\n= [R]² mod [D]\n= [R*R] mod [D]\n= [RESULT]\n\nRule: (N²) mod D = (N mod D)² mod D"
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯",
+      "Perfect! ⭐",
+      "Brilliant! 🧠",
+      "Well done! 👍",
+      "Amazing! 🌟",
+      "Superb! 🚀",
+      "Outstanding! 💫",
+      "Great job! 🎊",
+      "Spot on! ✨",
+      "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪",
+      "Check divisibility rules! 📐",
+      "Almost! 😊",
+      "Think carefully! 🤔",
+      "Remember the remainder rule! 📚",
+      "So close! 💝",
+      "One more try! 🎯",
+      "Keep going! 🌈"
+    ]
+  }
+}

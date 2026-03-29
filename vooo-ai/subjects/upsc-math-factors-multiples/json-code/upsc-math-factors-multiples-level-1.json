@@ -1,0 +1,143 @@
+{
+  "puzzle_type": "upsc-math-factors-multiples-level-1",
+  "display_name": "Factors & Multiples L1",
+  "templates": [
+    {
+  "template_id": "FM_L1_01",
+  "pattern": "How many factors does [N] have?",
+  "variables": {
+    "N": {
+      "values": [12, 18, 24, 30, 36, 48, 60, 72, 84, 96, 100, 120, 144, 180, 210, 240, 360, 420, 504, 630]
+    }
+  },
+  "calculation": "(function(n){ let c=0; for(let i=1;i<=n;i++) if(n%i===0) c++; return c; })([N])",
+  "explanation": "To count factors of [N], find all numbers from 1 to [N] that divide it exactly.\nFor example, check each integer 1, 2, 3, ... up to [N].\nIf N = p^a × q^b, total factors = (a+1)(b+1).\nCount of factors of [N] is the answer."
+},
+    {
+      "template_id": "FM_L1_02",
+      "pattern": "What is the HCF (Highest Common Factor) of [A] and [B]?",
+      "variables": {
+        "A": { "min": 12, "max": 96, "step": 6 },
+        "B": { "min": 18, "max": 90, "step": 6 }
+      },
+      "constraints": ["A !== B"],
+      "calculation": "gcd(A, B)",
+      "explanation": "To find HCF of [A] and [B], use the division method.\nDivide the larger number by the smaller, then replace with the remainder.\nRepeat until remainder = 0. The last divisor is the HCF.\nHCF([A], [B]) = [gcd(A,B)]."
+    },
+    {
+      "template_id": "FM_L1_03",
+      "pattern": "What is the LCM (Lowest Common Multiple) of [A] and [B]?",
+      "variables": {
+        "A": { "min": 4, "max": 20, "step": 1 },
+        "B": { "min": 5, "max": 25, "step": 1 }
+      },
+      "constraints": ["A !== B", "A * B / gcd(A, B) <= 500"],
+      "calculation": "lcm(A, B)",
+      "explanation": "Formula: LCM = (A × B) ÷ HCF(A, B).\nHCF([A], [B]) = [gcd(A,B)].\nLCM = ([A] × [B]) ÷ [gcd(A,B)] = [lcm(A,B)]."
+    },
+    {
+      "template_id": "FM_L1_04",
+      "pattern": "The HCF of two numbers is [H] and their LCM is [H*M*N]. If one number is [H*M], what is the other number?",
+      "variables": {
+        "H": { "values": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
+        "M": { "values": [2, 3, 4, 5, 6, 7, 8, 9, 10] },
+        "N": { "values": [3, 4, 5, 6, 7, 8, 9, 10, 11] }
+      },
+      "constraints": ["M !== N"],
+      "calculation": "H * N",
+      "explanation": "Key formula: HCF × LCM = Product of the two numbers.\nOther number = (HCF × LCM) ÷ First number\n= ([H] × [H*M*N]) ÷ [H*M]\n= [H*N]."
+    },
+    {
+      "template_id": "FM_L1_05",
+      "pattern": "Which of the following is a multiple of both [A] and [B]?",
+      "variables": {
+        "A": { "values": [3, 4, 5, 6, 7, 8, 9, 10] },
+        "B": { "values": [4, 5, 6, 7, 8, 9, 10, 11] }
+      },
+      "constraints": ["A !== B"],
+      "calculation": "lcm(A, B)",
+      "options_builder": "[lcm(A,B), lcm(A,B)+A, lcm(A,B)+B, lcm(A,B)+A+B]",
+      "explanation": "A number that is a multiple of both [A] and [B] must be a multiple of their LCM.\nLCM([A],[B]) = [lcm(A,B)].\nVerify: [lcm(A,B)] ÷ [A] = [lcm(A,B)/A] ✓  and  [lcm(A,B)] ÷ [B] = [lcm(A,B)/B] ✓"
+    },
+    {
+      "template_id": "FM_L1_06",
+      "pattern": "What is the smallest number divisible by [A], [B], and [C]?",
+      "variables": {
+        "A": { "values": [2, 3, 4, 5, 6] },
+        "B": { "values": [3, 4, 5, 6, 7] },
+        "C": { "values": [4, 5, 6, 7, 8] }
+      },
+      "constraints": ["A !== B", "B !== C", "A !== C", "lcm(A, lcm(B, C)) <= 420"],
+      "calculation": "lcm(A, lcm(B, C))",
+      "explanation": "The smallest number divisible by [A], [B], and [C] is their LCM.\nStep 1: LCM([A],[B]) = [lcm(A,B)].\nStep 2: LCM([lcm(A,B)],[C]) = [lcm(A,lcm(B,C))].\nAnswer: [lcm(A,lcm(B,C))]."
+    },
+    {
+      "template_id": "FM_L1_07",
+      "pattern": "Is [N] a perfect square?",
+      "variables": {
+        "N": {
+          "values": [4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 8, 18, 50, 72, 98, 32, 45, 75, 20, 48]
+        }
+      },
+      "calculation": "floor(sqrt(N)) * floor(sqrt(N)) === N ? 'Yes' : 'No'",
+      "options": ["Yes", "No", "Cannot be determined", "Sometimes"],
+      "explanation": "A perfect square has a whole-number square root.\n√[N] ≈ [round2(sqrt(N))].\nSince floor(√[N])² = [floor(sqrt(N))*floor(sqrt(N))],\n[N] is [floor(sqrt(N)) * floor(sqrt(N)) === N ? '' : 'NOT ']a perfect square."
+    },
+    {
+      "template_id": "FM_L1_08",
+      "pattern": "The product of two numbers is [A*B] and their HCF is [gcd(A,B)]. What is their LCM?",
+      "variables": {
+        "A": { "min": 6, "max": 30, "step": 3 },
+        "B": { "min": 4, "max": 24, "step": 4 }
+      },
+      "constraints": ["A !== B", "A * B <= 720"],
+      "calculation": "lcm(A, B)",
+      "explanation": "Formula: LCM × HCF = Product of the two numbers.\nSo LCM = Product ÷ HCF\n= [A*B] ÷ [gcd(A,B)]\n= [lcm(A,B)]."
+    },
+    {
+      "template_id": "FM_L1_09",
+      "pattern": "How many numbers from 1 to [N] are divisible by [D]?",
+      "variables": {
+        "N": { "values": [50, 60, 70, 80, 90, 100, 110, 120, 150, 200] },
+        "D": { "values": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12] }
+      },
+      "calculation": "floor(N / D)",
+      "explanation": "Count of numbers from 1 to [N] divisible by [D] = floor(N ÷ D).\n= floor([N] ÷ [D])\n= [floor(N/D)].\nThese are [D], [D*2], [D*3], ... up to [D*floor(N/D)]."
+    },
+    {
+      "template_id": "FM_L1_10",
+      "pattern": "What is the sum of all factors of [N]?",
+      "variables": {
+        "N": {
+          "values": [6, 8, 10, 12, 15, 16, 18, 20, 24, 28, 30, 32, 36, 40, 45, 48, 50, 60, 72, 96]
+        }
+      },
+      "calculation": "sigma(N)",
+      "explanation": "List all factors of [N] and add them up.\nFor prime power p^a: sum of factors = (p^(a+1) − 1) ÷ (p − 1).\nFor composite numbers, multiply the sums for each prime factor.\nSum of all factors of [N] = [sigma(N)]."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯",
+      "Perfect! ⭐",
+      "Brilliant! 🧠",
+      "Well done! 👍",
+      "Amazing! 🌟",
+      "Superb! 🚀",
+      "Outstanding! 💫",
+      "Great job! 🎊",
+      "Spot on! ✨",
+      "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪",
+      "Review factor rules! 📐",
+      "Almost there! 😊",
+      "Think carefully! 🤔",
+      "Remember: HCF × LCM = Product! 📚",
+      "So close! 💝",
+      "One more try! 🎯",
+      "Keep going! 🌈"
+    ]
+  }
+}

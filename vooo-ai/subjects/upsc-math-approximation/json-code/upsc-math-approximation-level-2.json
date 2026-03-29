@@ -1,0 +1,477 @@
+{
+  "puzzle_type": "upsc-math-approximation-level-2",
+  "display_name": "Approximation L2",
+  "templates": [
+    {
+      "template_id": "APPROX_L2_01",
+      "pattern": "Approximate: [P]% of [N] ≈ ?",
+      "variables": {
+        "P": {
+          "values": [
+            9,
+            11,
+            18,
+            19,
+            21,
+            22,
+            24,
+            29,
+            31,
+            32,
+            38,
+            39,
+            41,
+            42,
+            48,
+            49,
+            51
+          ]
+        },
+        "N": {
+          "values": [
+            48,
+            49,
+            51,
+            52,
+            98,
+            99,
+            101,
+            102,
+            148,
+            149,
+            151,
+            198,
+            199,
+            201,
+            248,
+            249,
+            251,
+            298,
+            299,
+            301
+          ]
+        }
+      },
+      "calculation": "round(round(P) / 100 * round(N / 10) * 10)",
+      "explanation": "Approximate [P]% of [N]:\nRound [P]% ≈ [round(P)]%\nRound [N] ≈ [round(N/10)*10]\n[round(P)]% of [round(N/10)*10] = [round(P)] × [round(N/10)*10] ÷ 100\n= [RESULT]\n\nRule: Round both values first, then calculate percentage."
+    },
+    {
+      "template_id": "APPROX_L2_02",
+      "pattern": "Approximate: [A] + [P]% of [A] ≈ ?",
+      "variables": {
+        "A": {
+          "values": [
+            100,
+            150,
+            200,
+            250,
+            300,
+            400,
+            500
+          ]
+        },
+        "P": {
+          "values": [
+            8,
+            9,
+            11,
+            12,
+            18,
+            19,
+            21,
+            22,
+            24
+          ]
+        }
+      },
+      "calculation": "round(A + round(P) / 100 * A)",
+      "explanation": "Approximate [A] + [P]% of [A]:\n[P]% ≈ [round(P)]%\n[round(P)]% of [A] = [round(P/100*A)]\n[A] + [round(P/100*A)] = [RESULT]\n\nRule: Calculate percentage first, then add."
+    },
+    {
+      "template_id": "APPROX_L2_03",
+      "pattern": "Approximate: √[N] ≈ ?",
+      "variables": {
+        "N": {
+          "values": [
+            143,
+            145,
+            168,
+            170,
+            195,
+            197,
+            224,
+            226,
+            255,
+            257,
+            288,
+            290,
+            323,
+            325,
+            360,
+            362,
+            399,
+            401
+          ]
+        }
+      },
+      "calculation": "round(sqrt(N))",
+      "explanation": "Find nearest perfect squares around [N].\nsqrt([N]) lies between sqrt([floor(sqrt(N))*floor(sqrt(N))]) and sqrt([ceil(sqrt(N))*ceil(sqrt(N))])\n= between [floor(sqrt(N))] and [ceil(sqrt(N))]\nsqrt([N]) ≈ [RESULT]\n\nRule: Identify the nearest perfect square."
+    },
+    {
+      "template_id": "APPROX_L2_04",
+      "pattern": "Approximate: [A].[P] × [B].[Q] ≈ ?",
+      "variables": {
+        "A": {
+          "min": 3,
+          "max": 12,
+          "step": 1
+        },
+        "P": {
+          "min": 1,
+          "max": 9,
+          "step": 1
+        },
+        "B": {
+          "min": 3,
+          "max": 9,
+          "step": 1
+        },
+        "Q": {
+          "min": 1,
+          "max": 9,
+          "step": 1
+        }
+      },
+      "calculation": "round(A) * round(B)",
+      "explanation": "Round each decimal to nearest whole number:\n[A].[P] ≈ [round(A)] (since .[P] < .5, round down)\n[B].[Q] ≈ [round(B)]\n[round(A)] × [round(B)] = [RESULT]\n\nRule: Round decimals to whole numbers first, then multiply."
+    },
+    {
+      "template_id": "APPROX_L2_05",
+      "pattern": "Approximate: [A] ÷ [B] + [C] ÷ [D] ≈ ?",
+      "variables": {
+        "A": {
+          "values": [
+            97,
+            98,
+            101,
+            102,
+            143,
+            148,
+            152,
+            197,
+            198,
+            203
+          ]
+        },
+        "B": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        },
+        "C": {
+          "values": [
+            47,
+            48,
+            52,
+            53,
+            63,
+            68,
+            72,
+            83,
+            88,
+            92
+          ]
+        },
+        "D": {
+          "values": [
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        }
+      },
+      "constraints": [
+        "B !== D"
+      ],
+      "calculation": "round(round(A / B) + round(C / D))",
+      "explanation": "Approximate each division separately:\n[A] ÷ [B] ≈ [round(A/B)]\n[C] ÷ [D] ≈ [round(C/D)]\n[round(A/B)] + [round(C/D)] = [RESULT]\n\nRule: Approximate each part separately, then add."
+    },
+    {
+      "template_id": "APPROX_L2_06",
+      "pattern": "Approximate: [A]² ≈ ? (round [A] to nearest 10 first)",
+      "variables": {
+        "A": {
+          "values": [
+            18,
+            19,
+            21,
+            22,
+            28,
+            29,
+            31,
+            32,
+            38,
+            39,
+            41,
+            42,
+            48,
+            49,
+            51,
+            52,
+            58,
+            59,
+            61,
+            62
+          ]
+        }
+      },
+      "calculation": "pow(round(A / 10) * 10, 2)",
+      "explanation": "Round [A] to nearest 10 first:\n[A] ≈ [round(A/10)*10]\n[round(A/10)*10]² = [round(A/10)*10] × [round(A/10)*10] = [RESULT]\n\nRule: Round the base first, then square."
+    },
+    {
+      "template_id": "APPROX_L2_07",
+      "pattern": "Approximate: [A] × [B] - [C] × [D] ≈ ?",
+      "variables": {
+        "A": {
+          "values": [
+            48,
+            49,
+            51,
+            52,
+            58,
+            59,
+            61,
+            62
+          ]
+        },
+        "B": {
+          "values": [
+            9,
+            11,
+            12,
+            18,
+            19,
+            21
+          ]
+        },
+        "C": {
+          "values": [
+            28,
+            29,
+            31,
+            32,
+            38,
+            39,
+            41,
+            42
+          ]
+        },
+        "D": {
+          "values": [
+            8,
+            9,
+            11,
+            12
+          ]
+        }
+      },
+      "constraints": [
+        "round(A/10)*10 * round(B/10)*10 > round(C/10)*10 * round(D/10)*10"
+      ],
+      "calculation": "round(A / 10) * 10 * round(B / 10) * 10 - round(C / 10) * 10 * round(D / 10) * 10",
+      "explanation": "Round each to nearest 10 first:\n[A] ≈ [round(A/10)*10], [B] ≈ [round(B/10)*10]\n[C] ≈ [round(C/10)*10], [D] ≈ [round(D/10)*10]\n[round(A/10)*10] × [round(B/10)*10] = [round(A/10)*10*round(B/10)*10]\n[round(C/10)*10] × [round(D/10)*10] = [round(C/10)*10*round(D/10)*10]\nDifference = [RESULT]\n\nRule: Round each factor, compute products, then subtract."
+    },
+    {
+      "template_id": "APPROX_L2_08",
+      "pattern": "Approximate: ([A] + [B]) ÷ [C] ≈ ?",
+      "variables": {
+        "A": {
+          "values": [
+            97,
+            98,
+            101,
+            102,
+            147,
+            148,
+            152,
+            197,
+            198,
+            202,
+            247,
+            248,
+            252,
+            297,
+            298,
+            302
+          ]
+        },
+        "B": {
+          "values": [
+            48,
+            49,
+            51,
+            52,
+            97,
+            98,
+            102,
+            103,
+            147,
+            148,
+            152,
+            153
+          ]
+        },
+        "C": {
+          "values": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ]
+        }
+      },
+      "calculation": "round((round(A / 10) * 10 + round(B / 10) * 10) / C)",
+      "explanation": "Round [A] and [B] to nearest 10:\n[A] ≈ [round(A/10)*10]\n[B] ≈ [round(B/10)*10]\nSum ≈ [round(A/10)*10] + [round(B/10)*10] = [round(A/10)*10+round(B/10)*10]\n÷ [C] = [RESULT]\n\nRule: Round numerator terms, add, then divide."
+    },
+    {
+      "template_id": "APPROX_L2_09",
+      "pattern": "Approximate: [P]% of [A] + [B] ≈ ?",
+      "variables": {
+        "P": {
+          "values": [
+            19,
+            21,
+            24,
+            26,
+            29,
+            31,
+            34,
+            36,
+            39,
+            41
+          ]
+        },
+        "A": {
+          "values": [
+            198,
+            199,
+            201,
+            202,
+            298,
+            299,
+            301,
+            302,
+            398,
+            399,
+            401,
+            402,
+            498,
+            499,
+            501
+          ]
+        },
+        "B": {
+          "values": [
+            48,
+            49,
+            51,
+            52,
+            73,
+            74,
+            76,
+            77,
+            98,
+            99,
+            101,
+            102
+          ]
+        }
+      },
+      "calculation": "round(round(P) / 100 * round(A / 10) * 10 + round(B / 10) * 10)",
+      "explanation": "Step 1: Round [P]% ≈ [round(P)]%, [A] ≈ [round(A/10)*10]\n[round(P)]% of [round(A/10)*10] = [round(round(P)/100*round(A/10)*10)]\nStep 2: Round [B] ≈ [round(B/10)*10]\nStep 3: Add = [round(round(P)/100*round(A/10)*10)] + [round(B/10)*10] = [RESULT]\n\nRule: Round all values first, then calculate."
+    },
+    {
+      "template_id": "APPROX_L2_10",
+      "pattern": "Approximate: [A].[P] ÷ [B].[Q] ≈ ?",
+      "variables": {
+        "A": {
+          "values": [
+            9,
+            14,
+            19,
+            24,
+            29,
+            34,
+            39,
+            44,
+            49,
+            54,
+            59,
+            64,
+            69,
+            74,
+            79,
+            84,
+            89,
+            94,
+            99
+          ]
+        },
+        "P": {
+          "min": 1,
+          "max": 9,
+          "step": 1
+        },
+        "B": {
+          "min": 2,
+          "max": 9,
+          "step": 1
+        },
+        "Q": {
+          "min": 1,
+          "max": 9,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "B !== 0",
+        "round(A / B) > 1"
+      ],
+      "calculation": "round(A / B)",
+      "explanation": "Round each to nearest whole:\n[A].[P] ≈ [A]\n[B].[Q] ≈ [B]\n[A] ÷ [B] = [A/B]\n≈ [RESULT]\n\nRule: Round decimals first, then divide."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯",
+      "Perfect! ⭐",
+      "Brilliant! 🧠",
+      "Well done! 👍",
+      "Amazing! 🌟",
+      "Superb! 🚀",
+      "Outstanding! 💫",
+      "Great job! 🎊",
+      "Spot on! ✨",
+      "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪",
+      "Check rounding rules! 📐",
+      "Almost! 😊",
+      "Think carefully! 🤔",
+      "Remember — round first! 📚",
+      "So close! 💝",
+      "One more try! 🎯",
+      "Keep going! 🌈"
+    ]
+  }
+}

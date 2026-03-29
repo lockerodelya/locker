@@ -1,0 +1,135 @@
+{
+  "puzzle_type": "upsc-math-bodmas-level-1",
+  "display_name": "BODMAS Rules L1",
+  "templates": [
+    {
+      "template_id": "BODMAS_L1_01",
+      "pattern": "Simplify: [A] + [B] × [C]",
+      "variables": {
+        "A": {"min": 2, "max": 20, "step": 1},
+        "B": {"min": 2, "max": 10, "step": 1},
+        "C": {"min": 2, "max": 10, "step": 1}
+      },
+      "calculation": "A + B * C",
+      "explanation": "Using BODMAS — Multiplication before Addition.\n= [A] + [B] × [C]\n= [A] + [B*C]\n= [RESULT]\n\nRule: Always perform Multiplication (M) before Addition (A)."
+    },
+    {
+      "template_id": "BODMAS_L1_02",
+      "pattern": "Simplify: [A] × [B] + [C] × [D]",
+      "variables": {
+        "A": {"min": 2, "max": 10, "step": 1},
+        "B": {"min": 2, "max": 10, "step": 1},
+        "C": {"min": 2, "max": 10, "step": 1},
+        "D": {"min": 2, "max": 10, "step": 1}
+      },
+      "calculation": "A * B + C * D",
+      "explanation": "Using BODMAS — Multiplication before Addition.\n= [A] × [B] + [C] × [D]\n= [A*B] + [C*D]\n= [RESULT]\n\nRule: Perform all Multiplications first, then Addition."
+    },
+    {
+      "template_id": "BODMAS_L1_03",
+      "pattern": "Simplify: [A] - [B] + [C]",
+      "variables": {
+        "A": {"min": 20, "max": 50, "step": 1},
+        "B": {"min": 5,  "max": 15, "step": 1},
+        "C": {"min": 2,  "max": 10, "step": 1}
+      },
+      "calculation": "A - B + C",
+      "explanation": "Using BODMAS — Addition and Subtraction have equal priority, solve left to right.\n= [A] - [B] + [C]\n= [A-B] + [C]\n= [RESULT]\n\nRule: When only Addition and Subtraction are present, solve from Left to Right."
+    },
+    {
+      "template_id": "BODMAS_L1_04",
+      "pattern": "Simplify: ([A] + [B]) × [C]",
+      "variables": {
+        "A": {"min": 2, "max": 15, "step": 1},
+        "B": {"min": 2, "max": 15, "step": 1},
+        "C": {"min": 2, "max": 10, "step": 1}
+      },
+      "calculation": "(A + B) * C",
+      "explanation": "Using BODMAS — Brackets first, then Multiplication.\n= ([A] + [B]) × [C]\n= [A+B] × [C]\n= [RESULT]\n\nRule: Always solve Brackets (B) first before any other operation."
+    },
+    {
+      "template_id": "BODMAS_L1_05",
+      "pattern": "Simplify: [A] + [B] ÷ [C]",
+      "variables": {
+        "A": {"min": 5,  "max": 30, "step": 1},
+        "B": {"values": [6, 8, 10, 12, 15, 18, 20, 24, 30, 36, 40, 42, 48]},
+        "C": {"values": [2, 3, 4,  5,  6]}
+      },
+      "constraints": ["B % C === 0"],
+      "calculation": "A + B / C",
+      "explanation": "Using BODMAS — Division before Addition.\n= [A] + [B] ÷ [C]\n= [A] + [B/C]\n= [RESULT]\n\nRule: Division (D) is performed before Addition (A)."
+    },
+    {
+      "template_id": "BODMAS_L1_06",
+      "pattern": "Simplify: [A] × [B] - [C]",
+      "variables": {
+        "A": {"min": 3, "max": 12, "step": 1},
+        "B": {"min": 3, "max": 12, "step": 1},
+        "C": {"min": 2, "max": 10, "step": 1}
+      },
+      "constraints": ["A * B > C"],
+      "calculation": "A * B - C",
+      "explanation": "Using BODMAS — Multiplication before Subtraction.\n= [A] × [B] - [C]\n= [A*B] - [C]\n= [RESULT]\n\nRule: Multiplication (M) is performed before Subtraction (S)."
+    },
+    {
+      "template_id": "BODMAS_L1_07",
+      "pattern": "Simplify: ([A] - [B]) × [C]",
+      "variables": {
+        "A": {"min": 10, "max": 25, "step": 1},
+        "B": {"min": 2,  "max": 8,  "step": 1},
+        "C": {"min": 2,  "max": 10, "step": 1}
+      },
+      "constraints": ["A > B"],
+      "calculation": "(A - B) * C",
+      "explanation": "Using BODMAS — Brackets first, then Multiplication.\n= ([A] - [B]) × [C]\n= [A-B] × [C]\n= [RESULT]\n\nRule: Brackets (B) are always solved first."
+    },
+    {
+      "template_id": "BODMAS_L1_08",
+      "pattern": "Simplify: [A] ÷ [B] + [C]",
+      "variables": {
+        "A": {"values": [6, 8, 10, 12, 14, 16, 18, 20, 24, 30, 36, 40, 42, 48, 50]},
+        "B": {"values": [2, 3, 4, 5, 6]},
+        "C": {"min": 2, "max": 20, "step": 1}
+      },
+      "constraints": ["A % B === 0"],
+      "calculation": "A / B + C",
+      "explanation": "Using BODMAS — Division before Addition.\n= [A] ÷ [B] + [C]\n= [A/B] + [C]\n= [RESULT]\n\nRule: Division (D) comes before Addition (A) in BODMAS."
+    },
+    {
+      "template_id": "BODMAS_L1_09",
+      "pattern": "Simplify: [A] + [B] - [C] + [D]",
+      "variables": {
+        "A": {"min": 10, "max": 30, "step": 1},
+        "B": {"min": 5,  "max": 20, "step": 1},
+        "C": {"min": 2,  "max": 10, "step": 1},
+        "D": {"min": 2,  "max": 10, "step": 1}
+      },
+      "constraints": ["A + B > C"],
+      "calculation": "A + B - C + D",
+      "explanation": "Using BODMAS — Only Addition and Subtraction, solve left to right.\n= [A] + [B] - [C] + [D]\n= [A+B] - [C] + [D]\n= [A+B-C] + [D]\n= [RESULT]\n\nRule: Addition and Subtraction are equal priority — solve Left to Right."
+    },
+    {
+      "template_id": "BODMAS_L1_10",
+      "pattern": "Simplify: [A] × ([B] + [C])",
+      "variables": {
+        "A": {"min": 2, "max": 12, "step": 1},
+        "B": {"min": 2, "max": 15, "step": 1},
+        "C": {"min": 2, "max": 15, "step": 1}
+      },
+      "calculation": "A * (B + C)",
+      "explanation": "Using BODMAS — Brackets first, then Multiplication.\n= [A] × ([B] + [C])\n= [A] × [B+C]\n= [RESULT]\n\nRule: Brackets (B) are always the first operation in BODMAS."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check BODMAS order! 📐","Almost! 😊",
+      "Think carefully! 🤔","Remember — Brackets first! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

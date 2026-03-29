@@ -1,0 +1,167 @@
+{
+  "puzzle_type": "upsc-math-factors-multiples-level-3",
+  "display_name": "Factors & Multiples L3",
+  "templates": [
+    {
+      "template_id": "FM_L3_01",
+      "pattern": "The ratio of two numbers is [P]:[Q] and their HCF is [H]. What is their LCM?",
+      "variables": {
+        "P": { "values": [2, 3, 4, 5, 3, 5, 7, 4, 5, 7] },
+        "Q": { "values": [3, 4, 5, 7, 5, 8, 9, 7, 9, 11] },
+        "H": { "values": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12] }
+      },
+      "constraints": ["P !== Q", "gcd(P,Q) === 1"],
+      "calculation": "H * P * Q",
+      "explanation": "If ratio is [P]:[Q] and HCF = [H], the two numbers are [H]×[P] = [H*P] and [H]×[Q] = [H*Q].\nSince P and Q are coprime, LCM = HCF × P × Q.\n= [H] × [P] × [Q] = [H*P*Q]."
+    },
+    {
+      "template_id": "FM_L3_02",
+      "pattern": "Find the least number which when divided by [A], [B], and [C] leaves remainder [R] in each case.",
+      "variables": {
+        "A": { "values": [6, 8, 9, 10, 12, 14, 15] },
+        "B": { "values": [8, 9, 10, 12, 14, 15, 16] },
+        "C": { "values": [10, 12, 14, 15, 16, 18, 20] },
+        "R": { "values": [2, 3, 4, 5] },
+        "LAB": { "calc": "lcm(A, B)" },
+        "LABC": { "calc": "lcm(LAB, C)" }
+      },
+      "constraints": ["A !== B", "B !== C", "A !== C", "R < A", "R < B", "R < C", "LABC <= 720"],
+      "calculation": "LABC + R",
+      "explanation": "The smallest number divisible by [A], [B], [C] is their LCM.\nLCM([A],[B]) = [LAB].\nLCM([LAB],[C]) = [LABC].\nSince remainder [R] is needed each time, add [R]:\nAnswer = [LABC] + [R] = [LABC+R]."
+    },
+    {
+      "template_id": "FM_L3_03",
+      "pattern": "The HCF and LCM of two numbers are [H] and [H*M*N] respectively. If one number exceeds the other by [H*M-H*N], find the smaller number.",
+      "variables": {
+        "H": { "values": [3, 4, 5, 6] },
+        "M": { "values": [4, 5, 6, 7, 8] },
+        "N": { "values": [2, 3, 4, 5, 6] }
+      },
+      "constraints": ["M !== N", "M > N"],
+      "calculation": "H * N",
+      "explanation": "The two numbers are H×M = [H*M] and H×N = [H*N].\nDifference = [H*M] − [H*N] = [H*M-H*N] ✓\nLCM = [H]×[M]×[N] = [H*M*N] ✓\nSmaller number = [H] × [N] = [H*N]."
+    },
+    {
+      "template_id": "FM_L3_04",
+      "pattern": "How many numbers from 1 to [N] are divisible by [A] or [B] (or both)?",
+      "variables": {
+        "N": { "values": [100, 120, 150, 200, 250, 300] },
+        "A": { "values": [3, 4, 5, 6, 7] },
+        "B": { "values": [5, 6, 7, 8, 9] },
+        "L": { "calc": "lcm(A, B)" },
+        "CA": { "calc": "floor(N / A)" },
+        "CB": { "calc": "floor(N / B)" },
+        "CAB": { "calc": "floor(N / L)" }
+      },
+      "constraints": ["A !== B"],
+      "calculation": "CA + CB - CAB",
+      "explanation": "Use inclusion-exclusion principle:\nCount(A or B) = Count(A) + Count(B) − Count(both).\nDivisible by [A]: floor([N]÷[A]) = [CA].\nDivisible by [B]: floor([N]÷[B]) = [CB].\nDivisible by both (LCM=[L]): floor([N]÷[L]) = [CAB].\nAnswer = [CA] + [CB] − [CAB] = [CA+CB-CAB]."
+    },
+    {
+      "template_id": "FM_L3_05",
+      "pattern": "What is the greatest 3-digit number exactly divisible by [A], [B], and [C]?",
+      "variables": {
+        "A": { "values": [4, 5, 6, 7, 8] },
+        "B": { "values": [6, 7, 8, 9, 10] },
+        "C": { "values": [8, 9, 10, 12, 14] },
+        "LAB": { "calc": "lcm(A, B)" },
+        "LABC": { "calc": "lcm(LAB, C)" },
+        "QUOT": { "calc": "floor(999 / LABC)" }
+      },
+      "constraints": ["A !== B", "B !== C", "A !== C", "LABC <= 840"],
+      "calculation": "QUOT * LABC",
+      "explanation": "Step 1: LCM([A],[B]) = [LAB].\nStep 2: LCM([LAB],[C]) = [LABC].\nStep 3: Largest 3-digit number = 999.\nStep 4: floor(999 ÷ [LABC]) = [QUOT].\nStep 5: [QUOT] × [LABC] = [QUOT*LABC].\nAnswer = [QUOT*LABC]."
+    },
+    {
+      "template_id": "FM_L3_06",
+      "pattern": "Two numbers have HCF [H] and LCM [H*P*Q]. How many such pairs of numbers are possible?",
+      "variables": {
+        "H": { "values": [2, 3, 4, 5, 6] },
+        "P": { "values": [2, 3, 5, 7, 11] },
+        "Q": { "values": [3, 5, 7, 11, 13] }
+      },
+      "constraints": ["P !== Q", "gcd(P,Q) === 1"],
+      "calculation": "2",
+      "options": ["1", "2", "3", "4"],
+      "explanation": "Given HCF = [H] and LCM = [H*P*Q].\nNumbers are of the form H×a and H×b where gcd(a,b) = 1 and a×b = [P*Q].\nValid pairs (a,b): (1, [P*Q]) and ([P], [Q]).\nBoth are valid unordered pairs, so answer = 2."
+    },
+    {
+      "template_id": "FM_L3_07",
+      "pattern": "The sum of two numbers is [K*P+K*Q] and their LCM is [K*P*Q]. What is their HCF?",
+      "variables": {
+        "K": { "values": [3, 4, 5, 6, 7, 8, 9, 10] },
+        "P": { "values": [2, 3, 4, 5] },
+        "Q": { "values": [3, 5, 7, 9] }
+      },
+      "constraints": ["P !== Q", "gcd(P,Q) === 1"],
+      "calculation": "K",
+      "explanation": "Let the two numbers be K×P = [K*P] and K×Q = [K*Q], where HCF = K.\nSum = [K*P] + [K*Q] = [K*P+K*Q] ✓\nLCM = [K] × [P] × [Q] = [K*P*Q] ✓\nTherefore HCF = [K]."
+    },
+    {
+      "template_id": "FM_L3_08",
+      "pattern": "Find the least number which when increased by [R] becomes divisible by [A], [B], and [C].",
+      "variables": {
+        "A": { "values": [6, 8, 9, 10, 12] },
+        "B": { "values": [8, 9, 10, 12, 15] },
+        "C": { "values": [12, 15, 16, 18, 20] },
+        "R": { "values": [3, 4, 5, 6, 7] },
+        "LAB": { "calc": "lcm(A, B)" },
+        "LABC": { "calc": "lcm(LAB, C)" }
+      },
+      "constraints": ["A !== B", "B !== C", "A !== C", "LABC > R", "LABC <= 720"],
+      "calculation": "LABC - R",
+      "explanation": "We need N such that (N + [R]) is divisible by [A], [B], and [C].\nLCM([A],[B]) = [LAB].\nLCM([LAB],[C]) = [LABC].\nSmallest: N + [R] = [LABC]\nN = [LABC] − [R] = [LABC-R]."
+    },
+    {
+      "template_id": "FM_L3_09",
+      "pattern": "If the HCF of [A] and [B] is [H], what is the HCF of [A+B] and [A*B]?",
+      "variables": {
+        "A": { "min": 6, "max": 60, "step": 6 },
+        "B": { "min": 8, "max": 56, "step": 8 },
+        "H": { "calc": "gcd(A, B)" },
+        "SUM": { "calc": "A + B" },
+        "PROD": { "calc": "A * B" },
+        "ANS": { "calc": "gcd(SUM, PROD)" }
+      },
+      "constraints": ["A !== B", "H > 1"],
+      "calculation": "ANS",
+      "explanation": "HCF of [A] and [B] = [H].\nSum = [A] + [B] = [SUM].\nProduct = [A] × [B] = [PROD].\nHCF([SUM], [PROD]) = [ANS].\nNote: HCF(A+B, A×B) always divides HCF(A,B) × (A+B)."
+    },
+    {
+      "template_id": "FM_L3_10",
+      "pattern": "A rectangular floor [K*P] m × [K*Q] m is to be paved with identical square tiles. What is the largest possible side length of each tile (in metres)?",
+      "variables": {
+        "K": { "values": [2, 3, 4, 5, 6, 7, 8] },
+        "P": { "values": [3, 5, 7, 9, 11] },
+        "Q": { "values": [4, 6, 8, 10, 13] }
+      },
+      "constraints": ["P !== Q"],
+      "calculation": "K",
+      "explanation": "The largest square tile must divide both length and width exactly.\nLength = [K*P] m, Width = [K*Q] m.\nHCF([K*P], [K*Q]) = K × HCF([P],[Q]).\nSince P=[P] and Q=[Q] are chosen to be coprime, HCF(P,Q)=1.\nLargest tile side = [K] × 1 = [K] m."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯",
+      "Perfect! ⭐",
+      "Brilliant! 🧠",
+      "Well done! 👍",
+      "Amazing! 🌟",
+      "Superb! 🚀",
+      "Outstanding! 💫",
+      "Great job! 🎊",
+      "Spot on! ✨",
+      "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪",
+      "Apply the right formula! 📐",
+      "Almost there! 😊",
+      "Think step by step! 🤔",
+      "Use inclusion-exclusion! 📚",
+      "So close! 💝",
+      "One more try! 🎯",
+      "Keep going! 🌈"
+    ]
+  }
+}

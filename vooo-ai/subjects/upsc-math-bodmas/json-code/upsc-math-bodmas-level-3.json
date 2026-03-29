@@ -1,0 +1,160 @@
+{
+  "puzzle_type": "upsc-math-bodmas-level-3",
+  "display_name": "BODMAS Rules L3",
+  "templates": [
+    {
+      "template_id": "BODMAS_L3_01",
+      "pattern": "Simplify: [A] + [B] × ([C] - [D]) ÷ [E]",
+      "variables": {
+        "A": {"min": 5,  "max": 30, "step": 1},
+        "B": {"min": 2,  "max": 10, "step": 1},
+        "C": {"min": 10, "max": 25, "step": 1},
+        "D": {"min": 2,  "max": 8,  "step": 1},
+        "E": {"values": [2, 3, 4, 5, 6]}
+      },
+      "constraints": ["C > D", "B * (C - D) % E === 0"],
+      "calculation": "A + B * (C - D) / E",
+      "explanation": "Using BODMAS — Brackets first, then M and D left to right, then Addition.\n= [A] + [B] × ([C] - [D]) ÷ [E]\n= [A] + [B] × [C-D] ÷ [E]\n= [A] + [B*(C-D)] ÷ [E]\n= [A] + [B*(C-D)/E]\n= [RESULT]\n\nRule: B → M and D (left to right) → A"
+    },
+    {
+      "template_id": "BODMAS_L3_02",
+      "pattern": "Simplify: ([A] + [B]) × ([C] - [D])",
+      "variables": {
+        "A": {"min": 3,  "max": 15, "step": 1},
+        "B": {"min": 3,  "max": 15, "step": 1},
+        "C": {"min": 10, "max": 25, "step": 1},
+        "D": {"min": 2,  "max": 8,  "step": 1}
+      },
+      "constraints": ["C > D"],
+      "calculation": "(A + B) * (C - D)",
+      "explanation": "Using BODMAS — Both brackets first, then Multiplication.\n= ([A] + [B]) × ([C] - [D])\n= [A+B] × [C-D]\n= [RESULT]\n\nRule: Solve both bracket expressions first, then multiply the results."
+    },
+    {
+      "template_id": "BODMAS_L3_03",
+      "pattern": "Simplify: [A] × [B] + [C] × [D] - [E] ÷ [F]",
+      "variables": {
+        "A": {"min": 2,  "max": 8,  "step": 1},
+        "B": {"min": 2,  "max": 8,  "step": 1},
+        "C": {"min": 2,  "max": 8,  "step": 1},
+        "D": {"min": 2,  "max": 8,  "step": 1},
+        "E": {"values": [6, 8, 10, 12, 15, 18, 20, 24, 30]},
+        "F": {"values": [2, 3, 4, 5, 6]}
+      },
+      "constraints": ["E % F === 0", "A * B + C * D - E / F > 0"],
+      "calculation": "A * B + C * D - E / F",
+      "explanation": "Using BODMAS — All M and D first (left to right), then A and S left to right.\n= [A] × [B] + [C] × [D] - [E] ÷ [F]\n= [A*B] + [C*D] - [E/F]\n= [A*B+C*D] - [E/F]\n= [RESULT]\n\nRule: Complete all M and D operations before A and S."
+    },
+    {
+      "template_id": "BODMAS_L3_04",
+      "pattern": "Simplify: [A] + [B] × [C] - ([D] + [E])",
+      "variables": {
+        "A": {"min": 10, "max": 30, "step": 1},
+        "B": {"min": 3,  "max": 10, "step": 1},
+        "C": {"min": 3,  "max": 10, "step": 1},
+        "D": {"min": 2,  "max": 10, "step": 1},
+        "E": {"min": 2,  "max": 10, "step": 1}
+      },
+      "constraints": ["A + B * C - (D + E) > 0"],
+      "calculation": "A + B * C - (D + E)",
+      "explanation": "Using BODMAS — Brackets and Multiplication first, then A and S left to right.\n= [A] + [B] × [C] - ([D] + [E])\n= [A] + [B*C] - [D+E]\n= [A+B*C] - [D+E]\n= [RESULT]\n\nRule: Bracket and M are resolved first, then left to right for A and S."
+    },
+    {
+      "template_id": "BODMAS_L3_05",
+      "pattern": "Simplify: [A] ÷ ([B] - [C]) + [D] × [E]",
+      "variables": {
+        "A": {"values": [6, 8, 10, 12, 15, 18, 20, 24, 30, 36, 40]},
+        "B": {"min": 5,  "max": 15, "step": 1},
+        "C": {"min": 1,  "max": 4,  "step": 1},
+        "D": {"min": 2,  "max": 8,  "step": 1},
+        "E": {"min": 2,  "max": 8,  "step": 1}
+      },
+      "constraints": ["B > C", "A % (B - C) === 0"],
+      "calculation": "A / (B - C) + D * E",
+      "explanation": "Using BODMAS — Bracket first, then D and M, then Addition.\n= [A] ÷ ([B] - [C]) + [D] × [E]\n= [A] ÷ [B-C] + [D] × [E]\n= [A/(B-C)] + [D*E]\n= [RESULT]\n\nRule: B → D and M → A"
+    },
+    {
+      "template_id": "BODMAS_L3_06",
+      "pattern": "Simplify: ([A] + [B] × [C]) ÷ [D]",
+      "variables": {
+        "A": {"min": 2,  "max": 15, "step": 1},
+        "B": {"min": 2,  "max": 10, "step": 1},
+        "C": {"min": 2,  "max": 10, "step": 1},
+        "D": {"values": [2, 3, 4, 5, 6, 7]}
+      },
+      "constraints": ["(A + B * C) % D === 0"],
+      "calculation": "(A + B * C) / D",
+      "explanation": "Using BODMAS — Inside bracket: M before A. Then Division outside.\n= ([A] + [B] × [C]) ÷ [D]\n= ([A] + [B*C]) ÷ [D]\n= [A+B*C] ÷ [D]\n= [RESULT]\n\nRule: Even inside brackets, BODMAS applies — M before A."
+    },
+    {
+      "template_id": "BODMAS_L3_07",
+      "pattern": "Simplify: [A] × [B] - [C] × ([D] - [E])",
+      "variables": {
+        "A": {"min": 3,  "max": 10, "step": 1},
+        "B": {"min": 3,  "max": 10, "step": 1},
+        "C": {"min": 2,  "max": 8,  "step": 1},
+        "D": {"min": 8,  "max": 20, "step": 1},
+        "E": {"min": 2,  "max": 6,  "step": 1}
+      },
+      "constraints": ["D > E", "A * B - C * (D - E) > 0"],
+      "calculation": "A * B - C * (D - E)",
+      "explanation": "Using BODMAS — Brackets first, then both Multiplications, then Subtraction.\n= [A] × [B] - [C] × ([D] - [E])\n= [A] × [B] - [C] × [D-E]\n= [A*B] - [C*(D-E)]\n= [RESULT]\n\nRule: B → M → S"
+    },
+    {
+      "template_id": "BODMAS_L3_08",
+      "pattern": "Simplify: [A] + ([B] ÷ [C] - [D]) × [E]",
+      "variables": {
+        "A": {"min": 5,  "max": 25, "step": 1},
+        "B": {"values": [6, 8, 10, 12, 15, 18, 20, 24, 30, 36, 40, 42]},
+        "C": {"values": [2, 3, 4,  5,  6]},
+        "D": {"min": 1,  "max": 4,  "step": 1},
+        "E": {"min": 2,  "max": 8,  "step": 1}
+      },
+      "constraints": ["B % C === 0", "B / C > D"],
+      "calculation": "A + (B / C - D) * E",
+      "explanation": "Using BODMAS — Inside bracket: D before S. Then Multiplication outside. Then Addition.\n= [A] + ([B] ÷ [C] - [D]) × [E]\n= [A] + ([B/C] - [D]) × [E]\n= [A] + [B/C-D] × [E]\n= [A] + [(B/C-D)*E]\n= [RESULT]\n\nRule: Inside brackets — D before S. Then B → M → A."
+    },
+    {
+      "template_id": "BODMAS_L3_09",
+      "pattern": "Simplify: [A] × ([B] + [C]) - ([D] × [E] - [F])",
+      "variables": {
+        "A": {"min": 2,  "max": 8,  "step": 1},
+        "B": {"min": 3,  "max": 10, "step": 1},
+        "C": {"min": 3,  "max": 10, "step": 1},
+        "D": {"min": 2,  "max": 8,  "step": 1},
+        "E": {"min": 2,  "max": 8,  "step": 1},
+        "F": {"min": 2,  "max": 10, "step": 1}
+      },
+      "constraints": ["D * E > F", "A * (B + C) - (D * E - F) > 0"],
+      "calculation": "A * (B + C) - (D * E - F)",
+      "explanation": "Using BODMAS — Both brackets first (inside each: M before S), then Subtraction.\n= [A] × ([B] + [C]) - ([D] × [E] - [F])\n= [A] × [B+C] - ([D*E] - [F])\n= [A*(B+C)] - [D*E-F]\n= [RESULT]\n\nRule: Resolve all brackets first — inside each bracket follow BODMAS too."
+    },
+    {
+      "template_id": "BODMAS_L3_10",
+      "pattern": "Simplify: [A] ÷ [B] + [C] × [D] - ([E] - [F] ÷ [G])",
+      "variables": {
+        "A": {"values": [6, 8, 10, 12, 15, 18, 20, 24, 30]},
+        "B": {"values": [2, 3, 4, 5, 6]},
+        "C": {"min": 2,  "max": 8,  "step": 1},
+        "D": {"min": 2,  "max": 8,  "step": 1},
+        "E": {"min": 10, "max": 20, "step": 1},
+        "F": {"values": [6, 8, 10, 12, 15, 18, 20, 24]},
+        "G": {"values": [2, 3, 4,  5,  6]}
+      },
+      "constraints": ["A % B === 0", "F % G === 0", "A / B + C * D - (E - F / G) > 0"],
+      "calculation": "A / B + C * D - (E - F / G)",
+      "explanation": "Using BODMAS — Bracket first (D inside before S), then D and M outside, then A and S left to right.\n= [A] ÷ [B] + [C] × [D] - ([E] - [F] ÷ [G])\n= [A/B] + [C*D] - ([E] - [F/G])\n= [A/B] + [C*D] - [E-F/G]\n= [RESULT]\n\nRule: Full BODMAS — B → D/M → A/S (all left to right at each level)."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check BODMAS order! 📐","Almost! 😊",
+      "Think carefully! 🤔","Remember — Brackets first! 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

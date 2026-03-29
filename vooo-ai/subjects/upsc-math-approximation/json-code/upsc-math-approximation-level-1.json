@@ -1,0 +1,252 @@
+{
+  "puzzle_type": "upsc-math-approximation-level-1",
+  "display_name": "Approximation L1",
+  "templates": [
+    {
+      "template_id": "APPROX_L1_01",
+      "pattern": "Approximate [N] to the nearest 10.",
+      "variables": {
+        "N": {
+          "min": 11,
+          "max": 99,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "N % 10 !== 0"
+      ],
+      "calculation": "round(N / 10) * 10",
+      "explanation": "To round [N] to nearest 10:\nLook at units digit: [N % 10].\n[N % 10] >= 5 → round up, else round down.\n[N] ≈ [RESULT]\n\nRule: Units digit ≥ 5 → round up, < 5 → round down."
+    },
+    {
+      "template_id": "APPROX_L1_02",
+      "pattern": "Approximate [N] to the nearest 100.",
+      "variables": {
+        "N": {
+          "min": 101,
+          "max": 999,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "N % 100 !== 0"
+      ],
+      "calculation": "round(N / 100) * 100",
+      "explanation": "To round [N] to nearest 100:\nLook at tens digit: [floor(N/10) % 10].\nTens digit ≥ 5 → round up, else round down.\n[N] ≈ [RESULT]\n\nRule: Tens digit ≥ 5 → round up to next hundred."
+    },
+    {
+      "template_id": "APPROX_L1_03",
+      "pattern": "Approximate: [A] + [B] ≈ ?",
+      "variables": {
+        "A": {
+          "min": 11,
+          "max": 89,
+          "step": 1
+        },
+        "B": {
+          "min": 11,
+          "max": 89,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "A % 10 !== 0",
+        "B % 10 !== 0"
+      ],
+      "calculation": "round(A / 10) * 10 + round(B / 10) * 10",
+      "explanation": "Round each number to nearest 10, then add.\n[A] ≈ [round(A/10)*10]\n[B] ≈ [round(B/10)*10]\n[round(A/10)*10] + [round(B/10)*10] = [RESULT]\n\nRule: Round each term first, then operate."
+    },
+    {
+      "template_id": "APPROX_L1_04",
+      "pattern": "Approximate: [A] - [B] ≈ ?",
+      "variables": {
+        "A": {
+          "min": 41,
+          "max": 99,
+          "step": 1
+        },
+        "B": {
+          "min": 11,
+          "max": 39,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "A % 10 !== 0",
+        "B % 10 !== 0",
+        "A > B"
+      ],
+      "calculation": "round(A / 10) * 10 - round(B / 10) * 10",
+      "explanation": "Round each number to nearest 10, then subtract.\n[A] ≈ [round(A/10)*10]\n[B] ≈ [round(B/10)*10]\n[round(A/10)*10] - [round(B/10)*10] = [RESULT]\n\nRule: Round each term first, then subtract."
+    },
+    {
+      "template_id": "APPROX_L1_05",
+      "pattern": "Round [A].[B] to the nearest whole number.",
+      "variables": {
+        "A": {
+          "min": 2,
+          "max": 19,
+          "step": 1
+        },
+        "B": {
+          "min": 1,
+          "max": 9,
+          "step": 1
+        }
+      },
+      "calculation": "B >= 5 ? A + 1 : A",
+      "explanation": "Look at the decimal part: .[B]\n[B] >= 5 → round up to [A+1]\n[B] < 5 → round down to [A]\nAnswer: [RESULT]\n\nRule: Decimal ≥ .5 → round up."
+    },
+    {
+      "template_id": "APPROX_L1_06",
+      "pattern": "Approximate [N] to the nearest 5.",
+      "variables": {
+        "N": {
+          "min": 11,
+          "max": 99,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "N % 5 !== 0"
+      ],
+      "calculation": "round(N / 5) * 5",
+      "explanation": "To round [N] to nearest 5:\nDivide by 5, round, multiply by 5.\n[N] ÷ 5 = [N/5]\nRound [round1(N/5)] → [round(N/5)]\n[round(N/5)] × 5 = [RESULT]\n\nRule: round(N/5) × 5"
+    },
+    {
+      "template_id": "APPROX_L1_07",
+      "pattern": "Approximate: [A] × [B] ≈ ?",
+      "variables": {
+        "A": {
+          "min": 11,
+          "max": 59,
+          "step": 1
+        },
+        "B": {
+          "min": 11,
+          "max": 29,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "A % 10 !== 0",
+        "B % 10 !== 0"
+      ],
+      "calculation": "round(A / 10) * 10 * round(B / 10) * 10",
+      "explanation": "Round each number to nearest 10, then multiply.\n[A] ≈ [round(A/10)*10]\n[B] ≈ [round(B/10)*10]\n[round(A/10)*10] × [round(B/10)*10] = [RESULT]\n\nRule: Round each factor first, then multiply."
+    },
+    {
+      "template_id": "APPROX_L1_08",
+      "pattern": "Approximate: [A] ÷ [B] ≈ ?",
+      "variables": {
+        "A": {
+          "min": 50,
+          "max": 200,
+          "step": 1
+        },
+        "B": {
+          "values": [
+            4,
+            5,
+            6,
+            8,
+            9,
+            11
+          ]
+        }
+      },
+      "calculation": "round(A / B)",
+      "explanation": "Approximate [A] ÷ [B]:\n[A] ÷ [B] = [A/B]\nRound to nearest whole: [RESULT]\n\nRule: Divide then round to nearest whole number."
+    },
+    {
+      "template_id": "APPROX_L1_09",
+      "pattern": "Approximate √[N] to the nearest whole number.",
+      "variables": {
+        "N": {
+          "values": [
+            3,
+            5,
+            6,
+            7,
+            8,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            17,
+            18,
+            19,
+            20,
+            23,
+            24,
+            26,
+            27,
+            28,
+            29,
+            31,
+            32,
+            33,
+            34,
+            35
+          ]
+        }
+      },
+      "calculation": "round(sqrt(N))",
+      "explanation": "Find nearest perfect squares around [N].\nIdentify: which perfect square is [N] closest to?\nsqrt([N]) ≈ [RESULT]\n\nRule: Find the perfect square closest to [N], take its root."
+    },
+    {
+      "template_id": "APPROX_L1_10",
+      "pattern": "Approximate: [A] + [B] + [C] ≈ ?",
+      "variables": {
+        "A": {
+          "min": 11,
+          "max": 79,
+          "step": 1
+        },
+        "B": {
+          "min": 11,
+          "max": 79,
+          "step": 1
+        },
+        "C": {
+          "min": 11,
+          "max": 79,
+          "step": 1
+        }
+      },
+      "constraints": [
+        "A % 10 !== 0",
+        "B % 10 !== 0",
+        "C % 10 !== 0"
+      ],
+      "calculation": "round(A / 10) * 10 + round(B / 10) * 10 + round(C / 10) * 10",
+      "explanation": "Round each to nearest 10, then add.\n[A] ≈ [round(A/10)*10]\n[B] ≈ [round(B/10)*10]\n[C] ≈ [round(C/10)*10]\nSum ≈ [round(A/10)*10] + [round(B/10)*10] + [round(C/10)*10] = [RESULT]\n\nRule: Round each term to nearest 10 first."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯",
+      "Perfect! ⭐",
+      "Brilliant! 🧠",
+      "Well done! 👍",
+      "Amazing! 🌟",
+      "Superb! 🚀",
+      "Outstanding! 💫",
+      "Great job! 🎊",
+      "Spot on! ✨",
+      "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪",
+      "Check rounding rules! 📐",
+      "Almost! 😊",
+      "Think carefully! 🤔",
+      "Remember — round first! 📚",
+      "So close! 💝",
+      "One more try! 🎯",
+      "Keep going! 🌈"
+    ]
+  }
+}

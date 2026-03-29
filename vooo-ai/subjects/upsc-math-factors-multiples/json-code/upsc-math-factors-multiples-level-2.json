@@ -1,0 +1,162 @@
+{
+  "puzzle_type": "upsc-math-factors-multiples-level-2",
+  "display_name": "Factors & Multiples L2",
+  "templates": [
+    {
+      "template_id": "FM_L2_01",
+      "pattern": "What is the largest number that divides both [A] and [B] leaving no remainder?",
+      "variables": {
+        "K": { "values": [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] },
+        "P": { "values": [3, 4, 5, 6, 7, 8, 9, 10] },
+        "Q": { "values": [4, 5, 6, 7, 8, 9, 10, 11] }
+      },
+      "constraints": ["P !== Q"],
+      "pattern": "What is the largest number that divides both [K*P] and [K*Q] leaving no remainder?",
+      "calculation": "K",
+      "explanation": "The largest number that divides both [K*P] and [K*Q] exactly is their HCF.\nHCF([K*P], [K*Q]) = [K] × HCF([P],[Q]).\nSince [K] is the common factor here, HCF = [K].\nVerify: [K*P] ÷ [K] = [P] ✓  and  [K*Q] ÷ [K] = [Q] ✓"
+    },
+    {
+      "template_id": "FM_L2_02",
+      "pattern": "Find the HCF of [K*P], [K*Q], and [K*R].",
+      "variables": {
+        "K": { "values": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
+        "P": { "values": [2, 3, 4, 5, 6, 7, 8] },
+        "Q": { "values": [3, 4, 5, 6, 7, 8, 9] },
+        "R": { "values": [4, 5, 6, 7, 8, 9, 10] }
+      },
+      "constraints": ["P !== Q", "Q !== R", "P !== R"],
+      "calculation": "K",
+      "explanation": "Find HCF step by step:\nHCF([K*P], [K*Q]) = [K] (K is the common factor).\nHCF([K], [K*R]) = [K].\nSo HCF([K*P], [K*Q], [K*R]) = [K]."
+    },
+    {
+      "template_id": "FM_L2_03",
+      "pattern": "What is the smallest number that when divided by [A] and [B] leaves remainder [R] each time?",
+      "variables": {
+        "A": { "values": [4, 5, 6, 7, 8, 9, 10, 12] },
+        "B": { "values": [6, 7, 8, 9, 10, 12, 14, 15] },
+        "R": { "values": [1, 2, 3] },
+        "L": { "calc": "lcm(A, B)" }
+      },
+      "constraints": ["A !== B", "R < A", "R < B", "L <= 420"],
+      "calculation": "L + R",
+      "explanation": "The smallest number divisible by both [A] and [B] is LCM([A],[B]) = [L].\nSince it must leave remainder [R] each time, add [R]:\nAnswer = [L] + [R] = [L+R].\nCheck: [L+R] ÷ [A] leaves remainder [R] ✓"
+    },
+    {
+      "template_id": "FM_L2_04",
+      "pattern": "The LCM of two numbers is [L] and their HCF is [H]. One number is [A]. Find the other.",
+      "variables": {
+        "A": { "min": 6, "max": 48, "step": 6 },
+        "B": { "min": 8, "max": 40, "step": 4 },
+        "L": { "calc": "lcm(A, B)" },
+        "H": { "calc": "gcd(A, B)" }
+      },
+      "constraints": ["A !== B", "L <= 360"],
+      "calculation": "B",
+      "explanation": "Formula: First number × Second number = LCM × HCF.\nSecond number = (LCM × HCF) ÷ First number\n= ([L] × [H]) ÷ [A]\n= [L*H] ÷ [A]\n= [B]."
+    },
+    {
+      "template_id": "FM_L2_05",
+      "pattern": "How many numbers from 1 to [L*SPAN] are divisible by both [A] and [B]?",
+      "variables": {
+        "A": { "values": [3, 4, 5, 6, 7] },
+        "B": { "values": [4, 5, 6, 7, 8] },
+        "SPAN": { "values": [5, 6, 7, 8, 9, 10, 12, 15] },
+        "L": { "calc": "lcm(A, B)" }
+      },
+      "constraints": ["A !== B", "L * SPAN <= 600"],
+      "calculation": "SPAN",
+      "explanation": "Numbers divisible by both [A] and [B] must be divisible by LCM([A],[B]) = [L].\nFrom 1 to [L*SPAN], every [L]th number qualifies.\nCount = [L*SPAN] ÷ [L] = [SPAN]."
+    },
+    {
+      "template_id": "FM_L2_06",
+      "pattern": "A number when divided by [D1] leaves remainder [D1-GAP] and when divided by [D2] leaves remainder [D2-GAP]. What is the smallest such positive number?",
+      "variables": {
+        "D1": { "values": [5, 6, 7, 8, 9, 10] },
+        "D2": { "values": [6, 7, 8, 9, 10, 11] },
+        "GAP": { "values": [1, 2, 3] },
+        "L": { "calc": "lcm(D1, D2)" }
+      },
+      "constraints": ["D1 !== D2", "GAP < D1", "GAP < D2"],
+      "calculation": "L - GAP",
+      "explanation": "Both remainders are [GAP] less than their divisors.\nThis means (number + [GAP]) is divisible by both [D1] and [D2].\nSo (number + [GAP]) = LCM([D1],[D2]) = [L].\nSmallest number = [L] − [GAP] = [L-GAP]."
+    },
+    {
+      "template_id": "FM_L2_07",
+      "pattern": "Which of the following numbers has exactly [T] factors?",
+      "variables": {
+        "T": { "values": [2, 3, 4, 6, 8, 9, 12] }
+      },
+      "calculation": "T === 2 ? 7 : T === 3 ? 4 : T === 4 ? 6 : T === 6 ? 12 : T === 8 ? 24 : T === 9 ? 36 : 60",
+      "options_builder": "T === 2 ? [7,9,12,15] : T === 3 ? [4,6,8,12] : T === 4 ? [6,8,10,15] : T === 6 ? [12,16,18,24] : T === 8 ? [24,30,36,48] : T === 9 ? [36,64,100,81] : [60,72,84,96]",
+      "explanation": "A number has exactly [T] factors based on its prime factorisation.\nIf N = p^a × q^b, total factors = (a+1)(b+1).\nFor [T] factors: find N where the factor-count formula gives [T].\nThe correct answer satisfies this condition."
+    },
+    {
+      "template_id": "FM_L2_08",
+      "pattern": "What is the HCF of [A*K] and [B*K] if their LCM is [L*K]?",
+      "variables": {
+        "K": { "values": [2, 3, 4, 5, 6, 7, 8, 9, 10] },
+        "A": { "values": [2, 3, 4, 5, 6, 7] },
+        "B": { "values": [3, 4, 5, 6, 7, 8] },
+        "H": { "calc": "gcd(A, B)" },
+        "L": { "calc": "lcm(A, B)" }
+      },
+      "constraints": ["A !== B"],
+      "calculation": "K * H",
+      "explanation": "HCF scales with the common factor K.\nHCF([A*K], [B*K]) = K × HCF([A],[B])\n= [K] × [H]\n= [K*H].\nVerify: LCM([A*K],[B*K]) = K × LCM([A],[B]) = [K] × [L] = [L*K] ✓"
+    },
+    {
+      "template_id": "FM_L2_09",
+      "pattern": "Three bells ring at intervals of [A], [B], and [C] minutes. If they ring together at 9:00 AM, after how many minutes will they next ring together?",
+      "variables": {
+        "A": { "values": [2, 3, 4, 5, 6] },
+        "B": { "values": [3, 4, 5, 6, 8] },
+        "C": { "values": [4, 5, 6, 8, 10] },
+        "LAB": { "calc": "lcm(A, B)" },
+        "LABC": { "calc": "lcm(A, B)" }
+      },
+      "constraints": ["A !== B", "B !== C", "A !== C"],
+      "calculation": "lcm(LAB, C)",
+      "explanation": "The bells ring together again after LCM([A],[B],[C]) minutes.\nStep 1: LCM([A],[B]) = [LAB].\nStep 2: LCM([LAB],[C]) = [lcm(LAB,C)] minutes.\nAnswer: [lcm(LAB,C)] minutes after 9:00 AM."
+    },
+    {
+      "template_id": "FM_L2_10",
+      "pattern": "What is the greatest number that divides [G*P+RA], [G*Q+RB], and [G*R+RC] leaving remainders [RA], [RB], and [RC] respectively?",
+      "variables": {
+        "G": { "values": [4, 5, 6, 7, 8, 9, 10, 11, 12] },
+        "P": { "values": [3, 4, 5, 6, 7, 8] },
+        "Q": { "values": [5, 6, 7, 8, 9, 10] },
+        "R": { "values": [7, 8, 9, 10, 11, 12] },
+        "RA": { "values": [1, 2, 3] },
+        "RB": { "values": [1, 2, 3] },
+        "RC": { "values": [1, 2, 3] }
+      },
+      "constraints": ["P !== Q", "Q !== R", "P !== R", "RA < G", "RB < G", "RC < G"],
+      "calculation": "G",
+      "explanation": "Subtract each remainder from its number:\n[G*P+RA] − [RA] = [G*P]\n[G*Q+RB] − [RB] = [G*Q]\n[G*R+RC] − [RC] = [G*R]\nNow find HCF([G*P],[G*Q],[G*R]).\n[G] divides all three, so HCF = [G].\nAnswer: [G]."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯",
+      "Perfect! ⭐",
+      "Brilliant! 🧠",
+      "Well done! 👍",
+      "Amazing! 🌟",
+      "Superb! 🚀",
+      "Outstanding! 💫",
+      "Great job! 🎊",
+      "Spot on! ✨",
+      "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪",
+      "Review HCF & LCM rules! 📐",
+      "Almost there! 😊",
+      "Think step by step! 🤔",
+      "Remember: subtract remainders first! 📚",
+      "So close! 💝",
+      "One more try! 🎯",
+      "Keep going! 🌈"
+    ]
+  }
+}

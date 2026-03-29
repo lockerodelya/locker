@@ -1,0 +1,701 @@
+{
+  "puzzle_type": "upsc-math-simple-ratio-level-3",
+  "display_name": "Simple & Compound Ratio L3",
+  "templates": [
+    {
+      "template_id": "RATIO_L3_01",
+      "pattern": "A:B = [P]:[Q]. Total A+B = [T]. Find 2A - B.",
+      "variables": {
+        "P": {
+          "values": [
+            3,
+            5,
+            4,
+            2,
+            5,
+            4,
+            3,
+            5,
+            7,
+            4
+          ]
+        },
+        "Q": {
+          "values": [
+            2,
+            3,
+            1,
+            3,
+            3,
+            3,
+            2,
+            4,
+            3,
+            6
+          ]
+        },
+        "T": {
+          "values": [
+            50,
+            40,
+            50,
+            60,
+            40,
+            70,
+            50,
+            90,
+            50,
+            100
+          ]
+        }
+      },
+      "constraints": [
+        "T % (P+Q) === 0"
+      ],
+      "calculation": "2 * T * P / (P+Q) - T * Q / (P+Q)",
+      "explanation": "A:B = [P]:[Q], A+B = [T]\nA = [T] × [P] ÷ [P+Q] = [T*P/(P+Q)]\nB = [T] × [Q] ÷ [P+Q] = [T*Q/(P+Q)]\n2A - B = 2 × [T*P/(P+Q)] - [T*Q/(P+Q)]\n= [2*T*P/(P+Q)] - [T*Q/(P+Q)]\n= [RESULT]\n\nRule: Find individual shares first, then compute the expression."
+    },
+    {
+      "template_id": "RATIO_L3_02",
+      "pattern": "If A:B = [P]:[Q], find (A+B):(A-B).",
+      "variables": {
+        "P": {
+          "values": [
+            3,
+            5,
+            7,
+            9,
+            4,
+            6,
+            8,
+            5,
+            7,
+            9
+          ]
+        },
+        "Q": {
+          "values": [
+            1,
+            3,
+            5,
+            7,
+            2,
+            4,
+            6,
+            3,
+            5,
+            7
+          ]
+        }
+      },
+      "constraints": [
+        "P > Q",
+        "(P+Q) % (P-Q) === 0"
+      ],
+      "calculation": "(P + Q) / (P - Q)",
+      "explanation": "A:B = [P]:[Q]\nLet A = [P]k, B = [Q]k for some k.\nA+B = [P]k + [Q]k = [P+Q]k\nA-B = [P]k - [Q]k = [P-Q]k\n(A+B):(A-B) = [P+Q]:[P-Q]\n= [P+Q] ÷ [P-Q] (as a ratio simplification)\n= [RESULT]:1\n\nRule: k cancels — ratio only depends on P and Q."
+    },
+    {
+      "template_id": "RATIO_L3_03",
+      "pattern": "A alone does work in [D1] days, B alone in [D2] days. Working together, how many days?",
+      "variables": {
+        "D1": {
+          "values": [
+            6,
+            4,
+            10,
+            6,
+            8,
+            12,
+            15,
+            12,
+            20,
+            9
+          ]
+        },
+        "D2": {
+          "values": [
+            12,
+            12,
+            15,
+            3,
+            24,
+            4,
+            10,
+            6,
+            30,
+            18
+          ]
+        }
+      },
+      "constraints": [
+        "D1 * D2 % (D1 + D2) === 0"
+      ],
+      "calculation": "D1 * D2 / (D1 + D2)",
+      "explanation": "A's 1 day work = 1/[D1]\nB's 1 day work = 1/[D2]\nTogether 1 day work = 1/[D1] + 1/[D2] = ([D2]+[D1])/([D1]×[D2]) = [D1+D2]/[D1*D2]\nDays together = [D1]×[D2] ÷ ([D1]+[D2])\n= [D1*D2] ÷ [D1+D2]\n= [RESULT] days\n\nRule: Together days = (D1×D2)÷(D1+D2)."
+    },
+    {
+      "template_id": "RATIO_L3_04",
+      "pattern": "A mixture has milk:water = [P]:[Q] in [T] litres. [W] litres of water is added. Find new milk:water ratio — what is the water part?",
+      "variables": {
+        "P": {
+          "values": [
+            3,
+            4,
+            5,
+            3,
+            5,
+            7,
+            4,
+            5,
+            3,
+            7
+          ]
+        },
+        "Q": {
+          "values": [
+            1,
+            1,
+            1,
+            2,
+            2,
+            3,
+            3,
+            3,
+            1,
+            2
+          ]
+        },
+        "T": {
+          "values": [
+            20,
+            20,
+            24,
+            30,
+            35,
+            40,
+            28,
+            40,
+            20,
+            45
+          ]
+        },
+        "W": {
+          "values": [
+            5,
+            10,
+            6,
+            10,
+            7,
+            8,
+            7,
+            5,
+            10,
+            9
+          ]
+        }
+      },
+      "constraints": [
+        "T % (P+Q) === 0"
+      ],
+      "calculation": "T * Q / (P + Q) + W",
+      "explanation": "Original mixture = [T] litres, ratio [P]:[Q]\nMilk = [T] × [P] ÷ [P+Q] = [T*P/(P+Q)] litres\nWater = [T] × [Q] ÷ [P+Q] = [T*Q/(P+Q)] litres\nAfter adding [W] litres water:\nNew water = [T*Q/(P+Q)] + [W] = [RESULT] litres\nNew milk stays = [T*P/(P+Q)] litres\n\nRule: Only water changes — milk stays same."
+    },
+    {
+      "template_id": "RATIO_L3_05",
+      "pattern": "If [A] ∝ [B]/[C]², and [A]=[X] when [B]=[Y],[C]=[Z], find [A] when [B]=[Y2],[C]=[Z2].",
+      "variables": {
+        "X": {
+          "values": [
+            8,
+            12,
+            18,
+            20,
+            16,
+            9,
+            24,
+            15,
+            10,
+            6
+          ]
+        },
+        "Y": {
+          "values": [
+            8,
+            12,
+            18,
+            20,
+            16,
+            9,
+            24,
+            15,
+            10,
+            6
+          ]
+        },
+        "Z": {
+          "values": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "Y2": {
+          "values": [
+            2,
+            3,
+            2,
+            5,
+            4,
+            4,
+            6,
+            5,
+            4,
+            6
+          ]
+        },
+        "Z2": {
+          "values": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "constraints": [
+        "X * Y2 % Y === 0"
+      ],
+      "calculation": "X * Y2 / Y",
+      "explanation": "A ∝ B (direct, since C=1 always here)\nk = A/B = [X]/[Y] = [X/Y]\nNew A = k × [Y2] = [X/Y] × [Y2] = [RESULT]\n\nRule: Find constant k first, then apply proportion."
+    },
+    {
+      "template_id": "RATIO_L3_06",
+      "pattern": "Salaries of A and B are in ratio [P]:[Q]. If each gets ₹[K] raise, new ratio is [R]:[S]. Find A's original salary.",
+      "variables": {
+        "P": {
+          "values": [
+            3,
+            4,
+            5,
+            3,
+            4,
+            5,
+            3,
+            4,
+            5,
+            6
+          ]
+        },
+        "Q": {
+          "values": [
+            4,
+            5,
+            6,
+            5,
+            6,
+            7,
+            7,
+            7,
+            8,
+            7
+          ]
+        },
+        "R": {
+          "values": [
+            4,
+            5,
+            6,
+            4,
+            5,
+            6,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "S": {
+          "values": [
+            5,
+            6,
+            7,
+            6,
+            7,
+            8,
+            8,
+            8,
+            9,
+            8
+          ]
+        },
+        "K": {
+          "values": [
+            2000,
+            3000,
+            4000,
+            5000,
+            6000,
+            7000,
+            8000,
+            9000,
+            10000,
+            6000
+          ]
+        }
+      },
+      "constraints": [
+        "R * Q - S * P !== 0",
+        "(K * (S - R)) % (R * Q - S * P) === 0"
+      ],
+      "calculation": "P * K * (S - R) / (R * Q - S * P)",
+      "explanation": "Let A = [P]x, B = [Q]x\nAfter raise: ([P]x+[K])/([Q]x+[K]) = [R]/[S]\n[S]([P]x+[K]) = [R]([Q]x+[K])\n[S*P]x + [S*K] = [R*Q]x + [R*K]\nx([S*P]-[R*Q]) = [R*K]-[S*K]\nx = [K]([R]-[S]) ÷ ([S*P]-[R*Q])\nA = [P]x = [RESULT]\n\nRule: Set up equation with original ratio and solve for x."
+    },
+    {
+      "template_id": "RATIO_L3_07",
+      "pattern": "If [A] men or [B] women do a work in [D] days, how many days will [M] men and [W] women together take?",
+      "variables": {
+        "A": {
+          "values": [
+            4,
+            6,
+            5,
+            8,
+            3,
+            6,
+            4,
+            5,
+            6,
+            8
+          ]
+        },
+        "B": {
+          "values": [
+            6,
+            8,
+            10,
+            12,
+            6,
+            9,
+            8,
+            10,
+            12,
+            12
+          ]
+        },
+        "D": {
+          "values": [
+            12,
+            10,
+            12,
+            9,
+            10,
+            8,
+            15,
+            12,
+            10,
+            9
+          ]
+        },
+        "M": {
+          "values": [
+            2,
+            3,
+            2,
+            4,
+            1,
+            2,
+            2,
+            2,
+            3,
+            4
+          ]
+        },
+        "W": {
+          "values": [
+            3,
+            4,
+            5,
+            6,
+            3,
+            3,
+            4,
+            5,
+            6,
+            6
+          ]
+        }
+      },
+      "constraints": [
+        "(M * B + W * A) !== 0",
+        "A * B * D % (M * B + W * A) === 0"
+      ],
+      "calculation": "A * B * D / (M * B + W * A)",
+      "explanation": "1 man's 1 day work = 1/([A]×[D])\n1 woman's 1 day work = 1/([B]×[D])\n[M] men + [W] women 1 day work:\n= [M]/([A]×[D]) + [W]/([B]×[D])\n= ([M]×[B] + [W]×[A]) / ([A]×[B]×[D])\nDays = [A]×[B]×[D] ÷ ([M]×[B]+[W]×[A])\n= [A*B*D] ÷ [M*B+W*A]\n= [RESULT] days\n\nRule: Find combined work rate, then invert for days."
+    },
+    {
+      "template_id": "RATIO_L3_08",
+      "pattern": "The ratio of A to B is [P]:[Q]. If A is increased by [X]% and B is decreased by [Y]%, find new ratio — what is the new A part (×[Q])?",
+      "variables": {
+        "P": {
+          "values": [
+            2,
+            3,
+            4,
+            3,
+            5,
+            2,
+            4,
+            3,
+            5,
+            6
+          ]
+        },
+        "Q": {
+          "values": [
+            3,
+            4,
+            5,
+            5,
+            6,
+            5,
+            5,
+            4,
+            8,
+            7
+          ]
+        },
+        "X": {
+          "values": [
+            20,
+            25,
+            25,
+            50,
+            20,
+            50,
+            25,
+            50,
+            20,
+            50
+          ]
+        },
+        "Y": {
+          "values": [
+            20,
+            25,
+            25,
+            20,
+            25,
+            20,
+            25,
+            20,
+            25,
+            50
+          ]
+        }
+      },
+      "calculation": "P * (100 + X)",
+      "explanation": "Original A:[P], B:[Q]\nNew A = [P] × (1 + [X]/100) = [P] × [100+X]/100\nNew B = [Q] × (1 - [Y]/100) = [Q] × [100-Y]/100\nNew ratio numerator (×100) = [P]×[100+X] = [RESULT]\nNew ratio denominator (×100) = [Q]×[100-Y] = [Q*(100-Y)]\n\nRule: Apply percentage change to each part of ratio."
+    },
+    {
+      "template_id": "RATIO_L3_09",
+      "pattern": "A, B, C invest ₹[PA]00, ₹[PB]00, ₹[PC]00 for [TA], [TB], [TC] months. Total profit ₹[T]. Find B's profit share.",
+      "variables": {
+        "PA": {
+          "values": [
+            2,
+            3,
+            4,
+            2,
+            3,
+            1,
+            2,
+            3,
+            4,
+            3
+          ]
+        },
+        "PB": {
+          "values": [
+            3,
+            4,
+            5,
+            4,
+            5,
+            2,
+            3,
+            4,
+            5,
+            4
+          ]
+        },
+        "PC": {
+          "values": [
+            4,
+            5,
+            6,
+            6,
+            7,
+            3,
+            5,
+            6,
+            6,
+            6
+          ]
+        },
+        "TA": {
+          "values": [
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12
+          ]
+        },
+        "TB": {
+          "values": [
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12
+          ]
+        },
+        "TC": {
+          "values": [
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12,
+            12
+          ]
+        },
+        "T": {
+          "values": [
+            1080,
+            1440,
+            1800,
+            1440,
+            1800,
+            720,
+            1200,
+            1560,
+            1800,
+            1560
+          ]
+        }
+      },
+      "constraints": [
+        "T % (PA*TA + PB*TB + PC*TC) === 0"
+      ],
+      "calculation": "T * PB * TB / (PA * TA + PB * TB + PC * TC)",
+      "explanation": "Investment ratio = (PA×TA) : (PB×TB) : (PC×TC)\n= ([PA]×[TA]) : ([PB]×[TB]) : ([PC]×[TC])\n= [PA*TA] : [PB*TB] : [PC*TC]\nTotal parts = [PA*TA+PB*TB+PC*TC]\nB's share = [T] × [PB*TB] ÷ [PA*TA+PB*TB+PC*TC]\n= [RESULT]\n\nRule: Profit share ∝ Investment × Time."
+    },
+    {
+      "template_id": "RATIO_L3_10",
+      "pattern": "Speed varies inversely as time. At speed [S1] km/hr, time = [T1] hrs. If time is reduced by [R] hrs, find new speed.",
+      "variables": {
+        "S1": {
+          "values": [
+            40,
+            60,
+            30,
+            50,
+            80,
+            45,
+            60,
+            75,
+            90,
+            120
+          ]
+        },
+        "T1": {
+          "values": [
+            6,
+            5,
+            8,
+            6,
+            5,
+            8,
+            6,
+            4,
+            5,
+            4
+          ]
+        },
+        "R": {
+          "values": [
+            2,
+            1,
+            2,
+            2,
+            1,
+            2,
+            2,
+            1,
+            1,
+            2
+          ]
+        }
+      },
+      "constraints": [
+        "T1 > R",
+        "S1 * T1 % (T1 - R) === 0"
+      ],
+      "calculation": "S1 * T1 / (T1 - R)",
+      "explanation": "Speed × Time = Distance = constant (inverse proportion)\n[S1] × [T1] = New Speed × ([T1]-[R])\nNew Speed = [S1] × [T1] ÷ ([T1]-[R])\n= [S1*T1] ÷ [T1-R]\n= [RESULT] km/hr\n\nRule: Speed ∝ 1/Time — as time decreases, speed increases."
+    }
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯",
+      "Perfect! ⭐",
+      "Brilliant! 🧠",
+      "Well done! 👍",
+      "Amazing! 🌟",
+      "Superb! 🚀",
+      "Outstanding! 💫",
+      "Great job! 🎊",
+      "Spot on! ✨",
+      "Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪",
+      "Check proportion type! 📐",
+      "Almost! 😊",
+      "Think carefully! 🤔",
+      "Direct or Inverse? 📚",
+      "So close! 💝",
+      "One more try! 🎯",
+      "Keep going! 🌈"
+    ]
+  }
+}
