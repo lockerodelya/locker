@@ -111,6 +111,11 @@ await db.runTransaction(async (transaction) => {
         return deviceId;
     }
 
-    // Start the tracker
-    initDeviceTracker();
+// Only run tracker on main MCQ page — not on dashboard or payment pages
+    const currentPath = window.location.pathname;
+    const skipPages   = ['/vooo-ai/vooodashboard', '/vooo-ai/vooonusrpy', '/vooo-ai/voooexusrpy', '/vooo-ai/vooologin', '/vooo-ai/vooosignup'];
+    const shouldSkip  = skipPages.some(p => currentPath.includes(p));
+    if (!shouldSkip) {
+        initDeviceTracker();
+    }
 })();
