@@ -277,10 +277,18 @@
         const signupBtn  = document.getElementById('signup-btn');
 
         // ====== READ URL PARAMS FROM PRICING PAGE ======
+// ====== READ URL PARAMS FROM PRICING PAGE ======
         const urlParams  = new URLSearchParams(window.location.search);
         const planKey    = urlParams.get('plan');
         const planName   = urlParams.get('name');
         const planAmount = urlParams.get('amount');
+
+        // Always clear old localStorage plan data first
+        localStorage.removeItem('vooo_plan_key');
+        localStorage.removeItem('vooo_plan_name');
+        localStorage.removeItem('vooo_plan_amount');
+        localStorage.removeItem('vooo_intl_currency');
+        localStorage.removeItem('vooo_intl_amount');
 
         // Show plan banner if coming from pricing page
         if (planKey && planAmount) {
