@@ -1532,8 +1532,7 @@ a.vooo-intro-link:hover {
             }
         }
 
-        async function initVOOOGame() {
-            window._voooFirstLoad = true;
+async function initVOOOGame() {
             const defaultCategory = 'basmath-level-1';
             const success = await _activateEngine(defaultCategory);
             if (!success) {
@@ -1619,13 +1618,6 @@ async function nextPuzzle() {
     if (_nextPuzzleLock) return;
     _nextPuzzleLock = true;
 
-    if (window._voooFirstLoad) {
-        window._voooFirstLoad = false;
-        const puzzle = window.voooEngine.generateNewPuzzle();
-        if (puzzle) updatePuzzleDisplay(puzzle);
-        _nextPuzzleLock = false;
-        return;
-    }
 
     // ✅ Wait for auth to finish before checking user
     await new Promise(resolve => {
@@ -1709,10 +1701,12 @@ async function checkAndIncrementMCQ() {
 
             // Under limit: increment atomically
             const newCount = savedCount + 1;
-            transaction.set(userRef, {
-                'dailyUsage.date':    todayStr,
-                'dailyUsage.count':   newCount,
-                'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
+			transaction.set(userRef, {
+                dailyUsage: {
+                    date:  todayStr,
+                    count: newCount
+                },
+                totalMCQsAttempted: firebase.firestore.FieldValue.increment(1)
             }, { merge: true });
 
             // Sync local cache
