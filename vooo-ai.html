@@ -1681,9 +1681,9 @@ async function checkAndIncrementMCQ() {
 
             if (tier === 'paid') {
                 // Paid users: always allow, just increment total
-                transaction.set(userRef, {
-                    'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
-                }, { merge: true });
+                transaction.update(userRef, {
+                    totalMCQsAttempted: firebase.firestore.FieldValue.increment(1)
+                });
                 // Sync local cache
                 if (userVoooData) {
                     userVoooData.tier = 'paid';
@@ -1705,9 +1705,11 @@ async function checkAndIncrementMCQ() {
                 dailyUsage: {
                     date:  todayStr,
                     count: newCount
-                },
-                totalMCQsAttempted: firebase.firestore.FieldValue.increment(1)
+                }
             }, { merge: true });
+            transaction.update(userRef, {
+                totalMCQsAttempted: firebase.firestore.FieldValue.increment(1)
+            });
 
             // Sync local cache
             if (userVoooData) {
