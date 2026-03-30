@@ -50,13 +50,13 @@
                 const fingerprint = await generateFingerprint();
                 const deviceRef = db.collection(DEVICE_CONFIG.COLLECTION_NAME).doc(uid);
 
-                await db.runTransaction(async (transaction) => {
+await db.runTransaction(async (transaction) => {
                     const deviceDoc = await transaction.get(deviceRef);
 
                     if (!deviceDoc.exists) {
+                        // First time login — register this device
                         transaction.set(deviceRef, {
-                            count: 1,
-                            lastFingerprint: fingerprint,
+                            registeredDevice: fingerprint,
                             lastActive: firebase.firestore.FieldValue.serverTimestamp(),
                             createdAt: firebase.firestore.FieldValue.serverTimestamp()
                         });
@@ -64,33 +64,34 @@
                     }
 
                     const data = deviceDoc.data();
-                    const currentCount = data.count || 0;
-                    const lastFingerprint = data.lastFingerprint || '';
+                    const registeredDevice = data.registeredDevice || '';
 
-                    if (lastFingerprint !== fingerprint) {
-                        const newCount = currentCount + 1;
-
+                    if (registeredDevice === '') {
+                        // No device registered yet — register this one
                         transaction.update(deviceRef, {
-                            count: newCount,
-                            lastFingerprint: fingerprint,
+                            registeredDevice: fingerprint,
                             lastActive: firebase.firestore.FieldValue.serverTimestamp()
                         });
-
-                        if (newCount > DEVICE_CONFIG.MAX_DEVICES_ALLOWED) {
-                            setTimeout(() => {
-                                firebase.auth().signOut().then(() => {
-                                    alert("Username only for one device only");
-                                }).catch(() => {
-                                    alert("Username only for one device only");
-                                    window.location.reload();
-                                });
-                            }, DEVICE_CONFIG.LOGOUT_TIMER_SECONDS * 1000);
-                        }
-                    } else {
-                        transaction.update(deviceRef, {
-                            lastActive: firebase.firestore.FieldValue.serverTimestamp()
-                        });
+                        return;
                     }
+
+                    if (registeredDevice === fingerprint) {
+                        // Same device — allow, update last active
+                        transaction.update(deviceRef, {
+                            lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        return;
+                    }
+
+                    // Different device — block and logout
+                    setTimeout(() => {
+                        firebase.auth().signOut().then(() => {
+                            alert('⚠️ This account is already active on another device.\n\nThis username can only be used on one device.\n\nPlease logout from your other device first.');
+                            window.location.href = '/vooo-ai/vooologin.html';
+                        }).catch(() => {
+                            window.location.href = '/vooo-ai/vooologin.html';
+                        });
+                    }, DEVICE_CONFIG.LOGOUT_TIMER_SECONDS * 1000);
                 });
 
             } catch (error) {
@@ -99,30 +100,15 @@
         });
     }
 
-    // Generate simple but effective fingerprint
+// Generate permanent device ID stored in localStorage
     async function generateFingerprint() {
-        const components = [
-            navigator.userAgent,
-            screen.width + 'x' + screen.height,
-            screen.colorDepth,
-            new Date().getTimezoneOffset(),
-            navigator.language,
-            !!window.chrome,
-            navigator.hardwareConcurrency || 'unknown'
-        ];
-
-        const fingerprint = components.join('|');
-
-        try {
-            return btoa(encodeURIComponent(fingerprint)).substring(0, 50);
-        } catch (e) {
-            let hash = 0;
-            for (let i = 0; i < fingerprint.length; i++) {
-                hash = ((hash << 5) - hash) + fingerprint.charCodeAt(i);
-                hash |= 0;
-            }
-            return String(Math.abs(hash));
+        const storageKey = 'vooo_device_id';
+        let deviceId = localStorage.getItem(storageKey);
+        if (!deviceId) {
+            deviceId = 'dev_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem(storageKey, deviceId);
         }
+        return deviceId;
     }
 
     // Start the tracker
