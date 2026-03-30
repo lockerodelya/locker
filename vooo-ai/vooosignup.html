@@ -287,10 +287,17 @@
             document.getElementById('plan-banner').style.display = 'block';
             document.getElementById('banner-amount').textContent = 'INR ' + planAmount;
 
-            // Save plan info to localStorage immediately
+            // Save plan info to localStorage only when coming from pricing page
             localStorage.setItem('vooo_plan_key',    planKey);
             localStorage.setItem('vooo_plan_name',   planName);
             localStorage.setItem('vooo_plan_amount', planAmount);
+        } else {
+            // User came directly to signup — clear any old plan data
+            localStorage.removeItem('vooo_plan_key');
+            localStorage.removeItem('vooo_plan_name');
+            localStorage.removeItem('vooo_plan_amount');
+            localStorage.removeItem('vooo_intl_currency');
+            localStorage.removeItem('vooo_intl_amount');
         }
 
         // Clear all fields on page load
@@ -446,7 +453,9 @@
                 await auth.signOut();
 
                 // Show success
-                successDiv.textContent   = '✓ User created successfully! Redirecting to payment...';
+                successDiv.textContent   = planKey
+                    ? '✓ User created successfully! Redirecting to payment...'
+                    : '✓ User created successfully! Redirecting to login...';
                 successDiv.style.display = 'block';
                 form.reset();
 
@@ -456,12 +465,12 @@
                     const storedAmount = localStorage.getItem('vooo_plan_amount');
                     const storedName   = localStorage.getItem('vooo_plan_name');
 
-                    if (storedPlan && storedAmount) {
-                        // Go to payment page
+                    if (planKey && storedPlan && storedAmount) {
+                        // Came from pricing page — go to payment
                         window.location.href = 'https://odelya.online/vooo-ai/vooonusrpy.html?plan=' + storedPlan + '&name=' + encodeURIComponent(storedName) + '&amount=' + storedAmount;
                     } else {
-                        // No plan selected — go to main site
-                        window.location.href = 'https://odelya.online/vooo-ai';
+                        // Direct signup — go to login
+                        window.location.href = 'https://odelya.online/vooo-ai/vooologin.html';
                     }
                 }, 1800);
 
