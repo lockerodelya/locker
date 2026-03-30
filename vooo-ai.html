@@ -1864,7 +1864,14 @@ function showLoggedInUI(data) {
         document.getElementById('vooo-limit-overlay').classList.remove('active');
     }
 
-    function logoutFromVooo() {
+    async function logoutFromVooo() {
+        if (voooAuth && voooDb && currentVoooUser) {
+            try {
+                await voooDb.collection('device_tracking').doc(currentVoooUser.uid).delete();
+            } catch(e) {
+                console.log('Device clear error:', e);
+            }
+        }
         if (voooAuth) voooAuth.signOut().then(() => { location.reload(); });
     }
 </script>
