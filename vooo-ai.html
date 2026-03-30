@@ -1668,62 +1668,46 @@ async function checkAndIncrementMCQ() {
     const todayStr = getTodayIST();
 
     try {
-        let allowed = false;
+        const userDoc = await userRef.get();
+        const data    = userDoc.exists ? userDoc.data() : {};
+        const tier    = data.tier || 'free';
 
-        await voooDb.runTransaction(async (transaction) => {
-            const userDoc  = await transaction.get(userRef);
-            const data     = userDoc.exists ? userDoc.data() : {};
-            const tier     = data.tier || 'free';
-
-            const dailyData  = data.dailyUsage || {};
-            const savedDate  = dailyData.date  || '';
-            const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
-
-            if (tier === 'paid') {
-                // Paid users: always allow, just increment total
-                transaction.update(userRef, {
-                    totalMCQsAttempted: firebase.firestore.FieldValue.increment(1)
-                });
-                // Sync local cache
-                if (userVoooData) {
-                    userVoooData.tier = 'paid';
-                    userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
-                }
-                allowed = true;
-                return;
-            }
-
-            // Free users: check limit first
-            if (savedCount >= FREE_LIMIT) {
-                allowed = false;
-                return; // don't write anything
-            }
-
-            // Under limit: increment atomically
-            const newCount = savedCount + 1;
-			transaction.set(userRef, {
-                dailyUsage: {
-                    date:  todayStr,
-                    count: newCount
-                }
-            }, { merge: true });
-            transaction.update(userRef, {
+        if (tier === 'paid') {
+            await userRef.update({
                 totalMCQsAttempted: firebase.firestore.FieldValue.increment(1)
             });
-
-            // Sync local cache
             if (userVoooData) {
-                userVoooData.dailyUsage = { date: todayStr, count: newCount };
                 userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
             }
-            allowed = true;
+            return true;
+        }
+
+        const dailyData  = data.dailyUsage || {};
+        const savedDate  = dailyData.date  || '';
+        const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
+
+        if (savedCount >= FREE_LIMIT) {
+            return false;
+        }
+
+        const newCount = savedCount + 1;
+
+        await userRef.update({
+            'dailyUsage.date':    todayStr,
+            'dailyUsage.count':   newCount,
+            totalMCQsAttempted:   firebase.firestore.FieldValue.increment(1)
         });
 
-        return allowed;
+        if (userVoooData) {
+            userVoooData.dailyUsage = { date: todayStr, count: newCount };
+            userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
+        }
+
+        return true;
 
     } catch (err) {
-        console.error('MCQ transaction error:', err);
-        return true; // fail open so user is not blocked by a network glitch
+        console.error('MCQ count error:', err);
+        return true;
     }
 }
 
