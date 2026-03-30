@@ -1545,6 +1545,7 @@ async function initVOOOGame() {
         }
 
         async function changeLevel(categoryKey) {
+            _categoryChanging = true;
             document.getElementById('vooo-question').textContent = 'Loading...';
             document.getElementById('vooo-options').innerHTML = '';
             document.getElementById('vooo-feedback').textContent = '';
@@ -1555,7 +1556,8 @@ async function initVOOOGame() {
                 return;
             }
             window.voooEngine.resetScore();
-            nextPuzzle();
+            await nextPuzzle();
+            _categoryChanging = false;
         }
 
 async function updatePuzzleDisplay(puzzle) {
@@ -1613,6 +1615,7 @@ async function updatePuzzleDisplay(puzzle) {
 // ============================================================
 let _nextPuzzleLock = false;
 let _mcqCountInProgress = false;
+let _categoryChanging = false;
 
 async function nextPuzzle() {
     if (!window.voooEngine) return;
@@ -1664,6 +1667,7 @@ function getTodayIST() {
 async function checkAndIncrementMCQ() {
     if (!currentVoooUser) return false;
     if (_mcqCountInProgress) return false;
+    if (_categoryChanging) return false;
     _mcqCountInProgress = true;
 
     const uid      = currentVoooUser.uid;
