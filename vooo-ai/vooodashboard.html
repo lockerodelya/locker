@@ -952,8 +952,16 @@ try {
             if (e.target === this) closeChangePasswordModal();
         });
         async function logout() {
-        await auth.signOut();
-        window.location.href = 'https://odelya.online/vooo-ai';
+            const user = auth.currentUser;
+            if (user) {
+                try {
+                    await db.collection('device_tracking').doc(user.uid).delete();
+                } catch(e) {
+                    console.log('Device tracking clear error:', e);
+                }
+            }
+            await auth.signOut();
+            window.location.href = 'https://odelya.online/vooo-ai';
         }
     </script>
 </body>
