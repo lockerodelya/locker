@@ -1633,10 +1633,12 @@ async function nextPuzzle() {
     });
 
     if (!currentVoooUser) {
-        showLimitModal(
-            'Get Free 30 MCQs Per Day!',
-            'Sign up for free to practice 30 MCQs every day.'
-        );
+        if (!_categoryChanging) {
+            showLimitModal(
+                'Get Free 30 MCQs Per Day!',
+                'Sign up for free to practice 30 MCQs every day.'
+            );
+        }
         _nextPuzzleLock = false;
         return;
     }
@@ -1644,14 +1646,16 @@ async function nextPuzzle() {
 const puzzle = window.voooEngine.generateNewPuzzle();
 if (!puzzle) { _nextPuzzleLock = false; return; }
 
-const allowed = await checkAndIncrementMCQ();
-if (!allowed) {
-    showLimitModal(
-        'Daily Limit Reached!',
-        `You've used all ${FREE_LIMIT} free MCQs for today. Upgrade for unlimited access!`
-    );
-    _nextPuzzleLock = false;
-    return;
+if (!_categoryChanging) {
+    const allowed = await checkAndIncrementMCQ();
+    if (!allowed) {
+        showLimitModal(
+            'Daily Limit Reached!',
+            `You've used all ${FREE_LIMIT} free MCQs for today. Upgrade for unlimited access!`
+        );
+        _nextPuzzleLock = false;
+        return;
+    }
 }
 
 updatePuzzleDisplay(puzzle);
