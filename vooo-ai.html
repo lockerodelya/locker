@@ -1544,21 +1544,67 @@ async function initVOOOGame() {
             else document.getElementById('vooo-question').textContent = 'Error generating puzzle.';
         }
 
-        async function changeLevel(categoryKey) {
-            _categoryChanging = true;
-            document.getElementById('vooo-question').textContent = 'Loading...';
-            document.getElementById('vooo-options').innerHTML = '';
-            document.getElementById('vooo-feedback').textContent = '';
-            document.getElementById('vooo-explanation').textContent = '';
-            const success = await _activateEngine(categoryKey);
-            if (!success) {
-                document.getElementById('vooo-question').textContent = 'Error loading this category.';
-                return;
-            }
-            window.voooEngine.resetScore();
-            await nextPuzzle(true);
-            _categoryChanging = false;
+async function changeLevel(categoryKey) {
+    document.getElementById('vooo-question').textContent = 'Loading...';
+    document.getElementById('vooo-options').innerHTML = '';
+    document.getElementById('vooo-feedback').textContent = '';
+    document.getElementById('vooo-explanation').textContent = '';
+
+    const success = await _activateEngine(categoryKey);
+    if (!success) {
+        document.getElementById('vooo-question').textContent = 'Error loading this category.';
+        return;
+    }
+
+    window.voooEngine.resetScore();
+
+    // Show first question free — no counting
+    const puzzle = window.voooEngine.generateNewPuzzle();
+    if (puzzle) updatePuzzleDisplay(puzzle);
+}
+
+async function checkAndCount() {
+    if (!currentVoooUser) return false;
+
+    const uid      = currentVoooUser.uid;
+    const userRef  = voooDb.collection('users').doc(uid);
+    const todayStr = getTodayIST();
+
+    try {
+        const userDoc = await userRef.get();
+        const data    = userDoc.exists ? userDoc.data() : {};
+        const tier    = data.tier || 'free';
+
+        // Paid users — always allow, just increment total
+        if (tier === 'paid') {
+            await userRef.update({
+                totalMCQsAttempted: firebase.firestore.FieldValue.increment(1)
+            });
+            return true;
         }
+
+        // Free users — check daily count
+        const dailyData  = data.dailyUsage || {};
+        const savedDate  = dailyData.date  || '';
+        const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
+
+        if (savedCount >= FREE_LIMIT) return false;
+
+        const newCount = savedCount + 1;
+
+        await userRef.update({
+            'dailyUsage.date':  todayStr,
+            'dailyUsage.count': newCount,
+            totalMCQsAttempted: firebase.firestore.FieldValue.increment(1)
+        });
+
+        return true;
+
+    } catch (err) {
+        console.error('MCQ count error:', err);
+        return false;
+    }
+}
 
 async function updatePuzzleDisplay(puzzle) {
     document.getElementById('vooo-question').textContent = puzzle.question;
@@ -1614,16 +1660,12 @@ async function updatePuzzleDisplay(puzzle) {
 // nextPuzzle — generates new MCQ + increments count for logged-in users
 // ============================================================
 let _nextPuzzleLock = false;
-let _mcqCountInProgress = false;
-let _categoryChanging = false;
 
-async function nextPuzzle(fromCategoryChange = false) {
+async function nextPuzzle() {
     if (!window.voooEngine) return;
     if (_nextPuzzleLock) return;
     _nextPuzzleLock = true;
 
-
-    // ✅ Wait for auth to finish before checking user
     await new Promise(resolve => {
         if (currentVoooUser !== undefined) { resolve(); return; }
         const unsubscribe = firebase.auth().onAuthStateChanged(() => {
@@ -1633,21 +1675,15 @@ async function nextPuzzle(fromCategoryChange = false) {
     });
 
     if (!currentVoooUser) {
-        if (!fromCategoryChange) {
-            showLimitModal(
-                'Get Free 30 MCQs Per Day!',
-                'Sign up for free to practice 30 MCQs every day.'
-            );
-        }
+        showLimitModal(
+            'Get Free 30 MCQs Per Day!',
+            'Sign up for free to practice 30 MCQs every day.'
+        );
         _nextPuzzleLock = false;
         return;
     }
 
-const puzzle = window.voooEngine.generateNewPuzzle();
-if (!puzzle) { _nextPuzzleLock = false; return; }
-
-if (!fromCategoryChange) {
-    const allowed = await checkAndIncrementMCQ();
+    const allowed = await checkAndCount();
     if (allowed === false) {
         showLimitModal(
             'Daily Limit Reached!',
@@ -1656,9 +1692,9 @@ if (!fromCategoryChange) {
         _nextPuzzleLock = false;
         return;
     }
-}
 
-updatePuzzleDisplay(puzzle);
+    const puzzle = window.voooEngine.generateNewPuzzle();
+    if (puzzle) updatePuzzleDisplay(puzzle);
     _nextPuzzleLock = false;
 }
 
