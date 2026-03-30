@@ -1645,14 +1645,20 @@ async function nextPuzzle() {
         return;
     }
 
-    const allowed = await checkMCQLimit();
-    if (!allowed) { _nextPuzzleLock = false; return; }
+const puzzle = window.voooEngine.generateNewPuzzle();
+if (!puzzle) { _nextPuzzleLock = false; return; }
 
-    const puzzle = window.voooEngine.generateNewPuzzle();
-    if (puzzle) {
-        updatePuzzleDisplay(puzzle);
-        await incrementMCQCount();
-    }
+const allowed = await checkAndIncrementMCQ();
+if (!allowed) {
+    showLimitModal(
+        'Daily Limit Reached!',
+        `You've used all ${FREE_LIMIT} free MCQs for today. Upgrade for unlimited access!`
+    );
+    _nextPuzzleLock = false;
+    return;
+}
+
+updatePuzzleDisplay(puzzle);
     _nextPuzzleLock = false;
 }
 
@@ -1661,67 +1667,68 @@ function getTodayIST() {
     return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 }
 
-async function checkMCQLimit() {
+// ── Single atomic transaction: check limit + increment together ──
+async function checkAndIncrementMCQ() {
+    if (!currentVoooUser) return false;
+
+    const uid      = currentVoooUser.uid;
+    const userRef  = voooDb.collection('users').doc(uid);
+    const todayStr = getTodayIST();
+    const FREE_LIMIT = VOOO_CONFIG.free_daily_limit;
+
     try {
-        if (!currentVoooUser) return false;
+        let allowed = false;
 
-        const freshDoc  = await voooDb.collection('users').doc(currentVoooUser.uid).get();
-        const freshData = freshDoc.exists ? freshDoc.data() : {};
-        const freshTier = freshData.tier || 'free';
+        await voooDb.runTransaction(async (transaction) => {
+            const userDoc  = await transaction.get(userRef);
+            const data     = userDoc.exists ? userDoc.data() : {};
+            const tier     = data.tier || 'free';
 
-        if (freshData.dailyUsage) {
-            if (userVoooData) userVoooData.dailyUsage = freshData.dailyUsage;
-            else userVoooData = freshData;
-        }
-        if (userVoooData) userVoooData.tier = freshTier;
+            const dailyData  = data.dailyUsage || {};
+            const savedDate  = dailyData.date  || '';
+            const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
 
-        if (freshTier === 'paid') return true;
+            if (tier === 'paid') {
+                // Paid users: always allow, just increment total
+                transaction.update(userRef, {
+                    'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
+                });
+                // Sync local cache
+                if (userVoooData) {
+                    userVoooData.tier = 'paid';
+                    userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
+                }
+                allowed = true;
+                return;
+            }
 
-        const todayStr   = getTodayIST();
-        const dailyData  = userVoooData ? (userVoooData.dailyUsage || {}) : {};
-        const savedDate  = dailyData.date  || '';
-        const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
+            // Free users: check limit first
+            if (savedCount >= FREE_LIMIT) {
+                allowed = false;
+                return; // don't write anything
+            }
 
-        const FREE_LIMIT = VOOO_CONFIG.free_daily_limit;
-        if (savedCount >= FREE_LIMIT) {
-            showLimitModal(
-                'Daily Limit Reached!',
-                `You've used all ${FREE_LIMIT} free MCQs for today. Upgrade for unlimited access!`
-            );
-            return false;
-        }
-        return true;
-    } catch (err) {
-        console.error('Limit check error:', err);
-        return true;
-    }
-}
+            // Under limit: increment atomically
+            const newCount = savedCount + 1;
+            transaction.update(userRef, {
+                'dailyUsage.date':    todayStr,
+                'dailyUsage.count':   newCount,
+                'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
+            });
 
-async function incrementMCQCount() {
-    try {
-        if (!currentVoooUser) return;
-        const uid      = currentVoooUser.uid;
-        const userRef  = voooDb.collection('users').doc(uid);
-        const todayStr = getTodayIST();  // ✅ same timezone everywhere
-
-        const dailyData  = userVoooData?.dailyUsage || {};
-        const savedDate  = dailyData.date  || '';
-        const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
-        const newCount   = savedCount + 1;
-
-        // ✅ Use update() with flat field paths — reliable for nested fields
-        await userRef.update({
-            'dailyUsage.date':    todayStr,
-            'dailyUsage.count':   newCount,
-            'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
+            // Sync local cache
+            if (userVoooData) {
+                userVoooData.dailyUsage = { date: todayStr, count: newCount };
+                userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
+            }
+            allowed = true;
         });
 
-        if (userVoooData) {
-            userVoooData.dailyUsage        = { date: todayStr, count: newCount };
-            userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
-        }
+        return allowed;
+
     } catch (err) {
-        console.error('MCQ count write error:', err);
+        console.error('MCQ transaction error:', err);
+        return true; // fail open so user is not blocked by a network glitch
     }
 }
 
