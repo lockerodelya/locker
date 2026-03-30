@@ -1674,7 +1674,6 @@ async function checkAndIncrementMCQ() {
     const uid      = currentVoooUser.uid;
     const userRef  = voooDb.collection('users').doc(uid);
     const todayStr = getTodayIST();
-    const FREE_LIMIT = VOOO_CONFIG.free_daily_limit;
 
     try {
         let allowed = false;
@@ -1690,9 +1689,9 @@ async function checkAndIncrementMCQ() {
 
             if (tier === 'paid') {
                 // Paid users: always allow, just increment total
-                transaction.update(userRef, {
+                transaction.set(userRef, {
                     'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
-                });
+                }, { merge: true });
                 // Sync local cache
                 if (userVoooData) {
                     userVoooData.tier = 'paid';
@@ -1710,11 +1709,11 @@ async function checkAndIncrementMCQ() {
 
             // Under limit: increment atomically
             const newCount = savedCount + 1;
-            transaction.update(userRef, {
+            transaction.set(userRef, {
                 'dailyUsage.date':    todayStr,
                 'dailyUsage.count':   newCount,
                 'totalMCQsAttempted': firebase.firestore.FieldValue.increment(1)
-            });
+            }, { merge: true });
 
             // Sync local cache
             if (userVoooData) {
@@ -1753,6 +1752,7 @@ async function checkAndIncrementMCQ() {
     <!-- ====== FIREBASE AUTH + MCQ LIMIT VARIABLES ====== -->
 <script>
     let voooAuth, voooDb;
+    const FREE_LIMIT = (window.VOOO_CONFIG && VOOO_CONFIG.free_daily_limit) ? VOOO_CONFIG.free_daily_limit : 30;
     let currentVoooUser = undefined; // undefined = not yet checked, null = confirmed logged out
     let userVoooData    = null;
 
@@ -1805,11 +1805,12 @@ async function checkAndIncrementMCQ() {
 
     document.addEventListener('DOMContentLoaded', initFirebaseAuth);
 
-    function showLoggedInUI(data) {
-        document.getElementById('gap-signup-btn').style.display     = 'none';
-        document.getElementById('gap-login-btn').style.display      = 'none';
-        document.getElementById('gap-dashboard-icon').style.display = 'inline-flex';
-        document.getElementById('gap-logout-btn').style.display     = 'inline-flex';
+function showLoggedInUI(data) {
+            document.getElementById('gap-signup-btn').style.display     = 'none';
+            document.getElementById('gap-login-btn').style.display      = 'none';
+            document.getElementById('gap-dashboard-icon').style.display = 'inline-flex';
+            document.getElementById('gap-logout-btn').style.display     = 'inline-flex';
+            document.getElementById('vooo-limit-overlay').classList.remove('active');
         const planBtn = document.getElementById('gap-plan-btn');
         planBtn.textContent = (data.tier === 'paid') ? 'Upgrade Plan' : 'Buy Plan';
     }
