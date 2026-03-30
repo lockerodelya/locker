@@ -1612,6 +1612,7 @@ async function updatePuzzleDisplay(puzzle) {
 // nextPuzzle — generates new MCQ + increments count for logged-in users
 // ============================================================
 let _nextPuzzleLock = false;
+let _mcqCountInProgress = false;
 
 async function nextPuzzle() {
     if (!window.voooEngine) return;
@@ -1662,6 +1663,8 @@ function getTodayIST() {
 // ── Single atomic transaction: check limit + increment together ──
 async function checkAndIncrementMCQ() {
     if (!currentVoooUser) return false;
+    if (_mcqCountInProgress) return false;
+    _mcqCountInProgress = true;
 
     const uid      = currentVoooUser.uid;
     const userRef  = voooDb.collection('users').doc(uid);
@@ -1687,6 +1690,7 @@ async function checkAndIncrementMCQ() {
         const savedCount = (savedDate === todayStr) ? (dailyData.count || 0) : 0;
 
         if (savedCount >= FREE_LIMIT) {
+            _mcqCountInProgress = false;
             return false;
         }
 
@@ -1703,10 +1707,12 @@ async function checkAndIncrementMCQ() {
             userVoooData.totalMCQsAttempted = (userVoooData.totalMCQsAttempted || 0) + 1;
         }
 
+        _mcqCountInProgress = false;
         return true;
 
     } catch (err) {
         console.error('MCQ count error:', err);
+        _mcqCountInProgress = false;
         return true;
     }
 }
