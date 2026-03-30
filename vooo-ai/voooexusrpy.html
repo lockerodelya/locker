@@ -287,8 +287,9 @@
     const planAmt      = payable.planAmount;
     const gatewayFee   = payable.gatewayFee;
     const totalAmount  = payable.totalAmount;
-    const durationDays = VOOO_CONFIG.getDurationDays(planKey);
-    const feePercent   = VOOO_CONFIG.gateway_fee_percent;
+	const durationDays = VOOO_CONFIG.getDurationDays(planKey);
+
+    // ── Razorpay charge: international users pay intlAmount in intlCurrency ──
 
     // ── Razorpay charge: international users pay intlAmount in intlCurrency ──
     // India users pay totalAmount in INR as before
@@ -392,14 +393,35 @@
                 payBtn.textContent = 'Confirming payment...';
 
                 try {
-                    const today      = VOOO_CONFIG.getTodayDate();
-                    const expiryDate = VOOO_CONFIG.getExpiryDate(planKey);
+                    const today = VOOO_CONFIG.getTodayDate();
+
+                    // Read current expiry from Firestore
+                    const userDoc       = await db.collection('users').doc(uid).get();
+                    const userData      = userDoc.exists ? userDoc.data() : {};
+                    const currentTier   = userData.tier || 'free';
+                    const currentExpiry = userData.planExpiryDate || null;
+
+                    // If already paid and expiry is in the future — start from expiry
+                    // Otherwise start from today
+                    let startDate;
+                    if (currentTier === 'paid' && currentExpiry) {
+                        const expiryMs = currentExpiry.seconds
+                            ? currentExpiry.seconds * 1000
+                            : new Date(currentExpiry).getTime();
+                        startDate = expiryMs > Date.now()
+                            ? new Date(expiryMs).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' })
+                            : today;
+                    } else {
+                        startDate = today;
+                    }
+
+                    const expiryDate = VOOO_CONFIG.getExpiryDateFrom(planKey, startDate);
 
                     await db.collection('users').doc(uid).update({
                         tier:              'paid',
                         planType:          planKey,
                         planValue:         'INR ' + planAmt,
-                        planStartDate:     today,
+                        planStartDate:     startDate,
                         planExpiryDate:    expiryDate,
                         planKey:           planKey,
                         planDurationDays:  durationDays,

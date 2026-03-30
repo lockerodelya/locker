@@ -510,12 +510,20 @@ VOOO_CONFIG.getExpiryDate = function(planKey) {
     const days = this.getDurationDays(planKey);
     const d    = new Date();
     d.setDate(d.getDate() + days);
-    return d.toISOString().split('T')[0];
+    return d.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 };
 
-// Get today's date as YYYY-MM-DD
+// Calculate expiry date from a given start date + duration days
+VOOO_CONFIG.getExpiryDateFrom = function(planKey, fromDateStr) {
+    const days  = this.getDurationDays(planKey);
+    const start = new Date(fromDateStr);
+    start.setDate(start.getDate() + days);
+    return start.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+};
+
+// Get today's date as YYYY-MM-DD (IST)
 VOOO_CONFIG.getTodayDate = function() {
-    return new Date().toISOString().split('T')[0];
+    return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 };
 
 // Export for Node.js environments
