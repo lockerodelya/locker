@@ -496,8 +496,18 @@
                 tier:     tier
             };
 
-            if (newPassword) {
-                updateData.password = newPassword;
+if (newPassword) {
+                // Update password in Firebase Auth only — never store in Firestore
+                try {
+                    // We cannot update another user's Auth password from client side
+                    // Password field in Firestore is removed for security
+                    // Admin must use Firebase Console to reset user passwords
+                    alert('⚠️ Password cannot be changed from admin panel.\nUse Firebase Console → Authentication → Reset password for this user.');
+                    return;
+                } catch(err) {
+                    alert('❌ Password update error: ' + err.message);
+                    return;
+                }
             }
 
             if (tier === 'paid') {
@@ -558,9 +568,14 @@
             }
 
             try {
-                const cred = await auth.createUserWithEmailAndPassword(email, password);
+// Create user via secondary app instance to avoid overwriting admin session
+                const secondaryApp = firebase.initializeApp(VOOO_CONFIG.firebase, 'secondary_' + Date.now());
+                const secondaryAuth = secondaryApp.auth();
+                const cred = await secondaryAuth.createUserWithEmailAndPassword(email, password);
                 const uid  = cred.user.uid;
                 await cred.user.updateProfile({ displayName: fullname });
+                await secondaryAuth.signOut();
+                await secondaryApp.delete();
 
                 const userData = {
                     username:           username,
@@ -568,7 +583,6 @@
                     dob:                dob,
                     phone:              phone,
                     email:              email,
-                    password:           password,
                     tier:               tier,
                     vooo_user:          true,
                     planType:           null,
@@ -582,7 +596,7 @@
                     accuracyScore:      0,
                     badges:             [],
                     devices:            [],
-                    dailyUsage:         { date: new Date().toISOString().split('T')[0], count: 0 }
+                    dailyUsage:         { date: new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }), count: 0 }
                 };
 
                 if (tier === 'paid') {
