@@ -1556,7 +1556,7 @@ async function initVOOOGame() {
                 return;
             }
             window.voooEngine.resetScore();
-            await nextPuzzle();
+            await nextPuzzle(true);
             _categoryChanging = false;
         }
 
@@ -1617,7 +1617,7 @@ let _nextPuzzleLock = false;
 let _mcqCountInProgress = false;
 let _categoryChanging = false;
 
-async function nextPuzzle() {
+async function nextPuzzle(fromCategoryChange = false) {
     if (!window.voooEngine) return;
     if (_nextPuzzleLock) return;
     _nextPuzzleLock = true;
@@ -1633,7 +1633,7 @@ async function nextPuzzle() {
     });
 
     if (!currentVoooUser) {
-        if (!_categoryChanging) {
+        if (!fromCategoryChange) {
             showLimitModal(
                 'Get Free 30 MCQs Per Day!',
                 'Sign up for free to practice 30 MCQs every day.'
@@ -1646,17 +1646,17 @@ async function nextPuzzle() {
 const puzzle = window.voooEngine.generateNewPuzzle();
 if (!puzzle) { _nextPuzzleLock = false; return; }
 
-if (!_categoryChanging) {
-            const allowed = await checkAndIncrementMCQ();
-            if (allowed === false) {
-                showLimitModal(
-                    'Daily Limit Reached!',
-                    `You've used all ${FREE_LIMIT} free MCQs for today. Upgrade for unlimited access!`
-                );
-                _nextPuzzleLock = false;
-                return;
-            }
-        }
+if (!fromCategoryChange) {
+    const allowed = await checkAndIncrementMCQ();
+    if (allowed === false) {
+        showLimitModal(
+            'Daily Limit Reached!',
+            `You've used all ${FREE_LIMIT} free MCQs for today. Upgrade for unlimited access!`
+        );
+        _nextPuzzleLock = false;
+        return;
+    }
+}
 
 updatePuzzleDisplay(puzzle);
     _nextPuzzleLock = false;
@@ -1729,6 +1729,8 @@ async function checkAndIncrementMCQ() {
         return false;
     }
 }
+
+
 
         function updateStatsDisplay() {
             const stats = window.voooEngine.getStats();
