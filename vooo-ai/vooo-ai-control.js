@@ -99,9 +99,12 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-decision-level-2' : '/vooo-ai/vae-upscdecision-level-2.js',
 	'upsc-decision-level-3' : '/vooo-ai/vae-upscdecision-level-3.js',
 
-	'upsc-arguments-level-1' : '/vooo-ai/vae-upsc-arguments-level-1.js',
-	'upsc-arguments-level-2' : '/vooo-ai/vae-upsc-arguments-level-2.js',
-	'upsc-arguments-level-3' : '/vooo-ai/vae-upsc-arguments-level-3.js',
+	'upsc-arguments-level-1' : '/vooo-ai/subjects/upsc-arguments/engine-code/upsc-arguments-level-1.js',
+	'upsc-arguments-level-2' : '/vooo-ai/subjects/upsc-arguments/engine-code/upsc-arguments-level-2.js',
+	'upsc-arguments-level-3' : '/vooo-ai/subjects/upsc-arguments/engine-code/upsc-arguments-level-3.js',
+	'upsc-arguments-level-4' : '/vooo-ai/subjects/upsc-arguments/engine-code/upsc-arguments-level-4.js',
+	'upsc-arguments-level-5' : '/vooo-ai/subjects/upsc-arguments/engine-code/upsc-arguments-level-5.js',
+	'upsc-arguments-level-6' : '/vooo-ai/subjects/upsc-arguments/engine-code/upsc-arguments-level-6.js',
 
 	'upsc-blood-level-1' : '/vooo-ai/vae-upsc-blood-level-1.js',
 	'upsc-blood-level-2' : '/vooo-ai/vae-upsc-blood-level-2.js',
@@ -342,9 +345,12 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-decision-level-2' : 'vaeupscdecisionl2',
 	'upsc-decision-level-3' : 'vaeupscdecisionl3',
 
-	'upsc-arguments-level-1' : 'vaeupscargumentsl1',
-	'upsc-arguments-level-2' : 'vaeupscargumentsl2',
-	'upsc-arguments-level-3' : 'vaeupscargumentsl3',
+	'upsc-arguments-level-1' : 'upscargumentsl1',
+	'upsc-arguments-level-2' : 'upscargumentsl2',
+	'upsc-arguments-level-3' : 'upscargumentsl3',
+	'upsc-arguments-level-4' : 'upscargumentsl4',
+	'upsc-arguments-level-5' : 'upscargumentsl5',
+	'upsc-arguments-level-6' : 'upscargumentsl6',
 
 	'upsc-blood-level-1' : 'vaeupscbloodl1',
 	'upsc-blood-level-2' : 'vaeupscbloodl2',
@@ -623,6 +629,9 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'upsc-arguments-level-1', text: '• Arguments & Conclusions L1' },
 					{ value: 'upsc-arguments-level-2', text: '• Arguments & Conclusions L2' },
                     { value: 'upsc-arguments-level-3', text: '• Arguments & Conclusions L3' },
+                    { value: 'upsc-arguments-level-4', text: '• Arguments & Conclusions L4' },
+                    { value: 'upsc-arguments-level-5', text: '• Arguments & Conclusions L5' },
+                    { value: 'upsc-arguments-level-6', text: '• Arguments & Conclusions L6' },
                 ]
             },
 			{
