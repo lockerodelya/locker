@@ -106,6 +106,13 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-arguments-level-5' : '/vooo-ai/subjects/upsc-arguments/engine-code/upsc-arguments-level-5.js',
 	'upsc-arguments-level-6' : '/vooo-ai/subjects/upsc-arguments/engine-code/upsc-arguments-level-6.js',
 
+	'upsc-blood-level-1' : '/vooo-ai/subjects/upsc-blood/engine-code/upsc-blood-level-1.js',
+	'upsc-blood-level-2' : '/vooo-ai/subjects/upsc-blood/engine-code/upsc-blood-level-2.js',
+	'upsc-blood-level-3' : '/vooo-ai/subjects/upsc-blood/engine-code/upsc-blood-level-3.js',
+	'upsc-blood-level-4' : '/vooo-ai/subjects/upsc-blood/engine-code/upsc-blood-level-4.js',
+	'upsc-blood-level-5' : '/vooo-ai/subjects/upsc-blood/engine-code/upsc-blood-level-5.js',
+	'upsc-blood-level-6' : '/vooo-ai/subjects/upsc-blood/engine-code/upsc-blood-level-6.js',
+	
 	'upsc-blood-level-1' : '/vooo-ai/vae-upsc-blood-level-1.js',
 	'upsc-blood-level-2' : '/vooo-ai/vae-upsc-blood-level-2.js',
 	'upsc-blood-level-3' : '/vooo-ai/vae-upsc-blood-level-3.js',
@@ -352,9 +359,12 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-arguments-level-5' : 'upscargumentsl5',
 	'upsc-arguments-level-6' : 'upscargumentsl6',
 
-	'upsc-blood-level-1' : 'vaeupscbloodl1',
-	'upsc-blood-level-2' : 'vaeupscbloodl2',
-	'upsc-blood-level-3' : 'vaeupscbloodl3',
+	'upsc-blood-level-1' : 'upscbloodl1',
+	'upsc-blood-level-2' : 'upscbloodl2',
+	'upsc-blood-level-3' : 'upscbloodl3',
+	'upsc-blood-level-4' : 'upscbloodl4',
+	'upsc-blood-level-5' : 'upscbloodl5',
+	'upsc-blood-level-6' : 'upscbloodl6',
 
 	'upsc-code-level-1' : 'vaeupsccodel1',
 	'upsc-code-level-2' : 'vaeupsccodel2',
@@ -640,6 +650,9 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'upsc-blood-level-1', text: '• Blood Relations L1' },
 					{ value: 'upsc-blood-level-2', text: '• Blood Relations L2' },
                     { value: 'upsc-blood-level-3', text: '• Blood Relations L3' },
+                    { value: 'upsc-blood-level-4', text: '• Blood Relations L4' },
+                    { value: 'upsc-blood-level-5', text: '• Blood Relations L5' },
+                    { value: 'upsc-blood-level-6', text: '• Blood Relations L6' },
                 ]
             },
 			{
