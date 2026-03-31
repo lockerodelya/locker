@@ -113,10 +113,6 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-blood-level-5' : '/vooo-ai/subjects/upsc-blood/engine-code/upsc-blood-level-5.js',
 	'upsc-blood-level-6' : '/vooo-ai/subjects/upsc-blood/engine-code/upsc-blood-level-6.js',
 	
-	'upsc-blood-level-1' : '/vooo-ai/vae-upsc-blood-level-1.js',
-	'upsc-blood-level-2' : '/vooo-ai/vae-upsc-blood-level-2.js',
-	'upsc-blood-level-3' : '/vooo-ai/vae-upsc-blood-level-3.js',
-
 	'upsc-code-level-1' : '/vooo-ai/vae-upsc-code-level-1.js',
 	'upsc-code-level-2' : '/vooo-ai/vae-upsc-code-level-2.js',
 	'upsc-code-level-3' : '/vooo-ai/vae-upsc-code-level-3.js',
