@@ -264,7 +264,7 @@ const VOOO_ENGINE_INSTANCES = {
 	'basic-math-level-8' : 'basicmathl8',
 	'basic-math-level-9' : 'basicmathl9',
 	'basic-math-level-10' : 'basicmathll0',
-	'basic-math-level-11' : 'basicmathll1',
+	'basic-math-level-11' : 'basicmathl11',
 	'basic-math-level-12' : 'basicmathl12',
 	'basic-math-level-13' : 'basicmathl13',
 	'basic-math-level-14' : 'basicmathl14',
