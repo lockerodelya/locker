@@ -90,10 +90,13 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-compar-level-1' : '/vooo-ai/vae-upsccompar-level-1.js',
 	'upsc-compar-level-2' : '/vooo-ai/vae-upsccompar-level-2.js',
 	'upsc-compar-level-3' : '/vooo-ai/vae-upsccompar-level-3.js',
-	
-	'upsc-clock-level-1' : '/vooo-ai/vae-upsc-clock-level-1.js',
-	'upsc-clock-level-2' : '/vooo-ai/vae-upsc-clock-level-2.js',
-	'upsc-clock-level-3' : '/vooo-ai/vae-upsc-clock-level-3.js',
+
+	'upsc-clock-calendar-level-1' : '/vooo-ai/subjects/upsc-clock-calendar/engine-code/upsc-clock-calendar-level-1.js',
+	'upsc-clock-calendar-level-2' : '/vooo-ai/subjects/upsc-clock-calendar/engine-code/upsc-clock-calendar-level-2.js',
+	'upsc-clock-calendar-level-3' : '/vooo-ai/subjects/upsc-clock-calendar/engine-code/upsc-clock-calendar-level-3.js',
+	'upsc-clock-calendar-level-4' : '/vooo-ai/subjects/upsc-clock-calendar/engine-code/upsc-clock-calendar-level-4.js',
+	'upsc-clock-calendar-level-5' : '/vooo-ai/subjects/upsc-clock-calendar/engine-code/upsc-clock-calendar-level-5.js',
+	'upsc-clock-calendar-level-6' : '/vooo-ai/subjects/upsc-clock-calendar/engine-code/upsc-clock-calendar-level-6.js',
 
 	'upsc-decision-level-1' : '/vooo-ai/vae-upscdecision-level-1.js',
 	'upsc-decision-level-2' : '/vooo-ai/vae-upscdecision-level-2.js',
@@ -340,9 +343,12 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-compar-level-2' : 'vaeupsccomparl2',
 	'upsc-compar-level-3' : 'vaeupsccomparl3',
 	
-	'upsc-clock-level-1' : 'vaeupscclockl1',
-	'upsc-clock-level-2' : 'vaeupscclockl2',
-	'upsc-clock-level-3' : 'vaeupscclockl3',
+	'upsc-clock-level-1' : 'upscclockcalendarl1',
+	'upsc-clock-level-2' : 'upscclockcalendarl2',
+	'upsc-clock-level-3' : 'upscclockcalendarl3',
+	'upsc-clock-level-4' : 'upscclockcalendarl4',
+	'upsc-clock-level-5' : 'upscclockcalendarl5',
+	'upsc-clock-level-6' : 'upscclockcalendarl6',
 	
 	'upsc-decision-level-1' : 'vaeupscdecisionl1',
 	'upsc-decision-level-2' : 'vaeupscdecisionl2',
@@ -616,9 +622,12 @@ const VOOO_ENGINE_INSTANCES = {
 			{
                 label: 'Clock & Calendar',
                 options: [
-                    { value: 'upsc-clock-level-1', text: '• Clock & Calendar L1' },
-					{ value: 'upsc-clock-level-2', text: '• Clock & Calendar L2' },
-                    { value: 'upsc-clock-level-3', text: '• Clock & Calendar L3' },
+                    { value: 'upsc-clock-calendar-level-1', text: '• Clock & Calendar L1' },
+					{ value: 'upsc-clock-calendar-level-2', text: '• Clock & Calendar L2' },
+                    { value: 'upsc-clock-calendar-level-3', text: '• Clock & Calendar L3' },
+                    { value: 'upsc-clock-calendar-level-4', text: '• Clock & Calendar L4' },
+                    { value: 'upsc-clock-calendar-level-5', text: '• Clock & Calendar L5' },
+                    { value: 'upsc-clock-calendar-level-6', text: '• Clock & Calendar L6' },
                 ]
             },
 			{
