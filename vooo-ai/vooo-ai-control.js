@@ -343,12 +343,12 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-compar-level-2' : 'vaeupsccomparl2',
 	'upsc-compar-level-3' : 'vaeupsccomparl3',
 	
-	'upsc-clock-level-1' : 'upscclockcalendarl1',
-	'upsc-clock-level-2' : 'upscclockcalendarl2',
-	'upsc-clock-level-3' : 'upscclockcalendarl3',
-	'upsc-clock-level-4' : 'upscclockcalendarl4',
-	'upsc-clock-level-5' : 'upscclockcalendarl5',
-	'upsc-clock-level-6' : 'upscclockcalendarl6',
+	'upsc-clock-calendar-level-1' : 'upscclockcalendarl1',
+	'upsc-clock-calendar-level-2' : 'upscclockcalendarl2',
+	'upsc-clock-calendar-level-3' : 'upscclockcalendarl3',
+	'upsc-clock-calendar-level-4' : 'upscclockcalendarl4',
+	'upsc-clock-calendar-level-5' : 'upscclockcalendarl5',
+	'upsc-clock-calendar-level-6' : 'upscclockcalendarl6',
 	
 	'upsc-decision-level-1' : 'vaeupscdecisionl1',
 	'upsc-decision-level-2' : 'vaeupscdecisionl2',
