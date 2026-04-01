@@ -98,9 +98,12 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-clock-calendar-level-5' : '/vooo-ai/subjects/upsc-clock-calendar/engine-code/upsc-clock-calendar-level-5.js',
 	'upsc-clock-calendar-level-6' : '/vooo-ai/subjects/upsc-clock-calendar/engine-code/upsc-clock-calendar-level-6.js',
 
-	'upsc-decision-level-1' : '/vooo-ai/vae-upscdecision-level-1.js',
-	'upsc-decision-level-2' : '/vooo-ai/vae-upscdecision-level-2.js',
-	'upsc-decision-level-3' : '/vooo-ai/vae-upscdecision-level-3.js',
+	'upsc-decision-making-level-1' : '/vooo-ai/subjects/upsc-decision-making/engine-code/upsc-decision-making-level-1.js',
+	'upsc-decision-making-level-2' : '/vooo-ai/subjects/upsc-decision-making/engine-code/upsc-decision-making-level-2.js',
+	'upsc-decision-making-level-3' : '/vooo-ai/subjects/upsc-decision-making/engine-code/upsc-decision-making-level-3.js',
+	'upsc-decision-making-level-4' : '/vooo-ai/subjects/upsc-decision-making/engine-code/upsc-decision-making-level-4.js',
+	'upsc-decision-making-level-5' : '/vooo-ai/subjects/upsc-decision-making/engine-code/upsc-decision-making-level-5.js',
+	'upsc-decision-making-level-6' : '/vooo-ai/subjects/upsc-decision-making/engine-code/upsc-decision-making-level-6.js',
 
 	'upsc-arguments-level-1' : '/vooo-ai/subjects/upsc-arguments/engine-code/upsc-arguments-level-1.js',
 	'upsc-arguments-level-2' : '/vooo-ai/subjects/upsc-arguments/engine-code/upsc-arguments-level-2.js',
@@ -350,9 +353,12 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-clock-calendar-level-5' : 'upscclockcalendarl5',
 	'upsc-clock-calendar-level-6' : 'upscclockcalendarl6',
 	
-	'upsc-decision-level-1' : 'vaeupscdecisionl1',
-	'upsc-decision-level-2' : 'vaeupscdecisionl2',
-	'upsc-decision-level-3' : 'vaeupscdecisionl3',
+	'upsc-decision-making-level-1' : 'upscdecisionmakingl1',
+	'upsc-decision-making-level-2' : 'upscdecisionmakingl2',
+	'upsc-decision-making-level-3' : 'upscdecisionmakingl3',
+	'upsc-decision-making-level-4' : 'upscdecisionmakingl4',
+	'upsc-decision-making-level-5' : 'upscdecisionmakingl5',
+	'upsc-decision-making-level-6' : 'upscdecisionmakingl6',
 
 	'upsc-arguments-level-1' : 'upscargumentsl1',
 	'upsc-arguments-level-2' : 'upscargumentsl2',
@@ -633,9 +639,12 @@ const VOOO_ENGINE_INSTANCES = {
 			{
                 label: 'Decision Making',
                 options: [
-                    { value: 'upsc-decision-level-1', text: '• Decision Making L1' },
-					{ value: 'upsc-decision-level-2', text: '• Decision Making L2' },
-                    { value: 'upsc-decision-level-3', text: '• Decision Making L3' },
+                    { value: 'upsc-decision-making-level-1', text: '• Decision Making L1' },
+					{ value: 'upsc-decision-making-level-2', text: '• Decision Making L2' },
+                    { value: 'upsc-decision-making-level-3', text: '• Decision Making L3' },
+                    { value: 'upsc-decision-making-level-4', text: '• Decision Making L4' },
+                    { value: 'upsc-decision-making-level-5', text: '• Decision Making L5' },
+                    { value: 'upsc-decision-making-level-6', text: '• Decision Making L6' },
                 ]
             },
 			{
