@@ -1,0 +1,138 @@
+{
+  "puzzle_type": "upsc-clock-calendar-level-6",
+  "display_name": "Clock & Calendar L6",
+  "templates": [
+
+    {
+      "template_id": "CC_L6_01",
+      "pattern": "A clock lost [L] min on day 1, [L]*2 on day 2... How many minutes slow after [N] days?",
+      "variables": {
+        "L": {"values": [1, 2, 3, 1, 2, 3]},
+        "N": {"values": [5, 4, 3, 6, 5, 4]}
+      },
+      "calculation": "L*N*(N+1)/2",
+      "options": [6, 10, 15, 18, 20, 21, 24, 30],
+      "explanation": "AP sum: Loss = L * N*(N+1)/2 = [L]*[N]*([N]+1)/2 minutes."
+    },
+    {
+      "template_id": "CC_L6_02",
+      "pattern": "How many odd days from year [Y1] to [Y2] (non-inclusive)? (mod 7)",
+      "variables": {
+        "Y1": {"values": [2010, 2015, 2012, 2016, 2014, 2018]},
+        "Y2": {"values": [2015, 2020, 2017, 2021, 2019, 2023]}
+      },
+      "calculation": "((Y2-Y1)+Math.floor((Y2-1)/4)-Math.floor((Y1-1)/4))%7",
+      "options": [0, 1, 2, 3, 4, 5, 6],
+      "explanation": "Odd days = (years + leap years in range) mod 7."
+    },
+    {
+      "template_id": "CC_L6_03",
+      "pattern": "Clock A gains [GW] sec/min, Clock B loses [LT] sec/min. After how many real minutes will A be [D] minutes ahead of B?",
+      "variables": {
+        "GW": {"values": [1, 2, 3, 4, 5, 6]},
+        "LT": {"values": [1, 2, 3, 4, 5, 6]},
+        "D": {"values": [10, 20, 15, 8, 25, 12]}
+      },
+      "calculation": "Math.round(D*60/(GW+LT))",
+      "options": [60, 100, 120, 150, 200, 250, 300],
+      "explanation": "Divergence = (GW+LT) sec/min. Time = D*60/(GW+LT) real minutes."
+    },
+    {
+      "template_id": "CC_L6_04",
+      "pattern": "The minute hand is [M_LEN] cm. How far does its tip travel in [N] hours? (Use π = 22/7)",
+      "variables": {
+        "M_LEN": {"values": [7, 10, 14, 7, 10, 14]},
+        "N": {"values": [1, 2, 3, 6, 12, 1]}
+      },
+      "calculation": "Math.round(2*(22/7)*M_LEN*N)",
+      "options": [44, 88, 132, 176, 264, 528, 754, 1056],
+      "explanation": "Distance = N * 2πr = [N] * 2 * (22/7) * [M_LEN] cm."
+    },
+    {
+      "template_id": "CC_L6_05",
+      "pattern": "Clock loses [L] seconds every [N] minutes. How many hours to lose 720 minutes?",
+      "variables": {
+        "L": {"values": [1, 2, 3, 4, 5, 6]},
+        "N": {"values": [1, 2, 3, 4, 5, 6]}
+      },
+      "calculation": "Math.round((720*60*N/L)/60)",
+      "options": [720, 1080, 1440, 2160, 2880, 4320],
+      "explanation": "Time = 720*60*N/L minutes = [720*60*N/L]/60 hours."
+    },
+    {
+      "template_id": "CC_L6_06",
+      "pattern": "Net day shift = (M - N - P) mod 7. Today is day [D] (Mon=1). M=[M_VAL], N=[N_VAL], P=[P_VAL]. What day number is the result?",
+      "variables": {
+        "D": {"values": [1, 2, 3, 4, 5, 6]},
+        "M_VAL": {"values": [10, 15, 8, 12, 20, 9]},
+        "N_VAL": {"values": [5, 8, 3, 6, 10, 4]},
+        "P_VAL": {"values": [3, 6, 2, 5, 8, 3]}
+      },
+      "calculation": "((D+(M_VAL-N_VAL-P_VAL)%7+7-1)%7)+1",
+      "options": [1, 2, 3, 4, 5, 6, 7],
+      "explanation": "Net shift = (M-N-P) mod 7. Result = (D + shift - 1) mod 7 + 1."
+    },
+    {
+      "template_id": "CC_L6_07",
+      "pattern": "Mirror image of clock shows [H]:[M]. What is actual time in minutes from 12:00?",
+      "variables": {
+        "H": {"values": [7, 3, 9, 5, 8, 2]},
+        "M": {"values": [40, 55, 20, 45, 5, 30]}
+      },
+      "calculation": "((11-H)*60+(60-M))%720",
+      "options": [30, 95, 130, 215, 330, 430, 510],
+      "explanation": "Actual time = 11:60 - mirror. In minutes from 12:00 = ((11-H)*60+(60-M)) mod 720."
+    },
+    {
+      "template_id": "CC_L6_08",
+      "pattern": "Time is [H]:[M]. What will it be [T] minutes later? (Answer in total minutes from 12:00)",
+      "variables": {
+        "H": {"values": [3, 6, 9, 11, 1, 10]},
+        "M": {"values": [40, 50, 10, 55, 5, 30]},
+        "T": {"values": [50, 70, 80, 70, 65, 90]}
+      },
+      "calculation": "(H*60+M+T)%720",
+      "options": [30, 95, 150, 210, 270, 330, 390, 430, 510, 600],
+      "explanation": "Total minutes from 12:00 = (H*60 + M + T) mod 720."
+    },
+    {
+      "template_id": "CC_L6_09",
+      "pattern": "Ravi says 'Day before yesterday was day [D1] (Mon=1).' Suresh hears this [N] days later. What day number is it for Suresh?",
+      "variables": {
+        "D1": {"values": [1, 2, 3, 4, 5, 6]},
+        "N": {"values": [3, 4, 5, 6, 7, 8]}
+      },
+      "calculation": "((D1+1+N-1)%7)+1",
+      "options": [1, 2, 3, 4, 5, 6, 7],
+      "explanation": "Ravi's today = D1+2. Suresh's today = D1+2+N. Day = ((D1+N+1) mod 7)+1."
+    },
+    {
+      "template_id": "CC_L6_10",
+      "pattern": "A clock was [M1] min slow at 3 PM Tuesday and [M2] min fast at 3 PM Thursday (48 hrs later). How many hours after 3 PM Tuesday was it correct?",
+      "variables": {
+        "M1": {"values": [4, 6, 8, 2, 10, 5]},
+        "M2": {"values": [4, 6, 8, 2, 10, 5]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "48*M1/(M1+M2)",
+      "options": [12, 16, 20, 24, 28, 32, 36],
+      "explanation": "Correct at M1/(M1+M2)*48 = [M1]/([M1]+[M2])*48 hours after 3 PM Tuesday."
+    },
+    {
+      "template_id": "CC_L6_11",
+      "pattern": "How many Feb 29ths between [Y_BIRTH] and [Y_NOW] (excluding birth year)?",
+      "variables": {
+        "Y_BIRTH": {"values": [1960, 1964, 1968, 1972, 1976, 1980]},
+        "Y_NOW": {"values": [2024, 2024, 2024, 2024, 2024, 2024]}
+      },
+      "calculation": "Math.floor((Y_NOW-Y_BIRTH)/4)",
+      "options": [14, 15, 16, 17, 18, 20],
+      "explanation": "Leap years every 4 years. Count = floor((Y_NOW - Y_BIRTH)/4)."
+    }
+
+    ],
+  "responses": {
+    "correct": ["Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍","Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊","Spot on! ✨","Fantastic! 🎈"],
+    "incorrect": ["Try again! 💪","Is the argument direct and relevant? 🤔","Almost! 😊","Think carefully! 🤔","Check if it's strong or weak 📚","So close! 💝","One more try! 🎯","Keep going! 🌈"]
+  }
+}

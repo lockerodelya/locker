@@ -1,0 +1,149 @@
+{
+  "puzzle_type": "upsc-clock-calendar-level-4",
+  "display_name": "Clock & Calendar L4",
+  "templates": [
+
+    {
+      "template_id": "CC_L4_01",
+      "pattern": "Clock A gains [GA] minutes per hour. Clock B loses [LB] minutes per hour. How many minutes apart will they be after [N] hours?",
+      "variables": {
+        "GA": {"values": [2, 3, 1, 4, 2, 3]},
+        "LB": {"values": [1, 2, 2, 1, 3, 2]},
+        "N": {"values": [5, 4, 6, 3, 4, 5]}
+      },
+      "calculation": "(GA+LB)*N",
+      "options": [9, 12, 15, 18, 20, 24, 25],
+      "explanation": "Total gap = (GA+LB)*N = ([GA]+[LB])*[N] minutes."
+    },
+    {
+      "template_id": "CC_L4_02",
+      "pattern": "The minute hand of a clock is [M_LEN] cm long. How far does its tip travel in [N] hours? (Use π = 22/7)",
+      "variables": {
+        "M_LEN": {"values": [7, 7, 14, 14, 7, 14]},
+        "N": {"values": [1, 2, 1, 2, 3, 3]}
+      },
+      "calculation": "Math.round(2*(22/7)*M_LEN*N)",
+      "options": [44, 88, 132, 176, 264, 528],
+      "explanation": "Distance = N × 2πr = [N] × 2 × (22/7) × [M_LEN] cm."
+    },
+    {
+      "template_id": "CC_L4_03",
+      "pattern": "How many times do the hands of a clock coincide in [N] hours?",
+      "variables": {
+        "N": {"values": [12, 6, 24, 3, 9, 18]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.floor(N*11/12)",
+      "options": [2, 3, 5, 8, 11, 16, 22],
+      "explanation": "Hands coincide 11 times every 12 hours. In [N] hours = floor([N]*11/12) times."
+    },
+    {
+      "template_id": "CC_L4_04",
+      "pattern": "A clock loses [L] minutes every [N] hours. How many minutes will it lose in [D] days?",
+      "variables": {
+        "L": {"values": [5, 10, 3, 6, 4, 8]},
+        "N": {"values": [1, 2, 1, 2, 1, 2]},
+        "D": {"values": [1, 2, 3, 1, 2, 1]}
+      },
+      "calculation": "(L/N)*24*D",
+      "options": [24, 36, 48, 60, 72, 96, 120],
+      "explanation": "Loss per hour = L/N. In [D] days = [D]*24 hours. Total = (L/N)*24*[D] minutes."
+    },
+    {
+      "template_id": "CC_L4_05",
+      "pattern": "Two persons A and B work together every [A_DAYS] and [B_DAYS] days respectively. After how many days will they work together again?",
+      "variables": {
+        "A_DAYS": {"values": [2, 3, 4, 2, 3, 6]},
+        "B_DAYS": {"values": [3, 4, 6, 5, 6, 4]}
+      },
+      "calculation": "Math.round((A_DAYS*B_DAYS)/Math.round(A_DAYS>B_DAYS?A_DAYS%B_DAYS||B_DAYS:B_DAYS%A_DAYS||A_DAYS))",
+      "options": [6, 10, 12, 15, 18, 20, 24],
+      "explanation": "Next meeting = LCM(A_DAYS, B_DAYS). LCM([A_DAYS],[B_DAYS]) days."
+    },
+    {
+      "template_id": "CC_L4_06",
+      "pattern": "At 6:00, the angle between clock hands is 180°. After how many minutes will the angle be [A]° for the first time?",
+      "variables": {
+        "A": {"values": [90, 60, 120, 30, 150, 0]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.round((180-A)/5.5)",
+      "options": [0, 5, 10, 16, 22, 27, 33],
+      "explanation": "Minute hand gains 5.5° per minute on hour hand. Time = (180-[A])/5.5 minutes."
+    },
+    {
+      "template_id": "CC_L4_07",
+      "pattern": "How many odd days are in [Y] years? (100 yrs=5, 200 yrs=3, 300 yrs=1, 400 yrs=0)",
+      "variables": {
+        "Y": {"values": [100, 200, 300, 400, 700, 800]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Y===100?5:Y===200?3:Y===300?1:Y===400||Y===700||Y===800?0:0",
+      "options": [0, 1, 2, 3, 4, 5],
+      "explanation": "100 years = 5 odd days, 200 = 3, 300 = 1, 400 = 0. Multiples of 400 = 0."
+    },
+    {
+      "template_id": "CC_L4_08",
+      "pattern": "A clock was [M1] minutes slow at 3 PM Tuesday and [M2] minutes fast at 3 PM Thursday. How many hours after 3 PM Tuesday did it show correct time?",
+      "variables": {
+        "M1": {"values": [4, 6, 8, 2, 10, 5]},
+        "M2": {"values": [4, 6, 8, 2, 10, 5]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "48*M1/(M1+M2)",
+      "options": [12, 16, 20, 24, 28, 32, 36],
+      "explanation": "Total change = M1+M2 in 48 hours. Correct time at M1/(M1+M2)*48 = [M1]/([M1]+[M2])*48 hours after 3 PM Tuesday."
+    },
+    {
+      "template_id": "CC_L4_09",
+      "pattern": "The [N]th day of a month is [DAY_N] (Mon=1). What day number is the last day if the month has [DAYS] days?",
+      "variables": {
+        "N": {"values": [5, 10, 15, 20, 3, 8]},
+        "DAY_N": {"values": [1, 2, 3, 4, 5, 6]},
+        "DAYS": {"values": [31, 30, 31, 28, 31, 30]}
+      },
+      "calculation": "((DAY_N+(DAYS-N)-1)%7)+1",
+      "options": [1, 2, 3, 4, 5, 6, 7],
+      "explanation": "Days from Nth to last = DAYS-N. Last day = (DAY_N + DAYS - N - 1) mod 7 + 1."
+    },
+    {
+      "template_id": "CC_L4_10",
+      "pattern": "Mirror image of clock shows [H]:[M]. What is the actual time in total minutes from 12:00?",
+      "variables": {
+        "H": {"values": [6, 7, 8, 9, 10, 4]},
+        "M": {"values": [30, 25, 15, 45, 10, 50]}
+      },
+      "calculation": "Math.round(((11*60+60-H*60-M))%720)",
+      "options": [30, 95, 130, 215, 330, 430],
+      "explanation": "Actual time = 11:60 - mirror time. Convert to minutes from 12:00."
+    },
+    {
+      "template_id": "CC_L4_11",
+      "pattern": "How many minutes does a clock gain per day if minute hand overtakes hour hand every [X] minutes?",
+      "variables": {
+        "X": {"values": [65, 64, 63, 66, 62, 61]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.round(Math.abs(720/11-X)*1440/(720/11)*10)/10",
+      "options": [0, 10, 22, 33, 44, 55, 65],
+      "explanation": "Normal overtake = 720/11 ≈ 65.45 min. Gain/loss per day = |65.45-X|/65.45 * 1440 minutes."
+    },
+    {
+      "template_id": "CC_L4_12",
+      "pattern": "The angle between clock hands at [H]:[M] is [A]°. After how many minutes will it be 0° (hands coincide)?",
+      "variables": {
+        "H": {"values": [12, 1, 2, 3, 4, 6]},
+        "M": {"values": [0, 0, 0, 0, 0, 0]},
+        "A": {"values": [0, 30, 60, 90, 120, 180]}
+      },
+      "calculation": "Math.round(A/5.5)",
+      "options": [0, 5, 11, 16, 22, 33],
+      "explanation": "Hands approach at 5.5° per minute. Time to coincide = A/5.5 = [A]/5.5 minutes."
+    }
+
+    ],
+  "responses": {
+    "correct": ["Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍","Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊","Spot on! ✨","Fantastic! 🎈"],
+    "incorrect": ["Try again! 💪","Is the argument direct and relevant? 🤔","Almost! 😊","Think carefully! 🤔","Check if it's strong or weak 📚","So close! 💝","One more try! 🎯","Keep going! 🌈"]
+  }
+}

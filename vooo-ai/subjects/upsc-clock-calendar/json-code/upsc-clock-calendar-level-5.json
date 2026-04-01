@@ -1,0 +1,157 @@
+{
+  "puzzle_type": "upsc-clock-calendar-level-5",
+  "display_name": "Clock & Calendar L5",
+  "templates": [
+
+    {
+      "template_id": "CC_L5_01",
+      "pattern": "A clock loses [L] minutes every [N] hours. How many minutes will it lose in [D] days?",
+      "variables": {
+        "L": {"values": [4, 6, 8, 10, 5, 12]},
+        "N": {"values": [2, 3, 4, 5, 1, 6]},
+        "D": {"values": [2, 3, 1, 2, 3, 1]}
+      },
+      "calculation": "(L/N)*24*D",
+      "options": [24, 36, 48, 60, 72, 96, 120, 144],
+      "explanation": "Loss per hour = L/N. In [D] days = [D]*24 hours. Total = (L/N)*24*[D] minutes."
+    },
+    {
+      "template_id": "CC_L5_02",
+      "pattern": "Clock X gains [GX] seconds per minute. Clock Y loses [LY] seconds per minute. How many seconds apart after [H] hours?",
+      "variables": {
+        "GX": {"values": [1, 2, 3, 4, 5, 6]},
+        "LY": {"values": [1, 2, 3, 4, 5, 6]},
+        "H": {"values": [1, 2, 3, 4, 5, 6]}
+      },
+      "calculation": "(GX+LY)*60*H",
+      "options": [60, 120, 180, 240, 300, 360, 480, 600, 720],
+      "explanation": "Combined divergence = (GX+LY) sec/min. In [H] hours = [H]*60 minutes. Total = ([GX]+[LY])*60*[H] seconds."
+    },
+    {
+      "template_id": "CC_L5_03",
+      "pattern": "At [H]:[M], what is the angle between the clock hands?",
+      "variables": {
+        "H": {"values": [1, 2, 4, 7, 9, 11]},
+        "M": {"values": [0, 30, 40, 20, 45, 55]}
+      },
+      "calculation": "Math.abs(30*H-5.5*M)",
+      "options": [0, 22, 30, 44, 60, 82, 90, 110, 120, 150, 180],
+      "explanation": "Angle = |30H - 5.5M| = |30*[H] - 5.5*[M]| degrees."
+    },
+    {
+      "template_id": "CC_L5_04",
+      "pattern": "A watch gains [G] seconds per minute. How many minutes does it gain in [H] hours?",
+      "variables": {
+        "G": {"values": [1, 2, 3, 4, 5, 6]},
+        "H": {"values": [6, 3, 2, 1, 4, 5]}
+      },
+      "calculation": "G*H",
+      "options": [2, 3, 4, 5, 6, 8, 10, 12, 18, 20, 24, 30],
+      "explanation": "Gain per minute = [G] seconds = [G]/60 minutes. In [H]*60 minutes, total gain = [G]*[H] minutes."
+    },
+    {
+      "template_id": "CC_L5_05",
+      "pattern": "A clock gains [G] min per hour. How many hours to gain exactly 720 minutes?",
+      "variables": {
+        "G": {"values": [1, 2, 3, 4, 5, 6]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "720/G",
+      "options": [120, 144, 180, 240, 360, 720],
+      "explanation": "Time = 720/G = 720/[G] hours."
+    },
+    {
+      "template_id": "CC_L5_06",
+      "pattern": "How many times do clock hands coincide in [N] hours?",
+      "variables": {
+        "N": {"values": [12, 24, 6, 18, 9, 3]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.floor(N*11/12)",
+      "options": [2, 3, 5, 8, 11, 16, 22],
+      "explanation": "Hands coincide 11 times every 12 hours. In [N] hours = floor([N]*11/12)."
+    },
+    {
+      "template_id": "CC_L5_07",
+      "pattern": "Today is day number [DAY_N] (Mon=1). What day number is it [K] days later?",
+      "variables": {
+        "DAY_N": {"values": [1, 2, 3, 4, 5, 6]},
+        "K": {"values": [10, 20, 15, 25, 30, 18]}
+      },
+      "calculation": "((DAY_N+K-1)%7)+1",
+      "options": [1, 2, 3, 4, 5, 6, 7],
+      "explanation": "Day = ((DAY_N + K - 1) mod 7) + 1."
+    },
+    {
+      "template_id": "CC_L5_08",
+      "pattern": "A clock gains [G] min/hour. After [T] hours, how many minutes fast is it?",
+      "variables": {
+        "G": {"values": [2, 3, 4, 5, 6, 1]},
+        "T": {"values": [6, 4, 3, 2, 5, 12]}
+      },
+      "calculation": "G*T",
+      "options": [6, 8, 10, 12, 16, 18, 20, 24, 30],
+      "explanation": "Total gain = G*T = [G]*[T] minutes."
+    },
+    {
+      "template_id": "CC_L5_09",
+      "pattern": "In [Y] years starting from a leap year, how many Feb 29ths? (Ignore century exceptions)",
+      "variables": {
+        "Y": {"values": [4, 8, 12, 20, 40, 100]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.floor(Y/4)",
+      "options": [1, 2, 3, 5, 10, 25],
+      "explanation": "Leap years = floor(Y/4) = floor([Y]/4)."
+    },
+    {
+      "template_id": "CC_L5_10",
+      "pattern": "A clock strikes once at 1, twice at 2... How many total strikes in [N] hours from 1 o'clock?",
+      "variables": {
+        "N": {"values": [12, 6, 3, 9, 4, 8]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "N*(N+1)/2",
+      "options": [6, 10, 21, 36, 45, 55, 66, 78],
+      "explanation": "Total = 1+2+...+N = N*(N+1)/2."
+    },
+    {
+      "template_id": "CC_L5_11",
+      "pattern": "If Jan 1 of a leap year is day [D] (Mon=1), what day number is Dec 31?",
+      "variables": {
+        "D": {"values": [1, 3, 5, 7, 2, 4]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "(D%7)+1",
+      "options": [1, 2, 3, 4, 5, 6, 7],
+      "explanation": "Leap year = 366 days. 366 mod 7 = 2. Dec 31 day = (D+1) mod 7 adjusted = (D mod 7)+1."
+    },
+    {
+      "template_id": "CC_L5_12",
+      "pattern": "At what angle (degrees) are clock hands at [H]:00?",
+      "variables": {
+        "H": {"values": [1, 2, 3, 4, 5, 6]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "30*H",
+      "options": [30, 60, 90, 120, 150, 180],
+      "explanation": "At [H]:00, angle = 30*H = 30*[H] degrees."
+    },
+    {
+      "template_id": "CC_L5_13",
+      "pattern": "How many times does the minute hand gain 360° over the hour hand in [N] hours?",
+      "variables": {
+        "N": {"values": [12, 24, 6, 18, 9, 3]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.floor(N*11/12)",
+      "options": [2, 3, 5, 8, 11, 16, 22],
+      "explanation": "Minute hand laps hour hand 11 times in 12 hours. In [N] hours = floor([N]*11/12) times."
+    }
+
+    ],
+  "responses": {
+    "correct": ["Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍","Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊","Spot on! ✨","Fantastic! 🎈"],
+    "incorrect": ["Try again! 💪","Is the argument direct and relevant? 🤔","Almost! 😊","Think carefully! 🤔","Check if it's strong or weak 📚","So close! 💝","One more try! 🎯","Keep going! 🌈"]
+  }
+}

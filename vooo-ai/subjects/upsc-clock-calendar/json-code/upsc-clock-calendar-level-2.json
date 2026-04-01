@@ -1,0 +1,114 @@
+{
+  "puzzle_type": "upsc-clock-calendar-level-2",
+  "display_name": "Clock & Calendar L2",
+  "templates": [
+
+    {
+      "template_id": "CC_L2_01",
+      "pattern": "What is the angle between the hands at [H]:30?",
+      "variables": { "H": { "values": [3, 4, 5, 6] } },
+      "calculation": "abs(30*[H] - 165)",
+      "explanation": "Using formula |30H - 5.5M|: |30*[H] - 5.5*30| = |30*[H] - 165|.",
+      "options": ["75", "45", "15", "105"]
+    },
+    {
+      "template_id": "CC_L2_02",
+      "pattern": "At what time between [H] and [H_NEXT] o'clock are the hands together?",
+      "variables": { "H": { "values": [3, 4, 5] }, "H_NEXT": { "calc": "[H]+1" } },
+      "calculation": "'(60*[H]/11) min past [H]'",
+      "explanation": "Formula for coincidence is M = 60H/11.",
+      "options": ["(180/11) min past [H]", "(240/11) min past [H]", "(300/11) min past [H]", "30 min past [H]"]
+    },
+    {
+      "template_id": "CC_L2_03",
+      "pattern": "How many times in 24 hours are the hands of a clock in a straight line but opposite in direction?",
+      "variables": { "X": { "values": [1] } },
+      "calculation": "'22'",
+      "explanation": "This happens once an hour, except the gap between 5 and 7 where they are opposite only at 6:00.",
+      "options": ["22", "44", "11", "24"]
+    },
+    {
+      "template_id": "CC_L2_04",
+      "pattern": "How many times in a day are the hands of a clock at right angles?",
+      "variables": { "X": { "values": [1] } },
+      "calculation": "'44'",
+      "explanation": "Right angles occur twice an hour, but only 22 times every 12 hours due to overlaps at 3:00 and 9:00.",
+      "options": ["44", "22", "48", "24"]
+    },
+    {
+      "template_id": "CC_L2_05",
+      "pattern": "If a clock shows [H]:[M], what is its mirror image time?",
+      "variables": { "H": { "values": [2, 3, 4] }, "M": { "values": [20, 30, 40] } },
+      "calculation": "11-H + ':' + (60-M)",
+      "explanation": "Subtract the time from 11:60 to find the mirror image.",
+      "options": ["9:40", "8:30", "7:20", "10:10"]
+    },
+    {
+      "template_id": "CC_L2_06",
+      "pattern": "A clock gains [G] minutes every hour. If set right at 8 AM, what time will it show at 8 PM?",
+      "variables": { "G": { "values": [2, 3, 5] } },
+      "calculation": "'8:' + (12*[G]) + ' PM'",
+      "explanation": "Total 12 hours passed. Total gain = 12 * [G] minutes.",
+      "options": ["8:24 PM", "8:36 PM", "9:00 PM", "8:12 PM"]
+    },
+    {
+      "template_id": "CC_L2_07",
+      "pattern": "What was the day of the week on 1st January, 2001?",
+      "variables": { "X": { "values": [1] } },
+      "calculation": "'Monday'",
+      "explanation": "2000 was a leap year with 0 odd days. Jan 1st 2001 is the first day of the new cycle.",
+      "options": ["Monday", "Sunday", "Tuesday", "Saturday"]
+    },
+    {
+      "template_id": "CC_L2_08",
+      "pattern": "If [D1] [M1] [Y] was a [DAY], what day was [D2] [M1] [Y]?",
+      "variables": { 
+        "D1": { "values": [1] }, 
+        "D2": { "values": [15, 22, 29] }, 
+        "M1": { "values": ["August"] }, 
+        "Y": { "values": [2023] },
+        "DAY": { "values": ["Tuesday"] }
+      },
+      "calculation": "'Tuesday'",
+      "explanation": "Difference is a multiple of 7 days, so the day remains the same.",
+      "options": ["Tuesday", "Monday", "Wednesday", "Sunday"]
+    },
+    {
+      "template_id": "CC_L2_09",
+      "pattern": "The calendar for the year 2024 will be the same for which year?",
+      "variables": { "X": { "values": [1] } },
+      "calculation": "'2052'",
+      "explanation": "Leap year calendars repeat every 28 years. 2024 + 28 = 2052.",
+      "options": ["2052", "2035", "2030", "2048"]
+    },
+    {
+      "template_id": "CC_L2_10",
+      "pattern": "If today is [DAY], what day was it [N] days ago?",
+      "variables": { "DAY": { "values": ["Friday"] }, "N": { "values": [10] } },
+      "calculation": "'Tuesday'",
+      "explanation": "10 days ago = 3 odd days back (10 mod 7). Friday - 3 days = Tuesday.",
+      "options": ["Tuesday", "Wednesday", "Monday", "Thursday"]
+    },
+    {
+      "template_id": "CC_L2_11",
+      "pattern": "At [H]:[M], the minute hand points North. In which direction does the hour hand point?",
+      "variables": { "H": { "values": [3] }, "M": { "values": [0] } },
+      "calculation": "'East'",
+      "explanation": "At 3:00, minute hand is at 12 (North) and hour hand is at 3 (East).",
+      "options": ["East", "West", "South", "North-East"]
+    },
+    {
+      "template_id": "CC_L2_12",
+      "pattern": "What is the angle between hands at 12:20?",
+      "variables": { "X": { "values": [1] } },
+      "calculation": "'110'",
+      "explanation": "Formula |30H - 5.5M|. Here H=0 (for 12), M=20. |30(0) - 5.5(20)| = 110°.",
+      "options": ["110", "100", "120", "90"]
+    }
+
+    ],
+  "responses": {
+    "correct": ["Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍","Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊","Spot on! ✨","Fantastic! 🎈"],
+    "incorrect": ["Try again! 💪","Is the argument direct and relevant? 🤔","Almost! 😊","Think carefully! 🤔","Check if it's strong or weak 📚","So close! 💝","One more try! 🎯","Keep going! 🌈"]
+  }
+}
