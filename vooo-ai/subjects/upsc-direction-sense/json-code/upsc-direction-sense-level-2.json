@@ -1,0 +1,188 @@
+{
+  "puzzle_type": "upsc-direction-sense-level-2",
+  "display_name": "Direction Sense L2",
+  "templates": [
+
+    {
+      "template_id": "DS_L2_01",
+      "pattern": "[P1] starts from home, walks [D1] km North to market, then [D2] km East to school. How far is the school from home (straight line distance)?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [3,4,6,8,5,12]},
+        "D2": {"values": [4,3,8,6,12,5]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.sqrt(D1*D1+D2*D2)",
+      "explanation": "Right angle triangle: √([D1]²+[D2]²) = √([D1*D1]+[D2*D2]) km",
+      "answer_values": [5,5,10,10,13,13]
+    },
+    {
+      "template_id": "DS_L2_02",
+      "pattern": "[P1] walks [D1] km North, then turns right and walks [D2] km, then turns right again and walks [D1] km. How far is [P1] from start and in which direction?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [3,4,5,6,2,3]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "D2",
+      "explanation": "North [D1] → East [D2] → South [D1]. North and South cancel. [P1] is [D2] km East of start.",
+      "answer_values": [3,4,5,6,2,3]
+    },
+    {
+      "template_id": "DS_L2_03",
+      "pattern": "[P1] and [P2] start from the same point. [P1] walks [D1] km North and [P2] walks [D1] km South. How far apart are they?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "2*D1",
+      "explanation": "They walk in opposite directions. Total distance apart = [D1]+[D1] = 2×[D1].",
+      "answer_values": [10,16,12,20,8,14]
+    },
+    {
+      "template_id": "DS_L2_04",
+      "pattern": "[P1] walks [D1] km to the North-East. If [P1] had walked only North, how far North would [P1] have reached? (Assume 45-degree angle, so North component = [D1]/√2 ≈ [D1]×0.7)",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [10,14,10,14,10,14]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.round(D1/Math.sqrt(2))",
+      "explanation": "North-East at 45° means equal North and East components. North component = [D1]/√2 ≈ [D1]×0.707",
+      "answer_values": [7,10,7,10,7,10]
+    },
+    {
+      "template_id": "DS_L2_05",
+      "pattern": "[P1] walks [D1] km West, then turns right and walks [D2] km. Which direction is [P1] now facing?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [3,4,5,6,2,3]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Walking West then turning right = now facing North.",
+      "answer_label": ["North","North","North","North","North","North"]
+    },
+    {
+      "template_id": "DS_L2_06",
+      "pattern": "[P1] starts from point A, walks [D1] km North to B, then [D2] km East to C, then [D1] km South to D. What is the distance and direction of D from A?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [3,4,5,6,2,3]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "D2",
+      "explanation": "North [D1] + South [D1] cancel out. D is [D2] km East of A.",
+      "answer_values": [3,4,5,6,2,3]
+    },
+    {
+      "template_id": "DS_L2_07",
+      "pattern": "If South-East is exactly between South and East, in which direction would [P1] be walking if [P1] is walking in the exact opposite direction of North-West?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Opposite of North-West is South-East.",
+      "answer_label": ["South-East","South-East","South-East","South-East","South-East","South-East"]
+    },
+    {
+      "template_id": "DS_L2_08",
+      "pattern": "[P1] walks [D1] km East, then turns North and walks [D2] km. What is the shortest distance from the starting point?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [3,4,6,8,5,12]},
+        "D2": {"values": [4,3,8,6,12,5]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.sqrt(D1*D1+D2*D2)",
+      "explanation": "Right angle triangle: √([D1]²+[D2]²) = [D1*D1+D2*D2] → √[answer] km",
+      "answer_values": [5,5,10,10,13,13]
+    },
+    {
+      "template_id": "DS_L2_09",
+      "pattern": "[P1] faces South. Turns 90 degrees clockwise. Which direction does [P1] face?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "South + 90 degrees clockwise = West.",
+      "answer_label": ["West","West","West","West","West","West"]
+    },
+    {
+      "template_id": "DS_L2_10",
+      "pattern": "[P1] walks [D1] km North, [D2] km East, [D1] km South, [D2] km West. Where is [P1] now relative to start?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [3,4,5,6,2,3]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "N[D1]+S[D1] cancel. E[D2]+W[D2] cancel. [P1] is back at the starting point.",
+      "answer_label": ["At starting point","At starting point","At starting point","At starting point","At starting point","At starting point"]
+    },
+    {
+      "template_id": "DS_L2_11",
+      "pattern": "At sunset, [P1] stands with the sun directly behind. Which direction is [P1] facing?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Sun sets in West. Sun is behind = West is behind. [P1] is facing East.",
+      "answer_label": ["East","East","East","East","East","East"]
+    },
+    {
+      "template_id": "DS_L2_12",
+      "pattern": "[P1] walks [D1] km North, then turns left and walks [D2] km, then turns left again and walks [D3] km. How far is [P1] from start (North-South only)?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [10,12,8,15,10,12]},
+        "D2": {"values": [4,5,3,6,4,5]},
+        "D3": {"values": [4,5,3,6,4,5]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "D1-D3",
+      "explanation": "North [D1] → left = West [D2] → left = South [D3]. Net North = [D1]-[D3].",
+      "answer_values": [6,7,5,9,6,7]
+    },
+    {
+      "template_id": "DS_L2_13",
+      "pattern": "[P1] is [D1] km to the East of [P2]. [P3] is [D2] km to the North of [P2]. How far is [P1] from [P3]?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "D1": {"values": [3,4,6,8,5,12]},
+        "D2": {"values": [4,3,8,6,12,5]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "Math.sqrt(D1*D1+D2*D2)",
+      "explanation": "Right angle triangle with legs [D1] and [D2]. Distance = √([D1]²+[D2]²)",
+      "answer_values": [5,5,10,10,13,13]
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Draw a diagram 📐","Almost! 😊",
+      "Think carefully! 🤔","Use compass directions 🧭","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "puzzle_type": "upsc-direction-sense-level-3",
+  "display_name": "Direction Sense L3",
+  "templates": [
+
+    {
+      "template_id": "DS_L3_01",
+      "pattern": "[P1] starts from point A facing North. Walks [D1] km, turns left, walks [D2] km, turns left, walks [D3] km. What direction does [P1] face and how far is [P1] from A (East-West only)?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [8,10,9,12,7,10]},
+        "D3": {"values": [3,5,4,6,2,4]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "D2",
+      "explanation": "North→left=West[D2]→left=South[D3]. Now facing South. East-West displacement = [D2] km West.",
+      "answer_values": [8,10,9,12,7,10]
+    },
+    {
+      "template_id": "DS_L3_02",
+      "pattern": "[P1] and [P2] start from same point. [P1] walks [D1] km North then [D2] km East. [P2] walks [D2] km East then [D1] km North. How far apart are [P1] and [P2]?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [3,4,5,6,2,3]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Both end at the same point (N[D1]+E[D2] = E[D2]+N[D1]). They are 0 km apart.",
+      "answer_label": ["0 km (same point)","0 km (same point)","0 km (same point)","0 km (same point)","0 km (same point)","0 km (same point)"]
+    },
+    {
+      "template_id": "DS_L3_03",
+      "pattern": "[P1] walks [D1] km towards North-East, then turns and walks [D1] km towards South-East. In which direction is [P1] from the starting point?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "NE gives equal North and East components. SE gives equal South and East components. North and South cancel. Net movement is East only.",
+      "answer_label": ["East","East","East","East","East","East"]
+    },
+    {
+      "template_id": "DS_L3_04",
+      "pattern": "[P1] is facing South-West. Turns 90 degrees clockwise. Which direction does [P1] face now?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "SW + 90° clockwise = NW.",
+      "answer_label": ["North-West","North-West","North-West","North-West","North-West","North-West"]
+    },
+    {
+      "template_id": "DS_L3_05",
+      "pattern": "[P1] starts from O, walks [D1] km East to A, then [D2] km North to B, then [D1] km West to C, then [D2] km South back. [P2] starts from O and walks [D3] km directly to C. What direction does [P2] walk?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [3,4,5,6,2,3]},
+        "D3": {"values": [3,4,5,6,2,3]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "[P1] returns to O (complete rectangle). C is at same latitude as O. [P2] walks from O directly — C is at E[D1],N[D2] then W[D1]=O horizontally, N[D2]. So C = North of O. [P2] walks North.",
+      "answer_label": ["North","North","North","North","North","North"]
+    },
+    {
+      "template_id": "DS_L3_06",
+      "pattern": "[P1] faces North. Turns right 3 times. [P2] faces South. Turns left 3 times. Do they face the same direction?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "[P1]: N→E→S→W (3 right turns). [P2]: S→E→N→W (3 left turns). Both face West. Yes, same direction.",
+      "answer_label": ["Yes, both face West","Yes, both face West","Yes, both face West","Yes, both face West","Yes, both face West","Yes, both face West"]
+    },
+    {
+      "template_id": "DS_L3_07",
+      "pattern": "A clock is placed on a wall. The minute hand points East at 3 o'clock position. Which direction does the hour hand point at 12 o'clock?",
+      "variables": {
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]},
+        "DUMMY3": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "3 o'clock = East. 12 o'clock is 90° anticlockwise from 3. East rotated 90° anticlockwise = North.",
+      "answer_label": ["North","North","North","North","North","North"]
+    },
+    {
+      "template_id": "DS_L3_08",
+      "pattern": "[P1] walks [D1] km in the direction of South-West, then turns and walks [D1] km North-West. In which direction is [P1] from the starting point?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "SW has equal S and W components. NW has equal N and W components. S and N cancel. Net is West only. [P1] is to the West.",
+      "answer_label": ["West","West","West","West","West","West"]
+    },
+    {
+      "template_id": "DS_L3_09",
+      "pattern": "[P1] stands at the centre of a square field with sides facing North, South, East, West. Walks to the North-East corner. What is the direction from the North-East corner back to the centre?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "From NE corner, the centre is in the South-West direction.",
+      "answer_label": ["South-West","South-West","South-West","South-West","South-West","South-West"]
+    },
+    {
+      "template_id": "DS_L3_10",
+      "pattern": "[P1] walks [D1] km North, turns 45 degrees right (North-East direction), walks [D2] km. Which general direction is [P1] from start?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "D1": {"values": [5,8,6,10,4,7]},
+        "D2": {"values": [6,8,6,8,6,8]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "Walking North then North-East keeps [P1] in the North-East quadrant from start. Direction is North-East.",
+      "answer_label": ["North-East","North-East","North-East","North-East","North-East","North-East"]
+    },
+    {
+      "template_id": "DS_L3_11",
+      "pattern": "[P1] takes 3 left turns starting from North. Each turn is 90°. Which direction does [P1] face finally?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "DUMMY1": {"values": [1,1,1,1,1,1]},
+        "DUMMY2": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "North → left(W) → left(S) → left(E). After 3 left turns = East.",
+      "answer_label": ["East","East","East","East","East","East"]
+    },
+    {
+      "template_id": "DS_L3_12",
+      "pattern": "[P1] and [P2] face each other. [P1] faces North. [P2] turns 90 degrees to the right. Which direction does [P2] now face?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "0",
+      "explanation": "[P1] faces North → [P2] faces South (opposite). [P2] turns right from South → West.",
+      "answer_label": ["West","West","West","West","West","West"]
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Draw a diagram 📐","Almost! 😊",
+      "Think carefully! 🤔","Use compass directions 🧭","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
