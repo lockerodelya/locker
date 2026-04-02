@@ -119,13 +119,19 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-blood-level-5' : '/vooo-ai/subjects/upsc-blood/engine-code/upsc-blood-level-5.js',
 	'upsc-blood-level-6' : '/vooo-ai/subjects/upsc-blood/engine-code/upsc-blood-level-6.js',
 	
-	'upsc-code-level-1' : '/vooo-ai/vae-upsc-code-level-1.js',
-	'upsc-code-level-2' : '/vooo-ai/vae-upsc-code-level-2.js',
-	'upsc-code-level-3' : '/vooo-ai/vae-upsc-code-level-3.js',
+	'upsc-code-decode-level-1' : '/vooo-ai/subjects/upsc-code-decode/engine-code/upsc-code-decode-level-1.js',
+	'upsc-code-decode-level-2' : '/vooo-ai/subjects/upsc-code-decode/engine-code/upsc-code-decode-level-2.js',
+	'upsc-code-decode-level-3' : '/vooo-ai/subjects/upsc-code-decode/engine-code/upsc-code-decode-level-3.js',
+	'upsc-code-decode-level-4' : '/vooo-ai/subjects/upsc-code-decode/engine-code/upsc-code-decode-level-4.js',
+	'upsc-code-decode-level-5' : '/vooo-ai/subjects/upsc-code-decode/engine-code/upsc-code-decode-level-5.js',
+	'upsc-code-decode-level-6' : '/vooo-ai/subjects/upsc-code-decode/engine-code/upsc-code-decode-level-6.js',
 
-	'upsc-direction-level-1' : '/vooo-ai/vae-upsc-direction-level-1.js',
-	'upsc-direction-level-2' : '/vooo-ai/vae-upsc-direction-level-2.js',
-	'upsc-direction-level-3' : '/vooo-ai/vae-upsc-direction-level-3.js',
+	'upsc-direction-sense-level-1' : '/vooo-ai/subjects/upsc-direction-sense/engine-code/upsc-direction-sense-level-1.js',
+	'upsc-direction-sense-level-2' : '/vooo-ai/subjects/upsc-direction-sense/engine-code/upsc-direction-sense-level-2.js',
+	'upsc-direction-sense-level-3' : '/vooo-ai/subjects/upsc-direction-sense/engine-code/upsc-direction-sense-level-3.js',
+	'upsc-direction-sense-level-4' : '/vooo-ai/subjects/upsc-direction-sense/engine-code/upsc-direction-sense-level-4.js',
+	'upsc-direction-sense-level-5' : '/vooo-ai/subjects/upsc-direction-sense/engine-code/upsc-direction-sense-level-5.js',
+	'upsc-direction-sense-level-6' : '/vooo-ai/subjects/upsc-direction-sense/engine-code/upsc-direction-sense-level-6.js',
 
 	'upsc-ranktime-level-1' : '/vooo-ai/vae-upsc-ranktime-level-1.js',
 	'upsc-ranktime-level-2' : '/vooo-ai/vae-upsc-ranktime-level-2.js',
@@ -374,13 +380,19 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-blood-level-5' : 'upscbloodl5',
 	'upsc-blood-level-6' : 'upscbloodl6',
 
-	'upsc-code-level-1' : 'vaeupsccodel1',
-	'upsc-code-level-2' : 'vaeupsccodel2',
-	'upsc-code-level-3' : 'vaeupsccodel3',
+	'upsc-code-decode-level-1' : 'upsccodedecodel1',
+	'upsc-code-decode-level-2' : 'upsccodedecodel2',
+	'upsc-code-decode-level-3' : 'upsccodedecodel3',
+	'upsc-code-decode-level-4' : 'upsccodedecodel4',
+	'upsc-code-decode-level-5' : 'upsccodedecodel5',
+	'upsc-code-decode-level-6' : 'upsccodedecodel6',
 
-	'upsc-direction-level-1' : 'vaeupscdirectionl1',
-	'upsc-direction-level-2' : 'vaeupscdirectionl2',
-	'upsc-direction-level-3' : 'vaeupscdirectionl3',
+	'upsc-direction-sense-level-1' : 'upscdirectionsensel1',
+	'upsc-direction-sense-level-2' : 'upscdirectionsensel2',
+	'upsc-direction-sense-level-3' : 'upscdirectionsensel3',
+	'upsc-direction-sense-level-4' : 'upscdirectionsensel4',
+	'upsc-direction-sense-level-5' : 'upscdirectionsensel5',
+	'upsc-direction-sense-level-6' : 'upscdirectionsensel6',
 
 	'upsc-ranktime-level-1' : 'vaeupscranktimel1',
 	'upsc-ranktime-level-2' : 'vaeupscranktimel2',
@@ -672,17 +684,23 @@ const VOOO_ENGINE_INSTANCES = {
 			{
                 label: 'Code-Decode',
                 options: [
-                    { value: 'upsc-code-level-1', text: '• Code-Decode L1' },
-					{ value: 'upsc-code-level-2', text: '• Code-Decode L2' },
-                    { value: 'upsc-code-level-3', text: '• Code-Decode L3' },
+                    { value: 'upsc-code-decode-level-1', text: '• Code-Decode L1' },
+					{ value: 'upsc-code-decode-level-2', text: '• Code-Decode L2' },
+                    { value: 'upsc-code-decode-level-3', text: '• Code-Decode L3' },
+                    { value: 'upsc-code-decode-level-4', text: '• Code-Decode L4' },
+                    { value: 'upsc-code-decode-level-5', text: '• Code-Decode L5' },
+                    { value: 'upsc-code-decode-level-6', text: '• Code-Decode L6' },
                 ]
             },
 			{
                 label: 'Direction Sense',
                 options: [
-                    { value: 'upsc-direction-level-1', text: '• Direction Sense L1' },
-					{ value: 'upsc-direction-level-2', text: '• Direction Sense L2' },
-                    { value: 'upsc-direction-level-3', text: '• Direction Sense L3' },
+                    { value: 'upsc-direction-sense-level-1', text: '• Direction Sense L1' },
+					{ value: 'upsc-direction-sense-level-2', text: '• Direction Sense L2' },
+                    { value: 'upsc-direction-sense-level-3', text: '• Direction Sense L3' },
+                    { value: 'upsc-direction-sense-level-4', text: '• Direction Sense L4' },
+                    { value: 'upsc-direction-sense-level-5', text: '• Direction Sense L5' },
+                    { value: 'upsc-direction-sense-level-6', text: '• Direction Sense L6' },
                 ]
             },
 			{
