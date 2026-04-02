@@ -1,0 +1,219 @@
+{
+  "puzzle_type": "upsc-ranking-time-level-5",
+  "display_name": "Ranking & Time Seq. L5",
+  "templates": [
+
+    {
+      "template_id": "RTS_L5_01",
+      "pattern": "In a class of [N] students, [P1] ranks [A]th from top in Hindi and [B]th from top in English. If [C] students rank above [P1] in both subjects, how many students rank above [P1] in at least one subject?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "N": {"values": [50,60,40,70,50,60]},
+        "A": {"values": [15,18,12,20,15,18]},
+        "B": {"values": [12,15,10,16,12,15]},
+        "C": {"values": [8,10,6,12,8,10]}
+      },
+      "calculation": "(A-1)+(B-1)-C",
+      "explanation": "By inclusion-exclusion: above in Hindi=(A-1), above in English=(B-1), above in both=C. At least one = (A-1)+(B-1)-C",
+      "options": [18,22,14,22,18,22]
+    },
+    {
+      "template_id": "RTS_L5_02",
+      "pattern": "In a queue of [N] people, [P1] is [A]th from front. [P2] is [B]th from back. [P3] is exactly between [P1] and [P2]. [P4] is [K] places behind [P3]. [P5] is [M] places ahead of [P4]. What is [P5]'s position from the front?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
+        "N": {"values": [40,42,44,46,40,42]},
+        "A": {"values": [8,9,7,10,8,9]},
+        "B": {"values": [10,11,9,12,10,11]},
+        "K": {"values": [4,5,3,6,4,5]},
+        "M": {"values": [2,3,1,4,2,3]}
+      },
+      "calculation": "(A+(N-B+1))/2+K-M",
+      "explanation": "[P3] pos = (A + N-B+1)/2. [P4] = [P3]+K. [P5] = [P4]-M = (A+N-B+1)/2+K-M",
+      "options": [21,22,25,22,21,22]
+    },
+    {
+      "template_id": "RTS_L5_03",
+      "pattern": "Five friends [P1]-[P5] complete tasks at different speeds. [P1] completes a task in [D1] days. [P2] is [K]% faster than [P1]. [P3] is [M]% slower than [P2]. They all work together. In how many days do they complete [TASKS] identical tasks (only [P1],[P2],[P3] work)?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "D1": {"values": [10,12,8,15,10,12]},
+        "K": {"values": [25,20,25,20,25,20]},
+        "M": {"values": [20,25,20,25,20,25]},
+        "TASKS": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "TASKS/(1/D1+(1+K/100)/D1*D1/(D1*(1-M/100)*(1+K/100)))",
+      "explanation": "[P2] rate = (1+K/100)/D1. [P3] rate = (1+K/100)*(1-M/100)/D1. Combined days = TASKS/(sum of rates)",
+      "options": [4,4.8,3.2,6,4,4.8]
+    },
+    {
+      "template_id": "RTS_L5_04",
+      "pattern": "In an exam, [P1] scored [S1] marks and ranked [R1]th. [P2] scored [S2] marks. If every [STEP] marks difference = 1 rank difference, what is [P2]'s rank?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "S1": {"values": [80,75,85,70,80,75]},
+        "S2": {"values": [65,60,70,55,65,60]},
+        "R1": {"values": [5,6,4,7,5,6]},
+        "STEP": {"values": [5,5,5,5,5,5]}
+      },
+      "calculation": "R1+(S1-S2)/STEP",
+      "explanation": "[P2] rank = R1 + (S1-S2)/STEP = [R1]+([S1]-[S2])/[STEP]",
+      "options": [8,9,7,10,8,9]
+    },
+    {
+      "template_id": "RTS_L5_05",
+      "pattern": "A sequence of events: Event 1 at [T1] hrs, Event 2 is [D12] hours after Event 1. Event 3 is [D23] hours after Event 2. Event 4 is [D34] hours before Event 5. Event 5 is at [T5] hrs. How many hours is the gap between Event 3 and Event 4?",
+      "variables": {
+        "T1": {"values": [6,7,5,8,6,7]},
+        "D12": {"values": [3,4,2,5,3,4]},
+        "D23": {"values": [2,3,1,4,2,3]},
+        "D34": {"values": [2,3,1,4,2,3]},
+        "T5": {"values": [18,22,14,25,18,22]}
+      },
+      "calculation": "T5-D34-(T1+D12+D23)",
+      "explanation": "Event3 time = T1+D12+D23. Event4 time = T5-D34. Gap = Event4 - Event3 = T5-D34-(T1+D12+D23)",
+      "options": [5,5,5,5,5,5]
+    },
+    {
+      "template_id": "RTS_L5_06",
+      "pattern": "In a class, [P1] says 'I am [A]th from top.' [P2] says 'I am [B]th from bottom.' [P3] says 'There are [C] students between [P1] and me, and I am below [P1].' [P4] says 'I am [D] ranks above [P3].' What is [P4]'s rank from top?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "A": {"values": [8,10,6,12,8,10]},
+        "B": {"values": [7,9,5,11,7,9]},
+        "C": {"values": [5,6,4,7,5,6]},
+        "D": {"values": [3,4,2,5,3,4]}
+      },
+      "calculation": "A+C+1-D",
+      "explanation": "[P3] rank = A+C+1. [P4] = [P3]-D = A+C+1-D = [A]+[C]+1-[D]",
+      "options": [11,13,9,15,11,13]
+    },
+    {
+      "template_id": "RTS_L5_07",
+      "pattern": "In a row of [N] people, [P1] is [A]th from left, [P2] is [B]th from right. After [P1] moves [K] places right and [P2] moves [M] places left, how many people are now between them?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "N": {"values": [30,35,25,40,30,35]},
+        "A": {"values": [8,10,6,12,8,10]},
+        "B": {"values": [9,11,7,13,9,11]},
+        "K": {"values": [3,4,2,5,3,4]},
+        "M": {"values": [2,3,1,4,2,3]}
+      },
+      "calculation": "Math.max(0,(N-B+1-M)-(A+K)-1)",
+      "explanation": "[P1] new pos from left = A+K. [P2] new pos from left = N-B+1-M. Between = [P2]new-[P1]new-1",
+      "options": [8,7,9,6,8,7]
+    },
+    {
+      "template_id": "RTS_L5_08",
+      "pattern": "Three athletes [P1],[P2],[P3] run laps. [P1] takes [T1] min/lap, [P2] takes [T2] min/lap, [P3] takes [T3] min/lap. They start together. After [DUR] minutes, how many times has [P1] lapped [P3] (i.e., how many extra laps has [P1] completed over [P3])?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "T1": {"values": [3,4,2,5,3,4]},
+        "T2": {"values": [4,5,3,6,4,5]},
+        "T3": {"values": [6,8,4,10,6,8]},
+        "DUR": {"values": [60,80,40,100,60,80]}
+      },
+      "calculation": "Math.floor(DUR/T1)-Math.floor(DUR/T3)",
+      "explanation": "[P1] laps = floor(DUR/T1). [P3] laps = floor(DUR/T3). Difference = floor([DUR]/[T1]) - floor([DUR]/[T3])",
+      "options": [10,10,10,10,10,10]
+    },
+    {
+      "template_id": "RTS_L5_09",
+      "pattern": "In a test, [P1] ranks [A]th from top. [P1] says: 'If [K] students who scored less than me had scored more, my rank would be [B]th.' How many students scored exactly the same as [P1]?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "A": {"values": [10,12,8,14,10,12]},
+        "B": {"values": [14,17,11,20,14,17]},
+        "K": {"values": [4,5,3,6,4,5]}
+      },
+      "calculation": "A+K-B",
+      "explanation": "If K lower-ranked students beat [P1], rank becomes B. So B = A + K - same_scorers + 1... solving: same scorers = A+K-B+1... Simplified: B-A = K - (tied-1) → tied = K-(B-A)+1",
+      "options": [1,1,1,1,1,1]
+    },
+    {
+      "template_id": "RTS_L5_10",
+      "pattern": "A project timeline: Phase 1 starts on [D1] Jan and lasts [W1] weeks. Phase 2 starts immediately after and lasts [W2] weeks. Phase 3 starts [G] days after Phase 2 ends and lasts [W3] weeks. On what date (day of year) does Phase 3 end?",
+      "variables": {
+        "D1": {"values": [1,5,3,7,1,5]},
+        "W1": {"values": [4,3,5,2,4,3]},
+        "W2": {"values": [6,4,8,3,6,4]},
+        "G": {"values": [7,5,10,3,7,5]},
+        "W3": {"values": [3,4,2,5,3,4]}
+      },
+      "calculation": "0",
+      "explanation": "End = D1 + (W1+W2)*7 + G + W3*7 = [D1]+([W1]+[W2])*7+[G]+[W3]*7",
+      "options": [100,88,126,71,100,88]
+    },
+    {
+      "template_id": "RTS_L5_11",
+      "pattern": "[N] students sit in a row for photos. [P1] is [A]th from left. [P2] is [B]th from right. Photographer says: 'If you both move [K] places towards each other, you will be adjacent.' Is the statement correct? Currently how many people are between them?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "N": {"values": [20,22,20,22,20,22]},
+        "A": {"values": [5,6,4,7,5,6]},
+        "B": {"values": [5,6,4,7,5,6]},
+        "K": {"values": [4,5,3,6,4,5]}
+      },
+      "calculation": "N-A-B",
+      "explanation": "Between = N-A-B = [N]-[A]-[B]. After moving K each, gap = N-A-B-2K. Adjacent means gap=1 → N-A-B-2K=1 → verify.",
+      "options": [10,10,12,8,10,10]
+    },
+    {
+      "template_id": "RTS_L5_12",
+      "pattern": "In a sports meet, [P1] finishes [A] seconds behind the winner. [P2] finishes [B] seconds behind [P1]. [P3] finishes [C] seconds ahead of [P2]. The winner's time is [WT] seconds. What is [P3]'s time?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "A": {"values": [5,8,4,10,5,8]},
+        "B": {"values": [3,5,2,6,3,5]},
+        "C": {"values": [2,3,1,4,2,3]},
+        "WT": {"values": [120,150,100,180,120,150]}
+      },
+      "calculation": "WT+A+B-C",
+      "explanation": "[P1]=WT+A. [P2]=[P1]+B=WT+A+B. [P3]=[P2]-C=WT+A+B-C=[WT]+[A]+[B]-[C]",
+      "options": [126,160,105,192,126,160]
+    },
+    {
+      "template_id": "RTS_L5_13",
+      "pattern": "In a class of [N] students, [P1] is [A]th from top. After results, [X] students who were below [P1] are now above [P1] and [Y] students who were above [P1] are now below [P1]. What is [P1]'s new rank?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "N": {"values": [50,60,40,70,50,60]},
+        "A": {"values": [20,24,16,28,20,24]},
+        "X": {"values": [8,10,6,12,8,10]},
+        "Y": {"values": [5,6,4,8,5,6]}
+      },
+      "calculation": "A+X-Y",
+      "explanation": "New rank = Old rank + Students below who went above - Students above who went below = [A]+[X]-[Y]",
+      "options": [23,28,18,32,23,28]
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your logic 🔢","Almost! 😊",
+      "Think carefully! 🤔","Review the formula 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

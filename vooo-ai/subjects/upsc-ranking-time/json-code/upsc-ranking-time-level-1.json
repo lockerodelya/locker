@@ -1,0 +1,186 @@
+{
+  "puzzle_type": "upsc-ranking-time-level-1",
+  "display_name": "Ranking & Time Seq. L1",
+  "templates": [
+
+    {
+      "template_id": "RTS_L1_01",
+      "pattern": "In a class of [N] students, [P1] ranks [A]th from the top. What is [P1]'s rank from the bottom?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "N": {"values": [30,35,40,25,50,45]},
+        "A": {"values": [8,10,12,6,15,11]}
+      },
+      "calculation": "N-A+1",
+      "explanation": "Rank from bottom = Total students - Rank from top + 1 = [N]-[A]+1",
+      "options": [23,26,29,20,36,35]
+    },
+    {
+      "template_id": "RTS_L1_02",
+      "pattern": "[P1] ranks [A]th from the top and [B]th from the bottom in a row. How many students are in the row?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "A": {"values": [8,10,12,6,15,9]},
+        "B": {"values": [7,9,11,5,14,8]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "A+B-1",
+      "explanation": "Total students = Rank from top + Rank from bottom - 1 = [A]+[B]-1",
+      "options": [14,18,22,10,28,16]
+    },
+    {
+      "template_id": "RTS_L1_03",
+      "pattern": "In a queue of [N] persons, [P1] is [A]th from the front. How many persons are behind [P1]?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "N": {"values": [20,25,30,18,35,28]},
+        "A": {"values": [7,9,11,5,12,8]}
+      },
+      "calculation": "N-A",
+      "explanation": "Persons behind = Total - Position from front = [N]-[A]",
+      "options": [13,16,19,13,23,20]
+    },
+    {
+      "template_id": "RTS_L1_04",
+      "pattern": "[P1] is [A]th from the left in a row of [N] persons. [P2] is [B]th from the right. How many persons are between them?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "N": {"values": [20,25,20,25,20,25]},
+        "A": {"values": [5,6,4,7,5,6]},
+        "B": {"values": [6,7,5,8,6,7]}
+      },
+      "calculation": "Math.max(0,N-A-B)",
+      "explanation": "Persons between = N - A - B = [N]-[A]-[B] (when [P1] is left of [P2])",
+      "options": [9,12,11,10,9,12]
+    },
+    {
+      "template_id": "RTS_L1_05",
+      "pattern": "In a class, [P1] is [A]th from top. [P2] is [B] ranks below [P1]. What is [P2]'s rank from top?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "A": {"values": [5,7,4,8,6,9]},
+        "B": {"values": [3,4,2,5,3,4]}
+      },
+      "calculation": "A+B",
+      "explanation": "[P2] rank from top = [P1] rank + B = [A]+[B]",
+      "options": [8,11,6,13,9,13]
+    },
+    {
+      "template_id": "RTS_L1_06",
+      "pattern": "An event started on [DAY1] and lasted [DAYS] days (including start day). On which day did it end?",
+      "variables": {
+        "DAY1": {"values": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},
+        "DAYS": {"values": [5,3,4,6,2,7]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "DAYS-1",
+      "explanation": "End day = Start day + (DAYS-1) days forward",
+      "options": ["Friday","Thursday","Saturday","Tuesday","Saturday","Friday"]
+    },
+    {
+      "template_id": "RTS_L1_07",
+      "pattern": "In a competition, [P1] finished [A] places ahead of [P2]. [P2] finished [B]th. What position did [P1] finish?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "A": {"values": [3,4,2,5,3,4]},
+        "B": {"values": [8,10,7,12,9,11]}
+      },
+      "calculation": "B-A",
+      "explanation": "[P1] position = [P2] position - A = [B]-[A]",
+      "options": [5,6,5,7,6,7]
+    },
+    {
+      "template_id": "RTS_L1_08",
+      "pattern": "[P1] takes [T1] minutes to complete a task. [P2] takes [T2] minutes. They start together. How many minutes before [P2] does [P1] finish?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "T1": {"values": [20,25,15,30,20,25]},
+        "T2": {"values": [35,40,30,45,35,40]}
+      },
+      "calculation": "T2-T1",
+      "explanation": "Difference = T2 - T1 = [T2]-[T1] minutes",
+      "options": [15,15,15,15,15,15]
+    },
+    {
+      "template_id": "RTS_L1_09",
+      "pattern": "Today is [DAY]. What day will it be after [N] days?",
+      "variables": {
+        "DAY": {"values": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]},
+        "N": {"values": [10,15,20,8,12,9]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "N%7",
+      "explanation": "Move [N] days forward from [DAY]. [N] mod 7 = [N%7] extra days",
+      "options": ["Thursday","Wednesday","Friday","Friday","Wednesday","Monday"]
+    },
+    {
+      "template_id": "RTS_L1_10",
+      "pattern": "In a row of [N] students, [P1] is [A]th from the front and [P2] is [A]th from the back. How many students are between them?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "N": {"values": [20,25,22,28,20,26]},
+        "A": {"values": [7,8,6,9,7,8]}
+      },
+      "calculation": "Math.max(0,N-2*A)",
+      "explanation": "Between them = N - 2*A = [N] - 2*[A] (when they are not the same person)",
+      "options": [6,9,10,10,6,10]
+    },
+    {
+      "template_id": "RTS_L1_11",
+      "pattern": "[P1] was born in [YEAR]. His age this year ([CY]) is [AGE]. In how many years will [P1] be [TARGET] years old?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "YEAR": {"values": [1995,1990,2000,1985,1998,1992]},
+        "CY": {"values": [2026,2026,2026,2026,2026,2026]},
+        "AGE": {"values": [31,36,26,41,28,34]},
+        "TARGET": {"values": [40,50,35,55,40,45]}
+      },
+      "calculation": "TARGET-AGE",
+      "explanation": "Years from now = Target age - Current age = [TARGET]-[AGE]",
+      "options": [9,14,9,14,12,11]
+    },
+    {
+      "template_id": "RTS_L1_12",
+      "pattern": "A bus leaves every [INT] minutes. Last bus left at [HH]:[MM]. When will the next bus leave?",
+      "variables": {
+        "HH": {"values": [9,10,8,11,7,6]},
+        "MM": {"values": [0,15,30,45,20,10]},
+        "INT": {"values": [15,20,30,15,25,20]}
+      },
+      "calculation": "MM+INT",
+      "explanation": "Next bus = Last bus time + Interval = [HH]:[MM] + [INT] minutes",
+      "options": ["9:15","10:35","9:00","12:00","7:45","6:30"]
+    },
+    {
+      "template_id": "RTS_L1_13",
+      "pattern": "In a class of [N] students, [P1] is [A]th from top in Maths and [B]th from top in Science. What is the minimum possible number of students who rank above [P1] in both subjects?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "N": {"values": [40,45,50,35,40,45]},
+        "A": {"values": [10,12,8,15,10,12]},
+        "B": {"values": [12,10,15,8,12,10]}
+      },
+      "calculation": "Math.min(A,B)-1",
+      "explanation": "Minimum who rank above in BOTH = min(A,B)-1 = min([A],[B])-1",
+      "options": [9,9,7,7,9,9]
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your logic 🔢","Almost! 😊",
+      "Think carefully! 🤔","Review the formula 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

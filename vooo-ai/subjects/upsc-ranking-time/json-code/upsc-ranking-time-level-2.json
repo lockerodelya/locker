@@ -1,0 +1,180 @@
+{
+  "puzzle_type": "upsc-ranking-time-level-2",
+  "display_name": "Ranking & Time Seq. L2",
+  "templates": [
+
+    {
+      "template_id": "RTS_L2_01",
+      "pattern": "A train departs at [HH]:[MM]. It takes [DUR] minutes to reach the destination. At what time does it arrive?",
+      "variables": {
+        "HH": {"values": [9,10,8,11,7,6]},
+        "MM": {"values": [30,15,45,0,20,50]},
+        "DUR": {"values": [90,75,120,45,100,80]}
+      },
+      "calculation": "(HH*60+MM+DUR)",
+      "explanation": "Arrival = Departure + Duration. Departure=[HH]:[MM], Duration=[DUR] min",
+      "options": ["11:00","11:30","10:45","11:45","9:00","8:10"]
+    },
+    {
+      "template_id": "RTS_L2_02",
+      "pattern": "Five students [P1],[P2],[P3],[P4],[P5] are ranked 1 to 5. [P3] ranks higher than [P1]. [P2] ranks lower than [P4]. [P5] ranks 1st. [P1] ranks 3rd. What is [P3]'s rank?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "2",
+      "explanation": "[P5]=1st, [P1]=3rd. [P3] ranks higher than [P1] → [P3]=2nd. [P4]=4th, [P2]=5th",
+      "options": [2,2,2,2,2,2]
+    },
+    {
+      "template_id": "RTS_L2_03",
+      "pattern": "[P1] started walking at [HH]:[MM] and walked for [DUR] minutes. At what time did [P1] stop?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "HH": {"values": [7,8,6,9,10,5]},
+        "MM": {"values": [0,30,45,15,0,50]},
+        "DUR": {"values": [45,30,75,60,90,40]}
+      },
+      "calculation": "HH*60+MM+DUR",
+      "explanation": "Stop time = Start + Duration = [HH]:[MM] + [DUR] minutes",
+      "options": ["7:45","9:00","8:00","10:15","11:30","6:30"]
+    },
+    {
+      "template_id": "RTS_L2_04",
+      "pattern": "[P1] completed a task in [T1] hours starting at [SH]:[SM]. [P2] started [D] hours later. [P2] also takes [T1] hours. Who finishes first?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "T1": {"values": [3,4,2,5,3,4]},
+        "SH": {"values": [9,8,10,7,9,8]},
+        "SM": {"values": [0,0,0,0,0,0]},
+        "D": {"values": [1,2,1,2,1,2]}
+      },
+      "calculation": "P1",
+      "explanation": "[P1] finishes at SH+T1. [P2] starts D hours later, finishes at SH+D+T1. [P1] finishes D hours earlier",
+      "options": ["P1","P1","P1","P1","P1","P1"]
+    },
+    {
+      "template_id": "RTS_L2_05",
+      "pattern": "In a row, [P1] is [A]th from left. After [K] new students join to the left of [P1], what is [P1]'s new rank from the left?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "A": {"values": [6,7,5,8,6,7]},
+        "K": {"values": [3,4,2,5,3,4]}
+      },
+      "calculation": "A+K",
+      "explanation": "New rank from left = Old rank + New students added to left = [A]+[K]",
+      "options": [9,11,7,13,9,11]
+    },
+    {
+      "template_id": "RTS_L2_06",
+      "pattern": "A meeting was scheduled at [SH]:[SM]. It started [LATE] minutes late and lasted [DUR] minutes. At what time did it end?",
+      "variables": {
+        "SH": {"values": [10,11,9,14,15,16]},
+        "SM": {"values": [0,30,0,0,30,0]},
+        "LATE": {"values": [15,10,20,5,15,10]},
+        "DUR": {"values": [60,90,45,120,75,60]}
+      },
+      "calculation": "SH*60+SM+LATE+DUR",
+      "explanation": "End time = Scheduled time + Late start + Duration = [SH]:[SM] + [LATE] + [DUR] mins",
+      "options": ["11:15","13:10","10:05","16:05","17:00","17:10"]
+    },
+    {
+      "template_id": "RTS_L2_07",
+      "pattern": "Five runners finished a race. [P1] finished before [P3] but after [P2]. [P4] finished last. [P5] finished just before [P4]. In what position did [P1] finish?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
+        "DUMMY": {"values": [1,1,1,1,1,1]}
+      },
+      "calculation": "3",
+      "explanation": "Order: [P2]-?-[P1]-[P3]-[P5]-[P4]. [P1]=3rd position",
+      "options": [3,3,3,3,3,3]
+    },
+    {
+      "template_id": "RTS_L2_08",
+      "pattern": "[P1] was [A] years old [K] years ago. How old will [P1] be [M] years from now?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "A": {"values": [20,25,18,30,22,28]},
+        "K": {"values": [5,5,3,5,4,5]},
+        "M": {"values": [10,8,12,10,8,10]}
+      },
+      "calculation": "A+K+M",
+      "explanation": "Current age = A+K. Future age = A+K+M = [A]+[K]+[M]",
+      "options": [35,38,33,45,34,43]
+    },
+    {
+      "template_id": "RTS_L2_09",
+      "pattern": "In a class of [N] students, [P1] is [A]th from top. [P2] is [B]th from bottom. If [P1] and [P2] are the same person, how many students are in the class?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "A": {"values": [12,15,10,18,12,15]},
+        "B": {"values": [9,11,8,13,9,11]},
+        "N": {"values": [20,25,17,30,20,25]}
+      },
+      "calculation": "A+B-1",
+      "explanation": "Total = Rank from top + Rank from bottom - 1 = [A]+[B]-1",
+      "options": [20,25,17,30,20,25]
+    },
+    {
+      "template_id": "RTS_L2_10",
+      "pattern": "A clock shows [HH]:[MM]. After [MIN] minutes, what time will the clock show?",
+      "variables": {
+        "HH": {"values": [3,7,11,5,9,1]},
+        "MM": {"values": [45,50,55,40,30,35]},
+        "MIN": {"values": [30,20,15,45,60,50]}
+      },
+      "calculation": "(HH*60+MM+MIN)%720",
+      "explanation": "New time = [HH]:[MM] + [MIN] minutes",
+      "options": ["4:15","8:10","12:10","6:25","10:30","2:25"]
+    },
+    {
+      "template_id": "RTS_L2_11",
+      "pattern": "In a merit list of [N] students, [P1] is ranked [A]th. [K] students who scored higher than [P1] are disqualified. What is [P1]'s new rank?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "N": {"values": [50,60,40,70,50,60]},
+        "A": {"values": [15,18,12,20,15,18]},
+        "K": {"values": [5,6,4,8,5,6]}
+      },
+      "calculation": "A-K",
+      "explanation": "New rank = Old rank - Disqualified students above = [A]-[K]",
+      "options": [10,12,8,12,10,12]
+    },
+    {
+      "template_id": "RTS_L2_12",
+      "pattern": "[P1] joined office at [SH]:[SM] AM. Worked for [WH] hours with a [BRK] minute lunch break. At what time did [P1] leave?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "SH": {"values": [9,8,9,10,9,8]},
+        "SM": {"values": [0,30,0,0,0,0]},
+        "WH": {"values": [8,8,8,8,8,8]},
+        "BRK": {"values": [60,45,30,60,45,30]}
+      },
+      "calculation": "SH*60+SM+WH*60+BRK",
+      "explanation": "Leave time = Join time + Work hours + Break = [SH]:[SM] + [WH]hrs + [BRK]min",
+      "options": ["18:00","17:15","17:30","18:00","17:45","17:00"]
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your logic 🔢","Almost! 😊",
+      "Think carefully! 🤔","Review the formula 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}

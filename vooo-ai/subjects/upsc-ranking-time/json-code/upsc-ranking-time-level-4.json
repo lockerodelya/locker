@@ -1,0 +1,189 @@
+{
+  "puzzle_type": "upsc-ranking-time-level-4",
+  "display_name": "Ranking & Time Seq. L4",
+  "templates": [
+
+    {
+      "template_id": "RTS_L4_01",
+      "pattern": "In a class of [N] students, [P1] ranks [A]th from top. [P2] ranks [B]th from bottom. How many students are between [P1] and [P2]?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "N": {"values": [40,45,50,35,40,45]},
+        "A": {"values": [10,12,8,7,10,12]},
+        "B": {"values": [8,10,6,9,8,10]}
+      },
+      "calculation": "Math.max(0,N-A-B)",
+      "explanation": "Students between = N - rank_from_top([P1]) - rank_from_bottom([P2]) = [N]-[A]-[B]",
+      "options": [22,23,36,19,22,23]
+    },
+    {
+      "template_id": "RTS_L4_02",
+      "pattern": "Train A departs at [AH]:[AM] and travels at [AS] km/h. Train B departs at [BH]:[BM] from the same station and travels at [BS] km/h in the same direction. After how many hours does Train B overtake Train A?",
+      "variables": {
+        "AH": {"values": [8,9,7,10,8,9]},
+        "AM": {"values": [0,0,0,0,0,0]},
+        "AS": {"values": [60,50,40,80,60,50]},
+        "BH": {"values": [10,11,9,12,10,11]},
+        "BM": {"values": [0,0,0,0,0,0]},
+        "BS": {"values": [90,80,60,120,90,80]}
+      },
+      "calculation": "(AS*(BH-AH))/(BS-AS)",
+      "explanation": "Head start = AS*(BH-AH). Overtake time (after B departs) = Head start / (BS-AS) = [AS]*([BH]-[AH])/([BS]-[AS])",
+      "options": [4,5,4,4,4,5]
+    },
+    {
+      "template_id": "RTS_L4_03",
+      "pattern": "In a race, [P1] finishes [A] seconds before [P2]. [P2] finishes [B] seconds before [P3]. [P3]'s time is [T3] seconds. What is [P1]'s time?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "A": {"values": [5,8,4,10,5,8]},
+        "B": {"values": [3,5,2,6,3,5]},
+        "T3": {"values": [120,150,100,180,120,150]}
+      },
+      "calculation": "T3-B-A",
+      "explanation": "[P2] time = T3-B. [P1] time = T3-B-A = [T3]-[B]-[A]",
+      "options": [112,137,94,164,112,137]
+    },
+    {
+      "template_id": "RTS_L4_04",
+      "pattern": "A project started on [DATE] of [MONTH]. It takes [WEEKS] weeks to complete. On what date does it end? (Assume 4 weeks = 28 days)",
+      "variables": {
+        "DATE": {"values": [1,5,10,15,3,8]},
+        "MONTH": {"values": ["January","February","March","April","May","June"]},
+        "WEEKS": {"values": [6,4,8,3,5,7]}
+      },
+      "calculation": "DATE+WEEKS*7",
+      "explanation": "End date = Start date + (Weeks × 7) = [DATE] + [WEEKS]×7 = [DATE+WEEKS*7] [MONTH]",
+      "answer_label": ["43rd day (12 Feb)","33rd day (8 Mar)","66th day (15 May)","36th day (21 May)","38th day (10 June)","57th day (4 Aug)"]
+    },
+    {
+      "template_id": "RTS_L4_05",
+      "pattern": "A clock gains [G] minutes every [H] hours. It shows correct time at [SH]:[SM]. After [D] hours, what time does the clock show?",
+      "variables": {
+        "SH": {"values": [9,10,8,12,6,3]},
+        "SM": {"values": [0,0,0,0,0,0]},
+        "G": {"values": [5,3,4,6,2,5]},
+        "H": {"values": [1,1,1,1,1,1]},
+        "D": {"values": [12,10,15,8,24,6]}
+      },
+      "calculation": "0",
+      "explanation": "Clock gains G*D extra minutes over D hours. Shown time = Actual time + G*D = [SH]:[SM] + [D]hrs + [D]*[G]min",
+      "answer_label": ["22:00","20:30","24:00","21:20","30:48","9:30"]
+    },
+    {
+      "template_id": "RTS_L4_06",
+      "pattern": "[P1] starts a journey at [SH]:[SM] and travels at [SP] km/h. [P2] starts [K] hours later from the same point at [SP2] km/h in the same direction. At what time does [P2] catch [P1]?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "SH": {"values": [8,9,7,10,8,9]},
+        "SM": {"values": [0,0,0,0,0,0]},
+        "SP": {"values": [40,30,50,60,40,30]},
+        "SP2": {"values": [60,50,75,90,60,50]},
+        "K": {"values": [2,3,2,2,2,3]}
+      },
+      "calculation": "SH+K+SP*K/(SP2-SP)",
+      "explanation": "Time for [P2] to catch = SP*K/(SP2-SP). [P2] catches at time = SH+K + SP*K/(SP2-SP)",
+      "options": [14,18,14,16,14,18]
+    },
+    {
+      "template_id": "RTS_L4_07",
+      "pattern": "Five persons [P1]-[P5] appeared for an interview on consecutive days. [P3] appeared on Wednesday. [P1] appeared [K] days before [P3]. [P5] appeared 2 days after [P3]. [P2] appeared just before [P5]. What day did [P4] appear?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "P3": {"values": ["Charu","Tara","Kavya","Rita","Sneha","Lata"]},
+        "P4": {"values": ["Dev","Uday","Rohit","Sunil","Kiran","Nitin"]},
+        "P5": {"values": ["Elan","Vinay","Sahil","Tarun","Lucky","Pawan"]},
+        "K": {"values": [2,2,2,2,2,2]}
+      },
+      "calculation": "0",
+      "explanation": "[P1]=Mon, ?=Tue, [P3]=Wed, [P4]=Thu, [P2]=Thu... [P5]=Fri, [P2]=Thu. [P4]=Tue",
+      "answer_label": ["Tuesday","Tuesday","Tuesday","Tuesday","Tuesday","Tuesday"]
+    },
+    {
+      "template_id": "RTS_L4_08",
+      "pattern": "A series of tasks must be completed in order. Task 1 takes [T1] mins, Task 2 takes [T2] mins, Task 3 takes [T3] mins, Task 4 takes [T4] mins. Starting at [SH]:[SM], when is Task 3 completed?",
+      "variables": {
+        "SH": {"values": [9,10,8,11,9,10]},
+        "SM": {"values": [0,30,0,0,0,0]},
+        "T1": {"values": [20,15,25,30,20,15]},
+        "T2": {"values": [30,20,35,25,30,20]},
+        "T3": {"values": [25,30,20,35,25,30]},
+        "T4": {"values": [15,25,20,20,15,25]}
+      },
+      "calculation": "0",
+      "explanation": "Task 3 completes at Start + T1 + T2 + T3 = [SH]:[SM] + [T1]+[T2]+[T3] mins",
+      "answer_label": ["10:15","12:05","9:20","12:50","10:15","12:05"]
+    },
+    {
+      "template_id": "RTS_L4_09",
+      "pattern": "Event A ends at [AH]:[AM]. Event B starts [GAP] minutes after Event A ends and lasts [BD] minutes. Event C starts immediately after Event B. At what time does Event C start?",
+      "variables": {
+        "AH": {"values": [10,11,9,14,15,16]},
+        "AM": {"values": [30,0,45,30,0,15]},
+        "GAP": {"values": [15,20,10,30,15,20]},
+        "BD": {"values": [45,60,30,90,60,45]}
+      },
+      "calculation": "0",
+      "explanation": "Event C starts at AH:AM + GAP + BD = [AH]:[AM] + [GAP] + [BD] minutes",
+      "answer_label": ["12:00","13:20","11:05","17:30","16:15","18:20"]
+    },
+    {
+      "template_id": "RTS_L4_10",
+      "pattern": "[P1] finishes a job in [D1] days. [P2] finishes the same job in [D2] days. They work together for [W] days. What fraction of the job is left?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "P2": {"values": ["Bina","Sita","Priya","Mona","Neha","Pooja"]},
+        "D1": {"values": [10,12,8,15,10,12]},
+        "D2": {"values": [15,18,12,20,15,18]},
+        "W": {"values": [4,6,3,5,4,6]}
+      },
+      "calculation": "1-W*(1/D1+1/D2)",
+      "explanation": "Work per day together = 1/D1+1/D2. Done in W days = W*(1/D1+1/D2). Left = 1 - W*(1/[D1]+1/[D2])",
+      "options": [0.333,0.333,0.375,0.333,0.333,0.333]
+    },
+    {
+      "template_id": "RTS_L4_11",
+      "pattern": "A clock is [FAST] minutes fast. It shows [SH]:[SM]. What is the correct time?",
+      "variables": {
+        "SH": {"values": [10,11,9,14,8,3]},
+        "SM": {"values": [30,20,45,10,5,50]},
+        "FAST": {"values": [15,20,10,25,12,18]}
+      },
+      "calculation": "0",
+      "explanation": "Correct time = Shown time - Fast minutes = [SH]:[SM] - [FAST] mins",
+      "answer_label": ["10:15","11:00","9:35","13:45","7:53","3:32"]
+    },
+    {
+      "template_id": "RTS_L4_12",
+      "pattern": "In a class of [N] students, [P1] is [A]th from top. [K] students join the class, all ranked above [P1]. [M] students ranked above [P1] leave. What is [P1]'s new rank?",
+      "variables": {
+        "P1": {"values": ["Amit","Ram","Suresh","Anil","Vijay","Mohan"]},
+        "N": {"values": [40,45,50,35,40,45]},
+        "A": {"values": [15,18,12,20,15,18]},
+        "K": {"values": [5,6,4,8,5,6]},
+        "M": {"values": [3,4,2,5,3,4]}
+      },
+      "calculation": "A+K-M",
+      "explanation": "New rank = A + Joined above - Left above = [A]+[K]-[M]",
+      "options": [17,20,14,23,17,20]
+    }
+
+  ],
+  "responses": {
+    "correct": [
+      "Excellent! 🎯","Perfect! ⭐","Brilliant! 🧠","Well done! 👍",
+      "Amazing! 🌟","Superb! 🚀","Outstanding! 💫","Great job! 🎊",
+      "Spot on! ✨","Fantastic! 🎈"
+    ],
+    "incorrect": [
+      "Try again! 💪","Check your logic 🔢","Almost! 😊",
+      "Think carefully! 🤔","Review the formula 📚","So close! 💝",
+      "One more try! 🎯","Keep going! 🌈"
+    ]
+  }
+}
