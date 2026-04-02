@@ -133,9 +133,12 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-direction-sense-level-5' : '/vooo-ai/subjects/upsc-direction-sense/engine-code/upsc-direction-sense-level-5.js',
 	'upsc-direction-sense-level-6' : '/vooo-ai/subjects/upsc-direction-sense/engine-code/upsc-direction-sense-level-6.js',
 
-	'upsc-ranktime-level-1' : '/vooo-ai/vae-upsc-ranktime-level-1.js',
-	'upsc-ranktime-level-2' : '/vooo-ai/vae-upsc-ranktime-level-2.js',
-	'upsc-ranktime-level-3' : '/vooo-ai/vae-upsc-ranktime-level-3.js',
+	'upsc-ranking-time-level-1' : '/vooo-ai/subjects/upsc-ranking-time/engine-code/upsc-ranking-time-level-1.js',
+	'upsc-ranking-time-level-2' : '/vooo-ai/subjects/upsc-ranking-time/engine-code/upsc-ranking-time-level-2.js',
+	'upsc-ranking-time-level-3' : '/vooo-ai/subjects/upsc-ranking-time/engine-code/upsc-ranking-time-level-3.js',
+	'upsc-ranking-time-level-4' : '/vooo-ai/subjects/upsc-ranking-time/engine-code/upsc-ranking-time-level-4.js',
+	'upsc-ranking-time-level-5' : '/vooo-ai/subjects/upsc-ranking-time/engine-code/upsc-ranking-time-level-5.js',
+	'upsc-ranking-time-level-6' : '/vooo-ai/subjects/upsc-ranking-time/engine-code/upsc-ranking-time-level-6.js',
 
 	'upsc-statement-level-1' : '/vooo-ai/vae-upsc-statement-level-1.js',
 	'upsc-statement-level-2' : '/vooo-ai/vae-upsc-statement-level-2.js',
@@ -394,9 +397,12 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-direction-sense-level-5' : 'upscdirectionsensel5',
 	'upsc-direction-sense-level-6' : 'upscdirectionsensel6',
 
-	'upsc-ranktime-level-1' : 'vaeupscranktimel1',
-	'upsc-ranktime-level-2' : 'vaeupscranktimel2',
-	'upsc-ranktime-level-3' : 'vaeupscranktimel3',
+	'upsc-ranking-time-level-1' : 'upscrankingtimel1',
+	'upsc-ranking-time-level-2' : 'upscrankingtimel2',
+	'upsc-ranking-time-level-3' : 'upscrankingtimel3',
+	'upsc-ranking-time-level-4' : 'upscrankingtimel4',
+	'upsc-ranking-time-level-5' : 'upscrankingtimel5',
+	'upsc-ranking-time-level-6' : 'upscrankingtimel6',
 
 	'upsc-statement-level-1' : 'vaeupscstatementl1',
 	'upsc-statement-level-2' : 'vaeupscstatementl2',
@@ -706,9 +712,12 @@ const VOOO_ENGINE_INSTANCES = {
 			{
                 label: 'Ranking & Time Secquence',
                 options: [
-                    { value: 'upsc-ranktime-level-1', text: '• Ranking & Time Seq. L1' },
-					{ value: 'upsc-ranktime-level-2', text: '• Ranking & Time Seq. L2' },
-                    { value: 'upsc-ranktime-level-3', text: '• Ranking & Time Seq. L3' },
+                    { value: 'upsc-ranking-time-level-1', text: '• Ranking & Time Seq. L1' },
+					{ value: 'upsc-ranking-time-level-2', text: '• Ranking & Time Seq. L2' },
+                    { value: 'upsc-ranking-time-level-3', text: '• Ranking & Time Seq. L3' },
+                    { value: 'upsc-ranking-time-level-4', text: '• Ranking & Time Seq. L4' },
+                    { value: 'upsc-ranking-time-level-5', text: '• Ranking & Time Seq. L5' },
+                    { value: 'upsc-ranking-time-level-6', text: '• Ranking & Time Seq. L6' },
                 ]
             },
 			{
