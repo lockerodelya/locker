@@ -83,12 +83,15 @@ const VOOO_ENGINE_REGISTRY = {
 	'basic-general-knowledge-level-26' : '/vooo-ai/subjects/basic-general-knowledge/engine-code/basic-general-knowledge-level-26.js',
 	'basic-general-knowledge-level-27' : '/vooo-ai/subjects/basic-general-knowledge/engine-code/basic-general-knowledge-level-27.js',
 
+	'upsc-ratio-proportion-level-1' : '/vooo-ai/subjects/upsc-ratio-proportion/engine-code/upsc-ratio-proportion-level-1.js',
+	'upsc-ratio-proportion-level-2' : '/vooo-ai/subjects/upsc-ratio-proportion/engine-code/upsc-ratio-proportion-level-2.js',
+	'upsc-ratio-proportion-level-3' : '/vooo-ai/subjects/upsc-ratio-proportion/engine-code/upsc-ratio-proportion-level-3.js',
+
 	'upsc-barg-level-1' : '/vooo-ai/vae-upscbarg-level-1.js',
 	'upsc-lineg-level-1' : '/vooo-ai/vae-upsclineg-level-1.js',
 	'upsc-compd-level-1' : '/vooo-ai/vae-upsccompd-level-1.js',
 	'upsc-numsys-level-1' : '/vooo-ai/vae-upscnumsys-level-1.js',
 	'upsc-perc-level-1' : '/vooo-ai/vae-upscperc-level-1.js',
-	'upsc-ratios-level-1' : '/vooo-ai/vae-upscratios-level-1.js',
 	'upsc-tabledata-level-1' : '/vooo-ai/vae-upsctabledata-level-1.js',
 	'upsc-timespeed-level-1' : '/vooo-ai/vae-upsctimespeed-level-1.js',
 	
@@ -374,12 +377,15 @@ const VOOO_ENGINE_INSTANCES = {
 	'basic-general-knowledge-level-26' : 'basicgeneralknowledgel26',
 	'basic-general-knowledge-level-27' : 'basicgeneralknowledgel27',
 
+	'upsc-ratio-proportion-level-1' : 'upscratioproportionl1',
+	'upsc-ratio-proportion-level-2' : 'upscratioproportionl2',
+	'upsc-ratio-proportion-level-3' : 'upscratioproportionl3',
+
 	'upsc-barg-level-1' : 'vaeupscbargl1',
 	'upsc-lineg-level-1' : 'vaeupsclinegl1',
 	'upsc-compd-level-1' : 'vaeupsccompdl1',
 	'upsc-numsys-level-1' : 'vaeupscnumsysl1',
 	'upsc-perc-level-1' : 'vaeupscpercl1',
-	'upsc-ratios-level-1' : 'vaeupscratiosl1',
 	'upsc-tabledata-level-1' : 'vaeupsctabledatal1',
 	'upsc-timespeed-level-1' : 'vaeupsctimespeedl1',
 
@@ -670,27 +676,34 @@ const VOOO_ENGINE_INSTANCES = {
 					{ value: 'basic-general-knowledge-level-17', text: '• Basic General Knowledge L17' },
 					{ value: 'basic-general-knowledge-level-18', text: '• Basic General Knowledge L18' },
 					{ value: 'basic-general-knowledge-level-19', text: '• Basic General Knowledge L19' },
-					{ value: 'basic-general-knowledge-level-20', text: '• Basic General Knowledge L20' },
-					{ value: 'basic-general-knowledge-level-21', text: '• Basic General Knowledge L21' },
-					{ value: 'basic-general-knowledge-level-22', text: '• Basic General Knowledge L22' },
-					{ value: 'basic-general-knowledge-level-23', text: '• Basic General Knowledge L23' },
-					{ value: 'basic-general-knowledge-level-24', text: '• Basic General Knowledge L24' },
-					{ value: 'basic-general-knowledge-level-25', text: '• Basic General Knowledge L25' },
-					{ value: 'basic-general-knowledge-level-26', text: '• Basic General Knowledge L26' },
-					{ value: 'basic-general-knowledge-level-27', text: '• Basic General Knowledge L27' },
+					{ value: 'basic-general-knowledgegk-level-20', text: '• Basic General Knowledge L20' },
+					{ value: 'basic-general-knowledgegk-level-21', text: '• Basic General Knowledge L21' },
+					{ value: 'basic-general-knowledgegk-level-22', text: '• Basic General Knowledge L22' },
+					{ value: 'basic-general-knowledgegk-level-23', text: '• Basic General Knowledge L23' },
+					{ value: 'basic-general-knowledgegk-level-24', text: '• Basic General Knowledge L24' },
+					{ value: 'basic-general-knowledgegk-level-25', text: '• Basic General Knowledge L25' },
+					{ value: 'basic-general-knowledgegk-level-26', text: '• Basic General Knowledge L26' },
+					{ value: 'basic-general-knowledgegk-level-27', text: '• Basic General Knowledge L27' },
                 ]
             },
             {
-                label: 'Numeracy (Class X)',
+                label: 'Basic Numeracy',
                 options: [
                     { value: 'upsc-barg-level-1', text: '• Numeracy Bargraph L1' },
 					{ value: 'upsc-lineg-level-1', text: '• Numeracy  Linegraph L1' },
                     { value: 'upsc-compd-level-1', text: '• Numeracy Compound L1' },
 					{ value: 'upsc-numsys-level-1', text: '• Numeracy Numbersys L1' },
 					{ value: 'upsc-perc-level-1', text: '• Numeracy Percentage L1' },
-                    { value: 'upsc-ratios-level-1', text: '• Numeracy Ratios L1' },
                     { value: 'upsc-tabledata-level-1', text: '• Numeracy Table Data L1' },
                     { value: 'upsc-timespeed-level-1', text: '• Numeracy Time Speed L1' },
+                ]
+            },
+            {
+                label: 'Basic Numeracy',
+                options: [
+                    { value: 'upsc-ratio-proportion-level-1', text: '• Ratio and Proportion L1' },
+					{ value: 'upsc-ratio-proportion-level-2', text: '• Ratio and Proportion L2' },
+                    { value: 'upsc-ratio-proportion-level-3', text: '• Ratio and Proportion L3' },
                 ]
             },
 			{
