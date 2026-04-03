@@ -87,7 +87,10 @@ const VOOO_ENGINE_REGISTRY = {
 	'upsc-ratio-proportion-level-2' : '/vooo-ai/subjects/upsc-ratio-proportion/engine-code/upsc-ratio-proportion-level-2.js',
 	'upsc-ratio-proportion-level-3' : '/vooo-ai/subjects/upsc-ratio-proportion/engine-code/upsc-ratio-proportion-level-3.js',
 
-	'upsc-barg-level-1' : '/vooo-ai/vae-upscbarg-level-1.js',
+	'upsc-bar-graph-level-1' : '/vooo-ai/subjects/upsc-bar-graph/engine-code/upsc-bar-graph-level-1.js',
+	'upsc-bar-graph-level-2' : '/vooo-ai/subjects/upsc-bar-graph/engine-code/upsc-bar-graph-level-2.js',
+	'upsc-bar-graph-level-3' : '/vooo-ai/subjects/upsc-bar-graph/engine-code/upsc-bar-graph-level-3.js',
+
 	'upsc-lineg-level-1' : '/vooo-ai/vae-upsclineg-level-1.js',
 	'upsc-compd-level-1' : '/vooo-ai/vae-upsccompd-level-1.js',
 	'upsc-numsys-level-1' : '/vooo-ai/vae-upscnumsys-level-1.js',
@@ -381,7 +384,10 @@ const VOOO_ENGINE_INSTANCES = {
 	'upsc-ratio-proportion-level-2' : 'upscratioproportionl2',
 	'upsc-ratio-proportion-level-3' : 'upscratioproportionl3',
 
-	'upsc-barg-level-1' : 'vaeupscbargl1',
+	'upsc-bar-graph-level-1' : 'upscbargraphl1',
+	'upsc-bar-graph-level-2' : 'upscbargraphl2',
+	'upsc-bar-graph-level-3' : 'upscbargraphl3',
+
 	'upsc-lineg-level-1' : 'vaeupsclinegl1',
 	'upsc-compd-level-1' : 'vaeupsccompdl1',
 	'upsc-numsys-level-1' : 'vaeupscnumsysl1',
@@ -689,8 +695,7 @@ const VOOO_ENGINE_INSTANCES = {
             {
                 label: 'Basic Numeracy',
                 options: [
-                    { value: 'upsc-barg-level-1', text: '• Numeracy Bargraph L1' },
-					{ value: 'upsc-lineg-level-1', text: '• Numeracy  Linegraph L1' },
+                    { value: 'upsc-lineg-level-1', text: '• Numeracy  Linegraph L1' },
                     { value: 'upsc-compd-level-1', text: '• Numeracy Compound L1' },
 					{ value: 'upsc-numsys-level-1', text: '• Numeracy Numbersys L1' },
 					{ value: 'upsc-perc-level-1', text: '• Numeracy Percentage L1' },
@@ -704,6 +709,14 @@ const VOOO_ENGINE_INSTANCES = {
                     { value: 'upsc-ratio-proportion-level-1', text: '• Ratio and Proportion L1' },
 					{ value: 'upsc-ratio-proportion-level-2', text: '• Ratio and Proportion L2' },
                     { value: 'upsc-ratio-proportion-level-3', text: '• Ratio and Proportion L3' },
+                ]
+            },
+            {
+                label: 'Basic Numeracy',
+                options: [
+                    { value: 'upsc-bar-graph-level-1', text: '• Bar Graph L1' },
+					{ value: 'upsc-bar-graph-level-2', text: '• Bar Graph L2' },
+                    { value: 'upsc-bar-graph-level-3', text: '• Bar Graph L3' },
                 ]
             },
 			{
