@@ -408,25 +408,24 @@ isTemplateComputable(template){
         }
 
 calculateAnswer(template, variables) {
-    // ROWS MODE: ANS injected into variables by _pickRow
     if (template.rows && variables.ANS !== undefined) {
         return variables.ANS;
     }
-
-    // ANSWER_LABEL only (fixed templates like CD_L1_07, 10, 15, 21, 24)
     if (template.answer_label && Array.isArray(template.answer_label)) {
         return template.answer_label[0];
     }
 
-    // ── Original logic below (untouched) ──
     if (!template.calculation) return null;
     const calc = template.calculation.trim();
     if (calc === '' || calc === 'null') return null;
-	if(/^Option\s[A-D]$/.test(calc)){
-    return calc;
-	}
-    if (this.isPlainText(calc)) return null;
 
+    if (/^Option\s[A-D]$/.test(calc)) {
+        return calc;
+    }
+
+    // ✅ FIX: variable name lookup MUST come before isPlainText check
+    // "QUALITY", "EFFECT", "CATEGORY" etc. all match /^[A-Z][A-Z0-9_]*$/
+    // but also match isPlainText's /^[A-Za-z\s]+$/ — so they were dying here
     if (/^[A-Z][A-Z0-9_]*$/.test(calc)) {
         if (variables.hasOwnProperty(calc)) {
             const val = variables[calc];
@@ -436,6 +435,9 @@ calculateAnswer(template, variables) {
             return val;
         }
     }
+
+    // ✅ isPlainText guard now comes AFTER the variable lookup
+    if (this.isPlainText(calc)) return null;
 
     if (calc.includes('repeat('))          return this.evaluateExpression(calc, variables);
     if (calc.includes('next_in_pattern(')) {
@@ -465,6 +467,11 @@ if(template.options && Array.isArray(template.options)){
     const correctStr = String(correctAnswer);
     const found = opts.some(o=>String(o).startsWith(correctStr));
     if(!found) opts[0] = correctAnswer;
+    if(opts.length > 4){
+        const correct = opts.find(o=>String(o)===correctStr||String(o).startsWith(correctStr));
+        const wrong = this._shuffleArray(opts.filter(o=>String(o)!==String(correct)));
+        return this._shuffleArray([correct,...wrong.slice(0,3)]);
+    }
     return this._shuffleArray(opts);
 }
     if(template.options_builder){
@@ -597,7 +604,7 @@ if(template.options&&Array.isArray(template.options)){
         // VALIDATION
         // ════════════════════════════════════════════
         _validateOptions(options,correct){
-            if(!options||options.length!==4)return false;
+            if(!options||options.length<2)return false;
             if(new Set(options.map(o=>String(o))).size!==4)return false;
             if(!options.some(o=>String(o)===String(correct)||String(o).startsWith(String(correct))))return false;
             return true;
