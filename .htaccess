@@ -1,35 +1,35 @@
+FileETag MTime Size
 RewriteEngine On
 ErrorDocument 404 /404.html
 
-# Force HTTPS and remove www
-RewriteCond %{HTTP_HOST} ^www\.odelya\.online [NC,OR]
-RewriteCond %{HTTPS} off
-RewriteCond %{HTTP_HOST} ^(?:www\.)?(.+)$ [NC]
+# Redirect www to non-www
+RewriteCond %{HTTP_HOST} ^www\.odelya\.online [NC]
 RewriteRule ^ https://odelya.online%{REQUEST_URI} [R=301,L,NE]
 
-# Remove trailing slash ONLY for non-directory URLs
+# Force HTTPS (handles both direct and reverse proxy)
+RewriteCond %{HTTP:X-Forwarded-Proto} !https [OR]
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://odelya.online%{REQUEST_URI} [R=301,L,NE]
+
+# Remove trailing slash (non-dirs only)
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} /$ [NC]
 RewriteRule ^(.*)/$ /$1 [R=301,L,NE]
 
-# Block external access to .html URLs → redirect to clean URL
+# .html → clean URL redirect
 RewriteCond %{THE_REQUEST} \s/(.+?)\.html[\s?] [NC]
 RewriteRule ^ /%1 [R=301,L,NE]
 
-# Internally serve .html for clean URLs (no redirect, invisible to browser)
+# Clean URL → .html (internal)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_URI}.html -f
+RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_URI}\.html -f
 RewriteRule ^(.+)$ $1.html [L]
 
-# ====== CACHING RULES ======
+# ====== CACHING ======
 <IfModule mod_expires.c>
     ExpiresActive On
-
-    # HTML - no cache (always fresh)
     ExpiresByType text/html                "access plus 0 seconds"
-
-    # Images - 1 year
     ExpiresByType image/jpg                "access plus 1 year"
     ExpiresByType image/jpeg               "access plus 1 year"
     ExpiresByType image/png                "access plus 1 year"
@@ -37,15 +37,9 @@ RewriteRule ^(.+)$ $1.html [L]
     ExpiresByType image/gif                "access plus 1 year"
     ExpiresByType image/svg+xml            "access plus 1 year"
     ExpiresByType image/x-icon             "access plus 1 year"
-
-    # JavaScript - 1 year
     ExpiresByType application/javascript   "access plus 1 year"
     ExpiresByType text/javascript          "access plus 1 year"
-
-    # CSS - 1 year
     ExpiresByType text/css                 "access plus 1 year"
-
-    # Fonts - 1 year
     ExpiresByType font/woff                "access plus 1 year"
     ExpiresByType font/woff2               "access plus 1 year"
     ExpiresByType application/font-woff    "access plus 1 year"
@@ -58,19 +52,17 @@ RewriteRule ^(.+)$ $1.html [L]
         Header set Pragma "no-cache"
         Header set Expires "0"
     </FilesMatch>
-
-    # JS and CSS — 1 year but must-revalidate using ETag
+    # JS and CSS — 1 year
     <FilesMatch "\.(js|css)$">
         Header set Cache-Control "public, max-age=31536000"
-        Header unset ETag
-        FileETag MTime Size
     </FilesMatch>
-
-    # Images and fonts — 1 year
+    # Images and fonts — 1 year immutable
     <FilesMatch "\.(webp|png|jpg|jpeg|ico|gif|svg|woff|woff2)$">
         Header set Cache-Control "public, max-age=31536000, immutable"
     </FilesMatch>
+    # Security headers
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
-
-# Enable ETag based on file modification time
-FileETag MTime Size
