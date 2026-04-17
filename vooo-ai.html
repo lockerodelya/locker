@@ -1,6 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-IN">
 <head>
+
+(function() {
+    var host = window.location.hostname;
+    var protocol = window.location.protocol;
+    var path = window.location.pathname;
+    var search = window.location.search;  // Only addition needed
+    var cleanPath = path.replace(/\.html$/, '').replace(/\/+$/, '');
+
+    var needsRedirect = false;
+
+    if (protocol !== 'https:') needsRedirect = true;
+    if (host === 'www.odelya.online') needsRedirect = true;
+    if (path !== cleanPath) needsRedirect = true;
+
+    var targetURL = 'https://odelya.online' + cleanPath + search + window.location.hash;
+    if (needsRedirect && window.location.href !== targetURL) {
+        window.location.replace(targetURL);
+    }
+})();	
 	
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
