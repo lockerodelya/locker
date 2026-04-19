@@ -402,6 +402,25 @@ MCQs. For truly unlimited daily MCQ practice, visit
 </script>
 
 <script>
+    function selectOption(el,isCorrect){ ... }
+    function toggleAnswer(btn){ ... }
+
+    // FAQ accordion
+    document.querySelectorAll('.faq-question').forEach(function(q) {
+        q.addEventListener('click', function() {
+            const answer = this.nextElementSibling;
+            const isOpen = answer.classList.contains('open');
+            document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+            document.querySelectorAll('.faq-question').forEach(q => q.classList.remove('open'));
+            if (!isOpen) {
+                answer.classList.add('open');
+                this.classList.add('open');
+            }
+        });
+    });
+</script>
+
+<script>
 function selectOption(el,isCorrect){const card=el.closest('.mcq-card');card.querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(isCorrect){el.style.background='#e8f5e9';el.style.borderColor='#2e7d32';el.style.color='#1B5E20';el.style.fontWeight='700';}else{el.style.background='#ffebee';el.style.borderColor='#c62828';el.style.color='#b71c1c';card.querySelector('.answer-box').classList.add('show');}}
 function toggleAnswer(btn){const box=btn.closest('.mcq-card').querySelector('.answer-box');box.classList.toggle('show');btn.textContent=box.classList.contains('show')?'Hide Answer':'Show Answer';}
 </script>
