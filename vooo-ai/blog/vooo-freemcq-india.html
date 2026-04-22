@@ -1,6 +1,27 @@
 <!DOCTYPE html>
 <html lang="en-IN">
 <head>
+
+<script>
+(function() {
+    var host = window.location.hostname;
+    var protocol = window.location.protocol;
+    var path = window.location.pathname;
+    var search = window.location.search;  // Only addition needed
+    var cleanPath = path.replace(/\.html$/, '').replace(/\/+$/, '');
+
+    var needsRedirect = false;
+
+    if (protocol !== 'https:') needsRedirect = true;
+    if (host === 'www.odelya.online') needsRedirect = true;
+    if (path !== cleanPath) needsRedirect = true;
+
+    var targetURL = 'https://odelya.online' + cleanPath + search + window.location.hash;
+    if (needsRedirect && window.location.href !== targetURL) {
+        window.location.replace(targetURL);
+    }
+})();	
+</script>
 	
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -282,7 +303,7 @@ a.vooo-intro-link:hover {
             text-decoration: none;
         }
 
-        /* Sign Up & Login buttons — far right of gap strip */
+        /* Sign Up and Login buttons — far right of gap strip */
         .gap-auth-buttons {
             display: flex;
             align-items: center;
@@ -670,7 +691,7 @@ a.vooo-intro-link:hover {
       "name": "What subjects are available for MCQ practice on Vooo AI?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Vooo AI provides MCQ practice in Mathematics (from Foundation to Scholar level), Logical Reasoning (Syllogistic, Analogical, If-Then), Puzzle Reasoning (Sudoku, Grid, Sequence, Code Breaking, Lateral Thinking), Pattern Recognition, Math Operations, and Problem Solving including Time & Distance, Probability, and Cause & Effect."
+        "text": "Vooo AI provides MCQ practice in Mathematics (from Foundation to Scholar level), Logical Reasoning (Syllogistic, Analogical, If-Then), Puzzle Reasoning (Sudoku, Grid, Sequence, Code Breaking, Lateral Thinking), Pattern Recognition, Math Operations, and Problem Solving including Time and Distance, Probability, and Cause and Effect."
       }
     },
     {
@@ -1073,7 +1094,8 @@ a.vooo-intro-link:hover {
       <a href="/vooo-ai">Vooo Home</a><span class="separator">|</span>
       <a href="/vooo-ai/vooopricing">Vooo Pricing</a><span class="separator">|</span>
       <a href="/vooo-ai/vooosignup">Vooo Sign Up</a><span class="separator">|</span>
-      <a href="/vooo-ai/blog/vooo-freemcq-bankfinance">Bank Exam</a>
+      <a href="/vooo-ai/blog/vooo-freemcq-bankfinance">Bank Exam</a><span class="separator">|</span>
+	  <a href="/vooo-ai/blog/vooo-freemcq-blog">Free MCQs</a>
     </div>
   </div>
 </footer>
