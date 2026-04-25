@@ -1007,79 +1007,100 @@ footer {
 }
 </style>
 
-<!-- Dropdown JS -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const hamburger = document.getElementById('hamburger');
-    const dropdown = document.getElementById('dropdown');
-    if (hamburger && dropdown) {
-        hamburger.addEventListener('click', function(e) {
-            e.stopPropagation();
-            dropdown.classList.toggle('active');
-            document.body.classList.toggle('menu-open');
-            const icon = hamburger.querySelector('i');
-            if (dropdown.classList.contains('active')) {
-                icon.classList.replace('fa-bars','fa-times');
-            } else {
-                icon.classList.replace('fa-times','fa-bars');
+    <!-- JavaScript for Dropdown -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger');
+            const dropdown = document.getElementById('dropdown');
+            
+            if (hamburger && dropdown) {
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('active');
+                    
+                    document.body.classList.toggle('menu-open');
+                    
+                    const icon = hamburger.querySelector('i');
+                    if (dropdown.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
+                        dropdown.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                        const icon = hamburger.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+                
+                dropdown.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'A' || e.target.parentElement.tagName === 'A') {
+                        dropdown.classList.remove('active');
+                        const icon = hamburger.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+                
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && dropdown.classList.contains('active')) {
+                        dropdown.classList.remove('active');
+                        const icon = hamburger.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+            
+            // Fix Home link scrolling issue
+            const homeNav = document.querySelector('.home-nav');
+            if (homeNav) {
+                homeNav.addEventListener('click', function(e) {
+                    if (window.location.pathname === '/' || 
+                        window.location.pathname === '/index.html' || 
+                        window.location.pathname === '') {
+                        
+                        e.preventDefault();
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'instant'
+                        });
+                        history.replaceState(null, null, ' ');
+                    }
+                });
             }
         });
-        document.addEventListener('click', function(e) {
-            if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
-                dropdown.classList.remove('active');
-                document.body.classList.remove('menu-open');
-                hamburger.querySelector('i').classList.replace('fa-times','fa-bars');
-            }
-        });
-        dropdown.addEventListener('click', function(e) {
-            if (e.target.tagName === 'A' || e.target.parentElement.tagName === 'A') {
-                dropdown.classList.remove('active');
-                hamburger.querySelector('i').classList.replace('fa-times','fa-bars');
-            }
-        });
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && dropdown.classList.contains('active')) {
-                dropdown.classList.remove('active');
-                hamburger.querySelector('i').classList.replace('fa-times','fa-bars');
-            }
-        });
-    }
-});
-</script>
-
-<!-- Home nav fix -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const homeNav = document.querySelector('.home-nav');
-    if (homeNav) {
-        homeNav.addEventListener('click', function(e) {
-            if (window.location.pathname === '/' || window.location.pathname === '/index.html' || window.location.pathname === '') {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: 'instant' });
-                history.replaceState(null, null, ' ');
-            }
-        });
-    }
-});
-</script>
+    </script>
 
 </head>
 
 <body>
 
 <!-- ====== FIXED HEADER ====== -->
-<header>
-    <div class="header-container">
-        <div class="logo">
-            <img src="images/locker-logo.webp" alt="Odelya Management Pvt Ltd Logo" class="logo-image"
-                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0iIzBDNDdBMSI+PHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiByeD0iMjUiIGZpbGw9IiNGRkYiLz48dGV4dCB4PSIyNSIgeT0iMzAiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtZmFtaWx5PSJBcmlhbCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzBDNDdBMSI+TzwvdGV4dD48L3N2Zz4=';">
-            <span>Locker</span>
-        </div>
-        <div class="nav-right">
-            <a href="/" class="home-nav" onclick="event.preventDefault(); window.location.href='/';">Home</a>
-            <button class="hamburger" id="hamburger" aria-label="Menu">
-                <i class="fas fa-bars"></i>
-            </button>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="images/locker-logo.webp" alt="Odelya Locker Logo" class="logo-image" 
+     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0iIzBDNDdBMSI+PHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiByeD0iMjUiIGZpbGw9IiNGRkYiLz48dGV4dCB4PSIyNSIgeT0iMzAiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtZmFtaWx5PSJBcmlhbCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzBDNDdBMSI+TzwvdGV4dD48L3N2Zz4=';">
+                <span>Locker</span>
+            </div>
+            
+            <!-- Navigation Container (Home + Hamburger) -->
+            <div class="nav-right">
+                <!-- Home Tab -->
+                <a href="/" class="home-nav" onclick="event.preventDefault(); window.location.href='/';">Home</a>
+                
+                <!-- Hamburger Menu -->
+                <button class="hamburger" id="hamburger" aria-label="Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
 
               <!-- Dropdown Menu -->
             <div class="dropdown" id="dropdown">
