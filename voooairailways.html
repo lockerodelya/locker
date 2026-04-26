@@ -2,6 +2,26 @@
 <html lang="en-IN">
 <head>
 
+<script>
+(function() {
+    var host = window.location.hostname;
+    var protocol = window.location.protocol;
+    var path = window.location.pathname;
+    var search = window.location.search;  // Only addition needed
+    var cleanPath = path.replace(/\.html$/, '').replace(/\/+$/, '');
+
+    var needsRedirect = false;
+
+    if (protocol !== 'https:') needsRedirect = true;
+    if (host === 'www.odelya.online') needsRedirect = true;
+    if (path !== cleanPath) needsRedirect = true;
+
+    var targetURL = 'https://odelya.online' + cleanPath + search + window.location.hash;
+    if (needsRedirect && window.location.href !== targetURL) {
+        window.location.replace(targetURL);
+    }
+})();	
+</script>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1280,6 +1300,52 @@ a.vooo-intro-link:hover {
 function selectOption(el,isCorrect){const card=el.closest('.mcq-card');card.querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(isCorrect){el.style.background='#e8f5e9';el.style.borderColor='#2e7d32';el.style.color='#1B5E20';el.style.fontWeight='700';}else{el.style.background='#ffebee';el.style.borderColor='#c62828';el.style.color='#b71c1c';card.querySelector('.answer-box').classList.add('show');}}
 function toggleAnswer(btn){const box=btn.closest('.mcq-card').querySelector('.answer-box');box.classList.toggle('show');btn.textContent=box.classList.contains('show')?'Hide Answer':'Show Answer';}
 </script>
+
+<script>
+  // Lazy reveal cards as user scrolls
+  if('IntersectionObserver' in window){
+    const cards = document.querySelectorAll('.blog-card');
+    const observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.style.opacity='1';
+          entry.target.style.transform='translateY(0)';
+          observer.unobserve(entry.target);
+        }
+      });
+    },{rootMargin:'100px'});
+    cards.forEach(function(card){
+      card.style.opacity='0';
+      card.style.transform='translateY(16px)';
+      card.style.transition='opacity 0.3s ease, transform 0.3s ease';
+      observer.observe(card);
+    });
+  }
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9SWTR9V32R"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-9SWTR9V32R');
+</script>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=108583861', 'ym');
+
+    ym(108583861, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/108583861" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
 
 </body>
 </html>
