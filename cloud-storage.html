@@ -253,54 +253,78 @@
         }
         
         /* DROPDOWN STYLES */
-        .dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 20px;
-            background: #FFFFFF;
-            min-width: 300px;
-            border-radius: 8px;
-            z-index: 1000;
-            padding: 10px 0;
-            border: 1px solid #e0e7ff;
-        }
-        
-        .dropdown.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .dropdown a {
-            display: flex;
-            align-items: center;
-            padding: 12px 20px;
-            color: #37474f;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-        }
-        
-        .dropdown a:hover {
-            background: #f8f9ff;
-            color: #0D47A1;
-            border-left: 3px solid #4361ee;
-            padding-left: 25px;
-        }
-        
-        .dropdown a i {
-            width: 25px;
-            margin-right: 10px;
-            color: #0D47A1;
-            font-size: 1.1rem;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 20px;
+    background: #FFFFFF;
+    min-width: 350px;
+    border-radius: 8px;
+    z-index: 1000;
+    padding: 10px 0;
+    border: 1px solid #e0e7ff;
+    max-height: 364px;        /* shows exactly 7 links */
+    overflow-y: scroll;       /* always visible scrollbar */
+}
+
+.dropdown.active { display: block; animation: fadeIn 0.3s ease; }
+
+.dropdown a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #37474f;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.dropdown a:hover {
+    background: #f8f9ff;
+    color: #0D47A1;
+    border-left: 3px solid #4361ee;
+    padding-left: 25px;
+}
+
+.dropdown a i {
+    width: 25px;
+    margin-right: 10px;
+    color: #0D47A1;
+    font-size: 1.1rem;
+}
+
+/* Scrollbar — Chrome, Edge, Safari */
+.dropdown::-webkit-scrollbar {
+    width: 14px;
+}
+
+.dropdown::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 0 8px 8px 0;
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+    background: #0D47A1;
+    border-radius: 8px;
+}
+
+.dropdown::-webkit-scrollbar-thumb:hover {
+    background: #4361ee;
+}
+
+/* Scrollbar — Firefox */
+.dropdown {
+    scrollbar-width: thick;
+    scrollbar-color: #0D47A1 #f1f1f1;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
         
         /* ====== FIXED FOOTER STYLES ====== */
         footer {
@@ -573,10 +597,8 @@
                 font-size: 1.2rem;
             }
             
-            .dropdown {
-                right: 15px;
-                min-width: 200px;
-            }
+            .dropdown { right: 10px; min-width: 270px; }
+			.dropdown a { padding: 8px 12px; font-size: 0.9rem; }
             
             /* Hero Section */
             .hero {
@@ -659,15 +681,8 @@
                 height: 40px;
             }
             
-            .dropdown {
-                right: 10px;
-                min-width: 180px;
-            }
-            
-            .dropdown a {
-                padding: 10px 15px;
-                font-size: 0.95rem;
-            }
+            .dropdown { right: 10px; min-width: 220px; }
+            .dropdown a { padding: 8px 10px; font-size: 0.8rem; }
             
             /* Hero Section */
             .hero {
@@ -1188,12 +1203,15 @@
                 <a href="/user-login">☁️ Cloud User Account</a>
                 <a href="/cloud-storage">🔒 Cloud Storage Pricing</a>
                 <a href="/senai">🖼️ SEN-AI Imaging Process</a>
-				<a href="/accountodelya">🧮 Odelya Accounting Support
                 <a href="/vooo-ai">🌐 Vooo AI Education</a>
-                <a href="/voooaiinfo">📚 Vooo AI MCQ Info</a>
+                <a href="/voooaiinfo">📚 Vooo AI Info</a>
+				<a href="/voooaifinancesector">🏦 Finance Exams in India</a>
+				<a href="/voooaiexamsindia">🎯 Competitive Exams in India</a>
+				<a href="/voooairailways">🚂 Railway Exams in India</a>
+				<a href="/voooaidefence">🎖️ Defence Exams in India</a>
+				<a href="/voooaistatemainexams">🗺️ State Exams in India</a>
+				<a href="/voooaiadvanced">✍️ Top Civil Exams in India</a>
                 <a href="/cloudguest">💾 Cloud Guest Storage</a>
-                <a href="/odelyaitservices">💻 Odelya IT Services</a>
-                <a href="/odelyafaq">✉️ FAQs</a>
                 <a href="/contact">👥 Contact</a>
             </div>
             </div>
@@ -1360,11 +1378,18 @@
       <a href="/privacy-policy">Privacy</a><span class="separator">|</span>
       <a href="/terms">Terms</a><span class="separator">|</span>
       <a href="/about">About</a><span class="separator">|</span>
+	  <a href="/odelyaitservices">Odelya IT Services</a><span class="separator">|</span>
       <a href="/vooo-ai">Vooo Home</a><span class="separator">|</span>
       <a href="/vooo-ai/vooopricing">Vooo Pricing</a><span class="separator">|</span>
       <a href="/vooo-ai/vooosignup">Vooo Sign Up</a><span class="separator">|</span>
-      <a href="/voooaifinancesector">Finance Exams</a><span class="separator">|</span>
-	  <a href="/voooaiinfo">Vooo AI MCQ Info</a>
+	  <a href="/voooaiinfo">Vooo AI Info</a><span class="separator">|</span>
+	  <a href="/voooaifinancesector">Finance Exams in India</a><span class="separator">|</span>
+	  <a href="/voooaiexamsindia">Competitive Exams in India</a><span class="separator">|</span>
+	  <a href="/voooairailways">Railway Exams in India</a><span class="separator">|</span>
+	  <a href="/voooaidefence">Defence Exams in India</a><span class="separator">|</span>
+	  <a href="/voooaistatemainexams">State Exams in India</a><span class="separator">|</span>
+	  <a href="/voooaiadvanced">Top Civil Exams in India</a><span class="separator">|</span>
+	  <a href="/odelyafaq">FAQs of OMPL</a>
     </div>
   </div>
 </footer>
