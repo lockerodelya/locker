@@ -693,7 +693,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
             {
-                label: 'Basic Numeracy',
+                label: 'UPSC : Basic Numeracy',
                 options: [
                     { value: 'upsc-lineg-level-1', text: '• Numeracy  Linegraph L1' },
                     { value: 'upsc-compd-level-1', text: '• Numeracy Compound L1' },
@@ -704,7 +704,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
             {
-                label: 'Basic Numeracy',
+                label: 'UPSC : Basic Numeracy',
                 options: [
                     { value: 'upsc-ratio-proportion-level-1', text: '• Ratio and Proportion L1' },
 					{ value: 'upsc-ratio-proportion-level-2', text: '• Ratio and Proportion L2' },
@@ -712,7 +712,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
             {
-                label: 'Basic Numeracy',
+                label: 'UPSC : Basic Numeracy',
                 options: [
                     { value: 'upsc-bar-graph-level-1', text: '• Bar Graph L1' },
 					{ value: 'upsc-bar-graph-level-2', text: '• Bar Graph L2' },
@@ -720,7 +720,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Analytical Reasoning',
+                label: 'UPSC : Analytical Reasoning',
                 options: [
                     { value: 'upsc-analytical-seating-level-1', text: '• Seating Arrangement L1' },
 					{ value: 'upsc-analytical-seating-level-2', text: '• Seating Arrangement L2' },
@@ -731,7 +731,7 @@ const VOOO_ENGINE_INSTANCES = {
                 		]
             },
 			{
-                label: 'Analytical Reasoning',
+                label: 'UPSC : Analytical Reasoning',
                 options: [
                     { value: 'upsc-analytical-complex-level-1', text: '• Complex Arrangement L1' },
 					{ value: 'upsc-analytical-complex-level-2', text: '• Complex Arrangement L2' },
@@ -742,7 +742,7 @@ const VOOO_ENGINE_INSTANCES = {
                 		]
             },
 			{
-                label: 'Clock & Calendar',
+                label: 'UPSC : Clock & Calendar',
                 options: [
                     { value: 'upsc-clock-calendar-level-1', text: '• Clock & Calendar L1' },
 					{ value: 'upsc-clock-calendar-level-2', text: '• Clock & Calendar L2' },
@@ -753,7 +753,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Decision Making',
+                label: 'UPSC : Decision Making',
                 options: [
                     { value: 'upsc-decision-making-level-1', text: '• Decision Making L1' },
 					{ value: 'upsc-decision-making-level-2', text: '• Decision Making L2' },
@@ -764,7 +764,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Arguments & Conclusions',
+                label: 'UPSC : Arguments & Conclusions',
                 options: [
                     { value: 'upsc-arguments-level-1', text: '• Arguments & Conclusions L1' },
 					{ value: 'upsc-arguments-level-2', text: '• Arguments & Conclusions L2' },
@@ -775,7 +775,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Blood Relations',
+                label: 'UPSC : Blood Relations',
                 options: [
                     { value: 'upsc-blood-level-1', text: '• Blood Relations L1' },
 					{ value: 'upsc-blood-level-2', text: '• Blood Relations L2' },
@@ -786,7 +786,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Code-Decode',
+                label: 'UPSC : Code-Decode',
                 options: [
                     { value: 'upsc-code-decode-level-1', text: '• Code-Decode L1' },
 					{ value: 'upsc-code-decode-level-2', text: '• Code-Decode L2' },
@@ -797,7 +797,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Direction Sense',
+                label: 'UPSC : Direction Sense',
                 options: [
                     { value: 'upsc-direction-sense-level-1', text: '• Direction Sense L1' },
 					{ value: 'upsc-direction-sense-level-2', text: '• Direction Sense L2' },
@@ -808,7 +808,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Ranking & Time Secquence',
+                label: 'UPSC : Ranking & Time Secquence',
                 options: [
                     { value: 'upsc-ranking-time-level-1', text: '• Ranking & Time Seq. L1' },
 					{ value: 'upsc-ranking-time-level-2', text: '• Ranking & Time Seq. L2' },
@@ -819,7 +819,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Statement & Assumptions',
+                label: 'UPSC : Statement & Assumptions',
                 options: [
                     { value: 'upsc-statement-assumption-level-1', text: '• Statement & Assumptions L1' },
 					{ value: 'upsc-statement-assumption-level-2', text: '• Statement & Assumptions L2' },
@@ -830,7 +830,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Syllogisms',
+                label: 'UPSC : Syllogisms',
                 options: [
                     { value: 'upsc-syllogisms-level-1', text: '• Syllogisms L1' },
 					{ value: 'upsc-syllogisms-level-2', text: '• Syllogisms L2' },
@@ -841,7 +841,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Data Sufficiency: Geometry',
+                label: 'UPSC : Data Sufficiency: Geometry',
                 options: [
                     { value: 'upsc-ds-geometry-level-1', text: '• Geometry L1' },
 					{ value: 'upsc-ds-geometry-level-2', text: '• Geometry L2' },
@@ -852,7 +852,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Data Sufficiency: Profit & Loss',
+                label: 'UPSC : Data Sufficiency: Profit & Loss',
                 options: [
                     { value: 'upsc-ds-profit-loss-level-1', text: '• Profit & Loss L1' },
 					{ value: 'upsc-ds-profit-loss-level-2', text: '• Profit & Loss L2' },
@@ -1039,7 +1039,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Mathematics : Simple & Compound Ratio',
+                label: 'UPSC Math : Simple & Compound Ratio',
                 options: [
                     { value: 'upsc-math-simple-ratio-level-1', text: '• Simple & Compound Ratio L1' },
 					{ value: 'upsc-math-simple-ratio-level-2', text: '• Simple & Compound Ratio L2' },
@@ -1047,7 +1047,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Mathematics : Approximation',
+                label: 'UPSC Math : Approximation',
                 options: [
                     { value: 'upsc-math-approximation-level-1', text: '• Approximation L1' },
 					{ value: 'upsc-math-approximation-level-2', text: '• Approximation L2' },
@@ -1055,7 +1055,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Mathematics : BODMAS',
+                label: 'UPSC Math : BODMAS',
                 options: [
                     { value: 'upsc-math-bodmas-level-1', text: '• BODMAS L1' },
 					{ value: 'upsc-math-bodmas-level-2', text: '• BODMAS L2' },
@@ -1063,7 +1063,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Mathematics : Divisibility',
+                label: 'UPSC Math : Divisibility',
                 options: [
                     { value: 'upsc-math-divisibility-level-1', text: '• Divisibility L1' },
 					{ value: 'upsc-math-divisibility-level-2', text: '• Divisibility L2' },
@@ -1071,7 +1071,7 @@ const VOOO_ENGINE_INSTANCES = {
                 ]
             },
 			{
-                label: 'Mathematics : Factors & Multiples',
+                label: 'UPSC Math : Factors & Multiples',
                 options: [
                     { value: 'upsc-math-factors-multiples-level-1', text: '• Factors & Multiples L1' },
 					{ value: 'upsc-math-factors-multiples-level-2', text: '• Factors & Multiples L2' },
