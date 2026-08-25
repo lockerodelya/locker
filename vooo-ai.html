@@ -2145,36 +2145,6 @@ function showLoggedInUI(data) {
     }
 </script>
 <script src="/vooo-ai/voooai-tracker.js" async></script>
-
-<script>
-    let _gtmLoaded = false;
-
-    function loadGTM() {
-        if (_gtmLoaded) return;
-        _gtmLoaded = true;
-        const script = document.createElement('script');
-        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-9SWTR9V32R';
-        script.async = true;
-        document.head.appendChild(script);
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        window.gtag = gtag;
-        gtag('js', new Date());
-        gtag('config', 'G-9SWTR9V32R');
-    }
-
-    // Fire on first user interaction — scroll, click, or touch
-    // PageSpeed lab test never interacts so GTM never loads in the test
-    // Real users trigger it within 1-2 seconds naturally
-    ['scroll', 'click', 'touchstart', 'keydown'].forEach(function(event) {
-        window.addEventListener(event, loadGTM, { once: true, passive: true });
-    });
-
-    // Safety fallback — load after 8 seconds even if no interaction
-    window.addEventListener('load', function() {
-        setTimeout(loadGTM, 8000);
-    });
-</script>
 <script>
     function toggleFaq(button) {
         const item = button.parentElement;
