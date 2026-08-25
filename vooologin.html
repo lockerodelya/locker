@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://odelya.online/vooo-ai/vooologin.html">    
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+<title>Login - Vooo AI Education</title>
+<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0D47A1;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        /* ====== TOP ROW: Back button + Logo ====== */
+        .top-row {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .go-back-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #0D47A1;
+            color: #FFFFFF;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .go-back-btn:hover {
+            background: #0a3a8a;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+
+        .logo {
+            text-align: center;
+            padding-top: 45px;
+        }
+
+        .logo h1 {
+            color: #0D47A1;
+            font-size: 2.8em;
+            font-weight: 800;
+            margin-bottom: 8px;
+            white-space: nowrap;
+        }
+
+        .logo p {
+            color: #2E7D32;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        /* Add this new CSS */
+.logo-img-wrapper {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #0D47A1;
+    margin: 0 auto 10px auto;
+}
+.logo-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #0D47A1;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #0D47A1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover { background: #0a3a8a; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .links {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .links a {
+            color: #000000;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+        .links a:hover { text-decoration: underline; }
+
+        @media (max-width: 480px) {
+            .logo h1 { font-size: 2em; white-space: normal; }
+            .logo p { font-size: 1em; }
+            .go-back-btn { font-size: 0.9em; padding: 6px 12px; }
+        }
+    </style>
+
+</head>
+<body>
+    <div class="login-container">
+
+        <!-- Top row: Back button + Logo -->
+        <div class="top-row">
+            <a href="https://odelya.online/vooo-ai.html" class="go-back-btn">← Back</a>
+            <div class="logo">
+                <div class="logo-img-wrapper">
+                    <img src="/vooo-ai/images/vooo-logo.webp" alt="Vooo Logo">
+                </div>
+                <h1>Vooo AI Education</h1>
+                <p>Guaranteed Unlimited Unique MCQs</p>
+            </div>
+        </div>
+
+        <div id="error-message" class="error"></div>
+
+        <form id="login-form" autocomplete="off">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="user_vooo_login" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="text" id="password" name="pass_vooo_login" autocomplete="off" readonly onfocus="this.removeAttribute('readonly'); this.type='password';" required>
+            </div>
+
+            <button type="submit" class="btn" id="login-btn">Login</button>
+        </form>
+
+        <div class="links">
+            <a href="vooosignup.html">Don't have an account? Sign Up</a>
+            <a href="voooreset.html">Forgot Password?</a>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="vooo-config.js"></script>
+
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(VOOO_CONFIG.firebase);
+        const auth = firebase.auth();
+        const db   = firebase.firestore();
+
+        const form     = document.getElementById('login-form');
+        const errorDiv = document.getElementById('error-message');
+        const loginBtn = document.getElementById('login-btn');
+
+        // Clear fields on load
+        window.addEventListener('load', () => {
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const usernameInput = document.getElementById('username').value.trim();
+            const password      = document.getElementById('password').value;
+
+            loginBtn.disabled     = true;
+            loginBtn.textContent  = 'Logging in...';
+            errorDiv.style.display = 'none';
+
+            try {
+                let email = usernameInput;
+
+                // Username entered — look up email from Firestore
+                if (!usernameInput.includes('@')) {
+                    // Try exact match first (handles mixed-case usernames)
+                    let userQuery = await db.collection('users')
+                        .where('username', '==', usernameInput)
+                        .limit(1)
+                        .get();
+
+                    // If not found, try lowercase (legacy users)
+                    if (userQuery.empty) {
+                        userQuery = await db.collection('users')
+                            .where('username', '==', usernameInput.toLowerCase())
+                            .limit(1)
+                            .get();
+                    }
+
+                    if (userQuery.empty) {
+                        throw new Error('Username not found');
+                    }
+
+                    email = userQuery.docs[0].data().email;
+                }
+
+                // Login with Firebase Auth
+                await auth.signInWithEmailAndPassword(email, password);
+
+                // Update last login timestamp
+                const user = auth.currentUser;
+                await db.collection('users').doc(user.uid).update({
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Redirect back to Vooo AI page
+                window.location.href = 'https://odelya.online/vooo-ai.html';
+
+            } catch (error) {
+                console.error('Login error:', error);
+
+                let errorMessage = 'Wrong Credentials';
+                
+                errorDiv.textContent   = errorMessage;
+                errorDiv.style.display = 'block';
+                loginBtn.disabled      = false;
+                loginBtn.textContent   = 'Login';
+            }
+        });
+    </script>
+</body>
+</html>

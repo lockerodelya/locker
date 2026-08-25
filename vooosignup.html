@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico">	
+<title>Sign Up - Vooo AI Education</title>
+<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0D47A1;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .signup-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 80%;
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 40px 50px;
+        }
+
+        .top-row {
+            position: relative;
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .go-back-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #0D47A1;
+            color: #FFFFFF;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .go-back-btn:hover { background: #0a3a8a; color: #FFFFFF; text-decoration: none; }
+
+        .logo {
+            text-align: center;
+            padding-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-img-wrapper {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #0D47A1;
+            flex-shrink: 0;
+        }
+        .logo-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+        .logo h1 {
+            color: #0D47A1;
+            font-size: 2.4em;
+            font-weight: 800;
+            margin: 0;
+            white-space: nowrap;
+        }
+        .logo p { color: #2E7D32; font-size: 1.1em; font-weight: 600; margin: 0; }
+
+        /* Plan banner shown when coming from pricing page */
+        .plan-banner {
+            background: #e8f5e9;
+            border: 2px solid #2E7D32;
+            border-radius: 10px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+        .plan-banner p { color: #1b5e20; font-size: 1.05em; font-weight: 700; }
+        .plan-banner span { color: #cc0000; font-size: 1.2em; font-weight: 800; }
+
+        .form-group { margin-bottom: 18px; }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            background: white;
+        }
+        input:focus, select:focus { outline: none; border-color: #0D47A1; }
+
+        .password-match-msg { font-size: 0.85em; margin-top: 5px; display: none; }
+        .password-match-msg.match { color: #2E7D32; }
+        .password-match-msg.no-match { color: #c33; }
+
+        .username-msg { font-size: 0.85em; margin-top: 5px; display: none; }
+        .username-msg.unavailable { color: #c33; }
+        .username-msg.available { color: #2E7D32; }
+
+        .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #0D47A1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 6px;
+        }
+        .btn:hover { background: #0a3a8a; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        .error, .success { padding: 12px; border-radius: 8px; margin-bottom: 20px; display: none; }
+        .error { background: #fee; color: #c33; }
+        .success { background: #efe; color: #2E7D32; font-weight: 700; font-size: 1.1em; text-align: center; }
+
+        .links-bar {
+            background: #0D47A1;
+            border-radius: 10px;
+            padding: 14px 20px;
+            margin-top: 22px;
+            text-align: center;
+            color: #ffffff;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+        .links-bar a { color: #ffffff; text-decoration: none; font-size: 1.2em; font-weight: 700; margin-left: 4px; }
+        .links-bar a:hover { text-decoration: none; }
+
+        small { color: #666; font-size: 0.82em; display: block; margin-top: 3px; }
+
+        @media (max-width: 768px) {
+            body { padding: 0; }
+            .signup-container { width: 100%; border-radius: 0; margin: 0; padding: 24px 18px; }
+            .form-row-2, .form-row-3 { grid-template-columns: 1fr; }
+            .logo h1 { font-size: 1.7em; white-space: normal; }
+            .logo p { font-size: 0.95em; }
+            .go-back-btn { font-size: 0.88em; padding: 6px 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="top-row">
+            <a href="https://odelya.online/vooo-ai.html" class="go-back-btn">Back</a>
+            <div class="logo">
+                <div class="logo-img-wrapper">
+                    <img src="/vooo-ai/images/vooo-logo.webp" alt="Vooo Logo">
+                </div>
+                <h1>Vooo AI Education</h1>
+                <p>Guaranteed Unlimited Unique MCQs</p>
+            </div>
+        </div>
+
+        <!-- Plan banner — shown only when coming from pricing page -->
+        <div class="plan-banner" id="plan-banner">
+            <p>You are signing up for: <span id="banner-amount"></span> Plan &nbsp;|&nbsp; Complete signup to proceed to payment</p>
+        </div>
+
+        <div id="error-message" class="error"></div>
+        <div id="success-message" class="success"></div>
+
+        <form id="signup-form" autocomplete="off">
+
+            <!-- Row 1: Name | DOB | Phone -->
+            <div class="form-row-3">
+                <div class="form-group">
+                    <label for="fullname">Full Name *</label>
+                    <input type="text" id="fullname" name="fullname_vooo" autocomplete="off" required maxlength="30" pattern="[A-Za-z ]{3,30}" placeholder="Your full name">
+                    <small>Max 30 characters</small>
+                </div>
+                <div class="form-group">
+                    <label for="dob">Date of Birth *</label>
+                    <input type="text" id="dob" name="dob_vooo" autocomplete="off" placeholder="DD-MM-YYYY" required pattern="\d{2}-\d{2}-\d{4}">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="text" id="phone" name="phone_vooo" autocomplete="off" placeholder="10 digit mobile number" required maxlength="10">
+                </div>
+            </div>
+
+            <!-- Row 2: Gender | Email -->
+            <div class="form-row-2">
+                <div class="form-group">
+                    <label for="gender">Gender *</label>
+                    <select id="gender" name="gender_vooo" required>
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email ID *</label>
+                    <input type="text" id="email" name="email_vooo" autocomplete="off" readonly onfocus="this.removeAttribute('readonly'); this.type='email';" required placeholder="your@email.com">
+                </div>
+            </div>
+
+            <!-- Row 3: Username | Password | Confirm Password -->
+            <div class="form-row-3">
+                <div class="form-group">
+                    <label for="username">Username *</label>
+                    <input type="text" id="username" name="username_vooo" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" required minlength="8" maxlength="12" pattern="[a-zA-Z0-9]{8,12}" placeholder="8–12 characters">
+                    <small>8–12 chars: letters & numbers only</small>
+                    <div id="username-msg" class="username-msg"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="text" id="password" name="password_vooo" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly'); this.type='password';" required minlength="8" maxlength="12" placeholder="8–12 characters">
+                    <small>Uppercase, lowercase, number, special char</small>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password *</label>
+                    <input type="password" id="confirm-password" name="confirm_password_vooo" autocomplete="off" required minlength="8" maxlength="12" placeholder="Re-enter your password">
+                    <div id="password-match-msg" class="password-match-msg"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn" id="signup-btn">Sign Up</button>
+        </form>
+
+        <div class="links-bar">
+            Already have an account? <a href="vooologin.html">Login</a>
+        </div>
+
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="vooo-config.js"></script>
+
+    <script>
+        firebase.initializeApp(VOOO_CONFIG.firebase);
+        const auth = firebase.auth();
+        const db   = firebase.firestore();
+
+        const form       = document.getElementById('signup-form');
+        const errorDiv   = document.getElementById('error-message');
+        const successDiv = document.getElementById('success-message');
+        const signupBtn  = document.getElementById('signup-btn');
+
+        // ====== READ URL PARAMS FROM PRICING PAGE ======
+// ====== READ URL PARAMS FROM PRICING PAGE ======
+        const urlParams  = new URLSearchParams(window.location.search);
+        const planKey    = urlParams.get('plan');
+        const planName   = urlParams.get('name');
+        const planAmount = urlParams.get('amount');
+
+        // Always clear old localStorage plan data first
+        localStorage.removeItem('vooo_plan_key');
+        localStorage.removeItem('vooo_plan_name');
+        localStorage.removeItem('vooo_plan_amount');
+        localStorage.removeItem('vooo_intl_currency');
+        localStorage.removeItem('vooo_intl_amount');
+
+        // Show plan banner if coming from pricing page
+        if (planKey && planAmount) {
+            document.getElementById('plan-banner').style.display = 'block';
+            document.getElementById('banner-amount').textContent = 'INR ' + planAmount;
+
+            // Save plan info to localStorage only when coming from pricing page
+            localStorage.setItem('vooo_plan_key',    planKey);
+            localStorage.setItem('vooo_plan_name',   planName);
+            localStorage.setItem('vooo_plan_amount', planAmount);
+        } else {
+            // User came directly to signup — clear any old plan data
+            localStorage.removeItem('vooo_plan_key');
+            localStorage.removeItem('vooo_plan_name');
+            localStorage.removeItem('vooo_plan_amount');
+            localStorage.removeItem('vooo_intl_currency');
+            localStorage.removeItem('vooo_intl_amount');
+        }
+
+        // Clear all fields on page load
+        window.addEventListener('load', () => {
+            document.getElementById('fullname').value        = '';
+            document.getElementById('dob').value             = '';
+            document.getElementById('phone').value           = '';
+            document.getElementById('email').value           = '';
+            document.getElementById('gender').value          = '';
+            document.getElementById('username').value        = '';
+            document.getElementById('password').value        = '';
+            document.getElementById('confirm-password').value = '';
+        });
+
+        function toTitleCase(str) {
+            return str.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+
+        function validatePassword(pw) {
+            return /[A-Z]/.test(pw) && /[a-z]/.test(pw) && /\d/.test(pw) && /[!@#$%^&*(),.?":{}|<>]/.test(pw);
+        }
+
+        function validatePhone(ph) { return /^\d{10}$/.test(ph); }
+
+        // Password match indicator
+        const passwordInput = document.getElementById('password');
+        const confirmInput  = document.getElementById('confirm-password');
+        const matchMsg      = document.getElementById('password-match-msg');
+
+        function checkPasswordMatch() {
+            const p1 = passwordInput.value, p2 = confirmInput.value;
+            if (!p2.length) { matchMsg.style.display = 'none'; return; }
+            matchMsg.style.display = 'block';
+            if (p1 === p2) {
+                matchMsg.textContent = '✓ Passwords match';
+                matchMsg.className = 'password-match-msg match';
+            } else {
+                matchMsg.textContent = '✗ Passwords do not match';
+                matchMsg.className = 'password-match-msg no-match';
+            }
+        }
+        confirmInput.addEventListener('input', checkPasswordMatch);
+        passwordInput.addEventListener('input', checkPasswordMatch);
+
+        // Username: no special chars
+        const usernameInput = document.getElementById('username');
+        const usernameMsg   = document.getElementById('username-msg');
+
+        usernameInput.addEventListener('input', (e) => {
+            const raw     = e.target.value;
+            const cleaned = raw.replace(/[^a-zA-Z0-9]/g, '');
+            if (raw !== cleaned) {
+                usernameMsg.textContent = 'Special characters are not allowed';
+                usernameMsg.className   = 'username-msg unavailable';
+                usernameMsg.style.display = 'block';
+            } else {
+                usernameMsg.style.display = 'none';
+            }
+            e.target.value = cleaned;
+        });
+
+        // ====== FORM SUBMIT ======
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            let fullname      = document.getElementById('fullname').value.trim();
+            const dob         = document.getElementById('dob').value.trim();
+            const phone       = document.getElementById('phone').value.trim();
+            const gender      = document.getElementById('gender').value;
+            const email       = document.getElementById('email').value.trim().toLowerCase();
+            const username    = document.getElementById('username').value.trim();
+            const password    = document.getElementById('password').value;
+            const confirmPass = document.getElementById('confirm-password').value;
+
+            if (!fullname || !dob || !phone || !gender || !email || !username || !password || !confirmPass) {
+                errorDiv.textContent = 'All fields are mandatory. Please fill in every field.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            if (!validatePhone(phone)) {
+                errorDiv.textContent = 'Phone must be exactly 10 digits.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            if (password !== confirmPass) {
+                errorDiv.textContent = 'Passwords do not match. Please re-enter.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            if (!validatePassword(password)) {
+                errorDiv.textContent = 'Password must include uppercase, lowercase, number, and special character.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            fullname = toTitleCase(fullname);
+
+            signupBtn.disabled    = true;
+            signupBtn.textContent = 'Creating account...';
+            errorDiv.style.display   = 'none';
+            successDiv.style.display = 'none';
+
+            try {
+                // Check username uniqueness
+                const usernameCheck = await db.collection('users')
+                    .where('username', '==', username).limit(1).get();
+
+                if (!usernameCheck.empty) {
+                    usernameMsg.textContent   = 'This username is unavailable.';
+                    usernameMsg.className     = 'username-msg unavailable';
+                    usernameMsg.style.display = 'block';
+                    throw new Error('This username is unavailable. Please choose another.');
+                }
+
+                // Create Firebase Auth user
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                await user.updateProfile({ displayName: fullname });
+
+                // Save to Firestore
+                await db.collection('users').doc(user.uid).set({
+                    username:          username,
+                    fullName:          fullname,
+                    dob:               dob,
+                    phone:             phone,
+                    gender:            gender,
+                    email:             email,
+                    tier:              'free',
+                    vooo_user:         true,
+                    planType:          null,
+                    planStartDate:     null,
+                    planExpiryDate:    null,
+                    createdAt:         firebase.firestore.FieldValue.serverTimestamp(),
+                    lastLogin:         firebase.firestore.FieldValue.serverTimestamp(),
+                    dailyStreak:       0,
+                    totalMCQsAttempted: 0,
+                    accuracyScore:     0,
+                    badges:            ['first_login'],
+                    devices:           [],
+                    dailyUsage: {
+                        date:  new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }),
+                        count: 0
+                    }
+                });
+
+                // ====== SAVE USER INFO TO LOCALSTORAGE FOR                // ====== SAVE USER INFO TO LOCALSTORAGE FOR PAYMENT PAGE ======
+                localStorage.setItem('vooo_uid',       user.uid);
+                localStorage.setItem('vooo_email',     email);
+                localStorage.setItem('vooo_fullname',  fullname);
+
+                // Sign out immediately (prevents browser password prompts)
+                await auth.signOut();
+
+                // Show success
+                successDiv.textContent   = planKey
+                    ? '✓ User created successfully! Redirecting to payment...'
+                    : '✓ User created successfully! Redirecting to login...';
+                successDiv.style.display = 'block';
+                form.reset();
+
+                // ====== REDIRECT ======
+                setTimeout(() => {
+                    const storedPlan   = localStorage.getItem('vooo_plan_key');
+                    const storedAmount = localStorage.getItem('vooo_plan_amount');
+                    const storedName   = localStorage.getItem('vooo_plan_name');
+
+                    if (planKey && storedPlan && storedAmount) {
+                        // Came from pricing page — go to payment
+                        window.location.href = 'https://odelya.online/vooo-ai/vooonusrpy.html?plan=' + storedPlan + '&name=' + encodeURIComponent(storedName) + '&amount=' + storedAmount;
+                    } else {
+                        // Direct signup — go to login
+                        window.location.href = 'https://odelya.online/vooo-ai/vooologin.html';
+                    }
+                }, 1800);
+
+            } catch (error) {
+                console.error('Signup error:', error);
+                let msg = error.message;
+                if (error.code === 'auth/email-already-in-use') msg = 'Email already registered. Please login or use another email.';
+                else if (error.code === 'auth/invalid-email')   msg = 'Invalid email address.';
+                else if (error.code === 'auth/weak-password')   msg = 'Password is too weak. Use at least 8 characters.';
+
+                errorDiv.textContent   = msg;
+                errorDiv.style.display = 'block';
+                signupBtn.disabled     = false;
+                signupBtn.textContent  = 'Sign Up';
+            }
+        });
+
+        // Phone: digits only
+        const phoneInput = document.getElementById('phone');
+        phoneInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+        });
+        phoneInput.addEventListener('paste', (e) => {
+            e.preventDefault();
+            phoneInput.value = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 10);
+        });
+
+        // DOB auto-format
+        document.getElementById('dob').addEventListener('input', (e) => {
+            let n = e.target.value.replace(/\D/g, '').slice(0, 8);
+            let f = '';
+            if (n.length >= 1) f = n.slice(0, 2);
+            if (n.length >= 3) f += '-' + n.slice(2, 4);
+            if (n.length >= 5) f += '-' + n.slice(4, 8);
+            e.target.value = f;
+        });
+    </script>
+</body>
+</html>

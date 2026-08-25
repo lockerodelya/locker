@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Login - Vooo AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .admin-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            max-width: 450px;
+            width: 100%;
+            padding: 40px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo h1 {
+            color: #1e40af;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        .logo p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        input:focus {
+            outline: none;
+            border-color: #1e40af;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #1e40af;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #1e3a8a;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .info {
+            background: #eff6ff;
+            border: 2px solid #2563eb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="logo">
+            <h1>🔐 Admin Login</h1>
+            <p>Vooo AI Education</p>
+        </div>
+        
+        <div class="info">
+            ℹ️ <strong>Vooo AI Admin Login</strong><br>
+            Email: <strong>odelyadelhi@gmail.com</strong>
+        </div>
+        
+        <div id="error-message" class="error"></div>
+        
+        <form id="admin-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" value="odelyadelhi@gmail.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            
+            <button type="submit" class="btn" id="login-btn">Login to Admin Panel</button>
+        </form>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="/vooo-ai/vooo-config.js"></script>
+    
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(VOOO_CONFIG.firebase);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        const form = document.getElementById('admin-form');
+        const errorDiv = document.getElementById('error-message');
+        const loginBtn = document.getElementById('login-btn');
+        
+        // Check if already logged in
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                // Check if user is VOOO admin
+                const adminDoc = await db.collection('vooo_admins').doc(user.uid).get();
+                if (adminDoc.exists) {
+                    window.location.href = 'voooadmin-users.html';
+                } else {
+                    errorDiv.textContent = 'You are not authorized as Vooo AI admin.';
+                    errorDiv.style.display = 'block';
+                    await auth.signOut();
+                }
+            }
+        });
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+            errorDiv.style.display = 'none';
+            
+            try {
+                // Sign in with Firebase
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Check if VOOO admin document exists
+                const adminDoc = await db.collection('vooo_admins').doc(user.uid).get();
+                
+                if (!adminDoc.exists) {
+                    // First time - create VOOO admin document
+                    await db.collection('vooo_admins').doc(user.uid).set({
+                        email: email,
+                        role: 'vooo_super_admin',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    alert('✅ Vooo AI Admin account created successfully!');
+                }
+                
+                // Redirect to admin panel
+                window.location.href = 'voooadmin-users.html';
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                let errorMessage = 'Login failed. ';
+                
+                if (error.code === 'auth/wrong-password') {
+                    errorMessage += 'Incorrect password.';
+                } else if (error.code === 'auth/user-not-found') {
+                    errorMessage += 'No account found with this email. Please create an account first from the signup page.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage += 'Invalid email address.';
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessage += 'Too many failed attempts. Please try again later.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                errorDiv.textContent = errorMessage;
+                errorDiv.style.display = 'block';
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login to Admin Panel';
+            }
+        });
+    </script>
+</body>
+</html>

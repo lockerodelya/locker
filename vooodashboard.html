@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico">	
+<title>Dashboard - Vooo AI Education</title>
+
+<!-- jsPDF for invoice download -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* ====== HEADER ====== */
+        .header {
+            background: #0D47A1;
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .btn-back {
+            background: #FFFFFF;
+            color: #0D47A1;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 1.2em;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+        .btn-back:hover { background: #e8eef7; color: #0D47A1; text-decoration: none; }
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .btn-header {
+            padding: 8px 20px;
+            background: #FFFFFF;
+            color: #0D47A1;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+        .btn-header:hover { background: #e8eef7; }
+
+        /* ====== LOGO STRIP ====== */
+        .logo-strip {
+            background: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 18px 0 10px 0;
+            gap: 20px;
+        }
+        .logo-circle {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #0D47A1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ====== DOWNLOAD BUTTON — paid users only, shown via JS ====== */
+        #download-invoice-btn {
+            display: none;
+            background: #0D47A1;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(13,71,161,0.25);
+        }
+        #download-invoice-btn:hover {
+            background: #0a3a8a;
+            transform: translateY(-2px);
+        }
+
+        /* ====== LOADING SPINNER ====== */
+        .loading-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 60vh;
+            gap: 20px;
+        }
+        .spinner {
+            width: 52px;
+            height: 52px;
+            border: 5px solid #e0e0e0;
+            border-top: 5px solid #0D47A1;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text { color: #0D47A1; font-size: 1.1em; font-weight: 600; }
+
+        /* ====== MAIN CONTAINER ====== */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: none;
+        }
+
+        /* ====== WELCOME SECTION ====== */
+        .welcome-section {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .welcome-top { margin-bottom: 20px; }
+        .welcome-top h2 { font-size: 2em; color: #333; }
+        .welcome-top h2 span { color: #0D47A1; }
+        .welcome-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* ====== ACTION BUTTONS ====== */
+        .plan-action-btn {
+            padding: 15px 40px;
+            background: #C62828;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.5em;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+            display: inline-block;
+            text-align: center;
+        }
+        .plan-action-btn:hover { background: #b71c1c; color: white; text-decoration: none; }
+        .plan-action-btn.upgrade { background: #2E7D32; }
+        .plan-action-btn.upgrade:hover { background: #1b5e20; }
+
+        .start-mcq-btn {
+            padding: 15px 40px;
+            background: #0D47A1;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.5em;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+            display: inline-block;
+            text-align: center;
+        }
+        .start-mcq-btn:hover {
+            background: #0a3a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(13,71,161,0.4);
+        }
+
+        /* ====== UPGRADE BANNER ====== */
+        .upgrade-banner {
+            display: inline-block;
+            padding: 15px 40px;
+            background: #2E7D32;
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.5em;
+            text-decoration: none;
+            transition: background 0.3s;
+            width: 100%;
+        }
+        .upgrade-banner h3 { font-size: 1.2em; margin-bottom: 6px; }
+
+        /* ====== PAYMENT SUCCESS BANNER ====== */
+        .payment-success-banner {
+            background: #e8f5e9;
+            border: 2px solid #2E7D32;
+            border-radius: 12px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            display: none;
+        }
+        .payment-success-banner .psb-title {
+            color: #2E7D32;
+            font-size: 1.3em;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+        .payment-success-banner .psb-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 7px 0;
+            border-bottom: 1px solid #c8e6c9;
+            font-size: 0.97em;
+            color: #333;
+        }
+        .payment-success-banner .psb-row:last-child { border-bottom: none; }
+        .payment-success-banner .psb-row span:last-child { font-weight: 700; color: #1b5e20; }
+        .payment-success-banner .psb-dismiss {
+            margin-top: 14px;
+            background: #2E7D32;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            padding: 8px 22px;
+            font-size: 0.9em;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .payment-success-banner .psb-dismiss:hover { background: #1b5e20; }
+
+        /* ====== STATS GRID ====== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-label { color: #000000; font-size: 1.2em; font-weight: 700; margin-bottom: 10px; }
+        .stat-value { font-size: 2.5em; font-weight: bold; color: #0D47A1; }
+        .account-type-value { font-size: 2em; font-weight: 700; color: #FF0000; }
+        .account-type-value.paid { color: #FF0000; }
+
+        /* ====== PLAN INFO ====== */
+        .plan-info {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .plan-info h3 { color: #0D47A1; font-size: 2em; font-weight: 700; margin-bottom: 20px; }
+        .plan-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1.15em;
+            color: #000000;
+        }
+        .plan-detail:last-child { border-bottom: none; }
+        .plan-detail span { font-weight: 600; }
+        .plan-detail strong { color: #000000; font-weight: 700; }
+
+        /* ====== CHANGE PASSWORD MODAL ====== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: white;
+            border-radius: 14px;
+            padding: 35px 30px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .modal-box h3 { color: #0D47A1; font-size: 1.4em; margin-bottom: 20px; text-align: center; }
+        .modal-field { margin-bottom: 16px; }
+        .modal-field label { display: block; font-size: 0.9em; font-weight: 600; color: #333; margin-bottom: 6px; }
+        .modal-field input {
+            width: 100%; padding: 10px 14px; border: 2px solid #e0e0e0;
+            border-radius: 8px; font-size: 1em; outline: none; transition: border-color 0.2s;
+        }
+        .modal-field input:focus { border-color: #0D47A1; }
+        .modal-policy { font-size: 0.8em; color: #666; margin-bottom: 16px; line-height: 1.5; }
+        .modal-policy ul { padding-left: 18px; }
+        .modal-error { color: #C62828; font-size: 0.85em; margin-bottom: 12px; display: none; }
+        .modal-actions { display: flex; gap: 12px; }
+        .modal-btn { flex: 1; padding: 11px; border: none; border-radius: 8px; font-size: 1em; font-weight: 700; cursor: pointer; transition: background 0.3s; }
+        .modal-btn-confirm { background: #0D47A1; color: white; }
+        .modal-btn-confirm:hover { background: #0a3a8a; }
+        .modal-btn-cancel { background: #f0f0f0; color: #333; }
+        .modal-btn-cancel:hover { background: #e0e0e0; }
+        .modal-close { position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 1.4em; cursor: pointer; color: #999; }
+        .modal-close:hover { color: #333; }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 768px) {
+            .header { flex-wrap: wrap; gap: 10px; }
+            .btn-back { font-size: 1em; font-weight: 600; }
+            .btn-header { font-size: 1em; font-weight: 600; padding: 7px 14px; }
+            .welcome-top h2 { font-size: 1.5em; }
+            .welcome-buttons { flex-direction: row; justify-content: space-between; gap: 10px; }
+            .plan-action-btn, .start-mcq-btn { padding: 10px 18px; font-size: 1.1em; }
+            .modal-box { margin: 0 16px; padding: 28px 20px; }
+            .payment-success-banner .psb-row { flex-direction: column; gap: 2px; }
+            .plan-detail { font-size: 1em; }
+            .stats-grid { gap: 10px; }
+            .stat-card { padding: 15px 8px; }
+            .stat-label { font-size: 0.85em; }
+            .stat-value { font-size: 1.6em; }
+            .account-type-value { font-size: 1.2em; }
+            #download-invoice-btn { font-size: 0.9em; padding: 8px 14px; }
+        }
+        @media (max-width: 400px) {
+            .plan-action-btn, .start-mcq-btn { padding: 8px 12px; font-size: 1em; }
+            .stat-label { font-size: 0.75em; }
+            .stat-value { font-size: 1.3em; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <a href="https://odelya.online/vooo-ai.html" class="btn-back">← Back</a>
+        </div>
+        <div class="header-right">
+            <button class="btn-header" onclick="openChangePasswordModal()">Change Password</button>
+            <button class="btn-header" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- LOGO STRIP — logo left, download button right of it, paid users only -->
+    <div class="logo-strip">
+        <div class="logo-circle">
+            <img src="/vooo-ai/images/vooo-logo.webp" alt="Vooo AI Logo">
+        </div>
+        <button id="download-invoice-btn" onclick="downloadInvoice()">⬇ Download Details</button>
+    </div>
+
+    <!-- CHANGE PASSWORD MODAL -->
+    <div id="change-password-modal" class="modal-overlay">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeChangePasswordModal()">✕</button>
+            <h3>🔒 Change Password</h3>
+            <div class="modal-policy">
+                Password must contain:
+                <ul>
+                    <li>At least 8 characters</li>
+                    <li>One uppercase letter (A–Z)</li>
+                    <li>One lowercase letter (a–z)</li>
+                    <li>One number (0–9)</li>
+                    <li>One special character (!@#$%^&* etc.)</li>
+                </ul>
+            </div>
+            <div class="modal-field">
+                <label for="new-password">New Password</label>
+                <input type="password" id="new-password" placeholder="Enter new password" oninput="clearModalError()">
+            </div>
+            <div class="modal-field">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" placeholder="Confirm new password" oninput="clearModalError()">
+            </div>
+            <div class="modal-error" id="modal-error"></div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" onclick="closeChangePasswordModal()">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" onclick="submitChangePassword()">Update Password</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOADING SPINNER -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading your dashboard...</div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container" id="main-container">
+
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-top">
+                <h2>Dashboard: <span id="user-fullname"></span></h2>
+            </div>
+            <div class="welcome-buttons">
+                <button class="start-mcq-btn" onclick="startMCQs()">Start MCQs</button>
+                <a id="plan-action-btn" href="/vooo-ai/vooopricing.html?existing=true" class="plan-action-btn">Buy Plan</a>
+            </div>
+        </div>
+
+        <!-- Payment Success Banner -->
+        <div id="payment-success-banner" class="payment-success-banner">
+            <div class="psb-title">✅ Payment Successful! Your plan is now active.</div>
+            <div class="psb-row"><span>Payment ID</span><span id="psb-payment-id">-</span></div>
+            <div class="psb-row"><span>Amount Paid</span><span id="psb-amount">-</span></div>
+            <div class="psb-row"><span>Plan Active From</span><span id="psb-start">-</span></div>
+            <div class="psb-row"><span>Plan Valid Until</span><span id="psb-expiry">-</span></div>
+            <button class="psb-dismiss" onclick="dismissPaymentBanner()">OK, Got it ✓</button>
+        </div>
+
+        <!-- Upgrade Banner -->
+        <div id="upgrade-banner" class="upgrade-banner" style="display:none;">
+            <h3>⚡ Upgrade to Unlimited Access!</h3>
+            <p id="upgrade-message"></p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Today's MCQs</div>
+                <div class="stat-value" id="today-usage">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Account Type</div>
+                <div class="stat-value" style="font-size:1em; margin-top:8px;">
+                    <span id="account-type-display" class="account-type-value">-</span>
+                </div>
+            </div>
+            <div class="stat-card" style="display:none;">
+                <div class="stat-label">Total MCQs Attempted</div>
+                <div class="stat-value" id="total-attempted">-</div>
+            </div>
+        </div>
+
+        <!-- Plan Info — paid users only -->
+        <div id="plan-info" class="plan-info" style="display:none;">
+            <h3>Plan Details :</h3>
+            <div class="plan-detail">
+                <span>Plan Value</span>
+                <strong id="plan-value">-</strong>
+            </div>
+            <div class="plan-detail">
+                <span>Plan Type</span>
+                <strong id="plan-type">-</strong>
+            </div>
+            <div class="plan-detail">
+                <span>Start Date</span>
+                <strong id="plan-start">-</strong>
+            </div>
+            <div class="plan-detail">
+                <span>Expiry Date</span>
+                <strong id="plan-expiry">-</strong>
+            </div>
+        </div>
+
+        <!-- Basic Information — always visible -->
+        <div class="plan-info" style="margin-top: 25px;">
+            <h3>Basic Information :</h3>
+            <div class="plan-detail">
+                <span>Full Name</span>
+                <strong id="basic-fullname">-</strong>
+            </div>
+            <div class="plan-detail">
+                <span>Date of Birth</span>
+                <strong id="basic-dob">-</strong>
+            </div>
+            <div class="plan-detail">
+                <span>Phone Number</span>
+                <strong id="basic-phone">-</strong>
+            </div>
+            <div class="plan-detail">
+                <span>Email ID</span>
+                <strong id="basic-email">-</strong>
+            </div>
+        </div>
+
+    </div><!-- end #main-container -->
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="vooo-config.js"></script>
+
+    <script>
+        firebase.initializeApp(VOOO_CONFIG.firebase);
+        const auth = firebase.auth();
+        const db   = firebase.firestore();
+
+        const PLAN_DISPLAY = {
+            '1month':  '1 Month',
+            '3month':  '3 Months',
+            '6month':  '6 Months',
+            '1year':   '1 Year'
+        };
+
+        // ── SHOW / HIDE ──
+        function showDashboard() {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('main-container').style.display = 'block';
+        }
+        function showError() {
+            document.getElementById('loading-screen').innerHTML =
+                '<div style="color:#C62828;font-size:1.1em;font-weight:600;text-align:center;padding:40px;">❌ Failed to load dashboard.<br>Please refresh the page.</div>';
+        }
+
+        // ── PAYMENT SUCCESS BANNER ──
+        function checkPaymentSuccess() {
+            const paymentStatus = localStorage.getItem('vooo_payment_status');
+            if (paymentStatus === 'success') {
+                document.getElementById('psb-payment-id').textContent = localStorage.getItem('vooo_payment_id')  || '-';
+                document.getElementById('psb-amount').textContent     = 'INR ' + (localStorage.getItem('vooo_amount_paid') || '-');
+                document.getElementById('psb-start').textContent      = localStorage.getItem('vooo_plan_start')  || '-';
+                document.getElementById('psb-expiry').textContent     = localStorage.getItem('vooo_plan_expiry') || '-';
+                document.getElementById('payment-success-banner').style.display = 'block';
+                localStorage.removeItem('vooo_payment_status');
+                localStorage.removeItem('vooo_payment_id');
+                localStorage.removeItem('vooo_amount_paid');
+                localStorage.removeItem('vooo_plan_start');
+                localStorage.removeItem('vooo_plan_expiry');
+            }
+        }
+        function dismissPaymentBanner() {
+            document.getElementById('payment-success-banner').style.display = 'none';
+        }
+
+        // ── AUTH STATE ──
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) { window.location.href = 'vooologin.html'; return; }
+            localStorage.setItem('vooo_uid',   user.uid);
+            localStorage.setItem('vooo_email', user.email);
+            checkPaymentSuccess();
+            await loadDashboard(user.uid);
+        });
+
+        // ── LOAD DASHBOARD ──
+        async function loadDashboard(userId) {
+            try {
+                const userDoc = await db.collection('users').doc(userId).get();
+                if (!userDoc.exists) {
+                    alert('User data not found');
+                    await auth.signOut();
+                    window.location.href = 'vooologin.html';
+                    return;
+                }
+
+                const userData = userDoc.data();
+                localStorage.setItem('vooo_fullname', userData.fullName || '');
+                document.getElementById('user-fullname').textContent = userData.fullName || 'User';
+
+                const isPaid = userData.tier === 'paid';
+
+                // Plan action button
+                const planBtn = document.getElementById('plan-action-btn');
+                if (isPaid) { planBtn.textContent = 'Upgrade Plan'; planBtn.classList.add('upgrade'); }
+                else        { planBtn.textContent = 'Buy Plan'; }
+
+                // Account type badge
+                const accountTypeEl = document.getElementById('account-type-display');
+                accountTypeEl.textContent = isPaid ? 'Paid' : 'Free';
+                if (isPaid) accountTypeEl.classList.add('paid');
+
+                // Today's MCQs
+                const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+                const dailyData = userData.dailyUsage || {};
+                const todayUsed = (dailyData.date === todayStr) ? (dailyData.count || 0) : 0;
+                document.getElementById('today-usage').textContent = todayUsed;
+
+                // Total MCQs
+                document.getElementById('total-attempted').textContent = userData.totalMCQsAttempted || 0;
+
+                // Upgrade banner — free users near limit
+                if (!isPaid && todayUsed >= 30) {
+                    document.getElementById('upgrade-banner').style.display = 'block';
+                    document.getElementById('upgrade-message').textContent  =
+                        `You've used ${todayUsed}/${VOOO_CONFIG.free_daily_limit} MCQs today. Upgrade for unlimited access!`;
+                }
+
+                // Plan info — paid users only
+                if (isPaid && userData.planType) {
+                    document.getElementById('plan-info').style.display = 'block';
+
+                    // ✅ Show Download button — paid users only
+                    document.getElementById('download-invoice-btn').style.display = 'inline-block';
+
+                    document.getElementById('plan-value').textContent =
+                        userData.planValue || '-';
+
+                    document.getElementById('plan-type').textContent =
+                        PLAN_DISPLAY[userData.planType] || userData.planType;
+
+                    if (userData.planStartDate) {
+                        const sd = userData.planStartDate.seconds
+                            ? new Date(userData.planStartDate.seconds * 1000)
+                            : new Date(userData.planStartDate);
+                        document.getElementById('plan-start').textContent = sd.toLocaleDateString('en-GB');
+                    }
+
+                    if (userData.planExpiryDate) {
+                        const ed = userData.planExpiryDate.seconds
+                            ? new Date(userData.planExpiryDate.seconds * 1000)
+                            : new Date(userData.planExpiryDate);
+                        document.getElementById('plan-expiry').textContent = ed.toLocaleDateString('en-GB');
+
+                       const nowIST   = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+                        const daysLeft = Math.ceil((ed - nowIST) / (1000 * 60 * 60 * 24));
+                        if (daysLeft > 0 && daysLeft <= 7) {
+                            document.getElementById('upgrade-banner').style.display = 'block';
+                            document.getElementById('upgrade-message').textContent  =
+                                `Your plan expires in ${daysLeft} days. Renew now to continue unlimited access!`;
+                        }
+                    }
+                }
+
+                // Basic info — always visible
+                document.getElementById('basic-fullname').textContent = userData.fullName || '-';
+                document.getElementById('basic-dob').textContent      = userData.dob      || '-';
+                document.getElementById('basic-phone').textContent    = userData.phone    || '-';
+                document.getElementById('basic-email').textContent    = userData.email    || '-';
+
+                showDashboard();
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                showError();
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // DOWNLOAD INVOICE PDF
+        // Data is read from the DOM (already loaded from Firebase above)
+        // Filename: PHONE_FULLNAME.pdf
+        // ══════════════════════════════════════════════════════════════
+        function downloadInvoice() {
+            const { jsPDF } = window.jspdf;
+            const doc    = new jsPDF({ format: 'a4', unit: 'mm' });
+            const pageW  = 210;
+            const pageH  = 297;
+            const margin = 18;
+            const colW   = pageW - margin * 2;
+            let   y      = 0;
+
+            // ── Colour palette ──
+            const BLUE  = [13,  71,  161];
+            const DBLUE = [8,   45,  100];
+            const LGREY = [245, 247, 250];
+            const BLACK = [30,  30,  30];
+            const WHITE = [255, 255, 255];
+            const RED   = [198, 40,  40];
+            const GREEN = [30,  100, 30];
+            const AMBER = [180, 120, 0];
+
+            // ── Shorthand: set font style/size/colour ──
+            function sf(style, size, color) {
+                doc.setFont('helvetica', style);
+                doc.setFontSize(size);
+                doc.setTextColor(...color);
+            }
+
+            // ── Dark-blue section header bar ──
+            function sectionHead(yy, label) {
+                doc.setFillColor(...DBLUE);
+                doc.roundedRect(margin, yy, colW, 8, 2, 2, 'F');
+                sf('bold', 9, WHITE);
+                doc.text(label, margin + 4, yy + 5.5);
+                return yy + 11;  // returns next y position
+            }
+
+            // ── Rounded filled box, optional border ──
+            function filledBox(yy, h, fillRGB, borderRGB) {
+                doc.setFillColor(...fillRGB);
+                if (borderRGB) {
+                    doc.setDrawColor(...borderRGB);
+                    doc.setLineWidth(0.5);
+                    doc.roundedRect(margin, yy, colW, h, 2, 2, 'FD');
+                } else {
+                    doc.roundedRect(margin, yy, colW, h, 2, 2, 'F');
+                }
+            }
+
+            // ── Read all values from DOM ──
+            const fullName   = document.getElementById('basic-fullname').textContent || '-';
+            const dob        = document.getElementById('basic-dob').textContent      || '-';
+            const phone      = document.getElementById('basic-phone').textContent    || '-';
+            const email      = document.getElementById('basic-email').textContent    || '-';
+            const planValue  = document.getElementById('plan-value').textContent     || '-';
+            const planType   = document.getElementById('plan-type').textContent      || '-';
+            const planStart  = document.getElementById('plan-start').textContent     || '-';
+            const planExpiry = document.getElementById('plan-expiry').textContent    || '-';
+
+            // Download date + time
+            const now    = new Date();
+            const dlDate = now.toLocaleDateString('en-GB') + '  ' +
+                now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+            // ════════════════════════
+            // 1. HEADER BAND
+            // ════════════════════════
+            doc.setFillColor(...BLUE);
+            doc.rect(0, 0, pageW, 40, 'F');
+
+try {
+                doc.addImage(
+                    '/vooo-ai/images/invoicelogo.jpg', 'JPEG',
+                    pageW - margin - 17, 11, 17, 17,
+                    undefined, 'NONE'
+                );
+                // Draw circle cutout OVER the image using blue fill to mask the square corners
+                doc.setFillColor(...BLUE);
+                // Top-left corner mask
+                doc.rect(pageW - margin - 17, 11, 17, 17, 'F');
+                // Redraw white circle on top to reveal only circular area
+                doc.setFillColor(...WHITE);
+                doc.circle(pageW - margin - 8.5, 19.5, 8.5, 'F');
+                // Redraw image clipped inside — not possible in jsPDF, so use border ring instead
+                doc.addImage(
+                    '/vooo-ai/images/invoicelogo.jpg', 'JPEG',
+                    pageW - margin - 17, 11, 17, 17,
+                    undefined, 'NONE'
+                );
+            } catch(e) { /* logo unavailable — skip silently */ }
+
+            // Company name
+            sf('bold', 17, WHITE);
+            doc.text('Odelya Vooo AI Education', margin, 15);
+
+            // Sub-line
+            sf('normal', 8.5, [180, 210, 255]);
+            doc.text('Service Receipt', margin, 24);
+
+            // Address — inside header band below sub-line
+            sf('normal', 7, [180, 210, 255]);
+            doc.text(
+                '44E, 2nd Floor, Nandalal Mitra Lane, Kudghat, Ashok Nagar, Tollygunge, Kolkata, West Bengal 700040, India',
+                margin, 32
+            );
+
+            // Download date — bottom-right of header
+            sf('normal', 7, [180, 210, 255]);
+            doc.text('Downloaded: ' + dlDate, pageW - margin, 38, { align: 'right' });
+
+            y = 46;
+
+            // ════════════════════════
+            // 2. BENEFICIARY DETAILS
+            // ════════════════════════
+            y = sectionHead(y, 'BENEFICIARY DETAILS');
+            filledBox(y, 30, LGREY, null);
+
+            // Name | DOB
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Beneficiary Name', margin + 5, y + 7);
+            sf('bold', 10, BLACK);
+            doc.text(fullName, margin + 5, y + 14);
+
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Date of Birth', margin + colW / 2 + 5, y + 7);
+            sf('normal', 10, BLACK);
+            doc.text(dob, margin + colW / 2 + 5, y + 14);
+
+            // Phone | Email
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Phone Number', margin + 5, y + 21);
+            sf('normal', 10, BLACK);
+            doc.text(phone, margin + 5, y + 27);
+
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Email ID', margin + colW / 2 + 5, y + 21);
+            sf('normal', 10, BLACK);
+            doc.text(email, margin + colW / 2 + 5, y + 27);
+
+            y += 35;
+
+            // ════════════════════════
+            // 4. SERVICE DETAILS
+            // ════════════════════════
+            y = sectionHead(y, 'SERVICE DETAILS');
+
+            // Service name — full width highlight row
+            doc.setFillColor(224, 235, 255);
+            doc.roundedRect(margin, y, colW, 11, 2, 2, 'F');
+            sf('bold', 11, BLUE);
+            doc.text('Vooo AI Education', pageW / 2, y + 8, { align: 'center' });
+            y += 15;
+
+            // Plan details box — reduced height, no days remaining row
+            filledBox(y, 35, LGREY, null);
+
+            // Plan Value | Plan Type
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Plan Value', margin + 5, y + 7);
+            sf('bold', 12, GREEN);
+            // Extract digits only, then write as plain ASCII "INR 200" — avoids superscript rendering bug
+            const numOnly    = planValue.replace(/[^0-9.]/g, '').trim();
+            const cleanValue = numOnly ? 'INR ' + numOnly : 'INR -';
+            doc.text(cleanValue, margin + 5, y + 15);
+
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Plan Type', margin + colW / 2 + 5, y + 7);
+            sf('bold', 12, BLACK);
+            doc.text(planType, margin + colW / 2 + 5, y + 15);
+
+            // Thin divider inside box
+            doc.setDrawColor(210, 215, 230);
+            doc.setLineWidth(0.3);
+            doc.line(margin + 5, y + 20, margin + colW - 5, y + 20);
+
+            // Start Date | Expiry Date
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Start Date', margin + 5, y + 27);
+            sf('normal', 10, BLACK);
+            doc.text(planStart, margin + 5, y + 34);
+
+            sf('bold', 7.5, [100, 100, 100]);
+            doc.text('Expiry Date', margin + colW / 2 + 5, y + 27);
+            sf('normal', 10, BLACK);
+            doc.text(planExpiry, margin + colW / 2 + 5, y + 34);
+
+            y += 41;
+
+            // ════════════════════════
+            // 5. DECLARATION
+            // ════════════════════════
+            y = sectionHead(y, 'DECLARATION');
+
+            // Company Policy box — red tint, full page width inside margins
+            filledBox(y, 21, [255, 242, 242], RED);
+            sf('bold', 8, RED);
+            doc.text('Company Policy:', margin + 5, y + 7);
+            sf('normal', 8, [100, 30, 30]);
+            const policyLines = doc.splitTextToSize(
+                'Money cannot be refunded under any circumstances once paid. All sales are final.',
+                colW - 10
+            );
+            doc.text(policyLines, margin + 5, y + 13);
+            y += 26;
+
+            // User Acknowledgement box — amber tint, full page width inside margins
+            filledBox(y, 26, [255, 250, 230], [200, 150, 0]);
+            sf('bold', 8, AMBER);
+            doc.text('User Acknowledgement:', margin + 5, y + 7);
+            sf('normal', 8, [100, 70, 0]);
+            const ackLines = doc.splitTextToSize(
+                'I have read and agree to the no-refund policy. I understand that all sales are final and no refund will be issued under any circumstances.',
+                colW - 10
+            );
+            doc.text(ackLines, margin + 5, y + 14);
+            y += 32;
+
+            // ════════════════════════
+            // 6. FOOTER
+            // ════════════════════════
+            doc.setFillColor(...BLUE);
+            doc.rect(0, pageH - 14, pageW, 14, 'F');
+            sf('normal', 8, [180, 210, 255]);
+            doc.text(
+                'A Product of Odelya Management Private Limited',
+                pageW / 2, pageH - 5.5, { align: 'center' }
+            );
+
+            // ── Save as PHONE_FULLNAME.pdf ──
+            const safeName  = fullName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+            const safePhone = phone.replace(/[^0-9]/g, '');
+            doc.save(safePhone + '_' + safeName + '.pdf');
+        }
+
+        // ── OTHER FUNCTIONS ──
+        function startMCQs() {
+            window.location.href = 'https://odelya.online/vooo-ai.html';
+        }
+
+        function openChangePasswordModal() {
+            document.getElementById('new-password').value     = '';
+            document.getElementById('confirm-password').value = '';
+            clearModalError();
+            document.getElementById('change-password-modal').classList.add('active');
+        }
+        function closeChangePasswordModal() {
+            document.getElementById('change-password-modal').classList.remove('active');
+        }
+        function clearModalError() {
+            const err = document.getElementById('modal-error');
+            err.style.display = 'none';
+            err.textContent   = '';
+        }
+        function showModalError(msg) {
+            const err = document.getElementById('modal-error');
+            err.textContent   = msg;
+            err.style.display = 'block';
+        }
+        function validatePassword(password) {
+            if (password.length < 8)              return 'Password must be at least 8 characters.';
+            if (!/[A-Z]/.test(password))          return 'Password must contain at least one uppercase letter.';
+            if (!/[a-z]/.test(password))          return 'Password must contain at least one lowercase letter.';
+            if (!/[0-9]/.test(password))          return 'Password must contain at least one number.';
+            if (!/[!@#$%^&*()\-_=+\[\]{};':"\\|,.<>\/?]/.test(password))
+                                                  return 'Password must contain at least one special character.';
+            return null;
+        }
+        async function submitChangePassword() {
+            const newPass     = document.getElementById('new-password').value;
+            const confirmPass = document.getElementById('confirm-password').value;
+            const validErr    = validatePassword(newPass);
+            if (validErr) { showModalError(validErr); return; }
+            if (newPass !== confirmPass) { showModalError('Passwords do not match.'); return; }
+            const user = auth.currentUser;
+            if (!user) { showModalError('No user logged in.'); return; }
+            try {
+                await user.updatePassword(newPass);
+                closeChangePasswordModal();
+                alert('✅ Password updated successfully! You will be logged out now.');
+                await auth.signOut();
+                window.location.href = 'vooologin.html';
+            } catch (error) {
+                if (error.code === 'auth/requires-recent-login') {
+                    showModalError('Session expired. Please log out and log back in before changing your password.');
+                } else {
+                    showModalError('❌ Error: ' + error.message);
+                }
+            }
+        }
+        document.getElementById('change-password-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeChangePasswordModal();
+        });
+        async function logout() {
+            const user = auth.currentUser;
+            if (user) {
+                try {
+                    await db.collection('device_tracking').doc(user.uid).delete();
+                } catch(e) {
+                    console.log('Device tracking clear error:', e);
+                }
+            }
+            await auth.signOut();
+            window.location.href = 'https://odelya.online/vooo-ai.html';
+        }
+    </script>
+</body>
+</html>
